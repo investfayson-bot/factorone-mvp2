@@ -1,5 +1,9 @@
-import { redirect } from 'next/navigation'
-export const dynamic = 'force-dynamic'
-export default function Home() {
-  redirect('/auth')
+'use client'
+import { useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+
+export default function LoginRedirect() {
+  const router = useRouter()
+  useEffect(() => { router.replace('/auth') }, [])
+  return null
 }
