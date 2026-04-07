@@ -1,7 +1,7 @@
 'use client'
 export const dynamic = 'force-dynamic'
 import React, { useEffect, useState, useRef } from 'react'
-import { createClient } from '@/lib/supabase'
+import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
 
 const CATS = ['Marketing','Tecnologia','RH','Software','Jurídico','Viagens','Infraestrutura','Alimentação','Outros']
@@ -15,7 +15,7 @@ export default function DespesasPage() {
   const [arquivo, setArquivo] = useState<File|null>(null)
   const [preview, setPreview] = useState('')
   const fileRef = useRef<HTMLInputElement>(null)
-  const sb = createClient()
+  const sb = supabase
 
   useEffect(() => { load() }, [])
 

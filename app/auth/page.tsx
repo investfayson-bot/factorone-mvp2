@@ -1,7 +1,7 @@
 'use client'
 export const dynamic = 'force-dynamic'
 import React, { useState } from 'react'
-import { createClient } from '@/lib/supabase'
+import { supabase } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
 import toast from 'react-hot-toast'
 
@@ -13,7 +13,7 @@ export default function AuthPage() {
   const [modo, setModo] = useState<'login'|'cadastro'>('login')
   const [loading, setLoading] = useState(false)
   const router = useRouter()
-  const sb = createClient()
+  const sb = supabase
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault()

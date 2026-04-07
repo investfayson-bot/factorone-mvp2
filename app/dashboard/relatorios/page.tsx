@@ -1,15 +1,11 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { createClient } from '@supabase/supabase-js'
+import { supabase } from '@/lib/supabase'
 
 type LinhaDRE = { label: string; atual: number; anterior: number }
 
 export default function RelatoriosPage() {
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  )
   const [periodo, setPeriodo] = useState<'mes' | 'trimestre' | 'ano'>('mes')
   const [linhas, setLinhas] = useState<LinhaDRE[]>([])
   const [analiseIA, setAnaliseIA] = useState('')
@@ -152,7 +148,7 @@ export default function RelatoriosPage() {
             <div className="bg-white/5 border border-white/10 rounded-2xl p-4 backdrop-blur-sm hover:border-blue-500/30 transition-all">Margem Bruta: {margemBruta.toFixed(1)}%</div>
             <div className="bg-white/5 border border-white/10 rounded-2xl p-4 backdrop-blur-sm hover:border-blue-500/30 transition-all">Margem EBITDA: {margemEbitda.toFixed(1)}%</div>
             <div className="bg-white/5 border border-white/10 rounded-2xl p-4 backdrop-blur-sm hover:border-blue-500/30 transition-all">Margem Líquida: {margemLiquida.toFixed(1)}%</div>
-          </div>
+            </div>
         </div>
         <aside className="bg-white/5 border border-white/10 rounded-2xl p-6 backdrop-blur-sm hover:border-blue-500/30 transition-all">
           <h2 className="font-semibold mb-2">Análise da IA</h2>

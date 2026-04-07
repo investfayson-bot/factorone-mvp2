@@ -1,7 +1,7 @@
 'use client'
 export const dynamic = 'force-dynamic'
 import React, { useEffect, useState } from 'react'
-import { createClient } from '@/lib/supabase'
+import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
 
 export default function InvoicesPage() {
@@ -10,7 +10,7 @@ export default function InvoicesPage() {
   const [loading, setLoading] = useState(false)
   const [empresaId, setEmpresaId] = useState('')
   const [form, setForm] = useState({ cliente_nome:'', valor:'', vencimento:'', descricao:'', status:'rascunho' })
-  const sb = createClient()
+  const sb = supabase
 
   useEffect(() => { load() }, [])
 

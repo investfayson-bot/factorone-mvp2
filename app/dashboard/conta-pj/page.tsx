@@ -1,13 +1,9 @@
 'use client'
 
 import { useMemo, useState } from 'react'
-import { createClient } from '@supabase/supabase-js'
+import { supabase } from '@/lib/supabase'
 
 export default function ContaPJPage() {
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  )
   const [etapa, setEtapa] = useState(1)
   const [empresa, setEmpresa] = useState({ cnpj: '', razao_social: '', cnae: '', data_abertura: '' })
   const [socios, setSocios] = useState([{ nome: '', cpf: '', participacao: 0 }])

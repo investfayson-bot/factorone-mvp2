@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useRef, useState } from 'react'
-import { createClient } from '@supabase/supabase-js'
+import { supabase } from '@/lib/supabase'
 import { Send, Zap, User, Bot, Loader2 } from 'lucide-react'
 
 type Msg = { role: 'user' | 'assistant'; content: string }
@@ -13,10 +13,6 @@ const SUGESTOES = [
 ]
 
 export default function AICFOPage() {
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  )
   const [mensagens, setMensagens] = useState<Msg[]>([])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
