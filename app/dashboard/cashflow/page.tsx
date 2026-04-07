@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
-import { createBrowserClient } from '@supabase/ssr'
+import { createClient } from '@supabase/supabase-js'
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import { ArrowDownCircle, ArrowUpCircle, Wallet, AlertTriangle, Plus } from 'lucide-react'
 
@@ -15,9 +15,9 @@ type Transacao = {
 }
 
 export default function CashflowPage() {
-  const supabase = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL || 'http://localhost:54321',
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'public-anon-key'
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   )
   const [transacoes, setTransacoes] = useState<Transacao[]>([])
   const [filtroTipo, setFiltroTipo] = useState<'todos' | 'entrada' | 'saida'>('todos')
@@ -127,7 +127,7 @@ export default function CashflowPage() {
         </div>
       )}
 
-      <div className="bg-[#111118] border border-[#1E1E2E] rounded-xl p-4">
+      <div className="bg-white/5 border border-white/10 rounded-2xl p-6 backdrop-blur-sm hover:border-blue-500/30 transition-all">
         <ResponsiveContainer width="100%" height={280}>
           <AreaChart data={serieComProjecao}>
             <CartesianGrid stroke="#1F1F2A" strokeDasharray="3 3" />
@@ -141,22 +141,22 @@ export default function CashflowPage() {
       </div>
 
       <div className="flex flex-wrap gap-2">
-        <select className="bg-[#111118] border border-[#2A2A35] rounded px-3 py-2" value={filtroPeriodo} onChange={(e) => setFiltroPeriodo(e.target.value as '30' | '90' | '365')}>
+        <select className="w-full md:w-auto bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:bg-white/8 transition-all" value={filtroPeriodo} onChange={(e) => setFiltroPeriodo(e.target.value as '30' | '90' | '365')}>
           <option value="30">Últimos 30 dias</option>
           <option value="90">Últimos 90 dias</option>
           <option value="365">Último ano</option>
         </select>
-        <select className="bg-[#111118] border border-[#2A2A35] rounded px-3 py-2" value={filtroCategoria} onChange={(e) => setFiltroCategoria(e.target.value)}>
+        <select className="w-full md:w-auto bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:bg-white/8 transition-all" value={filtroCategoria} onChange={(e) => setFiltroCategoria(e.target.value)}>
           {categorias.map(c => <option key={c} value={c}>{c}</option>)}
         </select>
-        <select className="bg-[#111118] border border-[#2A2A35] rounded px-3 py-2" value={filtroTipo} onChange={(e) => setFiltroTipo(e.target.value as 'todos' | 'entrada' | 'saida')}>
+        <select className="w-full md:w-auto bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:bg-white/8 transition-all" value={filtroTipo} onChange={(e) => setFiltroTipo(e.target.value as 'todos' | 'entrada' | 'saida')}>
           <option value="todos">Todos</option>
           <option value="entrada">Entrada</option>
           <option value="saida">Saída</option>
         </select>
       </div>
 
-      <div className="bg-[#111118] border border-[#1E1E2E] rounded-xl overflow-hidden">
+      <div className="bg-white/5 border border-white/10 rounded-2xl p-2 backdrop-blur-sm hover:border-blue-500/30 transition-all overflow-hidden">
         <table className="w-full text-sm">
           <thead className="bg-[#0F0F16] text-gray-400">
             <tr>
@@ -184,7 +184,7 @@ export default function CashflowPage() {
       </div>
 
       {insightIA && (
-        <div className="bg-[#111118] border border-[#0066FF]/40 rounded-xl p-4">
+        <div className="bg-white/5 border border-white/10 rounded-2xl p-6 backdrop-blur-sm hover:border-blue-500/30 transition-all">
           <h2 className="font-semibold mb-2">Insights de fluxo</h2>
           <p className="text-gray-300 whitespace-pre-line">{insightIA}</p>
         </div>
@@ -192,19 +192,24 @@ export default function CashflowPage() {
 
       {modalAberto && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
-          <div className="w-full max-w-md bg-[#111118] border border-[#2A2A35] rounded-xl p-4 space-y-3">
+          <div className="w-full max-w-md bg-[#0A0A0F] border border-white/10 rounded-2xl p-6 space-y-3">
             <h3 className="font-semibold">Nova transação</h3>
-            <input className="w-full bg-[#0A0A0F] border border-[#2A2A35] rounded p-2" placeholder="Descrição" value={form.descricao} onChange={(e) => setForm({ ...form, descricao: e.target.value })} />
-            <input className="w-full bg-[#0A0A0F] border border-[#2A2A35] rounded p-2" placeholder="Categoria" value={form.categoria} onChange={(e) => setForm({ ...form, categoria: e.target.value })} />
-            <select className="w-full bg-[#0A0A0F] border border-[#2A2A35] rounded p-2" value={form.tipo} onChange={(e) => setForm({ ...form, tipo: e.target.value as 'entrada' | 'saida' })}>
+            <input className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:bg-white/8 transition-all" placeholder="Descrição" value={form.descricao} onChange={(e) => setForm({ ...form, descricao: e.target.value })} />
+            <select className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:bg-white/8 transition-all" value={form.categoria} onChange={(e) => setForm({ ...form, categoria: e.target.value })}>
+              <option value="operacional">operacional</option>
+              <option value="impostos">impostos</option>
+              <option value="custo">custo</option>
+              <option value="receita_extra">receita_extra</option>
+            </select>
+            <select className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:bg-white/8 transition-all" value={form.tipo} onChange={(e) => setForm({ ...form, tipo: e.target.value as 'entrada' | 'saida' })}>
               <option value="entrada">Entrada</option>
               <option value="saida">Saída</option>
             </select>
-            <input type="number" className="w-full bg-[#0A0A0F] border border-[#2A2A35] rounded p-2" value={form.valor} onChange={(e) => setForm({ ...form, valor: Number(e.target.value) })} />
-            <input type="date" className="w-full bg-[#0A0A0F] border border-[#2A2A35] rounded p-2" value={form.data} onChange={(e) => setForm({ ...form, data: e.target.value })} />
+            <input type="number" className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:bg-white/8 transition-all" value={form.valor} onChange={(e) => setForm({ ...form, valor: Number(e.target.value) })} />
+            <input type="date" className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:bg-white/8 transition-all" value={form.data} onChange={(e) => setForm({ ...form, data: e.target.value })} />
             <div className="flex justify-end gap-2">
-              <button className="px-3 py-2 rounded bg-[#2A2A35]" onClick={() => setModalAberto(false)}>Cancelar</button>
-              <button className="px-3 py-2 rounded bg-[#0066FF]" onClick={criarTransacao}>Salvar</button>
+              <button className="bg-white/10 hover:bg-white/15 text-white font-medium px-4 py-2.5 rounded-xl border border-white/10 transition-all" onClick={() => setModalAberto(false)}>Cancelar</button>
+              <button className="bg-blue-500 hover:bg-blue-600 text-white font-medium px-4 py-2.5 rounded-xl transition-all flex items-center gap-2" onClick={criarTransacao}>Salvar</button>
             </div>
           </div>
         </div>
@@ -215,7 +220,7 @@ export default function CashflowPage() {
 
 function Card({ titulo, valor, icon }: { titulo: string; valor: string; icon: React.ReactNode }) {
   return (
-    <div className="bg-[#111118] border border-[#1E1E2E] rounded-xl p-4">
+    <div className="bg-white/5 border border-white/10 rounded-2xl p-5 flex flex-col gap-3">
       <div className="flex items-center gap-2 text-gray-400 text-sm mb-2">{icon}{titulo}</div>
       <p className="text-xl font-semibold">{valor}</p>
     </div>

@@ -1,96 +1,94 @@
 'use client'
-export const dynamic = 'force-dynamic'
-import React, { useEffect, useState } from 'react'
-import { useRouter, usePathname } from 'next/navigation'
-import { createClient } from '@/lib/supabase'
+import { useEffect, useState } from 'react'
+import { usePathname, useRouter } from 'next/navigation'
+import { createClient } from '@supabase/supabase-js'
+import { LayoutDashboard, TrendingUp, Receipt, Building2, BarChart3, FileText, Zap, Settings, LogOut, ChevronRight } from 'lucide-react'
 import Link from 'next/link'
-import { LayoutDashboard, TrendingUp, Receipt, Building2, BarChart3, FileText, Zap, Settings } from 'lucide-react'
 
-const NAV = [
-  { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/dashboard/cashflow', label: 'Fluxo de Caixa', icon: TrendingUp },
-  { href: '/dashboard/nota-fiscal', label: 'Nota Fiscal', icon: Receipt },
-  { href: '/dashboard/conta-pj', label: 'Conta PJ', icon: Building2 },
-  { href: '/dashboard/relatorios', label: 'DRE', icon: BarChart3 },
-  { href: '/dashboard/despesas', label: 'Despesas', icon: FileText },
-  { href: '/dashboard/aicfo', label: 'AI CFO', icon: Zap, badge: 'AI' },
-  { href: '/dashboard/integracoes', label: 'Integrações', icon: Settings },
+const menu = [
+  { href: '/dashboard', icon: LayoutDashboard, label: 'Dashboard', group: 'principal' },
+  { href: '/dashboard/cashflow', icon: TrendingUp, label: 'Fluxo de Caixa', group: 'financeiro' },
+  { href: '/dashboard/nota-fiscal', icon: Receipt, label: 'Nota Fiscal', group: 'financeiro' },
+  { href: '/dashboard/relatorios', icon: BarChart3, label: 'DRE', group: 'financeiro' },
+  { href: '/dashboard/despesas', icon: FileText, label: 'Despesas', group: 'financeiro' },
+  { href: '/dashboard/conta-pj', icon: Building2, label: 'Conta PJ', group: 'servicos' },
+  { href: '/dashboard/aicfo', icon: Zap, label: 'AI CFO', group: 'ia', badge: 'IA' },
+  { href: '/dashboard/integracoes', icon: Settings, label: 'Integrações', group: 'config' },
 ]
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const [empresa, setEmpresa] = useState<any>(null)
-  const [usuario, setUsuario] = useState<any>(null)
-  const router = useRouter()
   const pathname = usePathname()
-  const sb = createClient()
+  const router = useRouter()
+  const [user, setUser] = useState<any>(null)
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  )
 
   useEffect(() => {
-    async function load() {
-      const { data: { user } } = await sb.auth.getUser()
-      if (!user) { router.push('/auth'); return }
-      const { data: u } = await sb.from('usuarios').select('*, empresas(*)').eq('id', user.id).single()
-      if (u) { setUsuario(u); setEmpresa(u.empresas) }
-    }
-    load()
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (!user) router.push('/auth')
+      else setUser(user)
+    })
   }, [])
 
-  async function handleLogout() {
-    await sb.auth.signOut()
+  async function sair() {
+    await supabase.auth.signOut()
     router.push('/auth')
   }
 
   return (
-    <div style={{ display: 'flex', height: '100vh', overflow: 'hidden', background: '#09100F' }}>
-      {/* Sidebar */}
-      <aside style={{ width: 220, minWidth: 220, background: '#111A19', borderRight: '1px solid #233130', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-        {/* Logo */}
-        <div style={{ padding: '14px 14px 8px', borderBottom: '1px solid #233130', marginBottom: 6 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <div style={{ width: 28, height: 28, background: '#C8F135', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: 12, color: '#000', fontFamily: 'Sora, sans-serif' }}>F1</div>
+    <div className="flex h-screen bg-[#0A0A0F] text-white overflow-hidden">
+      <aside className="w-60 flex-shrink-0 flex flex-col border-r border-white/5 bg-[#0D0D14]">
+        <div className="p-5 border-b border-white/5">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center font-bold text-white text-sm shadow-lg shadow-blue-500/25">F1</div>
             <div>
-              <div style={{ fontSize: 13, fontWeight: 700, color: '#E4E8E7', fontFamily: 'Sora, sans-serif' }}>FactorOne</div>
-              <div style={{ fontSize: 9, color: '#7A9290', fontFamily: 'monospace' }}>Finance OS</div>
+              <p className="font-bold text-white text-sm leading-tight">FactorOne</p>
+              <p className="text-gray-500 text-xs">Finance OS</p>
             </div>
           </div>
         </div>
 
-        {/* Nav */}
-        <nav style={{ flex: 1, overflowY: 'auto', padding: '4px 0' }}>
-          {NAV.map(item => {
-            const active = pathname === item.href || (item.href !== '/dashboard' && pathname.startsWith(item.href))
-            const Icon = item.icon
+        <nav className="flex-1 p-3 space-y-0.5 overflow-y-auto">
+          {menu.map((item) => {
+            const isActive = pathname === item.href || (item.href !== '/dashboard' && pathname.startsWith(item.href))
             return (
               <Link key={item.href} href={item.href}
-                style={{ display: 'flex', alignItems: 'center', gap: 9, padding: '7px 10px', borderRadius: 8, margin: '1px 8px', fontSize: 13, color: active ? '#000' : '#7A9290', background: active ? '#C8F135' : 'transparent', fontWeight: active ? 700 : 400, textDecoration: 'none', transition: 'all .15s' }}>
-                <Icon size={14} style={{ opacity: active ? 1 : 0.7 }} />
-                <span style={{ flex: 1 }}>{item.label}</span>
+                className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all group ${
+                  isActive
+                    ? 'bg-blue-500/15 text-blue-400 border border-blue-500/20 border-l-2 border-l-blue-500'
+                    : 'text-gray-400 hover:bg-white/5 hover:text-white'
+                }`}>
+                <item.icon size={17} className={isActive ? 'text-blue-400' : 'text-gray-500 group-hover:text-gray-300'} />
+                <span className="flex-1">{item.label}</span>
                 {item.badge && (
-                  <span style={{ fontSize: 9, background: active ? '#000' : '#C8F135', color: active ? '#C8F135' : '#000', padding: '1px 5px', borderRadius: 3, fontWeight: 800, fontFamily: 'monospace' }}>{item.badge}</span>
+                  <span className="text-xs bg-blue-500/20 text-blue-400 px-1.5 py-0.5 rounded-md animate-pulse">{item.badge}</span>
                 )}
+                {isActive && <ChevronRight size={14} className="text-blue-400" />}
               </Link>
             )
           })}
         </nav>
 
-        {/* Footer */}
-        <div style={{ padding: 10, borderTop: '1px solid #233130' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 7, padding: '8px 10px', background: '#182120', borderRadius: 8, cursor: 'pointer' }} onClick={handleLogout}>
-            <div style={{ width: 26, height: 26, background: '#3B8BFF', borderRadius: 5, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 9, fontWeight: 800, color: '#fff', flexShrink: 0 }}>
-              {empresa?.nome?.slice(0, 2).toUpperCase() || 'F1'}
+        <div className="p-3 border-t border-white/5">
+          <div className="flex items-center gap-2 px-3 py-2">
+            <div className="w-7 h-7 rounded-lg bg-blue-500/20 flex items-center justify-center text-blue-400 font-bold text-xs flex-shrink-0">
+              {user?.email?.[0]?.toUpperCase() || 'U'}
             </div>
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontSize: 11, fontWeight: 600, color: '#E4E8E7', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{empresa?.nome || 'Carregando...'}</div>
-              <div style={{ fontSize: 10, color: '#7A9290' }}>{empresa?.plano || 'trial'} · Sair</div>
+            <div className="flex-1 min-w-0">
+              <p className="text-white text-xs font-medium truncate">{user?.email}</p>
+              <p className="text-gray-500 text-xs">Trial</p>
             </div>
+            <button onClick={sair} className="text-gray-500 hover:text-red-400 transition-colors" title="Sair">
+              <LogOut size={15} />
+            </button>
           </div>
         </div>
       </aside>
 
-      {/* Main */}
-      <main style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-        <div style={{ flex: 1, overflowY: 'auto', padding: 24 }}>
-          {children}
-        </div>
+      <main className="flex-1 overflow-y-auto">
+        {children}
       </main>
     </div>
   )

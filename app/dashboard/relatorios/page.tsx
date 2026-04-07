@@ -1,14 +1,14 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
-import { createBrowserClient } from '@supabase/ssr'
+import { useEffect, useState } from 'react'
+import { createClient } from '@supabase/supabase-js'
 
 type LinhaDRE = { label: string; atual: number; anterior: number }
 
 export default function RelatoriosPage() {
-  const supabase = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL || 'http://localhost:54321',
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'public-anon-key'
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   )
   const [periodo, setPeriodo] = useState<'mes' | 'trimestre' | 'ano'>('mes')
   const [linhas, setLinhas] = useState<LinhaDRE[]>([])
@@ -114,18 +114,18 @@ export default function RelatoriosPage() {
       <div className="flex justify-between items-center mb-4 hide-print">
         <h1 className="text-2xl font-bold">DRE Completo</h1>
         <div className="flex gap-2">
-          <select className="bg-[#111118] border border-[#2A2A35] rounded px-3 py-2" value={periodo} onChange={(e) => setPeriodo(e.target.value as 'mes' | 'trimestre' | 'ano')}>
+          <select className="w-full md:w-auto bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:bg-white/8 transition-all" value={periodo} onChange={(e) => setPeriodo(e.target.value as 'mes' | 'trimestre' | 'ano')}>
             <option value="mes">Mês atual</option>
             <option value="trimestre">Trimestre</option>
             <option value="ano">Último ano</option>
           </select>
-          <button className="bg-[#0066FF] px-3 py-2 rounded" onClick={analisarComIA} disabled={loadingIA}>{loadingIA ? 'Analisando...' : 'Analisar com IA'}</button>
-          <button className="bg-[#2A2A35] px-3 py-2 rounded" onClick={() => window.print()}>Exportar PDF</button>
+          <button className="bg-blue-500 hover:bg-blue-600 text-white font-medium px-4 py-2.5 rounded-xl transition-all flex items-center gap-2" onClick={analisarComIA} disabled={loadingIA}>{loadingIA ? 'Analisando...' : 'Analisar com IA'}</button>
+          <button className="bg-white/10 hover:bg-white/15 text-white font-medium px-4 py-2.5 rounded-xl border border-white/10 transition-all" onClick={() => window.print()}>Exportar PDF</button>
         </div>
       </div>
 
       <div className="grid lg:grid-cols-3 gap-4">
-        <div className="lg:col-span-2 bg-[#111118] border border-[#1E1E2E] rounded-xl p-4">
+        <div className="lg:col-span-2 bg-white/5 border border-white/10 rounded-2xl p-6 backdrop-blur-sm hover:border-blue-500/30 transition-all">
           <table className="w-full text-sm">
             <thead>
               <tr className="text-left text-gray-400 border-b border-[#2A2A35]">
@@ -149,12 +149,12 @@ export default function RelatoriosPage() {
             </tbody>
           </table>
           <div className="grid md:grid-cols-3 gap-3 mt-4">
-            <div className="bg-[#0A0A0F] border border-[#2A2A35] rounded p-3">Margem Bruta: {margemBruta.toFixed(1)}%</div>
-            <div className="bg-[#0A0A0F] border border-[#2A2A35] rounded p-3">Margem EBITDA: {margemEbitda.toFixed(1)}%</div>
-            <div className="bg-[#0A0A0F] border border-[#2A2A35] rounded p-3">Margem Líquida: {margemLiquida.toFixed(1)}%</div>
+            <div className="bg-white/5 border border-white/10 rounded-2xl p-4 backdrop-blur-sm hover:border-blue-500/30 transition-all">Margem Bruta: {margemBruta.toFixed(1)}%</div>
+            <div className="bg-white/5 border border-white/10 rounded-2xl p-4 backdrop-blur-sm hover:border-blue-500/30 transition-all">Margem EBITDA: {margemEbitda.toFixed(1)}%</div>
+            <div className="bg-white/5 border border-white/10 rounded-2xl p-4 backdrop-blur-sm hover:border-blue-500/30 transition-all">Margem Líquida: {margemLiquida.toFixed(1)}%</div>
           </div>
         </div>
-        <aside className="bg-[#111118] border border-[#1E1E2E] rounded-xl p-4">
+        <aside className="bg-white/5 border border-white/10 rounded-2xl p-6 backdrop-blur-sm hover:border-blue-500/30 transition-all">
           <h2 className="font-semibold mb-2">Análise da IA</h2>
           <p className="text-gray-300 whitespace-pre-line text-sm">
             {analiseIA || 'Clique em "Analisar com IA" para gerar insights do DRE.'}

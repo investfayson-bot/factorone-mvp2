@@ -1,50 +1,55 @@
 import { NextRequest, NextResponse } from 'next/server'
-import Anthropic from '@anthropic-ai/sdk'
-import { createServerClient } from '@supabase/ssr'
+import OpenAI from 'openai'
+import { createClient } from '@supabase/supabase-js'
+
+const openrouter = new OpenAI({
+  baseURL: 'https://openrouter.ai/api/v1',
+  apiKey: process.env.OPENROUTER_API_KEY || '',
+})
 
 export async function POST(req: NextRequest) {
   try {
-    if (!process.env.ANTHROPIC_API_KEY) {
-      return NextResponse.json(
-        { error: 'ANTHROPIC_API_KEY não configurada no servidor' },
-        { status: 500 }
-      )
+    if (!process.env.OPENROUTER_API_KEY) {
+      return NextResponse.json({ error: 'OPENROUTER_API_KEY não configurada' }, { status: 500 })
     }
-    const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
-    const supabase = createServerClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY!, { cookies: { getAll: () => [], setAll: () => {} } })
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!
+    )
+
     const { data: { user } } = await supabase.auth.getUser()
-    if (!user) {
-      return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
-    }
 
     const { message, context } = await req.json()
+    if (!message) return NextResponse.json({ error: 'Mensagem obrigatória' }, { status: 400 })
 
-    const { data: transacoes } = await supabase
+    const { data: transacoes } = user ? await supabase
       .from('transacoes')
       .select('*')
       .eq('empresa_id', user.id)
       .order('data', { ascending: false })
-      .limit(20)
+      .limit(20) : { data: [] }
 
-    const systemPrompt = `Você é o CFO Inteligente da FactorOne — assistente financeiro para PMEs brasileiras.
-Responda sempre em português brasileiro. Seja direto, prático e use linguagem simples.
-Forneça insights acionáveis baseados nos dados reais da empresa.
+    const systemPrompt = `Você é o CFO Inteligente da FactorOne — assistente financeiro especializado para PMEs brasileiras.
+Responda SEMPRE em português brasileiro. Seja direto, prático e use linguagem simples.
+Forneça insights acionáveis e específicos baseados nos dados da empresa.
 
-Dados financeiros recentes:
+Dados financeiros recentes da empresa:
 ${JSON.stringify(transacoes || [], null, 2)}
 
-Contexto da pergunta: ${context || 'geral'}`
+Contexto atual: ${context || 'dashboard geral'}`
 
-    const response = await anthropic.messages.create({
-      model: 'claude-sonnet-4-6',
+    const response = await openrouter.chat.completions.create({
+      model: 'anthropic/claude-3-haiku',
       max_tokens: 1500,
-      system: systemPrompt,
-      messages: [{ role: 'user', content: message }]
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: message }
+      ],
     })
 
     return NextResponse.json({
-      response: response.content[0].type === 'text' ? response.content[0].text : ''
+      response: response.choices[0]?.message?.content || 'Sem resposta'
     })
   } catch (error: any) {
     console.error('Erro AI CFO:', error)
