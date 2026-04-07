@@ -1,152 +1,108 @@
 'use client'
-export const dynamic = 'force-dynamic'
-import React, { useState } from 'react'
-import { supabase } from '@/lib/supabase'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import toast from 'react-hot-toast'
+import { supabase } from '@/lib/supabase'
+import { Eye, EyeOff, Loader2, ArrowRight, Zap, CheckCircle } from 'lucide-react'
 
 export default function AuthPage() {
+  const [modo, setModo] = useState<'entrar' | 'cadastrar'>('entrar')
   const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [nome, setNome] = useState('')
-  const [empresa, setEmpresa] = useState('')
-  const [modo, setModo] = useState<'login'|'cadastro'>('login')
+  const [senha, setSenha] = useState('')
+  const [mostrarSenha, setMostrarSenha] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [msg, setMsg] = useState({ text: '', type: '' })
   const router = useRouter()
-  const sb = supabase
 
-  async function handleLogin(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setLoading(true)
-    const { data, error } = await sb.auth.signInWithPassword({ email, password })
-    if (error) {
-      toast.error('Email ou senha incorretos')
+    setMsg({ text: '', type: '' })
+    try {
+      if (modo === 'entrar') {
+        const { error } = await supabase.auth.signInWithPassword({ email, password: senha })
+        if (error) throw error
+        router.push('/dashboard')
+      } else {
+        const { error } = await supabase.auth.signUp({ email, password: senha })
+        if (error) throw error
+        setMsg({ text: 'Conta criada! Verifique seu email para confirmar.', type: 'success' })
+      }
+    } catch (err: any) {
+      const msgs: Record<string, string> = {
+        'Invalid login credentials': 'Email ou senha incorretos',
+        'Email not confirmed': 'Confirme seu email antes de entrar',
+        'User already registered': 'Email já cadastrado. Faça login.',
+        'Password should be at least 6 characters': 'Senha: mínimo 6 caracteres',
+      }
+      setMsg({ text: msgs[err.message] || err.message, type: 'error' })
+    } finally {
       setLoading(false)
-      return
-    }
-    if (data.user) {
-      toast.success('Bem-vindo!')
-      window.location.href = '/dashboard'
     }
   }
 
-  async function handleCadastro(e: React.FormEvent) {
-    e.preventDefault()
-    if (!nome || !empresa) { toast.error('Preencha nome e empresa'); return }
+  async function usarDemo() {
     setLoading(true)
-    const { data, error } = await sb.auth.signUp({
-      email, password,
-      options: { data: { nome, empresa_nome: empresa } }
-    })
-    if (error) { toast.error(error.message); setLoading(false); return }
-    if (data.user) {
-      try {
-        const { data: emp } = await sb.from('empresas')
-          .insert({ nome: empresa, plano: 'trial', plano_ativo: true })
-          .select().single()
-
-        if (emp) {
-          await sb.from('usuarios').insert({
-            id: data.user.id, empresa_id: emp.id, nome, email, papel: 'admin'
-          })
-          await sb.from('metricas').insert({ empresa_id: emp.id })
-          // Cash flow de demo
-          await sb.from('cashflow').insert([
-            { empresa_id: emp.id, mes: 'Jan/26', entradas: 180000, saidas: 140000 },
-            { empresa_id: emp.id, mes: 'Fev/26', entradas: 220000, saidas: 165000 },
-            { empresa_id: emp.id, mes: 'Mar/26', entradas: 265000, saidas: 178000 },
-            { empresa_id: emp.id, mes: 'Abr/26', entradas: 290000, saidas: 185000, projetado: true },
-            { empresa_id: emp.id, mes: 'Mai/26', entradas: 320000, saidas: 192000, projetado: true },
-          ])
-        }
-        toast.success('Conta criada! Redirecionando...')
-        window.location.href = '/dashboard'
-      } catch (err) {
-        console.error(err)
-        window.location.href = '/dashboard'
-      }
-    }
+    const { error } = await supabase.auth.signInWithPassword({ email: 'demo@factorone.com.br', password: 'demo123456' })
+    if (!error) router.push('/dashboard')
+    else setMsg({ text: 'Conta demo não encontrada. Crie uma conta primeiro.', type: 'error' })
     setLoading(false)
   }
 
-  function usarDemo() {
-    setEmail('demo@factorone.com.br')
-    setPassword('demo123456')
-    setModo('login')
-    toast('Clique em "Entrar" para usar a conta demo', { icon: '💡' })
-  }
+  const features = [
+    'Reconhecimento de NF por foto ou upload',
+    'CFO Inteligente com IA em tempo real',
+    'DRE e fluxo de caixa automáticos',
+    'Abertura de conta PJ e captação',
+  ]
 
   return (
-    <div style={{ minHeight:'100vh', background:'#F8FAF9', display:'flex', alignItems:'center', justifyContent:'center', padding:16, fontFamily:'Inter,sans-serif' }}>
-      <div style={{ width:'100%', maxWidth:420 }}>
-        {/* Logo */}
-        <div style={{ textAlign:'center', marginBottom:32 }}>
-          <div style={{ display:'inline-flex', alignItems:'center', gap:10, marginBottom:20 }}>
-            <div style={{ width:36, height:36, background:'#C8F135', borderRadius:8, display:'flex', alignItems:'center', justifyContent:'center', fontWeight:800, fontSize:14, color:'#000', fontFamily:'Sora,sans-serif' }}>F1</div>
-            <span style={{ fontSize:22, fontWeight:800, color:'#1C2B2A', fontFamily:'Sora,sans-serif', letterSpacing:'-.03em' }}>FactorOne</span>
+    <div className="min-h-screen bg-slate-50 flex">
+      <div className="hidden lg:flex lg:w-[45%] flex-col bg-gradient-to-br from-blue-700 to-blue-900 p-12 text-white">
+        <div className="flex items-center gap-3 mb-auto">
+          <div className="w-10 h-10 bg-white/20 backdrop-blur rounded-xl flex items-center justify-center font-bold text-white text-sm border border-white/20">F1</div>
+          <div>
+            <p className="font-bold text-lg leading-none">FactorOne</p>
+            <p className="text-blue-200 text-xs">Finance OS</p>
           </div>
-          <h1 style={{ fontSize:24, fontWeight:700, color:'#1C2B2A', fontFamily:'Sora,sans-serif', margin:'0 0 6px' }}>
-            {modo === 'login' ? 'Bem-vindo de volta' : 'Criar sua conta'}
-          </h1>
-          <p style={{ fontSize:14, color:'#6B7280', margin:0 }}>
-            {modo === 'login' ? 'Entre no painel financeiro' : '14 dias grátis, sem cartão'}
-          </p>
         </div>
-
-        <div style={{ background:'#fff', borderRadius:16, border:'1px solid #E5E7EB', padding:32, boxShadow:'0 1px 8px rgba(0,0,0,.06)' }}>
-          {/* Tabs */}
-          <div style={{ display:'flex', background:'#F3F4F6', borderRadius:10, padding:4, marginBottom:24, gap:4 }}>
-            {(['login','cadastro'] as const).map(m => (
-              <button key={m} onClick={() => setModo(m)}
-                style={{ flex:1, padding:'9px 0', fontSize:13, fontWeight:modo===m?700:500, borderRadius:7, border:'none', cursor:'pointer', transition:'all .15s', background:modo===m?'#fff':'transparent', color:modo===m?'#1C2B2A':'#6B7280', boxShadow:modo===m?'0 1px 4px rgba(0,0,0,.1)':'none' }}>
-                {m === 'login' ? 'Entrar' : 'Criar conta'}
-              </button>
+        <div className="space-y-8 my-auto">
+          <div>
+            <h1 className="text-4xl font-bold leading-tight text-white">Sistema Operacional<br />Financeiro com IA</h1>
+            <p className="text-blue-200 mt-4 text-base leading-relaxed">Automatizando a gestão financeira das empresas modernas.</p>
+          </div>
+          <div className="space-y-3">
+            {features.map((f) => (
+              <div key={f} className="flex items-center gap-3">
+                <div className="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center flex-shrink-0"><CheckCircle size={13} className="text-white" /></div>
+                <span className="text-blue-100 text-sm">{f}</span>
+              </div>
             ))}
           </div>
+        </div>
+      </div>
 
-          <form onSubmit={modo === 'login' ? handleLogin : handleCadastro}>
-            {modo === 'cadastro' && (
-              <>
-                <div style={{ marginBottom:14 }}>
-                  <label style={{ display:'block', fontSize:12, fontWeight:600, color:'#374151', marginBottom:6, textTransform:'uppercase', letterSpacing:'.05em' }}>Seu nome</label>
-                  <input value={nome} onChange={e=>setNome(e.target.value)} required placeholder="João Silva"
-                    style={{ width:'100%', padding:'11px 14px', borderRadius:9, border:'1.5px solid #E5E7EB', fontSize:14, color:'#1C2B2A', outline:'none', boxSizing:'border-box', transition:'border-color .15s', fontFamily:'Inter,sans-serif' }}
-                    onFocus={e=>e.target.style.borderColor='#0055FF'} onBlur={e=>e.target.style.borderColor='#E5E7EB'} />
-                </div>
-                <div style={{ marginBottom:14 }}>
-                  <label style={{ display:'block', fontSize:12, fontWeight:600, color:'#374151', marginBottom:6, textTransform:'uppercase', letterSpacing:'.05em' }}>Nome da empresa</label>
-                  <input value={empresa} onChange={e=>setEmpresa(e.target.value)} required placeholder="Minha Empresa Ltda"
-                    style={{ width:'100%', padding:'11px 14px', borderRadius:9, border:'1.5px solid #E5E7EB', fontSize:14, color:'#1C2B2A', outline:'none', boxSizing:'border-box', transition:'border-color .15s', fontFamily:'Inter,sans-serif' }}
-                    onFocus={e=>e.target.style.borderColor='#0055FF'} onBlur={e=>e.target.style.borderColor='#E5E7EB'} />
-                </div>
-              </>
-            )}
-
-            <div style={{ marginBottom:14 }}>
-              <label style={{ display:'block', fontSize:12, fontWeight:600, color:'#374151', marginBottom:6, textTransform:'uppercase', letterSpacing:'.05em' }}>Email</label>
-              <input type="email" value={email} onChange={e=>setEmail(e.target.value)} required placeholder="joao@empresa.com.br"
-                style={{ width:'100%', padding:'11px 14px', borderRadius:9, border:'1.5px solid #E5E7EB', fontSize:14, color:'#1C2B2A', outline:'none', boxSizing:'border-box', transition:'border-color .15s', fontFamily:'Inter,sans-serif' }}
-                onFocus={e=>e.target.style.borderColor='#0055FF'} onBlur={e=>e.target.style.borderColor='#E5E7EB'} />
+      <div className="flex-1 flex items-center justify-center p-8">
+        <div className="w-full max-w-md">
+          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-8 space-y-6">
+            <div>
+              <h2 className="text-2xl font-bold text-slate-800">{modo === 'entrar' ? 'Entrar na sua conta' : 'Criar sua conta'}</h2>
+              <p className="text-slate-500 text-sm mt-1">{modo === 'entrar' ? 'Acesse o seu painel financeiro' : 'Comece gratuitamente hoje'}</p>
             </div>
-
-            <div style={{ marginBottom:22 }}>
-              <label style={{ display:'block', fontSize:12, fontWeight:600, color:'#374151', marginBottom:6, textTransform:'uppercase', letterSpacing:'.05em' }}>Senha</label>
-              <input type="password" value={password} onChange={e=>setPassword(e.target.value)} required minLength={6} placeholder="Mínimo 6 caracteres"
-                style={{ width:'100%', padding:'11px 14px', borderRadius:9, border:'1.5px solid #E5E7EB', fontSize:14, color:'#1C2B2A', outline:'none', boxSizing:'border-box', transition:'border-color .15s', fontFamily:'Inter,sans-serif' }}
-                onFocus={e=>e.target.style.borderColor='#0055FF'} onBlur={e=>e.target.style.borderColor='#E5E7EB'} />
+            <div className="flex bg-slate-100 rounded-xl p-1 gap-1">
+              {(['entrar', 'cadastrar'] as const).map((m) => (
+                <button key={m} onClick={() => { setModo(m); setMsg({ text: '', type: '' }) }} className={`flex-1 py-2 rounded-lg text-sm font-semibold transition-all ${modo === m ? 'bg-white text-blue-700 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}>{m === 'entrar' ? 'Entrar' : 'Criar conta'}</button>
+              ))}
             </div>
-
-            <button type="submit" disabled={loading}
-              style={{ width:'100%', padding:'13px', borderRadius:10, border:'none', background:'#1C2B2A', color:'#fff', fontSize:14, fontWeight:700, cursor:loading?'not-allowed':'pointer', opacity:loading?.7:1, transition:'all .15s', fontFamily:'Sora,sans-serif' }}>
-              {loading ? 'Aguarde...' : modo === 'login' ? 'Entrar no painel →' : 'Criar conta grátis →'}
-            </button>
-          </form>
-
-          <div style={{ textAlign:'center', marginTop:16 }}>
-            <button onClick={usarDemo}
-              style={{ fontSize:12, color:'#9CA3AF', background:'none', border:'none', cursor:'pointer', textDecoration:'underline' }}>
-              Usar conta demo
-            </button>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="seu@email.com" required className="w-full bg-white border border-slate-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 rounded-xl px-4 py-2.5 text-slate-800 placeholder-slate-400 outline-none transition-all text-sm" />
+              <div className="relative">
+                <input type={mostrarSenha ? 'text' : 'password'} value={senha} onChange={e => setSenha(e.target.value)} placeholder="Mínimo 6 caracteres" required className="w-full bg-white border border-slate-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 rounded-xl px-4 py-2.5 text-slate-800 placeholder-slate-400 outline-none transition-all text-sm pr-11" />
+                <button type="button" onClick={() => setMostrarSenha(!mostrarSenha)} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">{mostrarSenha ? <EyeOff size={16} /> : <Eye size={16} />}</button>
+              </div>
+              {msg.text && <div className={`text-sm px-4 py-3 rounded-xl border ${msg.type === 'success' ? 'bg-emerald-50 border-emerald-200 text-emerald-700' : 'bg-red-50 border-red-200 text-red-700'}`}>{msg.text}</div>}
+              <button type="submit" disabled={loading} className="w-full bg-blue-700 hover:bg-blue-800 disabled:opacity-50 text-white font-semibold py-3 rounded-xl transition-all flex items-center justify-center gap-2 shadow-sm">{loading ? <Loader2 size={18} className="animate-spin" /> : <>{modo === 'entrar' ? 'Entrar no painel' : 'Criar conta'} <ArrowRight size={16} /></>}</button>
+            </form>
+            <button onClick={usarDemo} disabled={loading} className="w-full bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 font-medium py-2.5 rounded-xl transition-all flex items-center justify-center gap-2 text-sm"><Zap size={15} className="text-blue-600" /> Usar conta demo</button>
           </div>
         </div>
       </div>

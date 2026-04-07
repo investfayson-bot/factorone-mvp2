@@ -17,45 +17,43 @@ export default function IntegracoesPage() {
     { n:'Omie ERP', c:'ERP', ic:'🗄️', ok:false, d:'Sync contábil automático' },
   ]
 
-  const S = { card: { background:'#111A19', border:'1px solid #233130', borderRadius:12, padding:16 } as any }
-
   return (
-    <div>
-      <div style={{ marginBottom:20 }}>
-        <h1 style={{ fontSize:18, fontWeight:700, fontFamily:'Sora,sans-serif', margin:0 }}>Integrações</h1>
-        <p style={{ fontSize:11, color:'#7A9290', fontFamily:'monospace', margin:0 }}>
+    <div className="p-6 bg-slate-50 min-h-screen">
+      <div className="mb-5">
+        <h1 className="text-2xl font-bold text-slate-800">Integrações</h1>
+        <p className="text-sm text-slate-500">
           {integrations.filter(i=>i.ok).length} ativas · {integrations.filter(i=>!i.ok).length} disponíveis
         </p>
       </div>
 
-      <div style={{ marginBottom:12 }}>
-        <div style={{ fontSize:10, color:'#7A9290', fontFamily:'monospace', textTransform:'uppercase', letterSpacing:'.08em', marginBottom:10 }}>Conectadas</div>
-        <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(220px,1fr))', gap:10 }}>
+      <div className="mb-4">
+        <div className="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-2">Conectadas</div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           {integrations.filter(i=>i.ok).map(int=>(
-            <div key={int.n} style={{ ...S.card, borderColor:'rgba(34,201,122,.3)' }}>
-              <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', marginBottom:8 }}>
+            <div key={int.n} className="bg-white border border-emerald-200 rounded-2xl p-4 shadow-sm">
+              <div className="flex justify-between items-start mb-2">
                 <span style={{ fontSize:22 }}>{int.ic}</span>
-                <span style={{ fontSize:10, padding:'2px 7px', borderRadius:20, background:'rgba(34,201,122,.15)', color:'#22C97A', fontFamily:'monospace' }}>Ativo</span>
+                <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-lg px-2.5 py-1 text-xs font-semibold">Ativo</span>
               </div>
-              <div style={{ fontSize:13, fontWeight:600, color:'#E4E8E7', marginBottom:2 }}>{int.n}</div>
-              <div style={{ fontSize:11, color:'#7A9290', marginBottom:8 }}>{int.d}</div>
-              <div style={{ fontSize:10, color:'#4A6260', fontFamily:'monospace' }}>{int.c}</div>
+              <div className="text-sm font-semibold text-slate-800 mb-1">{int.n}</div>
+              <div className="text-sm text-slate-500 mb-2">{int.d}</div>
+              <div className="text-xs text-slate-400">{int.c}</div>
             </div>
           ))}
         </div>
       </div>
 
       <div>
-        <div style={{ fontSize:10, color:'#7A9290', fontFamily:'monospace', textTransform:'uppercase', letterSpacing:'.08em', marginBottom:10 }}>Disponíveis para conectar</div>
-        <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(220px,1fr))', gap:10 }}>
+        <div className="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-2">Disponíveis para conectar</div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           {integrations.filter(i=>!i.ok).map(int=>(
-            <div key={int.n} style={S.card}>
-              <div style={{ fontSize:22, marginBottom:8 }}>{int.ic}</div>
-              <div style={{ fontSize:13, fontWeight:600, color:'#E4E8E7', marginBottom:2 }}>{int.n}</div>
-              <div style={{ fontSize:11, color:'#7A9290', marginBottom:10 }}>{int.d}</div>
-              <div style={{ fontSize:10, color:'#4A6260', fontFamily:'monospace', marginBottom:10 }}>{int.c}</div>
-              <button style={{ width:'100%', padding:'7px 0', background:'#C8F135', border:'none', borderRadius:8, fontSize:11, fontWeight:700, cursor:'pointer', color:'#000' }}
-                onClick={()=>alert('Em breve! Entre em contato: contato@factorone.com.br')}>
+            <div key={int.n} className="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm hover:shadow-md hover:border-blue-200 transition-all">
+              <div style={{ fontSize:22 }} className="mb-2">{int.ic}</div>
+              <div className="text-sm font-semibold text-slate-800 mb-1">{int.n}</div>
+              <div className="text-sm text-slate-500 mb-3">{int.d}</div>
+              <div className="text-xs text-slate-400 mb-3">{int.c}</div>
+              <button className="bg-blue-700 hover:bg-blue-800 text-white font-semibold px-5 py-2.5 rounded-xl shadow-sm transition-all w-full"
+                onClick={() => alert('Em breve! Entre em contato: contato@factorone.com.br')}>
                 + Conectar
               </button>
             </div>

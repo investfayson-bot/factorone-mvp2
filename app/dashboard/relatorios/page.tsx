@@ -105,26 +105,26 @@ export default function RelatoriosPage() {
   `
 
   return (
-    <div className="min-h-screen bg-[#0A0A0F] text-white p-6">
+    <div className="min-h-screen bg-slate-50 text-slate-700 p-6">
       <style>{cssPrint}</style>
       <div className="flex justify-between items-center mb-4 hide-print">
-        <h1 className="text-2xl font-bold">DRE Completo</h1>
+        <h1 className="text-2xl font-bold text-slate-800">DRE Completo</h1>
         <div className="flex gap-2">
-          <select className="w-full md:w-auto bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:bg-white/8 transition-all" value={periodo} onChange={(e) => setPeriodo(e.target.value as 'mes' | 'trimestre' | 'ano')}>
+          <select className="w-full md:w-auto bg-white border border-slate-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 rounded-xl px-4 py-2.5 text-slate-800 placeholder-slate-400 outline-none transition-all" value={periodo} onChange={(e) => setPeriodo(e.target.value as 'mes' | 'trimestre' | 'ano')}>
             <option value="mes">Mês atual</option>
             <option value="trimestre">Trimestre</option>
             <option value="ano">Último ano</option>
           </select>
-          <button className="bg-blue-500 hover:bg-blue-600 text-white font-medium px-4 py-2.5 rounded-xl transition-all flex items-center gap-2" onClick={analisarComIA} disabled={loadingIA}>{loadingIA ? 'Analisando...' : 'Analisar com IA'}</button>
-          <button className="bg-white/10 hover:bg-white/15 text-white font-medium px-4 py-2.5 rounded-xl border border-white/10 transition-all" onClick={() => window.print()}>Exportar PDF</button>
+          <button className="bg-blue-700 hover:bg-blue-800 text-white font-semibold px-5 py-2.5 rounded-xl shadow-sm transition-all flex items-center gap-2" onClick={analisarComIA} disabled={loadingIA}>{loadingIA ? 'Analisando...' : 'Analisar com IA'}</button>
+          <button className="bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 hover:border-slate-300 font-medium px-5 py-2.5 rounded-xl transition-all" onClick={() => window.print()}>Exportar PDF</button>
         </div>
       </div>
 
       <div className="grid lg:grid-cols-3 gap-4">
-        <div className="lg:col-span-2 bg-white/5 border border-white/10 rounded-2xl p-6 backdrop-blur-sm hover:border-blue-500/30 transition-all">
+        <div className="lg:col-span-2 bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-md hover:border-blue-200 transition-all">
           <table className="w-full text-sm">
             <thead>
-              <tr className="text-left text-gray-400 border-b border-[#2A2A35]">
+              <tr className="text-left text-slate-500 border-b border-slate-200">
                 <th className="py-2">Linha</th>
                 <th className="py-2">Atual</th>
                 <th className="py-2">Mês anterior</th>
@@ -133,8 +133,8 @@ export default function RelatoriosPage() {
             </thead>
             <tbody>
               {linhas.map((l) => (
-                <tr key={l.label} className="border-b border-[#1A1A25]">
-                  <td className="py-2">{l.label}</td>
+                <tr key={l.label} className="border-b border-slate-100">
+                  <td className="py-2 text-slate-800">{l.label}</td>
                   <td>{fmt(l.atual)}</td>
                   <td>{fmt(l.anterior)}</td>
                   <td className={variacao(l.atual, l.anterior) >= 0 ? 'text-green-400' : 'text-red-400'}>
@@ -145,14 +145,14 @@ export default function RelatoriosPage() {
             </tbody>
           </table>
           <div className="grid md:grid-cols-3 gap-3 mt-4">
-            <div className="bg-white/5 border border-white/10 rounded-2xl p-4 backdrop-blur-sm hover:border-blue-500/30 transition-all">Margem Bruta: {margemBruta.toFixed(1)}%</div>
-            <div className="bg-white/5 border border-white/10 rounded-2xl p-4 backdrop-blur-sm hover:border-blue-500/30 transition-all">Margem EBITDA: {margemEbitda.toFixed(1)}%</div>
-            <div className="bg-white/5 border border-white/10 rounded-2xl p-4 backdrop-blur-sm hover:border-blue-500/30 transition-all">Margem Líquida: {margemLiquida.toFixed(1)}%</div>
+            <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">Margem Bruta: {margemBruta.toFixed(1)}%</div>
+            <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">Margem EBITDA: {margemEbitda.toFixed(1)}%</div>
+            <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">Margem Líquida: {margemLiquida.toFixed(1)}%</div>
             </div>
         </div>
-        <aside className="bg-white/5 border border-white/10 rounded-2xl p-6 backdrop-blur-sm hover:border-blue-500/30 transition-all">
-          <h2 className="font-semibold mb-2">Análise da IA</h2>
-          <p className="text-gray-300 whitespace-pre-line text-sm">
+        <aside className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-md hover:border-blue-200 transition-all">
+          <h2 className="font-semibold mb-2 text-slate-800">Análise da IA</h2>
+          <p className="text-slate-600 whitespace-pre-line text-sm">
             {analiseIA || 'Clique em "Analisar com IA" para gerar insights do DRE.'}
           </p>
         </aside>

@@ -46,16 +46,16 @@ export default function DashboardPage() {
   const hora = new Date().getHours()
   const saudacao = hora < 12 ? 'Bom dia' : hora < 18 ? 'Boa tarde' : 'Boa noite'
 
-  if (loading) return <div className="flex items-center justify-center h-full"><div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" /></div>
+  if (loading) return <div className="flex items-center justify-center h-full"><div className="w-8 h-8 border-2 border-blue-700 border-t-transparent rounded-full animate-spin" /></div>
 
   return (
-    <div className="p-6 space-y-6 max-w-7xl text-white">
+    <div className="p-8 max-w-6xl mx-auto space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white">{saudacao}, {user?.email?.split('@')[0]}! 👋</h1>
-          <p className="text-gray-400 text-sm mt-1">Resumo financeiro de hoje — {new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })}</p>
+          <h1 className="text-2xl font-bold text-slate-800">{saudacao}, {user?.email?.split('@')[0]}! 👋</h1>
+          <p className="text-slate-500 text-sm mt-1">Resumo financeiro de hoje — {new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })}</p>
         </div>
-        <button onClick={gerarInsight} disabled={loadingAi} className="bg-blue-500 hover:bg-blue-600 disabled:opacity-50 text-white font-medium px-4 py-2.5 rounded-xl transition-all flex items-center gap-2 text-sm">
+        <button onClick={gerarInsight} disabled={loadingAi} className="bg-blue-700 hover:bg-blue-800 disabled:opacity-50 text-white font-semibold px-5 py-2.5 rounded-xl shadow-sm transition-all flex items-center gap-2 text-sm">
           <Zap size={16} />{loadingAi ? 'Analisando...' : 'Análise IA'}
         </button>
       </div>
@@ -67,59 +67,59 @@ export default function DashboardPage() {
           { label: 'Saldo Atual', value: fmt(metricas.saldo), icon: DollarSign, color: metricas.saldo >= 0 ? 'blue' : 'red', change: '' },
           { label: 'NFs Pendentes', value: metricas.nfs.toString(), icon: FileText, color: 'amber', change: '' },
         ].map((m) => (
-          <div key={m.label} className="bg-white/5 border border-white/10 rounded-2xl p-5 hover:border-blue-500/30 transition-all">
+          <div key={m.label} className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm hover:shadow-md hover:border-blue-200 transition-all">
             <div className="flex items-center justify-between mb-3">
-              <span className="text-gray-400 text-xs font-medium uppercase tracking-wide">{m.label}</span>
-              <div className={`w-8 h-8 rounded-lg bg-${m.color}-500/20 flex items-center justify-center`}>
+              <span className="text-slate-500 text-xs font-semibold uppercase tracking-wide">{m.label}</span>
+              <div className={`w-8 h-8 rounded-lg bg-${m.color}-50 border border-${m.color}-100 flex items-center justify-center`}>
                 <m.icon size={16} className={`text-${m.color}-400`} />
               </div>
             </div>
-            <p className="text-2xl font-bold text-white">{m.value}</p>
-            {m.change && <p className="text-xs text-gray-500 mt-1">{m.change} vs mês anterior</p>}
+            <p className="text-2xl font-bold text-slate-800">{m.value}</p>
+            {m.change && <p className="text-xs text-slate-400 mt-1">{m.change} vs mês anterior</p>}
           </div>
         ))}
       </div>
 
-      <div className="bg-gradient-to-br from-blue-500/10 to-purple-500/5 border border-blue-500/20 rounded-2xl p-6">
+      <div className="bg-gradient-to-r from-blue-700 to-blue-800 rounded-2xl p-6 text-white">
         <div className="flex items-center gap-2 mb-3">
           <div className="w-8 h-8 rounded-lg bg-blue-500/20 flex items-center justify-center">
-            <Zap size={16} className="text-blue-400" />
+            <Zap size={16} className="text-white" />
           </div>
           <h2 className="font-semibold text-white">CFO Inteligente</h2>
-          <span className="text-xs bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded-full">IA</span>
+          <span className="text-xs bg-white/20 text-blue-100 px-2 py-0.5 rounded-full">IA</span>
         </div>
         {aiInsight ? (
-          <p className="text-gray-300 text-sm leading-relaxed whitespace-pre-line">{aiInsight}</p>
+          <p className="text-blue-100 text-sm leading-relaxed whitespace-pre-line">{aiInsight}</p>
         ) : (
-          <div className="flex items-center gap-3 text-gray-500">
+          <div className="flex items-center gap-3 text-blue-200">
             <AlertCircle size={16} />
             <p className="text-sm">Clique em "Análise IA" para receber insights personalizados sobre sua empresa.</p>
           </div>
         )}
       </div>
 
-      <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
+      <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="font-semibold text-white">Últimas Transações</h2>
-          <button onClick={() => router.push('/dashboard/cashflow')} className="text-blue-400 hover:text-blue-300 text-sm flex items-center gap-1">Ver todas <ArrowUpRight size={14} /></button>
+          <h2 className="font-semibold text-slate-800">Últimas Transações</h2>
+          <button onClick={() => router.push('/dashboard/cashflow')} className="text-blue-700 hover:text-blue-800 text-sm flex items-center gap-1">Ver todas <ArrowUpRight size={14} /></button>
         </div>
         {transacoes.length === 0 ? (
-          <div className="text-center py-8 text-gray-500">
-            <FileText size={32} className="mx-auto mb-2 opacity-50" />
+          <div className="text-center py-8 text-slate-400">
+            <FileText size={32} className="mx-auto mb-2 opacity-50 text-slate-300" />
             <p className="text-sm">Nenhuma transação este mês</p>
-            <button onClick={() => router.push('/dashboard/cashflow')} className="mt-3 text-blue-400 text-sm hover:underline">Adicionar transação</button>
+            <button onClick={() => router.push('/dashboard/cashflow')} className="mt-3 text-blue-700 text-sm hover:underline">Adicionar transação</button>
           </div>
         ) : (
           <div className="space-y-2">
             {transacoes.map((t) => (
-              <div key={t.id} className="flex items-center justify-between py-2.5 border-b border-white/5 last:border-0">
+              <div key={t.id} className="flex items-center justify-between py-2.5 border-b border-slate-100 last:border-0">
                 <div className="flex items-center gap-3">
                   <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${t.tipo === 'entrada' ? 'bg-emerald-500/20' : 'bg-red-500/20'}`}>
                     {t.tipo === 'entrada' ? <TrendingUp size={14} className="text-emerald-400" /> : <TrendingDown size={14} className="text-red-400" />}
                   </div>
                   <div>
-                    <p className="text-white text-sm font-medium">{t.descricao || 'Sem descrição'}</p>
-                    <p className="text-gray-500 text-xs">{t.categoria || 'Sem categoria'} • {new Date(t.data).toLocaleDateString('pt-BR')}</p>
+                    <p className="text-slate-800 text-sm font-medium">{t.descricao || 'Sem descrição'}</p>
+                    <p className="text-slate-400 text-xs">{t.categoria || 'Sem categoria'} • {new Date(t.data).toLocaleDateString('pt-BR')}</p>
                   </div>
                 </div>
                 <span className={`font-semibold text-sm ${t.tipo === 'entrada' ? 'text-emerald-400' : 'text-red-400'}`}>

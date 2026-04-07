@@ -81,46 +81,46 @@ export default function NotaFiscalPage() {
           'bg-white/10 text-gray-300'
 
   return (
-    <div className="p-6 space-y-6 text-white">
-      <h1 className="text-2xl font-bold text-white">Nota Fiscal Inteligente</h1>
-      <p className="text-sm text-gray-400">Upload por arquivo, foto, texto manual ou email.</p>
+    <div className="p-6 space-y-6 bg-slate-50">
+      <h1 className="text-2xl font-bold text-slate-800">Nota Fiscal Inteligente</h1>
+      <p className="text-sm text-slate-500">Upload por arquivo, foto, texto manual ou email.</p>
 
       <div className="grid md:grid-cols-3 gap-4">
-        <button onClick={() => fileRef.current?.click()} className="bg-white/5 border border-white/10 rounded-2xl p-6 backdrop-blur-sm hover:border-blue-500/30 transition-all text-left">
+        <button onClick={() => fileRef.current?.click()} className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-md hover:border-blue-200 transition-all text-left">
           <Upload className="text-blue-400 mb-3" />
           <p className="font-semibold">Arquivo</p>
-          <p className="text-sm text-gray-400">Arraste ou selecione XML, PDF ou imagem</p>
+          <p className="text-sm text-slate-500">Arraste ou selecione XML, PDF ou imagem</p>
         </button>
-        <button onClick={() => camRef.current?.click()} className="bg-white/5 border border-white/10 rounded-2xl p-6 backdrop-blur-sm hover:border-blue-500/30 transition-all text-left">
+        <button onClick={() => camRef.current?.click()} className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-md hover:border-blue-200 transition-all text-left">
           <Camera className="text-blue-400 mb-3" />
           <p className="font-semibold">Câmera / Foto</p>
-          <p className="text-sm text-gray-400">Capture a NF com seu celular</p>
+          <p className="text-sm text-slate-500">Capture a NF com seu celular</p>
         </button>
-        <div className="bg-white/5 border border-white/10 rounded-2xl p-6 backdrop-blur-sm hover:border-blue-500/30 transition-all">
+        <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-md hover:border-blue-200 transition-all">
           <div className="flex items-center gap-2 mb-2"><FileText size={16} className="text-blue-400" /> <p className="font-semibold">Colar texto</p></div>
-          <textarea value={texto} onChange={(e) => { setTexto(e.target.value); setPreview(e.target.value.slice(0, 200)); setImagemPreview('') }} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:bg-white/8 transition-all min-h-24" placeholder="Cole XML ou texto da NF..." />
+          <textarea value={texto} onChange={(e) => { setTexto(e.target.value); setPreview(e.target.value.slice(0, 200)); setImagemPreview('') }} className="w-full bg-white border border-slate-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 rounded-xl px-4 py-2.5 text-slate-800 placeholder-slate-400 outline-none transition-all min-h-24" placeholder="Cole XML ou texto da NF..." />
         </div>
       </div>
 
       <input ref={fileRef} type="file" accept=".xml,.pdf,image/*" className="hidden" onChange={(e) => handleArquivo(e.target.files?.[0])} />
       <input ref={camRef} type="file" accept="image/*" capture="environment" className="hidden" onChange={(e) => handleArquivo(e.target.files?.[0])} />
 
-      <div className="bg-white/5 border border-white/10 rounded-2xl p-6 backdrop-blur-sm hover:border-blue-500/30 transition-all">
-        <div className="flex items-center gap-2 mb-3"><Mail size={16} className="text-blue-400" /><p className="text-sm text-gray-400">Também é possível encaminhar para: <span className="text-white">nf@factorone.com.br</span></p></div>
-        {imagemPreview ? <img src={imagemPreview} alt="preview" className="max-h-52 rounded-xl border border-white/10 mb-4" /> : <p className="text-sm text-gray-400 mb-4">{preview ? preview : 'Sem preview ainda'}</p>}
-        <button onClick={analisar} disabled={loading || !texto} className="bg-blue-500 hover:bg-blue-600 text-white font-medium px-4 py-2.5 rounded-xl transition-all flex items-center gap-2">
+      <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-md hover:border-blue-200 transition-all">
+        <div className="flex items-center gap-2 mb-3"><Mail size={16} className="text-blue-700" /><p className="text-sm text-slate-500">Também é possível encaminhar para: <span className="text-slate-800">nf@factorone.com.br</span></p></div>
+        {imagemPreview ? <img src={imagemPreview} alt="preview" className="max-h-52 rounded-xl border border-slate-200 mb-4" /> : <p className="text-sm text-slate-500 mb-4">{preview ? preview : 'Sem preview ainda'}</p>}
+        <button onClick={analisar} disabled={loading || !texto} className="bg-blue-700 hover:bg-blue-800 text-white font-semibold px-5 py-2.5 rounded-xl shadow-sm transition-all flex items-center gap-2">
           <ZapIcon /> {loading ? 'Analisando...' : 'Analisar Nota Fiscal'}
         </button>
       </div>
 
       {resultado && (
-        <div className="bg-white/5 border border-white/10 rounded-2xl p-6 backdrop-blur-sm hover:border-blue-500/30 transition-all space-y-4">
-          <h2 className="text-lg font-semibold">Resultado da análise</h2>
+        <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-md hover:border-blue-200 transition-all space-y-4">
+          <h2 className="text-lg font-semibold text-slate-800">Resultado da análise</h2>
           <div className="grid md:grid-cols-4 gap-3 text-sm">
-            <div><p className="text-gray-400">Número NF</p><p>{resultado.numero || '-'}</p></div>
-            <div><p className="text-gray-400">Emitente</p><p>{resultado.emitente_nome || '-'}</p></div>
-            <div><p className="text-gray-400">Data</p><p>{resultado.data_emissao || '-'}</p></div>
-            <div><p className="text-gray-400">Valor</p><p>R$ {(resultado.valor_total || 0).toLocaleString('pt-BR')}</p></div>
+            <div><p className="text-slate-500">Número NF</p><p className="text-slate-800">{resultado.numero || '-'}</p></div>
+            <div><p className="text-slate-500">Emitente</p><p className="text-slate-800">{resultado.emitente_nome || '-'}</p></div>
+            <div><p className="text-slate-500">Data</p><p className="text-slate-800">{resultado.data_emissao || '-'}</p></div>
+            <div><p className="text-slate-500">Valor</p><p className="text-slate-800">R$ {(resultado.valor_total || 0).toLocaleString('pt-BR')}</p></div>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
@@ -133,25 +133,25 @@ export default function NotaFiscalPage() {
             {resultado.adequado_para_factoring && <span className="px-3 py-1 rounded-full text-xs bg-emerald-500/20 text-emerald-400">Adequado para factoring</span>}
           </div>
           <div className="flex gap-2">
-            <button className="bg-white/10 hover:bg-white/15 text-white font-medium px-4 py-2.5 rounded-xl border border-white/10 transition-all">Salvar no sistema</button>
-            <button onClick={() => enviarCaptacao(resultado.id)} className="bg-blue-500 hover:bg-blue-600 text-white font-medium px-4 py-2.5 rounded-xl transition-all flex items-center gap-2"><Send size={14} />Enviar para Captação</button>
+            <button className="bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 hover:border-slate-300 font-medium px-5 py-2.5 rounded-xl transition-all">Salvar no sistema</button>
+            <button onClick={() => enviarCaptacao(resultado.id)} className="bg-blue-700 hover:bg-blue-800 text-white font-semibold px-5 py-2.5 rounded-xl shadow-sm transition-all flex items-center gap-2"><Send size={14} />Enviar para Captação</button>
           </div>
         </div>
       )}
 
-      <div className="bg-white/5 border border-white/10 rounded-2xl p-6 backdrop-blur-sm hover:border-blue-500/30 transition-all">
-        <h2 className="text-lg font-semibold mb-3">Notas cadastradas</h2>
+      <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-md hover:border-blue-200 transition-all">
+        <h2 className="text-lg font-semibold mb-3 text-slate-800">Notas cadastradas</h2>
         <table className="w-full text-sm">
-          <thead><tr className="text-gray-400"><th className="text-left">Data</th><th className="text-left">Emitente</th><th className="text-left">Valor</th><th className="text-left">Classificação</th><th className="text-left">Status</th><th className="text-left">Ações</th></tr></thead>
+          <thead><tr className="text-slate-500"><th className="text-left">Data</th><th className="text-left">Emitente</th><th className="text-left">Valor</th><th className="text-left">Classificação</th><th className="text-left">Status</th><th className="text-left">Ações</th></tr></thead>
           <tbody>
             {notas.map((n) => (
-              <tr key={n.id} className="border-t border-white/10">
-                <td className="py-2">{n.data_emissao || '-'}</td>
-                <td>{n.emitente_nome || '-'}</td>
-                <td>R$ {(n.valor_total || 0).toLocaleString('pt-BR')}</td>
-                <td>{n.classificacao || '-'}</td>
+              <tr key={n.id} className="border-t border-slate-100">
+                <td className="py-2 text-slate-800">{n.data_emissao || '-'}</td>
+                <td className="text-slate-800">{n.emitente_nome || '-'}</td>
+                <td className="text-slate-800">R$ {(n.valor_total || 0).toLocaleString('pt-BR')}</td>
+                <td className="text-slate-800">{n.classificacao || '-'}</td>
                 <td><span className={`px-2 py-1 rounded-full text-xs ${statusBadge(n.status)}`}>{n.status || 'pendente'}</span></td>
-                <td><button className="text-blue-400 hover:text-blue-300 text-sm flex items-center gap-1"><Eye size={13} />Ver detalhes</button></td>
+                <td><button className="text-blue-700 hover:text-blue-800 text-sm flex items-center gap-1"><Eye size={13} />Ver detalhes</button></td>
               </tr>
             ))}
           </tbody>

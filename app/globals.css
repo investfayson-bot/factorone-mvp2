@@ -1,29 +1,29 @@
-@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800;900&family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap');
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-:root {
-  --navy: #1C2B2A;
-  --blue: #0055FF;
-  --accent: #C8F135;
-  --green: #22C97A;
-  --red: #FF4F4F;
-  --amber: #F59E0B;
+html, body {
+  background-color: #F8FAFC;
+  color: #334155;
 }
 
-* { box-sizing: border-box; }
-
-body {
-  font-family: 'Inter', sans-serif;
-  background: #09100F;
-  color: #E4E8E7;
+* {
+  scroll-behavior: smooth;
+  box-sizing: border-box;
 }
 
-/* Scrollbar */
-::-webkit-scrollbar { width: 4px; height: 4px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #2E3D3B; border-radius: 2px; }
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
 
-/* Auth pages têm bg branco */
-.auth-page { background: #F8FAF9; color: #1C2B2A; }
+::-webkit-scrollbar-track {
+  background: #F1F5F9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
+}

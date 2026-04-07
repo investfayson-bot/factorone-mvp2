@@ -99,12 +99,12 @@ export default function CashflowPage() {
   const fmt = (v: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v || 0)
 
   return (
-    <div className="min-h-screen bg-[#0A0A0F] text-white p-6 space-y-5">
+    <div className="min-h-screen bg-slate-50 text-slate-700 p-6 space-y-5">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Fluxo de Caixa Inteligente</h1>
+        <h1 className="text-2xl font-bold text-slate-800">Fluxo de Caixa Inteligente</h1>
         <div className="flex gap-2">
-          <button className="bg-[#0066FF] px-3 py-2 rounded-lg flex items-center gap-2" onClick={() => setModalAberto(true)}><Plus size={15} /> Nova transação</button>
-          <button className="bg-[#111118] border border-[#2A2A35] px-3 py-2 rounded-lg" onClick={analisarIA} disabled={loadingIA}>
+          <button className="bg-blue-700 hover:bg-blue-800 text-white font-semibold px-5 py-2.5 rounded-xl shadow-sm transition-all flex items-center gap-2" onClick={() => setModalAberto(true)}><Plus size={15} /> Nova transação</button>
+          <button className="bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 hover:border-slate-300 font-medium px-5 py-2.5 rounded-xl transition-all" onClick={analisarIA} disabled={loadingIA}>
             {loadingIA ? 'Analisando...' : 'Analisar com IA'}
           </button>
         </div>
@@ -188,7 +188,7 @@ export default function CashflowPage() {
 
       {modalAberto && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
-          <div className="w-full max-w-md bg-[#0A0A0F] border border-white/10 rounded-2xl p-6 space-y-3">
+          <div className="w-full max-w-md bg-white border border-slate-200 rounded-2xl p-6 space-y-3">
             <h3 className="font-semibold">Nova transação</h3>
             <input className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:bg-white/8 transition-all" placeholder="Descrição" value={form.descricao} onChange={(e) => setForm({ ...form, descricao: e.target.value })} />
             <select className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:bg-white/8 transition-all" value={form.categoria} onChange={(e) => setForm({ ...form, categoria: e.target.value })}>
@@ -216,9 +216,9 @@ export default function CashflowPage() {
 
 function Card({ titulo, valor, icon }: { titulo: string; valor: string; icon: React.ReactNode }) {
   return (
-    <div className="bg-white/5 border border-white/10 rounded-2xl p-5 flex flex-col gap-3">
-      <div className="flex items-center gap-2 text-gray-400 text-sm mb-2">{icon}{titulo}</div>
-      <p className="text-xl font-semibold">{valor}</p>
+    <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm hover:shadow-md hover:border-blue-200 transition-all">
+      <div className="flex items-center gap-2 text-slate-500 text-sm mb-2">{icon}{titulo}</div>
+      <p className="text-xl font-semibold text-slate-800">{valor}</p>
     </div>
   )
 }

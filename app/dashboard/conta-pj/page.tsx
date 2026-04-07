@@ -30,24 +30,24 @@ export default function ContaPJPage() {
   }
 
   return (
-    <div className="p-6 space-y-6 text-white">
-      <h1 className="text-2xl font-bold text-white">Abertura de Conta PJ</h1>
-      <div className="bg-white/5 border border-white/10 rounded-2xl p-4">
+    <div className="p-6 space-y-6 bg-slate-50">
+      <h1 className="text-2xl font-bold text-slate-800">Abertura de Conta PJ</h1>
+      <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
         <div className="flex items-center justify-between mb-3">
           {[1, 2, 3, 4].map((n) => (
-            <div key={n} className={`w-8 h-8 rounded-full flex items-center justify-center text-sm ${etapa >= n ? 'bg-blue-500 text-white' : 'bg-white/10 text-gray-400'}`}>{n}</div>
+            <div key={n} className={`w-8 h-8 rounded-full flex items-center justify-center text-sm ${etapa >= n ? 'bg-blue-700 text-white' : 'bg-slate-100 text-slate-400'}`}>{n}</div>
           ))}
         </div>
-        <div className="w-full h-2 bg-white/10 rounded-full">
-          <div className="h-2 bg-blue-500 rounded-full transition-all" style={{ width: `${progresso}%` }} />
+        <div className="w-full h-2 bg-slate-100 rounded-full">
+          <div className="h-2 bg-blue-700 rounded-full transition-all" style={{ width: `${progresso}%` }} />
         </div>
       </div>
 
-      <div className="bg-white/5 border border-white/10 rounded-2xl p-6 backdrop-blur-sm hover:border-blue-500/30 transition-all">
+      <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-md hover:border-blue-200 transition-all">
         {etapa === 1 && (
           <div className="space-y-3">
-            <h2 className="text-lg font-semibold">Etapa 1 — Dados da Empresa</h2>
-            <input className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:bg-white/8 transition-all" placeholder="CNPJ" value={empresa.cnpj} onChange={(e) => setEmpresa({ ...empresa, cnpj: e.target.value })} />
+            <h2 className="text-lg font-semibold text-slate-800">Etapa 1 — Dados da Empresa</h2>
+            <input className="w-full bg-white border border-slate-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 rounded-xl px-4 py-2.5 text-slate-800 placeholder-slate-400 outline-none transition-all" placeholder="CNPJ" value={empresa.cnpj} onChange={(e) => setEmpresa({ ...empresa, cnpj: e.target.value })} />
             <input className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:bg-white/8 transition-all" placeholder="Razão social" value={empresa.razao_social} onChange={(e) => setEmpresa({ ...empresa, razao_social: e.target.value })} />
             <input className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:bg-white/8 transition-all" placeholder="CNAE" value={empresa.cnae} onChange={(e) => setEmpresa({ ...empresa, cnae: e.target.value })} />
             <input type="date" className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:bg-white/8 transition-all" value={empresa.data_abertura} onChange={(e) => setEmpresa({ ...empresa, data_abertura: e.target.value })} />
@@ -95,10 +95,10 @@ export default function ContaPJPage() {
       </div>
 
       <div className="flex justify-between">
-        <button onClick={() => setEtapa(Math.max(1, etapa - 1))} disabled={etapa === 1} className="bg-white/10 hover:bg-white/15 text-white font-medium px-4 py-2.5 rounded-xl border border-white/10 transition-all disabled:opacity-40">Anterior</button>
+        <button onClick={() => setEtapa(Math.max(1, etapa - 1))} disabled={etapa === 1} className="bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 hover:border-slate-300 font-medium px-5 py-2.5 rounded-xl transition-all disabled:opacity-40">Anterior</button>
         <div className="flex gap-2">
-          <button onClick={salvarProgresso} className="bg-blue-500 hover:bg-blue-600 text-white font-medium px-4 py-2.5 rounded-xl transition-all flex items-center gap-2">Salvar</button>
-          <button onClick={() => setEtapa(Math.min(4, etapa + 1))} disabled={etapa === 4} className="bg-blue-500 hover:bg-blue-600 text-white font-medium px-4 py-2.5 rounded-xl transition-all flex items-center gap-2 disabled:opacity-40">Próxima</button>
+          <button onClick={salvarProgresso} className="bg-blue-700 hover:bg-blue-800 text-white font-semibold px-5 py-2.5 rounded-xl shadow-sm transition-all flex items-center gap-2">Salvar</button>
+          <button onClick={() => setEtapa(Math.min(4, etapa + 1))} disabled={etapa === 4} className="bg-blue-700 hover:bg-blue-800 text-white font-semibold px-5 py-2.5 rounded-xl shadow-sm transition-all flex items-center gap-2 disabled:opacity-40">Próxima</button>
         </div>
       </div>
     </div>
