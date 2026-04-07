@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { createBrowserClient } from '@supabase/ssr'
 
 type Socio = { nome: string; cpf: string; participacao: number }
 
@@ -12,7 +12,10 @@ const BANCOS = [
 ]
 
 export default function ContaPJPage() {
-  const supabase = createClientComponentClient()
+  const supabase = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL || 'http://localhost:54321',
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'public-anon-key'
+  )
   const [etapa, setEtapa] = useState(1)
   const [idRegistro, setIdRegistro] = useState<string | null>(null)
   const [empresa, setEmpresa] = useState({ cnpj: '', razao_social: '', cnae: '', data_abertura: '', nome_fantasia: '' })

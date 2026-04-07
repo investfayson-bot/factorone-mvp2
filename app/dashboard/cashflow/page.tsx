@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { createBrowserClient } from '@supabase/ssr'
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import { ArrowDownCircle, ArrowUpCircle, Wallet, AlertTriangle, Plus } from 'lucide-react'
 
@@ -15,7 +15,10 @@ type Transacao = {
 }
 
 export default function CashflowPage() {
-  const supabase = createClientComponentClient()
+  const supabase = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL || 'http://localhost:54321',
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'public-anon-key'
+  )
   const [transacoes, setTransacoes] = useState<Transacao[]>([])
   const [filtroTipo, setFiltroTipo] = useState<'todos' | 'entrada' | 'saida'>('todos')
   const [filtroCategoria, setFiltroCategoria] = useState('todas')
@@ -74,7 +77,7 @@ export default function CashflowPage() {
     setLoadingIA(false)
   }
 
-  const categorias = useMemo(() => ['todas', ...new Set(transacoes.map(t => t.categoria || 'sem_categoria'))], [transacoes])
+  const categorias = useMemo(() => ['todas', ...Array.from(new Set(transacoes.map(t => t.categoria || 'sem_categoria')))], [transacoes])
   const filtradas = useMemo(
     () => transacoes.filter(t =>
       (filtroTipo === 'todos' || t.tipo === filtroTipo) &&

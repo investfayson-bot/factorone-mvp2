@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { createBrowserClient } from '@supabase/ssr'
 import { Upload, FileText, Send } from 'lucide-react'
 
 type NotaFiscal = {
@@ -20,7 +20,10 @@ type NotaFiscal = {
 const STATUS = ['todos', 'pendente', 'aguardando_captacao'] as const
 
 export default function NotaFiscalPage() {
-  const supabase = createClientComponentClient()
+  const supabase = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL || 'http://localhost:54321',
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'public-anon-key'
+  )
   const [dragAtivo, setDragAtivo] = useState(false)
   const [processando, setProcessando] = useState(false)
   const [statusFiltro, setStatusFiltro] = useState<(typeof STATUS)[number]>('todos')
@@ -49,7 +52,12 @@ export default function NotaFiscalPage() {
     }
     if (nome.endsWith('.pdf')) {
       const arr = await arquivo.arrayBuffer()
-      return `PDF_BASE64:${btoa(String.fromCharCode(...new Uint8Array(arr).slice(0, 30000)))}`
+      const bytes = new Uint8Array(arr).slice(0, 30000)
+      let binary = ''
+      bytes.forEach((b) => {
+        binary += String.fromCharCode(b)
+      })
+      return `PDF_BASE64:${btoa(binary)}`
     }
     throw new Error('Formato inválido. Envie XML ou PDF.')
   }

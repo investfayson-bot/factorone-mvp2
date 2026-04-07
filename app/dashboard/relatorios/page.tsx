@@ -1,12 +1,15 @@
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { createBrowserClient } from '@supabase/ssr'
 
 type LinhaDRE = { label: string; atual: number; anterior: number }
 
 export default function RelatoriosPage() {
-  const supabase = createClientComponentClient()
+  const supabase = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL || 'http://localhost:54321',
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'public-anon-key'
+  )
   const [periodo, setPeriodo] = useState<'mes' | 'trimestre' | 'ano'>('mes')
   const [linhas, setLinhas] = useState<LinhaDRE[]>([])
   const [analiseIA, setAnaliseIA] = useState('')
