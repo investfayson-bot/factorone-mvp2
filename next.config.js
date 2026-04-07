@@ -5,9 +5,10 @@ const nextConfig = {
       { protocol: 'https', hostname: '*.supabase.co' },
     ],
   },
-  // Disable static generation for all pages - app uses auth/dynamic data
-  experimental: {
-    missingSuspenseWithCSRBailout: false,
+
+  // opcional (remove warning de root)
+  turbopack: {
+    root: __dirname,
   },
 }
 
