@@ -28,7 +28,7 @@ export async function middleware(req: NextRequest) {
 
   // 🔒 exemplo: proteger rota
   if (!user && req.nextUrl.pathname.startsWith('/dashboard')) {
-    return NextResponse.redirect(new URL('/login', req.url))
+    return NextResponse.redirect(new URL('/auth', req.url))
   }
 
   return res
