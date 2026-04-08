@@ -355,6 +355,16 @@ export default function DespesasPage() {
         headers: { 'Content-Type': 'application/json', ...(sess.session?.access_token ? { Authorization: `Bearer ${sess.session.access_token}` } : {}) },
         body: JSON.stringify({ empresaId: empresaId || userId, competencia: hoje }),
       })
+      await fetch('/api/orcamento/atualizar-realizado', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...(sess.session?.access_token ? { Authorization: `Bearer ${sess.session.access_token}` } : {}) },
+        body: JSON.stringify({
+          categoria: row.categoria,
+          mes: Number(hoje.slice(5, 7)),
+          ano: Number(hoje.slice(0, 4)),
+          valor: Number(row.valor || 0),
+        }),
+      })
     }
     if (e2) toast.error(e2.message)
     else {
@@ -398,6 +408,17 @@ export default function DespesasPage() {
           transaction_id: tx?.id ?? null,
         })
         .eq('id', id)
+      const { data: sess } = await supabase.auth.getSession()
+      await fetch('/api/orcamento/atualizar-realizado', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...(sess.session?.access_token ? { Authorization: `Bearer ${sess.session.access_token}` } : {}) },
+        body: JSON.stringify({
+          categoria: row.categoria,
+          mes: Number(hoje.slice(5, 7)),
+          ano: Number(hoje.slice(0, 4)),
+          valor: Number(row.valor || 0),
+        }),
+      })
     }
     toast.success('Pagamentos registrados')
     setSelected(new Set())

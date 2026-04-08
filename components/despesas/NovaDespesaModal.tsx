@@ -177,6 +177,59 @@ export default function NovaDespesaModal({
     }
     setLoading(true)
     try {
+      const dataRef = new Date(form.data_despesa || new Date().toISOString().slice(0, 10))
+      const mes = dataRef.getMonth() + 1
+      const ano = dataRef.getFullYear()
+      const validarOrcamento = async (
+        categoria: string,
+        valorItem: number,
+        mesRef: number,
+        anoRef: number
+      ) => {
+        const { data: orc } = await supabase
+          .from('orcamentos')
+          .select('id')
+          .eq('empresa_id', empresaId)
+          .eq('ano_fiscal', anoRef)
+          .in('status', ['ativo', 'aprovado'])
+          .order('versao', { ascending: false })
+          .limit(1)
+          .maybeSingle()
+        if (!orc) {
+          return { bloqueado: false, percentualAposLancamento: 0, estouraOrcamento: false, mensagem: '' }
+        }
+        const { data: linha } = await supabase
+          .from('orcamento_linhas')
+          .select('valor_previsto,valor_realizado')
+          .eq('orcamento_id', orc.id)
+          .eq('categoria', categoria)
+          .eq('mes', mesRef)
+          .eq('ano', anoRef)
+          .is('centro_custo_id', null)
+          .maybeSingle()
+        if (!linha) return { bloqueado: false, percentualAposLancamento: 0, estouraOrcamento: false, mensagem: '' }
+        const previsto = Number(linha.valor_previsto || 0)
+        const realizadoApos = Number(linha.valor_realizado || 0) + valorItem
+        const percentual = previsto > 0 ? (realizadoApos / previsto) * 100 : 0
+        const estoura = realizadoApos > previsto && previsto > 0
+        return {
+          bloqueado: false,
+          percentualAposLancamento: percentual,
+          estouraOrcamento: estoura,
+          mensagem: estoura
+            ? `⚠️ Esta despesa ultrapassará o orçamento (${percentual.toFixed(1)}% do previsto).`
+            : '',
+        }
+      }
+      const validacao = await validarOrcamento(form.categoria, valor, mes, ano)
+      if (validacao.estouraOrcamento) {
+        const ok = window.confirm(`${validacao.mensagem}\n\nDeseja salvar mesmo assim?`)
+        if (!ok) {
+          setLoading(false)
+          return
+        }
+      }
+
       const comprovante_url = await uploadComprovante()
       if (file && !comprovante_url) {
         setLoading(false)

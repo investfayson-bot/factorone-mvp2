@@ -28,6 +28,7 @@ type Kpi = {
   saldo: number
   nfs: number
 }
+type OrcamentoWidget = { consumidoPct: number; alertas: number; top: string[] }
 
 function pctVar(atual: number, anterior: number): number | null {
   if (anterior === 0) return null
@@ -56,6 +57,7 @@ export default function DashboardPage() {
   const [aiInsight, setAiInsight] = useState('')
   const [loadingAi, setLoadingAi] = useState(false)
   const [transacoes, setTransacoes] = useState<TransacaoLista[]>([])
+  const [orcamentoWidget, setOrcamentoWidget] = useState<OrcamentoWidget>({ consumidoPct: 0, alertas: 0, top: [] })
   const router = useRouter()
 
   useEffect(() => {
@@ -124,6 +126,37 @@ export default function DashboardPage() {
       setKpiAnt({ ...kb, nfs: cAnt ?? 0 })
 
       setTransacoes((tAtual || []).slice(0, 5))
+      const anoAtual = now.getFullYear()
+      const { data: orc } = await supabase
+        .from('orcamentos')
+        .select('id')
+        .eq('empresa_id', u.id)
+        .eq('ano_fiscal', anoAtual)
+        .in('status', ['ativo', 'aprovado'])
+        .order('versao', { ascending: false })
+        .limit(1)
+        .maybeSingle()
+      if (orc?.id) {
+        const [lin, al] = await Promise.all([
+          supabase.from('orcamento_linhas').select('categoria,valor_previsto,valor_realizado').eq('orcamento_id', orc.id),
+          supabase.from('alertas_orcamento').select('id').eq('empresa_id', u.id).eq('lido', false),
+        ])
+        const previsto = (lin.data || []).reduce((s, x) => s + Number(x.valor_previsto || 0), 0)
+        const realizado = (lin.data || []).reduce((s, x) => s + Number(x.valor_realizado || 0), 0)
+        const byCat = new Map<string, { p: number; r: number }>()
+        for (const l of lin.data || []) {
+          const c = byCat.get(l.categoria) || { p: 0, r: 0 }
+          c.p += Number(l.valor_previsto || 0)
+          c.r += Number(l.valor_realizado || 0)
+          byCat.set(l.categoria, c)
+        }
+        const top = Array.from(byCat.entries())
+          .map(([k, v]) => ({ k, pct: v.p > 0 ? (v.r / v.p) * 100 : 0 }))
+          .sort((a, b) => b.pct - a.pct)
+          .slice(0, 3)
+          .map((x) => x.k)
+        setOrcamentoWidget({ consumidoPct: previsto > 0 ? (realizado / previsto) * 100 : 0, alertas: (al.data || []).length, top })
+      }
 
       setLoading(false)
     }
@@ -269,6 +302,16 @@ export default function DashboardPage() {
             <UpcomingPayments empresaId={empresaId} />
           </DashboardErrorBoundary>
         </div>
+      </div>
+
+      <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+        <div className="mb-2 flex items-center justify-between">
+          <h3 className="font-semibold text-slate-800">Orçamento</h3>
+          <Link href="/dashboard/orcamento" className="text-sm font-medium text-blue-700">Ver orçamento completo</Link>
+        </div>
+        <p className="text-sm text-slate-600">% consumido do ano: <span className="font-semibold">{orcamentoWidget.consumidoPct.toFixed(1)}%</span></p>
+        <p className="text-sm text-slate-600">Alertas ativos: <span className="font-semibold">{orcamentoWidget.alertas}</span></p>
+        <p className="text-sm text-slate-600">Categorias próximas do limite: {orcamentoWidget.top.join(', ') || '—'}</p>
       </div>
 
       {/* Linha 5 — Gráfico + Mini DRE */}
