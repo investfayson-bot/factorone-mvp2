@@ -18,7 +18,7 @@ export default function ModalPix({ open, onClose, empresaId, contaId, onDone }: 
     setLoading(true)
     const valor = parseBRLInput(valorMask)
     const { data: sess } = await supabase.auth.getSession()
-    await fetch('/api/conta-pj/transferencia', {
+    const res = await fetch('/api/conta-pj/transferencia', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', ...(sess.session?.access_token ? { Authorization: `Bearer ${sess.session.access_token}` } : {}) },
       body: JSON.stringify({
@@ -32,7 +32,9 @@ export default function ModalPix({ open, onClose, empresaId, contaId, onDone }: 
         data_agendada: new Date().toISOString().slice(0, 10),
       }),
     })
+    const payload = await res.json().catch(() => ({}))
     setLoading(false)
+    if (!res.ok) return alert(payload.error || 'Falha ao enviar PIX')
     onDone()
     onClose()
   }

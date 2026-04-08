@@ -19,7 +19,7 @@ export default function ModalTed({ open, onClose, empresaId, contaId, onDone }: 
 
   async function confirmar() {
     const { data: sess } = await supabase.auth.getSession()
-    await fetch('/api/conta-pj/transferencia', {
+    const res = await fetch('/api/conta-pj/transferencia', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', ...(sess.session?.access_token ? { Authorization: `Bearer ${sess.session.access_token}` } : {}) },
       body: JSON.stringify({
@@ -27,6 +27,8 @@ export default function ModalTed({ open, onClose, empresaId, contaId, onDone }: 
         destinatario_documento: documento, destinatario_banco: banco, destinatario_agencia: agencia, destinatario_conta: conta, descricao, data_agendada: data,
       }),
     })
+    const payload = await res.json().catch(() => ({}))
+    if (!res.ok) return alert(payload.error || 'Falha ao criar TED')
     onDone(); onClose()
   }
 
