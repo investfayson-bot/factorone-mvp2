@@ -9,6 +9,7 @@ import {
 } from '@/lib/nfeio'
 import { getSupabaseUser } from '@/lib/supabase-route'
 import { lancarReceitaNota } from '@/lib/notas-financeiras'
+import { recalcularDREMes } from '@/lib/financeiro/recalcularDRE'
 import { erroDesconhecido } from '@/lib/transacao-types'
 
 type BodyNFSe = {
@@ -159,6 +160,17 @@ export async function POST(req: NextRequest) {
         competenciaDate: competencia,
       })
       transacaoId = tid
+      await supabase.from('lancamentos').insert({
+        empresa_id: user.id,
+        descricao: `Receita NFS-e ${numero || ''}`.trim(),
+        valor: valorBruto,
+        tipo: 'credito',
+        competencia,
+        transaction_id: transacaoId,
+        nota_id: inserted.id,
+        origem: 'nfe',
+      })
+      await recalcularDREMes(user.id, new Date(competencia))
     }
 
     return NextResponse.json({

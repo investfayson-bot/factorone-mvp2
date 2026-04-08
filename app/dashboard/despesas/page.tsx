@@ -338,6 +338,24 @@ export default function DespesasPage() {
         transaction_id: tx?.id ?? null,
       })
       .eq('id', id)
+    if (!e2) {
+      await supabase.from('lancamentos').insert({
+        empresa_id: empresaId || userId,
+        descricao: `Despesa paga - ${row.descricao}`,
+        valor: row.valor,
+        tipo: 'debito',
+        competencia: hoje,
+        transaction_id: tx?.id ?? null,
+        despesa_id: id,
+        origem: 'despesa',
+      })
+      const { data: sess } = await supabase.auth.getSession()
+      await fetch('/api/dre/recalcular', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...(sess.session?.access_token ? { Authorization: `Bearer ${sess.session.access_token}` } : {}) },
+        body: JSON.stringify({ empresaId: empresaId || userId, competencia: hoje }),
+      })
+    }
     if (e2) toast.error(e2.message)
     else {
       toast.success('Marcado como pago e lançado no fluxo de caixa')
