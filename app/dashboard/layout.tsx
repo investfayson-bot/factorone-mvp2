@@ -13,6 +13,10 @@ const menu = [
   { href: '/dashboard/relatorios', icon: BarChart3, label: 'DRE', group: 'financeiro' },
   { href: '/dashboard/despesas', icon: FileText, label: 'Despesas', group: 'financeiro' },
   { href: '/dashboard/conta-pj', icon: Building2, label: 'Conta PJ', group: 'servicos' },
+  { href: '/dashboard/conta-pj/extrato', icon: Building2, label: 'Conta PJ • Extrato', group: 'servicos' },
+  { href: '/dashboard/conta-pj/investimentos', icon: Building2, label: 'Conta PJ • Investimentos', group: 'servicos' },
+  { href: '/dashboard/conta-pj/transferencias', icon: Building2, label: 'Conta PJ • Transferências', group: 'servicos' },
+  { href: '/dashboard/conta-pj/conectar-banco', icon: Building2, label: 'Conta PJ • Conectar Banco', group: 'servicos' },
   { href: '/dashboard/aicfo', icon: Zap, label: 'AI CFO', group: 'ia', badge: 'IA' },
   { href: '/dashboard/integracoes', icon: Settings, label: 'Integrações', group: 'config' },
 ]
