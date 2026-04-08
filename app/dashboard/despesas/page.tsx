@@ -20,6 +20,7 @@ import {
 import NovaDespesaModal, { type DespesaEdit } from '@/components/despesas/NovaDespesaModal'
 import { formatBRL } from '@/lib/currency-brl'
 import { CATEGORIAS_PADRAO } from '@/lib/despesas-categorizacao'
+import * as XLSX from 'xlsx'
 
 type DespesaRow = {
   id: string
@@ -131,6 +132,7 @@ export default function DespesasPage() {
   const [rejeitar, setRejeitar] = useState<{ id: string } | null>(null)
   const [motivoRejeicao, setMotivoRejeicao] = useState('')
   const [exportMenuOpen, setExportMenuOpen] = useState(false)
+  const [importing, setImporting] = useState(false)
 
   const periodoLabel = useMemo(
     () =>
@@ -148,7 +150,17 @@ export default function DespesasPage() {
       .select('empresa_id, nome')
       .eq('id', user.id)
       .maybeSingle()
-    const empresa = u?.empresa_id ?? user.id
+    const empresaFromUsuarios = u?.empresa_id ?? null
+    let empresaFromEmpresas: string | null = null
+    if (!empresaFromUsuarios) {
+      const { data: emp } = await supabase
+        .from('empresas')
+        .select('id')
+        .eq('user_id', user.id)
+        .maybeSingle()
+      empresaFromEmpresas = emp?.id ?? null
+    }
+    const empresa = empresaFromUsuarios ?? empresaFromEmpresas ?? user.id
     setEmpresaId(empresa)
     setUserName(u?.nome ?? user.email ?? null)
 
@@ -473,6 +485,37 @@ export default function DespesasPage() {
     w.document.close()
   }
 
+  async function importarLote(file: File) {
+    setImporting(true)
+    try {
+      const buf = await file.arrayBuffer()
+      const wb = XLSX.read(buf, { type: 'array' })
+      const ws = wb.Sheets[wb.SheetNames[0]]
+      const rowsCsv = XLSX.utils.sheet_to_json<Record<string, unknown>>(ws, { defval: '' })
+      if (!rowsCsv.length) throw new Error('Arquivo vazio')
+      const payload = rowsCsv
+        .map((r) => ({
+          empresa_id: empresaId,
+          descricao: String(r.descricao || r.Descricao || r.DESCRICAO || '').trim(),
+          categoria: String(r.categoria || r.Categoria || r.CATEGORIA || 'Outros').trim() || 'Outros',
+          valor: Number(String(r.valor || r.Valor || r.VALOR || '0').replace(',', '.')),
+          data: String(r.data || r.Data || r.DATA || new Date().toISOString().slice(0, 10)).slice(0, 10),
+          data_despesa: String(r.data || r.Data || r.DATA || new Date().toISOString().slice(0, 10)).slice(0, 10),
+          status: 'pendente_aprovacao',
+        }))
+        .filter((r) => r.descricao && Number.isFinite(r.valor) && r.valor > 0)
+      if (!payload.length) throw new Error('Sem linhas válidas. Use colunas: descricao, valor, categoria, data')
+      const { error } = await supabase.from('despesas').insert(payload)
+      if (error) throw error
+      toast.success(`${payload.length} despesas importadas`)
+      void load()
+    } catch (e: unknown) {
+      toast.error(e instanceof Error ? e.message : 'Falha na importação')
+    } finally {
+      setImporting(false)
+    }
+  }
+
   function escapeHtml(s: string) {
     return s
       .replace(/&/g, '&amp;')
@@ -564,6 +607,19 @@ export default function DespesasPage() {
             >
               + Nova despesa
             </button>
+            <label className="cursor-pointer rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50">
+              {importing ? 'Importando…' : 'Importar CSV/Excel'}
+              <input
+                type="file"
+                accept=".csv,.xlsx,.xls"
+                className="hidden"
+                onChange={(e) => {
+                  const f = e.target.files?.[0]
+                  if (f) void importarLote(f)
+                  e.currentTarget.value = ''
+                }}
+              />
+            </label>
           </div>
         </div>
 

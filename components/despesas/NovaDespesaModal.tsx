@@ -49,8 +49,7 @@ const TIPOS_PAG = [
 const RECORR = [
   { v: 'mensal', l: 'Mensal' },
   { v: 'semanal', l: 'Semanal' },
-  { v: 'trimestral', l: 'Trimestral' },
-  { v: 'anual', l: 'Anual' },
+  { v: 'bisemanal', l: 'Bisemanal' },
 ]
 
 export default function NovaDespesaModal({
@@ -198,7 +197,7 @@ export default function NovaDespesaModal({
         tipo_pagamento: form.tipo_pagamento || null,
         data_despesa: form.data_despesa,
         data: form.data_despesa,
-        data_vencimento: form.data_vencimento || null,
+        data_vencimento: form.recorrente ? null : form.data_vencimento || null,
         observacao: form.observacao?.trim() || null,
         recorrente: form.recorrente,
         recorrencia_tipo: form.recorrente ? form.recorrencia_tipo : null,
@@ -333,7 +332,7 @@ export default function NovaDespesaModal({
               {valorMask ? formatBRL(parseBRLInput(valorMask)) : ''}
             </p>
           </div>
-          <div className="grid grid-cols-2 gap-3">
+          {!form.recorrente && <div className="grid grid-cols-2 gap-3">
             <div>
               <label htmlFor="despesa-categoria" className="text-xs font-medium text-slate-600">Categoria *</label>
               <select
@@ -371,7 +370,7 @@ export default function NovaDespesaModal({
                 <p className="mt-1 text-xs text-amber-700">Centro de custo indisponível até aplicar migration.</p>
               )}
             </div>
-          </div>
+          </div>}
           <div className="flex flex-wrap items-end gap-2 rounded-xl border border-dashed border-slate-200 bg-slate-50/80 p-3">
             <div className="min-w-[140px] flex-1">
               <label htmlFor="despesa-novo-centro" className="text-xs font-medium text-slate-600">Novo centro (rápido)</label>
@@ -501,7 +500,7 @@ export default function NovaDespesaModal({
               disabled={ocrLoading || !file}
               className="mt-2 rounded-lg border border-blue-200 bg-blue-50 px-3 py-1.5 text-xs font-medium text-blue-700 hover:bg-blue-100 disabled:opacity-50"
             >
-              {ocrLoading ? 'Lendo arquivo…' : 'Ler comprovante/extrato com IA'}
+              {ocrLoading ? 'Atualizando…' : 'Atualizar por comprovante/extrato'}
             </button>
             {sugestaoCategoria && (
               <div className="mt-2 rounded-lg border border-emerald-200 bg-emerald-50 p-2 text-xs text-emerald-800">
