@@ -1,6 +1,5 @@
 'use client'
 import { useEffect, useRef, useState } from 'react'
-import { supabase } from '@/lib/supabase'
 import { Send, Zap, User, Bot, Loader2 } from 'lucide-react'
 
 type Msg = { role: 'user' | 'assistant'; content: string }

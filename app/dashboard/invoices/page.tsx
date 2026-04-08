@@ -1,34 +1,47 @@
 'use client'
 export const dynamic = 'force-dynamic'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState, type CSSProperties } from 'react'
 import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
 
+type InvoiceStatus = 'rascunho' | 'enviada' | 'pendente' | 'paga' | 'vencida'
+
+type InvoiceRow = {
+  id: string
+  numero: string
+  cliente_nome: string
+  valor: number
+  vencimento: string | null
+  descricao: string | null
+  status: InvoiceStatus | string
+}
+
 export default function InvoicesPage() {
-  const [invoices, setInvoices] = useState<any[]>([])
+  const [invoices, setInvoices] = useState<InvoiceRow[]>([])
   const [modal, setModal] = useState(false)
   const [loading, setLoading] = useState(false)
   const [empresaId, setEmpresaId] = useState('')
   const [form, setForm] = useState({ cliente_nome:'', valor:'', vencimento:'', descricao:'', status:'rascunho' })
-  const sb = supabase
 
-  useEffect(() => { load() }, [])
-
-  async function load() {
-    const { data: { user } } = await sb.auth.getUser()
+  const load = useCallback(async () => {
+    const { data: { user } } = await supabase.auth.getUser()
     if (!user) return
-    const { data: u } = await sb.from('usuarios').select('empresa_id').eq('id', user.id).single()
+    const { data: u } = await supabase.from('usuarios').select('empresa_id').eq('id', user.id).single()
     if (!u) return
     setEmpresaId(u.empresa_id)
-    const { data } = await sb.from('invoices').select('*').eq('empresa_id', u.empresa_id).order('created_at', { ascending:false })
-    if (data) setInvoices(data)
-  }
+    const { data } = await supabase.from('invoices').select('*').eq('empresa_id', u.empresa_id).order('created_at', { ascending:false })
+    if (data) setInvoices(data as InvoiceRow[])
+  }, [])
+
+  useEffect(() => {
+    void load()
+  }, [load])
 
   async function salvar() {
     if (!form.cliente_nome || !form.valor) { toast.error('Preencha cliente e valor'); return }
     setLoading(true)
     const num = `INV-${Date.now().toString().slice(-4)}`
-    await sb.from('invoices').insert({ ...form, numero: num, valor: parseFloat(form.valor), empresa_id: empresaId })
+    await supabase.from('invoices').insert({ ...form, numero: num, valor: parseFloat(form.valor), empresa_id: empresaId })
     toast.success('Invoice criada!')
     setModal(false)
     setForm({ cliente_nome:'', valor:'', vencimento:'', descricao:'', status:'rascunho' })
@@ -37,19 +50,60 @@ export default function InvoicesPage() {
   }
 
   async function atualizar(id: string, status: string) {
-    await sb.from('invoices').update({ status }).eq('id', id)
+    await supabase.from('invoices').update({ status }).eq('id', id)
     toast.success('Status atualizado!')
     load()
   }
 
   const fmt = (n: number) => 'R$' + n.toLocaleString('pt-BR', { minimumFractionDigits:2 })
-  const statusColor: any = { rascunho:'#7A9290', enviada:'#3B8BFF', pendente:'#F59E0B', paga:'#22C97A', vencida:'#FF4F4F' }
-  const S = {
-    card: { background:'#111A19', border:'1px solid #233130', borderRadius:12, padding:16 } as any,
-    btn: { padding:'8px 16px', borderRadius:8, border:'1px solid #2E3D3B', background:'transparent', color:'#E4E8E7', fontSize:12, cursor:'pointer' } as any,
-    btnPrimary: { padding:'8px 16px', borderRadius:8, border:'none', background:'#C8F135', color:'#000', fontSize:12, fontWeight:700, cursor:'pointer' } as any,
-    input: { width:'100%', background:'#182120', border:'1px solid #2E3D3B', borderRadius:7, padding:'9px 12px', color:'#E4E8E7', fontSize:13, outline:'none', boxSizing:'border-box' as any },
-    label: { fontSize:10, color:'#7A9290', fontFamily:'monospace', textTransform:'uppercase' as any, letterSpacing:'.05em', display:'block', marginBottom:4 },
+  const statusColor: Record<string, string> = {
+    rascunho: '#7A9290',
+    enviada: '#3B8BFF',
+    pendente: '#F59E0B',
+    paga: '#22C97A',
+    vencida: '#FF4F4F',
+  }
+  const S: { card: CSSProperties; btn: CSSProperties; btnPrimary: CSSProperties; input: CSSProperties; label: CSSProperties } = {
+    card: { background: '#111A19', border: '1px solid #233130', borderRadius: 12, padding: 16 },
+    btn: {
+      padding: '8px 16px',
+      borderRadius: 8,
+      border: '1px solid #2E3D3B',
+      background: 'transparent',
+      color: '#E4E8E7',
+      fontSize: 12,
+      cursor: 'pointer',
+    },
+    btnPrimary: {
+      padding: '8px 16px',
+      borderRadius: 8,
+      border: 'none',
+      background: '#C8F135',
+      color: '#000',
+      fontSize: 12,
+      fontWeight: 700,
+      cursor: 'pointer',
+    },
+    input: {
+      width: '100%',
+      background: '#182120',
+      border: '1px solid #2E3D3B',
+      borderRadius: 7,
+      padding: '9px 12px',
+      color: '#E4E8E7',
+      fontSize: 13,
+      outline: 'none',
+      boxSizing: 'border-box',
+    },
+    label: {
+      fontSize: 10,
+      color: '#7A9290',
+      fontFamily: 'monospace',
+      textTransform: 'uppercase',
+      letterSpacing: '.05em',
+      display: 'block',
+      marginBottom: 4,
+    },
   }
 
   const totalAberto = invoices.filter(i=>['enviada','pendente'].includes(i.status)).reduce((a,i)=>a+i.valor,0)

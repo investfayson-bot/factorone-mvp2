@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import OpenAI from 'openai'
 import { createClient } from '@supabase/supabase-js'
+import { erroDesconhecido } from '@/lib/transacao-types'
 
 const openrouter = new OpenAI({
   baseURL: 'https://openrouter.ai/api/v1',
@@ -58,8 +59,8 @@ export async function POST(req: NextRequest) {
     if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
     return NextResponse.json({ nota: data })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Erro API nota-fiscal:', error)
-    return NextResponse.json({ error: error.message || 'Erro interno' }, { status: 500 })
+    return NextResponse.json({ error: erroDesconhecido(error) || 'Erro interno' }, { status: 500 })
   }
 }

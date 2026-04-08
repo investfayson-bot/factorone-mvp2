@@ -1,28 +1,39 @@
 'use client'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
 
 const CATS = ['Marketing', 'Tecnologia', 'RH', 'Software', 'Jurídico', 'Viagens', 'Infraestrutura', 'Alimentação', 'Outros']
 
+type DespesaRow = {
+  id: string
+  descricao: string
+  valor: number
+  categoria: string
+  data: string
+  status: string
+}
+
 export default function DespesasPage() {
-  const [despesas, setDespesas] = useState<any[]>([])
+  const [despesas, setDespesas] = useState<DespesaRow[]>([])
   const [modal, setModal] = useState(false)
   const [loading, setLoading] = useState(false)
   const [empresaId, setEmpresaId] = useState('')
   const [form, setForm] = useState({ descricao: '', valor: '', categoria: 'Marketing', data: new Date().toISOString().split('T')[0], status: 'pago' })
 
-  useEffect(() => { load() }, [])
-
-  async function load() {
+  const load = useCallback(async () => {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return
     const { data: u } = await supabase.from('usuarios').select('empresa_id').eq('id', user.id).single()
     if (!u) return
     setEmpresaId(u.empresa_id)
     const { data } = await supabase.from('despesas').select('*').eq('empresa_id', u.empresa_id).order('created_at', { ascending: false })
-    setDespesas(data || [])
-  }
+    setDespesas((data ?? []) as DespesaRow[])
+  }, [])
+
+  useEffect(() => {
+    void load()
+  }, [load])
 
   async function salvar() {
     if (!form.descricao || !form.valor) { toast.error('Preencha descrição e valor'); return }

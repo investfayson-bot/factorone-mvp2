@@ -1,7 +1,29 @@
 'use client'
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { supabase } from '@/lib/supabase'
-import { Upload, Camera, Mail, FileText, Send, CheckCircle, Clock, XCircle, Eye } from 'lucide-react'
+import { Upload, Camera, Mail, FileText, Send, Eye } from 'lucide-react'
+
+type ImpostosNF = { icms?: number; pis?: number; cofins?: number }
+
+type AnaliseNFResult = {
+  id: string
+  numero?: string
+  emitente_nome?: string
+  data_emissao?: string
+  valor_total?: number
+  impostos?: ImpostosNF
+  classificacao?: string
+  adequado_para_factoring?: boolean
+}
+
+type NotaFiscalLista = {
+  id: string
+  data_emissao: string | null
+  emitente_nome: string | null
+  valor_total: number | null
+  classificacao: string | null
+  status: string | null
+}
 
 export default function NotaFiscalPage() {
   const fileRef = useRef<HTMLInputElement>(null)
@@ -9,20 +31,20 @@ export default function NotaFiscalPage() {
   const [texto, setTexto] = useState('')
   const [preview, setPreview] = useState('')
   const [imagemPreview, setImagemPreview] = useState('')
-  const [resultado, setResultado] = useState<any>(null)
-  const [notas, setNotas] = useState<any[]>([])
+  const [resultado, setResultado] = useState<AnaliseNFResult | null>(null)
+  const [notas, setNotas] = useState<NotaFiscalLista[]>([])
   const [loading, setLoading] = useState(false)
 
-  useEffect(() => {
-    carregarNotas()
-  }, [])
-
-  async function carregarNotas() {
+  const carregarNotas = useCallback(async () => {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return
     const { data } = await supabase.from('notas_fiscais').select('*').eq('empresa_id', user.id).order('created_at', { ascending: false })
-    setNotas(data || [])
-  }
+    setNotas((data ?? []) as NotaFiscalLista[])
+  }, [])
+
+  useEffect(() => {
+    void carregarNotas()
+  }, [carregarNotas])
 
   async function handleArquivo(file?: File) {
     if (!file) return
@@ -62,8 +84,8 @@ export default function NotaFiscalPage() {
       body: JSON.stringify({ texto })
     })
     const data = await res.json()
-    if (res.ok) {
-      setResultado(data.nota)
+    if (res.ok && data.nota) {
+      setResultado(data.nota as AnaliseNFResult)
       await carregarNotas()
     }
     setLoading(false)
@@ -107,7 +129,12 @@ export default function NotaFiscalPage() {
 
       <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-md hover:border-blue-200 transition-all">
         <div className="flex items-center gap-2 mb-3"><Mail size={16} className="text-blue-700" /><p className="text-sm text-slate-500">Também é possível encaminhar para: <span className="text-slate-800">nf@factorone.com.br</span></p></div>
-        {imagemPreview ? <img src={imagemPreview} alt="preview" className="max-h-52 rounded-xl border border-slate-200 mb-4" /> : <p className="text-sm text-slate-500 mb-4">{preview ? preview : 'Sem preview ainda'}</p>}
+        {imagemPreview ? (
+          // eslint-disable-next-line @next/next/no-img-element -- preview data URL local
+          <img src={imagemPreview} alt="preview" className="max-h-52 rounded-xl border border-slate-200 mb-4" />
+        ) : (
+          <p className="text-sm text-slate-500 mb-4">{preview ? preview : 'Sem preview ainda'}</p>
+        )}
         <button onClick={analisar} disabled={loading || !texto} className="bg-blue-700 hover:bg-blue-800 text-white font-semibold px-5 py-2.5 rounded-xl shadow-sm transition-all flex items-center gap-2">
           <ZapIcon /> {loading ? 'Analisando...' : 'Analisar Nota Fiscal'}
         </button>

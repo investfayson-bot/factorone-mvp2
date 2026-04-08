@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import { ArrowDownCircle, ArrowUpCircle, Wallet, AlertTriangle, Plus } from 'lucide-react'
@@ -24,11 +24,7 @@ export default function CashflowPage() {
   const [insightIA, setInsightIA] = useState('')
   const [form, setForm] = useState({ descricao: '', categoria: 'operacional', tipo: 'saida', valor: 0, data: new Date().toISOString().slice(0, 10) })
 
-  useEffect(() => {
-    carregar()
-  }, [filtroPeriodo])
-
-  async function carregar() {
+  const carregar = useCallback(async () => {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return
     const dt = new Date()
@@ -40,7 +36,11 @@ export default function CashflowPage() {
       .gte('data', dt.toISOString())
       .order('data', { ascending: true })
     setTransacoes((data as Transacao[]) || [])
-  }
+  }, [filtroPeriodo])
+
+  useEffect(() => {
+    void carregar()
+  }, [carregar])
 
   async function criarTransacao() {
     const { data: { user } } = await supabase.auth.getUser()
@@ -82,11 +82,13 @@ export default function CashflowPage() {
     [transacoes, filtroTipo, filtroCategoria]
   )
 
-  let saldoAcumulado = 0
-  const serie = transacoes.map((t) => {
-    saldoAcumulado += t.tipo === 'entrada' ? Number(t.valor) : -Number(t.valor)
-    return { ...t, saldo: saldoAcumulado, projecao: null as number | null }
+  const serie = transacoes.map((t, i) => {
+    const saldo = transacoes
+      .slice(0, i + 1)
+      .reduce((s, x) => s + (x.tipo === 'entrada' ? Number(x.valor) : -Number(x.valor)), 0)
+    return { ...t, saldo, projecao: null as number | null }
   })
+  const saldoAcumulado = serie.length ? serie[serie.length - 1].saldo : 0
   const mediaDiaria = transacoes.length
     ? transacoes.reduce((s, t) => s + (t.tipo === 'entrada' ? Number(t.valor) : -Number(t.valor)), 0) / transacoes.length
     : 0

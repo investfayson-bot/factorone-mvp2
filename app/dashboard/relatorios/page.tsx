@@ -1,7 +1,8 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase'
+import type { TransacaoDRE } from '@/lib/dre-calculations'
 
 type LinhaDRE = { label: string; atual: number; anterior: number }
 
@@ -11,11 +12,7 @@ export default function RelatoriosPage() {
   const [analiseIA, setAnaliseIA] = useState('')
   const [loadingIA, setLoadingIA] = useState(false)
 
-  useEffect(() => {
-    carregarDRE()
-  }, [periodo])
-
-  async function carregarDRE() {
+  const carregarDRE = useCallback(async () => {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return
 
@@ -46,7 +43,7 @@ export default function RelatoriosPage() {
       .gte('data', inicioAnterior.toISOString())
       .lt('data', inicioAtual.toISOString())
 
-    const calc = (lista: any[]) => {
+    const calc = (lista: TransacaoDRE[]) => {
       const receitaBruta = lista.filter(i => i.tipo === 'entrada').reduce((s, i) => s + Number(i.valor || 0), 0)
       const deducoes = lista.filter(i => i.categoria === 'impostos').reduce((s, i) => s + Number(i.valor || 0), 0)
       const custos = lista.filter(i => i.categoria === 'custo').reduce((s, i) => s + Number(i.valor || 0), 0)
@@ -60,8 +57,8 @@ export default function RelatoriosPage() {
       return { receitaBruta, deducoes, receitaLiquida, lucroBruto, ebitda, lucroLiquido }
     }
 
-    const a = calc(atual || [])
-    const p = calc(anterior || [])
+    const a = calc((atual ?? []) as TransacaoDRE[])
+    const p = calc((anterior ?? []) as TransacaoDRE[])
     setLinhas([
       { label: 'Receita Bruta', atual: a.receitaBruta, anterior: p.receitaBruta },
       { label: 'Deduções', atual: a.deducoes, anterior: p.deducoes },
@@ -70,7 +67,11 @@ export default function RelatoriosPage() {
       { label: 'EBITDA', atual: a.ebitda, anterior: p.ebitda },
       { label: 'Lucro Líquido', atual: a.lucroLiquido, anterior: p.lucroLiquido }
     ])
-  }
+  }, [periodo])
+
+  useEffect(() => {
+    void carregarDRE()
+  }, [carregarDRE])
 
   async function analisarComIA() {
     setLoadingIA(true)

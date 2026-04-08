@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { createClient } from '@supabase/supabase-js'
+import { erroDesconhecido } from '@/lib/transacao-types'
 
 export async function POST(req: NextRequest) {
   try {
@@ -52,8 +53,8 @@ export async function POST(req: NextRequest) {
     })
 
     return NextResponse.json({ url: session.url })
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error('Stripe error:', err)
-    return NextResponse.json({ error: err.message }, { status: 500 })
+    return NextResponse.json({ error: erroDesconhecido(err) }, { status: 500 })
   }
 }

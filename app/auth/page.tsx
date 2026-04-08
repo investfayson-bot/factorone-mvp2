@@ -27,14 +27,15 @@ export default function AuthPage() {
         if (error) throw error
         setMsg({ text: 'Conta criada! Verifique seu email para confirmar.', type: 'success' })
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       const msgs: Record<string, string> = {
         'Invalid login credentials': 'Email ou senha incorretos',
         'Email not confirmed': 'Confirme seu email antes de entrar',
         'User already registered': 'Email já cadastrado. Faça login.',
         'Password should be at least 6 characters': 'Senha: mínimo 6 caracteres',
       }
-      setMsg({ text: msgs[err.message] || err.message, type: 'error' })
+      const raw = err instanceof Error ? err.message : String(err)
+      setMsg({ text: msgs[raw] ?? raw, type: 'error' })
     } finally {
       setLoading(false)
     }

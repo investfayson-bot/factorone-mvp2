@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
+import type { User } from '@supabase/supabase-js'
 import { supabase } from '@/lib/supabase'
 import { LayoutDashboard, TrendingUp, Receipt, Building2, BarChart3, FileText, Zap, Settings, LogOut, ChevronRight } from 'lucide-react'
 import Link from 'next/link'
@@ -19,14 +20,14 @@ const menu = [
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const router = useRouter()
-  const [user, setUser] = useState<any>(null)
+  const [user, setUser] = useState<User | null>(null)
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
       if (!user) router.push('/auth')
       else setUser(user)
     })
-  }, [])
+  }, [router])
 
   async function sair() {
     await supabase.auth.signOut()
