@@ -10,7 +10,15 @@ export default function ContaPJPage() {
   const [empresaId, setEmpresaId] = useState('')
   const [empresaNome, setEmpresaNome] = useState('Minha Empresa')
   const [empresaCnpj, setEmpresaCnpj] = useState('')
-  const [conta, setConta] = useState<{ id: string; saldo_disponivel: number; saldo_bloqueado: number; saldo: number } | null>(null)
+  const [conta, setConta] = useState<{
+    id: string
+    saldo_disponivel: number
+    saldo_bloqueado: number
+    saldo: number
+    agencia?: string | null
+    numero_conta?: string | null
+    digito?: string | null
+  } | null>(null)
   const [contaPendente, setContaPendente] = useState(false)
 
   const carregar = useCallback(async () => {

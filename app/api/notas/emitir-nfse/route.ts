@@ -53,6 +53,9 @@ export async function POST(req: NextRequest) {
     const { user, supabase } = await getSupabaseUser(req)
     if (!user) return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
 
+    const { data: uEmp } = await supabase.from('usuarios').select('empresa_id').eq('id', user.id).maybeSingle()
+    const empresaId = (uEmp?.empresa_id as string) || user.id
+
     const body = (await req.json()) as BodyNFSe
     const v = validar(body)
     if (v) return NextResponse.json({ error: v }, { status: 400 })
@@ -125,7 +128,7 @@ export async function POST(req: NextRequest) {
     const { data: inserted, error: insErr } = await supabase
       .from('notas_emitidas')
       .insert({
-        empresa_id: user.id,
+        empresa_id: empresaId,
         tipo: 'nfse',
         numero,
         chave_acesso: chave,
@@ -152,7 +155,7 @@ export async function POST(req: NextRequest) {
     let transacaoId: string | null = null
     if (status === 'autorizada') {
       const { transacaoId: tid } = await lancarReceitaNota(supabase, {
-        empresaId: user.id,
+        empresaId,
         notaEmitidaId: inserted.id,
         numero,
         destinatario: body.tomador.razaoSocial,
@@ -161,7 +164,7 @@ export async function POST(req: NextRequest) {
       })
       transacaoId = tid
       await supabase.from('lancamentos').insert({
-        empresa_id: user.id,
+        empresa_id: empresaId,
         descricao: `Receita NFS-e ${numero || ''}`.trim(),
         valor: valorBruto,
         tipo: 'credito',
@@ -170,7 +173,22 @@ export async function POST(req: NextRequest) {
         nota_id: inserted.id,
         origem: 'nfe',
       })
-      await recalcularDREMes(user.id, new Date(competencia))
+      const venc = new Date()
+      venc.setDate(venc.getDate() + 30)
+      await supabase.from('contas_receber').insert({
+        empresa_id: empresaId,
+        descricao: `NFS-e nº ${numero || ''} - ${body.tomador.razaoSocial}`.trim(),
+        cliente_nome: body.tomador.razaoSocial,
+        cliente_documento: body.tomador.cnpjCpf.replace(/\D/g, ''),
+        cliente_email: body.tomador.email || null,
+        categoria: 'Receita Operacional',
+        valor: valorBruto,
+        data_emissao: competencia,
+        data_vencimento: venc.toISOString().slice(0, 10),
+        status: 'pendente',
+        nota_fiscal_id: inserted.id,
+      })
+      await recalcularDREMes(empresaId, new Date(competencia))
     }
 
     return NextResponse.json({

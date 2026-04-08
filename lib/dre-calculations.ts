@@ -11,6 +11,8 @@ export type DREValores = {
   receitaBruta: number
   deducoes: number
   receitaLiquida: number
+  /** CMV / CSP — custos classificados como `custo` */
+  cmv: number
   lucroBruto: number
   ebitda: number
   lucroLiquido: number
@@ -28,7 +30,7 @@ export function calcDREFromTransacoes(lista: TransacaoDRE[]): DREValores {
   const ebitda = lucroBruto - despesasOp
   const lucroLiquido = ebitda - depreciacao
 
-  return { receitaBruta, deducoes, receitaLiquida, lucroBruto, ebitda, lucroLiquido }
+  return { receitaBruta, deducoes, receitaLiquida, cmv: custos, lucroBruto, ebitda, lucroLiquido }
 }
 
 export function variacaoPct(atual: number, anterior: number): number | null {
@@ -38,4 +40,18 @@ export function variacaoPct(atual: number, anterior: number): number | null {
 
 export function fmtBRL(v: number) {
   return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v || 0)
+}
+
+/** Ex.: 2.400.000 → "R$ 2,4M" · 349.000 → "R$ 349K" */
+export function fmtBRLCompact(v: number): string {
+  const n = Math.abs(v || 0)
+  const sign = v < 0 ? '-' : ''
+  if (n >= 1_000_000) {
+    const m = (Math.abs(v) / 1_000_000).toLocaleString('pt-BR', { maximumFractionDigits: 1 })
+    return `${sign}R$ ${m}M`
+  }
+  if (n >= 1_000) {
+    return `${sign}R$ ${Math.round(Math.abs(v) / 1_000)}K`
+  }
+  return fmtBRL(v)
 }

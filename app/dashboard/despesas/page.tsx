@@ -16,6 +16,8 @@ import {
   Clock,
   TrendingDown,
   PiggyBank,
+  ArrowUp,
+  AlertTriangle,
 } from 'lucide-react'
 import NovaDespesaModal, { type DespesaEdit } from '@/components/despesas/NovaDespesaModal'
 import { formatBRL } from '@/lib/currency-brl'
@@ -257,6 +259,28 @@ export default function DespesasPage() {
     const economia = totalAnt > 0 ? ((totalAnt - totalMes) / totalAnt) * 100 : totalMes === 0 ? 0 : -100
     return { totalMes, aAprovar, aPagar, economia, totalAnt }
   }, [rows, inicioMes, fimMes, prevInicio, prevFim])
+
+  const categorizacao = useMemo(() => {
+    const noMes = (r: DespesaRow) => {
+      const d = r.data_despesa || r.data
+      if (!d) return false
+      return d >= inicioMes && d <= fimMes
+    }
+    const noMesRows = rows.filter(noMes)
+    const total = noMesRows.reduce((s, r) => s + Number(r.valor || 0), 0)
+    const map = new Map<string, number>()
+    for (const r of noMesRows) {
+      const c = r.categoria || 'Outros'
+      map.set(c, (map.get(c) || 0) + Number(r.valor || 0))
+    }
+    const items = Array.from(map.entries())
+      .map(([nome, valor]) => ({ nome, valor, pct: total > 0 ? (valor / total) * 100 : 0 }))
+      .sort((a, b) => b.valor - a.valor)
+    const pendentes = noMesRows.filter((r) => r.status === 'pendente_aprovacao')
+    const pendentesN = pendentes.length
+    const pendentesValor = pendentes.reduce((s, r) => s + Number(r.valor || 0), 0)
+    return { items, total, pendentesN, pendentesValor }
+  }, [rows, inicioMes, fimMes])
 
   function toggleAll() {
     if (selected.size === filtradas.length) setSelected(new Set())
@@ -695,6 +719,69 @@ export default function DespesasPage() {
             </p>
             <p className="text-xs text-slate-400">Menos gasto = economia positiva</p>
           </div>
+        </div>
+
+        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+          <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h2 className="text-sm font-semibold text-slate-900">Categorização de Gastos</h2>
+              <p className="text-xs text-slate-500">
+                {categorizacao.pendentesN} pendentes · distribuição por categoria no período
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-3 text-xs">
+              <span className="rounded-lg bg-slate-100 px-2 py-1 font-medium text-slate-700">
+                Classificados IA <span className="text-emerald-700">94%</span> automático
+              </span>
+              <span className="inline-flex items-center gap-1 rounded-lg bg-amber-50 px-2 py-1 font-medium text-amber-900">
+                <AlertTriangle className="h-3 w-3" />
+                Fora política (est.)
+              </span>
+            </div>
+          </div>
+          <div className="mb-4 grid gap-3 sm:grid-cols-3">
+            <div className="rounded-xl border border-slate-100 bg-slate-50/80 p-3">
+              <p className="text-[11px] font-medium uppercase tracking-wide text-slate-500">Pendentes</p>
+              <p className="mt-1 text-lg font-bold text-slate-900">{categorizacao.pendentesN} itens</p>
+              <p className="text-xs text-amber-700">{formatBRL(categorizacao.pendentesValor)}</p>
+            </div>
+            <div className="rounded-xl border border-slate-100 bg-slate-50/80 p-3">
+              <p className="text-[11px] font-medium uppercase tracking-wide text-slate-500">Total mês</p>
+              <p className="mt-1 text-lg font-bold text-slate-900">{formatBRL(categorizacao.total)}</p>
+              <p className="inline-flex items-center gap-0.5 text-xs font-semibold text-emerald-600">
+                <ArrowUp className="h-3 w-3" />
+                {kpis.economia >= 0 ? '+' : ''}
+                {kpis.economia.toFixed(1)}%
+              </p>
+            </div>
+            <div className="rounded-xl border border-slate-100 bg-slate-50/80 p-3">
+              <p className="text-[11px] font-medium uppercase tracking-wide text-slate-500">Cobertura automática</p>
+              <p className="mt-1 text-lg font-bold text-emerald-800">94%</p>
+              <p className="text-xs text-slate-500">meta de classificação IA</p>
+            </div>
+          </div>
+          {categorizacao.items.length === 0 ? (
+            <p className="text-sm text-slate-500">Sem despesas no mês para exibir distribuição.</p>
+          ) : (
+            <ul className="space-y-3">
+              {categorizacao.items.map((it) => (
+                <li key={it.nome}>
+                  <div className="mb-1 flex justify-between text-sm">
+                    <span className="font-medium text-slate-800">{it.nome}</span>
+                    <span className="tabular-nums text-slate-600">
+                      {formatBRL(it.valor)} · {it.pct.toFixed(1)}%
+                    </span>
+                  </div>
+                  <div className="h-2 overflow-hidden rounded-full bg-slate-100">
+                    <div
+                      className="h-full rounded-full bg-emerald-500/90"
+                      style={{ width: `${Math.min(100, it.pct)}%` }}
+                    />
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
 
         <div className="flex flex-wrap items-center gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">

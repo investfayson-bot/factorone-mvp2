@@ -12,14 +12,17 @@ import {
   Zap,
   ArrowUpRight,
   AlertCircle,
+  ArrowUp,
+  CheckCircle2,
 } from 'lucide-react'
-import { fmtBRL } from '@/lib/dre-calculations'
+import { calcDREFromTransacoes, fmtBRL, fmtBRLCompact, variacaoPct, type TransacaoDRE } from '@/lib/dre-calculations'
 import HealthScore from '@/components/dashboard/HealthScore'
 import UpcomingPayments from '@/components/dashboard/UpcomingPayments'
 import AnomalyAlerts from '@/components/dashboard/AnomalyAlerts'
 import MiniDRE from '@/components/dashboard/MiniDRE'
-import CashflowMiniChart from '@/components/dashboard/CashflowMiniChart'
+import EntradasSaidasChart from '@/components/dashboard/EntradasSaidasChart'
 import { DashboardErrorBoundary } from '@/components/dashboard/DashboardErrorBoundary'
+import DashboardPageHeader from '@/components/dashboard/DashboardPageHeader'
 import type { TransacaoLista } from '@/lib/transacao-types'
 
 type Kpi = {
@@ -30,23 +33,33 @@ type Kpi = {
 }
 type OrcamentoWidget = { consumidoPct: number; alertas: number; top: string[] }
 
-function pctVar(atual: number, anterior: number): number | null {
-  if (anterior === 0) return null
-  return ((atual - anterior) / Math.abs(anterior)) * 100
-}
-
-function VarLabel({ atual, anterior }: { atual: number; anterior: number }) {
-  const v = pctVar(atual, anterior)
+function KpiTrendPct({ atual, anterior, invert }: { atual: number; anterior: number; invert?: boolean }) {
+  const v = variacaoPct(atual, anterior)
   if (v === null) {
-    return <span className="text-xs font-medium text-blue-600">Primeiro mês</span>
+    return <span className="text-xs font-medium text-slate-500">1º mês</span>
   }
-  const pos = v >= 0
+  const good = invert ? v <= 0 : v >= 0
   return (
-    <span className={`text-xs font-semibold ${pos ? 'text-emerald-600' : 'text-red-600'}`}>
-      {pos ? '+' : ''}
-      {v.toFixed(1)}% vs mês anterior
+    <span className={`text-xs font-semibold inline-flex items-center gap-0.5 ${good ? 'text-emerald-600' : 'text-red-600'}`}>
+      {good ? <ArrowUp className="w-3.5 h-3.5 shrink-0" /> : <TrendingDown className="w-3.5 h-3.5 shrink-0" />}
+      {v >= 0 ? '+' : ''}
+      {v.toFixed(1).replace('.', ',')}%
     </span>
   )
+}
+
+function tituloTransacao(t: TransacaoLista): string {
+  const d = (t.descricao || '').trim()
+  if (!d) return t.tipo === 'entrada' ? 'Entrada' : 'Saída'
+  if (/pix/i.test(d)) return d.toLowerCase().includes('receb') ? 'Pix Recebido' : d.toLowerCase().includes('saída') || d.toLowerCase().includes('saida') ? 'Pix Saída' : 'Transferência PIX'
+  if (/ted|transfer/i.test(d)) return 'Transferência / TED'
+  return d.length > 48 ? `${d.slice(0, 45)}…` : d
+}
+
+function subtituloTransacao(t: TransacaoLista): string {
+  const d = new Date(t.data).toLocaleDateString('pt-BR')
+  const cat = t.categoria || '—'
+  return `${cat} · ${d}`
 }
 
 export default function DashboardPage() {
@@ -58,6 +71,11 @@ export default function DashboardPage() {
   const [loadingAi, setLoadingAi] = useState(false)
   const [transacoes, setTransacoes] = useState<TransacaoLista[]>([])
   const [orcamentoWidget, setOrcamentoWidget] = useState<OrcamentoWidget>({ consumidoPct: 0, alertas: 0, top: [] })
+  const [empresaNome, setEmpresaNome] = useState('')
+  const [empresaId, setEmpresaId] = useState<string | null>(null)
+  const [dreMes, setDreMes] = useState({ liquido: 0, liquidoAnt: 0 })
+  const [fluxo30, setFluxo30] = useState(0)
+  const [riscoRunwayDias, setRiscoRunwayDias] = useState<number | null>(null)
   const router = useRouter()
 
   useEffect(() => {
@@ -71,6 +89,17 @@ export default function DashboardPage() {
       }
       setUser(u)
 
+      const { data: usrRow } = await supabase.from('usuarios').select('empresa_id').eq('id', u.id).maybeSingle()
+      const eid = (usrRow?.empresa_id as string | null) ?? u.id
+      setEmpresaId(eid)
+
+      if (usrRow?.empresa_id) {
+        const { data: emp } = await supabase.from('empresas').select('nome').eq('id', usrRow.empresa_id).maybeSingle()
+        setEmpresaNome((emp?.nome as string) || '')
+      } else {
+        setEmpresaNome('')
+      }
+
       const now = new Date()
       const inicioAtual = new Date(now.getFullYear(), now.getMonth(), 1)
       const fimAtual = new Date(now.getFullYear(), now.getMonth() + 1, 0)
@@ -82,10 +111,16 @@ export default function DashboardPage() {
       const b0 = inicioAnt.toISOString().slice(0, 10)
       const b1 = fimAnt.toISOString().slice(0, 10)
 
+      const fold = (rows: TransacaoLista[]) => {
+        const rec = rows.filter((x) => x.tipo === 'entrada').reduce((s, x) => s + Number(x.valor), 0)
+        const desp = rows.filter((x) => x.tipo === 'saida').reduce((s, x) => s + Number(x.valor), 0)
+        return { receita: rec, despesas: desp, saldo: rec - desp }
+      }
+
       const { data: tAtual } = await supabase
         .from('transacoes')
         .select('*')
-        .eq('empresa_id', u.id)
+        .eq('empresa_id', eid)
         .gte('data', a0)
         .lte('data', a1)
         .order('data', { ascending: false })
@@ -93,23 +128,58 @@ export default function DashboardPage() {
       const { data: tAnt } = await supabase
         .from('transacoes')
         .select('*')
-        .eq('empresa_id', u.id)
+        .eq('empresa_id', eid)
         .gte('data', b0)
         .lte('data', b1)
 
-      const fold = (rows: TransacaoLista[]) => {
-        const rec = rows.filter((x) => x.tipo === 'entrada').reduce((s, x) => s + Number(x.valor), 0)
-        const desp = rows.filter((x) => x.tipo === 'saida').reduce((s, x) => s + Number(x.valor), 0)
-        return { receita: rec, despesas: desp, saldo: rec - desp }
+      const dt30 = new Date()
+      dt30.setDate(dt30.getDate() - 30)
+      const d30 = dt30.toISOString().slice(0, 10)
+      const { data: t30 } = await supabase
+        .from('transacoes')
+        .select('tipo,valor')
+        .eq('empresa_id', eid)
+        .gte('data', d30)
+
+      const fold30 = (rows: { tipo: string; valor: number | string }[]) => {
+        let e = 0
+        let s = 0
+        for (const x of rows) {
+          const v = Number(x.valor) || 0
+          if (x.tipo === 'entrada') e += v
+          else s += v
+        }
+        return e - s
       }
+      setFluxo30(fold30((t30 || []) as { tipo: string; valor: number | string }[]))
 
       const ka = fold((tAtual ?? []) as TransacaoLista[])
       const kb = fold((tAnt ?? []) as TransacaoLista[])
 
+      const dreA = calcDREFromTransacoes((tAtual || []) as TransacaoDRE[])
+      const dreB = calcDREFromTransacoes((tAnt || []) as TransacaoDRE[])
+      setDreMes({ liquido: dreA.lucroLiquido, liquidoAnt: dreB.lucroLiquido })
+
+      const { data: contaPri } = await supabase
+        .from('contas_bancarias')
+        .select('saldo_disponivel,saldo')
+        .eq('empresa_id', eid)
+        .eq('is_principal', true)
+        .maybeSingle()
+      const saldoBanco = Number(contaPri?.saldo_disponivel ?? contaPri?.saldo ?? 0)
+      const despDia = ka.despesas > 0 ? ka.despesas / 30 : 0
+      if (saldoBanco > 0 && despDia > 0) {
+        setRiscoRunwayDias(Math.min(999, Math.floor(saldoBanco / despDia)))
+      } else if (saldoBanco > 0 && ka.despesas === 0) {
+        setRiscoRunwayDias(999)
+      } else {
+        setRiscoRunwayDias(null)
+      }
+
       const { count: cAtual } = await supabase
         .from('notas_fiscais')
         .select('*', { count: 'exact', head: true })
-        .eq('empresa_id', u.id)
+        .eq('empresa_id', eid)
         .eq('status', 'pendente')
         .gte('data_emissao', a0)
         .lte('data_emissao', a1)
@@ -117,7 +187,7 @@ export default function DashboardPage() {
       const { count: cAnt } = await supabase
         .from('notas_fiscais')
         .select('*', { count: 'exact', head: true })
-        .eq('empresa_id', u.id)
+        .eq('empresa_id', eid)
         .eq('status', 'pendente')
         .gte('data_emissao', b0)
         .lte('data_emissao', b1)
@@ -130,7 +200,7 @@ export default function DashboardPage() {
       const { data: orc } = await supabase
         .from('orcamentos')
         .select('id')
-        .eq('empresa_id', u.id)
+        .eq('empresa_id', eid)
         .eq('ano_fiscal', anoAtual)
         .in('status', ['ativo', 'aprovado'])
         .order('versao', { ascending: false })
@@ -139,7 +209,7 @@ export default function DashboardPage() {
       if (orc?.id) {
         const [lin, al] = await Promise.all([
           supabase.from('orcamento_linhas').select('categoria,valor_previsto,valor_realizado').eq('orcamento_id', orc.id),
-          supabase.from('alertas_orcamento').select('id').eq('empresa_id', u.id).eq('lido', false),
+          supabase.from('alertas_orcamento').select('id').eq('empresa_id', eid).eq('lido', false),
         ])
         const previsto = (lin.data || []).reduce((s, x) => s + Number(x.valor_previsto || 0), 0)
         const realizado = (lin.data || []).reduce((s, x) => s + Number(x.valor_realizado || 0), 0)
@@ -192,7 +262,7 @@ export default function DashboardPage() {
   const saudacao = hora < 12 ? 'Bom dia' : hora < 18 ? 'Boa tarde' : 'Boa noite'
   const nome = user?.email?.split('@')[0] ?? '—'
 
-  if (loading || !user) {
+  if (loading || !user || !empresaId) {
     return (
       <div className="p-6 md:p-8 max-w-7xl mx-auto space-y-6 animate-pulse">
         <div className="h-10 bg-slate-200 rounded-xl w-2/3 max-w-md" />
@@ -206,38 +276,53 @@ export default function DashboardPage() {
     )
   }
 
-  const empresaId = user.id
-
   const cards = [
     {
-      label: 'Receita do mês',
-      value: fmtBRL(kpiAtual.receita),
+      label: 'Receita Mensal',
+      value: fmtBRLCompact(kpiAtual.receita),
       icon: TrendingUp,
-      varEl: <VarLabel atual={kpiAtual.receita} anterior={kpiAnt.receita} />,
+      varEl: <KpiTrendPct atual={kpiAtual.receita} anterior={kpiAnt.receita} />,
       iconWrap: 'bg-emerald-50 border-emerald-100',
       iconColor: 'text-emerald-600',
     },
     {
-      label: 'Despesas do mês',
-      value: fmtBRL(kpiAtual.despesas),
-      icon: TrendingDown,
-      varEl: <VarLabel atual={kpiAtual.despesas} anterior={kpiAnt.despesas} />,
-      iconWrap: 'bg-red-50 border-red-100',
-      iconColor: 'text-red-600',
-    },
-    {
-      label: 'Saldo do mês',
-      value: fmtBRL(kpiAtual.saldo),
+      label: 'Lucro Líquido',
+      value: fmtBRLCompact(dreMes.liquido),
       icon: DollarSign,
-      varEl: <VarLabel atual={kpiAtual.saldo} anterior={kpiAnt.saldo} />,
-      iconWrap: kpiAtual.saldo >= 0 ? 'bg-blue-50 border-blue-100' : 'bg-red-50 border-red-100',
-      iconColor: kpiAtual.saldo >= 0 ? 'text-blue-600' : 'text-red-600',
+      varEl: <KpiTrendPct atual={dreMes.liquido} anterior={dreMes.liquidoAnt} />,
+      iconWrap: 'bg-sky-50 border-sky-100',
+      iconColor: 'text-sky-600',
     },
     {
-      label: 'NFs pendentes (mês)',
-      value: String(kpiAtual.nfs),
-      icon: FileText,
-      varEl: <VarLabel atual={kpiAtual.nfs} anterior={kpiAnt.nfs} />,
+      label: 'Fluxo 30d',
+      value: fmtBRLCompact(fluxo30),
+      icon: ArrowUpRight,
+      varEl:
+        fluxo30 >= 0 ? (
+          <span className="text-xs font-semibold text-emerald-600 inline-flex items-center gap-0.5">
+            <ArrowUp className="w-3.5 h-3.5 shrink-0" />
+            OK
+          </span>
+        ) : (
+          <span className="text-xs font-semibold text-red-600">Fluxo líquido negativo (30d)</span>
+        ),
+      iconWrap: 'bg-violet-50 border-violet-100',
+      iconColor: 'text-violet-600',
+    },
+    {
+      label: 'Alerta IA',
+      value: riscoRunwayDias != null ? `⚡ Risco ${riscoRunwayDias}d` : '—',
+      icon: Zap,
+      varEl:
+        riscoRunwayDias != null ? (
+          riscoRunwayDias < 90 ? (
+            <span className="text-xs font-medium text-amber-700">Atenção à liquidez</span>
+          ) : (
+            <span className="text-xs font-medium text-emerald-600">Runway confortável</span>
+          )
+        ) : (
+          <span className="text-xs text-slate-500">Abra conta PJ para runway com saldo real</span>
+        ),
       iconWrap: 'bg-amber-50 border-amber-100',
       iconColor: 'text-amber-600',
     },
@@ -246,29 +331,25 @@ export default function DashboardPage() {
   return (
     <div className="p-6 md:p-8 max-w-7xl mx-auto space-y-6">
       {/* Linha 1 */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-xl md:text-2xl font-bold text-slate-800">
-            {saudacao}, {nome}!
-          </h1>
-          <p className="text-slate-500 text-sm mt-1 capitalize">
-            {new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })}
-          </p>
-        </div>
+      <DashboardPageHeader
+        title={empresaNome ? `Dashboard — ${empresaNome}` : 'Dashboard'}
+        subtitle={`${saudacao}, ${nome} · ${new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })}`}
+        badge="live"
+      >
         <button
           type="button"
           onClick={gerarInsight}
           disabled={loadingAi}
-          className="bg-blue-700 hover:bg-blue-800 disabled:opacity-50 text-white font-semibold px-5 py-2.5 rounded-xl shadow-sm transition-all flex items-center justify-center gap-2 text-sm w-full sm:w-auto"
+          className="flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-700 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-emerald-800 disabled:opacity-50 sm:w-auto"
         >
           <Zap size={16} />
           {loadingAi ? 'Analisando...' : 'Análise IA'}
         </button>
-      </div>
+      </DashboardPageHeader>
 
       {/* Linha 2 */}
       <DashboardErrorBoundary title="Alertas">
-        <AnomalyAlerts empresaId={empresaId} />
+        <AnomalyAlerts empresaId={empresaId as string} />
       </DashboardErrorBoundary>
 
       {/* Linha 3 — KPIs */}
@@ -276,15 +357,15 @@ export default function DashboardPage() {
         {cards.map((m) => (
           <div
             key={m.label}
-            className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm hover:shadow-md hover:border-blue-200 transition-all"
+            className="rounded-2xl border border-gray-200/90 bg-white p-5 shadow-sm transition-all hover:border-emerald-200/80 hover:shadow-md"
           >
             <div className="flex items-center justify-between mb-3">
-              <span className="text-slate-500 text-xs font-semibold uppercase tracking-wide">{m.label}</span>
+              <span className="text-[11px] font-semibold uppercase tracking-wider text-gray-500">{m.label}</span>
               <div className={`w-8 h-8 rounded-lg border flex items-center justify-center ${m.iconWrap}`}>
                 <m.icon size={16} className={m.iconColor} />
               </div>
             </div>
-            <p className="text-2xl font-bold text-slate-800">{m.value}</p>
+            <p className="text-2xl font-bold tracking-tight text-gray-900">{m.value}</p>
             <div className="mt-2 min-h-[1.25rem]">{m.varEl}</div>
           </div>
         ))}
@@ -294,20 +375,22 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-1">
           <DashboardErrorBoundary title="Score de saúde">
-            <HealthScore empresaId={empresaId} />
+            <HealthScore empresaId={empresaId as string} />
           </DashboardErrorBoundary>
         </div>
         <div className="lg:col-span-2">
           <DashboardErrorBoundary title="Vencimentos">
-            <UpcomingPayments empresaId={empresaId} />
+            <UpcomingPayments empresaId={empresaId as string} />
           </DashboardErrorBoundary>
         </div>
       </div>
 
-      <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+      <div className="rounded-2xl border border-gray-200/90 bg-white p-5 shadow-sm">
         <div className="mb-2 flex items-center justify-between">
-          <h3 className="font-semibold text-slate-800">Orçamento</h3>
-          <Link href="/dashboard/orcamento" className="text-sm font-medium text-blue-700">Ver orçamento completo</Link>
+          <h3 className="font-semibold text-gray-900">Orçamento</h3>
+          <Link href="/dashboard/orcamento" className="text-sm font-medium text-emerald-700 hover:text-emerald-800">
+            Ver orçamento completo
+          </Link>
         </div>
         <p className="text-sm text-slate-600">% consumido do ano: <span className="font-semibold">{orcamentoWidget.consumidoPct.toFixed(1)}%</span></p>
         <p className="text-sm text-slate-600">Alertas ativos: <span className="font-semibold">{orcamentoWidget.alertas}</span></p>
@@ -318,12 +401,12 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="min-w-0 lg:col-span-2">
           <DashboardErrorBoundary title="Fluxo de caixa">
-            <CashflowMiniChart empresaId={empresaId} />
+            <EntradasSaidasChart empresaId={empresaId as string} />
           </DashboardErrorBoundary>
         </div>
         <div className="lg:col-span-1">
           <DashboardErrorBoundary title="DRE resumido">
-            <MiniDRE empresaId={empresaId} />
+            <MiniDRE empresaId={empresaId as string} />
           </DashboardErrorBoundary>
         </div>
       </div>
@@ -385,20 +468,20 @@ export default function DashboardPage() {
                     }`}
                   >
                     {t.tipo === 'entrada' ? (
-                      <TrendingUp size={14} className="text-emerald-600" />
+                      <CheckCircle2 size={14} className="text-emerald-600" />
+                    ) : Number(t.valor) > 50000 ? (
+                      <Zap size={14} className="text-amber-600" />
                     ) : (
                       <TrendingDown size={14} className="text-red-600" />
                     )}
                   </div>
                   <div className="min-w-0">
-                    <p className="text-slate-800 text-sm font-medium truncate">{t.descricao || 'Sem descrição'}</p>
-                    <p className="text-slate-400 text-xs truncate">
-                      {t.categoria || 'Sem categoria'} • {new Date(t.data).toLocaleDateString('pt-BR')}
-                    </p>
+                    <p className="text-slate-800 text-sm font-medium truncate">{tituloTransacao(t)}</p>
+                    <p className="text-slate-400 text-xs truncate">{subtituloTransacao(t)}</p>
                   </div>
                 </div>
                 <span
-                  className={`font-semibold text-sm shrink-0 ${
+                  className={`font-semibold text-sm shrink-0 tabular-nums ${
                     t.tipo === 'entrada' ? 'text-emerald-600' : 'text-red-600'
                   }`}
                 >

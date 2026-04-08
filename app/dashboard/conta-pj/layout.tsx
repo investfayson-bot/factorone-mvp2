@@ -23,7 +23,7 @@ export default function ContaPJLayout({ children }: { children: React.ReactNode 
               <Link
                 key={t.href}
                 href={t.href}
-                className={`rounded-xl px-3 py-1.5 text-sm font-medium ${active ? 'bg-blue-600 text-white' : 'border border-slate-200 bg-white text-slate-700 hover:bg-slate-50'}`}
+                className={`rounded-xl px-3 py-1.5 text-sm font-medium transition-all ${active ? 'bg-emerald-700 text-white shadow-sm' : 'border border-gray-200 bg-white text-gray-700 hover:bg-gray-50'}`}
               >
                 {t.label}
               </Link>

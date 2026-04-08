@@ -3,18 +3,23 @@
 import { useCallback, useEffect, useState } from 'react'
 import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
-import { calcDREFromTransacoes, fmtBRL, variacaoPct, type TransacaoDRE } from '@/lib/dre-calculations'
+import { calcDREFromTransacoes, fmtBRL, fmtBRLCompact, variacaoPct, type TransacaoDRE } from '@/lib/dre-calculations'
 import { FileSpreadsheet } from 'lucide-react'
 import { erroDesconhecido } from '@/lib/transacao-types'
 
 type Props = { empresaId: string }
 
-const linhasConfig: { key: keyof ReturnType<typeof calcDREFromTransacoes>; label: string }[] = [
+const linhasConfig: {
+  key: keyof ReturnType<typeof calcDREFromTransacoes>
+  label: string
+  /** Exibir valor como despesa (sinal negativo no mockup) */
+  negateDisplay?: boolean
+}[] = [
   { key: 'receitaBruta', label: 'Receita' },
-  { key: 'deducoes', label: 'Deduções' },
+  { key: 'cmv', label: '(-) CMV', negateDisplay: true },
   { key: 'lucroBruto', label: 'Lucro Bruto' },
   { key: 'ebitda', label: 'EBITDA' },
-  { key: 'lucroLiquido', label: 'Lucro líquido' },
+  { key: 'lucroLiquido', label: 'Líquido' },
 ]
 
 export default function MiniDRE({ empresaId }: Props) {
@@ -105,36 +110,50 @@ export default function MiniDRE({ empresaId }: Props) {
           <FileSpreadsheet className="w-4 h-4 text-emerald-700" />
         </div>
         <div className="flex-1">
-          <h2 className="font-semibold text-slate-800 text-sm">DRE resumido</h2>
+          <h2 className="font-semibold text-slate-800 text-sm">DRE Resumo</h2>
           <p className="text-xs text-slate-500">Mês atual vs anterior</p>
         </div>
-        <Link href="/dre" className="text-xs font-medium text-blue-700 hover:text-blue-800 whitespace-nowrap">
+        <Link href="/dashboard/relatorios" className="text-xs font-medium text-emerald-700 hover:text-emerald-800 whitespace-nowrap">
           Ver DRE completo
         </Link>
       </div>
 
       <div className="space-y-2 text-sm flex-1">
-        {linhasConfig.map(({ key, label }) => {
-          const v = atual[key]
-          const p = prevDre[key]
+        {linhasConfig.map(({ key, label, negateDisplay }) => {
+          const v = atual[key] as number
+          const p = prevDre[key] as number
+          const displayVal = negateDisplay ? -Math.abs(v) : v
+          const fmt = (n: number) => (Math.abs(n) >= 1000 ? fmtBRLCompact(n) : fmtBRL(n))
           const varPct = variacaoPct(v, p)
           return (
             <div
-              key={key}
+              key={String(key)}
               className="flex items-center justify-between gap-2 rounded-xl border border-slate-100 bg-slate-50/80 px-3 py-2"
             >
               <span className="text-slate-600 truncate">{label}</span>
               <div className="flex items-center gap-2 shrink-0">
-                <span className="font-semibold text-slate-800 tabular-nums">{fmtBRL(v)}</span>
+                <span
+                  className={`font-semibold tabular-nums ${
+                    negateDisplay && v > 0 ? 'text-red-700' : 'text-slate-800'
+                  }`}
+                >
+                  {fmt(displayVal)}
+                </span>
                 {varPct === null ? (
                   <span className="text-[10px] font-medium text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">1º mês</span>
                 ) : (
                   <span
                     className={`text-[10px] font-semibold tabular-nums ${
-                      varPct >= 0 ? 'text-emerald-600' : 'text-red-600'
+                      negateDisplay
+                        ? varPct <= 0
+                          ? 'text-emerald-600'
+                          : 'text-red-600'
+                        : varPct >= 0
+                          ? 'text-emerald-600'
+                          : 'text-red-600'
                     }`}
                   >
-                    {varPct >= 0 ? '+' : ''}
+                    {negateDisplay ? (varPct >= 0 ? '+' : '') : varPct >= 0 ? '+' : ''}
                     {varPct.toFixed(1)}%
                   </span>
                 )}
