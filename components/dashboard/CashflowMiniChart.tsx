@@ -53,14 +53,14 @@ export default function CashflowMiniChart({ empresaId }: Props) {
   }
 
   return (
-    <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+    <div className="min-w-0 bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
       <h2 className="font-semibold text-slate-800 text-sm mb-1">Fluxo de caixa (30 dias)</h2>
       <p className="text-xs text-slate-500 mb-4">Saldo acumulado no período</p>
-      <div className="h-[260px] w-full">
+      <div className="h-[260px] w-full min-w-0">
         {chartData.length === 0 ? (
           <p className="text-sm text-slate-500 py-12 text-center">Sem transações nos últimos 30 dias.</p>
         ) : (
-          <ResponsiveContainer width="100%" height="100%">
+          <ResponsiveContainer width="99%" height="100%" minWidth={280}>
             <AreaChart data={chartData}>
               <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
               <XAxis dataKey="data" tick={{ fontSize: 10, fill: '#64748b' }} />

@@ -49,7 +49,7 @@ export default function UpcomingPayments({ empresaId }: Props) {
         const a = today.toISOString().slice(0, 10)
         const b = end.toISOString().slice(0, 10)
 
-        const { data, error: e } = await supabase
+        const primary = await supabase
           .from('transacoes')
           .select('id,descricao,valor,due_date,tipo')
           .eq('empresa_id', empresaId)
@@ -59,8 +59,29 @@ export default function UpcomingPayments({ empresaId }: Props) {
           .lte('due_date', b)
           .order('due_date', { ascending: true })
 
-        if (e) throw e
-        if (!cancelled) setRows((data as Row[]) || [])
+        if (!primary.error) {
+          if (!cancelled) setRows((primary.data as Row[]) || [])
+          return
+        }
+
+        // Fallback para bases legadas sem due_date/status pendente.
+        const fallback = await supabase
+          .from('transacoes')
+          .select('id,descricao,valor,data,tipo')
+          .eq('empresa_id', empresaId)
+          .gte('data', a)
+          .lte('data', b)
+          .order('data', { ascending: true })
+
+        if (fallback.error) throw fallback.error
+        const mapped = ((fallback.data as Array<Row & { data?: string | null }>) || []).map((r) => ({
+          id: r.id,
+          descricao: r.descricao,
+          valor: Number(r.valor || 0),
+          due_date: r.data ?? null,
+          tipo: r.tipo,
+        }))
+        if (!cancelled) setRows(mapped)
       } catch (err: unknown) {
         if (!cancelled) setError(erroDesconhecido(err) || 'Erro ao carregar vencimentos')
       } finally {
@@ -104,7 +125,7 @@ export default function UpcomingPayments({ empresaId }: Props) {
           </div>
           <div>
             <h2 className="font-semibold text-slate-800 text-sm">Próximos vencimentos</h2>
-            <p className="text-xs text-slate-500">7 dias • status pendente</p>
+            <p className="text-xs text-slate-500">7 dias • transações com vencimento</p>
           </div>
         </div>
         <Link
