@@ -19,6 +19,7 @@ import {
 } from 'lucide-react'
 import NovaDespesaModal, { type DespesaEdit } from '@/components/despesas/NovaDespesaModal'
 import { formatBRL } from '@/lib/currency-brl'
+import { CATEGORIAS_PADRAO } from '@/lib/despesas-categorizacao'
 
 type DespesaRow = {
   id: string
@@ -58,21 +59,6 @@ const STATUS_LABEL: Record<string, string> = {
   pago: 'Pago',
   cancelado: 'Cancelado',
 }
-
-const CATEGORIAS_PADRAO = [
-  'Alimentação',
-  'Transporte',
-  'Hospedagem',
-  'Tecnologia/Software',
-  'Marketing',
-  'Fornecedores',
-  'Folha de Pagamento',
-  'Impostos/Taxas',
-  'Aluguel/Infraestrutura',
-  'Consultoria',
-  'Material de Escritório',
-  'Outros',
-]
 
 function statusBadge(status: string) {
   const base = 'inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium'

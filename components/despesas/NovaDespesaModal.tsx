@@ -4,16 +4,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
 import { formatBRL, maskBRLInput, parseBRLInput } from '@/lib/currency-brl'
-
-const SUGESTOES_CATEGORIA: Array<{ matcher: RegExp; categoria: string }> = [
-  { matcher: /(uber|99|cabify|taxi|combust|posto|ipiranga|shell)/i, categoria: 'Transporte' },
-  { matcher: /(ifood|restaurante|lanch|caf[eé]|padaria)/i, categoria: 'Alimentação' },
-  { matcher: /(hotel|airbnb|pousada)/i, categoria: 'Hospedagem' },
-  { matcher: /(google|meta|facebook|instagram|ads|tiktok)/i, categoria: 'Marketing' },
-  { matcher: /(netflix|spotify|apple|google cloud|aws|azure|openai|notion|slack|figma|github)/i, categoria: 'Tecnologia/Software' },
-  { matcher: /(imposto|tributo|darf|simples|taxa|iof)/i, categoria: 'Impostos/Taxas' },
-  { matcher: /(aluguel|condom[ií]nio|energia|internet|agua)/i, categoria: 'Aluguel/Infraestrutura' },
-]
+import { sugerirCategoriaDespesa } from '@/lib/despesas-categorizacao'
 
 export type DespesaEdit = {
   id: string
@@ -92,6 +83,8 @@ export default function NovaDespesaModal({
   const [loading, setLoading] = useState(false)
   const [file, setFile] = useState<File | null>(null)
   const [centroDisponivel, setCentroDisponivel] = useState(true)
+  const [ocrLoading, setOcrLoading] = useState(false)
+  const [sugestaoCategoria, setSugestaoCategoria] = useState<string | null>(null)
 
   const reset = useCallback(() => {
     setValorMask('')
@@ -109,6 +102,7 @@ export default function NovaDespesaModal({
     })
     setFile(null)
     setNovoCentro('')
+    setSugestaoCategoria(null)
   }, [categorias, userId])
 
   useEffect(() => {
@@ -190,7 +184,7 @@ export default function NovaDespesaModal({
         return
       }
 
-      const categoriaFinal = form.categoria || sugerirCategoria(form.descricao, categorias)
+      const categoriaFinal = form.categoria || sugerirCategoria(form.descricao)
       const respNome =
         membros.find((m) => m.id === (form.responsavel_id || userId))?.nome || userName
       const payload = {
@@ -239,12 +233,57 @@ export default function NovaDespesaModal({
 
   if (!open) return null
 
-  function sugerirCategoria(descricao: string, cats: string[]): string {
-    const desc = descricao.trim()
-    if (!desc) return cats[0] ?? 'Outros'
-    const hit = SUGESTOES_CATEGORIA.find((s) => s.matcher.test(desc))
-    if (!hit) return cats[0] ?? 'Outros'
-    return cats.find((c) => c.toLowerCase() === hit.categoria.toLowerCase()) ?? hit.categoria
+  function sugerirCategoria(descricao: string): string {
+    return sugerirCategoriaDespesa(descricao, categorias)
+  }
+
+  async function preencherComOcr() {
+    if (!file) {
+      toast.error('Selecione um comprovante ou extrato (imagem/PDF)')
+      return
+    }
+    setOcrLoading(true)
+    try {
+      const { data: sess } = await supabase.auth.getSession()
+      const fd = new FormData()
+      fd.append('file', file)
+      const res = await fetch('/api/despesas/extrair-comprovante', {
+        method: 'POST',
+        headers: sess.session?.access_token
+          ? { Authorization: `Bearer ${sess.session.access_token}` }
+          : undefined,
+        body: fd,
+      })
+      const out = (await res.json()) as {
+        error?: string
+        extracted?: {
+          merchant?: string
+          amount?: number | null
+          issue_date?: string | null
+          due_date?: string | null
+          description?: string
+          suggested_category?: string
+        }
+      }
+      if (!res.ok) throw new Error(out.error || 'Falha ao ler comprovante')
+      const e = out.extracted ?? {}
+      if (e.amount && e.amount > 0) {
+        setValorMask(maskBRLInput(String(Math.round(e.amount * 100))))
+      }
+      setForm((prev) => ({
+        ...prev,
+        descricao: prev.descricao || e.merchant || e.description || prev.descricao,
+        data_despesa: e.issue_date || prev.data_despesa,
+        data_vencimento: e.due_date || prev.data_vencimento,
+      }))
+      const sug = e.suggested_category || sugerirCategoria(`${e.merchant || ''} ${e.description || ''}`)
+      if (sug) setSugestaoCategoria(sug)
+      toast.success('Dados extraídos. Confira e confirme.')
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : 'Falha no OCR')
+    } finally {
+      setOcrLoading(false)
+    }
   }
 
   return (
@@ -273,7 +312,7 @@ export default function NovaDespesaModal({
             />
             <button
               type="button"
-              onClick={() => setForm((f) => ({ ...f, categoria: sugerirCategoria(f.descricao, categorias) }))}
+              onClick={() => setForm((f) => ({ ...f, categoria: sugerirCategoria(f.descricao) }))}
               className="mt-2 text-xs font-medium text-blue-700 hover:underline"
             >
               Sugerir categoria automática pela descrição
@@ -456,6 +495,36 @@ export default function NovaDespesaModal({
               onChange={(e) => setFile(e.target.files?.[0] ?? null)}
               className="mt-1 w-full text-sm text-slate-600"
             />
+            <button
+              type="button"
+              onClick={() => void preencherComOcr()}
+              disabled={ocrLoading || !file}
+              className="mt-2 rounded-lg border border-blue-200 bg-blue-50 px-3 py-1.5 text-xs font-medium text-blue-700 hover:bg-blue-100 disabled:opacity-50"
+            >
+              {ocrLoading ? 'Lendo arquivo…' : 'Ler comprovante/extrato com IA'}
+            </button>
+            {sugestaoCategoria && (
+              <div className="mt-2 rounded-lg border border-emerald-200 bg-emerald-50 p-2 text-xs text-emerald-800">
+                IA sugeriu categoria: <strong>{sugestaoCategoria}</strong>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setForm((f) => ({ ...f, categoria: sugestaoCategoria }))
+                    setSugestaoCategoria(null)
+                  }}
+                  className="ml-2 font-semibold underline"
+                >
+                  Aplicar sugestão
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSugestaoCategoria(null)}
+                  className="ml-2 underline"
+                >
+                  Manter atual
+                </button>
+              </div>
+            )}
             {edit?.comprovante_url && !file && (
               <p className="mt-1 text-xs text-slate-500">
                 Há um comprovante anexado — abra pela lista (ações → Ver comprovante).
