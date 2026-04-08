@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 
@@ -9,6 +9,8 @@ type Props = { empresaId: string }
 export default function CashflowMiniChart({ empresaId }: Props) {
   const [loading, setLoading] = useState(true)
   const [data, setData] = useState<{ data: string; saldo: number }[]>([])
+  const [ready, setReady] = useState(false)
+  const containerRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
     let cancelled = false
@@ -43,6 +45,16 @@ export default function CashflowMiniChart({ empresaId }: Props) {
 
   const chartData = useMemo(() => data, [data])
 
+  useEffect(() => {
+    const el = containerRef.current
+    if (!el) return
+    const sync = () => setReady(el.clientWidth > 0 && el.clientHeight > 0)
+    sync()
+    const ro = new ResizeObserver(sync)
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [])
+
   if (loading) {
     return (
       <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm h-[320px] animate-pulse">
@@ -56,11 +68,13 @@ export default function CashflowMiniChart({ empresaId }: Props) {
     <div className="min-w-0 bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
       <h2 className="font-semibold text-slate-800 text-sm mb-1">Fluxo de caixa (30 dias)</h2>
       <p className="text-xs text-slate-500 mb-4">Saldo acumulado no período</p>
-      <div className="h-[260px] w-full min-w-0">
+      <div ref={containerRef} className="h-[260px] w-full min-w-0">
         {chartData.length === 0 ? (
           <p className="text-sm text-slate-500 py-12 text-center">Sem transações nos últimos 30 dias.</p>
+        ) : !ready ? (
+          <div className="h-full w-full animate-pulse rounded-xl bg-slate-100" />
         ) : (
-          <ResponsiveContainer width="99%" height="100%" minWidth={280}>
+          <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={chartData}>
               <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
               <XAxis dataKey="data" tick={{ fontSize: 10, fill: '#64748b' }} />

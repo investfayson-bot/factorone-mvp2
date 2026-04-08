@@ -5,6 +5,16 @@ import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
 import { formatBRL, maskBRLInput, parseBRLInput } from '@/lib/currency-brl'
 
+const SUGESTOES_CATEGORIA: Array<{ matcher: RegExp; categoria: string }> = [
+  { matcher: /(uber|99|cabify|taxi|combust|posto|ipiranga|shell)/i, categoria: 'Transporte' },
+  { matcher: /(ifood|restaurante|lanch|caf[eé]|padaria)/i, categoria: 'Alimentação' },
+  { matcher: /(hotel|airbnb|pousada)/i, categoria: 'Hospedagem' },
+  { matcher: /(google|meta|facebook|instagram|ads|tiktok)/i, categoria: 'Marketing' },
+  { matcher: /(netflix|spotify|apple|google cloud|aws|azure|openai|notion|slack|figma|github)/i, categoria: 'Tecnologia/Software' },
+  { matcher: /(imposto|tributo|darf|simples|taxa|iof)/i, categoria: 'Impostos/Taxas' },
+  { matcher: /(aluguel|condom[ií]nio|energia|internet|agua)/i, categoria: 'Aluguel/Infraestrutura' },
+]
+
 export type DespesaEdit = {
   id: string
   descricao: string
@@ -81,6 +91,7 @@ export default function NovaDespesaModal({
   const [novoCentro, setNovoCentro] = useState('')
   const [loading, setLoading] = useState(false)
   const [file, setFile] = useState<File | null>(null)
+  const [centroDisponivel, setCentroDisponivel] = useState(true)
 
   const reset = useCallback(() => {
     setValorMask('')
@@ -102,6 +113,7 @@ export default function NovaDespesaModal({
 
   useEffect(() => {
     if (!open) return
+    setCentroDisponivel(true)
     if (edit) {
       setForm({
         descricao: edit.descricao,
@@ -135,9 +147,11 @@ export default function NovaDespesaModal({
       .select('id, nome')
       .single()
     if (error) {
-      toast.error(error.message)
+      setCentroDisponivel(false)
+      toast.error('Centro de custo indisponível. Aplique a migration de despesas.')
       return
     }
+    setCentroDisponivel(true)
     toast.success('Centro criado')
     setForm((f) => ({ ...f, centro_custo_id: data.id }))
     setNovoCentro('')
@@ -176,14 +190,15 @@ export default function NovaDespesaModal({
         return
       }
 
+      const categoriaFinal = form.categoria || sugerirCategoria(form.descricao, categorias)
       const respNome =
         membros.find((m) => m.id === (form.responsavel_id || userId))?.nome || userName
       const payload = {
         empresa_id: empresaId,
         descricao: form.descricao.trim(),
         valor,
-        categoria: form.categoria,
-        centro_custo_id: form.centro_custo_id || null,
+        categoria: categoriaFinal,
+        centro_custo_id: centroDisponivel ? form.centro_custo_id || null : null,
         responsavel_id: form.responsavel_id || userId,
         responsavel_nome: respNome,
         tipo_pagamento: form.tipo_pagamento || null,
@@ -224,6 +239,14 @@ export default function NovaDespesaModal({
 
   if (!open) return null
 
+  function sugerirCategoria(descricao: string, cats: string[]): string {
+    const desc = descricao.trim()
+    if (!desc) return cats[0] ?? 'Outros'
+    const hit = SUGESTOES_CATEGORIA.find((s) => s.matcher.test(desc))
+    if (!hit) return cats[0] ?? 'Outros'
+    return cats.find((c) => c.toLowerCase() === hit.categoria.toLowerCase()) ?? hit.categoria
+  }
+
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 p-4"
@@ -239,17 +262,28 @@ export default function NovaDespesaModal({
 
         <div className="space-y-3">
           <div>
-            <label className="text-xs font-medium text-slate-600">Descrição *</label>
+            <label htmlFor="despesa-descricao" className="text-xs font-medium text-slate-600">Descrição *</label>
             <input
+              id="despesa-descricao"
+              name="descricao"
               value={form.descricao}
               onChange={(e) => setForm({ ...form, descricao: e.target.value })}
               className="mt-1 w-full rounded-xl border border-slate-200 px-4 py-2.5 text-slate-800 outline-none ring-blue-100 focus:border-blue-400 focus:ring-2"
               placeholder="Ex.: Assinatura software"
             />
+            <button
+              type="button"
+              onClick={() => setForm((f) => ({ ...f, categoria: sugerirCategoria(f.descricao, categorias) }))}
+              className="mt-2 text-xs font-medium text-blue-700 hover:underline"
+            >
+              Sugerir categoria automática pela descrição
+            </button>
           </div>
           <div>
-            <label className="text-xs font-medium text-slate-600">Valor *</label>
+            <label htmlFor="despesa-valor" className="text-xs font-medium text-slate-600">Valor *</label>
             <input
+              id="despesa-valor"
+              name="valor"
               value={valorMask}
               onChange={(e) => setValorMask(maskBRLInput(e.target.value))}
               inputMode="decimal"
@@ -262,8 +296,10 @@ export default function NovaDespesaModal({
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="text-xs font-medium text-slate-600">Categoria *</label>
+              <label htmlFor="despesa-categoria" className="text-xs font-medium text-slate-600">Categoria *</label>
               <select
+                id="despesa-categoria"
+                name="categoria"
                 value={form.categoria}
                 onChange={(e) => setForm({ ...form, categoria: e.target.value })}
                 className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2.5 text-slate-800 outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
@@ -276,8 +312,11 @@ export default function NovaDespesaModal({
               </select>
             </div>
             <div>
-              <label className="text-xs font-medium text-slate-600">Centro de custo</label>
+              <label htmlFor="despesa-centro" className="text-xs font-medium text-slate-600">Centro de custo</label>
               <select
+                id="despesa-centro"
+                name="centro_custo_id"
+                disabled={!centroDisponivel}
                 value={form.centro_custo_id}
                 onChange={(e) => setForm({ ...form, centro_custo_id: e.target.value })}
                 className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2.5 text-slate-800 outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
@@ -289,12 +328,18 @@ export default function NovaDespesaModal({
                   </option>
                 ))}
               </select>
+              {!centroDisponivel && (
+                <p className="mt-1 text-xs text-amber-700">Centro de custo indisponível até aplicar migration.</p>
+              )}
             </div>
           </div>
           <div className="flex flex-wrap items-end gap-2 rounded-xl border border-dashed border-slate-200 bg-slate-50/80 p-3">
             <div className="min-w-[140px] flex-1">
-              <label className="text-xs font-medium text-slate-600">Novo centro (rápido)</label>
+              <label htmlFor="despesa-novo-centro" className="text-xs font-medium text-slate-600">Novo centro (rápido)</label>
               <input
+                id="despesa-novo-centro"
+                name="novo_centro"
+                disabled={!centroDisponivel}
                 value={novoCentro}
                 onChange={(e) => setNovoCentro(e.target.value)}
                 placeholder="Nome"
@@ -303,15 +348,18 @@ export default function NovaDespesaModal({
             </div>
             <button
               type="button"
+              disabled={!centroDisponivel}
               onClick={() => void criarCentroRapido()}
-              className="rounded-lg bg-slate-700 px-3 py-2 text-sm font-medium text-white hover:bg-slate-800"
+              className="rounded-lg bg-slate-700 px-3 py-2 text-sm font-medium text-white hover:bg-slate-800 disabled:opacity-50"
             >
               + Criar
             </button>
           </div>
           <div>
-            <label className="text-xs font-medium text-slate-600">Responsável</label>
+            <label htmlFor="despesa-responsavel" className="text-xs font-medium text-slate-600">Responsável</label>
             <select
+              id="despesa-responsavel"
+              name="responsavel_id"
               value={form.responsavel_id || userId}
               onChange={(e) => setForm({ ...form, responsavel_id: e.target.value })}
               className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2.5 text-slate-800 outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
@@ -324,8 +372,10 @@ export default function NovaDespesaModal({
             </select>
           </div>
           <div>
-            <label className="text-xs font-medium text-slate-600">Tipo de pagamento</label>
+            <label htmlFor="despesa-tipo-pagamento" className="text-xs font-medium text-slate-600">Tipo de pagamento</label>
             <select
+              id="despesa-tipo-pagamento"
+              name="tipo_pagamento"
               value={form.tipo_pagamento}
               onChange={(e) => setForm({ ...form, tipo_pagamento: e.target.value })}
               className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2.5 text-slate-800 outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
@@ -339,8 +389,10 @@ export default function NovaDespesaModal({
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="text-xs font-medium text-slate-600">Data da despesa</label>
+              <label htmlFor="despesa-data" className="text-xs font-medium text-slate-600">Data da despesa</label>
               <input
+                id="despesa-data"
+                name="data_despesa"
                 type="date"
                 value={form.data_despesa}
                 onChange={(e) => setForm({ ...form, data_despesa: e.target.value })}
@@ -348,8 +400,10 @@ export default function NovaDespesaModal({
               />
             </div>
             <div>
-              <label className="text-xs font-medium text-slate-600">Vencimento</label>
+              <label htmlFor="despesa-vencimento" className="text-xs font-medium text-slate-600">Vencimento</label>
               <input
+                id="despesa-vencimento"
+                name="data_vencimento"
                 type="date"
                 value={form.data_vencimento}
                 onChange={(e) => setForm({ ...form, data_vencimento: e.target.value })}
@@ -358,8 +412,10 @@ export default function NovaDespesaModal({
             </div>
           </div>
           <div>
-            <label className="text-xs font-medium text-slate-600">Observações</label>
+            <label htmlFor="despesa-observacao" className="text-xs font-medium text-slate-600">Observações</label>
             <textarea
+              id="despesa-observacao"
+              name="observacao"
               value={form.observacao}
               onChange={(e) => setForm({ ...form, observacao: e.target.value })}
               rows={2}
@@ -391,8 +447,10 @@ export default function NovaDespesaModal({
             )}
           </div>
           <div>
-            <label className="text-xs font-medium text-slate-600">Comprovante</label>
+            <label htmlFor="despesa-comprovante" className="text-xs font-medium text-slate-600">Comprovante</label>
             <input
+              id="despesa-comprovante"
+              name="comprovante"
               type="file"
               accept="image/*,.pdf"
               onChange={(e) => setFile(e.target.files?.[0] ?? null)}

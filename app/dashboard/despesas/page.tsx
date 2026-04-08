@@ -59,6 +59,21 @@ const STATUS_LABEL: Record<string, string> = {
   cancelado: 'Cancelado',
 }
 
+const CATEGORIAS_PADRAO = [
+  'Alimentação',
+  'Transporte',
+  'Hospedagem',
+  'Tecnologia/Software',
+  'Marketing',
+  'Fornecedores',
+  'Folha de Pagamento',
+  'Impostos/Taxas',
+  'Aluguel/Infraestrutura',
+  'Consultoria',
+  'Material de Escritório',
+  'Outros',
+]
+
 function statusBadge(status: string) {
   const base = 'inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium'
   switch (status) {
@@ -142,10 +157,14 @@ export default function DespesasPage() {
     const user = auth.user
     if (!user) return
     setUserId(user.id)
-    const { data: u } = await supabase.from('usuarios').select('empresa_id, nome').eq('id', user.id).single()
-    if (!u?.empresa_id) return
-    setEmpresaId(u.empresa_id)
-    setUserName(u.nome ?? user.email ?? null)
+    const { data: u } = await supabase
+      .from('usuarios')
+      .select('empresa_id, nome')
+      .eq('id', user.id)
+      .maybeSingle()
+    const empresa = u?.empresa_id ?? user.id
+    setEmpresaId(empresa)
+    setUserName(u?.nome ?? user.email ?? null)
 
     const inicio = `${ano}-${String(mes).padStart(2, '0')}-01`
     const fim = lastDayOfMonth(ano, mes)
@@ -154,21 +173,31 @@ export default function DespesasPage() {
       supabase
         .from('despesas')
         .select('*')
-        .eq('empresa_id', u.empresa_id)
-        .gte('data_despesa', inicio)
-        .lte('data_despesa', fim)
-        .order('data_despesa', { ascending: false }),
-      supabase.from('centros_custo').select('id, nome').eq('empresa_id', u.empresa_id).eq('ativo', true),
-      supabase.from('categorias_despesa').select('nome').eq('empresa_id', u.empresa_id).order('nome'),
-      supabase.from('usuarios').select('id, nome').eq('empresa_id', u.empresa_id),
+        .eq('empresa_id', empresa)
+        .gte('data', inicio)
+        .lte('data', fim)
+        .order('data', { ascending: false }),
+      supabase.from('centros_custo').select('id, nome').eq('empresa_id', empresa).eq('ativo', true),
+      supabase.from('categorias_despesa').select('nome').eq('empresa_id', empresa).order('nome'),
+      supabase.from('usuarios').select('id, nome').eq('empresa_id', empresa),
     ])
 
     if (dRes.error) toast.error(dRes.error.message)
     setRows((dRes.data ?? []) as DespesaRow[])
-    setCentros((cRes.data ?? []) as { id: string; nome: string }[])
-    const nomes = (catRes.data ?? []).map((x: { nome: string }) => x.nome)
-    setCategorias(nomes.length ? nomes : ['Outros'])
-    setMembros((teamRes.data ?? []) as { id: string; nome: string | null }[])
+    if (cRes.error) {
+      setCentros([])
+    } else {
+      setCentros((cRes.data ?? []) as { id: string; nome: string }[])
+    }
+    if (catRes.error) {
+      const fromRows = Array.from(new Set((dRes.data ?? []).map((r: { categoria?: string }) => r.categoria).filter(Boolean)))
+      setCategorias(fromRows.length ? fromRows : CATEGORIAS_PADRAO)
+    } else {
+      const nomes = (catRes.data ?? []).map((x: { nome: string }) => x.nome)
+      setCategorias(nomes.length ? nomes : CATEGORIAS_PADRAO)
+    }
+    const membrosBase = (teamRes.data ?? []) as { id: string; nome: string | null }[]
+    setMembros(membrosBase.length ? membrosBase : [{ id: user.id, nome: u?.nome ?? user.email ?? 'Usuário' }])
     setLoading(false)
   }, [ano, mes])
 

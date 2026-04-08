@@ -49,22 +49,6 @@ export default function UpcomingPayments({ empresaId }: Props) {
         const a = today.toISOString().slice(0, 10)
         const b = end.toISOString().slice(0, 10)
 
-        const primary = await supabase
-          .from('transacoes')
-          .select('id,descricao,valor,due_date,tipo')
-          .eq('empresa_id', empresaId)
-          .eq('status', 'pendente')
-          .not('due_date', 'is', null)
-          .gte('due_date', a)
-          .lte('due_date', b)
-          .order('due_date', { ascending: true })
-
-        if (!primary.error) {
-          if (!cancelled) setRows((primary.data as Row[]) || [])
-          return
-        }
-
-        // Fallback para bases legadas sem due_date/status pendente.
         const fallback = await supabase
           .from('transacoes')
           .select('id,descricao,valor,data,tipo')
@@ -125,7 +109,7 @@ export default function UpcomingPayments({ empresaId }: Props) {
           </div>
           <div>
             <h2 className="font-semibold text-slate-800 text-sm">Próximos vencimentos</h2>
-            <p className="text-xs text-slate-500">7 dias • transações com vencimento</p>
+            <p className="text-xs text-slate-500">7 dias • previsão por data da transação</p>
           </div>
         </div>
         <Link
@@ -138,8 +122,7 @@ export default function UpcomingPayments({ empresaId }: Props) {
 
       {rows.length === 0 ? (
         <p className="text-sm text-slate-500 py-6 text-center">
-          Nenhum vencimento com <code className="text-xs bg-slate-100 px-1 rounded">due_date</code> nos próximos 7 dias.
-          Preencha a data de vencimento nas transações pendentes.
+          Nenhuma transação prevista para os próximos 7 dias.
         </p>
       ) : (
         <ul className="space-y-2 flex-1 overflow-auto max-h-[280px]">

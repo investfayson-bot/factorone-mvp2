@@ -5,7 +5,7 @@ import { Toaster } from 'react-hot-toast'
 export const metadata: Metadata = {
   title: 'FactorOne — Finance OS',
   description: 'Sistema Operacional Financeiro com IA para empresas modernas',
-  icons: { icon: '/favicon.ico' },
+  icons: { icon: '/favicon.svg' },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
