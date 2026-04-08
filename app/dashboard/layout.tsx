@@ -9,7 +9,7 @@ import Link from 'next/link'
 const menu = [
   { href: '/dashboard', icon: LayoutDashboard, label: 'Dashboard', group: 'principal' },
   { href: '/dashboard/cashflow', icon: TrendingUp, label: 'Fluxo de Caixa', group: 'financeiro' },
-  { href: '/dashboard/nota-fiscal', icon: Receipt, label: 'Nota Fiscal', group: 'financeiro' },
+  { href: '/dashboard/notas', icon: Receipt, label: 'Notas fiscais', group: 'financeiro' },
   { href: '/dashboard/relatorios', icon: BarChart3, label: 'DRE', group: 'financeiro' },
   { href: '/dashboard/despesas', icon: FileText, label: 'Despesas', group: 'financeiro' },
   { href: '/dashboard/conta-pj', icon: Building2, label: 'Conta PJ', group: 'servicos' },

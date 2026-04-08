@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation'
 
-export default function NotaFiscalLegacyPage() {
+export default function NotasAliasPage() {
   redirect('/dashboard/notas')
 }
