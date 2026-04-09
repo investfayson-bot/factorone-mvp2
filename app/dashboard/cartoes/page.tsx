@@ -1,7 +1,11 @@
 'use client'
 
+import { useMemo, useState } from 'react'
 import { CreditCard, AlertTriangle, CheckCircle2, Sparkles } from 'lucide-react'
 import { fmtBRLCompact } from '@/lib/dre-calculations'
+import { supabase } from '@/lib/supabase'
+import LoadingButton from '@/components/ui/LoadingButton'
+import { useToast } from '@/components/ui/useToast'
 
 export const dynamic = 'force-dynamic'
 
@@ -12,7 +16,15 @@ const RESUMO = {
   cashbackMes: 1_560,
 }
 
-const CARTOES = [
+type CartaoItem = {
+  nome: string
+  ultimos: string
+  limite: number
+  usado: number
+  alerta: boolean
+}
+
+const CARTOES_INICIAIS: CartaoItem[] = [
   {
     nome: 'Cartão Marketing',
     ultimos: '3302',
@@ -34,12 +46,62 @@ const CARTOES = [
     usado: 29_000,
     alerta: false,
   },
-] as const
+]
 
 export default function CartoesPage() {
-  const disp = RESUMO.limiteTotal - RESUMO.utilizado
-  const pctUso = (RESUMO.utilizado / RESUMO.limiteTotal) * 100
-  const pctDisp = (disp / RESUMO.limiteTotal) * 100
+  const toast = useToast()
+  const [cartoes, setCartoes] = useState(CARTOES_INICIAIS.map((c) => ({ ...c, open: false })))
+  const [loadingSolic, setLoadingSolic] = useState(false)
+  const [form, setForm] = useState({ nome: '', setor: '', limite: '' })
+
+  const utilizadoTotal = useMemo(() => cartoes.reduce((s, c) => s + c.usado, 0), [cartoes])
+  const limiteTotal = useMemo(() => Math.max(RESUMO.limiteTotal, cartoes.reduce((s, c) => s + c.limite, 0)), [cartoes])
+  const disp = limiteTotal - utilizadoTotal
+  const pctUso = (utilizadoTotal / limiteTotal) * 100
+  const pctDisp = (disp / limiteTotal) * 100
+
+  function toggleOpen(nome: string) {
+    setCartoes((prev) => prev.map((c) => (c.nome === nome ? { ...c, open: !c.open } : c)))
+  }
+
+  async function ajustarLimite(nome: string, novoLimite: number) {
+    if (!Number.isFinite(novoLimite) || novoLimite <= 0) {
+      toast.warning('Informe um limite válido')
+      return
+    }
+    setCartoes((prev) => prev.map((c) => (c.nome === nome ? { ...c, limite: novoLimite } : c)))
+    toast.success('Limite ajustado (simulação local)')
+  }
+
+  async function solicitarCartao() {
+    const limite = Number(form.limite.replace(/\./g, '').replace(',', '.'))
+    if (!form.nome.trim()) return toast.warning('Informe o nome do cartão')
+    if (!Number.isFinite(limite) || limite <= 0) return toast.warning('Informe um limite válido')
+    setLoadingSolic(true)
+    try {
+      const { data: sess } = await supabase.auth.getSession()
+      const res = await fetch('/api/cartoes/solicitar', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(sess.session?.access_token ? { Authorization: `Bearer ${sess.session?.access_token}` } : {}),
+        },
+        body: JSON.stringify({
+          nome_cartao: form.nome,
+          setor: form.setor,
+          limite_sugerido: limite,
+        }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data?.error || 'Falha ao solicitar')
+      toast.success('Solicitação enviada com sucesso')
+      setForm({ nome: '', setor: '', limite: '' })
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : 'Erro ao solicitar cartão')
+    } finally {
+      setLoadingSolic(false)
+    }
+  }
 
   return (
     <div className="min-h-full bg-[#F9FAFB] p-6 md:p-8">
@@ -48,7 +110,7 @@ export default function CartoesPage() {
           <div>
             <p className="text-xs font-medium uppercase tracking-wider text-gray-500">Powered by Swap Corpway</p>
             <h1 className="text-2xl font-bold tracking-tight text-gray-900">Cartões corporativos</h1>
-            <p className="mt-1 text-sm text-gray-600">Limites, uso por cartão virtual e cashback — integração em produção em breve.</p>
+            <p className="mt-1 text-sm text-gray-600">Limites, uso por cartão virtual e cashback.</p>
           </div>
           <a
             href="mailto:contato@factorone.com.br?subject=Cartões%20FactorOne"
@@ -59,10 +121,10 @@ export default function CartoesPage() {
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <Kpi label="Limite total" value={fmtBRLCompact(RESUMO.limiteTotal)} sub="faturamento" accent="border-t-emerald-500" />
+          <Kpi label="Limite total" value={fmtBRLCompact(limiteTotal)} sub="faturamento" accent="border-t-emerald-500" />
           <Kpi
             label="Utilizado"
-            value={fmtBRLCompact(RESUMO.utilizado)}
+            value={fmtBRLCompact(utilizadoTotal)}
             sub={`${pctUso.toFixed(1)}%`}
             accent="border-t-amber-500"
           />
@@ -78,12 +140,13 @@ export default function CartoesPage() {
         <div className="space-y-4">
           <h2 className="text-sm font-semibold text-gray-900">Cartões por setor</h2>
           <div className="grid gap-4 md:grid-cols-1 lg:grid-cols-3">
-            {CARTOES.map((c) => {
+            {cartoes.map((c) => {
               const pct = (c.usado / c.limite) * 100
               return (
                 <div
                   key={c.nome}
-                  className="rounded-2xl border border-gray-200/90 bg-white p-5 shadow-sm transition hover:border-emerald-200/80 hover:shadow-md"
+                  className="rounded-2xl border border-gray-200/90 bg-white p-5 shadow-sm transition hover:border-emerald-200/80 hover:shadow-md cursor-pointer"
+                  onClick={() => toggleOpen(c.nome)}
                 >
                   <div className="mb-3 flex items-start justify-between gap-2">
                     <div className="flex items-center gap-2">
@@ -116,18 +179,64 @@ export default function CartoesPage() {
                       style={{ width: `${Math.min(100, pct)}%` }}
                     />
                   </div>
+                  {c.open && (
+                    <div className="mt-4 border-t border-gray-100 pt-3">
+                      <label className="text-xs text-gray-500">Ajustar limite</label>
+                      <div className="mt-1 flex items-center gap-2">
+                        <input
+                          defaultValue={String(c.limite)}
+                          type="number"
+                          min={1}
+                          className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm"
+                          onClick={(e) => e.stopPropagation()}
+                          onBlur={(e) => ajustarLimite(c.nome, Number(e.target.value))}
+                        />
+                        <span className="text-xs text-gray-500">BRL</span>
+                      </div>
+                    </div>
+                  )}
                 </div>
               )
             })}
           </div>
         </div>
 
-        <div className="rounded-2xl border border-dashed border-gray-300 bg-white p-6 text-center">
-          <Sparkles className="mx-auto mb-2 h-8 w-8 text-emerald-600" />
-          <p className="text-sm font-medium text-gray-900">Emissão e gestão via API Swap</p>
-          <p className="mx-auto mt-1 max-w-lg text-sm text-gray-600">
-            Os valores acima são ilustrativos. Com a integração ativa, limites e extratos virão em tempo real da Swap Corpway.
-          </p>
+        <div className="rounded-2xl border border-dashed border-gray-300 bg-white p-6">
+          <div className="mb-4 text-center">
+            <Sparkles className="mx-auto mb-2 h-8 w-8 text-emerald-600" />
+            <p className="text-sm font-medium text-gray-900">Solicitar novo cartão</p>
+            <p className="mx-auto mt-1 max-w-lg text-sm text-gray-600">Formulário funcional com registro no banco.</p>
+          </div>
+          <div className="grid gap-3 md:grid-cols-3">
+            <input
+              value={form.nome}
+              onChange={(e) => setForm((f) => ({ ...f, nome: e.target.value }))}
+              placeholder="Nome do cartão"
+              className="rounded-xl border border-gray-200 px-3 py-2.5 text-sm"
+            />
+            <input
+              value={form.setor}
+              onChange={(e) => setForm((f) => ({ ...f, setor: e.target.value }))}
+              placeholder="Setor (ex: Marketing)"
+              className="rounded-xl border border-gray-200 px-3 py-2.5 text-sm"
+            />
+            <input
+              value={form.limite}
+              onChange={(e) => setForm((f) => ({ ...f, limite: e.target.value }))}
+              placeholder="Limite sugerido"
+              className="rounded-xl border border-gray-200 px-3 py-2.5 text-sm"
+            />
+          </div>
+          <div className="mt-4 flex justify-end">
+            <LoadingButton
+              loading={loadingSolic}
+              loadingText="Enviando..."
+              onClick={solicitarCartao}
+              className="rounded-xl bg-[var(--fo-teal)] px-4 py-2.5 text-sm font-semibold text-white"
+            >
+              Solicitar cartão
+            </LoadingButton>
+          </div>
         </div>
       </div>
     </div>

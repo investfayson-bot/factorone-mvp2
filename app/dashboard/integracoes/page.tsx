@@ -1,6 +1,7 @@
 'use client'
 
 import type { ReactNode } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
 import {
   CheckCircle2,
@@ -14,10 +15,14 @@ import {
   UserCog,
   ArrowRight,
 } from 'lucide-react'
+import { supabase } from '@/lib/supabase'
+import { useToast } from '@/components/ui/useToast'
+import LoadingButton from '@/components/ui/LoadingButton'
 
 export const dynamic = 'force-dynamic'
 
 type StatusKind = 'sync' | 'open_finance' | 'connected' | 'crm' | 'transmitting'
+type RuntimeStatus = 'aguardando_configuracao' | 'configurado' | 'sincronizando' | 'sincronizado' | 'erro'
 
 const sistemas: {
   nome: string
@@ -34,6 +39,14 @@ const sistemas: {
   { nome: 'SEFAZ / NF-e', status: 'transmitting', label: 'Transmitindo' },
   { nome: 'Oracle NetSuite', status: 'sync', label: 'Sincronizado' },
 ]
+
+type SistemaView = {
+  nome: string
+  status: StatusKind
+  label: string
+  runtimeStatus: RuntimeStatus
+  ultimoSyncEm?: string | null
+}
 
 function badgeClass(kind: StatusKind) {
   switch (kind) {
@@ -53,7 +66,98 @@ function badgeClass(kind: StatusKind) {
 }
 
 export default function IntegracoesPage() {
-  const conectados = sistemas.length
+  const toast = useToast()
+  const [loadingSistema, setLoadingSistema] = useState<string | null>(null)
+  const [runtime, setRuntime] = useState<Record<string, { status: RuntimeStatus; ultimoSyncEm?: string | null }>>({})
+
+  useEffect(() => {
+    let cancelled = false
+    async function loadRuntime() {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
+      if (!user) return
+      const { data: u } = await supabase.from('usuarios').select('empresa_id').eq('id', user.id).maybeSingle()
+      const empresaId = (u?.empresa_id as string) || user.id
+      const { data } = await supabase
+        .from('integracoes_config')
+        .select('sistema,status,ultimo_sync_em')
+        .eq('empresa_id', empresaId)
+      if (cancelled) return
+      const map: Record<string, { status: RuntimeStatus; ultimoSyncEm?: string | null }> = {}
+      for (const d of data || []) {
+        map[String(d.sistema)] = {
+          status: (d.status as RuntimeStatus) || 'aguardando_configuracao',
+          ultimoSyncEm: (d.ultimo_sync_em as string | null) || null,
+        }
+      }
+      setRuntime(map)
+    }
+    loadRuntime()
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
+  const sistemasUi: SistemaView[] = useMemo(
+    () =>
+      sistemas.map((s) => ({
+        ...s,
+        runtimeStatus: runtime[s.nome]?.status || 'aguardando_configuracao',
+        ultimoSyncEm: runtime[s.nome]?.ultimoSyncEm || null,
+      })),
+    [runtime]
+  )
+
+  const conectados = sistemasUi.filter((s) => s.runtimeStatus === 'sincronizado' || s.runtimeStatus === 'configurado').length
+
+  async function configurar(sistema: string) {
+    const apiKey = window.prompt(`Informe a API key para ${sistema}`)
+    if (!apiKey) return
+    setLoadingSistema(`cfg:${sistema}`)
+    try {
+      const { data: sess } = await supabase.auth.getSession()
+      const res = await fetch('/api/integracoes/configurar', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(sess.session?.access_token ? { Authorization: `Bearer ${sess.session?.access_token}` } : {}),
+        },
+        body: JSON.stringify({ sistema, api_key: apiKey }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data?.error || 'Falha ao configurar')
+      setRuntime((prev) => ({ ...prev, [sistema]: { status: 'configurado', ultimoSyncEm: prev[sistema]?.ultimoSyncEm || null } }))
+      toast.success(`${sistema} configurado`)
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : 'Erro ao configurar')
+    } finally {
+      setLoadingSistema(null)
+    }
+  }
+
+  async function sincronizar(sistema: string) {
+    setLoadingSistema(`sync:${sistema}`)
+    try {
+      const { data: sess } = await supabase.auth.getSession()
+      const res = await fetch('/api/integracoes/sincronizar', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(sess.session?.access_token ? { Authorization: `Bearer ${sess.session?.access_token}` } : {}),
+        },
+        body: JSON.stringify({ sistema }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data?.error || 'Falha ao sincronizar')
+      setRuntime((prev) => ({ ...prev, [sistema]: { status: 'sincronizado', ultimoSyncEm: data.synced_at } }))
+      toast.success(`${sistema} sincronizado`)
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : 'Erro ao sincronizar')
+    } finally {
+      setLoadingSistema(null)
+    }
+  }
 
   return (
     <div className="min-h-screen bg-[#F9FAFB]">
@@ -92,7 +196,15 @@ export default function IntegracoesPage() {
                 <Clock className="h-3.5 w-3.5 text-gray-400" />
                 Última Sync
               </div>
-              <p className="mt-2 text-lg font-semibold text-gray-900">2 min atrás</p>
+              <p className="mt-2 text-lg font-semibold text-gray-900">
+                {(() => {
+                  const times = sistemasUi.map((s) => s.ultimoSyncEm).filter(Boolean) as string[]
+                  if (!times.length) return '—'
+                  const latest = new Date(times.sort().slice(-1)[0])
+                  const diffMin = Math.max(1, Math.round((Date.now() - latest.getTime()) / 60000))
+                  return `${diffMin} min atrás`
+                })()}
+              </p>
               <p className="mt-1 text-xs text-gray-500">atualização automática</p>
             </div>
           </div>
@@ -102,17 +214,43 @@ export default function IntegracoesPage() {
         <section>
           <h2 className="mb-4 text-sm font-semibold text-gray-800">Conexões</h2>
           <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
-            {sistemas.map((s) => (
+            {sistemasUi.map((s) => (
               <div
                 key={s.nome}
-                className="flex items-center justify-between gap-3 rounded-2xl border border-gray-200/90 bg-white px-4 py-3.5 shadow-sm transition hover:border-emerald-200/80 hover:shadow-md"
+                className="rounded-2xl border border-gray-200/90 bg-white px-4 py-3.5 shadow-sm transition hover:border-emerald-200/80 hover:shadow-md"
               >
-                <span className="min-w-0 font-medium text-gray-900">{s.nome}</span>
-                <span
-                  className={`shrink-0 rounded-lg border px-2.5 py-1 text-[11px] font-semibold ${badgeClass(s.status)}`}
-                >
-                  {s.label}
-                </span>
+                <div className="mb-2 flex items-center justify-between gap-3">
+                  <span className="min-w-0 font-medium text-gray-900">{s.nome}</span>
+                  <span
+                    className={`shrink-0 rounded-lg border px-2.5 py-1 text-[11px] font-semibold ${badgeClass(s.status)}`}
+                  >
+                    {s.runtimeStatus === 'aguardando_configuracao'
+                      ? 'Aguardando configuração'
+                      : s.runtimeStatus === 'sincronizando'
+                        ? 'Sincronizando'
+                        : s.runtimeStatus === 'sincronizado'
+                          ? 'Sincronizado'
+                          : s.label}
+                  </span>
+                </div>
+                <div className="flex items-center justify-end gap-2">
+                  <LoadingButton
+                    loading={loadingSistema === `cfg:${s.nome}`}
+                    loadingText="Salvando..."
+                    onClick={() => configurar(s.nome)}
+                    className="rounded-lg border border-[var(--fo-teal)] px-3 py-1.5 text-xs font-semibold text-[var(--fo-teal)]"
+                  >
+                    Configurar
+                  </LoadingButton>
+                  <LoadingButton
+                    loading={loadingSistema === `sync:${s.nome}`}
+                    loadingText="Sync..."
+                    onClick={() => sincronizar(s.nome)}
+                    className="rounded-lg bg-[var(--fo-teal)] px-3 py-1.5 text-xs font-semibold text-white"
+                  >
+                    Sincronizar agora
+                  </LoadingButton>
+                </div>
               </div>
             ))}
           </div>

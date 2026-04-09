@@ -18,6 +18,7 @@ import {
   Settings,
   LogOut,
   PieChart,
+  Calculator,
 } from 'lucide-react'
 import Link from 'next/link'
 
@@ -37,6 +38,7 @@ const menu: Array<{
   { href: '/dashboard/relatorios', icon: BarChart3, label: 'DRE Auto' },
   { href: '/dashboard/aicfo', icon: Zap, label: 'CFO IA' },
   { href: '/dashboard/notas', icon: Receipt, label: 'Fiscal' },
+  { href: '/contabilidade', icon: Calculator, label: 'Contabilidade' },
   { href: '/dashboard/orcamento', icon: PieChart, label: 'Orçamento' },
   { href: '/dashboard/patrimonio', icon: Building2, label: 'Patrimônio' },
   { href: '/dashboard/integracoes', icon: Settings, label: 'Integrações' },
@@ -66,8 +68,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   }
 
   return (
-    <div className="flex h-screen overflow-hidden bg-[#F9FAFB]">
-      <aside className="flex w-[260px] flex-shrink-0 flex-col border-r border-gray-200/90 bg-[#F3F4F6]">
+    <div className="flex h-screen overflow-hidden bg-[var(--fo-bg)]">
+      <aside className="flex w-[260px] flex-shrink-0 flex-col border-r border-[var(--fo-border)] bg-[var(--fo-sidebar)]">
         <div className="flex h-16 items-center border-b border-gray-200/80 px-5">
           <div className="flex items-center gap-3">
             <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-600 to-teal-700 shadow-sm">
@@ -89,14 +91,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 href={item.href}
                 className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all ${
                   isActive
-                    ? 'bg-white text-gray-900 shadow-sm ring-1 ring-gray-200/80'
-                    : 'text-gray-600 hover:bg-gray-200/60 hover:text-gray-900'
+                    ? 'bg-[var(--fo-teal)] text-white shadow-sm'
+                    : 'text-[var(--fo-text-muted)] hover:bg-[var(--fo-teal-bg)] hover:text-[var(--fo-dark)]'
                 }`}
               >
                 <item.icon
                   size={18}
                   strokeWidth={isActive ? 2.25 : 2}
-                  className={isActive ? 'text-emerald-700' : 'text-gray-400'}
+                  className={isActive ? 'text-white' : 'text-gray-400'}
                 />
                 <span className="flex-1">{item.label}</span>
               </Link>

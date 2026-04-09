@@ -18,17 +18,14 @@ export default function DashboardPageHeader({ title, subtitle, badge = 'live', c
       <div className="flex flex-shrink-0 flex-wrap items-center gap-2">
         {children}
         {badge === 'live' && (
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-white px-3 py-1 text-xs font-semibold text-emerald-800 shadow-sm">
-            <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
-            </span>
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--fo-border)] bg-white px-3 py-1 text-xs font-semibold text-[var(--fo-teal)] shadow-sm">
+            <span className="fo-live-dot" />
             LIVE
           </span>
         )}
         {badge === 'tempo-real' && (
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50/80 px-3 py-1 text-xs font-semibold text-emerald-800">
-            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--fo-border)] bg-[var(--fo-teal-bg)] px-3 py-1 text-xs font-semibold text-[var(--fo-teal)]">
+            <span className="fo-live-dot" />
             Tempo real
           </span>
         )}

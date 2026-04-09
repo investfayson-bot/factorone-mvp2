@@ -1,108 +1,100 @@
 'use client'
 export const dynamic = 'force-dynamic'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { supabase } from '@/lib/supabase'
+import { Building2, UserRound } from 'lucide-react'
 import toast from 'react-hot-toast'
 
-const PLANOS = [
-  {
-    id: 'essencial',
-    nome: 'Essencial',
-    preco: 89,
-    priceId: 'price_1TGr7aJA6DAGsEckmrH0fAgN',
-    desc: 'Para empresas em crescimento',
-    features: ['Dashboard financeiro', 'Gestão de despesas', 'Invoices básico', 'AI CFO (50 msgs/mês)', 'Suporte por chat'],
-    destaque: false,
-  },
-  {
-    id: 'profissional',
-    nome: 'Profissional',
-    preco: 199,
-    priceId: 'price_1TGr82JA6DAGsEcknu6iVcd9',
-    desc: 'Para empresas que estão escalando',
-    features: ['Tudo do Essencial', 'AI CFO ilimitado', 'Portal do contador', 'Upload de comprovantes', 'Cash flow preditivo', 'Relatórios avançados'],
-    destaque: true,
-  },
-  {
-    id: 'scale',
-    nome: 'Scale',
-    preco: 499,
-    priceId: 'price_1TGr8OJA6DAGsEckLv5wxY07',
-    desc: 'Para empresas de alto crescimento',
-    features: ['Tudo do Profissional', 'Múltiplos CNPJs', 'API access', 'Automação contábil completa', 'Onboarding dedicado', 'SLA 99.9%'],
-    destaque: false,
-  },
-]
+type TipoPerfil = 'empresarial' | 'pessoal'
 
 export default function OnboardingPage() {
-  const [planoSel, setPlanoSel] = useState('profissional')
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState<TipoPerfil | null>(null)
   const router = useRouter()
 
-  async function handleCheckout() {
-    setLoading(true)
-    const plano = PLANOS.find(p => p.id === planoSel)
-    if (!plano) return
+  async function selecionar(tipo: TipoPerfil) {
+    setLoading(tipo)
     try {
-      const res = await fetch('/api/stripe/checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ priceId: plano.priceId, plano: plano.id }),
-      })
-      const { url, error } = await res.json()
-      if (url) window.location.href = url
-      else { toast.error(error || 'Erro ao criar pagamento'); setLoading(false) }
-    } catch {
-      toast.error('Erro de conexão')
-      setLoading(false)
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
+      if (!user) {
+        router.push('/auth')
+        return
+      }
+
+      const { error } = await supabase.from('perfil_usuario').upsert(
+        {
+          user_id: user.id,
+          tipo,
+        },
+        { onConflict: 'user_id' }
+      )
+
+      if (error) throw error
+      toast.success(`Modo ${tipo === 'empresarial' ? 'Empresarial' : 'Pessoal'} configurado`)
+      router.push(tipo === 'empresarial' ? '/dashboard' : '/dashboard-pessoal')
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : 'Falha ao salvar seu perfil')
+    } finally {
+      setLoading(null)
     }
   }
 
-  function handleDemo() {
-    toast.success('Modo demo ativado — 14 dias grátis!')
-    setTimeout(() => router.push('/dashboard'), 800)
-  }
-
   return (
-    <div className="auth-page min-h-screen py-12 px-4">
-      <div style={{ maxWidth: 860, margin: '0 auto' }}>
-        <div style={{ textAlign: 'center', marginBottom: 40 }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
-            <div style={{ width: 32, height: 32, background: '#C8F135', borderRadius: 7, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: 12, color: '#000' }}>F1</div>
-            <span style={{ fontWeight: 800, fontSize: 16, color: '#1C2B2A' }}>FactorOne</span>
-          </div>
-          <h1 style={{ fontSize: 32, fontWeight: 900, color: '#1C2B2A', marginBottom: 8, letterSpacing: '-0.03em' }}>Escolha seu plano</h1>
-          <p style={{ color: '#6B7280', fontSize: 15 }}>14 dias grátis · Cancele quando quiser</p>
+    <div className="min-h-screen bg-[var(--fo-bg)] px-4 py-10">
+      <div className="mx-auto max-w-5xl">
+        <div className="mb-10 text-center">
+          <h1 className="text-3xl font-bold tracking-tight text-[var(--fo-text)]">Como você quer usar a FactorOne?</h1>
+          <p className="mt-2 text-sm text-[var(--fo-text-muted)]">Escolha seu modo principal. Você pode alterar depois.</p>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 16, marginBottom: 28 }}>
-          {PLANOS.map(p => (
-            <div key={p.id} onClick={() => setPlanoSel(p.id)}
-              style={{ position: 'relative', borderRadius: 16, padding: 24, cursor: 'pointer', background: '#fff', border: planoSel === p.id ? '2px solid #0055FF' : p.destaque ? '2px solid #1C2B2A' : '1px solid #E5E7EB', boxShadow: planoSel === p.id ? '0 0 0 4px rgba(0,85,255,0.08)' : '0 1px 4px rgba(0,0,0,0.06)', transition: 'all .15s' }}>
-              {p.destaque && <div style={{ position: 'absolute', top: -12, left: '50%', transform: 'translateX(-50%)', background: '#1C2B2A', color: '#fff', fontSize: 10, fontWeight: 800, padding: '3px 12px', borderRadius: 20 }}>Mais popular</div>}
-              {planoSel === p.id && <div style={{ position: 'absolute', top: 14, right: 14, width: 20, height: 20, background: '#0055FF', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg></div>}
-              <div style={{ fontSize: 11, fontWeight: 700, color: '#0055FF', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: 6 }}>{p.nome}</div>
-              <div style={{ fontSize: 36, fontWeight: 900, color: '#1C2B2A', letterSpacing: '-0.03em', lineHeight: 1, marginBottom: 4 }}>R${p.preco}<span style={{ fontSize: 13, fontWeight: 400, color: '#9CA3AF' }}>/mês</span></div>
-              <div style={{ fontSize: 12, color: '#6B7280', marginBottom: 16 }}>{p.desc}</div>
-              <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-                {p.features.map(f => (
-                  <li key={f} style={{ display: 'flex', alignItems: 'flex-start', gap: 7, fontSize: 12, color: '#374151', marginBottom: 6 }}>
-                    <span style={{ color: '#22C55E', fontWeight: 700, flexShrink: 0, marginTop: 1 }}>✓</span>{f}
-                  </li>
-                ))}
-              </ul>
+        <div className="grid gap-5 md:grid-cols-2">
+          <div className="rounded-2xl border border-[var(--fo-border)] bg-white p-6">
+            <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--fo-teal-bg)]">
+              <Building2 className="h-6 w-6 text-[var(--fo-teal)]" />
             </div>
-          ))}
-        </div>
+            <h2 className="text-xl font-semibold text-[var(--fo-text)]">Empresarial</h2>
+            <p className="mt-1 text-sm text-[var(--fo-text-muted)]">Para PMEs e empresas</p>
+            <ul className="mt-4 space-y-2 text-sm text-[var(--fo-text-muted)]">
+              <li>· Gestão completa</li>
+              <li>· NF-e / DRE</li>
+              <li>· Cartões corporativos</li>
+              <li>· Módulo fiscal</li>
+              <li>· Portal do contador</li>
+            </ul>
+            <button
+              type="button"
+              onClick={() => selecionar('empresarial')}
+              disabled={loading !== null}
+              className="mt-6 w-full rounded-xl bg-[var(--fo-teal)] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[var(--fo-teal-light)] disabled:opacity-60"
+            >
+              {loading === 'empresarial' ? 'Salvando...' : 'Começar como Empresa'}
+            </button>
+          </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10 }}>
-          <button onClick={handleCheckout} disabled={loading}
-            style={{ width: '100%', maxWidth: 360, padding: '14px 0', background: '#1C2B2A', color: '#fff', border: 'none', borderRadius: 12, fontSize: 15, fontWeight: 700, cursor: 'pointer', opacity: loading ? 0.6 : 1 }}>
-            {loading ? 'Redirecionando...' : `Assinar ${PLANOS.find(p=>p.id===planoSel)?.nome} →`}
-          </button>
-          <button onClick={handleDemo} style={{ background: 'none', border: 'none', fontSize: 13, color: '#9CA3AF', cursor: 'pointer', textDecoration: 'underline' }}>
-            Testar grátis por 14 dias sem cartão
-          </button>
+          <div className="rounded-2xl border border-[var(--fo-border)] bg-white p-6">
+            <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--fo-teal-bg)]">
+              <UserRound className="h-6 w-6 text-[var(--fo-teal)]" />
+            </div>
+            <h2 className="text-xl font-semibold text-[var(--fo-text)]">Pessoa Física</h2>
+            <p className="mt-1 text-sm text-[var(--fo-text-muted)]">Para finanças pessoais</p>
+            <ul className="mt-4 space-y-2 text-sm text-[var(--fo-text-muted)]">
+              <li>· Controle de gastos</li>
+              <li>· Contas a pagar</li>
+              <li>· Orçamento mensal</li>
+              <li>· Onde vai meu dinheiro</li>
+              <li>· Assinaturas e fixos</li>
+            </ul>
+            <button
+              type="button"
+              onClick={() => selecionar('pessoal')}
+              disabled={loading !== null}
+              className="mt-6 w-full rounded-xl border border-[var(--fo-teal)] bg-transparent px-4 py-2.5 text-sm font-semibold text-[var(--fo-teal)] transition hover:bg-[var(--fo-teal-bg)] disabled:opacity-60"
+            >
+              {loading === 'pessoal' ? 'Salvando...' : 'Começar como Pessoa'}
+            </button>
+          </div>
         </div>
       </div>
     </div>

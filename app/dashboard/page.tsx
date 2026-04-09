@@ -11,7 +11,6 @@ import {
   FileText,
   Zap,
   ArrowUpRight,
-  AlertCircle,
   ArrowUp,
   CheckCircle2,
 } from 'lucide-react'
@@ -67,8 +66,6 @@ export default function DashboardPage() {
   const [user, setUser] = useState<{ id: string; email?: string } | null>(null)
   const [kpiAtual, setKpiAtual] = useState<Kpi>({ receita: 0, despesas: 0, saldo: 0, nfs: 0 })
   const [kpiAnt, setKpiAnt] = useState<Kpi>({ receita: 0, despesas: 0, saldo: 0, nfs: 0 })
-  const [aiInsight, setAiInsight] = useState('')
-  const [loadingAi, setLoadingAi] = useState(false)
   const [transacoes, setTransacoes] = useState<TransacaoLista[]>([])
   const [orcamentoWidget, setOrcamentoWidget] = useState<OrcamentoWidget>({ consumidoPct: 0, alertas: 0, top: [] })
   const [empresaNome, setEmpresaNome] = useState('')
@@ -233,31 +230,6 @@ export default function DashboardPage() {
     load()
   }, [router])
 
-  async function gerarInsight() {
-    setLoadingAi(true)
-    setAiInsight('')
-    try {
-      const { data: { session } } = await supabase.auth.getSession()
-      const res = await fetch('/api/aicfo', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          ...(session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : {}),
-        },
-        body: JSON.stringify({
-          message:
-            'Com base nos dados recentes, sintetize riscos e oportunidades para este mês.',
-          context: 'dashboard',
-        }),
-      })
-      const data = await res.json()
-      setAiInsight(data.response || data.error || 'Erro ao gerar análise')
-    } catch {
-      setAiInsight('Erro de conexão')
-    }
-    setLoadingAi(false)
-  }
-
   const hora = new Date().getHours()
   const saudacao = hora < 12 ? 'Bom dia' : hora < 18 ? 'Boa tarde' : 'Boa noite'
   const nome = user?.email?.split('@')[0] ?? '—'
@@ -335,17 +307,7 @@ export default function DashboardPage() {
         title={empresaNome ? `Dashboard — ${empresaNome}` : 'Dashboard'}
         subtitle={`${saudacao}, ${nome} · ${new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })}`}
         badge="live"
-      >
-        <button
-          type="button"
-          onClick={gerarInsight}
-          disabled={loadingAi}
-          className="flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-700 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-emerald-800 disabled:opacity-50 sm:w-auto"
-        >
-          <Zap size={16} />
-          {loadingAi ? 'Analisando...' : 'Análise IA'}
-        </button>
-      </DashboardPageHeader>
+      />
 
       {/* Linha 2 */}
       <DashboardErrorBoundary title="Alertas">
@@ -409,27 +371,6 @@ export default function DashboardPage() {
             <MiniDRE empresaId={empresaId as string} />
           </DashboardErrorBoundary>
         </div>
-      </div>
-
-      {/* CFO + Linha 6 transações */}
-      <div className="bg-gradient-to-r from-blue-700 to-blue-800 rounded-2xl p-6 text-white">
-        <div className="flex items-center gap-2 mb-3">
-          <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center">
-            <Zap size={16} className="text-white" />
-          </div>
-          <h2 className="font-semibold text-white">CFO Inteligente</h2>
-          <span className="text-xs bg-white/20 text-blue-100 px-2 py-0.5 rounded-full">IA</span>
-        </div>
-        {aiInsight ? (
-          <p className="text-blue-50 text-sm leading-relaxed whitespace-pre-line">{aiInsight}</p>
-        ) : (
-          <div className="flex items-center gap-3 text-blue-100">
-            <AlertCircle size={16} />
-            <p className="text-sm">
-              Clique em &quot;Análise IA&quot; para receber insights personalizados sobre sua empresa.
-            </p>
-          </div>
-        )}
       </div>
 
       <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">

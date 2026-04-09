@@ -21,7 +21,7 @@ export default function AuthPage() {
       if (modo === 'entrar') {
         const { error } = await supabase.auth.signInWithPassword({ email, password: senha })
         if (error) throw error
-        router.push('/dashboard')
+        router.push('/onboarding')
       } else {
         const { error } = await supabase.auth.signUp({ email, password: senha })
         if (error) throw error
@@ -44,7 +44,7 @@ export default function AuthPage() {
   async function usarDemo() {
     setLoading(true)
     const { error } = await supabase.auth.signInWithPassword({ email: 'demo@factorone.com.br', password: 'demo123456' })
-    if (!error) router.push('/dashboard')
+    if (!error) router.push('/onboarding')
     else setMsg({ text: 'Conta demo não encontrada. Crie uma conta primeiro.', type: 'error' })
     setLoading(false)
   }
