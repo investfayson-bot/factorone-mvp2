@@ -1,4 +1,5 @@
 'use client'
+import { RespostaIA } from '@/components/aicfo/RespostaIA'
 
 import { useEffect, useRef, useState } from 'react'
 import {
@@ -34,47 +35,6 @@ const METRICAS_DEMO = {
   precisaoIaPct: 94,
 }
 
-
-type RespostaData = {
-  resumo: string; status: string
-  cards: { titulo: string; emoji: string; linhas: { label: string; valor: string; destaque: string }[] }[]
-  alertas: string[]; proxima_pergunta: string
-}
-function RespostaIA({ data }: { data: RespostaData }) {
-  const sc = ({positivo:'bg-emerald-50 border-emerald-200 text-emerald-700',atencao:'bg-amber-50 border-amber-200 text-amber-700',critico:'bg-red-50 border-red-200 text-red-700'} as Record<string,string>)[data.status]||'bg-slate-50 border-slate-200 text-slate-700'
-  const dc = (d:string) => (({positivo:'text-emerald-600 font-semibold',negativo:'text-red-500 font-semibold',neutro:'text-slate-600 font-medium'} as Record<string,string>)[d]||'text-slate-600')
-  return (
-    <div className='space-y-3 w-full'>
-      <div className={`rounded-xl border px-3 py-2 text-xs font-medium ${sc}`}>
-        {data.status==='positivo'?'✅':data.status==='critico'?'🔴':'⚠️'} {data.resumo}
-      </div>
-      <div className='grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3'>
-        {data.cards?.map((card,i)=>(
-          <div key={i} className='rounded-xl border border-gray-200 bg-white p-3 shadow-sm'>
-            <div className='mb-2 flex items-center gap-1.5'>
-              <span className='text-base'>{card.emoji}</span>
-              <span className='text-xs font-semibold text-slate-800'>{card.titulo}</span>
-            </div>
-            <div className='space-y-1.5'>
-              {card.linhas?.map((l,j)=>(
-                <div key={j} className='flex items-center justify-between border-b border-slate-100 pb-1 last:border-0'>
-                  <span className='text-[11px] text-slate-500'>{l.label}</span>
-                  <span className={`text-[11px] ${dc(l.destaque)}`}>{l.valor}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        ))}
-      </div>
-      {data.alertas?.length>0&&(
-        <div className='rounded-xl border border-amber-200 bg-amber-50 p-3 space-y-1'>
-          {data.alertas.map((a,i)=><p key={i} className='text-[11px] text-amber-700'>⚠️ {a}</p>)}
-        </div>
-      )}
-      {data.proxima_pergunta&&<p className='text-[11px] text-slate-400 italic'>💬 {data.proxima_pergunta}</p>}
-    </div>
-  )
-}
 export default function AICFOPage() {
   const [mensagens, setMensagens] = useState<Msg[]>([])
   const [input, setInput] = useState('')
@@ -211,7 +171,7 @@ export default function AICFOPage() {
                   : 'max-w-[80%] rounded-2xl rounded-tl-sm border border-gray-200 bg-white px-4 py-3 text-sm text-gray-800 shadow-sm'
               }
             >
-              {m.role === 'assistant' && (m as any).structured ? <RespostaIA data={(m as any).structured as RespostaData} /> : m.content}
+              {m.role === 'assistant' && (m as any).structured ? <RespostaIA data={(m as any).structured } /> : m.content}
             </div>
             {m.role === 'user' && (
               <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-700">
