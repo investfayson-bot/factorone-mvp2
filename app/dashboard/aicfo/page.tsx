@@ -1,8 +1,6 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import ReactMarkdown from 'react-markdown'
-import remarkGfm from 'remark-gfm'
 import {
   Send,
   Zap,
@@ -17,7 +15,7 @@ import {
 } from 'lucide-react'
 import { fmtBRLCompact } from '@/lib/dre-calculations'
 
-type Msg = { role: 'user' | 'assistant'; content: string }
+type Msg = { role: 'user' | 'assistant'; content: string; structured?: unknown }
 
 const SUGESTOES = [
   'Qual o impacto se reduzirmos 15% de Marketing?',
@@ -34,6 +32,68 @@ const METRICAS_DEMO = {
   riscoCaixaDias: 67,
   anomalias: 3,
   precisaoIaPct: 94,
+}
+
+type RespostaData = {
+  resumo: string
+  status: string
+  cards: { titulo: string; emoji: string; linhas: { label: string; valor: string; destaque: string }[] }[]
+  alertas: string[]
+  proxima_pergunta: string
+}
+
+function RespostaIA({ data }: { data: RespostaData }) {
+  const statusColor = {
+    positivo: 'bg-emerald-50 border-emerald-200 text-emerald-700',
+    atencao: 'bg-amber-50 border-amber-200 text-amber-700',
+    critico: 'bg-red-50 border-red-200 text-red-700',
+  }[data.status] || 'bg-slate-50 border-slate-200 text-slate-700'
+
+  const destaqueColor = (d: string) =>
+    ({
+      positivo: 'text-emerald-600 font-semibold',
+      negativo: 'text-red-500 font-semibold',
+      neutro: 'text-slate-600 font-medium',
+    }[d] || 'text-slate-600')
+
+  return (
+    <div className="space-y-3 w-full max-w-[85%]">
+      <div className={`rounded-xl border px-3 py-2 text-xs font-medium ${statusColor}`}>
+        {data.status === 'positivo' ? '✅' : data.status === 'critico' ? '🔴' : '⚠️'} {data.resumo}
+      </div>
+      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
+        {data.cards?.map((card, i) => (
+          <div key={i} className="rounded-xl border border-gray-200 bg-white p-3 shadow-sm">
+            <div className="mb-2 flex items-center gap-1.5">
+              <span className="text-base">{card.emoji}</span>
+              <span className="text-xs font-semibold text-slate-800">{card.titulo}</span>
+            </div>
+            <div className="space-y-1.5">
+              {card.linhas?.map((linha, j) => (
+                <div
+                  key={j}
+                  className="flex items-center justify-between border-b border-slate-100 pb-1 last:border-0 last:pb-0"
+                >
+                  <span className="text-[11px] text-slate-500">{linha.label}</span>
+                  <span className={`text-[11px] ${destaqueColor(linha.destaque)}`}>{linha.valor}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+      {data.alertas?.length > 0 && (
+        <div className="rounded-xl border border-amber-200 bg-amber-50 p-3 space-y-1">
+          {data.alertas.map((a, i) => (
+            <p key={i} className="text-[11px] text-amber-700">
+              ⚠️ {a}
+            </p>
+          ))}
+        </div>
+      )}
+      {data.proxima_pergunta && <p className="text-[11px] text-slate-400 italic">💬 {data.proxima_pergunta}</p>}
+    </div>
+  )
 }
 
 export default function AICFOPage() {
@@ -69,7 +129,14 @@ export default function AICFOPage() {
         body: JSON.stringify({ message: texto, context: 'chat_aicfo' }),
       })
       const data = await res.json()
-      setMensagens((prev) => [...prev, { role: 'assistant', content: data.response || data.error || 'Sem resposta' }])
+      setMensagens((prev) => [
+        ...prev,
+        {
+          role: 'assistant',
+          content: data.response || data.error || 'Sem resposta',
+          structured: data.structured || null,
+        },
+      ])
     } catch {
       setMensagens((prev) => [...prev, { role: 'assistant', content: 'Erro de conexão.' }])
     } finally {
@@ -180,13 +247,8 @@ export default function AICFOPage() {
                   : 'max-w-[80%] rounded-2xl rounded-tl-sm border border-gray-200 bg-white px-4 py-3 text-sm text-gray-800 shadow-sm'
               }
             >
-              {m.role === 'assistant' ? (
-                <ReactMarkdown
-                  remarkPlugins={[remarkGfm]}
-                  className="prose prose-sm max-w-none prose-table:border prose-td:border prose-td:px-3 prose-td:py-2 prose-th:border prose-th:px-3 prose-th:py-2 prose-th:bg-slate-50"
-                >
-                  {m.content}
-                </ReactMarkdown>
+              {m.role === 'assistant' && m.structured ? (
+                <RespostaIA data={m.structured as Parameters<typeof RespostaIA>[0]['data']} />
               ) : (
                 m.content
               )}
