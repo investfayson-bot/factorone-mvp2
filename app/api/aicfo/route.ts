@@ -1,81 +1,75 @@
 import { NextRequest, NextResponse } from 'next/server'
-import OpenAI from 'openai'
-import { createClient } from '@supabase/supabase-js'
+import Anthropic from '@anthropic-ai/sdk'
+import { createServerSupabase } from '@/lib/supabase-server'
 import { erroDesconhecido } from '@/lib/transacao-types'
 
-const openrouter = new OpenAI({
-  baseURL: 'https://openrouter.ai/api/v1',
-  apiKey: process.env.OPENROUTER_API_KEY || '',
+const anthropic = new Anthropic({
+  apiKey: process.env.ANTHROPIC_API_KEY || '',
 })
 
 export async function POST(req: NextRequest) {
   try {
-    if (!process.env.OPENROUTER_API_KEY) {
-      return NextResponse.json({ error: 'OPENROUTER_API_KEY não configurada' }, { status: 500 })
+    if (!process.env.ANTHROPIC_API_KEY) {
+      return NextResponse.json({ error: 'ANTHROPIC_API_KEY não configurada' }, { status: 500 })
     }
 
-    const url = process.env.NEXT_PUBLIC_SUPABASE_URL!
-    const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-
-    const authHeader = req.headers.get('authorization')
-    const token = authHeader?.replace(/^Bearer\s+/i, '')?.trim()
-
-    const supabaseUser = createClient(url, anonKey, {
-      global: { headers: token ? { Authorization: `Bearer ${token}` } : {} },
-    })
-
-    const {
-      data: { user },
-    } = await supabaseUser.auth.getUser()
-
-    if (!user) {
-      return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
-    }
+    const supabase = await createServerSupabase()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
 
     const { message, context } = await req.json()
     if (!message) return NextResponse.json({ error: 'Mensagem obrigatória' }, { status: 400 })
 
-    const { data: transacoes } = await supabaseUser
+    const { data: transacoes } = await supabase
       .from('transacoes')
       .select('*')
       .eq('empresa_id', user.id)
       .order('data', { ascending: false })
       .limit(40)
 
-    const isDashboard = context === 'dashboard'
-
     const dadosJson = JSON.stringify(transacoes || [], null, 2)
 
-    const systemDashboard =
-      'Você é o CFO digital do FactorOne. Analise os dados financeiros e dê 3 insights acionáveis em português, em formato de bullet points concisos.'
+    const systemPrompt = `Você é o CFO Inteligente da FactorOne para PMEs brasileiras.
 
-    const systemGeral = `Você é o CFO Inteligente da FactorOne — assistente financeiro especializado para PMEs brasileiras.
-Responda SEMPRE em português brasileiro. Seja direto, prático e use linguagem simples.
-Forneça insights acionáveis e específicos baseados nos dados da empresa.
+Responda SEMPRE em português brasileiro com este JSON exato (sem texto fora do JSON):
+{
+  "resumo": "frase curta de 1 linha resumindo a situação",
+  "status": "positivo" | "atencao" | "critico",
+  "cards": [
+    {
+      "titulo": "título do card",
+      "emoji": "emoji relevante",
+      "linhas": [
+        { "label": "nome do item", "valor": "R$ 0,00", "destaque": "positivo" | "negativo" | "neutro" }
+      ]
+    }
+  ],
+  "alertas": ["alerta 1", "alerta 2"],
+  "proxima_pergunta": "sugestão de próxima pergunta"
+}
 
-Dados financeiros recentes da empresa:
-${dadosJson}
+Máximo 3 cards. Cada card máximo 5 linhas. Números em formato R$ 1.234,56.
 
-Contexto atual: ${context || 'dashboard geral'}`
+DADOS DA EMPRESA:
+${dadosJson}`
 
-    const systemPrompt = isDashboard
-      ? `${systemDashboard}\n\nDados financeiros recentes da empresa:\n${dadosJson}`
-      : systemGeral
-
-    const model = isDashboard ? 'anthropic/claude-3.5-sonnet' : 'anthropic/claude-3-haiku'
-
-    const response = await openrouter.chat.completions.create({
-      model,
-      max_tokens: isDashboard ? 1200 : 1500,
-      messages: [
-        { role: 'system', content: systemPrompt },
-        { role: 'user', content: message },
-      ],
+    const response = await anthropic.messages.create({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 1500,
+      system: systemPrompt,
+      messages: [{ role: 'user', content: message }],
     })
 
-    return NextResponse.json({
-      response: response.choices[0]?.message?.content || 'Sem resposta',
-    })
+    const texto = response.content[0].type === 'text' ? response.content[0].text : '{}'
+    
+    // Tenta parsear como JSON, senão retorna como texto simples
+    try {
+      const json = JSON.parse(texto.replace(/```json|```/g, '').trim())
+      return NextResponse.json({ response: texto, structured: json })
+    } catch {
+      return NextResponse.json({ response: texto, structured: null })
+    }
+
   } catch (error: unknown) {
     console.error('Erro AI CFO:', error)
     return NextResponse.json({ error: erroDesconhecido(error) || 'Erro interno' }, { status: 500 })

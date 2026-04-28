@@ -1,4 +1,5 @@
 'use client'
+import InsightFloating from "@/components/aicfo/InsightFloating"
 
 import { useEffect, useState } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
@@ -128,6 +129,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       </aside>
 
       <main className="min-w-0 flex-1 overflow-y-auto bg-[#F9FAFB]">{children}</main>
+      <InsightFloating />
     </div>
   )
 }
