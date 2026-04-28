@@ -53,9 +53,17 @@ export default function AICFOPage() {
     setLoading(true)
 
     try {
+      const { createClient } = await import('@/lib/supabase')
+      const {
+        data: { session },
+      } = await createClient().auth.getSession()
+
       const res = await fetch('/api/aicfo', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session?.access_token ?? ''}`,
+        },
         body: JSON.stringify({ message: texto, context: 'chat_aicfo' }),
       })
       const data = await res.json()
