@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 import {
   Send,
   Zap,
@@ -179,7 +180,16 @@ export default function AICFOPage() {
                   : 'max-w-[80%] rounded-2xl rounded-tl-sm border border-gray-200 bg-white px-4 py-3 text-sm text-gray-800 shadow-sm'
               }
             >
-              {m.content}
+              {m.role === 'assistant' ? (
+                <ReactMarkdown
+                  remarkPlugins={[remarkGfm]}
+                  className="prose prose-sm max-w-none prose-table:border prose-td:border prose-td:px-3 prose-td:py-2 prose-th:border prose-th:px-3 prose-th:py-2 prose-th:bg-slate-50"
+                >
+                  {m.content}
+                </ReactMarkdown>
+              ) : (
+                m.content
+              )}
             </div>
             {m.role === 'user' && (
               <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-700">
