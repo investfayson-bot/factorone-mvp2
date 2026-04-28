@@ -247,11 +247,7 @@ export default function AICFOPage() {
                   : 'max-w-[80%] rounded-2xl rounded-tl-sm border border-gray-200 bg-white px-4 py-3 text-sm text-gray-800 shadow-sm'
               }
             >
-              {m.role === 'assistant' && m.structured ? (
-                <RespostaIA data={m.structured as Parameters<typeof RespostaIA>[0]['data']} />
-              ) : (
-                m.content
-              )}
+              {m.role === 'assistant' && (m as any).structured ? <RespostaIA data={(m as any).structured} /> : m.content}
             </div>
             {m.role === 'user' && (
               <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-700">
