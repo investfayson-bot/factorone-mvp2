@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import type { User } from '@supabase/supabase-js'
 import { supabase } from '@/lib/supabase'
+import InsightFloating from '@/components/aicfo/InsightFloating'
 import {
   LayoutDashboard,
   Landmark,
@@ -128,6 +129,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       </aside>
 
       <main className="min-w-0 flex-1 overflow-y-auto bg-[#F9FAFB]">{children}</main>
+      <InsightFloating />
     </div>
   )
 }
