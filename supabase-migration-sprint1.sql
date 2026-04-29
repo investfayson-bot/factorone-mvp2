@@ -1,14 +1,17 @@
 -- FactorOne Sprint 1 Migration
 -- Cole no SQL Editor do Supabase e clique Run ANTES de testar os módulos
 
--- 1. Ajusta transacoes para referenciar empresas (não auth.users diretamente)
-ALTER TABLE transacoes DROP CONSTRAINT IF EXISTS transacoes_empresa_id_fkey;
-ALTER TABLE transacoes ADD CONSTRAINT transacoes_empresa_id_fkey
-  FOREIGN KEY (empresa_id) REFERENCES empresas(id) ON DELETE CASCADE;
+-- 1. Ajusta tabela base transactions para referenciar empresas (não auth.users)
+--    transacoes é uma VIEW de public.transactions — alterar a tabela base
+ALTER TABLE public.transactions DROP CONSTRAINT IF EXISTS transacoes_empresa_id_fkey;
+ALTER TABLE public.transactions DROP CONSTRAINT IF EXISTS transactions_empresa_id_fkey;
+ALTER TABLE public.transactions ADD CONSTRAINT transactions_empresa_id_fkey
+  FOREIGN KEY (empresa_id) REFERENCES public.empresas(id) ON DELETE CASCADE;
 
-DROP POLICY IF EXISTS "user_own_data" ON transacoes;
-CREATE POLICY "transacoes_empresa" ON transacoes FOR ALL
-  USING (empresa_id IN (SELECT empresa_id FROM usuarios WHERE id = auth.uid()));
+DROP POLICY IF EXISTS "user_own_data" ON public.transactions;
+DROP POLICY IF EXISTS "transacoes_empresa" ON public.transactions;
+CREATE POLICY "transacoes_empresa" ON public.transactions FOR ALL
+  USING (empresa_id IN (SELECT empresa_id FROM public.usuarios WHERE id = auth.uid()));
 
 -- 2. Centros de custo
 CREATE TABLE IF NOT EXISTS centros_custo (
