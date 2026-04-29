@@ -177,7 +177,7 @@ export default function DespesasPage() {
         .gte('data', inicio)
         .lte('data', fim)
         .order('data', { ascending: false }),
-      supabase.from('centros_custo').select('id, nome').eq('empresa_id', empresa).eq('ativo', true),
+      supabase.from('centros_custo').select('id, nome').eq('empresa_id', empresa).order('nome'),
       supabase.from('categorias_despesa').select('nome').eq('empresa_id', empresa).order('nome'),
       supabase.from('usuarios').select('id, nome').eq('empresa_id', empresa),
     ])
@@ -340,7 +340,7 @@ export default function DespesasPage() {
     const { data: tx, error: e1 } = await supabase
       .from('transacoes')
       .insert({
-        empresa_id: userId,
+        empresa_id: empresaId,
         data: hoje,
         descricao: `Despesa: ${row.descricao}`,
         categoria: row.categoria,
@@ -414,7 +414,7 @@ export default function DespesasPage() {
       const { data: tx } = await supabase
         .from('transacoes')
         .insert({
-          empresa_id: userId,
+          empresa_id: empresaId,
           data: hoje,
           descricao: `Despesa: ${row.descricao}`,
           categoria: row.categoria,
