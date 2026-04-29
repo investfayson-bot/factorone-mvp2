@@ -48,6 +48,7 @@ Responda SEMPRE em português brasileiro com este JSON exato (sem texto fora do 
   "proxima_pergunta": "sugestão de próxima pergunta"
 }
 
+IMPORTANTE: Não use emojis em nenhuma parte da resposta. Use apenas texto limpo e profissional.
 Máximo 3 cards. Cada card máximo 5 linhas. Números em formato R$ 1.234,56.
 
 DADOS DA EMPRESA:
