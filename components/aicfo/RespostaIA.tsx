@@ -1,15 +1,10 @@
 'use client'
 import { useState } from 'react'
+import { exportExcel, exportPDF, type RespostaData } from '@/lib/export-relatorio'
 
-type RespostaData = {
-  resumo: string
-  status: string
-  cards: { titulo: string; emoji: string; linhas: { label: string; valor: string; destaque: string }[] }[]
-  alertas: string[]
-  proxima_pergunta: string
-}
+export type { RespostaData }
 
-export function RespostaIA({ data }: { data: RespostaData }) {
+export function RespostaIA({ data, pergunta = '' }: { data: RespostaData; pergunta?: string }) {
   const [expandido, setExpandido] = useState(false)
 
   const sc = ({
@@ -24,15 +19,40 @@ export function RespostaIA({ data }: { data: RespostaData }) {
     neutro: 'text-slate-600 font-medium',
   } as Record<string, string>)[d] || 'text-slate-600')
 
-  const textoPlano = data.cards?.map(card =>
-    card.titulo + ': ' + card.linhas?.map(l => l.label + ' ' + l.valor).join(', ')
+  const textoPlano = data.cards?.map(c =>
+    c.titulo + ': ' + c.linhas?.map(l => l.label + ' ' + l.valor).join(', ')
   ).join(' | ')
 
-  const wpp = 'https://wa.me/?text=' + encodeURIComponent(
+  const wppUrl = 'https://wa.me/?text=' + encodeURIComponent(
     'Relatorio CFO IA - FactorOne\n' + data.resumo + '\n\n' + textoPlano
   )
-  const mail = 'mailto:?subject=Relatorio CFO IA - FactorOne&body=' + encodeURIComponent(
+  const mailUrl = 'mailto:?subject=Relatorio CFO IA - FactorOne&body=' + encodeURIComponent(
     'Resumo: ' + data.resumo + '\n\n' + textoPlano
+  )
+
+  const BotoesCompartilhar = ({ grande }: { grande?: boolean }) => (
+    <div className={`flex items-center gap-2 flex-wrap ${grande ? '' : 'mt-1'}`}>
+      <button onClick={() => setExpandido(!expandido)}
+        className={`rounded-lg bg-slate-800 px-3 py-1.5 text-xs font-semibold text-white hover:bg-slate-700 ${grande ? 'hidden' : ''}`}>
+        {expandido ? '✕ Fechar' : '⛶ Tela cheia'}
+      </button>
+      <button onClick={() => exportExcel(data, pergunta)}
+        className="rounded-lg bg-emerald-700 px-3 py-1.5 text-xs font-semibold text-white hover:bg-emerald-800">
+        📊 Excel
+      </button>
+      <button onClick={() => exportPDF(data, pergunta)}
+        className="rounded-lg bg-red-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-red-700">
+        📄 PDF
+      </button>
+      <a href={wppUrl} target="_blank"
+        className="rounded-lg bg-green-500 px-3 py-1.5 text-xs font-semibold text-white hover:bg-green-600">
+        💬 WhatsApp
+      </a>
+      <a href={mailUrl}
+        className="rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-blue-700">
+        ✉️ Email
+      </a>
+    </div>
   )
 
   const Cards = ({ grande }: { grande?: boolean }) => (
@@ -58,23 +78,34 @@ export function RespostaIA({ data }: { data: RespostaData }) {
 
   return (
     <>
-      {/* MODAL TELA CHEIA */}
       {expandido && (
         <div className="fixed inset-0 z-50 flex flex-col bg-white overflow-y-auto">
           <div className="mx-auto w-full max-w-5xl p-6">
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
               <div>
                 <h2 className="text-xl font-bold text-slate-800">CFO IA — Análise Completa</h2>
                 <p className="text-sm text-slate-500 mt-1">{data.resumo}</p>
               </div>
-              <div className="flex items-center gap-2">
-                <a href={wpp} target="_blank" className="flex items-center gap-1.5 rounded-xl bg-green-500 px-4 py-2 text-sm font-semibold text-white hover:bg-green-600">
+              <div className="flex items-center gap-2 flex-wrap">
+                <BotoesCompartilhar grande />
+                <button onClick={() => exportExcel(data, pergunta)}
+                  className="rounded-xl bg-emerald-700 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-800">
+                  📊 Excel
+                </button>
+                <button onClick={() => exportPDF(data, pergunta)}
+                  className="rounded-xl bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700">
+                  📄 PDF
+                </button>
+                <a href={wppUrl} target="_blank"
+                  className="rounded-xl bg-green-500 px-4 py-2 text-sm font-semibold text-white hover:bg-green-600">
                   💬 WhatsApp
                 </a>
-                <a href={mail} className="flex items-center gap-1.5 rounded-xl bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700">
+                <a href={mailUrl}
+                  className="rounded-xl bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700">
                   ✉️ Email
                 </a>
-                <button onClick={() => setExpandido(false)} className="rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-50">
+                <button onClick={() => setExpandido(false)}
+                  className="rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-50">
                   ✕ Fechar
                 </button>
               </div>
@@ -84,14 +115,14 @@ export function RespostaIA({ data }: { data: RespostaData }) {
             </div>
             <Cards grande />
             {data.alertas?.length > 0 && (
-              <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4 space-y-2 mt-4">
-                <p className="text-xs font-bold text-amber-700 uppercase tracking-wide mb-2">⚠️ Alertas</p>
+              <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4 mt-4">
+                <p className="text-xs font-bold text-amber-700 uppercase mb-2">⚠️ Alertas</p>
                 {data.alertas.map((a, i) => <p key={i} className="text-sm text-amber-700">• {a}</p>)}
               </div>
             )}
             {data.proxima_pergunta && (
               <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 mt-4">
-                <p className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-1">💬 Próxima análise</p>
+                <p className="text-xs font-bold text-slate-500 uppercase mb-1">💬 Próxima análise</p>
                 <p className="text-sm text-slate-700">{data.proxima_pergunta}</p>
               </div>
             )}
@@ -99,7 +130,6 @@ export function RespostaIA({ data }: { data: RespostaData }) {
         </div>
       )}
 
-      {/* VERSÃO COMPACTA NO CHAT */}
       <div className="space-y-3 w-full">
         <div className={`rounded-xl border px-3 py-2 text-xs font-medium ${sc}`}>
           {data.status === 'positivo' ? '✅' : data.status === 'critico' ? '🔴' : '⚠️'} {data.resumo}
@@ -110,17 +140,7 @@ export function RespostaIA({ data }: { data: RespostaData }) {
             {data.alertas.map((a, i) => <p key={i} className="text-[11px] text-amber-700">⚠️ {a}</p>)}
           </div>
         )}
-        <div className="flex items-center gap-2 flex-wrap">
-          <button onClick={() => setExpandido(true)} className="rounded-lg bg-slate-800 px-3 py-1.5 text-xs font-semibold text-white hover:bg-slate-700">
-            ⛶ Tela cheia
-          </button>
-          <a href={wpp} target="_blank" className="rounded-lg bg-green-500 px-3 py-1.5 text-xs font-semibold text-white hover:bg-green-600">
-            💬 WhatsApp
-          </a>
-          <a href={mail} className="rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-blue-700">
-            ✉️ Email
-          </a>
-        </div>
+        <BotoesCompartilhar />
         {data.proxima_pergunta && (
           <p className="text-[11px] text-slate-400 italic">💬 {data.proxima_pergunta}</p>
         )}
