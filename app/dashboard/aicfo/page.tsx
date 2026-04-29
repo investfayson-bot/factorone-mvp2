@@ -119,23 +119,6 @@ export default function AICFOPage() {
         </div>
       </div>
 
-      <div className="mb-6 grid gap-4 md:grid-cols-2">
-        <div className="rounded-2xl border border-amber-200/80 bg-amber-50/50 p-4 text-sm text-amber-950">
-          <p className="font-semibold text-amber-900">CFO IA · Análise automática</p>
-          <p className="mt-2 leading-relaxed">
-            Alerta de liquidez: a projeção aponta risco de caixa em {METRICAS_DEMO.riscoCaixaDias} dias com o padrão atual de
-            gastos. Recomendo revisar despesas de Marketing acima da média e renegociar contratos de fornecedores.
-          </p>
-        </div>
-        <div className="rounded-2xl border border-emerald-200/80 bg-emerald-50/40 p-4 text-sm text-emerald-950">
-          <p className="font-semibold text-emerald-900">CFO IA · Oportunidade detectada</p>
-          <p className="mt-2 leading-relaxed">
-            Economia detectada: renegociação com fornecedores estratégicos pode gerar economia mensal relevante com base no
-            histórico e volume atual.
-          </p>
-        </div>
-      </div>
-
       <p className="mb-3 text-sm font-medium text-gray-900">Pergunte ao CFO IA</p>
 
       {mensagens.length === 0 && (
