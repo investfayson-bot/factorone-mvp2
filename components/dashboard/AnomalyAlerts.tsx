@@ -8,9 +8,9 @@ type AlertItem = { id: string; tone: 'red' | 'orange' | 'yellow'; title: string;
 
 const STORAGE_KEY = 'factorone-dismissed-alerts'
 
-type Props = { empresaId: string }
+type Props = { empresaId: string; onAlertClick?: (alertId: string) => void }
 
-export default function AnomalyAlerts({ empresaId }: Props) {
+export default function AnomalyAlerts({ empresaId, onAlertClick }: Props) {
   const [items, setItems] = useState<AlertItem[]>([])
   const [dismissed, setDismissed] = useState<Set<string>>(new Set())
 
@@ -180,8 +180,14 @@ export default function AnomalyAlerts({ empresaId }: Props) {
             )}
           </div>
           <div className="flex-1 min-w-0">
-            <p className="font-semibold text-sm">{a.title}</p>
-            <p className="text-sm opacity-90 mt-0.5">{a.detail}</p>
+            <button
+              type="button"
+              onClick={() => onAlertClick?.(a.id)}
+              className="w-full text-left rounded-lg transition hover:bg-black/5 p-1 -m-1"
+            >
+              <p className="font-semibold text-sm">{a.title}</p>
+              <p className="text-sm opacity-90 mt-0.5">{a.detail}</p>
+            </button>
           </div>
           <button
             type="button"
