@@ -21,7 +21,6 @@ import AnomalyAlerts from '@/components/dashboard/AnomalyAlerts'
 import MiniDRE from '@/components/dashboard/MiniDRE'
 import EntradasSaidasChart from '@/components/dashboard/EntradasSaidasChart'
 import { DashboardErrorBoundary } from '@/components/dashboard/DashboardErrorBoundary'
-import DashboardPageHeader from '@/components/dashboard/DashboardPageHeader'
 import type { TransacaoLista } from '@/lib/transacao-types'
 
 type Kpi = {
@@ -73,7 +72,15 @@ export default function DashboardPage() {
   const [dreMes, setDreMes] = useState({ liquido: 0, liquidoAnt: 0 })
   const [fluxo30, setFluxo30] = useState(0)
   const [riscoRunwayDias, setRiscoRunwayDias] = useState<number | null>(null)
+  const [selectedTx, setSelectedTx] = useState<TransacaoLista | null>(null)
   const router = useRouter()
+  function irParaAlerta(alertId: string) {
+    if (alertId === 'despesa-acima-media') return router.push('/dashboard/despesas')
+    if (alertId === 'saldo-caindo') return router.push('/dashboard/cashflow')
+    if (alertId === 'sem-receita-15') return router.push('/dashboard/financeiro/receber')
+    router.push('/dashboard/aicfo')
+  }
+
 
   useEffect(() => {
     async function load() {
@@ -236,14 +243,13 @@ export default function DashboardPage() {
 
   if (loading || !user || !empresaId) {
     return (
-      <div className="p-6 md:p-8 max-w-7xl mx-auto space-y-6 animate-pulse">
-        <div className="h-10 bg-slate-200 rounded-xl w-2/3 max-w-md" />
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div style={{ padding: 24, maxWidth: 1200, margin: '0 auto' }} className="animate-pulse space-y-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="h-28 bg-slate-200 rounded-2xl" />
+            <div key={i} style={{ height: 90, background: 'var(--gray-100)', borderRadius: 12 }} />
           ))}
         </div>
-        <div className="h-64 bg-slate-200 rounded-2xl" />
+        <div style={{ height: 260, background: 'var(--gray-100)', borderRadius: 12 }} />
       </div>
     )
   }
@@ -301,34 +307,36 @@ export default function DashboardPage() {
   ]
 
   return (
-    <div className="p-6 md:p-8 max-w-7xl mx-auto space-y-6">
-      {/* Linha 1 */}
-      <DashboardPageHeader
-        title={empresaNome ? `Dashboard — ${empresaNome}` : 'Dashboard'}
-        subtitle={`${saudacao}, ${nome} · ${new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })}`}
-        badge="live"
-      />
+    <div style={{ padding: 24, maxWidth: 1200, margin: '0 auto' }} className="space-y-4">
+      {/* Linha 1 — Page header */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
+        <div>
+          <div style={{ fontFamily: "'Sora', sans-serif", fontSize: 17, fontWeight: 700, color: 'var(--navy)' }}>Dashboard</div>
+          <div style={{ fontSize: 11, color: 'var(--gray-400)', fontFamily: "'DM Mono', monospace", marginTop: 2 }}>
+            {saudacao}, {nome} · {new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })}
+          </div>
+        </div>
+      </div>
 
       {/* Linha 2 */}
       <DashboardErrorBoundary title="Alertas">
-        <AnomalyAlerts empresaId={empresaId as string} />
+        <AnomalyAlerts empresaId={empresaId as string} onAlertClick={irParaAlerta} />
       </DashboardErrorBoundary>
 
       {/* Linha 3 — KPIs */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
         {cards.map((m) => (
           <div
             key={m.label}
-            className="rounded-2xl border border-gray-200/90 bg-white p-5 shadow-sm transition-all hover:border-emerald-200/80 hover:shadow-md"
+            style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: '14px 16px', boxShadow: '0 1px 4px rgba(0,0,0,.04)' }}
           >
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-[11px] font-semibold uppercase tracking-wider text-gray-500">{m.label}</span>
-              <div className={`w-8 h-8 rounded-lg border flex items-center justify-center ${m.iconWrap}`}>
-                <m.icon size={16} className={m.iconColor} />
-              </div>
+            <div style={{ fontSize: 9, fontWeight: 700, color: 'var(--gray-400)', letterSpacing: '.08em', textTransform: 'uppercase', marginBottom: 6, fontFamily: "'DM Mono', monospace" }}>
+              {m.label}
             </div>
-            <p className="text-2xl font-bold tracking-tight text-gray-900">{m.value}</p>
-            <div className="mt-2 min-h-[1.25rem]">{m.varEl}</div>
+            <div style={{ fontFamily: "'Sora', sans-serif", fontSize: 22, fontWeight: 800, color: 'var(--navy)', letterSpacing: '-.03em', lineHeight: 1.1, marginBottom: 4 }}>
+              {m.value}
+            </div>
+            <div style={{ fontSize: 10, fontWeight: 600, fontFamily: "'DM Mono', monospace" }}>{m.varEl}</div>
           </div>
         ))}
       </div>
@@ -373,67 +381,84 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="font-semibold text-slate-800">Últimas transações</h2>
-          <Link
-            href="/dashboard/cashflow"
-            className="text-blue-700 hover:text-blue-800 text-sm flex items-center gap-1 font-medium"
-          >
-            Ver todas <ArrowUpRight size={14} />
-          </Link>
+      <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, overflow: 'hidden' }}>
+        <div style={{ padding: '12px 16px', borderBottom: '1px solid var(--gray-100)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div style={{ fontSize: 9.5, fontWeight: 700, color: 'var(--gray-400)', letterSpacing: '.1em', textTransform: 'uppercase', fontFamily: "'DM Mono', monospace" }}>
+            Últimas transações
+          </div>
+          <Link href="/dashboard/cashflow" style={{ fontSize: 11, color: 'var(--teal)', textDecoration: 'none' }}>Ver todas →</Link>
         </div>
         {transacoes.length === 0 ? (
-          <div className="text-center py-8 text-slate-400">
-            <FileText size={32} className="mx-auto mb-2 opacity-50 text-slate-300" />
-            <p className="text-sm">Nenhuma transação este mês</p>
-            <button
-              type="button"
-              onClick={() => router.push('/dashboard/cashflow')}
-              className="mt-3 text-blue-700 text-sm hover:underline"
-            >
+          <div style={{ textAlign: 'center', padding: '32px 16px', color: 'var(--gray-400)', fontSize: 13 }}>
+            <p>Nenhuma transação este mês</p>
+            <button type="button" onClick={() => router.push('/dashboard/cashflow')} style={{ marginTop: 8, color: 'var(--teal)', background: 'none', border: 'none', cursor: 'pointer', fontSize: 12 }}>
               Adicionar transação
             </button>
           </div>
         ) : (
-          <div className="space-y-2">
-            {transacoes.map((t) => (
-              <div
-                key={t.id}
-                className="flex items-center justify-between py-2.5 border-b border-slate-100 last:border-0"
-              >
-                <div className="flex items-center gap-3 min-w-0">
-                  <div
-                    className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${
-                      t.tipo === 'entrada' ? 'bg-emerald-100' : 'bg-red-100'
-                    }`}
-                  >
-                    {t.tipo === 'entrada' ? (
-                      <CheckCircle2 size={14} className="text-emerald-600" />
-                    ) : Number(t.valor) > 50000 ? (
-                      <Zap size={14} className="text-amber-600" />
-                    ) : (
-                      <TrendingDown size={14} className="text-red-600" />
-                    )}
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-slate-800 text-sm font-medium truncate">{tituloTransacao(t)}</p>
-                    <p className="text-slate-400 text-xs truncate">{subtituloTransacao(t)}</p>
-                  </div>
-                </div>
-                <span
-                  className={`font-semibold text-sm shrink-0 tabular-nums ${
-                    t.tipo === 'entrada' ? 'text-emerald-600' : 'text-red-600'
-                  }`}
-                >
-                  {t.tipo === 'entrada' ? '+' : '-'}
-                  {fmtBRL(Number(t.valor))}
-                </span>
+          transacoes.map((t) => (
+            <div
+              key={t.id}
+              style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px', borderBottom: '1px solid var(--gray-100)', cursor: 'pointer' }}
+              onClick={() => setSelectedTx(t)}
+            >
+              <div style={{ flex: 1 }}>
+                <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--navy)', marginBottom: 2 }}>{tituloTransacao(t)}</div>
+                <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>{subtituloTransacao(t)}</div>
               </div>
-            ))}
-          </div>
+              <div style={{ fontFamily: "'Sora', sans-serif", fontSize: 13, fontWeight: 700, color: t.tipo === 'entrada' ? 'var(--fo-green)' : 'var(--fo-red)' }}>
+                {t.tipo === 'entrada' ? '+' : '-'}{fmtBRL(Number(t.valor))}
+              </div>
+            </div>
+          ))
         )}
       </div>
+
+      {selectedTx && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+          <div className="w-full max-w-lg rounded-2xl border border-[var(--fo-border)] bg-white p-5 shadow-lg">
+            <div className="mb-3 flex items-start justify-between gap-3">
+              <div>
+                <h3 className="text-lg font-semibold text-[var(--fo-text)]">Detalhe da transação</h3>
+                <p className="text-xs text-[var(--fo-text-muted)]">Dados do lançamento selecionado</p>
+              </div>
+              <button
+                type="button"
+                className="rounded-lg border border-[var(--fo-border)] px-2 py-1 text-xs text-[var(--fo-text-muted)]"
+                onClick={() => setSelectedTx(null)}
+              >
+                Fechar
+              </button>
+            </div>
+            <div className="space-y-2 text-sm">
+              <Detail label="Título" value={tituloTransacao(selectedTx)} />
+              <Detail label="Descrição original" value={selectedTx.descricao || '—'} />
+              <Detail label="Categoria" value={selectedTx.categoria || '—'} />
+              <Detail label="Tipo" value={selectedTx.tipo === 'entrada' ? 'Entrada' : 'Saída'} />
+              <Detail label="Data" value={new Date(selectedTx.data).toLocaleDateString('pt-BR')} />
+              <Detail label="Valor" value={`${selectedTx.tipo === 'entrada' ? '+' : '-'}${fmtBRL(Number(selectedTx.valor || 0))}`} />
+            </div>
+            <div className="mt-4 flex justify-end gap-2">
+              <button
+                type="button"
+                onClick={() => router.push('/dashboard/cashflow')}
+                className="rounded-xl border border-[var(--fo-border)] px-3 py-2 text-sm font-medium text-[var(--fo-text)]"
+              >
+                Abrir fluxo de caixa
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
+function Detail({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2">
+      <span className="text-[var(--fo-text-muted)]">{label}</span>
+      <span className="font-medium text-[var(--fo-text)] text-right">{value}</span>
     </div>
   )
 }
