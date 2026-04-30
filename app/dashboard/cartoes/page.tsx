@@ -239,7 +239,6 @@ export default function CartoesPage() {
             </LoadingButton>
           </div>
         </div>
-      </div>
     </>
   )
 }
