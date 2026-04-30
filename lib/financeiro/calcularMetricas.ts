@@ -53,8 +53,17 @@ export async function calcularMetricasMes(
   const supabase = getAdminSupabase()
   const { ini, fim, key } = toMonthBounds(competencia)
 
+  // transacoes usa auth.user.id como empresa_id — busca o user da empresa
+  const { data: usuarioRow } = await supabase
+    .from('usuarios')
+    .select('id')
+    .eq('empresa_id', empresaId)
+    .limit(1)
+    .maybeSingle()
+  const transacoesKey = usuarioRow?.id ?? empresaId
+
   const [txRes, despRes, notasRes, lancRes] = await Promise.all([
-    supabase.from('transacoes').select('tipo,valor,categoria,data').eq('empresa_id', empresaId).gte('data', ini).lte('data', fim),
+    supabase.from('transacoes').select('tipo,valor,categoria,data').eq('empresa_id', transacoesKey).gte('data', ini).lte('data', fim),
     supabase.from('despesas').select('valor,status,data,data_despesa').eq('empresa_id', empresaId).in('status', ['aprovado', 'pago']).gte('data', ini).lte('data', fim),
     supabase.from('notas_emitidas').select('valor_total,status,competencia,created_at').eq('empresa_id', empresaId).eq('status', 'autorizada').gte('created_at', `${ini}T00:00:00`).lte('created_at', `${fim}T23:59:59`).then((r) => ({ data: r.error ? [] : r.data, error: null })),
     supabase.from('lancamentos').select('valor,origem,descricao').eq('empresa_id', empresaId).gte('competencia', ini).lte('competencia', fim).then((r) => ({ data: r.error ? [] : r.data, error: null })),

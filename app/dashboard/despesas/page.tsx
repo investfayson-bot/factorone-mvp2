@@ -340,7 +340,7 @@ export default function DespesasPage() {
     const { data: tx, error: e1 } = await supabase
       .from('transacoes')
       .insert({
-        empresa_id: empresaId,
+        empresa_id: userId,
         data: hoje,
         descricao: `Despesa: ${row.descricao}`,
         categoria: row.categoria,
@@ -414,7 +414,7 @@ export default function DespesasPage() {
       const { data: tx } = await supabase
         .from('transacoes')
         .insert({
-          empresa_id: empresaId,
+          empresa_id: userId,
           data: hoje,
           descricao: `Despesa: ${row.descricao}`,
           categoria: row.categoria,

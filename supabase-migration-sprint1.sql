@@ -1,32 +1,8 @@
--- FactorOne Sprint 1 Migration
--- Cole no SQL Editor do Supabase e clique Run ANTES de testar os módulos
+-- FactorOne Sprint 1 Migration (versão final)
+-- Só cria tabelas que faltam e adiciona colunas em despesas
+-- NÃO altera transactions/transacoes
 
--- 1. Remove FKs antigas PRIMEIRO (antes de migrar dados)
-ALTER TABLE public.transactions DROP CONSTRAINT IF EXISTS transacoes_empresa_id_fkey;
-ALTER TABLE public.transactions DROP CONSTRAINT IF EXISTS transactions_empresa_id_fkey;
-
--- 2. Migra dados: auth.user.id → empresas.id
-UPDATE public.transactions t
-SET empresa_id = u.empresa_id
-FROM public.usuarios u
-WHERE t.empresa_id = u.id
-  AND u.empresa_id IS NOT NULL;
-
--- 3. Remove rows órfãs que não têm empresa correspondente
-DELETE FROM public.transactions
-WHERE empresa_id NOT IN (SELECT id FROM public.empresas);
-
--- 4. Adiciona novo FK apontando para empresas
-ALTER TABLE public.transactions ADD CONSTRAINT transactions_empresa_id_fkey
-  FOREIGN KEY (empresa_id) REFERENCES public.empresas(id) ON DELETE CASCADE;
-
--- 5. Atualiza RLS
-DROP POLICY IF EXISTS "user_own_data" ON public.transactions;
-DROP POLICY IF EXISTS "transacoes_empresa" ON public.transactions;
-CREATE POLICY "transacoes_empresa" ON public.transactions FOR ALL
-  USING (empresa_id IN (SELECT empresa_id FROM public.usuarios WHERE id = auth.uid()));
-
--- 2. Centros de custo
+-- 1. Centros de custo
 CREATE TABLE IF NOT EXISTS centros_custo (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   empresa_id uuid REFERENCES empresas(id) ON DELETE CASCADE,
@@ -39,7 +15,7 @@ DROP POLICY IF EXISTS "centros_custo_empresa" ON centros_custo;
 CREATE POLICY "centros_custo_empresa" ON centros_custo FOR ALL
   USING (empresa_id IN (SELECT empresa_id FROM usuarios WHERE id = auth.uid()));
 
--- 3. Metricas financeiras (DRE)
+-- 2. Metricas financeiras (DRE)
 CREATE TABLE IF NOT EXISTS metricas_financeiras (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   empresa_id uuid REFERENCES empresas(id) ON DELETE CASCADE,
@@ -73,7 +49,7 @@ DROP POLICY IF EXISTS "metricas_financeiras_empresa" ON metricas_financeiras;
 CREATE POLICY "metricas_financeiras_empresa" ON metricas_financeiras FOR ALL
   USING (empresa_id IN (SELECT empresa_id FROM usuarios WHERE id = auth.uid()));
 
--- 4. Lancamentos contabeis
+-- 3. Lancamentos contabeis
 CREATE TABLE IF NOT EXISTS lancamentos (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   empresa_id uuid REFERENCES empresas(id) ON DELETE CASCADE,
@@ -92,7 +68,7 @@ DROP POLICY IF EXISTS "lancamentos_empresa" ON lancamentos;
 CREATE POLICY "lancamentos_empresa" ON lancamentos FOR ALL
   USING (empresa_id IN (SELECT empresa_id FROM usuarios WHERE id = auth.uid()));
 
--- 5. Plano de contas
+-- 4. Plano de contas
 CREATE TABLE IF NOT EXISTS plano_contas (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   empresa_id uuid REFERENCES empresas(id) ON DELETE CASCADE,
@@ -106,7 +82,7 @@ DROP POLICY IF EXISTS "plano_contas_empresa" ON plano_contas;
 CREATE POLICY "plano_contas_empresa" ON plano_contas FOR ALL
   USING (empresa_id IN (SELECT empresa_id FROM usuarios WHERE id = auth.uid()));
 
--- 6. Colunas extras na tabela despesas (que o app espera)
+-- 5. Colunas extras na tabela despesas
 ALTER TABLE despesas ADD COLUMN IF NOT EXISTS data_despesa date;
 ALTER TABLE despesas ADD COLUMN IF NOT EXISTS data_vencimento date;
 ALTER TABLE despesas ADD COLUMN IF NOT EXISTS data_pagamento date;
@@ -121,11 +97,8 @@ ALTER TABLE despesas ADD COLUMN IF NOT EXISTS transaction_id uuid;
 ALTER TABLE despesas ADD COLUMN IF NOT EXISTS recorrente boolean DEFAULT false;
 ALTER TABLE despesas ADD COLUMN IF NOT EXISTS recorrencia_tipo text;
 ALTER TABLE despesas ADD COLUMN IF NOT EXISTS centro_custo_id uuid REFERENCES centros_custo(id);
-
--- Atualiza status default de despesas para workflow de aprovacao
 ALTER TABLE despesas ALTER COLUMN status SET DEFAULT 'pendente_aprovacao';
 
--- Atualiza RLS de despesas (caso tenha policy antiga)
 DROP POLICY IF EXISTS "despesas_empresa" ON despesas;
 CREATE POLICY "despesas_empresa" ON despesas FOR ALL
   USING (empresa_id IN (SELECT empresa_id FROM usuarios WHERE id = auth.uid()));

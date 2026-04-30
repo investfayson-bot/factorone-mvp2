@@ -35,21 +35,14 @@ export default function CashflowPage() {
   const carregar = useCallback(async () => {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return
-
-    const { data: u } = await supabase
-      .from('usuarios')
-      .select('empresa_id')
-      .eq('id', user.id)
-      .maybeSingle()
-    const empresa = u?.empresa_id ?? user.id
-    setEmpresaId(empresa)
+    setEmpresaId(user.id)
 
     const dt = new Date()
     dt.setDate(dt.getDate() - Number(filtroPeriodo))
     const { data } = await supabase
       .from('transacoes')
       .select('*')
-      .eq('empresa_id', empresa)
+      .eq('empresa_id', user.id)
       .gte('data', dt.toISOString().slice(0, 10))
       .order('data', { ascending: true })
     setTransacoes((data as Transacao[]) || [])
@@ -60,9 +53,10 @@ export default function CashflowPage() {
   }, [carregar])
 
   async function criarTransacao() {
-    if (!empresaId) return
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return
     await supabase.from('transacoes').insert({
-      empresa_id: empresaId,
+      empresa_id: user.id,
       data: form.data,
       descricao: form.descricao,
       categoria: form.categoria,
