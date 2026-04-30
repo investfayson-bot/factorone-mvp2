@@ -2,11 +2,10 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { supabase } from '@/lib/supabase'
-import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
+import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import { fmtBRLCompact } from '@/lib/dre-calculations'
 
 type Props = { empresaId: string }
-
 type Row = { mes: string; entradas: number; saidas: number }
 
 function mesKey(d: Date) {
@@ -21,6 +20,7 @@ function labelMes(key: string) {
 export default function EntradasSaidasChart({ empresaId }: Props) {
   const [loading, setLoading] = useState(true)
   const [rows, setRows] = useState<Row[]>([])
+  const [error, setError] = useState<string | null>(null)
   const [ready, setReady] = useState(false)
   const containerRef = useRef<HTMLDivElement | null>(null)
 
@@ -28,22 +28,26 @@ export default function EntradasSaidasChart({ empresaId }: Props) {
     let cancelled = false
     async function load() {
       setLoading(true)
+      setError(null)
       try {
         const end = new Date()
         const start = new Date(end.getFullYear(), end.getMonth() - 5, 1)
-        const { data: txs } = await supabase
-          .from('transacoes')
-          .select('data,tipo,valor')
-          .eq('empresa_id', empresaId)
-          .gte('data', start.toISOString().slice(0, 10))
-          .order('data', { ascending: true })
+        const fromDate = start.toISOString().slice(0, 10)
+
+        const fetchTx = async (table: 'transactions' | 'transacoes') =>
+          supabase.from(table).select('data,tipo,valor').eq('empresa_id', empresaId).gte('data', fromDate).order('data', { ascending: true })
+
+        const first = await fetchTx('transactions')
+        const second = first.error ? await fetchTx('transacoes') : first
+        if (second.error) throw second.error
+        const txs = second.data || []
 
         const acc = new Map<string, { e: number; s: number }>()
         for (let i = 5; i >= 0; i--) {
           const d = new Date(end.getFullYear(), end.getMonth() - i, 1)
           acc.set(mesKey(d), { e: 0, s: 0 })
         }
-        for (const t of txs || []) {
+        for (const t of txs) {
           const mk = (t.data as string).slice(0, 7)
           if (!acc.has(mk)) continue
           const cur = acc.get(mk) || { e: 0, s: 0 }
@@ -56,14 +60,14 @@ export default function EntradasSaidasChart({ empresaId }: Props) {
           .sort(([a], [b]) => a.localeCompare(b))
           .map(([mes, v]) => ({ mes: labelMes(mes), entradas: v.e, saidas: v.s }))
         if (!cancelled) setRows(ordered)
+      } catch (err: unknown) {
+        if (!cancelled) setError(err instanceof Error ? err.message : 'Falha ao carregar gráfico')
       } finally {
         if (!cancelled) setLoading(false)
       }
     }
     if (empresaId) load()
-    return () => {
-      cancelled = true
-    }
+    return () => { cancelled = true }
   }, [empresaId])
 
   const chartData = useMemo(() => rows, [rows])
@@ -80,38 +84,47 @@ export default function EntradasSaidasChart({ empresaId }: Props) {
 
   if (loading) {
     return (
-      <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm h-[320px] animate-pulse">
-        <div className="h-4 w-48 bg-slate-200 rounded mb-4" />
-        <div className="h-[240px] bg-slate-100 rounded-xl" />
+      <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: 20, height: 280 }} className="animate-pulse">
+        <div style={{ height: 12, width: 160, background: 'var(--gray-100)', borderRadius: 6, marginBottom: 14 }} />
+        <div style={{ height: 220, background: 'var(--gray-100)', borderRadius: 8 }} />
       </div>
     )
   }
 
   return (
-    <div className="min-w-0 bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
-      <h2 className="font-semibold text-slate-800 text-sm mb-1">Entradas vs Saídas</h2>
-      <p className="text-xs text-slate-500 mb-4">Últimos 6 meses · valores no período</p>
-      <div ref={containerRef} className="h-[260px] w-full min-w-0">
-        {chartData.length === 0 || !chartData.some((r) => r.entradas + r.saidas > 0) ? (
-          <p className="text-sm text-slate-500 py-12 text-center">Sem transações no período.</p>
+    <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: 20, minWidth: 0 }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+        <div style={{ fontSize: 9, fontWeight: 700, color: 'var(--gray-400)', letterSpacing: '.08em', textTransform: 'uppercase', fontFamily: "'DM Mono', monospace" }}>
+          Entradas vs Saídas — 6 meses
+        </div>
+        <div style={{ display: 'flex', gap: 12 }}>
+          {[{ color: '#5E8C87', label: 'Entradas' }, { color: 'rgba(184,146,42,.5)', label: 'Saídas' }].map(l => (
+            <div key={l.label} style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 10, color: 'var(--gray-400)' }}>
+              <span style={{ width: 8, height: 8, borderRadius: 2, background: l.color, display: 'inline-block' }} />
+              {l.label}
+            </div>
+          ))}
+        </div>
+      </div>
+      <div ref={containerRef} style={{ height: 220, width: '100%', minWidth: 0 }}>
+        {error ? (
+          <p style={{ fontSize: 12, color: 'var(--fo-red)', textAlign: 'center', paddingTop: 48 }}>Erro ao carregar dados do gráfico.</p>
+        ) : chartData.length === 0 || !chartData.some((r) => r.entradas + r.saidas > 0) ? (
+          <p style={{ fontSize: 12, color: 'var(--gray-400)', textAlign: 'center', paddingTop: 48 }}>Sem transações no período.</p>
         ) : !ready ? (
-          <div className="h-full w-full animate-pulse rounded-xl bg-slate-100" />
+          <div style={{ height: '100%', background: 'var(--gray-100)', borderRadius: 8 }} className="animate-pulse" />
         ) : (
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={chartData} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
-              <XAxis dataKey="mes" tick={{ fontSize: 10, fill: '#64748b' }} />
-              <YAxis
-                tick={{ fontSize: 10, fill: '#64748b' }}
-                tickFormatter={(v) => fmtBRLCompact(Number(v))}
-              />
+            <BarChart data={chartData} margin={{ top: 4, right: 4, left: 0, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--gray-100)" vertical={false} />
+              <XAxis dataKey="mes" tick={{ fontSize: 10, fill: 'var(--gray-400)', fontFamily: "'DM Mono', monospace" }} />
+              <YAxis tick={{ fontSize: 10, fill: 'var(--gray-400)', fontFamily: "'DM Mono', monospace" }} tickFormatter={(v) => fmtBRLCompact(Number(v))} />
               <Tooltip
                 formatter={(value: number) => fmtBRLCompact(value)}
-                contentStyle={{ borderRadius: 12, border: '1px solid #e2e8f0' }}
+                contentStyle={{ borderRadius: 8, border: '1px solid var(--gray-100)', fontFamily: "'Inter', sans-serif", fontSize: 12 }}
               />
-              <Legend wrapperStyle={{ fontSize: 12 }} />
-              <Bar dataKey="entradas" name="Entradas" fill="#10b981" radius={[4, 4, 0, 0]} />
-              <Bar dataKey="saidas" name="Saídas" fill="#f87171" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="entradas" name="Entradas" fill="#5E8C87" radius={[3, 3, 0, 0]} />
+              <Bar dataKey="saidas" name="Saídas" fill="rgba(184,146,42,.45)" radius={[3, 3, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         )}
