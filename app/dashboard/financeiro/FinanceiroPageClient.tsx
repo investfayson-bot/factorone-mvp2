@@ -8,7 +8,6 @@ import NovaContaPagarModal from '@/components/financeiro/NovaContaPagarModal'
 import NovaContaReceberModal from '@/components/financeiro/NovaContaReceberModal'
 import Conciliacao from '@/components/financeiro/Conciliacao'
 import AgingReport from '@/components/financeiro/AgingReport'
-import DashboardPageHeader from '@/components/dashboard/DashboardPageHeader'
 
 type ContaPagar = {
   id: string
@@ -38,6 +37,11 @@ async function authHeaders(): Promise<Record<string, string>> {
   return t ? { Authorization: `Bearer ${t}` } : {}
 }
 
+function statusTagFin(status: string) {
+  const map: Record<string, string> = { pendente: 'amber', vencida: 'red', paga: 'green', recebida: 'green', cancelada: 'gray' }
+  return <span className={`tag ${map[status] || 'gray'}`}>{status}</span>
+}
+
 function FinanceiroInner() {
   const searchParams = useSearchParams()
   const tabParam = searchParams.get('tab')
@@ -65,17 +69,11 @@ function FinanceiroInner() {
     setReceber((r.data || []) as ContaReceber[])
   }, [fStatusPagar, fStatusReceber])
 
-  useEffect(() => {
-    void carregar()
-  }, [carregar])
+  useEffect(() => { void carregar() }, [carregar])
 
   const kpis = useMemo(() => {
-    const pagarPend = pagar
-      .filter((x) => x.status === 'pendente' || x.status === 'vencida')
-      .reduce((s, x) => s + Number(x.valor || 0) - Number(x.valor_pago || 0), 0)
-    const receberPend = receber
-      .filter((x) => x.status === 'pendente' || x.status === 'vencida')
-      .reduce((s, x) => s + Number(x.valor || 0) - Number(x.valor_recebido || 0), 0)
+    const pagarPend = pagar.filter((x) => x.status === 'pendente' || x.status === 'vencida').reduce((s, x) => s + Number(x.valor || 0) - Number(x.valor_pago || 0), 0)
+    const receberPend = receber.filter((x) => x.status === 'pendente' || x.status === 'vencida').reduce((s, x) => s + Number(x.valor || 0) - Number(x.valor_recebido || 0), 0)
     const vencidasPagar = pagar.filter((x) => x.status === 'vencida').reduce((s, x) => s + Number(x.valor || 0), 0)
     const vencidasReceber = receber.filter((x) => x.status === 'vencida').reduce((s, x) => s + Number(x.valor || 0), 0)
     const recebidoMes = receber.filter((x) => x.status === 'recebida').reduce((s, x) => s + Number(x.valor_recebido || 0), 0)
@@ -86,124 +84,95 @@ function FinanceiroInner() {
   async function registrarPagamento(id: string, valor: number) {
     const data = new Date().toISOString().slice(0, 10)
     const h = await authHeaders()
-    await fetch(`/api/financeiro/pagar/${id}/pagar`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', ...h },
-      body: JSON.stringify({ data_pagamento: data, valor_pago: valor, tipo_pagamento: 'pix' }),
-    })
+    await fetch(`/api/financeiro/pagar/${id}/pagar`, { method: 'POST', headers: { 'Content-Type': 'application/json', ...h }, body: JSON.stringify({ data_pagamento: data, valor_pago: valor, tipo_pagamento: 'pix' }) })
     await carregar()
   }
   async function registrarRecebimento(id: string, valor: number, vencida: boolean) {
     const data = new Date().toISOString().slice(0, 10)
     const h = await authHeaders()
-    await fetch(`/api/financeiro/receber/${id}/receber`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', ...h },
-      body: JSON.stringify({ data_recebimento: data, valor_recebido: valor, cobrar_juros: vencida }),
-    })
+    await fetch(`/api/financeiro/receber/${id}/receber`, { method: 'POST', headers: { 'Content-Type': 'application/json', ...h }, body: JSON.stringify({ data_recebimento: data, valor_recebido: valor, cobrar_juros: vencida }) })
     await carregar()
   }
   async function enviarCobranca(id: string) {
     const h = await authHeaders()
-    await fetch('/api/financeiro/cobranca', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', ...h },
-      body: JSON.stringify({ action: 'enviar', conta_receber_id: id }),
-    })
+    await fetch('/api/financeiro/cobranca', { method: 'POST', headers: { 'Content-Type': 'application/json', ...h }, body: JSON.stringify({ action: 'enviar', conta_receber_id: id }) })
     alert('Cobrança processada')
   }
 
   return (
-    <div className="mx-auto max-w-7xl space-y-6 p-6 md:p-8">
-      <DashboardPageHeader
-        title="Financeiro"
-        subtitle="Contas a pagar e receber · conciliação e aging"
-        badge="tempo-real"
-      >
-        <button
-          type="button"
-          className="rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-800 shadow-sm hover:bg-gray-50"
-          onClick={() => setOpenPagar(true)}
-        >
-          + A pagar
-        </button>
-        <button
-          type="button"
-          className="rounded-xl bg-emerald-700 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-emerald-800"
-          onClick={() => setOpenReceber(true)}
-        >
-          + A receber
-        </button>
-      </DashboardPageHeader>
+    <>
+      {/* Header */}
+      <div className="page-hdr">
+        <div>
+          <div className="page-title">Contas Pagar / Receber</div>
+          <div className="page-sub">Conciliação bancária · Aging report · Tempo real</div>
+        </div>
+        <div style={{ display: 'flex', gap: 8 }}>
+          <button className="btn-action btn-ghost" onClick={() => setOpenPagar(true)}>+ A pagar</button>
+          <button className="btn-action" onClick={() => setOpenReceber(true)}>+ A receber</button>
+        </div>
+      </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+      {/* KPIs */}
+      <div className="kpis" style={{ gridTemplateColumns: 'repeat(6, 1fr)' }}>
         {[
-          { k: 'A pagar (pendente)', v: kpis.pagarPend, warn: false },
-          { k: 'A receber (pendente)', v: kpis.receberPend, warn: false },
-          { k: 'Vencidas a pagar', v: kpis.vencidasPagar, warn: true },
-          { k: 'Vencidas a receber', v: kpis.vencidasReceber, warn: true },
-          { k: 'Recebido no mês', v: kpis.recebidoMes, warn: false },
-          { k: 'Pago no mês', v: kpis.pagoMes, warn: false },
+          { k: 'A pagar', v: kpis.pagarPend, warn: false },
+          { k: 'A receber', v: kpis.receberPend, warn: false },
+          { k: 'Vencidas pagar', v: kpis.vencidasPagar, warn: true },
+          { k: 'Vencidas receber', v: kpis.vencidasReceber, warn: true },
+          { k: 'Recebido mês', v: kpis.recebidoMes, warn: false },
+          { k: 'Pago mês', v: kpis.pagoMes, warn: false },
         ].map((row) => (
-          <div
-            key={row.k}
-            className="rounded-2xl border border-gray-200/90 bg-white p-4 shadow-sm transition-all hover:border-emerald-200/80 hover:shadow-md"
-          >
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-gray-500">{row.k}</p>
-            <p className={`mt-2 text-xl font-bold tracking-tight ${row.warn ? 'text-red-600' : 'text-gray-900'}`}>
-              {formatBRL(row.v)}
-            </p>
+          <div key={row.k} className="kpi">
+            <div className="kpi-lbl">{row.k}</div>
+            <div className="kpi-val" style={{ color: row.warn && row.v > 0 ? 'var(--red)' : 'var(--navy)', fontSize: 18 }}>{formatBRL(row.v)}</div>
+            <div className={`kpi-delta ${row.warn && row.v > 0 ? 'dn' : 'up'}`}>{row.warn && row.v > 0 ? '⚠ atenção' : '✓ ok'}</div>
           </div>
         ))}
       </div>
 
+      {/* Tabs */}
+      <div style={{ display: 'flex', gap: 6, marginBottom: 14 }}>
+        {(['resumo', 'pagar', 'receber', 'conciliacao', 'aging'] as const).map((t) => (
+          <button key={t} className={`btn-action${tab !== t ? ' btn-ghost' : ''}`} style={{ fontSize: 11, padding: '5px 12px', textTransform: 'capitalize' }} onClick={() => setTab(t)}>{t}</button>
+        ))}
+      </div>
+
       {tab === 'resumo' && (
-        <div className="rounded-2xl border border-gray-200/90 bg-white p-5 text-sm text-gray-600 shadow-sm">
+        <div className="chart-card" style={{ fontSize: 13, color: 'var(--gray-500)' }}>
           Resumo consolidado: use as abas acima para A Pagar, A Receber, Conciliação bancária e Aging Report.
         </div>
       )}
 
       {tab === 'pagar' && (
-        <div className="space-y-3">
-          <div className="flex gap-2">
-            <select className="rounded border px-3 py-2" value={fStatusPagar} onChange={(e) => setFStatusPagar(e.target.value)}>
+        <>
+          <div style={{ marginBottom: 10 }}>
+            <select className="form-input" style={{ width: 'auto', padding: '6px 10px', fontSize: 12 }} value={fStatusPagar} onChange={(e) => setFStatusPagar(e.target.value)}>
               <option value="todas">Todas</option>
               <option value="pendente">Pendente</option>
               <option value="vencida">Vencida</option>
               <option value="paga">Paga</option>
             </select>
           </div>
-          <div className="overflow-x-auto rounded-2xl border bg-white">
-            <table className="min-w-full text-sm">
+          <div className="expenses-table">
+            <table>
               <thead>
-                <tr className="border-b bg-slate-50">
-                  <th className="p-2 text-left">Fornecedor</th>
-                  <th className="p-2 text-left">Descrição</th>
-                  <th className="p-2 text-left">Categoria</th>
-                  <th className="p-2 text-left">Vencimento</th>
-                  <th className="p-2 text-right">Valor</th>
-                  <th className="p-2 text-center">Status</th>
-                  <th className="p-2">Ações</th>
-                </tr>
+                <tr><th>Fornecedor</th><th>Descrição</th><th>Categoria</th><th>Vencimento</th><th>Valor</th><th>Status</th><th>Ações</th></tr>
               </thead>
               <tbody>
-                {pagar.map((c) => (
-                  <tr key={c.id} className="border-b">
-                    <td className="p-2">{c.fornecedor_nome}</td>
-                    <td className="p-2">{c.descricao}</td>
-                    <td className="p-2">{c.categoria}</td>
-                    <td className="p-2">{c.data_vencimento}</td>
-                    <td className="p-2 text-right">{formatBRL(Number(c.valor || 0))}</td>
-                    <td className="p-2 text-center">{c.status}</td>
-                    <td className="p-2 text-center">
+                {pagar.length === 0 ? (
+                  <tr><td colSpan={7} style={{ textAlign: 'center', color: 'var(--gray-400)', padding: 32 }}>Nenhuma conta a pagar.</td></tr>
+                ) : pagar.map((c) => (
+                  <tr key={c.id}>
+                    <td style={{ fontWeight: 600 }}>{c.fornecedor_nome}</td>
+                    <td>{c.descricao}</td>
+                    <td>{c.categoria}</td>
+                    <td style={{ fontFamily: "'DM Mono', monospace" }}>{c.data_vencimento}</td>
+                    <td style={{ fontWeight: 700, color: 'var(--red)', fontFamily: "'Sora', sans-serif" }}>{formatBRL(Number(c.valor || 0))}</td>
+                    <td>{statusTagFin(c.status)}</td>
+                    <td>
                       {c.status !== 'paga' && (
-                        <button
-                          type="button"
-                          className="rounded border px-2 py-1 text-xs"
-                          onClick={() => void registrarPagamento(c.id, Number(c.valor || 0) - Number(c.valor_pago || 0))}
-                        >
-                          Registrar pagamento
-                        </button>
+                        <button className="btn-action btn-ghost" style={{ fontSize: 11, padding: '4px 10px' }} onClick={() => void registrarPagamento(c.id, Number(c.valor || 0) - Number(c.valor_pago || 0))}>Pagar</button>
                       )}
                     </td>
                   </tr>
@@ -211,57 +180,41 @@ function FinanceiroInner() {
               </tbody>
             </table>
           </div>
-        </div>
+        </>
       )}
 
       {tab === 'receber' && (
-        <div className="space-y-3">
-          <div className="flex gap-2">
-            <select className="rounded border px-3 py-2" value={fStatusReceber} onChange={(e) => setFStatusReceber(e.target.value)}>
+        <>
+          <div style={{ marginBottom: 10 }}>
+            <select className="form-input" style={{ width: 'auto', padding: '6px 10px', fontSize: 12 }} value={fStatusReceber} onChange={(e) => setFStatusReceber(e.target.value)}>
               <option value="todas">Todas</option>
               <option value="pendente">Pendente</option>
               <option value="vencida">Vencida</option>
               <option value="recebida">Recebida</option>
             </select>
           </div>
-          <div className="overflow-x-auto rounded-2xl border bg-white">
-            <table className="min-w-full text-sm">
+          <div className="expenses-table">
+            <table>
               <thead>
-                <tr className="border-b bg-slate-50">
-                  <th className="p-2 text-left">Cliente</th>
-                  <th className="p-2 text-left">Descrição</th>
-                  <th className="p-2 text-left">Vencimento</th>
-                  <th className="p-2 text-center">Dias atraso</th>
-                  <th className="p-2 text-right">Valor</th>
-                  <th className="p-2 text-center">Status</th>
-                  <th className="p-2">Ações</th>
-                </tr>
+                <tr><th>Cliente</th><th>Descrição</th><th>Vencimento</th><th>Dias atraso</th><th>Valor</th><th>Status</th><th>Ações</th></tr>
               </thead>
               <tbody>
-                {receber.map((c) => (
-                  <tr key={c.id} className="border-b">
-                    <td className="p-2">{c.cliente_nome}</td>
-                    <td className="p-2">{c.descricao}</td>
-                    <td className="p-2">{c.data_vencimento}</td>
-                    <td className="p-2 text-center">{c.dias_atraso || 0}</td>
-                    <td className="p-2 text-right">{formatBRL(Number(c.valor || 0))}</td>
-                    <td className="p-2 text-center">{c.status}</td>
-                    <td className="p-2 text-center">
-                      <div className="flex justify-center gap-1">
+                {receber.length === 0 ? (
+                  <tr><td colSpan={7} style={{ textAlign: 'center', color: 'var(--gray-400)', padding: 32 }}>Nenhuma conta a receber.</td></tr>
+                ) : receber.map((c) => (
+                  <tr key={c.id}>
+                    <td style={{ fontWeight: 600 }}>{c.cliente_nome}</td>
+                    <td>{c.descricao}</td>
+                    <td style={{ fontFamily: "'DM Mono', monospace" }}>{c.data_vencimento}</td>
+                    <td style={{ color: c.dias_atraso > 0 ? 'var(--red)' : 'var(--navy)', fontFamily: "'DM Mono', monospace" }}>{c.dias_atraso || 0}</td>
+                    <td style={{ fontWeight: 700, color: 'var(--green)', fontFamily: "'Sora', sans-serif" }}>{formatBRL(Number(c.valor || 0))}</td>
+                    <td>{statusTagFin(c.status)}</td>
+                    <td>
+                      <div style={{ display: 'flex', gap: 6 }}>
                         {c.status !== 'recebida' && (
-                          <button
-                            type="button"
-                            className="rounded border px-2 py-1 text-xs"
-                            onClick={() =>
-                              void registrarRecebimento(c.id, Number(c.valor || 0) - Number(c.valor_recebido || 0), c.status === 'vencida')
-                            }
-                          >
-                            Registrar recebimento
-                          </button>
+                          <button className="btn-action btn-ghost" style={{ fontSize: 11, padding: '4px 10px' }} onClick={() => void registrarRecebimento(c.id, Number(c.valor || 0) - Number(c.valor_recebido || 0), c.status === 'vencida')}>Receber</button>
                         )}
-                        <button type="button" className="rounded border px-2 py-1 text-xs" onClick={() => void enviarCobranca(c.id)}>
-                          Enviar cobrança
-                        </button>
+                        <button className="btn-action btn-ghost" style={{ fontSize: 11, padding: '4px 10px' }} onClick={() => void enviarCobranca(c.id)}>Cobrar</button>
                       </div>
                     </td>
                   </tr>
@@ -269,7 +222,7 @@ function FinanceiroInner() {
               </tbody>
             </table>
           </div>
-        </div>
+        </>
       )}
 
       {tab === 'conciliacao' && <Conciliacao />}
@@ -277,13 +230,13 @@ function FinanceiroInner() {
 
       <NovaContaPagarModal open={openPagar} onClose={() => setOpenPagar(false)} onSaved={carregar} />
       <NovaContaReceberModal open={openReceber} onClose={() => setOpenReceber(false)} onSaved={carregar} />
-    </div>
+    </>
   )
 }
 
 export default function FinanceiroPageClient() {
   return (
-    <Suspense fallback={<div className="p-6 text-sm text-slate-600">Carregando…</div>}>
+    <Suspense fallback={<div style={{ padding: 32, color: 'var(--gray-400)', fontSize: 13 }}>Carregando…</div>}>
       <FinanceiroInner />
     </Suspense>
   )
