@@ -113,7 +113,7 @@ export default function AICFOPage() {
                 </div>
                 <div className={`msg-bubble ${m.role === 'assistant' ? 'ai' : 'user'}`}>
                   {m.role === 'assistant' && (m as { structured?: unknown }).structured
-                    ? <RespostaIA data={(m as { structured: unknown }).structured} />
+                    ? <RespostaIA data={(m as { structured: unknown }).structured as never} />
                     : m.content}
                 </div>
               </div>
