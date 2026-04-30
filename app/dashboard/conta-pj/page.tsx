@@ -42,6 +42,21 @@ export default function ContaPJPage() {
     void carregar()
   }, [carregar])
 
-  if (loading) return <div className="p-6">Carregando Conta PJ...</div>
-  return <div className="bg-slate-50">{conta ? <DashboardBancario empresaId={empresaId} empresaNome={empresaNome} empresaCnpj={empresaCnpj} conta={conta} /> : <div className="p-6 space-y-4">{contaPendente && <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">Sua solicitação de conta PJ está em análise. Enquanto isso, você pode revisar seus dados abaixo.</div>}<AberturaContaWizard /></div>}</div>
+  if (loading) return <div style={{ padding: 32, color: 'var(--gray-400)', fontSize: 13 }}>Carregando Banco PJ…</div>
+  return (
+    <>
+      {conta ? (
+        <DashboardBancario empresaId={empresaId} empresaNome={empresaNome} empresaCnpj={empresaCnpj} conta={conta} />
+      ) : (
+        <>
+          {contaPendente && (
+            <div className="alert-bar orange" style={{ marginBottom: 14 }}>
+              ⏳ Sua solicitação de conta PJ está em análise. Você pode revisar seus dados abaixo.
+            </div>
+          )}
+          <AberturaContaWizard />
+        </>
+      )}
+    </>
+  )
 }

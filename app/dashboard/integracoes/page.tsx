@@ -160,55 +160,46 @@ export default function IntegracoesPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F9FAFB]">
-      <div className="mx-auto max-w-7xl space-y-10 p-6 md:p-8">
-        {/* Cabeçalho + KPIs */}
-        <section>
-          <div className="mb-6">
-            <h1 className="text-2xl font-bold tracking-tight text-gray-900">Integrações Ativas</h1>
-            <p className="mt-1 text-sm text-gray-500">{conectados} conectados</p>
-          </div>
+    <>
+      <div className="page-hdr">
+        <div>
+          <div className="page-title">Hub de Integrações</div>
+          <div className="page-sub">{conectados} sistemas conectados · Tempo real</div>
+        </div>
+      </div>
 
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            <div className="rounded-2xl border border-gray-200/90 bg-white p-5 shadow-sm">
-              <p className="text-[11px] font-semibold uppercase tracking-wider text-gray-500">Sistemas Ativos</p>
-              <p className="mt-2 text-3xl font-bold tabular-nums text-gray-900">{conectados}</p>
-              <p className="mt-1 text-xs text-emerald-600">conectados</p>
-            </div>
-            <div className="rounded-2xl border border-gray-200/90 bg-white p-5 shadow-sm">
-              <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wider text-gray-500">
-                <RefreshCw className="h-3.5 w-3.5 text-emerald-600" />
-                Sync Hoje
-              </div>
-              <p className="mt-2 text-3xl font-bold tabular-nums text-gray-900">1.248</p>
-              <p className="mt-1 text-xs text-gray-500">transações</p>
-            </div>
-            <div className="rounded-2xl border border-gray-200/90 bg-white p-5 shadow-sm">
-              <p className="text-[11px] font-semibold uppercase tracking-wider text-gray-500">Erros</p>
-              <p className="mt-2 text-3xl font-bold tabular-nums text-gray-900">0</p>
-              <p className="mt-1 inline-flex items-center gap-1 text-xs font-medium text-emerald-600">
-                <CheckCircle2 className="h-3.5 w-3.5" />
-                limpo
-              </p>
-            </div>
-            <div className="rounded-2xl border border-gray-200/90 bg-white p-5 shadow-sm">
-              <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wider text-gray-500">
-                <Clock className="h-3.5 w-3.5 text-gray-400" />
-                Última Sync
-              </div>
-              <p className="mt-2 text-lg font-semibold text-gray-900">
-                {(() => {
-                  const times = sistemasUi.map((s) => s.ultimoSyncEm).filter(Boolean) as string[]
-                  if (!times.length) return '—'
-                  const latest = new Date(times.sort().slice(-1)[0])
-                  const diffMin = Math.max(1, Math.round((Date.now() - latest.getTime()) / 60000))
-                  return `${diffMin} min atrás`
-                })()}
-              </p>
-              <p className="mt-1 text-xs text-gray-500">atualização automática</p>
-            </div>
+      <div className="kpis">
+        <div className="kpi">
+          <div className="kpi-lbl">Sistemas ativos</div>
+          <div className="kpi-val" style={{ color: 'var(--green)' }}>{conectados}</div>
+          <div className="kpi-delta up">✓ conectados</div>
+        </div>
+        <div className="kpi">
+          <div className="kpi-lbl">Sync hoje</div>
+          <div className="kpi-val">1.248</div>
+          <div className="kpi-delta up">transações</div>
+        </div>
+        <div className="kpi">
+          <div className="kpi-lbl">Erros</div>
+          <div className="kpi-val" style={{ color: 'var(--green)' }}>0</div>
+          <div className="kpi-delta up">✓ limpo</div>
+        </div>
+        <div className="kpi">
+          <div className="kpi-lbl">Última sync</div>
+          <div className="kpi-val" style={{ fontSize: 16 }}>
+            {(() => {
+              const times = sistemasUi.map((s) => s.ultimoSyncEm).filter(Boolean) as string[]
+              if (!times.length) return '—'
+              const latest = new Date(times.sort().slice(-1)[0])
+              const diffMin = Math.max(1, Math.round((Date.now() - latest.getTime()) / 60000))
+              return `${diffMin}m atrás`
+            })()}
           </div>
-        </section>
+          <div className="kpi-delta up">automático</div>
+        </div>
+      </div>
+
+      <div style={{ marginBottom: 14 }}>
 
         {/* Lista de sistemas */}
         <section>
@@ -402,7 +393,7 @@ export default function IntegracoesPage() {
           </Link>
         </p>
       </div>
-    </div>
+    </>
   )
 }
 

@@ -104,41 +104,42 @@ export default function CartoesPage() {
   }
 
   return (
-    <div className="min-h-full bg-[#F9FAFB] p-6 md:p-8">
-      <div className="mx-auto max-w-7xl space-y-8">
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <p className="text-xs font-medium uppercase tracking-wider text-gray-500">Powered by Swap Corpway</p>
-            <h1 className="text-2xl font-bold tracking-tight text-gray-900">Cartões corporativos</h1>
-            <p className="mt-1 text-sm text-gray-600">Limites, uso por cartão virtual e cashback.</p>
-          </div>
-          <a
-            href="mailto:contato@factorone.com.br?subject=Cartões%20FactorOne"
-            className="text-sm font-semibold text-emerald-700 hover:text-emerald-800"
-          >
-            Solicitar acesso antecipado →
-          </a>
+    <>
+      <div className="page-hdr">
+        <div>
+          <div className="page-title">Cartões Corporativos</div>
+          <div className="page-sub">Powered by Swap Corpway · Limites e cashback</div>
         </div>
+        <a href="mailto:contato@factorone.com.br?subject=Cartões%20FactorOne" className="btn-action btn-ghost" style={{ fontSize: 12 }}>
+          Solicitar acesso antecipado →
+        </a>
+      </div>
 
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <Kpi label="Limite total" value={fmtBRLCompact(limiteTotal)} sub="faturamento" accent="border-t-emerald-500" />
-          <Kpi
-            label="Utilizado"
-            value={fmtBRLCompact(utilizadoTotal)}
-            sub={`${pctUso.toFixed(1)}%`}
-            accent="border-t-amber-500"
-          />
-          <Kpi
-            label="Disponível"
-            value={fmtBRLCompact(disp)}
-            sub={`${pctDisp.toFixed(1)}%`}
-            accent="border-t-sky-500"
-          />
-          <Kpi label="Cashback" value={fmtBRLCompact(RESUMO.cashbackMes)} sub="este mês" accent="border-t-violet-500" />
+      <div className="kpis">
+        <div className="kpi">
+          <div className="kpi-lbl">Limite total</div>
+          <div className="kpi-val">{fmtBRLCompact(limiteTotal)}</div>
+          <div className="kpi-delta up">faturamento</div>
         </div>
+        <div className="kpi">
+          <div className="kpi-lbl">Utilizado</div>
+          <div className="kpi-val" style={{ color: pctUso > 70 ? 'var(--gold)' : 'var(--navy)' }}>{fmtBRLCompact(utilizadoTotal)}</div>
+          <div className={`kpi-delta ${pctUso > 70 ? 'warn' : 'up'}`}>{pctUso.toFixed(1)}%</div>
+        </div>
+        <div className="kpi">
+          <div className="kpi-lbl">Disponível</div>
+          <div className="kpi-val" style={{ color: 'var(--green)' }}>{fmtBRLCompact(disp)}</div>
+          <div className="kpi-delta up">{pctDisp.toFixed(1)}%</div>
+        </div>
+        <div className="kpi">
+          <div className="kpi-lbl">Cashback</div>
+          <div className="kpi-val" style={{ color: 'var(--green)' }}>{fmtBRLCompact(RESUMO.cashbackMes)}</div>
+          <div className="kpi-delta up">✓ este mês</div>
+        </div>
+      </div>
 
-        <div className="space-y-4">
-          <h2 className="text-sm font-semibold text-gray-900">Cartões por setor</h2>
+      <div style={{ marginBottom: 14 }}>
+        <div className="chart-title" style={{ marginBottom: 12 }}>Cartões por setor</div>
           <div className="grid gap-4 md:grid-cols-1 lg:grid-cols-3">
             {cartoes.map((c) => {
               const pct = (c.usado / c.limite) * 100
@@ -239,7 +240,7 @@ export default function CartoesPage() {
           </div>
         </div>
       </div>
-    </div>
+    </>
   )
 }
 
