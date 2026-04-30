@@ -1,6 +1,5 @@
 'use client'
-import InsightFloating from "@/components/aicfo/InsightFloating"
-
+import InsightFloating from '@/components/aicfo/InsightFloating'
 import { useEffect, useState } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import type { User } from '@supabase/supabase-js'
@@ -26,14 +25,14 @@ const navGroups: NavGroup[] = [
       { href: '/dashboard/conta-pj', icon: 'fa-building-columns', label: 'Banco PJ' },
       { href: '/dashboard/cartoes', icon: 'fa-credit-card', label: 'Cartões' },
       { href: '/dashboard/financeiro', icon: 'fa-arrow-right-arrow-left', label: 'Contas Pagar/Receber' },
-      { href: '/dashboard/reembolsos', icon: 'fa-money-bill-transfer', label: 'Reembolsos', badge: '3', badgeColor: 'bg-[var(--teal)]' },
+      { href: '/dashboard/reembolsos', icon: 'fa-money-bill-transfer', label: 'Reembolsos', badge: '3', badgeColor: 'var(--teal)' },
     ],
   },
   {
     label: 'Automação',
     items: [
       { href: '/dashboard/despesas', icon: 'fa-receipt', label: 'Despesas & Recibos' },
-      { href: '/dashboard/aprovacoes', icon: 'fa-clipboard-check', label: 'Aprovações', badge: '5', badgeColor: 'bg-[var(--teal)]' },
+      { href: '/dashboard/aprovacoes', icon: 'fa-clipboard-check', label: 'Aprovações', badge: '5', badgeColor: 'var(--teal)' },
       { href: '/dashboard/relatorios', icon: 'fa-file-invoice-dollar', label: 'DRE & Plano de Contas' },
       { href: '/dashboard/conciliacao', icon: 'fa-code-branch', label: 'Conciliação Bancária' },
       { href: '/dashboard/notas', icon: 'fa-landmark', label: 'Fiscal & NF-e' },
@@ -44,7 +43,7 @@ const navGroups: NavGroup[] = [
     items: [
       { href: '/dashboard/aicfo', icon: 'fa-robot', label: 'AI CFO' },
       { href: '/dashboard/integracoes', icon: 'fa-plug', label: 'Hub de Integrações' },
-      { href: '/dashboard/marketplace', icon: 'fa-store', label: 'Marketplace', badge: 'NEW', badgeColor: 'bg-[#7C3AED]' },
+      { href: '/dashboard/marketplace', icon: 'fa-store', label: 'Marketplace', badge: 'NEW', badgeColor: '#7C3AED' },
     ],
   },
 ]
@@ -68,10 +67,10 @@ const pageTitles: Record<string, string> = {
   '/dashboard/patrimonio': 'Patrimônio',
 }
 
-function itemActive(pathname: string, item: NavGroup['items'][0]): boolean {
+function isActive(pathname: string, item: NavGroup['items'][0]) {
   if (item.match) return item.match(pathname)
   if (item.href === '/dashboard') return false
-  return pathname === item.href || pathname.startsWith(`${item.href}/`)
+  return pathname === item.href || pathname.startsWith(item.href + '/')
 }
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -99,103 +98,69 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   const pageTitle = pageTitles[pathname] ?? 'FactorOne'
   const initials = user?.email?.slice(0, 2).toUpperCase() ?? 'FO'
-  const empresaInitials = empresaNome ? empresaNome.split(' ').slice(0, 2).map(w => w[0]).join('').toUpperCase() : initials
+  const empresaInitials = empresaNome
+    ? empresaNome.split(' ').slice(0, 2).map(w => w[0]).join('').toUpperCase()
+    : initials
 
   return (
-    <div style={{ display: 'flex', height: '100vh', overflow: 'hidden', background: 'var(--cream)' }}>
-      {/* Font Awesome for icons */}
+    <>
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
-      {/* ── SIDEBAR ── */}
-      <aside style={{ width: 200, minWidth: 200, background: 'var(--navy)', display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden' }}>
-        {/* Logo */}
-        <div style={{ padding: '22px 18px 16px', borderBottom: '1px solid rgba(255,255,255,.07)' }}>
-          <div style={{ fontFamily: "'Sora', sans-serif", fontSize: 19, fontWeight: 800, color: '#fff', letterSpacing: '-.04em' }}>
-            Factor<span style={{ color: 'var(--teal)' }}>One</span>
+      <div style={{ display: 'flex', height: '100vh', overflow: 'hidden' }}>
+        {/* SIDEBAR */}
+        <aside className="sidebar">
+          <div className="sb-logo">
+            <div className="sb-logo-txt">Factor<span>One</span></div>
           </div>
-        </div>
-
-        {/* Nav */}
-        <nav style={{ flex: 1, overflowY: 'auto', padding: '10px 0', scrollbarWidth: 'none' }}>
-          {navGroups.map((group) => (
-            <div key={group.label}>
-              <div style={{ padding: '8px 14px 2px', fontSize: 9, fontWeight: 700, color: 'rgba(255,255,255,.25)', letterSpacing: '.1em', textTransform: 'uppercase' }}>
-                {group.label}
-              </div>
-              {group.items.map((item) => {
-                const isActive = itemActive(pathname, item)
-                return (
+          <nav className="sb-nav">
+            {navGroups.map(group => (
+              <div key={group.label}>
+                <div className="nav-section">{group.label}</div>
+                {group.items.map(item => (
                   <Link
                     key={item.href}
                     href={item.href}
-                    style={{
-                      display: 'flex', alignItems: 'center', gap: 9, padding: '9px 14px',
-                      fontSize: 13, fontWeight: 500,
-                      color: isActive ? '#fff' : 'rgba(255,255,255,.45)',
-                      background: isActive ? 'rgba(94,140,135,.15)' : 'transparent',
-                      borderLeft: isActive ? '2px solid var(--teal)' : '2px solid transparent',
-                      textDecoration: 'none', transition: 'all .15s',
-                    }}
-                    onMouseEnter={e => { if (!isActive) { (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,.8)'; (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,.04)' } }}
-                    onMouseLeave={e => { if (!isActive) { (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,.45)'; (e.currentTarget as HTMLElement).style.background = 'transparent' } }}
+                    className={`nav-item${isActive(pathname, item) ? ' active' : ''}`}
                   >
-                    <i className={`fa-solid ${item.icon}`} style={{ width: 15, textAlign: 'center', fontSize: 12, flexShrink: 0 }} />
+                    <i className={`fa-solid ${item.icon}`} />
                     <span style={{ flex: 1 }}>{item.label}</span>
                     {item.badge && (
-                      <span className={item.badgeColor} style={{ fontSize: 8, fontWeight: 700, padding: '1px 5px', borderRadius: 20, color: '#fff' }}>
+                      <span style={{ fontSize: 8, fontWeight: 700, padding: '1px 5px', borderRadius: 20, background: item.badgeColor, color: '#fff' }}>
                         {item.badge}
                       </span>
                     )}
                   </Link>
-                )
-              })}
-            </div>
-          ))}
-        </nav>
-
-        {/* Footer */}
-        <div style={{ padding: 12, borderTop: '1px solid rgba(255,255,255,.07)' }}>
-          <div
-            style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 10px', background: 'rgba(255,255,255,.05)', borderRadius: 8, cursor: 'pointer' }}
-            onClick={sair}
-            title="Clique para sair"
-          >
-            <div style={{ width: 26, height: 26, background: 'var(--teal)', borderRadius: 5, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 9, fontWeight: 800, color: '#fff', flexShrink: 0 }}>
-              {empresaInitials}
-            </div>
-            <div>
-              <div style={{ fontSize: 11, fontWeight: 600, color: 'rgba(255,255,255,.7)', maxWidth: 120, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                {empresaNome || user?.email?.split('@')[0] || 'Conta'}
+                ))}
               </div>
-              <div style={{ fontSize: 9.5, color: 'rgba(255,255,255,.3)' }}>Plano Profissional</div>
+            ))}
+          </nav>
+          <div className="sb-footer">
+            <div className="sb-co" onClick={sair} title="Clique para sair">
+              <div className="sb-co-av">{empresaInitials}</div>
+              <div>
+                <div className="sb-co-name" style={{ maxWidth: 130, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  {empresaNome || user?.email?.split('@')[0] || 'Conta'}
+                </div>
+                <div className="sb-co-plan">Plano Profissional</div>
+              </div>
             </div>
           </div>
-        </div>
-      </aside>
+        </aside>
 
-      {/* ── MAIN ── */}
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-        {/* Topbar */}
-        <div style={{ height: 52, background: '#fff', borderBottom: '1px solid var(--gray-100)', display: 'flex', alignItems: 'center', padding: '0 24px', gap: 10, flexShrink: 0 }}>
-          <div style={{ fontFamily: "'Sora', sans-serif", fontSize: 15, fontWeight: 700, color: 'var(--navy)', flex: 1 }}>
-            {pageTitle}{empresaNome ? ` — ${empresaNome}` : ''}
+        {/* MAIN */}
+        <div className="fo-main">
+          <div className="topbar">
+            <div className="topbar-title">{pageTitle}</div>
+            <div className="live-badge"><div className="live-dot" /> LIVE</div>
+            <div className="topbar-av" onClick={sair} title="Sair">{initials}</div>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 10, fontWeight: 700, color: 'var(--teal)', background: 'rgba(94,140,135,.1)', padding: '4px 10px', borderRadius: 100 }}>
-            <span style={{ width: 5, height: 5, borderRadius: '50%', background: 'var(--teal)', animation: 'fo-pulse 1.8s ease-out infinite', display: 'inline-block' }} />
-            LIVE
-          </div>
-          <div style={{ width: 30, height: 30, borderRadius: '50%', background: 'var(--navy)', color: '#fff', fontSize: 10, fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', marginLeft: 8 }} onClick={sair} title="Sair">
-            {initials}
+          <div className="fo-content">
+            {children}
           </div>
         </div>
-
-        {/* Content */}
-        <main style={{ flex: 1, overflowY: 'auto', background: '#fff', padding: 0 }}>
-          {children}
-        </main>
       </div>
 
       <InsightFloating />
-    </div>
+    </>
   )
 }
