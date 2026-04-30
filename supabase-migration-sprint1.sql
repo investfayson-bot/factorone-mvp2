@@ -1,25 +1,26 @@
 -- FactorOne Sprint 1 Migration
 -- Cole no SQL Editor do Supabase e clique Run ANTES de testar os módulos
 
--- 1. Migra dados existentes em transactions de auth.user.id → empresas.id
---    Rows antigas tinham empresa_id = auth.user.id; precisam virar o id da empresa
+-- 1. Remove FKs antigas PRIMEIRO (antes de migrar dados)
+ALTER TABLE public.transactions DROP CONSTRAINT IF EXISTS transacoes_empresa_id_fkey;
+ALTER TABLE public.transactions DROP CONSTRAINT IF EXISTS transactions_empresa_id_fkey;
+
+-- 2. Migra dados: auth.user.id → empresas.id
 UPDATE public.transactions t
 SET empresa_id = u.empresa_id
 FROM public.usuarios u
 WHERE t.empresa_id = u.id
   AND u.empresa_id IS NOT NULL;
 
--- Remove rows órfãs (sem empresa correspondente) para não violar o FK
+-- 3. Remove rows órfãs que não têm empresa correspondente
 DELETE FROM public.transactions
 WHERE empresa_id NOT IN (SELECT id FROM public.empresas);
 
--- Agora é seguro adicionar o FK para empresas
-ALTER TABLE public.transactions DROP CONSTRAINT IF EXISTS transacoes_empresa_id_fkey;
-ALTER TABLE public.transactions DROP CONSTRAINT IF EXISTS transactions_empresa_id_fkey;
+-- 4. Adiciona novo FK apontando para empresas
 ALTER TABLE public.transactions ADD CONSTRAINT transactions_empresa_id_fkey
   FOREIGN KEY (empresa_id) REFERENCES public.empresas(id) ON DELETE CASCADE;
 
--- Atualiza RLS para usar empresa via usuarios
+-- 5. Atualiza RLS
 DROP POLICY IF EXISTS "user_own_data" ON public.transactions;
 DROP POLICY IF EXISTS "transacoes_empresa" ON public.transactions;
 CREATE POLICY "transacoes_empresa" ON public.transactions FOR ALL
