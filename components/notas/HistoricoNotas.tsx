@@ -2,14 +2,6 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { supabase } from '@/lib/supabase'
-import {
-  Check,
-  Download,
-  Loader2,
-  Mail,
-  X,
-  Ban,
-} from 'lucide-react'
 
 export type NotaEmitidaRow = {
   id: string
@@ -22,6 +14,15 @@ export type NotaEmitidaRow = {
   xml_url: string | null
   pdf_url: string | null
   sefaz_motivo: string | null
+}
+
+const card: React.CSSProperties = { background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: 16, marginBottom: 14 }
+
+function BadgeStatus({ r }: { r: NotaEmitidaRow }) {
+  if (r.status === 'processando') return <span className="tag" style={{ background: 'rgba(184,146,42,.12)', color: 'var(--gold)' }}>⟳ Processando</span>
+  if (r.status === 'autorizada') return <span className="tag" style={{ background: 'rgba(45,155,111,.12)', color: 'var(--green)' }}>✓ Autorizada</span>
+  if (r.status === 'rejeitada') return <span className="tag" style={{ background: 'rgba(192,80,74,.1)', color: 'var(--red)' }} title={r.sefaz_motivo || ''}>✕ Rejeitada</span>
+  return <span className="tag" style={{ background: 'var(--gray-100)', color: 'var(--gray-400)', textDecoration: 'line-through' }}>Cancelada</span>
 }
 
 export default function HistoricoNotas() {
@@ -38,9 +39,7 @@ export default function HistoricoNotas() {
     if (!user) return
     const inicio = `${mes}-01`
     const [y, m] = mes.split('-').map(Number)
-    const fim = new Date(y, m, 0)
-    const fimStr = fim.toISOString().slice(0, 10)
-
+    const fimStr = new Date(y, m, 0).toISOString().slice(0, 10)
     let q = supabase
       .from('notas_emitidas')
       .select('id,tipo,numero,destinatario_nome,valor_total,status,created_at,xml_url,pdf_url,sefaz_motivo')
@@ -48,29 +47,18 @@ export default function HistoricoNotas() {
       .gte('created_at', `${inicio}T00:00:00`)
       .lte('created_at', `${fimStr}T23:59:59`)
       .order('created_at', { ascending: false })
-
-    if (filtroTipo !== 'todos') {
-      q = q.eq('tipo', filtroTipo)
-    }
-    if (filtroStatus !== 'todos') {
-      q = q.eq('status', filtroStatus)
-    }
-
+    if (filtroTipo !== 'todos') q = q.eq('tipo', filtroTipo)
+    if (filtroStatus !== 'todos') q = q.eq('status', filtroStatus)
     const { data } = await q
     setRows((data ?? []) as NotaEmitidaRow[])
   }, [mes, filtroTipo, filtroStatus])
 
-  useEffect(() => {
-    void carregar()
-  }, [carregar])
+  useEffect(() => { void carregar() }, [carregar])
 
   const temProcessando = useMemo(() => rows.some((r) => r.status === 'processando'), [rows])
-
   useEffect(() => {
     if (!temProcessando) return
-    const t = setInterval(() => {
-      void carregar()
-    }, 10000)
+    const t = setInterval(() => { void carregar() }, 10000)
     return () => clearInterval(t)
   }, [temProcessando, carregar])
 
@@ -81,10 +69,7 @@ export default function HistoricoNotas() {
       const { data: { session } } = await supabase.auth.getSession()
       await fetch('/api/notas/enviar-email', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          ...(session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : {}),
-        },
+        headers: { 'Content-Type': 'application/json', ...(session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : {}) },
         body: JSON.stringify({ nota_emitida_id: emailModal.id, email: emailModal.email }),
       })
       setEmailModal(null)
@@ -98,226 +83,115 @@ export default function HistoricoNotas() {
     const { data: { session } } = await supabase.auth.getSession()
     const res = await fetch(`/api/notas/cancelar/${cancelModal.id}`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        ...(session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : {}),
-      },
+      headers: { 'Content-Type': 'application/json', ...(session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : {}) },
       body: JSON.stringify({ justificativa: cancelModal.j }),
     })
-    if (res.ok) {
-      setCancelModal(null)
-      void carregar()
-    }
-  }
-
-  function badge(r: NotaEmitidaRow) {
-    if (r.status === 'processando') {
-      return (
-        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs bg-amber-100 text-amber-900 border border-amber-200">
-          <Loader2 size={12} className="animate-spin" /> Processando
-        </span>
-      )
-    }
-    if (r.status === 'autorizada') {
-      return (
-        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs bg-emerald-100 text-emerald-800 border border-emerald-200">
-          <Check size={12} /> Autorizada
-        </span>
-      )
-    }
-    if (r.status === 'rejeitada') {
-      return (
-        <span
-          className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs bg-red-100 text-red-800 border border-red-200"
-          title={r.sefaz_motivo || ''}
-        >
-          <X size={12} /> Rejeitada
-        </span>
-      )
-    }
-    return (
-      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs bg-slate-200 text-slate-600 line-through">
-        Cancelada
-      </span>
-    )
+    if (res.ok) { setCancelModal(null); void carregar() }
   }
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-wrap gap-3 items-end">
-        <label className="text-sm">
-          Tipo
-          <select
-            className="block mt-1 border border-slate-200 rounded-xl px-3 py-2 text-sm"
-            value={filtroTipo}
-            onChange={(e) => setFiltroTipo(e.target.value as 'todos' | 'nfe' | 'nfse')}
-          >
+    <div>
+      {/* Filters */}
+      <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginBottom: 14, alignItems: 'flex-end' }}>
+        <div className="form-group" style={{ margin: 0 }}>
+          <label className="form-label">Tipo</label>
+          <select className="form-input" style={{ width: 'auto' }} value={filtroTipo} onChange={(e) => setFiltroTipo(e.target.value as 'todos' | 'nfe' | 'nfse')}>
             <option value="todos">Todos</option>
             <option value="nfe">NF-e</option>
             <option value="nfse">NFS-e</option>
           </select>
-        </label>
-        <label className="text-sm">
-          Status
-          <select
-            className="block mt-1 border border-slate-200 rounded-xl px-3 py-2 text-sm"
-            value={filtroStatus}
-            onChange={(e) => setFiltroStatus(e.target.value)}
-          >
+        </div>
+        <div className="form-group" style={{ margin: 0 }}>
+          <label className="form-label">Status</label>
+          <select className="form-input" style={{ width: 'auto' }} value={filtroStatus} onChange={(e) => setFiltroStatus(e.target.value)}>
             <option value="todos">Todos</option>
             <option value="processando">Processando</option>
             <option value="autorizada">Autorizada</option>
             <option value="rejeitada">Rejeitada</option>
             <option value="cancelada">Cancelada</option>
           </select>
-        </label>
-        <label className="text-sm">
-          Mês
-          <input
-            type="month"
-            className="block mt-1 border border-slate-200 rounded-xl px-3 py-2 text-sm"
-            value={mes}
-            onChange={(e) => setMes(e.target.value)}
-          />
-        </label>
+        </div>
+        <div className="form-group" style={{ margin: 0 }}>
+          <label className="form-label">Mês</label>
+          <input type="month" className="form-input" style={{ width: 'auto' }} value={mes} onChange={(e) => setMes(e.target.value)} />
+        </div>
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
+      {/* Table */}
+      <div style={{ ...card, overflow: 'hidden', padding: 0 }}>
+        <div style={{ overflowX: 'auto' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12 }}>
             <thead>
-              <tr className="bg-slate-50 text-slate-600 text-left">
-                <th className="p-3 font-medium">Número</th>
-                <th className="p-3 font-medium">Tipo</th>
-                <th className="p-3 font-medium">Destinatário</th>
-                <th className="p-3 font-medium">Valor</th>
-                <th className="p-3 font-medium">Status</th>
-                <th className="p-3 font-medium">Data</th>
-                <th className="p-3 font-medium">Ações</th>
+              <tr style={{ background: 'var(--gray-50, #f8f9fa)' }}>
+                {['Número', 'Tipo', 'Destinatário', 'Valor', 'Status', 'Data', 'Ações'].map((h) => (
+                  <th key={h} style={{ textAlign: 'left', padding: '10px 12px', fontSize: 10, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', fontFamily: "'DM Mono',monospace", borderBottom: '1px solid var(--gray-100)' }}>{h}</th>
+                ))}
               </tr>
             </thead>
             <tbody>
               {rows.length === 0 ? (
-                <tr>
-                  <td colSpan={7} className="p-8 text-center text-slate-500">
-                    Nenhuma nota emitida no período.
+                <tr><td colSpan={7} style={{ padding: '24px 12px', textAlign: 'center', color: 'var(--gray-400)', fontSize: 12 }}>Nenhuma nota emitida no período.</td></tr>
+              ) : rows.map((r) => (
+                <tr key={r.id} style={{ borderTop: '1px solid var(--gray-100)' }}>
+                  <td style={{ padding: '10px 12px', color: 'var(--navy)', fontFamily: "'DM Mono',monospace" }}>{r.numero || '—'}</td>
+                  <td style={{ padding: '10px 12px' }}><span className="tag" style={{ background: 'var(--gray-100)', color: 'var(--gray-400)' }}>{r.tipo === 'nfe' ? 'NF-e' : 'NFS-e'}</span></td>
+                  <td style={{ padding: '10px 12px', color: 'var(--navy)', maxWidth: 180, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{r.destinatario_nome}</td>
+                  <td style={{ padding: '10px 12px', color: 'var(--navy)', fontFamily: "'DM Mono',monospace", fontWeight: 600 }}>
+                    {Number(r.valor_total).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                  </td>
+                  <td style={{ padding: '10px 12px' }}><BadgeStatus r={r} /></td>
+                  <td style={{ padding: '10px 12px', color: 'var(--gray-400)', whiteSpace: 'nowrap' }}>{new Date(r.created_at).toLocaleString('pt-BR')}</td>
+                  <td style={{ padding: '10px 12px' }}>
+                    <div style={{ display: 'flex', gap: 4 }}>
+                      {r.xml_url && (
+                        <a href={r.xml_url} target="_blank" rel="noreferrer" title="XML" style={{ padding: '4px 7px', borderRadius: 6, border: '1px solid var(--gray-100)', background: '#fff', color: 'var(--navy)', fontSize: 11, textDecoration: 'none' }}>XML</a>
+                      )}
+                      {r.pdf_url && (
+                        <a href={r.pdf_url} target="_blank" rel="noreferrer" title="PDF" style={{ padding: '4px 7px', borderRadius: 6, border: '1px solid var(--gray-100)', background: '#fff', color: 'var(--navy)', fontSize: 11, textDecoration: 'none' }}>PDF</a>
+                      )}
+                      <button type="button" title="E-mail" onClick={() => setEmailModal({ id: r.id, email: '' })} style={{ padding: '4px 7px', borderRadius: 6, border: '1px solid var(--gray-100)', background: '#fff', color: 'var(--navy)', fontSize: 11, cursor: 'pointer' }}>✉</button>
+                      {r.status !== 'cancelada' && r.status !== 'rejeitada' && (
+                        <button type="button" title="Cancelar" onClick={() => setCancelModal({ id: r.id, j: '' })} style={{ padding: '4px 7px', borderRadius: 6, border: '1px solid rgba(192,80,74,.2)', background: '#fff', color: 'var(--red)', fontSize: 11, cursor: 'pointer' }}>✕</button>
+                      )}
+                    </div>
                   </td>
                 </tr>
-              ) : (
-                rows.map((r) => (
-                  <tr key={r.id} className="border-t border-slate-100">
-                    <td className="p-3">{r.numero || '—'}</td>
-                    <td className="p-3">{r.tipo === 'nfe' ? 'NF-e' : 'NFS-e'}</td>
-                    <td className="p-3 max-w-[180px] truncate">{r.destinatario_nome}</td>
-                    <td className="p-3">
-                      {Number(r.valor_total).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-                    </td>
-                    <td className="p-3">{badge(r)}</td>
-                    <td className="p-3 whitespace-nowrap">
-                      {new Date(r.created_at).toLocaleString('pt-BR')}
-                    </td>
-                    <td className="p-3">
-                      <div className="flex flex-wrap gap-1">
-                        {r.xml_url && (
-                          <a
-                            href={r.xml_url}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="p-1.5 rounded-lg border border-slate-200 hover:bg-slate-50"
-                            title="XML"
-                          >
-                            <Download size={14} />
-                          </a>
-                        )}
-                        {r.pdf_url && (
-                          <a
-                            href={r.pdf_url}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="p-1.5 rounded-lg border border-slate-200 hover:bg-slate-50"
-                            title="PDF"
-                          >
-                            <Download size={14} />
-                          </a>
-                        )}
-                        <button
-                          type="button"
-                          className="p-1.5 rounded-lg border border-slate-200 hover:bg-slate-50"
-                          title="E-mail"
-                          onClick={() => setEmailModal({ id: r.id, email: '' })}
-                        >
-                          <Mail size={14} />
-                        </button>
-                        {r.status !== 'cancelada' && r.status !== 'rejeitada' && (
-                          <button
-                            type="button"
-                            className="p-1.5 rounded-lg border border-red-200 text-red-700 hover:bg-red-50"
-                            title="Cancelar"
-                            onClick={() => setCancelModal({ id: r.id, j: '' })}
-                          >
-                            <Ban size={14} />
-                          </button>
-                        )}
-                      </div>
-                    </td>
-                  </tr>
-                ))
-              )}
+              ))}
             </tbody>
           </table>
         </div>
       </div>
 
+      {/* Email modal */}
       {emailModal && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl p-6 max-w-md w-full space-y-3 shadow-xl">
-            <h3 className="font-semibold">Enviar por e-mail</h3>
-            <input
-              type="email"
-              className="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm"
-              placeholder="email@empresa.com"
-              value={emailModal.email}
-              onChange={(e) => setEmailModal({ ...emailModal, email: e.target.value })}
-            />
-            <div className="flex justify-end gap-2">
-              <button type="button" className="px-4 py-2 text-sm rounded-xl border" onClick={() => setEmailModal(null)}>
-                Fechar
-              </button>
-              <button
-                type="button"
-                disabled={loadingEmail}
-                className="px-4 py-2 text-sm rounded-xl bg-blue-700 text-white"
-                onClick={enviarEmail}
-              >
-                Enviar
-              </button>
+        <div className="modal-bg" onClick={() => setEmailModal(null)}>
+          <div className="modal-box" onClick={e => e.stopPropagation()}>
+            <div className="modal-title">
+              Enviar por e-mail
+              <button className="modal-close" onClick={() => setEmailModal(null)}>×</button>
+            </div>
+            <input type="email" className="form-input" placeholder="email@empresa.com" value={emailModal.email} onChange={(e) => setEmailModal({ ...emailModal, email: e.target.value })} style={{ marginBottom: 12 }} />
+            <div className="modal-actions">
+              <button type="button" className="btn-action btn-ghost" onClick={() => setEmailModal(null)}>Fechar</button>
+              <button type="button" disabled={loadingEmail} className="btn-action" onClick={enviarEmail} style={{ opacity: loadingEmail ? .6 : 1 }}>Enviar</button>
             </div>
           </div>
         </div>
       )}
 
+      {/* Cancel modal */}
       {cancelModal && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl p-6 max-w-md w-full space-y-3 shadow-xl">
-            <h3 className="font-semibold">Cancelar nota</h3>
-            <p className="text-sm text-slate-600">Justificativa (mín. 15 caracteres)</p>
-            <textarea
-              className="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm min-h-[100px]"
-              value={cancelModal.j}
-              onChange={(e) => setCancelModal({ ...cancelModal, j: e.target.value })}
-            />
-            <div className="flex justify-end gap-2">
-              <button type="button" className="px-4 py-2 text-sm rounded-xl border" onClick={() => setCancelModal(null)}>
-                Voltar
-              </button>
-              <button
-                type="button"
-                className="px-4 py-2 text-sm rounded-xl bg-red-700 text-white disabled:opacity-50"
-                disabled={cancelModal.j.trim().length < 15}
-                onClick={cancelar}
-              >
-                Confirmar cancelamento
-              </button>
+        <div className="modal-bg" onClick={() => setCancelModal(null)}>
+          <div className="modal-box" onClick={e => e.stopPropagation()}>
+            <div className="modal-title">
+              Cancelar nota
+              <button className="modal-close" onClick={() => setCancelModal(null)}>×</button>
+            </div>
+            <div style={{ fontSize: 12, color: 'var(--gray-400)', marginBottom: 8 }}>Justificativa (mín. 15 caracteres)</div>
+            <textarea className="form-input" value={cancelModal.j} onChange={(e) => setCancelModal({ ...cancelModal, j: e.target.value })} style={{ minHeight: 80, resize: 'vertical', marginBottom: 12 }} />
+            <div className="modal-actions">
+              <button type="button" className="btn-action btn-ghost" onClick={() => setCancelModal(null)}>Voltar</button>
+              <button type="button" disabled={cancelModal.j.trim().length < 15} onClick={cancelar} style={{ background: 'var(--red)', color: '#fff', border: 'none', borderRadius: 8, padding: '7px 16px', fontSize: 12, fontWeight: 600, cursor: 'pointer', opacity: cancelModal.j.trim().length < 15 ? .5 : 1 }}>Confirmar cancelamento</button>
             </div>
           </div>
         </div>

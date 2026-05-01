@@ -1,8 +1,7 @@
 'use client'
 
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { supabase } from '@/lib/supabase'
-import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import { fmtBRLCompact } from '@/lib/dre-calculations'
 
 type Props = { empresaId: string }
@@ -18,8 +17,6 @@ export default function EntradasSaidasChart({ empresaId }: Props) {
   const [loading, setLoading] = useState(true)
   const [rows, setRows] = useState<Row[]>([])
   const [error, setError] = useState<string | null>(null)
-  const [ready, setReady] = useState(false)
-  const containerRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
     let cancelled = false
@@ -53,33 +50,32 @@ export default function EntradasSaidasChart({ empresaId }: Props) {
 
   const chartData = useMemo(() => rows, [rows])
 
-  useEffect(() => {
-    const el = containerRef.current
-    if (!el) return
-    const sync = () => setReady(el.clientWidth > 0)
-    sync()
-    const ro = new ResizeObserver(sync)
-    ro.observe(el)
-    return () => ro.disconnect()
-  }, [])
+  if (loading) return <div style={{ height: 120, background: 'var(--gray-100)', borderRadius: 8 }} />
+  if (error || !chartData.some(r => r.entradas + r.saidas > 0)) {
+    return <div style={{ height: 120, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gray-400)', fontSize: 12 }}>Sem transações no período.</div>
+  }
 
-  if (loading) return <div style={{ height: 120, background: 'var(--gray-100)', borderRadius: 8, animation: 'pulse 1.5s infinite' }} />
-  if (error || !chartData.some(r => r.entradas + r.saidas > 0)) return <div style={{ height: 120, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gray-400)', fontSize: 12 }}>Sem transações no período.</div>
+  const maxVal = Math.max(...chartData.flatMap(r => [r.entradas, r.saidas]), 1)
 
   return (
-    <div ref={containerRef} style={{ height: 120 }}>
-      {ready && (
-        <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={chartData} margin={{ top: 2, right: 2, left: -20, bottom: 0 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="var(--gray-100)" vertical={false} />
-            <XAxis dataKey="mes" tick={{ fontSize: 9, fill: 'var(--gray-400)', fontFamily: "'DM Mono', monospace" }} />
-            <YAxis tick={{ fontSize: 9, fill: 'var(--gray-400)' }} tickFormatter={v => fmtBRLCompact(Number(v))} />
-            <Tooltip formatter={(v: number) => fmtBRLCompact(v)} contentStyle={{ borderRadius: 8, border: '1px solid var(--gray-100)', fontSize: 11 }} />
-            <Bar dataKey="entradas" name="Entradas" fill="var(--teal)" radius={[3, 3, 0, 0]} />
-            <Bar dataKey="saidas" name="Saídas" fill="rgba(184,146,42,.4)" radius={[3, 3, 0, 0]} />
-          </BarChart>
-        </ResponsiveContainer>
-      )}
+    <div className="cf-bars" style={{ height: 120, alignItems: 'flex-end' }}>
+      {chartData.map(m => (
+        <div key={m.mes} className="cf-col">
+          <div className="cf-bgrp">
+            <div
+              className="cf-bar i"
+              style={{ height: Math.round((m.entradas / maxVal) * 90) }}
+              title={`Entradas: ${fmtBRLCompact(m.entradas)}`}
+            />
+            <div
+              className="cf-bar o"
+              style={{ height: Math.round((m.saidas / maxVal) * 90) }}
+              title={`Saídas: ${fmtBRLCompact(m.saidas)}`}
+            />
+          </div>
+          <div className="cf-lbl">{m.mes}</div>
+        </div>
+      ))}
     </div>
   )
 }

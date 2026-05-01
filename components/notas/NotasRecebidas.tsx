@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { supabase } from '@/lib/supabase'
-import { Upload, Camera, Mail, FileText, Send, Eye } from 'lucide-react'
 
 type ImpostosNF = { icms?: number; pis?: number; cofins?: number }
 
@@ -26,6 +25,8 @@ type NotaFiscalLista = {
   status: string | null
 }
 
+const card: React.CSSProperties = { background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: 16, marginBottom: 14 }
+
 export default function NotasRecebidas() {
   const fileRef = useRef<HTMLInputElement>(null)
   const camRef = useRef<HTMLInputElement>(null)
@@ -37,9 +38,7 @@ export default function NotasRecebidas() {
   const [loading, setLoading] = useState(false)
 
   const carregarNotas = useCallback(async () => {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser()
+    const { data: { user } } = await supabase.auth.getUser()
     if (!user) return
     const { data } = await supabase
       .from('notas_fiscais')
@@ -49,34 +48,26 @@ export default function NotasRecebidas() {
     setNotas((data ?? []) as NotaFiscalLista[])
   }, [])
 
-  useEffect(() => {
-    void carregarNotas()
-  }, [carregarNotas])
+  useEffect(() => { void carregarNotas() }, [carregarNotas])
 
   async function handleArquivo(file?: File) {
     if (!file) return
     const ext = file.name.toLowerCase()
     if (ext.endsWith('.xml') || ext.endsWith('.txt')) {
       const t = await file.text()
-      setTexto(t)
-      setPreview(t.slice(0, 200))
-      setImagemPreview('')
+      setTexto(t); setPreview(t.slice(0, 200)); setImagemPreview('')
       return
     }
     if (ext.endsWith('.pdf')) {
       const t = await file.text().catch(() => 'PDF enviado')
-      setTexto(t || 'PDF enviado')
-      setPreview((t || 'PDF enviado').slice(0, 200))
-      setImagemPreview('')
+      setTexto(t || 'PDF enviado'); setPreview((t || 'PDF enviado').slice(0, 200)); setImagemPreview('')
       return
     }
     if (file.type.startsWith('image/')) {
       const reader = new FileReader()
       reader.onload = () => {
         const base64 = String(reader.result || '')
-        setTexto(base64)
-        setImagemPreview(base64)
-        setPreview('Imagem selecionada para OCR')
+        setTexto(base64); setImagemPreview(base64); setPreview('Imagem selecionada para OCR')
       }
       reader.readAsDataURL(file)
     }
@@ -85,16 +76,9 @@ export default function NotasRecebidas() {
   async function analisar() {
     if (!texto) return
     setLoading(true)
-    const res = await fetch('/api/nota-fiscal', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ texto }),
-    })
+    const res = await fetch('/api/nota-fiscal', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ texto }) })
     const data = await res.json()
-    if (res.ok && data.nota) {
-      setResultado(data.nota as AnaliseNFResult)
-      await carregarNotas()
-    }
+    if (res.ok && data.nota) { setResultado(data.nota as AnaliseNFResult); await carregarNotas() }
     setLoading(false)
   }
 
@@ -103,173 +87,124 @@ export default function NotasRecebidas() {
     await carregarNotas()
   }
 
-  const statusBadge = (s: string) =>
-    s === 'aprovada'
-      ? 'bg-emerald-100 text-emerald-800'
-      : s === 'rejeitada'
-        ? 'bg-red-100 text-red-800'
-        : s === 'aguardando_captacao'
-          ? 'bg-blue-100 text-blue-800'
-          : 'bg-slate-100 text-slate-600'
+  function statusColor(s: string) {
+    if (s === 'aprovada') return { bg: 'rgba(45,155,111,.12)', color: 'var(--green)' }
+    if (s === 'rejeitada') return { bg: 'rgba(192,80,74,.1)', color: 'var(--red)' }
+    if (s === 'aguardando_captacao') return { bg: 'rgba(94,140,135,.12)', color: 'var(--teal)' }
+    return { bg: 'var(--gray-100)', color: 'var(--gray-400)' }
+  }
 
   return (
-    <div className="space-y-6">
-      <p className="text-sm text-slate-600">
-        <strong>Recebidas</strong> — upload, OCR, câmera ou texto para leitura inteligente.
-      </p>
+    <div>
+      <div style={{ fontSize: 12, color: 'var(--gray-400)', marginBottom: 14 }}>
+        <strong style={{ color: 'var(--navy)' }}>Recebidas</strong> — upload, OCR, câmera ou texto para leitura inteligente.
+      </div>
 
-      <div className="grid md:grid-cols-3 gap-4">
-        <button
-          type="button"
-          onClick={() => fileRef.current?.click()}
-          className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-md hover:border-blue-200 transition-all text-left"
-        >
-          <Upload className="text-blue-600 mb-3" />
-          <p className="font-semibold text-slate-800">Arquivo</p>
-          <p className="text-sm text-slate-500">XML, PDF ou imagem</p>
+      {/* Upload options */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 10, marginBottom: 14 }}>
+        <button type="button" onClick={() => fileRef.current?.click()} style={{ ...card, margin: 0, cursor: 'pointer', textAlign: 'left' }}>
+          <div style={{ fontSize: 18, marginBottom: 8 }}>📄</div>
+          <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--navy)' }}>Arquivo</div>
+          <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>XML, PDF ou imagem</div>
         </button>
-        <button
-          type="button"
-          onClick={() => camRef.current?.click()}
-          className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-md hover:border-blue-200 transition-all text-left"
-        >
-          <Camera className="text-blue-600 mb-3" />
-          <p className="font-semibold text-slate-800">Câmera / Foto</p>
-          <p className="text-sm text-slate-500">Capture a NF</p>
+        <button type="button" onClick={() => camRef.current?.click()} style={{ ...card, margin: 0, cursor: 'pointer', textAlign: 'left' }}>
+          <div style={{ fontSize: 18, marginBottom: 8 }}>📷</div>
+          <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--navy)' }}>Câmera / Foto</div>
+          <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>Capture a NF</div>
         </button>
-        <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
-          <div className="flex items-center gap-2 mb-2">
-            <FileText size={16} className="text-blue-600" />{' '}
-            <p className="font-semibold text-slate-800">Colar texto</p>
-          </div>
+        <div style={{ ...card, margin: 0 }}>
+          <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--navy)', marginBottom: 8 }}>📋 Colar texto</div>
           <textarea
             value={texto}
-            onChange={(e) => {
-              setTexto(e.target.value)
-              setPreview(e.target.value.slice(0, 200))
-              setImagemPreview('')
-            }}
-            className="w-full bg-white border border-slate-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 rounded-xl px-4 py-2.5 text-slate-800 min-h-24 text-sm"
+            onChange={(e) => { setTexto(e.target.value); setPreview(e.target.value.slice(0, 200)); setImagemPreview('') }}
+            className="form-input"
+            style={{ minHeight: 60, resize: 'vertical', width: '100%' }}
             placeholder="Cole XML ou texto da NF..."
           />
         </div>
       </div>
 
-      <input
-        ref={fileRef}
-        type="file"
-        accept=".xml,.pdf,image/*"
-        className="hidden"
-        onChange={(e) => handleArquivo(e.target.files?.[0])}
-      />
-      <input
-        ref={camRef}
-        type="file"
-        accept="image/*"
-        capture="environment"
-        className="hidden"
-        onChange={(e) => handleArquivo(e.target.files?.[0])}
-      />
+      <input ref={fileRef} type="file" accept=".xml,.pdf,image/*" style={{ display: 'none' }} onChange={(e) => handleArquivo(e.target.files?.[0])} />
+      <input ref={camRef} type="file" accept="image/*" capture="environment" style={{ display: 'none' }} onChange={(e) => handleArquivo(e.target.files?.[0])} />
 
-      <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
-        <div className="flex items-center gap-2 mb-3">
-          <Mail size={16} className="text-blue-700" />
-          <p className="text-sm text-slate-500">
-            Encaminhar para: <span className="text-slate-800">nf@factorone.com.br</span>
-          </p>
+      {/* Preview + analyze */}
+      <div style={card}>
+        <div style={{ fontSize: 11, color: 'var(--gray-400)', marginBottom: 10 }}>
+          ✉ Encaminhar para: <span style={{ color: 'var(--navy)', fontWeight: 600 }}>nf@factorone.com.br</span>
         </div>
         {imagemPreview ? (
-          // eslint-disable-next-line @next/next/no-img-element -- preview data URL local
-          <img src={imagemPreview} alt="preview" className="max-h-52 rounded-xl border border-slate-200 mb-4" />
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={imagemPreview} alt="preview" style={{ maxHeight: 200, borderRadius: 8, border: '1px solid var(--gray-100)', marginBottom: 12 }} />
         ) : (
-          <p className="text-sm text-slate-500 mb-4">{preview || 'Sem preview ainda'}</p>
+          <div style={{ fontSize: 11, color: 'var(--gray-400)', marginBottom: 12 }}>{preview || 'Sem preview ainda'}</div>
         )}
-        <button
-          type="button"
-          onClick={analisar}
-          disabled={loading || !texto}
-          className="bg-blue-700 hover:bg-blue-800 text-white font-semibold px-5 py-2.5 rounded-xl shadow-sm flex items-center gap-2 disabled:opacity-50"
-        >
-          <span className="inline-block w-4 h-4 rounded bg-white/30" />{' '}
-          {loading ? 'Analisando...' : 'Analisar Nota Fiscal'}
+        <button type="button" onClick={analisar} disabled={loading || !texto} className="btn-action" style={{ opacity: loading || !texto ? .5 : 1 }}>
+          {loading ? 'Analisando...' : '✦ Analisar Nota Fiscal'}
         </button>
       </div>
 
+      {/* Result */}
       {resultado && (
-        <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-4">
-          <h2 className="text-lg font-semibold text-slate-800">Resultado da análise</h2>
-          <div className="grid md:grid-cols-4 gap-3 text-sm">
-            <div>
-              <p className="text-slate-500">Número NF</p>
-              <p className="text-slate-800">{resultado.numero || '-'}</p>
-            </div>
-            <div>
-              <p className="text-slate-500">Emitente</p>
-              <p className="text-slate-800">{resultado.emitente_nome || '-'}</p>
-            </div>
-            <div>
-              <p className="text-slate-500">Data</p>
-              <p className="text-slate-800">{resultado.data_emissao || '-'}</p>
-            </div>
-            <div>
-              <p className="text-slate-500">Valor</p>
-              <p className="text-slate-800">R$ {(resultado.valor_total || 0).toLocaleString('pt-BR')}</p>
-            </div>
+        <div style={card}>
+          <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--navy)', marginBottom: 12 }}>Resultado da análise</div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 10, marginBottom: 12 }}>
+            {[
+              { label: 'Número NF', val: resultado.numero || '-' },
+              { label: 'Emitente', val: resultado.emitente_nome || '-' },
+              { label: 'Data', val: resultado.data_emissao || '-' },
+              { label: 'Valor', val: `R$ ${(resultado.valor_total || 0).toLocaleString('pt-BR')}` },
+            ].map(({ label, val }) => (
+              <div key={label}>
+                <div style={{ fontSize: 10, color: 'var(--gray-400)', textTransform: 'uppercase', fontFamily: "'DM Mono',monospace" }}>{label}</div>
+                <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--navy)' }}>{val}</div>
+              </div>
+            ))}
           </div>
-          <div className="flex gap-2 flex-wrap">
-            <span className="px-3 py-1 rounded-full text-xs bg-amber-100 text-amber-800">
-              {resultado.classificacao || 'sem classificação'}
-            </span>
+          <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
+            <span className="tag" style={{ background: 'rgba(184,146,42,.1)', color: 'var(--gold)' }}>{resultado.classificacao || 'sem classificação'}</span>
             {resultado.adequado_para_factoring && (
-              <span className="px-3 py-1 rounded-full text-xs bg-emerald-100 text-emerald-800">Factoring</span>
+              <span className="tag" style={{ background: 'rgba(45,155,111,.12)', color: 'var(--green)' }}>✓ Factoring</span>
             )}
           </div>
-          <div className="flex gap-2">
-            <button
-              type="button"
-              onClick={() => enviarCaptacao(resultado.id)}
-              className="bg-blue-700 hover:bg-blue-800 text-white font-semibold px-5 py-2.5 rounded-xl flex items-center gap-2 text-sm"
-            >
-              <Send size={14} />
-              Enviar para Captação
-            </button>
-          </div>
+          <button type="button" onClick={() => enviarCaptacao(resultado.id)} className="btn-action">
+            ↗ Enviar para Captação
+          </button>
         </div>
       )}
 
-      <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
-        <h2 className="text-lg font-semibold mb-3 text-slate-800">Notas cadastradas (leitura)</h2>
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="text-slate-500">
-              <th className="text-left py-2">Data</th>
-              <th className="text-left">Emitente</th>
-              <th className="text-left">Valor</th>
-              <th className="text-left">Status</th>
-              <th className="text-left">Ações</th>
-            </tr>
-          </thead>
-          <tbody>
-            {notas.map((n) => (
-              <tr key={n.id} className="border-t border-slate-100">
-                <td className="py-2 text-slate-800">{n.data_emissao || '-'}</td>
-                <td className="text-slate-800">{n.emitente_nome || '-'}</td>
-                <td className="text-slate-800">R$ {(n.valor_total || 0).toLocaleString('pt-BR')}</td>
-                <td>
-                  <span className={`px-2 py-1 rounded-full text-xs ${statusBadge(n.status || '')}`}>
-                    {n.status || 'pendente'}
-                  </span>
-                </td>
-                <td>
-                  <span className="text-blue-700 text-sm flex items-center gap-1">
-                    <Eye size={13} />
-                    Ver
-                  </span>
-                </td>
+      {/* List */}
+      <div style={card}>
+        <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--navy)', marginBottom: 12 }}>Notas cadastradas</div>
+        <div className="expenses-table">
+          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12 }}>
+            <thead>
+              <tr style={{ color: 'var(--gray-400)', fontSize: 10, textTransform: 'uppercase', fontFamily: "'DM Mono',monospace" }}>
+                <th style={{ textAlign: 'left', padding: '6px 0', fontWeight: 600 }}>Data</th>
+                <th style={{ textAlign: 'left', padding: '6px 0', fontWeight: 600 }}>Emitente</th>
+                <th style={{ textAlign: 'left', padding: '6px 0', fontWeight: 600 }}>Valor</th>
+                <th style={{ textAlign: 'left', padding: '6px 0', fontWeight: 600 }}>Status</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {notas.map((n) => {
+                const sc = statusColor(n.status || '')
+                return (
+                  <tr key={n.id} style={{ borderTop: '1px solid var(--gray-100)' }}>
+                    <td style={{ padding: '8px 0', color: 'var(--navy)' }}>{n.data_emissao || '-'}</td>
+                    <td style={{ padding: '8px 0', color: 'var(--navy)' }}>{n.emitente_nome || '-'}</td>
+                    <td style={{ padding: '8px 0', color: 'var(--navy)', fontFamily: "'DM Mono',monospace" }}>R$ {(n.valor_total || 0).toLocaleString('pt-BR')}</td>
+                    <td style={{ padding: '8px 0' }}>
+                      <span className="tag" style={{ background: sc.bg, color: sc.color }}>{n.status || 'pendente'}</span>
+                    </td>
+                  </tr>
+                )
+              })}
+              {notas.length === 0 && (
+                <tr><td colSpan={4} style={{ padding: '20px 0', textAlign: 'center', color: 'var(--gray-400)', fontSize: 12 }}>Nenhuma nota cadastrada.</td></tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   )
