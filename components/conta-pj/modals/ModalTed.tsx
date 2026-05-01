@@ -2,11 +2,14 @@
 import { useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import { maskBRLInput, parseBRLInput } from '@/lib/currency-brl'
+import LoadingButton from '@/components/ui/LoadingButton'
+import { useToast } from '@/components/ui/useToast'
 
 type Props = { open: boolean; onClose: () => void; empresaId: string; contaId: string; onDone: () => void }
 const BANCOS = ['001 Banco do Brasil', '237 Bradesco', '341 Itaú', '033 Santander', '260 Nu Pagamentos', '077 Inter']
 
 export default function ModalTed({ open, onClose, empresaId, contaId, onDone }: Props) {
+  const toast = useToast()
   const [banco, setBanco] = useState(BANCOS[0])
   const [agencia, setAgencia] = useState('')
   const [conta, setConta] = useState('')
@@ -15,20 +18,27 @@ export default function ModalTed({ open, onClose, empresaId, contaId, onDone }: 
   const [valorMask, setValorMask] = useState('')
   const [descricao, setDescricao] = useState('')
   const [data, setData] = useState(new Date().toISOString().slice(0, 10))
+  const [loading, setLoading] = useState(false)
   if (!open) return null
 
   async function confirmar() {
+    const valor = parseBRLInput(valorMask)
+    if (!nome.trim()) return toast.warning('Informe o destinatário')
+    if (valor <= 0) return toast.warning('Informe um valor válido')
+    setLoading(true)
     const { data: sess } = await supabase.auth.getSession()
     const res = await fetch('/api/conta-pj/transferencia', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', ...(sess.session?.access_token ? { Authorization: `Bearer ${sess.session.access_token}` } : {}) },
       body: JSON.stringify({
-        empresaId, conta_origem_id: contaId, tipo: 'ted', valor: parseBRLInput(valorMask), destinatario_nome: nome,
+        empresaId, conta_origem_id: contaId, tipo: 'ted', valor, destinatario_nome: nome,
         destinatario_documento: documento, destinatario_banco: banco, destinatario_agencia: agencia, destinatario_conta: conta, descricao, data_agendada: data,
       }),
     })
     const payload = await res.json().catch(() => ({}))
-    if (!res.ok) return alert(payload.error || 'Falha ao criar TED')
+    setLoading(false)
+    if (!res.ok) return toast.error(payload.error || 'Falha ao criar TED')
+    toast.success(data === new Date().toISOString().slice(0, 10) ? 'TED enviada com sucesso' : 'TED agendada com sucesso')
     onDone(); onClose()
   }
 
@@ -43,7 +53,17 @@ export default function ModalTed({ open, onClose, empresaId, contaId, onDone }: 
         <input className="mt-2 w-full rounded border px-3 py-2" placeholder="Valor" value={valorMask} onChange={(e) => setValorMask(maskBRLInput(e.target.value))} />
         <input className="mt-2 w-full rounded border px-3 py-2" placeholder="Descrição" value={descricao} onChange={(e) => setDescricao(e.target.value)} />
         <input type="date" className="mt-2 w-full rounded border px-3 py-2" value={data} onChange={(e) => setData(e.target.value)} />
-        <div className="mt-3 flex justify-end gap-2"><button className="rounded border px-3 py-2" onClick={onClose}>Cancelar</button><button className="rounded bg-blue-700 px-3 py-2 text-white" onClick={() => void confirmar()}>Confirmar</button></div>
+        <div className="mt-3 flex justify-end gap-2">
+          <button className="rounded border px-3 py-2" onClick={onClose}>Cancelar</button>
+          <LoadingButton
+            loading={loading}
+            loadingText="Processando..."
+            className="rounded bg-[var(--fo-teal)] px-3 py-2 text-white"
+            onClick={() => void confirmar()}
+          >
+            Confirmar
+          </LoadingButton>
+        </div>
       </div>
     </div>
   )
