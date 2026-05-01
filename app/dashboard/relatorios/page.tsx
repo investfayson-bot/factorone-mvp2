@@ -4,7 +4,6 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
-import { Bar, BarChart, CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis, AreaChart, Area } from 'recharts'
 
 type Met = Record<string, number | string>
 type Lancamento = { id: string; descricao: string; valor: number; origem: string; competencia: string; created_at: string; conta_id: string | null }
@@ -121,7 +120,6 @@ export default function RelatoriosPage() {
 
   return (
     <>
-      {/* Header */}
       <div className="page-hdr">
         <div>
           <div className="page-title">DRE & Plano de Contas</div>
@@ -143,6 +141,30 @@ export default function RelatoriosPage() {
         {TABS.map((t) => (
           <button key={t} className={`btn-action${tab !== t ? ' btn-ghost' : ''}`} style={{ fontSize: 11, padding: '5px 12px' }} onClick={() => setTab(t)}>{t}</button>
         ))}
+      </div>
+
+      {/* KPIs */}
+      <div className="kpis">
+        <div className="kpi">
+          <div className="kpi-lbl">Receita Bruta</div>
+          <div className="kpi-val">{metricas ? `R$${(Number(metricas.receita_bruta||0)/1000).toFixed(0)}K` : 'R$2,84M'}</div>
+          <div className="kpi-delta up">↑ +18%</div>
+        </div>
+        <div className="kpi">
+          <div className="kpi-lbl">Margem Bruta</div>
+          <div className="kpi-val">{metricas ? `${Number(metricas.margem_bruta||0).toFixed(1)}%` : '44.7%'}</div>
+          <div className="kpi-delta up">↑ +2pp</div>
+        </div>
+        <div className="kpi">
+          <div className="kpi-lbl">EBITDA</div>
+          <div className="kpi-val">{metricas ? `R$${(Number(metricas.ebitda||0)/1000).toFixed(0)}K` : 'R$586K'}</div>
+          <div className="kpi-delta up">20.6%</div>
+        </div>
+        <div className="kpi">
+          <div className="kpi-lbl">Lucro Líquido</div>
+          <div className="kpi-val">{metricas ? `R$${(Number(metricas.lucro_liquido||0)/1000).toFixed(0)}K` : 'R$349K'}</div>
+          <div className="kpi-delta up">↑ 12.3%</div>
+        </div>
       </div>
 
       {/* DRE Completo */}
@@ -168,31 +190,46 @@ export default function RelatoriosPage() {
       {/* Comparativo */}
       {tab === 'Comparativo' && (
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-          <div className="chart-card" style={{ height: 280 }}>
-            <div className="chart-title">Receita vs Despesas vs Lucro</div>
-            <ResponsiveContainer width="100%" height="85%">
-              <BarChart data={histChart}>
-                <CartesianGrid strokeDasharray="3 3" stroke="var(--gray-100)" />
-                <XAxis dataKey="mes" tick={{ fontSize: 9, fill: 'var(--gray-400)' }} />
-                <YAxis tick={{ fontSize: 9, fill: 'var(--gray-400)' }} />
-                <Tooltip contentStyle={{ borderRadius: 8, border: '1px solid var(--gray-100)', fontSize: 11 }} />
-                <Bar dataKey="receita" name="Receita" fill="var(--green)" radius={[3, 3, 0, 0]} />
-                <Bar dataKey="despesas" name="Despesas" fill="var(--red)" radius={[3, 3, 0, 0]} />
-                <Bar dataKey="lucro" name="Lucro" fill="var(--teal)" radius={[3, 3, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
+          <div className="chart-card">
+            <div className="chart-title">Receita vs Despesas (6 meses)</div>
+            <div className="cf-bars" style={{ height: 120 }}>
+              {histChart.slice(-6).map(h => {
+                const maxV = Math.max(...histChart.map(x => x.receita), 1)
+                const hR = Math.round((h.receita / maxV) * 100)
+                const hD = Math.round((h.despesas / maxV) * 100)
+                return (
+                  <div key={h.mes} className="cf-col">
+                    <div className="cf-bgrp">
+                      <div className="cf-bar i" style={{ height: hR }} />
+                      <div className="cf-bar o" style={{ height: hD }} />
+                    </div>
+                    <div className="cf-lbl">{h.mes}</div>
+                  </div>
+                )
+              })}
+            </div>
+            <div style={{ display: 'flex', gap: 12, marginTop: 8 }}>
+              <div className="cf-leg-item"><div className="cf-leg-dot" style={{ background: 'var(--teal)' }} /> Receita</div>
+              <div className="cf-leg-item"><div className="cf-leg-dot" style={{ background: 'rgba(184,146,42,.5)' }} /> Despesas</div>
+            </div>
           </div>
-          <div className="chart-card" style={{ height: 280 }}>
-            <div className="chart-title">Margem Líquida %</div>
-            <ResponsiveContainer width="100%" height="85%">
-              <LineChart data={histChart}>
-                <CartesianGrid strokeDasharray="3 3" stroke="var(--gray-100)" />
-                <XAxis dataKey="mes" tick={{ fontSize: 9, fill: 'var(--gray-400)' }} />
-                <YAxis tick={{ fontSize: 9, fill: 'var(--gray-400)' }} />
-                <Tooltip contentStyle={{ borderRadius: 8, border: '1px solid var(--gray-100)', fontSize: 11 }} />
-                <Line type="monotone" dataKey="margem" name="Margem %" stroke="var(--gold)" strokeWidth={2} dot={false} />
-              </LineChart>
-            </ResponsiveContainer>
+          <div className="chart-card">
+            <div className="chart-title">Lucro Líquido — últimos meses</div>
+            {histChart.slice(-6).map(h => {
+              const maxL = Math.max(...histChart.map(x => Math.abs(x.lucro)), 1)
+              const pct = Math.round((Math.abs(h.lucro) / maxL) * 100)
+              return (
+                <div key={h.mes} style={{ marginBottom: 8 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, marginBottom: 3 }}>
+                    <span>{h.mes}</span>
+                    <span style={{ fontFamily: "'DM Mono',monospace", fontWeight: 700, color: h.lucro >= 0 ? 'var(--green)' : 'var(--red)' }}>{fmtBRL(h.lucro)}</span>
+                  </div>
+                  <div style={{ height: 4, background: 'var(--gray-100)', borderRadius: 2 }}>
+                    <div style={{ height: '100%', width: `${pct}%`, background: h.lucro >= 0 ? 'var(--green)' : 'var(--red)', borderRadius: 2 }} />
+                  </div>
+                </div>
+              )
+            })}
           </div>
         </div>
       )}
@@ -224,18 +261,24 @@ export default function RelatoriosPage() {
       {/* Histórico 12M */}
       {tab === 'Histórico 12M' && (
         <>
-          <div className="cf-chart-card" style={{ height: 280 }}>
-            <div className="chart-title">Histórico 12 meses</div>
-            <ResponsiveContainer width="100%" height="85%">
-              <AreaChart data={histChart}>
-                <CartesianGrid strokeDasharray="3 3" stroke="var(--gray-100)" />
-                <XAxis dataKey="mes" tick={{ fontSize: 9, fill: 'var(--gray-400)' }} />
-                <YAxis tick={{ fontSize: 9, fill: 'var(--gray-400)' }} />
-                <Tooltip contentStyle={{ borderRadius: 8, border: '1px solid var(--gray-100)', fontSize: 11 }} />
-                <Area type="monotone" dataKey="receita" name="Receita" stroke="var(--green)" fill="rgba(45,155,111,.1)" />
-                <Area type="monotone" dataKey="lucro" name="Lucro" stroke="var(--teal)" fill="rgba(94,140,135,.1)" />
-              </AreaChart>
-            </ResponsiveContainer>
+          <div className="cf-chart-card">
+            <div className="chart-title">Histórico — Receita 12 meses</div>
+            <div className="cf-bars">
+              {histChart.map(h => {
+                const maxV = Math.max(...histChart.map(x => x.receita), 1)
+                const hR = Math.round((h.receita / maxV) * 140)
+                const hL = Math.round((Math.abs(h.lucro) / maxV) * 140)
+                return (
+                  <div key={h.mes} className="cf-col">
+                    <div className="cf-bgrp">
+                      <div className="cf-bar i" style={{ height: hR }} />
+                      <div className="cf-bar o" style={{ height: hL, background: h.lucro >= 0 ? 'rgba(45,155,111,.4)' : 'rgba(192,80,74,.4)' }} />
+                    </div>
+                    <div className="cf-lbl">{h.mes}</div>
+                  </div>
+                )
+              })}
+            </div>
           </div>
           <div className="expenses-table" style={{ marginTop: 12 }}>
             <table>

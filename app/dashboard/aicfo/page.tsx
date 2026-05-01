@@ -146,11 +146,19 @@ export default function AICFOPage() {
 
         <div className="ai-sidebar">
           <div className="ai-ctx-card">
-            <div className="ai-ctx-title">Contexto Financeiro</div>
-            <div className="ai-ctx-item"><span className="ai-ctx-lbl">Previsão 30d</span><span className="ai-ctx-val" style={{ color: 'var(--green)' }}>{fmtBRLCompact(METRICAS_DEMO.previsao30d)}</span></div>
-            <div className="ai-ctx-item"><span className="ai-ctx-lbl">Risco caixa</span><span className="ai-ctx-val" style={{ color: 'var(--gold)' }}>{METRICAS_DEMO.riscoCaixaDias} dias</span></div>
-            <div className="ai-ctx-item"><span className="ai-ctx-lbl">Anomalias</span><span className="ai-ctx-val">{METRICAS_DEMO.anomalias} detectadas</span></div>
-            <div className="ai-ctx-item"><span className="ai-ctx-lbl">Precisão IA</span><span className="ai-ctx-val" style={{ color: 'var(--green)' }}>{METRICAS_DEMO.precisaoIaPct}%</span></div>
+            <div className="ai-ctx-title">Dados em contexto</div>
+            <div className="ai-ctx-item"><span className="ai-ctx-lbl">Saldo</span><span className="ai-ctx-val">R$487K</span></div>
+            <div className="ai-ctx-item"><span className="ai-ctx-lbl">MRR</span><span className="ai-ctx-val">R$284K</span></div>
+            <div className="ai-ctx-item"><span className="ai-ctx-lbl">Burn</span><span className="ai-ctx-val">R$42K/mês</span></div>
+            <div className="ai-ctx-item"><span className="ai-ctx-lbl">Runway</span><span className="ai-ctx-val">8.3m</span></div>
+            <div className="ai-ctx-item"><span className="ai-ctx-lbl">A Receber</span><span className="ai-ctx-val">R$157K</span></div>
+            <div className="ai-ctx-item"><span className="ai-ctx-lbl">Despesas</span><span className="ai-ctx-val">R$89K</span></div>
+          </div>
+          <div className="ai-ctx-card">
+            <div className="ai-ctx-title">Alertas ativos</div>
+            <div style={{ fontSize: 11, color: 'var(--red)', padding: '5px 0', borderBottom: '1px solid var(--gray-100)' }}>⚠ Invoice TechStart vencida</div>
+            <div style={{ fontSize: 11, color: 'var(--gold)', padding: '5px 0', borderBottom: '1px solid var(--gray-100)' }}>⚡ Budget Marketing 87%</div>
+            <div style={{ fontSize: 11, color: 'var(--gold)', padding: '5px 0' }}>⚡ Runway abaixo de 9 meses</div>
           </div>
           <div className="ai-ctx-card">
             <div className="ai-ctx-title">Sugestões rápidas</div>
