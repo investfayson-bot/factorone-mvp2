@@ -13,6 +13,8 @@ async function authHeaders(): Promise<Record<string, string>> {
 type Extrato = { id: string; data_transacao: string; descricao: string; valor: number; tipo: 'credito' | 'debito'; conta_id: string }
 type Match = { extrato_id: string; referencia_id: string; tipo: string; confidence: number; metodo: string }
 
+const card: React.CSSProperties = { background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: 16 }
+
 export default function Conciliacao() {
   const [extratos, setExtratos] = useState<Extrato[]>([])
   const [pendentes, setPendentes] = useState<Array<{ id: string; tipo: 'pagar' | 'receber'; nome: string; valor: number; data: string }>>([])
@@ -63,23 +65,68 @@ export default function Conciliacao() {
     : []
 
   return (
-    <div className="grid gap-4 lg:grid-cols-2">
-      <div className="rounded-2xl border bg-white p-4">
-        <div className="mb-2 flex items-center justify-between">
-          <h3 className="font-semibold">Extrato (não conciliados)</h3>
-          {extratos[0]?.conta_id && <button className="rounded border px-2 py-1 text-xs" onClick={() => void conciliarAutomatico(extratos[0].conta_id)}>Conciliar automaticamente</button>}
+    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+      <div style={card}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+          <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--navy)' }}>Extrato (não conciliados)</div>
+          {extratos[0]?.conta_id && (
+            <button className="btn-action" style={{ fontSize: 10, padding: '3px 10px' }} onClick={() => void conciliarAutomatico(extratos[0].conta_id)}>✨ Auto-conciliar</button>
+          )}
         </div>
-        <div className="space-y-2">{extratos.map((e) => <button key={e.id} className={`w-full rounded border p-2 text-left text-sm ${selectedExtrato?.id === e.id ? 'border-blue-500 bg-blue-50' : ''}`} onClick={() => setSelectedExtrato(e)}><p>{new Date(e.data_transacao).toLocaleDateString('pt-BR')} • {e.descricao}</p><p className={e.tipo === 'credito' ? 'text-emerald-600' : 'text-red-600'}>{formatBRL(Number(e.valor || 0))}</p></button>)}</div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+          {extratos.map((e) => (
+            <button
+              key={e.id}
+              onClick={() => setSelectedExtrato(e)}
+              style={{ width: '100%', borderRadius: 8, border: selectedExtrato?.id === e.id ? '1.5px solid var(--teal)' : '1px solid var(--gray-100)', background: selectedExtrato?.id === e.id ? 'rgba(94,140,135,.07)' : '#fff', padding: '8px 10px', textAlign: 'left', cursor: 'pointer' }}
+            >
+              <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>{new Date(e.data_transacao).toLocaleDateString('pt-BR')} · {e.descricao}</div>
+              <div style={{ fontSize: 12, fontWeight: 600, color: e.tipo === 'credito' ? 'var(--green)' : 'var(--red)' }}>{formatBRL(Number(e.valor || 0))}</div>
+            </button>
+          ))}
+          {extratos.length === 0 && <div style={{ fontSize: 12, color: 'var(--gray-400)', textAlign: 'center', padding: 16 }}>Nenhum extrato pendente.</div>}
+        </div>
       </div>
-      <div className="rounded-2xl border bg-white p-4">
-        <h3 className="font-semibold">Lançamentos internos pendentes</h3>
-        <div className="mt-2 space-y-2">{(selectedExtrato ? destaque : pendentes).map((p) => <div key={p.id} className={`rounded border p-2 text-sm ${selectedExtrato ? 'border-amber-300 bg-amber-50' : ''}`}><p>{p.nome} • {p.data}</p><p>{formatBRL(p.valor)} • {p.tipo}</p></div>)}</div>
+
+      <div style={card}>
+        <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--navy)', marginBottom: 12 }}>Lançamentos internos pendentes</div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+          {(selectedExtrato ? destaque : pendentes).map((p) => (
+            <div key={p.id} style={{ borderRadius: 8, border: selectedExtrato ? '1px solid var(--gold)' : '1px solid var(--gray-100)', background: selectedExtrato ? 'rgba(184,146,42,.06)' : '#fff', padding: '8px 10px' }}>
+              <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>{p.nome} · {p.data}</div>
+              <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--navy)' }}>{formatBRL(p.valor)} <span style={{ color: 'var(--gray-400)', fontWeight: 400 }}>({p.tipo})</span></div>
+            </div>
+          ))}
+          {(selectedExtrato ? destaque : pendentes).length === 0 && (
+            <div style={{ fontSize: 12, color: 'var(--gray-400)', textAlign: 'center', padding: 16 }}>
+              {selectedExtrato ? 'Nenhum match encontrado.' : 'Nenhum lançamento pendente.'}
+            </div>
+          )}
+        </div>
       </div>
-      <div className="rounded-2xl border bg-white p-4 lg:col-span-2">
-        <h3 className="font-semibold">Estatísticas</h3>
-        <p className="text-sm text-slate-600">% conciliado: {stats?.percentual?.toFixed(1) || '0'}%</p>
-        <p className="text-sm text-slate-600">Conciliados: {stats?.conciliados || 0} • Não conciliados: {stats?.nao_conciliados || 0}</p>
-        {sugestoes.length > 0 && <p className="text-sm text-slate-600">Sugestões fuzzy pendentes: {sugestoes.length}</p>}
+
+      <div style={{ ...card, gridColumn: 'span 2' }}>
+        <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--navy)', marginBottom: 10 }}>Estatísticas de conciliação</div>
+        <div style={{ display: 'flex', gap: 24 }}>
+          <div>
+            <div style={{ fontSize: 10, color: 'var(--gray-400)', textTransform: 'uppercase', fontFamily: "'DM Mono',monospace" }}>% Conciliado</div>
+            <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--green)' }}>{stats?.percentual?.toFixed(1) || '0'}%</div>
+          </div>
+          <div>
+            <div style={{ fontSize: 10, color: 'var(--gray-400)', textTransform: 'uppercase', fontFamily: "'DM Mono',monospace" }}>Conciliados</div>
+            <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--navy)' }}>{stats?.conciliados || 0}</div>
+          </div>
+          <div>
+            <div style={{ fontSize: 10, color: 'var(--gray-400)', textTransform: 'uppercase', fontFamily: "'DM Mono',monospace" }}>Não conciliados</div>
+            <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--gold)' }}>{stats?.nao_conciliados || 0}</div>
+          </div>
+          {sugestoes.length > 0 && (
+            <div>
+              <div style={{ fontSize: 10, color: 'var(--gray-400)', textTransform: 'uppercase', fontFamily: "'DM Mono',monospace" }}>Sugestões fuzzy</div>
+              <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--teal)' }}>{sugestoes.length}</div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   )

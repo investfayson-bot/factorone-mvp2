@@ -1,65 +1,93 @@
 'use client'
-import InsightFloating from "@/components/aicfo/InsightFloating"
-
+import InsightFloating from '@/components/aicfo/InsightFloating'
 import { useEffect, useState } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import type { User } from '@supabase/supabase-js'
 import { supabase } from '@/lib/supabase'
-import {
-  LayoutDashboard,
-  Landmark,
-  CreditCard,
-  Tags,
-  ArrowLeftRight,
-  Wallet,
-  BarChart3,
-  Zap,
-  Receipt,
-  Building2,
-  Settings,
-  LogOut,
-  PieChart,
-  Calculator,
-} from 'lucide-react'
 import Link from 'next/link'
 
-/** Ordem e rótulos alinhados ao visual de referência (Financial OS) */
-const menu: Array<{
-  href: string
-  icon: typeof LayoutDashboard
+type NavGroup = {
   label: string
-  match?: (path: string) => boolean
-}> = [
-  { href: '/dashboard', icon: LayoutDashboard, label: 'Dashboard', match: (p) => p === '/dashboard' || p === '/dashboard/' },
-  { href: '/dashboard/conta-pj', icon: Landmark, label: 'Banco PJ' },
-  { href: '/dashboard/cartoes', icon: CreditCard, label: 'Cartões' },
-  { href: '/dashboard/despesas', icon: Tags, label: 'Categorização' },
-  { href: '/dashboard/cashflow', icon: ArrowLeftRight, label: 'Fluxo de Caixa' },
-  { href: '/dashboard/financeiro', icon: Wallet, label: 'Financeiro' },
-  { href: '/dashboard/relatorios', icon: BarChart3, label: 'DRE Auto' },
-  { href: '/dashboard/aicfo', icon: Zap, label: 'CFO IA' },
-  { href: '/dashboard/notas', icon: Receipt, label: 'Fiscal' },
-  { href: '/contabilidade', icon: Calculator, label: 'Contabilidade' },
-  { href: '/dashboard/orcamento', icon: PieChart, label: 'Orçamento' },
-  { href: '/dashboard/patrimonio', icon: Building2, label: 'Patrimônio' },
-  { href: '/dashboard/integracoes', icon: Settings, label: 'Integrações' },
+  items: Array<{ href: string; icon: string; label: string; badge?: string; badgeColor?: string; match?: (p: string) => boolean }>
+}
+
+const navGroups: NavGroup[] = [
+  {
+    label: 'Core',
+    items: [
+      { href: '/dashboard', icon: 'fa-chart-line', label: 'Dashboard', match: (p) => p === '/dashboard' || p === '/dashboard/' },
+      { href: '/dashboard/cashflow', icon: 'fa-water', label: 'Cash Flow' },
+    ],
+  },
+  {
+    label: 'Financeiro',
+    items: [
+      { href: '/dashboard/conta-pj', icon: 'fa-building-columns', label: 'Banco PJ' },
+      { href: '/dashboard/cartoes', icon: 'fa-credit-card', label: 'Cartões' },
+      { href: '/dashboard/financeiro', icon: 'fa-arrow-right-arrow-left', label: 'Contas Pagar/Receber' },
+      { href: '/dashboard/reembolsos', icon: 'fa-money-bill-transfer', label: 'Reembolsos', badge: '3', badgeColor: 'var(--teal)' },
+    ],
+  },
+  {
+    label: 'Automação',
+    items: [
+      { href: '/dashboard/despesas', icon: 'fa-receipt', label: 'Despesas & Recibos' },
+      { href: '/dashboard/aprovacoes', icon: 'fa-clipboard-check', label: 'Aprovações', badge: '5', badgeColor: 'var(--teal)' },
+      { href: '/dashboard/relatorios', icon: 'fa-file-invoice-dollar', label: 'DRE & Plano de Contas' },
+      { href: '/dashboard/conciliacao', icon: 'fa-code-branch', label: 'Conciliação Bancária' },
+      { href: '/dashboard/notas', icon: 'fa-landmark', label: 'Fiscal & NF-e' },
+    ],
+  },
+  {
+    label: 'Inteligência',
+    items: [
+      { href: '/dashboard/aicfo', icon: 'fa-robot', label: 'AI CFO' },
+      { href: '/dashboard/integracoes', icon: 'fa-plug', label: 'Hub de Integrações' },
+      { href: '/dashboard/marketplace', icon: 'fa-store', label: 'Marketplace', badge: 'NEW', badgeColor: '#7C3AED' },
+    ],
+  },
 ]
 
-function itemActive(pathname: string, item: (typeof menu)[0]): boolean {
+const pageTitles: Record<string, string> = {
+  '/dashboard': 'Dashboard',
+  '/dashboard/cashflow': 'Cash Flow Intelligence',
+  '/dashboard/conta-pj': 'Banco PJ',
+  '/dashboard/cartoes': 'Cartões Corporativos',
+  '/dashboard/financeiro': 'Contas a Pagar / Receber',
+  '/dashboard/reembolsos': 'Reembolsos',
+  '/dashboard/despesas': 'Despesas & Recibos',
+  '/dashboard/aprovacoes': 'Aprovações',
+  '/dashboard/relatorios': 'DRE & Plano de Contas',
+  '/dashboard/conciliacao': 'Conciliação Bancária',
+  '/dashboard/notas': 'Fiscal & NF-e',
+  '/dashboard/aicfo': 'AI CFO',
+  '/dashboard/integracoes': 'Hub de Integrações',
+  '/dashboard/marketplace': 'Marketplace',
+  '/dashboard/orcamento': 'Orçamento',
+  '/dashboard/patrimonio': 'Patrimônio',
+}
+
+function isActive(pathname: string, item: NavGroup['items'][0]) {
   if (item.match) return item.match(pathname)
   if (item.href === '/dashboard') return false
-  return pathname === item.href || pathname.startsWith(`${item.href}/`)
+  return pathname === item.href || pathname.startsWith(item.href + '/')
 }
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const router = useRouter()
   const [user, setUser] = useState<User | null>(null)
+  const [empresaNome, setEmpresaNome] = useState('')
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      if (!user) router.push('/auth')
-      else setUser(user)
+    supabase.auth.getUser().then(async ({ data: { user: u } }) => {
+      if (!u) { router.push('/auth'); return }
+      setUser(u)
+      const { data: row } = await supabase.from('usuarios').select('empresa_id').eq('id', u.id).maybeSingle()
+      if (row?.empresa_id) {
+        const { data: emp } = await supabase.from('empresas').select('nome').eq('id', row.empresa_id).maybeSingle()
+        if (emp?.nome) setEmpresaNome(emp.nome as string)
+      }
     })
   }, [router])
 
@@ -68,68 +96,69 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     router.push('/auth')
   }
 
+  const pageTitle = pageTitles[pathname] ?? 'FactorOne'
+  const initials = user?.email?.slice(0, 2).toUpperCase() ?? 'FO'
+  const empresaInitials = empresaNome
+    ? empresaNome.split(' ').slice(0, 2).map(w => w[0]).join('').toUpperCase()
+    : initials
+
   return (
-    <div className="flex h-screen overflow-hidden bg-[var(--fo-bg)]">
-      <aside className="flex w-[260px] flex-shrink-0 flex-col border-r border-[var(--fo-border)] bg-[var(--fo-sidebar)]">
-        <div className="flex h-16 items-center border-b border-gray-200/80 px-5">
-          <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-600 to-teal-700 shadow-sm">
-              <span className="text-sm font-bold text-white">F1</span>
-            </div>
-            <div>
-              <p className="leading-none font-bold text-gray-900">FactorOne</p>
-              <p className="mt-0.5 text-[11px] leading-none text-gray-500">Financial OS</p>
+    <>
+      <div style={{ display: 'flex', height: '100vh', overflow: 'hidden' }}>
+        {/* SIDEBAR */}
+        <aside className="sidebar">
+          <div className="sb-logo">
+            <div className="sb-logo-txt">Factor<span>One</span></div>
+          </div>
+          <nav className="sb-nav">
+            {navGroups.map(group => (
+              <div key={group.label}>
+                <div className="nav-section">{group.label}</div>
+                {group.items.map(item => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={`nav-item${isActive(pathname, item) ? ' active' : ''}`}
+                  >
+                    <i className={`fa-solid ${item.icon}`} />
+                    <span style={{ flex: 1 }}>{item.label}</span>
+                    {item.badge && (
+                      <span style={{ fontSize: 8, fontWeight: 700, padding: '1px 5px', borderRadius: 20, background: item.badgeColor, color: '#fff' }}>
+                        {item.badge}
+                      </span>
+                    )}
+                  </Link>
+                ))}
+              </div>
+            ))}
+          </nav>
+          <div className="sb-footer">
+            <div className="sb-co" onClick={sair} title="Clique para sair">
+              <div className="sb-co-av">{empresaInitials}</div>
+              <div>
+                <div className="sb-co-name" style={{ maxWidth: 130, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  {empresaNome || user?.email?.split('@')[0] || 'Conta'}
+                </div>
+                <div className="sb-co-plan">Plano Profissional</div>
+              </div>
             </div>
           </div>
-        </div>
+        </aside>
 
-        <nav className="flex-1 space-y-0.5 overflow-y-auto px-2.5 py-4">
-          {menu.map((item) => {
-            const isActive = itemActive(pathname, item)
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all ${
-                  isActive
-                    ? 'bg-[var(--fo-teal)] text-white shadow-sm'
-                    : 'text-[var(--fo-text-muted)] hover:bg-[var(--fo-teal-bg)] hover:text-[var(--fo-dark)]'
-                }`}
-              >
-                <item.icon
-                  size={18}
-                  strokeWidth={isActive ? 2.25 : 2}
-                  className={isActive ? 'text-white' : 'text-gray-400'}
-                />
-                <span className="flex-1">{item.label}</span>
-              </Link>
-            )
-          })}
-        </nav>
-
-        <div className="border-t border-gray-200/80 p-3">
-          <div className="group flex items-center gap-2 rounded-xl px-2 py-2 transition-colors hover:bg-gray-200/50">
-            <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg bg-white text-sm font-semibold text-emerald-800 shadow-sm ring-1 ring-gray-200/80">
-              {user?.email?.[0]?.toUpperCase() || 'U'}
-            </div>
-            <div className="min-w-0 flex-1">
-              <p className="truncate text-xs font-semibold text-gray-800">{user?.email}</p>
-              <p className="text-[10px] text-gray-500">Conta ativa</p>
-            </div>
-            <button
-              type="button"
-              onClick={sair}
-              className="text-gray-400 opacity-0 transition-all hover:text-red-600 group-hover:opacity-100"
-              title="Sair"
-            >
-              <LogOut size={16} />
-            </button>
+        {/* MAIN */}
+        <div className="fo-main">
+          <div className="topbar">
+            <div className="topbar-title">{pageTitle}</div>
+            <div className="live-badge"><div className="live-dot" /> LIVE</div>
+            <div className="topbar-av" onClick={sair} title="Sair">{initials}</div>
+          </div>
+          <div className="fo-content">
+            {children}
           </div>
         </div>
-      </aside>
+      </div>
 
-      <main className="min-w-0 flex-1 overflow-y-auto bg-[#F9FAFB]">{children}</main>
       <InsightFloating />
-    </div>
+    </>
   )
 }

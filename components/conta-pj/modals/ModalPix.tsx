@@ -2,10 +2,13 @@
 import { useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import { maskBRLInput, parseBRLInput } from '@/lib/currency-brl'
+import LoadingButton from '@/components/ui/LoadingButton'
+import { useToast } from '@/components/ui/useToast'
 
 type Props = { open: boolean; onClose: () => void; empresaId: string; contaId: string; onDone: () => void }
 
 export default function ModalPix({ open, onClose, empresaId, contaId, onDone }: Props) {
+  const toast = useToast()
   const [chavePix, setChavePix] = useState('')
   const [valorMask, setValorMask] = useState('')
   const [descricao, setDescricao] = useState('')
@@ -14,9 +17,13 @@ export default function ModalPix({ open, onClose, empresaId, contaId, onDone }: 
   if (!open) return null
 
   async function confirmar() {
-    if (pin.length !== 4) return alert('PIN de 4 dígitos')
+    if (pin.length !== 4) return toast.warning('PIN de 4 dígitos')
     setLoading(true)
     const valor = parseBRLInput(valorMask)
+    if (valor <= 0) {
+      setLoading(false)
+      return toast.warning('Informe um valor válido')
+    }
     const { data: sess } = await supabase.auth.getSession()
     const res = await fetch('/api/conta-pj/transferencia', {
       method: 'POST',
@@ -34,7 +41,8 @@ export default function ModalPix({ open, onClose, empresaId, contaId, onDone }: 
     })
     const payload = await res.json().catch(() => ({}))
     setLoading(false)
-    if (!res.ok) return alert(payload.error || 'Falha ao enviar PIX')
+    if (!res.ok) return toast.error(payload.error || 'Falha ao enviar PIX')
+    toast.success('PIX enviado com sucesso')
     onDone()
     onClose()
   }
@@ -50,7 +58,14 @@ export default function ModalPix({ open, onClose, empresaId, contaId, onDone }: 
         <p className="mt-2 text-xs text-slate-500">Você está enviando {valorMask || '0,00'} via PIX.</p>
         <div className="mt-3 flex justify-end gap-2">
           <button className="rounded border px-3 py-2" onClick={onClose}>Cancelar</button>
-          <button disabled={loading} className="rounded bg-blue-700 px-3 py-2 text-white" onClick={() => void confirmar()}>Confirmar</button>
+          <LoadingButton
+            loading={loading}
+            loadingText="Processando..."
+            className="rounded bg-[var(--fo-teal)] px-3 py-2 text-white"
+            onClick={() => void confirmar()}
+          >
+            Confirmar
+          </LoadingButton>
         </div>
       </div>
     </div>

@@ -385,7 +385,7 @@ export default function NovaDespesaModal({
               {valorMask ? formatBRL(parseBRLInput(valorMask)) : ''}
             </p>
           </div>
-          {!form.recorrente && <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-3">
             <div>
               <label htmlFor="despesa-categoria" className="text-xs font-medium text-slate-600">Categoria *</label>
               <select
@@ -402,28 +402,30 @@ export default function NovaDespesaModal({
                 ))}
               </select>
             </div>
-            <div>
-              <label htmlFor="despesa-centro" className="text-xs font-medium text-slate-600">Centro de custo</label>
-              <select
-                id="despesa-centro"
-                name="centro_custo_id"
-                disabled={!centroDisponivel}
-                value={form.centro_custo_id}
-                onChange={(e) => setForm({ ...form, centro_custo_id: e.target.value })}
-                className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2.5 text-slate-800 outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
-              >
-                <option value="">— Nenhum —</option>
-                {centros.map((c) => (
-                  <option key={c.id} value={c.id}>
-                    {c.nome}
-                  </option>
-                ))}
-              </select>
-              {!centroDisponivel && (
-                <p className="mt-1 text-xs text-amber-700">Centro de custo indisponível até aplicar migration.</p>
-              )}
-            </div>
-          </div>}
+            {!form.recorrente && (
+              <div>
+                <label htmlFor="despesa-centro" className="text-xs font-medium text-slate-600">Centro de custo</label>
+                <select
+                  id="despesa-centro"
+                  name="centro_custo_id"
+                  disabled={!centroDisponivel}
+                  value={form.centro_custo_id}
+                  onChange={(e) => setForm({ ...form, centro_custo_id: e.target.value })}
+                  className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2.5 text-slate-800 outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
+                >
+                  <option value="">— Nenhum —</option>
+                  {centros.map((c) => (
+                    <option key={c.id} value={c.id}>
+                      {c.nome}
+                    </option>
+                  ))}
+                </select>
+                {!centroDisponivel && (
+                  <p className="mt-1 text-xs text-amber-700">Centro de custo indisponível até aplicar migration.</p>
+                )}
+              </div>
+            )}
+          </div>
           <div className="flex flex-wrap items-end gap-2 rounded-xl border border-dashed border-slate-200 bg-slate-50/80 p-3">
             <div className="min-w-[140px] flex-1">
               <label htmlFor="despesa-novo-centro" className="text-xs font-medium text-slate-600">Novo centro (rápido)</label>

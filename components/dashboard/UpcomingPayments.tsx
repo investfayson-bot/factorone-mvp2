@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
-import { CalendarClock, ChevronRight } from 'lucide-react'
 import { fmtBRL } from '@/lib/dre-calculations'
 import { erroDesconhecido } from '@/lib/transacao-types'
 
@@ -25,10 +24,10 @@ function diasRestantes(due: string) {
   return Math.round((d.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
 }
 
-function badgeClass(dias: number) {
-  if (dias <= 1) return 'bg-red-100 text-red-800 border-red-200'
-  if (dias <= 5) return 'bg-amber-100 text-amber-800 border-amber-200'
-  return 'bg-emerald-100 text-emerald-800 border-emerald-200'
+function badgeStyle(dias: number): React.CSSProperties {
+  if (dias <= 1) return { background: 'rgba(192,80,74,.12)', color: 'var(--fo-red)' }
+  if (dias <= 5) return { background: 'rgba(184,146,42,.12)', color: 'var(--fo-gold)' }
+  return { background: 'rgba(45,155,111,.12)', color: 'var(--fo-green)' }
 }
 
 export default function UpcomingPayments({ empresaId }: Props) {
@@ -73,19 +72,15 @@ export default function UpcomingPayments({ empresaId }: Props) {
       }
     }
     if (empresaId) load()
-    return () => {
-      cancelled = true
-    }
+    return () => { cancelled = true }
   }, [empresaId])
 
   if (loading) {
     return (
-      <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm animate-pulse">
-        <div className="h-4 w-48 bg-slate-200 rounded mb-4" />
-        <div className="space-y-3">
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="h-12 bg-slate-100 rounded-xl" />
-          ))}
+      <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: 20, height: '100%' }} className="animate-pulse">
+        <div style={{ height: 12, width: 160, background: 'var(--gray-100)', borderRadius: 6, marginBottom: 14 }} />
+        <div className="space-y-2">
+          {[1, 2, 3].map((i) => <div key={i} style={{ height: 44, background: 'var(--gray-100)', borderRadius: 8 }} />)}
         </div>
       </div>
     )
@@ -93,64 +88,56 @@ export default function UpcomingPayments({ empresaId }: Props) {
 
   if (error) {
     return (
-      <div className="bg-red-50 border border-red-200 rounded-2xl p-6 text-sm text-red-800">
-        <p className="font-medium">Vencimentos</p>
-        <p className="mt-1">{error}</p>
+      <div style={{ background: 'rgba(192,80,74,.06)', border: '1px solid rgba(192,80,74,.2)', borderRadius: 12, padding: 20, fontSize: 12, color: 'var(--fo-red)' }}>
+        <p style={{ fontWeight: 700 }}>Vencimentos</p>
+        <p style={{ marginTop: 4 }}>{error}</p>
       </div>
     )
   }
 
   return (
-    <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm h-full flex flex-col">
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-2">
-          <div className="w-9 h-9 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-center">
-            <CalendarClock className="w-4 h-4 text-slate-600" />
-          </div>
-          <div>
-            <h2 className="font-semibold text-slate-800 text-sm">Próximos vencimentos</h2>
-            <p className="text-xs text-slate-500">7 dias • previsão por data da transação</p>
-          </div>
+    <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: 20, height: '100%', display: 'flex', flexDirection: 'column' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+        <div style={{ fontSize: 9, fontWeight: 700, color: 'var(--gray-400)', letterSpacing: '.08em', textTransform: 'uppercase', fontFamily: "'DM Mono', monospace" }}>
+          Próximos Vencimentos · 7 dias
         </div>
-        <Link
-          href="/dashboard/despesas"
-          className="text-sm font-medium text-blue-700 hover:text-blue-800 flex items-center gap-0.5"
-        >
-          Ver todos <ChevronRight className="w-4 h-4" />
-        </Link>
+        <Link href="/dashboard/despesas" style={{ fontSize: 11, color: 'var(--teal)', textDecoration: 'none' }}>Ver todos →</Link>
       </div>
 
       {rows.length === 0 ? (
-        <p className="text-sm text-slate-500 py-6 text-center">
+        <p style={{ fontSize: 12, color: 'var(--gray-400)', textAlign: 'center', paddingBlock: 24 }}>
           Nenhuma transação prevista para os próximos 7 dias.
         </p>
       ) : (
-        <ul className="space-y-2 flex-1 overflow-auto max-h-[280px]">
+        <div style={{ flex: 1, overflow: 'auto', maxHeight: 280 }} className="space-y-2">
           {rows.map((r) => {
             const due = r.due_date!
             const dias = diasRestantes(due)
-            const tipoLabel = r.tipo === 'entrada' ? 'Receber' : 'Pagar'
             return (
-              <li
+              <div
                 key={r.id}
-                className="flex items-center justify-between gap-3 rounded-xl border border-slate-100 bg-slate-50/80 px-3 py-2.5"
+                style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10, padding: '9px 12px', background: 'var(--cream)', borderRadius: 8, border: '1px solid var(--gray-100)' }}
               >
-                <div className="min-w-0">
-                  <p className="text-sm font-medium text-slate-800 truncate">{r.descricao || 'Sem descrição'}</p>
-                  <p className="text-xs text-slate-500">
-                    {tipoLabel} • {new Date(due + 'T12:00:00').toLocaleDateString('pt-BR')}
+                <div style={{ minWidth: 0 }}>
+                  <p style={{ fontSize: 12.5, fontWeight: 600, color: 'var(--navy)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    {r.descricao || 'Sem descrição'}
+                  </p>
+                  <p style={{ fontSize: 10.5, color: 'var(--gray-400)', marginTop: 1 }}>
+                    {r.tipo === 'entrada' ? 'Receber' : 'Pagar'} · {new Date(due + 'T12:00:00').toLocaleDateString('pt-BR')}
                   </p>
                 </div>
-                <div className="flex flex-col items-end gap-1 shrink-0">
-                  <span className="text-sm font-semibold text-slate-800">{fmtBRL(Number(r.valor))}</span>
-                  <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full border ${badgeClass(dias)}`}>
-                    {dias === 0 ? 'Hoje' : dias === 1 ? 'Amanhã' : `${dias} dias`}
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 3, flexShrink: 0 }}>
+                  <span style={{ fontSize: 12.5, fontWeight: 700, color: 'var(--navy)', fontFamily: "'DM Mono', monospace" }}>
+                    {fmtBRL(r.valor)}
+                  </span>
+                  <span style={{ fontSize: 9.5, fontWeight: 700, padding: '1px 7px', borderRadius: 20, fontFamily: "'DM Mono', monospace", ...badgeStyle(dias) }}>
+                    {dias === 0 ? 'Hoje' : dias === 1 ? 'Amanhã' : `${dias}d`}
                   </span>
                 </div>
-              </li>
+              </div>
             )
           })}
-        </ul>
+        </div>
       )}
     </div>
   )

@@ -53,28 +53,55 @@ export default function NovaContaPagarModal({ open, onClose, onSaved }: Props) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-      <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl bg-white p-5">
-        <h3 className="text-lg font-bold">Nova Conta a Pagar</h3>
-        <div className="mt-3 grid gap-2 md:grid-cols-2">
-          <input className="rounded border px-3 py-2" placeholder="Fornecedor*" value={fornecedor} onChange={(e) => setFornecedor(e.target.value)} />
-          <input className="rounded border px-3 py-2" placeholder="CNPJ/CPF fornecedor" value={documento} onChange={(e) => setDocumento(e.target.value)} />
-          <input className="rounded border px-3 py-2 md:col-span-2" placeholder="Descrição*" value={descricao} onChange={(e) => setDescricao(e.target.value)} />
-          <input className="rounded border px-3 py-2" placeholder="Categoria" value={categoria} onChange={(e) => setCategoria(e.target.value)} />
-          <input className="rounded border px-3 py-2" placeholder="Valor*" value={valorMask} onChange={(e) => setValorMask(maskBRLInput(e.target.value))} />
-          <input type="date" className="rounded border px-3 py-2" value={emissao} onChange={(e) => setEmissao(e.target.value)} />
-          <input type="date" className="rounded border px-3 py-2" value={vencimento} onChange={(e) => setVencimento(e.target.value)} />
-          <select className="rounded border px-3 py-2" value={tipo} onChange={(e) => setTipo(e.target.value)}>
-            <option value="pix">PIX</option><option value="ted">TED</option><option value="boleto">Boleto</option><option value="cartao">Cartão</option><option value="dinheiro">Dinheiro</option><option value="outro">Outro</option>
-          </select>
-          <input className="rounded border px-3 py-2" placeholder="Código de barras" value={codigoBarras} onChange={(e) => setCodigoBarras(e.target.value)} />
-          <input className="rounded border px-3 py-2" placeholder="Chave PIX" value={chavePix} onChange={(e) => setChavePix(e.target.value)} />
-          <input type="number" className="rounded border px-3 py-2" placeholder="Parcelas" value={parcelas} onChange={(e) => setParcelas(Number(e.target.value || 1))} />
-          <label className="flex items-center gap-2 rounded border px-3 py-2"><input type="checkbox" checked={recorrente} onChange={(e) => setRecorrente(e.target.checked)} /> Recorrente</label>
-          {recorrente && <select className="rounded border px-3 py-2" value={recorrenciaTipo} onChange={(e) => setRecorrenciaTipo(e.target.value)}><option value="semanal">Semanal</option><option value="mensal">Mensal</option><option value="trimestral">Trimestral</option><option value="anual">Anual</option></select>}
-          <textarea className="rounded border px-3 py-2 md:col-span-2" placeholder="Observações" value={obs} onChange={(e) => setObs(e.target.value)} />
+    <div className="modal-bg" onClick={onClose}>
+      <div className="modal-box" style={{ maxWidth: 600, maxHeight: '90vh', overflowY: 'auto' }} onClick={e => e.stopPropagation()}>
+        <div className="modal-title">
+          Nova Conta a Pagar
+          <button className="modal-close" onClick={onClose}>×</button>
         </div>
-        <div className="mt-3 flex justify-end gap-2"><button className="rounded border px-3 py-2" onClick={onClose}>Cancelar</button><button className="rounded bg-blue-700 px-3 py-2 text-white" onClick={() => void salvar()}>Salvar</button></div>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 8 }}>
+          <input className="form-input" placeholder="Fornecedor*" value={fornecedor} onChange={(e) => setFornecedor(e.target.value)} />
+          <input className="form-input" placeholder="CNPJ/CPF fornecedor" value={documento} onChange={(e) => setDocumento(e.target.value)} />
+          <input className="form-input" placeholder="Descrição*" value={descricao} onChange={(e) => setDescricao(e.target.value)} style={{ gridColumn: 'span 2' }} />
+          <input className="form-input" placeholder="Categoria" value={categoria} onChange={(e) => setCategoria(e.target.value)} />
+          <input className="form-input" placeholder="Valor*" value={valorMask} onChange={(e) => setValorMask(maskBRLInput(e.target.value))} />
+          <div className="form-group" style={{ margin: 0 }}>
+            <label className="form-label">Emissão</label>
+            <input type="date" className="form-input" value={emissao} onChange={(e) => setEmissao(e.target.value)} />
+          </div>
+          <div className="form-group" style={{ margin: 0 }}>
+            <label className="form-label">Vencimento</label>
+            <input type="date" className="form-input" value={vencimento} onChange={(e) => setVencimento(e.target.value)} />
+          </div>
+          <select className="form-input" value={tipo} onChange={(e) => setTipo(e.target.value)}>
+            <option value="pix">PIX</option>
+            <option value="ted">TED</option>
+            <option value="boleto">Boleto</option>
+            <option value="cartao">Cartão</option>
+            <option value="dinheiro">Dinheiro</option>
+            <option value="outro">Outro</option>
+          </select>
+          <input className="form-input" placeholder="Código de barras" value={codigoBarras} onChange={(e) => setCodigoBarras(e.target.value)} />
+          <input className="form-input" placeholder="Chave PIX" value={chavePix} onChange={(e) => setChavePix(e.target.value)} />
+          <input type="number" className="form-input" placeholder="Parcelas" value={parcelas} onChange={(e) => setParcelas(Number(e.target.value || 1))} />
+          <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, color: 'var(--navy)', border: '1px solid var(--gray-100)', borderRadius: 8, padding: '8px 12px' }}>
+            <input type="checkbox" checked={recorrente} onChange={(e) => setRecorrente(e.target.checked)} />
+            Recorrente
+          </label>
+          {recorrente && (
+            <select className="form-input" value={recorrenciaTipo} onChange={(e) => setRecorrenciaTipo(e.target.value)}>
+              <option value="semanal">Semanal</option>
+              <option value="mensal">Mensal</option>
+              <option value="trimestral">Trimestral</option>
+              <option value="anual">Anual</option>
+            </select>
+          )}
+          <textarea className="form-input" placeholder="Observações" value={obs} onChange={(e) => setObs(e.target.value)} style={{ gridColumn: 'span 2', minHeight: 60, resize: 'vertical' }} />
+        </div>
+        <div className="modal-actions">
+          <button className="btn-action btn-ghost" onClick={onClose}>Cancelar</button>
+          <button className="btn-action" onClick={() => void salvar()}>Salvar</button>
+        </div>
       </div>
     </div>
   )

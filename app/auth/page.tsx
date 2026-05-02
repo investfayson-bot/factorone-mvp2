@@ -2,7 +2,14 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
-import { Eye, EyeOff, Loader2, ArrowRight, Zap, CheckCircle } from 'lucide-react'
+
+const FEATURES = [
+  'CFO Inteligente com IA em tempo real',
+  'DRE e fluxo de caixa automáticos',
+  'Reconhecimento de NF por foto ou upload',
+  'Abertura de conta PJ e captação',
+  'Conciliação bancária automática',
+]
 
 export default function AuthPage() {
   const [modo, setModo] = useState<'entrar' | 'cadastrar'>('entrar')
@@ -49,61 +56,126 @@ export default function AuthPage() {
     setLoading(false)
   }
 
-  const features = [
-    'Reconhecimento de NF por foto ou upload',
-    'CFO Inteligente com IA em tempo real',
-    'DRE e fluxo de caixa automáticos',
-    'Abertura de conta PJ e captação',
-  ]
-
   return (
-    <div className="min-h-screen bg-slate-50 flex">
-      <div className="hidden lg:flex lg:w-[45%] flex-col bg-gradient-to-br from-blue-700 to-blue-900 p-12 text-white">
-        <div className="flex items-center gap-3 mb-auto">
-          <div className="w-10 h-10 bg-white/20 backdrop-blur rounded-xl flex items-center justify-center font-bold text-white text-sm border border-white/20">F1</div>
-          <div>
-            <p className="font-bold text-lg leading-none">FactorOne</p>
-            <p className="text-blue-200 text-xs">Finance OS</p>
+    <div style={{ display: 'flex', minHeight: '100vh', background: 'var(--cream)' }}>
+      {/* Left panel — brand */}
+      <div style={{ width: 400, minWidth: 400, background: 'var(--navy)', display: 'flex', flexDirection: 'column', padding: '36px 32px' }}>
+        <div style={{ marginBottom: 'auto' }}>
+          <div style={{ fontFamily: "'Sora',sans-serif", fontSize: 22, fontWeight: 800, color: '#fff', letterSpacing: '-.04em', marginBottom: 40 }}>
+            Factor<span style={{ color: 'var(--teal)' }}>One</span>
           </div>
-        </div>
-        <div className="space-y-8 my-auto">
-          <div>
-            <h1 className="text-4xl font-bold leading-tight text-white">Sistema Operacional<br />Financeiro com IA</h1>
-            <p className="text-blue-200 mt-4 text-base leading-relaxed">Automatizando a gestão financeira das empresas modernas.</p>
+          <div style={{ fontFamily: "'Sora',sans-serif", fontSize: 26, fontWeight: 800, color: '#fff', lineHeight: 1.25, marginBottom: 14 }}>
+            Finance OS<br />com Inteligência<br />Artificial
           </div>
-          <div className="space-y-3">
-            {features.map((f) => (
-              <div key={f} className="flex items-center gap-3">
-                <div className="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center flex-shrink-0"><CheckCircle size={13} className="text-white" /></div>
-                <span className="text-blue-100 text-sm">{f}</span>
+          <div style={{ fontSize: 13, color: 'rgba(255,255,255,.5)', lineHeight: 1.65, marginBottom: 36 }}>
+            Automatizando a gestão financeira das empresas modernas.
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            {FEATURES.map(f => (
+              <div key={f} style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
+                <span style={{ color: 'var(--teal)', fontSize: 13, fontWeight: 700, marginTop: 1, flexShrink: 0 }}>✓</span>
+                <span style={{ fontSize: 13, color: 'rgba(255,255,255,.65)', lineHeight: 1.4 }}>{f}</span>
               </div>
             ))}
           </div>
         </div>
+        <div style={{ fontSize: 10, color: 'rgba(255,255,255,.2)', fontFamily: "'DM Mono',monospace", marginTop: 32 }}>
+          FACTORONE · FINANCE OS v2
+        </div>
       </div>
 
-      <div className="flex-1 flex items-center justify-center p-8">
-        <div className="w-full max-w-md">
-          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-8 space-y-6">
-            <div>
-              <h2 className="text-2xl font-bold text-slate-800">{modo === 'entrar' ? 'Entrar na sua conta' : 'Criar sua conta'}</h2>
-              <p className="text-slate-500 text-sm mt-1">{modo === 'entrar' ? 'Acesse o seu painel financeiro' : 'Comece gratuitamente hoje'}</p>
+      {/* Right panel — form */}
+      <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 32 }}>
+        <div style={{ background: '#fff', borderRadius: 16, padding: 32, width: 400, maxWidth: '100%', border: '1px solid var(--gray-100)', boxShadow: '0 4px 32px rgba(0,0,0,.07)' }}>
+          {/* Tab switcher */}
+          <div style={{ display: 'flex', background: 'var(--cream)', borderRadius: 10, padding: 4, gap: 4, marginBottom: 28 }}>
+            {(['entrar', 'cadastrar'] as const).map(m => (
+              <button
+                key={m}
+                onClick={() => { setModo(m); setMsg({ text: '', type: '' }) }}
+                style={{
+                  flex: 1, padding: '8px 0', borderRadius: 7, border: 'none', cursor: 'pointer',
+                  fontSize: 13, fontWeight: 600, fontFamily: "'Inter',sans-serif",
+                  background: modo === m ? '#fff' : 'transparent',
+                  color: modo === m ? 'var(--navy)' : 'var(--gray-400)',
+                  boxShadow: modo === m ? '0 1px 4px rgba(0,0,0,.08)' : 'none',
+                  transition: 'all .15s',
+                }}
+              >
+                {m === 'entrar' ? 'Entrar' : 'Criar conta'}
+              </button>
+            ))}
+          </div>
+
+          <form onSubmit={handleSubmit}>
+            <div className="form-group">
+              <label className="form-label">Email</label>
+              <input
+                type="email"
+                className="form-input"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                placeholder="seu@email.com"
+                required
+                autoComplete="email"
+              />
             </div>
-            <div className="flex bg-slate-100 rounded-xl p-1 gap-1">
-              {(['entrar', 'cadastrar'] as const).map((m) => (
-                <button key={m} onClick={() => { setModo(m); setMsg({ text: '', type: '' }) }} className={`flex-1 py-2 rounded-lg text-sm font-semibold transition-all ${modo === m ? 'bg-white text-blue-700 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}>{m === 'entrar' ? 'Entrar' : 'Criar conta'}</button>
-              ))}
-            </div>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="seu@email.com" required className="w-full bg-white border border-slate-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 rounded-xl px-4 py-2.5 text-slate-800 placeholder-slate-400 outline-none transition-all text-sm" />
-              <div className="relative">
-                <input type={mostrarSenha ? 'text' : 'password'} value={senha} onChange={e => setSenha(e.target.value)} placeholder="Mínimo 6 caracteres" required className="w-full bg-white border border-slate-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 rounded-xl px-4 py-2.5 text-slate-800 placeholder-slate-400 outline-none transition-all text-sm pr-11" />
-                <button type="button" onClick={() => setMostrarSenha(!mostrarSenha)} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">{mostrarSenha ? <EyeOff size={16} /> : <Eye size={16} />}</button>
+            <div className="form-group">
+              <label className="form-label">Senha</label>
+              <div style={{ position: 'relative' }}>
+                <input
+                  type={mostrarSenha ? 'text' : 'password'}
+                  className="form-input"
+                  value={senha}
+                  onChange={e => setSenha(e.target.value)}
+                  placeholder="Mínimo 6 caracteres"
+                  required
+                  autoComplete={modo === 'entrar' ? 'current-password' : 'new-password'}
+                  style={{ paddingRight: 40 }}
+                />
+                <button
+                  type="button"
+                  onClick={() => setMostrarSenha(!mostrarSenha)}
+                  style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--gray-400)', fontSize: 12 }}
+                >
+                  {mostrarSenha ? '🙈' : '👁'}
+                </button>
               </div>
-              {msg.text && <div className={`text-sm px-4 py-3 rounded-xl border ${msg.type === 'success' ? 'bg-emerald-50 border-emerald-200 text-emerald-700' : 'bg-red-50 border-red-200 text-red-700'}`}>{msg.text}</div>}
-              <button type="submit" disabled={loading} className="w-full bg-blue-700 hover:bg-blue-800 disabled:opacity-50 text-white font-semibold py-3 rounded-xl transition-all flex items-center justify-center gap-2 shadow-sm">{loading ? <Loader2 size={18} className="animate-spin" /> : <>{modo === 'entrar' ? 'Entrar no painel' : 'Criar conta'} <ArrowRight size={16} /></>}</button>
-            </form>
-            <button onClick={usarDemo} disabled={loading} className="w-full bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 font-medium py-2.5 rounded-xl transition-all flex items-center justify-center gap-2 text-sm"><Zap size={15} className="text-blue-600" /> Usar conta demo</button>
+            </div>
+
+            {msg.text && (
+              <div style={{
+                padding: '9px 12px', borderRadius: 8, fontSize: 12, marginBottom: 12,
+                background: msg.type === 'success' ? 'rgba(45,155,111,.08)' : 'rgba(192,80,74,.08)',
+                border: `1px solid ${msg.type === 'success' ? 'rgba(45,155,111,.2)' : 'rgba(192,80,74,.2)'}`,
+                color: msg.type === 'success' ? 'var(--green)' : 'var(--red)',
+              }}>
+                {msg.text}
+              </div>
+            )}
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="btn-action"
+              style={{ width: '100%', padding: '11px 0', fontSize: 13, marginBottom: 10, opacity: loading ? .6 : 1 }}
+            >
+              {loading ? 'Aguarde…' : modo === 'entrar' ? 'Entrar no painel' : 'Criar conta'}
+            </button>
+          </form>
+
+          <button
+            onClick={usarDemo}
+            disabled={loading}
+            className="btn-action btn-ghost"
+            style={{ width: '100%', padding: '10px 0', fontSize: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}
+          >
+            ⚡ Usar conta demo
+          </button>
+
+          <div style={{ marginTop: 20, paddingTop: 16, borderTop: '1px solid var(--gray-100)', textAlign: 'center', fontSize: 11, color: 'var(--gray-400)' }}>
+            Ao continuar você concorda com os{' '}
+            <span style={{ color: 'var(--teal)', cursor: 'pointer' }}>Termos de Uso</span>
           </div>
         </div>
       </div>

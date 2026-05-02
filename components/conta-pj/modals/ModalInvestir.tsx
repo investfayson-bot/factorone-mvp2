@@ -2,13 +2,17 @@
 import { useMemo, useState } from 'react'
 import { maskBRLInput, parseBRLInput, formatBRL } from '@/lib/currency-brl'
 import { supabase } from '@/lib/supabase'
+import { useToast } from '@/components/ui/useToast'
+import LoadingButton from '@/components/ui/LoadingButton'
 
 type Props = { open: boolean; onClose: () => void; empresaId: string; contaId: string; onDone: () => void }
 export default function ModalInvestir({ open, onClose, empresaId, contaId, onDone }: Props) {
+  const toast = useToast()
   const [valorMask, setValorMask] = useState('R$ 1.000,00')
   const [tipo, setTipo] = useState('cdb')
   const [prazo, setPrazo] = useState(180)
   const [percentual, setPercentual] = useState(102)
+  const [loading, setLoading] = useState(false)
   const valor = parseBRLInput(valorMask)
   const cdi = 10.5
   const resultado = useMemo(() => {
@@ -21,11 +25,16 @@ export default function ModalInvestir({ open, onClose, empresaId, contaId, onDon
   if (!open) return null
 
   async function aplicar() {
-    await supabase.from('investimentos').insert({
+    if (valor <= 0) return toast.warning('Informe valor válido')
+    setLoading(true)
+    const { error } = await supabase.from('investimentos').insert({
       empresa_id: empresaId, conta_id: contaId, tipo, nome: `${tipo.toUpperCase()} ${percentual}% CDI`,
       valor_aplicado: valor, valor_atual: resultado.liquido, percentual_cdi: percentual, data_aplicacao: new Date().toISOString().slice(0, 10),
       data_vencimento: new Date(Date.now() + prazo * 86400000).toISOString().slice(0, 10),
     })
+    setLoading(false)
+    if (error) return toast.error(error.message)
+    toast.success('Aplicação registrada com sucesso')
     onDone(); onClose()
   }
 
@@ -42,7 +51,17 @@ export default function ModalInvestir({ open, onClose, empresaId, contaId, onDon
         <div className="mt-3 rounded-xl bg-slate-50 p-3 text-sm">
           <p>Valor bruto: {formatBRL(resultado.bruto)}</p><p>IR estimado: {formatBRL(resultado.ir)}</p><p>Valor líquido: {formatBRL(resultado.liquido)}</p><p>Rentabilidade líquida: {resultado.rent.toFixed(2)}%</p>
         </div>
-        <div className="mt-3 flex justify-end gap-2"><button className="rounded border px-3 py-2" onClick={onClose}>Cancelar</button><button className="rounded bg-blue-700 px-3 py-2 text-white" onClick={() => void aplicar()}>Aplicar agora</button></div>
+        <div className="mt-3 flex justify-end gap-2">
+          <button className="rounded border px-3 py-2" onClick={onClose}>Cancelar</button>
+          <LoadingButton
+            loading={loading}
+            loadingText="Aplicando..."
+            className="rounded bg-[var(--fo-teal)] px-3 py-2 text-white"
+            onClick={() => void aplicar()}
+          >
+            Aplicar agora
+          </LoadingButton>
+        </div>
       </div>
     </div>
   )

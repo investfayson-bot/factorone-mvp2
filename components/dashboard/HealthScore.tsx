@@ -2,7 +2,6 @@
 
 import { useEffect, useMemo, useState } from 'react'
 import { supabase } from '@/lib/supabase'
-import { Activity } from 'lucide-react'
 import { erroDesconhecido } from '@/lib/transacao-types'
 
 type Props = { empresaId: string }
@@ -95,23 +94,21 @@ export default function HealthScore({ empresaId }: Props) {
       }
     }
     if (empresaId) run()
-    return () => {
-      cancelled = true
-    }
+    return () => { cancelled = true }
   }, [empresaId])
 
   const ring = useMemo(() => {
-    if (score <= 40) return { stroke: 'stroke-red-500', text: 'text-red-600' }
-    if (score <= 70) return { stroke: 'stroke-amber-500', text: 'text-amber-700' }
-    return { stroke: 'stroke-emerald-500', text: 'text-emerald-700' }
+    if (score <= 40) return { color: 'var(--fo-red)', stroke: '#C0504A' }
+    if (score <= 70) return { color: 'var(--fo-gold)', stroke: '#B8922A' }
+    return { color: 'var(--fo-green)', stroke: '#2D9B6F' }
   }, [score])
 
   if (loading) {
     return (
-      <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm animate-pulse">
-        <div className="h-4 w-40 bg-slate-200 rounded mb-4" />
-        <div className="flex justify-center py-6">
-          <div className="h-36 w-36 rounded-full bg-slate-200" />
+      <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: 20, height: '100%' }} className="animate-pulse">
+        <div style={{ height: 12, width: 120, background: 'var(--gray-100)', borderRadius: 6, marginBottom: 16 }} />
+        <div style={{ display: 'flex', justifyContent: 'center', paddingBlock: 24 }}>
+          <div style={{ width: 120, height: 120, borderRadius: '50%', background: 'var(--gray-100)' }} />
         </div>
       </div>
     )
@@ -119,9 +116,9 @@ export default function HealthScore({ empresaId }: Props) {
 
   if (error) {
     return (
-      <div className="bg-red-50 border border-red-200 rounded-2xl p-6 text-sm text-red-800">
-        <p className="font-medium">Score de saúde</p>
-        <p className="mt-1">{error}</p>
+      <div style={{ background: 'rgba(192,80,74,.06)', border: '1px solid rgba(192,80,74,.2)', borderRadius: 12, padding: 20, fontSize: 12, color: 'var(--fo-red)' }}>
+        <p style={{ fontWeight: 700 }}>Score de saúde</p>
+        <p style={{ marginTop: 4 }}>{error}</p>
       </div>
     )
   }
@@ -130,27 +127,17 @@ export default function HealthScore({ empresaId }: Props) {
   const offset = circumference - (score / 100) * circumference
 
   return (
-    <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm h-full">
-      <div className="flex items-center gap-2 mb-4">
-        <div className="w-9 h-9 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center">
-          <Activity className="w-4 h-4 text-blue-700" />
-        </div>
-        <div>
-          <h2 className="font-semibold text-slate-800 text-sm">Saúde financeira</h2>
-          <p className="text-xs text-slate-500">Indicadores do mês atual</p>
-        </div>
+    <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: 20, height: '100%' }}>
+      <div style={{ fontSize: 9, fontWeight: 700, color: 'var(--gray-400)', letterSpacing: '.08em', textTransform: 'uppercase', fontFamily: "'DM Mono', monospace", marginBottom: 14 }}>
+        Saúde Financeira
       </div>
-
-      <div className="flex flex-col items-center justify-center py-2">
-        <div className="relative w-36 h-36">
-          <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
-            <circle cx="50" cy="50" r="44" fill="none" className="stroke-slate-100" strokeWidth="10" />
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', paddingBlock: 8 }}>
+        <div style={{ position: 'relative', width: 130, height: 130 }}>
+          <svg style={{ width: '100%', height: '100%', transform: 'rotate(-90deg)' }} viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="44" fill="none" stroke="var(--gray-100)" strokeWidth="10" />
             <circle
-              cx="50"
-              cy="50"
-              r="44"
-              fill="none"
-              className={ring.stroke}
+              cx="50" cy="50" r="44" fill="none"
+              stroke={ring.stroke}
               strokeWidth="10"
               strokeLinecap="round"
               strokeDasharray={circumference}
@@ -158,14 +145,12 @@ export default function HealthScore({ empresaId }: Props) {
               style={{ transition: 'stroke-dashoffset 0.6s ease' }}
             />
           </svg>
-          <div className="absolute inset-0 flex flex-col items-center justify-center rotate-0">
-            <span className={`text-3xl font-bold ${ring.text}`}>{score}</span>
-            <span className="text-[10px] uppercase tracking-wide text-slate-400">/ 100</span>
+          <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+            <span style={{ fontFamily: "'Sora', sans-serif", fontSize: 30, fontWeight: 800, color: ring.color, lineHeight: 1 }}>{score}</span>
+            <span style={{ fontSize: 9, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.06em', fontFamily: "'DM Mono', monospace" }}>/ 100</span>
           </div>
         </div>
-        <p className={`mt-3 text-sm font-semibold ${ring.text}`}>
-          {label}
-        </p>
+        <p style={{ marginTop: 10, fontSize: 12, fontWeight: 700, color: ring.color, fontFamily: "'DM Mono', monospace", letterSpacing: '.04em' }}>{label}</p>
       </div>
     </div>
   )
