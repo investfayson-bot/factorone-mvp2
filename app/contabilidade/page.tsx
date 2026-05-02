@@ -1,11 +1,26 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Calculator, Camera, Brain, BarChart3, UserCog, UploadCloud } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import LoadingButton from '@/components/ui/LoadingButton'
 import { useToast } from '@/components/ui/useToast'
 import { fmtBRLCompact } from '@/lib/dre-calculations'
+import { type AnexoSimples } from '@/lib/fiscal/simples-nacional'
+import { formatBRL } from '@/lib/currency-brl'
+
+type DASResult = {
+  rbt12: number
+  receitaMes: number
+  faixa: number
+  aliquotaNominal: number
+  aliquotaEfetiva: number
+  valorDAS: number
+  vencimento: string
+  competencia: string
+  dentroDoLimite: boolean
+  alertas: string[]
+}
 
 export default function ContabilidadePage() {
   const toast = useToast()
@@ -15,6 +30,9 @@ export default function ContabilidadePage() {
   const [contadores, setContadores] = useState<Array<{ id: string; nome: string; email: string; status: string; crc: string | null; token_acesso: string }>>([])
   const [formCont, setFormCont] = useState({ nome: '', email: '', crc: '', telefone: '' })
   const [loadingConvite, setLoadingConvite] = useState(false)
+  const [das, setDas] = useState<DASResult | null>(null)
+  const [dasLoading, setDasLoading] = useState(false)
+  const [dasAnexo, setDasAnexo] = useState<AnexoSimples>('III')
 
   useEffect(() => {
     let cancelled = false
@@ -114,6 +132,27 @@ export default function ContabilidadePage() {
       setLoadingConvite(false)
     }
   }
+
+  const carregarDAS = useCallback(async (anexo: AnexoSimples) => {
+    setDasLoading(true)
+    try {
+      const { data: sess } = await supabase.auth.getSession()
+      const headers: Record<string, string> = {}
+      if (sess.session?.access_token) headers['Authorization'] = `Bearer ${sess.session.access_token}`
+      const res = await fetch(`/api/fiscal/das?anexo=${anexo}`, { headers })
+      const data = await res.json() as DASResult
+      if (!res.ok) throw new Error((data as { error?: string }).error || 'Falha')
+      setDas(data)
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : 'Erro ao calcular DAS')
+    } finally {
+      setDasLoading(false)
+    }
+  }, [toast])
+
+  useEffect(() => {
+    if (tab === 'tributacao' && !das) void carregarDAS(dasAnexo)
+  }, [tab, das, dasAnexo, carregarDAS])
 
   return (
     <div className="min-h-screen bg-[var(--fo-bg)] p-6 md:p-8">
@@ -256,8 +295,99 @@ export default function ContabilidadePage() {
         )}
 
         {tab === 'tributacao' && (
-          <div className="rounded-2xl border border-[var(--fo-border)] bg-white p-6 text-sm text-[var(--fo-text-muted)]">
-            IA Tributária: painel base ativo. Insights proativos serão conectados via API dedicada.
+          <div className="space-y-4">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <p className="font-semibold text-[var(--fo-text)]">Simples Nacional — DAS Estimado</p>
+                <p className="text-xs text-[var(--fo-text-muted)]">Baseado nas transações registradas · tabelas 2024</p>
+              </div>
+              <div className="flex items-center gap-2">
+                <label className="text-xs text-[var(--fo-text-muted)]">Anexo</label>
+                <select
+                  value={dasAnexo}
+                  onChange={e => { const v = e.target.value as AnexoSimples; setDasAnexo(v); setDas(null) }}
+                  className="rounded-lg border border-[var(--fo-border)] bg-white px-2 py-1.5 text-xs text-[var(--fo-text)]"
+                >
+                  <option value="I">Anexo I — Comércio</option>
+                  <option value="II">Anexo II — Indústria</option>
+                  <option value="III">Anexo III — Serviços (geral)</option>
+                  <option value="IV">Anexo IV — Serviços (profissional)</option>
+                  <option value="V">Anexo V — Serviços (TI/publicidade)</option>
+                </select>
+                <LoadingButton
+                  loading={dasLoading}
+                  onClick={() => { setDas(null); void carregarDAS(dasAnexo) }}
+                  className="rounded-lg border border-[var(--fo-border)] bg-white px-3 py-1.5 text-xs font-medium text-[var(--fo-text)]"
+                >
+                  Recalcular
+                </LoadingButton>
+              </div>
+            </div>
+
+            {dasLoading && <div className="h-40 rounded-2xl border border-[var(--fo-border)] bg-white animate-pulse" />}
+
+            {das && !dasLoading && (
+              <>
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                  <div className="rounded-2xl border border-[var(--fo-border)] bg-white p-4">
+                    <p className="text-[11px] font-semibold uppercase tracking-wider text-[var(--fo-text-muted)]">DAS estimado</p>
+                    <p className="mt-2 text-2xl font-bold text-[var(--fo-text)]">{formatBRL(das.valorDAS)}</p>
+                    <p className="mt-1 text-[11px] text-[var(--fo-text-muted)]">Competência {das.competencia}</p>
+                  </div>
+                  <div className="rounded-2xl border border-[var(--fo-border)] bg-white p-4">
+                    <p className="text-[11px] font-semibold uppercase tracking-wider text-[var(--fo-text-muted)]">Alíquota efetiva</p>
+                    <p className="mt-2 text-2xl font-bold text-[var(--fo-text)]">{(das.aliquotaEfetiva * 100).toFixed(2)}%</p>
+                    <p className="mt-1 text-[11px] text-[var(--fo-text-muted)]">Nominal {(das.aliquotaNominal * 100).toFixed(1)}% · Faixa {das.faixa}</p>
+                  </div>
+                  <div className="rounded-2xl border border-[var(--fo-border)] bg-white p-4">
+                    <p className="text-[11px] font-semibold uppercase tracking-wider text-[var(--fo-text-muted)]">Receita do mês</p>
+                    <p className="mt-2 text-2xl font-bold text-[var(--fo-text)]">{fmtBRLCompact(das.receitaMes)}</p>
+                    <p className="mt-1 text-[11px] text-[var(--fo-text-muted)]">RBT12 {fmtBRLCompact(das.rbt12)}</p>
+                  </div>
+                  <div className="rounded-2xl border border-[var(--fo-border)] bg-white p-4">
+                    <p className="text-[11px] font-semibold uppercase tracking-wider text-[var(--fo-text-muted)]">Vencimento DAS</p>
+                    <p className="mt-2 text-2xl font-bold text-[var(--fo-text)]">
+                      {das.vencimento.split('-').reverse().join('/')}
+                    </p>
+                    <p className="mt-1 text-[11px] text-[var(--fo-text-muted)]">Todo dia 20 do mês seguinte</p>
+                  </div>
+                </div>
+
+                {das.alertas.length > 0 && (
+                  <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4 space-y-2">
+                    <p className="text-xs font-semibold uppercase tracking-wider text-amber-700">Alertas fiscais</p>
+                    {das.alertas.map((a, i) => (
+                      <p key={i} className="text-sm text-amber-800">{a}</p>
+                    ))}
+                  </div>
+                )}
+
+                <div className="rounded-2xl border border-[var(--fo-border)] bg-white p-5">
+                  <p className="mb-3 text-sm font-semibold text-[var(--fo-text)]">Composicao da aliquota</p>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between text-[var(--fo-text-muted)]">
+                      <span>Receita bruta mensal</span>
+                      <span className="font-medium text-[var(--fo-text)]">{formatBRL(das.receitaMes)}</span>
+                    </div>
+                    <div className="flex justify-between text-[var(--fo-text-muted)]">
+                      <span>RBT12 (base de calculo)</span>
+                      <span className="font-medium text-[var(--fo-text)]">{formatBRL(das.rbt12)}</span>
+                    </div>
+                    <div className="flex justify-between text-[var(--fo-text-muted)]">
+                      <span>Aliquota nominal (faixa {das.faixa})</span>
+                      <span className="font-medium text-[var(--fo-text)]">{(das.aliquotaNominal * 100).toFixed(2)}%</span>
+                    </div>
+                    <div className="border-t border-[var(--fo-border)] pt-2 flex justify-between font-semibold text-[var(--fo-text)]">
+                      <span>DAS a recolher</span>
+                      <span>{formatBRL(das.valorDAS)}</span>
+                    </div>
+                  </div>
+                  <p className="mt-4 text-[11px] text-[var(--fo-text-muted)]">
+                    Estimativa baseada nas transacoes registradas. Valores definitivos devem ser gerados pelo PGDAS-D no portal do Simples Nacional.
+                  </p>
+                </div>
+              </>
+            )}
           </div>
         )}
       </div>
