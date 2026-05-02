@@ -6,7 +6,7 @@ type Integracao = { id: string; ic: string; nome: string; desc: string; ativo: b
 
 const INTEGRACOES: Integracao[] = [
   { id: 'swap', ic: '💳', nome: 'Swap Corpway', desc: 'Conta PJ + cartões corporativos BaaS', ativo: true },
-  { id: 'claude', ic: '🧠', nome: 'Claude API', desc: 'Motor do AI CFO — análise financeira', ativo: true },
+  { id: 'claude', ic: '🧠', nome: 'FactorOne IA', desc: 'Motor do AI CFO — análise financeira', ativo: true },
   { id: 'stripe', ic: '💰', nome: 'Stripe', desc: 'Cobrança de assinaturas FactorOne', ativo: true },
   { id: 'celcoin', ic: '⚡', nome: 'Celcoin', desc: 'PIX, boleto, TED', ativo: true },
   { id: 'remessa', ic: '🌐', nome: 'Remessa Online', desc: 'Conta Global USD — pagamentos internacionais', ativo: false },
@@ -58,7 +58,7 @@ export default function IntegracoesPage() {
         <div className="kpi">
           <div className="kpi-lbl">IA CFO</div>
           <div className="kpi-val" style={{ color: 'var(--green)', fontSize: 14 }}>✓ Online</div>
-          <div className="kpi-delta up">Claude API</div>
+          <div className="kpi-delta up">FactorOne IA</div>
         </div>
       </div>
 

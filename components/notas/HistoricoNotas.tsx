@@ -37,13 +37,15 @@ export default function HistoricoNotas() {
   const carregar = useCallback(async () => {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return
+    const { data: usrRow } = await supabase.from('usuarios').select('empresa_id').eq('id', user.id).maybeSingle()
+    const empresaId = usrRow?.empresa_id ?? user.id
     const inicio = `${mes}-01`
     const [y, m] = mes.split('-').map(Number)
     const fimStr = new Date(y, m, 0).toISOString().slice(0, 10)
     let q = supabase
       .from('notas_emitidas')
       .select('id,tipo,numero,destinatario_nome,valor_total,status,created_at,xml_url,pdf_url,sefaz_motivo')
-      .eq('empresa_id', user.id)
+      .eq('empresa_id', empresaId)
       .gte('created_at', `${inicio}T00:00:00`)
       .lte('created_at', `${fimStr}T23:59:59`)
       .order('created_at', { ascending: false })

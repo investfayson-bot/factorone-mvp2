@@ -13,6 +13,9 @@ export async function POST(req: NextRequest) {
     const { user, supabase } = await getSupabaseUser(req)
     if (!user) return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
 
+    const { data: usrRow } = await supabase.from('usuarios').select('empresa_id').eq('id', user.id).maybeSingle()
+    const empresaId = usrRow?.empresa_id ?? user.id
+
     const body = (await req.json()) as { nota_emitida_id?: string; email?: string }
     const emailPara = (body.email || '').trim()
     if (!body.nota_emitida_id || !emailPara) {
@@ -23,7 +26,7 @@ export async function POST(req: NextRequest) {
       .from('notas_emitidas')
       .select('*')
       .eq('id', body.nota_emitida_id)
-      .eq('empresa_id', user.id)
+      .eq('empresa_id', empresaId)
       .single()
 
     if (error || !nota) return NextResponse.json({ error: 'Nota não encontrada' }, { status: 404 })
@@ -71,7 +74,7 @@ export async function POST(req: NextRequest) {
     })
 
     await supabase.from('notas_email_envios').insert({
-      empresa_id: user.id,
+      empresa_id: empresaId,
       nota_emitida_id: nota.id,
       email_para: emailPara,
       status: sendErr ? 'erro' : 'enviado',

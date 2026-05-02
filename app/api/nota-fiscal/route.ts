@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import OpenAI from 'openai'
-import { createClient } from '@supabase/supabase-js'
+import { getSupabaseUser } from '@/lib/supabase-route'
 import { erroDesconhecido } from '@/lib/transacao-types'
 
 const openrouter = new OpenAI({
@@ -14,18 +14,17 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'OPENROUTER_API_KEY não configurada' }, { status: 500 })
     }
 
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    )
-    const { data: { user } } = await supabase.auth.getUser()
+    const { user, supabase } = await getSupabaseUser(req)
     if (!user) return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
+
+    const { data: usrRow } = await supabase.from('usuarios').select('empresa_id').eq('id', user.id).maybeSingle()
+    const empresaId = usrRow?.empresa_id ?? user.id
 
     const { texto } = await req.json()
     if (!texto) return NextResponse.json({ error: 'Texto da nota não enviado' }, { status: 400 })
 
     const response = await openrouter.chat.completions.create({
-      model: 'anthropic/claude-3-haiku',
+      model: 'anthropic/claude-haiku-4-5',
       max_tokens: 1500,
       messages: [{
         role: 'system',
@@ -40,7 +39,7 @@ export async function POST(req: NextRequest) {
     const parsed = JSON.parse(raw)
 
     const payload = {
-      empresa_id: user.id,
+      empresa_id: empresaId,
       numero: parsed.numero || null,
       emitente_cnpj: parsed.emitente_cnpj || null,
       emitente_nome: parsed.emitente_nome || null,

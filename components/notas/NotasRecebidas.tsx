@@ -40,10 +40,12 @@ export default function NotasRecebidas() {
   const carregarNotas = useCallback(async () => {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return
+    const { data: usrRow } = await supabase.from('usuarios').select('empresa_id').eq('id', user.id).maybeSingle()
+    const empresaId = usrRow?.empresa_id ?? user.id
     const { data } = await supabase
       .from('notas_fiscais')
       .select('*')
-      .eq('empresa_id', user.id)
+      .eq('empresa_id', empresaId)
       .order('created_at', { ascending: false })
     setNotas((data ?? []) as NotaFiscalLista[])
   }, [])

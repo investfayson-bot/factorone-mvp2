@@ -18,11 +18,14 @@ export async function GET(
     const { user, supabase } = await getSupabaseUser(req)
     if (!user) return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
 
+    const { data: usrRow } = await supabase.from('usuarios').select('empresa_id').eq('id', user.id).maybeSingle()
+    const empresaId = usrRow?.empresa_id ?? user.id
+
     const { data: nota, error } = await supabase
       .from('notas_emitidas')
       .select('id, tipo, nfeio_id, status')
       .eq('id', id)
-      .eq('empresa_id', user.id)
+      .eq('empresa_id', empresaId)
       .single()
 
     if (error || !nota) return NextResponse.json({ error: 'Nota não encontrada' }, { status: 404 })

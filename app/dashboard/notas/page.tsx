@@ -25,10 +25,12 @@ export default function NotasDashboardPage() {
     void (async () => {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user || cancelled) return
+      const { data: usrRow } = await supabase.from('usuarios').select('empresa_id').eq('id', user.id).maybeSingle()
+      const empresaId = usrRow?.empresa_id ?? user.id
       const start = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString()
       const [ok, rej] = await Promise.all([
-        supabase.from('notas_emitidas').select('*', { count: 'exact', head: true }).eq('empresa_id', user.id).eq('status', 'autorizada').gte('created_at', start),
-        supabase.from('notas_emitidas').select('*', { count: 'exact', head: true }).eq('empresa_id', user.id).eq('status', 'rejeitada').gte('created_at', start),
+        supabase.from('notas_emitidas').select('*', { count: 'exact', head: true }).eq('empresa_id', empresaId).eq('status', 'autorizada').gte('created_at', start),
+        supabase.from('notas_emitidas').select('*', { count: 'exact', head: true }).eq('empresa_id', empresaId).eq('status', 'rejeitada').gte('created_at', start),
       ])
       if (cancelled) return
       if (!ok.error) setNfeAutorizadasMes(ok.count ?? 0)
