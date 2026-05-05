@@ -3,8 +3,18 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import { formatBRL } from '@/lib/currency-brl'
 
+type ExtratoRow = {
+  id: string
+  descricao: string
+  contraparte_nome?: string | null
+  tipo: 'credito' | 'debito'
+  valor: number | string
+  saldo_apos?: number | string | null
+  data_transacao: string
+  conciliado?: boolean
+}
+
 export default function ExtratoCompletoPage() {
-  type ExtratoRow = { id: string; descricao: string; contraparte_nome?: string | null; tipo: 'credito' | 'debito'; valor: number | string; saldo_apos?: number | string | null; data_transacao: string; conciliado?: boolean }
   const [rows, setRows] = useState<ExtratoRow[]>([])
   const [tipo, setTipo] = useState('todos')
   const [busca, setBusca] = useState('')
@@ -13,36 +23,104 @@ export default function ExtratoCompletoPage() {
   const carregar = useCallback(async () => {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return
-    const u = await supabase.from('usuarios').select('empresa_id').eq('id', user.id).maybeSingle()
-    const empresaId = (u.data?.empresa_id as string) || user.id
-    const start = new Date()
-    start.setDate(start.getDate() - Number(periodo))
+    const { data: u } = await supabase.from('usuarios').select('empresa_id').eq('id', user.id).maybeSingle()
+    const empresaId = (u?.empresa_id as string) || user.id
+    const start = new Date(); start.setDate(start.getDate() - Number(periodo))
     let q = supabase.from('extrato_bancario').select('*').eq('empresa_id', empresaId).gte('data_transacao', start.toISOString()).order('data_transacao', { ascending: false })
     if (tipo !== 'todos') q = q.eq('tipo', tipo)
     const { data } = await q
     setRows(data || [])
   }, [periodo, tipo])
+
   useEffect(() => { void carregar() }, [carregar])
-  const filtered = rows.filter((r) => `${r.descricao || ''} ${r.contraparte_nome || ''}`.toLowerCase().includes(busca.toLowerCase()))
+
+  const filtered = rows.filter(r => `${r.descricao || ''} ${r.contraparte_nome || ''}`.toLowerCase().includes(busca.toLowerCase()))
   const totais = useMemo(() => ({
-    c: filtered.filter((r) => r.tipo === 'credito').reduce((s, r) => s + Number(r.valor || 0), 0),
-    d: filtered.filter((r) => r.tipo === 'debito').reduce((s, r) => s + Number(r.valor || 0), 0),
+    c: filtered.filter(r => r.tipo === 'credito').reduce((s, r) => s + Number(r.valor || 0), 0),
+    d: filtered.filter(r => r.tipo === 'debito').reduce((s, r) => s + Number(r.valor || 0), 0),
   }), [filtered])
 
   return (
-    <div className="space-y-4 p-6">
-      <h1 className="text-2xl font-bold">Extrato completo</h1>
-      <div className="grid gap-2 md:grid-cols-4">
-        <select className="rounded border px-3 py-2" value={periodo} onChange={(e) => setPeriodo(e.target.value)}><option value="1">Hoje</option><option value="7">7 dias</option><option value="15">15 dias</option><option value="30">30 dias</option></select>
-        <select className="rounded border px-3 py-2" value={tipo} onChange={(e) => setTipo(e.target.value)}><option value="todos">Todos</option><option value="credito">Crédito</option><option value="debito">Débito</option></select>
-        <input className="rounded border px-3 py-2 md:col-span-2" placeholder="Buscar descrição/contraparte" value={busca} onChange={(e) => setBusca(e.target.value)} />
+    <>
+      <div className="page-hdr">
+        <div>
+          <div className="page-title">Extrato Bancário</div>
+          <div className="page-sub">Banco PJ · histórico de movimentações</div>
+        </div>
       </div>
-      <div className="overflow-x-auto rounded-2xl border bg-white">
-        <table className="min-w-full text-sm"><thead><tr className="border-b bg-slate-50"><th className="p-2 text-left">Data/hora</th><th className="p-2 text-left">Descrição</th><th className="p-2 text-left">Contraparte</th><th className="p-2 text-right">Valor</th><th className="p-2 text-right">Saldo após</th><th className="p-2 text-center">Conciliado</th></tr></thead>
-          <tbody>{filtered.map((r) => <tr key={r.id} className="border-b"><td className="p-2">{new Date(r.data_transacao).toLocaleString('pt-BR')}</td><td className="p-2">{r.descricao}</td><td className="p-2">{r.contraparte_nome || '—'}</td><td className={`p-2 text-right font-semibold ${r.tipo === 'credito' ? 'text-emerald-600' : 'text-red-600'}`}>{r.tipo === 'credito' ? '+' : '-'}{formatBRL(Number(r.valor || 0))}</td><td className="p-2 text-right">{formatBRL(Number(r.saldo_apos || 0))}</td><td className="p-2 text-center">{r.conciliado ? 'Sim' : 'Não'}</td></tr>)}</tbody>
-        </table>
+
+      {/* Totais */}
+      <div className="kpis" style={{ gridTemplateColumns: 'repeat(3, 1fr)', marginBottom: 14 }}>
+        <div className="kpi">
+          <div className="kpi-lbl">Total créditos</div>
+          <div className="kpi-val" style={{ color: 'var(--green)' }}>{formatBRL(totais.c)}</div>
+          <div className="kpi-delta up">entradas no período</div>
+        </div>
+        <div className="kpi">
+          <div className="kpi-lbl">Total débitos</div>
+          <div className="kpi-val" style={{ color: 'var(--red)' }}>{formatBRL(totais.d)}</div>
+          <div className="kpi-delta dn">saídas no período</div>
+        </div>
+        <div className="kpi">
+          <div className="kpi-lbl">Saldo período</div>
+          <div className="kpi-val" style={{ color: totais.c - totais.d >= 0 ? 'var(--navy)' : 'var(--red)' }}>{formatBRL(totais.c - totais.d)}</div>
+          <div className={`kpi-delta ${totais.c - totais.d >= 0 ? 'up' : 'dn'}`}>{totais.c - totais.d >= 0 ? '↑ positivo' : '↓ negativo'}</div>
+        </div>
       </div>
-      <div className="flex flex-wrap gap-4 rounded-2xl border bg-white p-3 text-sm"><p>Total créditos: <b className="text-emerald-600">{formatBRL(totais.c)}</b></p><p>Total débitos: <b className="text-red-600">{formatBRL(totais.d)}</b></p><p>Saldo período: <b>{formatBRL(totais.c - totais.d)}</b></p></div>
-    </div>
+
+      {/* Filtros + tabela */}
+      <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, overflow: 'hidden' }}>
+        <div style={{ padding: '12px 16px', borderBottom: '1px solid var(--gray-100)', display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
+          <div style={{ fontSize: 9.5, fontWeight: 700, color: 'var(--gray-400)', letterSpacing: '.08em', textTransform: 'uppercase', fontFamily: "'DM Mono',monospace", flex: 1 }}>
+            Lançamentos ({filtered.length})
+          </div>
+          <select className="form-input" style={{ width: 'auto', padding: '5px 10px', fontSize: 11 }} value={periodo} onChange={e => setPeriodo(e.target.value)}>
+            <option value="1">Hoje</option>
+            <option value="7">7 dias</option>
+            <option value="15">15 dias</option>
+            <option value="30">30 dias</option>
+          </select>
+          <select className="form-input" style={{ width: 'auto', padding: '5px 10px', fontSize: 11 }} value={tipo} onChange={e => setTipo(e.target.value)}>
+            <option value="todos">Todos</option>
+            <option value="credito">Crédito</option>
+            <option value="debito">Débito</option>
+          </select>
+          <input className="form-input" style={{ width: 180, padding: '5px 10px', fontSize: 11 }} placeholder="Buscar..." value={busca} onChange={e => setBusca(e.target.value)} />
+        </div>
+
+        <div className="expenses-table">
+          <table>
+            <thead>
+              <tr>
+                <th>Data / Hora</th>
+                <th>Descrição</th>
+                <th>Contraparte</th>
+                <th style={{ textAlign: 'right' }}>Valor</th>
+                <th style={{ textAlign: 'right' }}>Saldo após</th>
+                <th style={{ textAlign: 'center' }}>Conciliado</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filtered.length === 0 ? (
+                <tr><td colSpan={6} style={{ textAlign: 'center', color: 'var(--gray-400)', padding: '32px 0' }}>Nenhuma movimentação no período.</td></tr>
+              ) : filtered.map(r => (
+                <tr key={r.id}>
+                  <td style={{ fontFamily: "'DM Mono',monospace", fontSize: 11 }}>{new Date(r.data_transacao).toLocaleString('pt-BR')}</td>
+                  <td style={{ fontWeight: 600 }}>{r.descricao}</td>
+                  <td style={{ color: 'var(--gray-500)' }}>{r.contraparte_nome || '—'}</td>
+                  <td style={{ textAlign: 'right', fontWeight: 700, fontFamily: "'DM Mono',monospace", color: r.tipo === 'credito' ? 'var(--green)' : 'var(--red)' }}>
+                    {r.tipo === 'credito' ? '+' : '-'}{formatBRL(Number(r.valor || 0))}
+                  </td>
+                  <td style={{ textAlign: 'right', fontFamily: "'DM Mono',monospace" }}>{formatBRL(Number(r.saldo_apos || 0))}</td>
+                  <td style={{ textAlign: 'center' }}>
+                    <span className={`tag ${r.conciliado ? 'green' : 'gray'}`}>{r.conciliado ? 'Sim' : 'Não'}</span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </>
   )
 }

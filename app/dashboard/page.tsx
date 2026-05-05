@@ -11,6 +11,9 @@ import { DashboardErrorBoundary } from '@/components/dashboard/DashboardErrorBou
 import type { TransacaoLista } from '@/lib/transacao-types'
 
 type Kpi = { receita: number; despesas: number; saldo: number; nfs: number }
+type Pendencias = { reembolsos: number; valorReembolsos: number; aprovacoes: number; saldoBanco: number; dasDias: number | null; dasValor: number | null }
+type ScoreComponente = { nome: string; pontos: number; max: number; descricao: string; detalhe: string }
+type ScoreData = { total: number; grade: string; componentes: ScoreComponente[] }
 
 function tituloTx(t: TransacaoLista) {
   const d = (t.descricao || '').trim()
@@ -32,6 +35,9 @@ export default function DashboardPage() {
   const [fluxo30, setFluxo30] = useState(0)
   const [runway, setRunway] = useState<number | null>(null)
   const [selectedTx, setSelectedTx] = useState<TransacaoLista | null>(null)
+  const [pendencias, setPendencias] = useState<Pendencias>({ reembolsos: 0, valorReembolsos: 0, aprovacoes: 0, saldoBanco: 0, dasDias: null, dasValor: null })
+  const [score, setScore] = useState<ScoreData | null>(null)
+  const [scoreExpanded, setScoreExpanded] = useState(false)
   const router = useRouter()
 
   function irParaAlerta(alertId: string) {
@@ -43,6 +49,7 @@ export default function DashboardPage() {
 
   useEffect(() => {
     async function load() {
+      try {
       const { data: { user: u } } = await supabase.auth.getUser()
       if (!u) { router.push('/auth'); return }
       setUser(u)
@@ -93,7 +100,40 @@ export default function DashboardPage() {
       const despDia = ka.despesas / 30
       setRunway(saldoBanco > 0 && despDia > 0 ? Math.min(999, Math.floor(saldoBanco / despDia)) : null)
 
-      setLoading(false)
+      // Pendências: reembolsos, aprovações, DAS
+      const [rPendRes, aPendRes, dasRaw] = await Promise.all([
+        supabase.from('reembolsos').select('valor').eq('empresa_id', eid).eq('status', 'pendente'),
+        supabase.from('despesas').select('id').eq('empresa_id', eid).eq('status', 'pendente_aprovacao'),
+        fetch('/api/fiscal/das').then(r => r.ok ? r.json() : null).catch(() => null) as Promise<{ vencimento?: string; das?: number } | null>,
+      ])
+      const rPend = rPendRes.data ?? []
+      const aPend = aPendRes.data ?? []
+      const valorReemb = rPend.reduce((s: number, r: { valor: number }) => s + Number(r.valor), 0)
+      const dasVenc = dasRaw?.vencimento ? Math.ceil((new Date(dasRaw.vencimento).getTime() - Date.now()) / 86400000) : null
+      setPendencias({
+        reembolsos: rPend.length,
+        valorReembolsos: valorReemb,
+        aprovacoes: (aPend ?? []).length,
+        saldoBanco,
+        dasDias: dasVenc,
+        dasValor: dasRaw?.das ?? null,
+      })
+
+      // Score Financeiro
+      const { data: sessData } = await supabase.auth.getSession()
+      const scoreRes = await fetch('/api/score/calcular', {
+        headers: sessData.session?.access_token ? { Authorization: `Bearer ${sessData.session.access_token}` } : {},
+      }).catch(() => null)
+      if (scoreRes?.ok) {
+        const scoreJson = await scoreRes.json().catch(() => null) as ScoreData | null
+        if (scoreJson) setScore(scoreJson)
+      }
+
+      } catch (err) {
+        console.error('[dashboard] load error', err)
+      } finally {
+        setLoading(false)
+      }
     }
     load()
   }, [router])
@@ -166,6 +206,100 @@ export default function DashboardPage() {
           </div>
         </div>
       </div>
+
+      {/* Pendências */}
+      {(pendencias.reembolsos > 0 || pendencias.aprovacoes > 0 || (pendencias.dasDias !== null && pendencias.dasDias <= 10)) && (
+        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: 16 }}>
+          {pendencias.aprovacoes > 0 && (
+            <Link href="/dashboard/aprovacoes" style={{ textDecoration: 'none', flex: 1, minWidth: 180 }}>
+              <div style={{ background: 'rgba(184,146,42,.06)', border: '1px solid rgba(184,146,42,.25)', borderRadius: 12, padding: '12px 16px', cursor: 'pointer' }}>
+                <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--gold)', letterSpacing: '.08em', textTransform: 'uppercase', marginBottom: 4 }}>Aprovações pendentes</div>
+                <div style={{ fontSize: 22, fontWeight: 800, color: 'var(--navy)' }}>{pendencias.aprovacoes}</div>
+                <div style={{ fontSize: 11, color: 'var(--gray-400)', marginTop: 2 }}>despesas aguardando → aprovar</div>
+              </div>
+            </Link>
+          )}
+          {pendencias.reembolsos > 0 && (
+            <Link href="/dashboard/reembolsos" style={{ textDecoration: 'none', flex: 1, minWidth: 180 }}>
+              <div style={{ background: 'rgba(94,140,135,.06)', border: '1px solid rgba(94,140,135,.25)', borderRadius: 12, padding: '12px 16px', cursor: 'pointer' }}>
+                <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--teal2)', letterSpacing: '.08em', textTransform: 'uppercase', marginBottom: 4 }}>Reembolsos pendentes</div>
+                <div style={{ fontSize: 22, fontWeight: 800, color: 'var(--navy)' }}>{pendencias.reembolsos}</div>
+                <div style={{ fontSize: 11, color: 'var(--gray-400)', marginTop: 2 }}>{fmtBRLCompact(pendencias.valorReembolsos)} a aprovar</div>
+              </div>
+            </Link>
+          )}
+          {pendencias.dasDias !== null && pendencias.dasDias <= 10 && (
+            <Link href="/contabilidade" style={{ textDecoration: 'none', flex: 1, minWidth: 180 }}>
+              <div style={{ background: pendencias.dasDias <= 3 ? 'rgba(192,80,74,.06)' : 'rgba(184,146,42,.06)', border: `1px solid ${pendencias.dasDias <= 3 ? 'rgba(192,80,74,.25)' : 'rgba(184,146,42,.25)'}`, borderRadius: 12, padding: '12px 16px', cursor: 'pointer' }}>
+                <div style={{ fontSize: 10, fontWeight: 700, color: pendencias.dasDias <= 3 ? 'var(--red)' : 'var(--gold)', letterSpacing: '.08em', textTransform: 'uppercase', marginBottom: 4 }}>DAS vence em {pendencias.dasDias}d</div>
+                <div style={{ fontSize: 22, fontWeight: 800, color: 'var(--navy)' }}>{pendencias.dasValor ? fmtBRLCompact(pendencias.dasValor) : '—'}</div>
+                <div style={{ fontSize: 11, color: 'var(--gray-400)', marginTop: 2 }}>Simples Nacional · ver detalhes</div>
+              </div>
+            </Link>
+          )}
+          {pendencias.saldoBanco > 0 && (
+            <Link href="/dashboard/cashflow" style={{ textDecoration: 'none', flex: 1, minWidth: 180 }}>
+              <div style={{ background: 'rgba(45,155,111,.06)', border: '1px solid rgba(45,155,111,.2)', borderRadius: 12, padding: '12px 16px', cursor: 'pointer' }}>
+                <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--green)', letterSpacing: '.08em', textTransform: 'uppercase', marginBottom: 4 }}>Saldo bancário</div>
+                <div style={{ fontSize: 22, fontWeight: 800, color: 'var(--navy)' }}>{fmtBRLCompact(pendencias.saldoBanco)}</div>
+                <div style={{ fontSize: 11, color: 'var(--gray-400)', marginTop: 2 }}>conta principal</div>
+              </div>
+            </Link>
+          )}
+        </div>
+      )}
+
+      {/* Score Financeiro */}
+      {score && (
+        <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: '14px 18px', marginBottom: 16 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 16, cursor: 'pointer' }} onClick={() => setScoreExpanded(v => !v)}>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--gray-400)', letterSpacing: '.08em', textTransform: 'uppercase', fontFamily: "'DM Mono',monospace", marginBottom: 4 }}>
+                Score Financeiro FactorOne
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                <div style={{ fontSize: 28, fontWeight: 800, color: score.total >= 700 ? 'var(--green)' : score.total >= 500 ? 'var(--gold)' : 'var(--red)', fontFamily: "'DM Mono',monospace" }}>
+                  {score.total}
+                </div>
+                <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>/ 1000</div>
+                <div style={{ fontSize: 13, fontWeight: 700, padding: '2px 10px', borderRadius: 20, background: score.total >= 700 ? 'rgba(45,155,111,.12)' : score.total >= 500 ? 'rgba(184,146,42,.12)' : 'rgba(192,80,74,.12)', color: score.total >= 700 ? 'var(--green)' : score.total >= 500 ? 'var(--gold)' : 'var(--red)' }}>
+                  {score.grade}
+                </div>
+                {/* Mini bar */}
+                <div style={{ flex: 1, height: 6, background: 'var(--gray-100)', borderRadius: 3, overflow: 'hidden', maxWidth: 200 }}>
+                  <div style={{ height: '100%', width: `${score.total / 10}%`, background: score.total >= 700 ? 'var(--green)' : score.total >= 500 ? 'var(--gold)' : 'var(--red)', borderRadius: 3, transition: 'width .4s' }} />
+                </div>
+              </div>
+            </div>
+            <div style={{ fontSize: 11, color: 'var(--teal)', fontWeight: 600 }}>
+              {scoreExpanded ? '▲ ocultar' : '▼ ver detalhes'}
+            </div>
+          </div>
+
+          {scoreExpanded && (
+            <div style={{ marginTop: 14, paddingTop: 14, borderTop: '1px solid var(--gray-100)', display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 10 }}>
+              {score.componentes.map(c => (
+                <div key={c.nome} style={{ textAlign: 'center' }}>
+                  <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: 6 }}>{c.nome}</div>
+                  <div style={{ position: 'relative', width: 52, height: 52, margin: '0 auto 6px' }}>
+                    <svg viewBox="0 0 36 36" style={{ transform: 'rotate(-90deg)', width: 52, height: 52 }}>
+                      <circle cx="18" cy="18" r="15.9155" fill="none" stroke="var(--gray-100)" strokeWidth="3" />
+                      <circle cx="18" cy="18" r="15.9155" fill="none"
+                        stroke={c.pontos >= 160 ? 'var(--green)' : c.pontos >= 100 ? 'var(--gold)' : 'var(--red)'}
+                        strokeWidth="3" strokeDasharray={`${(c.pontos / c.max) * 100} 100`} strokeLinecap="round" />
+                    </svg>
+                    <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 800, color: 'var(--navy)', fontFamily: "'DM Mono',monospace" }}>{c.pontos}</div>
+                  </div>
+                  <div style={{ fontSize: 11, color: 'var(--navy)', fontWeight: 600, marginBottom: 2 }}>{c.descricao}</div>
+                  <div style={{ fontSize: 10, color: c.detalhe === 'Atenção' || c.detalhe === 'Queda' || c.detalhe === 'Baixo' || c.detalhe === 'Negativa' ? 'var(--red)' : 'var(--gray-400)' }}>
+                    {c.detalhe}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Charts row */}
       <div className="charts-row">

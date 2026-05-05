@@ -1,9 +1,11 @@
 'use client'
 import { RespostaIA } from '@/components/aicfo/RespostaIA'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useCallback } from 'react'
+import { supabase } from '@/lib/supabase'
 import { fmtBRLCompact } from '@/lib/dre-calculations'
 
 type Msg = { role: 'user' | 'assistant'; content: string; structured?: unknown }
+type Ctx = { saldo: number; receita: number; despesas: number; aReceber: number; runway: number | null }
 
 const SUGESTOES = [
   'Qual o impacto se reduzirmos 15% de Marketing?',
@@ -12,22 +14,38 @@ const SUGESTOES = [
   'Detecte anomalias nos meus gastos',
 ]
 
-const METRICAS_DEMO = {
-  alertas: 3,
-  previsao30d: 2_600_000,
-  confiancaPct: 94,
-  riscoCaixaDias: 67,
-  anomalias: 3,
-  precisaoIaPct: 94,
-}
-
 export default function AICFOPage() {
   const [mensagens, setMensagens] = useState<Msg[]>([])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
+  const [ctx, setCtx] = useState<Ctx>({ saldo: 0, receita: 0, despesas: 0, aReceber: 0, runway: null })
   const refFim = useRef<HTMLDivElement>(null)
 
   useEffect(() => { refFim.current?.scrollIntoView({ behavior: 'smooth' }) }, [mensagens, loading])
+
+  const carregarCtx = useCallback(async () => {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return
+    const { data: u } = await supabase.from('usuarios').select('empresa_id').eq('id', user.id).maybeSingle()
+    const eid = (u?.empresa_id as string) || user.id
+    const agora = new Date()
+    const ini = `${agora.getFullYear()}-${String(agora.getMonth() + 1).padStart(2, '0')}-01`
+    const [txRes, contaRes, receberRes] = await Promise.all([
+      supabase.from('transacoes').select('tipo,valor').eq('empresa_id', eid).gte('data', ini),
+      supabase.from('contas_bancarias').select('saldo_disponivel,saldo').eq('empresa_id', eid).eq('is_principal', true).maybeSingle(),
+      supabase.from('contas_receber').select('valor,valor_recebido').eq('empresa_id', eid).in('status', ['pendente', 'vencida']),
+    ])
+    const txs = txRes.data ?? []
+    const rec = txs.filter(t => t.tipo === 'entrada').reduce((s, t) => s + Number(t.valor), 0)
+    const desp = txs.filter(t => t.tipo === 'saida').reduce((s, t) => s + Number(t.valor), 0)
+    const saldo = Number(contaRes.data?.saldo_disponivel ?? contaRes.data?.saldo ?? 0)
+    const aReceber = (receberRes.data ?? []).reduce((s, r) => s + Math.max(0, Number(r.valor) - Number(r.valor_recebido || 0)), 0)
+    const despDia = desp / 30
+    const runway = saldo > 0 && despDia > 0 ? Math.min(999, Math.floor(saldo / despDia)) : null
+    setCtx({ saldo, receita: rec, despesas: desp, aReceber, runway })
+  }, [])
+
+  useEffect(() => { void carregarCtx() }, [carregarCtx])
 
   async function enviar(m?: string) {
     const texto = (m || input).trim()
@@ -37,19 +55,28 @@ export default function AICFOPage() {
     setMensagens(novo)
     setLoading(true)
     try {
-      const res = await fetch('/api/aicfo', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: texto, context: 'chat_aicfo' }) })
-      const data = await res.json()
-      setMensagens((prev) => [...prev, { role: 'assistant', content: data.response || data.error || 'Sem resposta', structured: data.structured || null }])
+      const { data: sess } = await supabase.auth.getSession()
+      const res = await fetch('/api/aicfo', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(sess.session?.access_token ? { Authorization: `Bearer ${sess.session.access_token}` } : {}),
+        },
+        body: JSON.stringify({ message: texto, context: 'chat_aicfo' }),
+      })
+      const data = await res.json() as { response?: string; error?: string; structured?: unknown }
+      setMensagens(prev => [...prev, { role: 'assistant', content: data.response || data.error || 'Sem resposta', structured: data.structured || null }])
     } catch {
-      setMensagens((prev) => [...prev, { role: 'assistant', content: 'Erro de conexão.' }])
+      setMensagens(prev => [...prev, { role: 'assistant', content: 'Erro de conexão.' }])
     } finally {
       setLoading(false)
     }
   }
 
+  const runwayLabel = ctx.runway == null ? '—' : ctx.runway > 30 ? `${Math.round(ctx.runway / 30)}m` : `${ctx.runway}d`
+
   return (
     <>
-      {/* Header */}
       <div className="page-hdr">
         <div>
           <div className="page-title">AI CFO</div>
@@ -57,36 +84,36 @@ export default function AICFOPage() {
         </div>
       </div>
 
-      {/* KPIs */}
+      {/* KPIs reais */}
       <div className="kpis" style={{ gridTemplateColumns: 'repeat(5, 1fr)' }}>
         <div className="kpi">
-          <div className="kpi-lbl">Alertas</div>
-          <div className="kpi-val" style={{ color: 'var(--gold)' }}>{METRICAS_DEMO.alertas}</div>
-          <div className="kpi-delta warn">⚠ atenção</div>
+          <div className="kpi-lbl">Saldo banco</div>
+          <div className="kpi-val" style={{ color: ctx.saldo > 0 ? 'var(--navy)' : 'var(--red)' }}>{fmtBRLCompact(ctx.saldo)}</div>
+          <div className={`kpi-delta ${ctx.saldo > 0 ? 'up' : 'dn'}`}>{ctx.saldo > 0 ? '✓ disponível' : '⚠ atenção'}</div>
         </div>
         <div className="kpi">
-          <div className="kpi-lbl">Previsão 30d</div>
-          <div className="kpi-val">{fmtBRLCompact(METRICAS_DEMO.previsao30d)}</div>
-          <div className="kpi-delta up">{METRICAS_DEMO.confiancaPct}% confiança</div>
+          <div className="kpi-lbl">Receita mês</div>
+          <div className="kpi-val" style={{ color: 'var(--green)' }}>{fmtBRLCompact(ctx.receita)}</div>
+          <div className="kpi-delta up">mês atual</div>
         </div>
         <div className="kpi">
-          <div className="kpi-lbl">Risco caixa</div>
-          <div className="kpi-val" style={{ color: 'var(--gold)' }}>{METRICAS_DEMO.riscoCaixaDias}d</div>
-          <div className="kpi-delta warn">⚠ atenção</div>
+          <div className="kpi-lbl">Despesas mês</div>
+          <div className="kpi-val" style={{ color: 'var(--red)' }}>{fmtBRLCompact(ctx.despesas)}</div>
+          <div className="kpi-delta dn">mês atual</div>
         </div>
         <div className="kpi">
-          <div className="kpi-lbl">Anomalias</div>
-          <div className="kpi-val">{METRICAS_DEMO.anomalias}</div>
-          <div className="kpi-delta dn">detectadas</div>
+          <div className="kpi-lbl">A receber</div>
+          <div className="kpi-val">{fmtBRLCompact(ctx.aReceber)}</div>
+          <div className="kpi-delta up">pendente</div>
         </div>
         <div className="kpi">
-          <div className="kpi-lbl">Precisão IA</div>
-          <div className="kpi-val" style={{ color: 'var(--green)' }}>{METRICAS_DEMO.precisaoIaPct}%</div>
-          <div className="kpi-delta up">✓ classificação</div>
+          <div className="kpi-lbl">Runway</div>
+          <div className="kpi-val" style={{ color: ctx.runway != null && ctx.runway < 90 ? 'var(--gold)' : 'var(--navy)' }}>{runwayLabel}</div>
+          <div className={`kpi-delta ${ctx.runway == null ? '' : ctx.runway < 90 ? 'warn' : 'up'}`}>{ctx.runway == null ? 'sem saldo' : ctx.runway < 90 ? '⚠ atenção' : '✓ ok'}</div>
         </div>
       </div>
 
-      {/* Chat */}
+      {/* Chat + sidebar */}
       <div className="ai-wrap">
         <div className="ai-chat">
           <div className="ai-chat-hdr">
@@ -100,7 +127,7 @@ export default function AICFOPage() {
           {mensagens.length === 0 && (
             <div className="quick-btns" style={{ paddingTop: 12 }}>
               {SUGESTOES.map(s => (
-                <button key={s} className="quick-btn" onClick={() => enviar(s)}>{s}</button>
+                <button key={s} className="quick-btn" onClick={() => void enviar(s)}>{s}</button>
               ))}
             </div>
           )}
@@ -112,8 +139,8 @@ export default function AICFOPage() {
                   {m.role === 'assistant' ? 'FO' : 'VC'}
                 </div>
                 <div className={`msg-bubble ${m.role === 'assistant' ? 'ai' : 'user'}`}>
-                  {m.role === 'assistant' && (m as { structured?: unknown }).structured
-                    ? <RespostaIA data={(m as { structured: unknown }).structured as never} />
+                  {m.role === 'assistant' && m.structured
+                    ? <RespostaIA data={m.structured as never} />
                     : m.content}
                 </div>
               </div>
@@ -147,23 +174,16 @@ export default function AICFOPage() {
         <div className="ai-sidebar">
           <div className="ai-ctx-card">
             <div className="ai-ctx-title">Dados em contexto</div>
-            <div className="ai-ctx-item"><span className="ai-ctx-lbl">Saldo</span><span className="ai-ctx-val">R$487K</span></div>
-            <div className="ai-ctx-item"><span className="ai-ctx-lbl">MRR</span><span className="ai-ctx-val">R$284K</span></div>
-            <div className="ai-ctx-item"><span className="ai-ctx-lbl">Burn</span><span className="ai-ctx-val">R$42K/mês</span></div>
-            <div className="ai-ctx-item"><span className="ai-ctx-lbl">Runway</span><span className="ai-ctx-val">8.3m</span></div>
-            <div className="ai-ctx-item"><span className="ai-ctx-lbl">A Receber</span><span className="ai-ctx-val">R$157K</span></div>
-            <div className="ai-ctx-item"><span className="ai-ctx-lbl">Despesas</span><span className="ai-ctx-val">R$89K</span></div>
-          </div>
-          <div className="ai-ctx-card">
-            <div className="ai-ctx-title">Alertas ativos</div>
-            <div style={{ fontSize: 11, color: 'var(--red)', padding: '5px 0', borderBottom: '1px solid var(--gray-100)' }}>⚠ Invoice TechStart vencida</div>
-            <div style={{ fontSize: 11, color: 'var(--gold)', padding: '5px 0', borderBottom: '1px solid var(--gray-100)' }}>⚡ Budget Marketing 87%</div>
-            <div style={{ fontSize: 11, color: 'var(--gold)', padding: '5px 0' }}>⚡ Runway abaixo de 9 meses</div>
+            <div className="ai-ctx-item"><span className="ai-ctx-lbl">Saldo banco</span><span className="ai-ctx-val">{fmtBRLCompact(ctx.saldo)}</span></div>
+            <div className="ai-ctx-item"><span className="ai-ctx-lbl">Receita mês</span><span className="ai-ctx-val">{fmtBRLCompact(ctx.receita)}</span></div>
+            <div className="ai-ctx-item"><span className="ai-ctx-lbl">Despesas mês</span><span className="ai-ctx-val">{fmtBRLCompact(ctx.despesas)}</span></div>
+            <div className="ai-ctx-item"><span className="ai-ctx-lbl">A receber</span><span className="ai-ctx-val">{fmtBRLCompact(ctx.aReceber)}</span></div>
+            <div className="ai-ctx-item"><span className="ai-ctx-lbl">Runway</span><span className="ai-ctx-val">{runwayLabel}</span></div>
           </div>
           <div className="ai-ctx-card">
             <div className="ai-ctx-title">Sugestões rápidas</div>
             {SUGESTOES.map(s => (
-              <button key={s} className="quick-btn" style={{ display: 'block', width: '100%', marginBottom: 6, textAlign: 'left' }} onClick={() => enviar(s)}>{s}</button>
+              <button key={s} className="quick-btn" style={{ display: 'block', width: '100%', marginBottom: 6, textAlign: 'left' }} onClick={() => void enviar(s)}>{s}</button>
             ))}
           </div>
         </div>

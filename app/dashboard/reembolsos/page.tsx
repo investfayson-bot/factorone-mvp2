@@ -1,5 +1,5 @@
 'use client'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
 import { formatBRL } from '@/lib/currency-brl'
@@ -13,6 +13,7 @@ type Reembolso = {
   data_despesa: string | null
   solicitante_nome: string | null
   observacao: string | null
+  comprovante_url: string | null
   created_at: string
 }
 
@@ -35,6 +36,8 @@ export default function ReembolsosPage() {
   const [modalOpen, setModalOpen] = useState(false)
   const [salvando, setSalvando]   = useState(false)
   const [atualizando, setAtualizando] = useState<string | null>(null)
+  const [arquivo, setArquivo]     = useState<File | null>(null)
+  const fileInputRef              = useRef<HTMLInputElement>(null)
   const [form, setForm] = useState<NovoForm>({
     descricao: '', valor: '', categoria: 'Viagens',
     data_despesa: new Date().toISOString().slice(0, 10), observacao: '',
@@ -51,7 +54,7 @@ export default function ReembolsosPage() {
     setUserName((u as { nome?: string })?.nome || auth.user.email?.split('@')[0] || '')
     const { data } = await supabase
       .from('reembolsos')
-      .select('id,descricao,valor,categoria,status,data_despesa,solicitante_nome,observacao,created_at')
+      .select('id,descricao,valor,categoria,status,data_despesa,solicitante_nome,observacao,comprovante_url,created_at')
       .eq('empresa_id', eid)
       .order('created_at', { ascending: false })
     setRows((data ?? []) as Reembolso[])
@@ -60,12 +63,36 @@ export default function ReembolsosPage() {
 
   useEffect(() => { void load() }, [load])
 
+  async function notificar(tipo: string, item_id: string) {
+    await fetch('/api/notificacoes/aprovacao', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ tipo, item_id, tabela: 'reembolsos' }),
+    }).catch(() => {})
+  }
+
+  async function uploadComprovante(): Promise<string | null> {
+    if (!arquivo) return null
+    const path = `${empresaId}/${Date.now()}_${arquivo.name.replace(/[^\w.-]/g, '_')}`
+    const { error } = await supabase.storage.from('comprovantes').upload(path, arquivo, { upsert: false })
+    if (error) { toast.error(`Erro no upload: ${error.message}`); return null }
+    return path
+  }
+
+  async function abrirComprovante(pathOrUrl: string) {
+    if (pathOrUrl.startsWith('http')) { window.open(pathOrUrl, '_blank'); return }
+    const { data, error } = await supabase.storage.from('comprovantes').createSignedUrl(pathOrUrl, 3600)
+    if (error || !data?.signedUrl) { toast.error('Nao foi possivel abrir o comprovante'); return }
+    window.open(data.signedUrl, '_blank')
+  }
+
   async function solicitar() {
     const v = Number(form.valor.replace(',', '.'))
     if (!form.descricao.trim()) { toast.error('Descricao obrigatoria'); return }
     if (!v || v <= 0)           { toast.error('Valor invalido'); return }
     setSalvando(true)
-    const { error } = await supabase.from('reembolsos').insert({
+    const comprovante_url = await uploadComprovante()
+    const { data: inserted, error } = await supabase.from('reembolsos').insert({
       empresa_id: empresaId,
       solicitante_id: userId,
       solicitante_nome: userName,
@@ -74,10 +101,18 @@ export default function ReembolsosPage() {
       categoria: form.categoria,
       data_despesa: form.data_despesa || null,
       observacao: form.observacao.trim() || null,
+      comprovante_url: comprovante_url ?? null,
       status: 'pendente',
-    })
+    }).select('id').single()
     if (error) { toast.error(error.message) }
-    else { toast.success('Solicitacao enviada!'); setModalOpen(false); setForm({ descricao: '', valor: '', categoria: 'Viagens', data_despesa: new Date().toISOString().slice(0, 10), observacao: '' }); void load() }
+    else {
+      toast.success('Solicitacao enviada!')
+      setModalOpen(false)
+      setArquivo(null)
+      setForm({ descricao: '', valor: '', categoria: 'Viagens', data_despesa: new Date().toISOString().slice(0, 10), observacao: '' })
+      void load()
+      if (inserted?.id) void notificar('reembolso_solicitado', inserted.id)
+    }
     setSalvando(false)
   }
 
@@ -86,6 +121,7 @@ export default function ReembolsosPage() {
     await supabase.from('reembolsos').update({ status: 'aprovado', aprovado_por: userId, aprovado_em: new Date().toISOString() }).eq('id', id)
     setRows(prev => prev.map(r => r.id === id ? { ...r, status: 'aprovado' } : r))
     toast.success('Reembolso aprovado')
+    void notificar('reembolso_aprovado', id)
     setAtualizando(null)
   }
 
@@ -94,6 +130,7 @@ export default function ReembolsosPage() {
     await supabase.from('reembolsos').update({ status: 'rejeitado', rejeitado_motivo: 'Rejeitado pelo gestor' }).eq('id', id)
     setRows(prev => prev.map(r => r.id === id ? { ...r, status: 'rejeitado' } : r))
     toast('Reembolso rejeitado')
+    void notificar('reembolso_rejeitado', id)
     setAtualizando(null)
   }
 
@@ -112,6 +149,7 @@ export default function ReembolsosPage() {
     await supabase.from('reembolsos').update({ status: 'pago', pago_em: new Date().toISOString(), transaction_id: tx?.id ?? null }).eq('id', item.id)
     setRows(prev => prev.map(r => r.id === item.id ? { ...r, status: 'pago' } : r))
     toast.success(`Pagamento registrado para ${item.solicitante_nome || 'solicitante'}`)
+    void notificar('reembolso_pago', item.id)
     setAtualizando(null)
   }
 
@@ -199,15 +237,22 @@ export default function ReembolsosPage() {
                 <div style={{ fontWeight: 700, fontFamily: "'DM Mono',monospace", color: 'var(--navy)', marginBottom: 3 }}>{formatBRL(Number(item.valor))}</div>
                 {statusTag(item.status)}
               </div>
-              {item.status === 'pendente' && (
-                <div style={{ display: 'flex', gap: 5 }}>
-                  <button disabled={bloqueado} onClick={() => void aprovar(item.id)} style={{ background: 'rgba(45,155,111,.1)', color: 'var(--green)', border: '1px solid rgba(45,155,111,.25)', borderRadius: 7, padding: '4px 10px', fontSize: 10.5, fontWeight: 600, cursor: 'pointer' }}>Aprovar</button>
-                  <button disabled={bloqueado} onClick={() => void rejeitar(item.id)} style={{ background: 'rgba(192,80,74,.08)', color: 'var(--red)', border: '1px solid rgba(192,80,74,.2)', borderRadius: 7, padding: '4px 8px', fontSize: 10.5, cursor: 'pointer' }}>Rejeitar</button>
-                </div>
-              )}
-              {item.status === 'aprovado' && (
-                <button disabled={bloqueado} onClick={() => void marcarPago(item)} style={{ background: 'rgba(45,155,111,.1)', color: 'var(--green)', border: '1px solid rgba(45,155,111,.2)', borderRadius: 7, padding: '4px 10px', fontSize: 10.5, fontWeight: 600, cursor: 'pointer' }}>Registrar pagamento</button>
-              )}
+              <div style={{ display: 'flex', gap: 5, alignItems: 'center' }}>
+                {item.comprovante_url && (
+                  <button onClick={() => void abrirComprovante(item.comprovante_url!)} title="Ver comprovante" style={{ background: 'rgba(94,140,135,.1)', color: 'var(--teal2)', border: '1px solid rgba(94,140,135,.2)', borderRadius: 7, padding: '4px 8px', fontSize: 10.5, cursor: 'pointer' }}>
+                    Comprovante
+                  </button>
+                )}
+                {item.status === 'pendente' && (
+                  <>
+                    <button disabled={bloqueado} onClick={() => void aprovar(item.id)} style={{ background: 'rgba(45,155,111,.1)', color: 'var(--green)', border: '1px solid rgba(45,155,111,.25)', borderRadius: 7, padding: '4px 10px', fontSize: 10.5, fontWeight: 600, cursor: 'pointer' }}>Aprovar</button>
+                    <button disabled={bloqueado} onClick={() => void rejeitar(item.id)} style={{ background: 'rgba(192,80,74,.08)', color: 'var(--red)', border: '1px solid rgba(192,80,74,.2)', borderRadius: 7, padding: '4px 8px', fontSize: 10.5, cursor: 'pointer' }}>Rejeitar</button>
+                  </>
+                )}
+                {item.status === 'aprovado' && (
+                  <button disabled={bloqueado} onClick={() => void marcarPago(item)} style={{ background: 'rgba(45,155,111,.1)', color: 'var(--green)', border: '1px solid rgba(45,155,111,.2)', borderRadius: 7, padding: '4px 10px', fontSize: 10.5, fontWeight: 600, cursor: 'pointer' }}>Registrar pagamento</button>
+                )}
+              </div>
             </div>
           )
         })}
@@ -243,6 +288,37 @@ export default function ReembolsosPage() {
             <div className="form-group">
               <label className="form-label">Observacao (opcional)</label>
               <textarea className="form-input" rows={2} placeholder="Detalhes adicionais..." value={form.observacao} onChange={e => setForm(f => ({ ...f, observacao: e.target.value }))} />
+            </div>
+            <div className="form-group">
+              <label className="form-label">Comprovante (opcional)</label>
+              <div
+                onClick={() => fileInputRef.current?.click()}
+                style={{ border: '1.5px dashed var(--gray-200)', borderRadius: 9, padding: '12px 14px', cursor: 'pointer', background: arquivo ? 'rgba(45,155,111,.04)' : '#fafafa', display: 'flex', alignItems: 'center', gap: 10 }}
+              >
+                <span style={{ fontSize: 18 }}>{arquivo ? '📎' : '⬆️'}</span>
+                <div>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: arquivo ? 'var(--green)' : 'var(--navy)' }}>
+                    {arquivo ? arquivo.name : 'Anexar recibo ou nota fiscal'}
+                  </div>
+                  <div style={{ fontSize: 10.5, color: 'var(--gray-400)' }}>
+                    {arquivo ? `${(arquivo.size / 1024).toFixed(0)} KB` : 'JPG, PNG ou PDF · max 10 MB'}
+                  </div>
+                </div>
+                {arquivo && (
+                  <button
+                    type="button"
+                    onClick={e => { e.stopPropagation(); setArquivo(null); if (fileInputRef.current) fileInputRef.current.value = '' }}
+                    style={{ marginLeft: 'auto', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--gray-400)', fontSize: 16, lineHeight: 1 }}
+                  >×</button>
+                )}
+              </div>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/jpeg,image/png,image/webp,application/pdf"
+                style={{ display: 'none' }}
+                onChange={e => setArquivo(e.target.files?.[0] ?? null)}
+              />
             </div>
             <div className="modal-actions">
               <button className="btn-action btn-ghost" onClick={() => setModalOpen(false)}>Cancelar</button>

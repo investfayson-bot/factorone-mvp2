@@ -29,6 +29,14 @@ export default function AprovacoesPage() {
   const [loading, setLoading]     = useState(true)
   const [atualizando, setAtualizando] = useState<string | null>(null)
 
+  async function notificar(tipo: string, item_id: string) {
+    await fetch('/api/notificacoes/aprovacao', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ tipo, item_id, tabela: 'despesas' }),
+    }).catch(() => {})
+  }
+
   const load = useCallback(async () => {
     setLoading(true)
     const { data: auth } = await supabase.auth.getUser()
@@ -57,7 +65,7 @@ export default function AprovacoesPage() {
       .update({ status: 'aprovado', aprovado_por: userId, aprovado_em: new Date().toISOString() })
       .eq('id', id)
     if (error) { toast.error(error.message) }
-    else { toast.success('Despesa aprovada'); setRows(prev => prev.filter(r => r.id !== id)) }
+    else { toast.success('Despesa aprovada'); setRows(prev => prev.filter(r => r.id !== id)); void notificar('despesa_aprovada', id) }
     setAtualizando(null)
   }
 
@@ -68,7 +76,7 @@ export default function AprovacoesPage() {
       .update({ status: 'rejeitado', rejeitado_motivo: motivo })
       .eq('id', id)
     if (error) { toast.error(error.message) }
-    else { toast('Despesa rejeitada'); setRows(prev => prev.filter(r => r.id !== id)) }
+    else { toast('Despesa rejeitada'); setRows(prev => prev.filter(r => r.id !== id)); void notificar('despesa_rejeitada', id) }
     setAtualizando(null)
   }
 

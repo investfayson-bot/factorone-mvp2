@@ -26,6 +26,20 @@ type Ativo = {
   empresa_id: string
 }
 
+const STATUS_COLORS: Record<string, string> = {
+  ativo: 'green',
+  em_manutencao: 'gray',
+  baixado: 'red',
+  alienado: 'red',
+  perdido: 'red',
+}
+
+function depColor(p: number) {
+  if (p > 80) return 'var(--red)'
+  if (p >= 50) return 'var(--gold)'
+  return 'var(--teal)'
+}
+
 export default function PatrimonioPage() {
   const [empresaId, setEmpresaId] = useState('')
   const [ativos, setAtivos] = useState<Ativo[]>([])
@@ -60,6 +74,7 @@ export default function PatrimonioPage() {
     setDepreciacoes((d.data || []) as Array<{ competencia: string; valor_depreciacao: number }>)
     setManutencoes((m.data || []) as Array<{ id: string; ativo_id: string; tipo: string; descricao: string; data_manutencao: string; proxima_manutencao: string | null }>)
   }, [])
+
   useEffect(() => { void carregar() }, [carregar])
   useEffect(() => {
     const t = new URLSearchParams(window.location.search).get('tab')
@@ -76,6 +91,7 @@ export default function PatrimonioPage() {
   const valorTotal = ativosFiltrados.reduce((s, a) => s + Number(a.valor_aquisicao || 0), 0)
   const valorContabil = ativosFiltrados.reduce((s, a) => s + Number(a.valor_contabil || 0), 0)
   const depMes = depreciacoes.filter((d) => d.competencia?.startsWith(new Date().toISOString().slice(0, 7))).reduce((s, d) => s + Number(d.valor_depreciacao || 0), 0)
+
   const porCategoria = useMemo(() => categorias.map((c) => {
     const list = ativos.filter((a) => a.categoria_id === c.id)
     const total = list.reduce((s, a) => s + Number(a.valor_aquisicao || 0), 0)
@@ -105,103 +121,220 @@ export default function PatrimonioPage() {
   function depProgress(ativo: Ativo): number {
     const total = Number(ativo.valor_aquisicao || 0)
     if (!total) return 0
-    return ((Number(ativo.depreciacao_acumulada || 0)) / total) * 100
-  }
-  function progressClass(p: number): string {
-    if (p > 80) return 'bg-red-500'
-    if (p >= 50) return 'bg-amber-500'
-    return 'bg-emerald-500'
+    return (Number(ativo.depreciacao_acumulada || 0) / total) * 100
   }
 
   return (
-    <div className="space-y-5 p-6">
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <h1 className="text-2xl font-bold">Patrimônio & Ativos</h1>
-        <div className="flex gap-2">
-          <button className="rounded-xl border px-3 py-2" onClick={() => setOpenNovo(true)}>+ Novo Ativo</button>
-          <button className="rounded-xl bg-blue-700 px-3 py-2 text-white disabled:opacity-60" disabled={loadingDep} onClick={() => void processarDepreciacao()}>Processar Depreciação</button>
-          <a className="rounded-xl border px-3 py-2" href="/api/patrimonio/relatorio" target="_blank">Exportar Relatório</a>
+    <>
+      <div className="page-hdr">
+        <div>
+          <div className="page-title">Patrimônio & Ativos</div>
+          <div className="page-sub">Controle de ativos, depreciação e manutenções</div>
+        </div>
+        <div style={{ display: 'flex', gap: 8 }}>
+          <button className="btn-ghost" onClick={() => setOpenNovo(true)}>+ Novo Ativo</button>
+          <button className="btn-action" disabled={loadingDep} onClick={() => void processarDepreciacao()} style={{ opacity: loadingDep ? 0.6 : 1 }}>
+            {loadingDep ? 'Processando…' : 'Processar Depreciação'}
+          </button>
+          <a className="btn-ghost" href="/api/patrimonio/relatorio" target="_blank">Exportar Relatório</a>
         </div>
       </div>
-      <div className="grid gap-2 md:grid-cols-4">
-        <select className="rounded border px-3 py-2" value={fCategoria} onChange={(e) => setFCategoria(e.target.value)}><option value="">Categoria</option>{categorias.map((c) => <option key={c.id} value={c.id}>{c.nome}</option>)}</select>
-        <select className="rounded border px-3 py-2" value={fStatus} onChange={(e) => setFStatus(e.target.value)}><option value="">Status</option><option value="ativo">Ativo</option><option value="em_manutencao">Em manutenção</option><option value="baixado">Baixado</option><option value="alienado">Alienado</option><option value="perdido">Perdido</option></select>
-        <input className="rounded border px-3 py-2" placeholder="Localização" value={fLocal} onChange={(e) => setFLocal(e.target.value)} />
-        <input className="rounded border px-3 py-2" placeholder="Responsável" value={fResp} onChange={(e) => setFResp(e.target.value)} />
+
+      {/* Filtros */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 8, marginBottom: 4 }}>
+        <select className="form-input" value={fCategoria} onChange={(e) => setFCategoria(e.target.value)}>
+          <option value="">Todas categorias</option>
+          {categorias.map((c) => <option key={c.id} value={c.id}>{c.nome}</option>)}
+        </select>
+        <select className="form-input" value={fStatus} onChange={(e) => setFStatus(e.target.value)}>
+          <option value="">Todos status</option>
+          <option value="ativo">Ativo</option>
+          <option value="em_manutencao">Em manutenção</option>
+          <option value="baixado">Baixado</option>
+          <option value="alienado">Alienado</option>
+          <option value="perdido">Perdido</option>
+        </select>
+        <input className="form-input" placeholder="Localização" value={fLocal} onChange={(e) => setFLocal(e.target.value)} />
+        <input className="form-input" placeholder="Responsável" value={fResp} onChange={(e) => setFResp(e.target.value)} />
       </div>
-      <div className="grid gap-3 md:grid-cols-4">
-        <div className="rounded-2xl border bg-white p-4"><p className="text-sm text-slate-500">Total ativos</p><p className="text-2xl font-bold">{totalAtivos}</p></div>
-        <div className="rounded-2xl border bg-white p-4"><p className="text-sm text-slate-500">Valor total</p><p className="text-2xl font-bold">{formatBRL(valorTotal)}</p></div>
-        <div className="rounded-2xl border bg-white p-4"><p className="text-sm text-slate-500">Deprec. mês</p><p className="text-2xl font-bold">{formatBRL(depMes)}</p></div>
-        <div className="rounded-2xl border bg-white p-4"><p className="text-sm text-slate-500">Valor contábil</p><p className="text-2xl font-bold">{formatBRL(valorContabil)}</p></div>
+
+      {/* KPIs */}
+      <div className="kpis" style={{ gridTemplateColumns: 'repeat(4, 1fr)' }}>
+        <div className="kpi">
+          <div className="kpi-lbl">Total ativos</div>
+          <div className="kpi-val">{totalAtivos}</div>
+          <div className="kpi-delta">cadastrados</div>
+        </div>
+        <div className="kpi">
+          <div className="kpi-lbl">Valor total</div>
+          <div className="kpi-val">{formatBRL(valorTotal)}</div>
+          <div className="kpi-delta">aquisição</div>
+        </div>
+        <div className="kpi">
+          <div className="kpi-lbl">Deprec. mês</div>
+          <div className="kpi-val" style={{ color: 'var(--red)' }}>{formatBRL(depMes)}</div>
+          <div className="kpi-delta dn">mês atual</div>
+        </div>
+        <div className="kpi">
+          <div className="kpi-lbl">Valor contábil</div>
+          <div className="kpi-val" style={{ color: 'var(--teal)' }}>{formatBRL(valorContabil)}</div>
+          <div className="kpi-delta up">líquido</div>
+        </div>
       </div>
-      <div className="flex gap-2">
-        <button className={`rounded-xl px-3 py-2 ${tab === 'ativos' ? 'bg-blue-700 text-white' : 'border bg-white'}`} onClick={() => setTab('ativos')}>Lista de Ativos</button>
-        <button className={`rounded-xl px-3 py-2 ${tab === 'categorias' ? 'bg-blue-700 text-white' : 'border bg-white'}`} onClick={() => setTab('categorias')}>Por Categoria</button>
-        <button className={`rounded-xl px-3 py-2 ${tab === 'depreciacao' ? 'bg-blue-700 text-white' : 'border bg-white'}`} onClick={() => setTab('depreciacao')}>Depreciação</button>
-        <button className={`rounded-xl px-3 py-2 ${tab === 'manutencoes' ? 'bg-blue-700 text-white' : 'border bg-white'}`} onClick={() => setTab('manutencoes')}>Manutenções</button>
+
+      {/* Tabs */}
+      <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 4 }}>
+        {([['ativos', 'Lista de Ativos'], ['categorias', 'Por Categoria'], ['depreciacao', 'Depreciação'], ['manutencoes', 'Manutenções']] as [string, string][]).map(([k, l]) => (
+          <button
+            key={k}
+            onClick={() => setTab(k as typeof tab)}
+            style={{
+              padding: '7px 14px', borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: 'pointer', border: '1px solid',
+              background: tab === k ? 'var(--navy)' : '#fff',
+              color: tab === k ? '#fff' : 'var(--gray-500)',
+              borderColor: tab === k ? 'var(--navy)' : 'var(--gray-100)',
+            }}
+          >
+            {l}
+          </button>
+        ))}
       </div>
 
       {tab === 'ativos' && (
-        <div className="overflow-x-auto rounded-2xl border bg-white">
-          <table className="min-w-full text-sm">
-            <thead><tr className="border-b bg-slate-50"><th className="p-2 text-left">Foto</th><th className="p-2 text-left">Código</th><th className="p-2 text-left">Nome</th><th className="p-2 text-left">Categoria</th><th className="p-2 text-left">Localização</th><th className="p-2 text-right">Aquisição</th><th className="p-2 text-right">Deprec.</th><th className="p-2 text-right">Contábil</th><th className="p-2">Status</th><th className="p-2">Ações</th></tr></thead>
-            <tbody>
-              {ativosFiltrados.map((a) => {
-                const p = depProgress(a)
-                return (
-                  <tr key={a.id} className="border-b">
-                    <td className="p-2"><div className="h-8 w-8 overflow-hidden rounded-full bg-slate-100">{a.foto_url ? <img src={a.foto_url} alt={a.nome} className="h-full w-full object-cover" /> : null}</div></td>
-                    <td className="p-2">{a.codigo_interno || '-'}</td>
-                    <td className="p-2">{a.nome}<div className="mt-1 h-1.5 rounded bg-slate-100"><div className={`h-1.5 rounded ${progressClass(p)}`} style={{ width: `${Math.min(p, 100)}%` }} /></div></td>
-                    <td className="p-2">{categoriaNome(a.categoria_id)}</td>
-                    <td className="p-2">{a.localizacao || '-'}</td>
-                    <td className="p-2 text-right">{formatBRL(Number(a.valor_aquisicao || 0))}</td>
-                    <td className="p-2 text-right">{formatBRL(Number(a.depreciacao_acumulada || 0))}</td>
-                    <td className="p-2 text-right">{formatBRL(Number(a.valor_contabil || 0))}</td>
-                    <td className="p-2 text-center">{a.status}</td>
-                    <td className="p-2 text-center">
-                      <div className="flex justify-center gap-1">
-                        <button className="rounded border px-2 py-1 text-xs" onClick={() => setDetalhes(a)}>Ver</button>
-                        <button className="rounded border px-2 py-1 text-xs" onClick={() => setBaixa(a)}>Baixar</button>
-                        <button className="rounded border px-2 py-1 text-xs" onClick={() => setQr(a)}>QR</button>
-                      </div>
-                    </td>
-                  </tr>
-                )
-              })}
-            </tbody>
-          </table>
+        <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, overflow: 'hidden' }}>
+          <div className="expenses-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>Foto</th>
+                  <th>Código</th>
+                  <th>Nome / Depreciação</th>
+                  <th>Categoria</th>
+                  <th>Localização</th>
+                  <th style={{ textAlign: 'right' }}>Aquisição</th>
+                  <th style={{ textAlign: 'right' }}>Deprec.</th>
+                  <th style={{ textAlign: 'right' }}>Contábil</th>
+                  <th style={{ textAlign: 'center' }}>Status</th>
+                  <th style={{ textAlign: 'center' }}>Ações</th>
+                </tr>
+              </thead>
+              <tbody>
+                {ativosFiltrados.length === 0 && (
+                  <tr><td colSpan={10} style={{ textAlign: 'center', color: 'var(--gray-400)', padding: '32px 0' }}>Nenhum ativo encontrado.</td></tr>
+                )}
+                {ativosFiltrados.map((a) => {
+                  const p = depProgress(a)
+                  return (
+                    <tr key={a.id}>
+                      <td>
+                        <div style={{ width: 32, height: 32, borderRadius: '50%', overflow: 'hidden', background: 'var(--gray-100)' }}>
+                          {a.foto_url ? <img src={a.foto_url} alt={a.nome} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : null}
+                        </div>
+                      </td>
+                      <td style={{ fontFamily: "'DM Mono',monospace", fontSize: 11 }}>{a.codigo_interno || '—'}</td>
+                      <td>
+                        <div style={{ fontWeight: 600, fontSize: 12 }}>{a.nome}</div>
+                        <div style={{ marginTop: 4, height: 4, borderRadius: 2, background: 'var(--gray-100)', width: 80 }}>
+                          <div style={{ height: 4, borderRadius: 2, width: `${Math.min(p, 100)}%`, background: depColor(p) }} />
+                        </div>
+                      </td>
+                      <td style={{ color: 'var(--gray-500)', fontSize: 12 }}>{categoriaNome(a.categoria_id)}</td>
+                      <td style={{ color: 'var(--gray-500)', fontSize: 12 }}>{a.localizacao || '—'}</td>
+                      <td style={{ textAlign: 'right', fontFamily: "'DM Mono',monospace" }}>{formatBRL(Number(a.valor_aquisicao || 0))}</td>
+                      <td style={{ textAlign: 'right', fontFamily: "'DM Mono',monospace", color: 'var(--red)' }}>{formatBRL(Number(a.depreciacao_acumulada || 0))}</td>
+                      <td style={{ textAlign: 'right', fontFamily: "'DM Mono',monospace", color: 'var(--teal)', fontWeight: 700 }}>{formatBRL(Number(a.valor_contabil || 0))}</td>
+                      <td style={{ textAlign: 'center' }}>
+                        <span className={`tag ${STATUS_COLORS[a.status] || 'gray'}`}>{a.status}</span>
+                      </td>
+                      <td style={{ textAlign: 'center' }}>
+                        <div style={{ display: 'flex', justifyContent: 'center', gap: 4 }}>
+                          <button className="btn-ghost" style={{ padding: '3px 8px', fontSize: 10 }} onClick={() => setDetalhes(a)}>Ver</button>
+                          <button className="btn-ghost" style={{ padding: '3px 8px', fontSize: 10 }} onClick={() => setBaixa(a)}>Baixar</button>
+                          <button className="btn-ghost" style={{ padding: '3px 8px', fontSize: 10 }} onClick={() => setQr(a)}>QR</button>
+                        </div>
+                      </td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
 
       {tab === 'categorias' && (
-        <div className="grid gap-3 md:grid-cols-3">
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 12 }}>
           {porCategoria.map((c) => (
-            <button key={c.id} className="rounded-2xl border bg-white p-4 text-left" onClick={() => { setFCategoria(c.id); setTab('ativos') }}>
-              <p className="font-semibold">{c.nome}</p>
-              <p className="text-sm text-slate-500">{c.totalAtivos} ativos</p>
-              <p className="text-sm">{formatBRL(c.total)} / {formatBRL(c.contabil)}</p>
-              <div className="mt-2 h-2 rounded bg-slate-100"><div className="h-2 rounded bg-blue-600" style={{ width: `${Math.min(c.depPerc, 100)}%` }} /></div>
+            <button key={c.id} style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: 16, textAlign: 'left', cursor: 'pointer' }} onClick={() => { setFCategoria(c.id); setTab('ativos') }}>
+              <div style={{ fontWeight: 700, fontSize: 13, color: 'var(--navy)', marginBottom: 4 }}>{c.nome}</div>
+              <div style={{ fontSize: 12, color: 'var(--gray-400)', marginBottom: 4 }}>{c.totalAtivos} ativos</div>
+              <div style={{ fontSize: 12, fontFamily: "'DM Mono',monospace", marginBottom: 8 }}>{formatBRL(c.total)} / {formatBRL(c.contabil)}</div>
+              <div style={{ height: 6, borderRadius: 4, background: 'var(--gray-100)' }}>
+                <div style={{ height: 6, borderRadius: 4, width: `${Math.min(c.depPerc, 100)}%`, background: depColor(c.depPerc) }} />
+              </div>
             </button>
           ))}
         </div>
       )}
 
       {tab === 'depreciacao' && (
-        <div className="rounded-2xl border bg-white p-4">
-          <h3 className="mb-3 font-semibold">Histórico de depreciações</h3>
-          <div className="space-y-2">
-            {depreciacoes.map((d, i) => <div key={String(i)} className="flex justify-between rounded border p-2 text-sm"><span>{d.competencia}</span><span>{formatBRL(Number(d.valor_depreciacao || 0))}</span></div>)}
+        <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, overflow: 'hidden' }}>
+          <div style={{ padding: '12px 16px', borderBottom: '1px solid var(--gray-100)', fontSize: 12, fontWeight: 700, color: 'var(--navy)' }}>
+            Histórico de depreciações
+          </div>
+          <div className="expenses-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>Competência</th>
+                  <th style={{ textAlign: 'right' }}>Valor depreciado</th>
+                </tr>
+              </thead>
+              <tbody>
+                {depreciacoes.length === 0 && (
+                  <tr><td colSpan={2} style={{ textAlign: 'center', color: 'var(--gray-400)', padding: '24px 0' }}>Nenhuma depreciação processada.</td></tr>
+                )}
+                {depreciacoes.map((d, i) => (
+                  <tr key={String(i)}>
+                    <td style={{ fontFamily: "'DM Mono',monospace" }}>{d.competencia}</td>
+                    <td style={{ textAlign: 'right', fontFamily: "'DM Mono',monospace", color: 'var(--red)', fontWeight: 700 }}>{formatBRL(Number(d.valor_depreciacao || 0))}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
       )}
 
       {tab === 'manutencoes' && (
-        <div className="rounded-2xl border bg-white p-4">
-          <h3 className="mb-3 font-semibold">Manutenções</h3>
-          <div className="space-y-2">
-            {manutencoes.map((m) => <div key={m.id} className="rounded border p-2 text-sm"><p>{m.tipo} • {m.descricao}</p><p className="text-xs text-slate-500">{m.data_manutencao} {m.proxima_manutencao ? `• próxima: ${m.proxima_manutencao}` : ''}</p></div>)}
+        <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, overflow: 'hidden' }}>
+          <div style={{ padding: '12px 16px', borderBottom: '1px solid var(--gray-100)', fontSize: 12, fontWeight: 700, color: 'var(--navy)' }}>
+            Manutenções
+          </div>
+          <div className="expenses-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>Tipo</th>
+                  <th>Descrição</th>
+                  <th>Data</th>
+                  <th>Próxima</th>
+                </tr>
+              </thead>
+              <tbody>
+                {manutencoes.length === 0 && (
+                  <tr><td colSpan={4} style={{ textAlign: 'center', color: 'var(--gray-400)', padding: '24px 0' }}>Nenhuma manutenção registrada.</td></tr>
+                )}
+                {manutencoes.map((m) => (
+                  <tr key={m.id}>
+                    <td><span className="tag gray">{m.tipo}</span></td>
+                    <td style={{ fontSize: 12 }}>{m.descricao}</td>
+                    <td style={{ fontFamily: "'DM Mono',monospace", fontSize: 11 }}>{m.data_manutencao}</td>
+                    <td style={{ fontFamily: "'DM Mono',monospace", fontSize: 11, color: 'var(--gray-400)' }}>{m.proxima_manutencao || '—'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
       )}
@@ -210,6 +343,6 @@ export default function PatrimonioPage() {
       {detalhes && <DetalhesAtivoModal open={Boolean(detalhes)} onClose={() => setDetalhes(null)} ativo={{ id: detalhes.id, nome: detalhes.nome, categoria: categoriaNome(detalhes.categoria_id), foto_url: detalhes.foto_url, localizacao: detalhes.localizacao, responsavel_nome: detalhes.responsavel_nome, valor_contabil: Number(detalhes.valor_contabil || 0) }} />}
       {baixa && <BaixaAtivoModal open={Boolean(baixa)} onClose={() => setBaixa(null)} onDone={carregar} ativo={{ id: baixa.id, nome: baixa.nome, valor_contabil: Number(baixa.valor_contabil || 0), empresa_id: baixa.empresa_id }} />}
       {qr && <QRCodeAtivo open={Boolean(qr)} onClose={() => setQr(null)} qrCode={qr.qr_code} nome={qr.nome} />}
-    </div>
+    </>
   )
 }

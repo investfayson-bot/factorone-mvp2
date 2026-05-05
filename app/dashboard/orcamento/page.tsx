@@ -15,6 +15,21 @@ type Suplementacao = { id: string; status: string; valor_solicitado: number; jus
 
 const CATS_PADRAO = ['Alimentação', 'Transporte', 'Hospedagem', 'Tecnologia/Software', 'Marketing', 'Fornecedores', 'Folha de Pagamento', 'Impostos/Taxas', 'Aluguel/Infraestrutura', 'Consultoria', 'Material de Escritório', 'Outros']
 
+const TAB_LABELS: [string, string][] = [
+  ['geral', 'Visão Geral'],
+  ['categoria', 'Por Categoria'],
+  ['centro', 'Por Centro'],
+  ['mensal', 'Mensal'],
+  ['alertas', 'Alertas'],
+  ['suplementacoes', 'Suplementações'],
+]
+
+function progressColor(pct: number) {
+  if (pct > 100) return 'var(--red)'
+  if (pct >= 80) return 'var(--gold)'
+  return 'var(--teal)'
+}
+
 export default function OrcamentoPage() {
   const [ano, setAno] = useState(new Date().getFullYear())
   const [orcamento, setOrcamento] = useState<Orcamento | null>(null)
@@ -46,6 +61,7 @@ export default function OrcamentoPage() {
       setLinhas([]); setAlertas([]); setSuplementacoes([])
     }
   }, [ano])
+
   useEffect(() => { void carregar() }, [carregar])
   useEffect(() => {
     const t = new URLSearchParams(window.location.search).get('tab')
@@ -84,82 +100,174 @@ export default function OrcamentoPage() {
   }
 
   return (
-    <div className="space-y-5 p-6">
-      <div className="flex flex-wrap items-center justify-between gap-2">
+    <>
+      <div className="page-hdr">
         <div>
-          <h1 className="text-2xl font-bold">Orçamento Anual {ano}</h1>
-          <p className="text-sm text-slate-500">Status: <span className="font-medium">{orcamento?.status || 'sem orçamento'}</span></p>
+          <div className="page-title">Orçamento Anual {ano}</div>
+          <div className="page-sub">Status: <strong>{orcamento?.status || 'sem orçamento'}</strong></div>
         </div>
-        <div className="flex gap-2">
-          <select className="rounded-xl border px-3 py-2" value={ano} onChange={(e) => setAno(Number(e.target.value))}>{anoOptions.map((a) => <option key={a} value={a}>{a}</option>)}</select>
-          <button className="rounded-xl border px-3 py-2" onClick={() => setOpenWizard(true)}>+ Novo Orçamento</button>
-          {orcamento?.status === 'em_aprovacao' && <button className="rounded-xl bg-emerald-600 px-3 py-2 text-white" onClick={() => void aprovarOrcamento()}>Aprovar</button>}
-          <a href={`/api/orcamento/exportar?ano=${ano}`} target="_blank" className="rounded-xl border px-3 py-2">Exportar</a>
+        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
+          <select className="form-input" style={{ width: 'auto', padding: '6px 12px' }} value={ano} onChange={(e) => setAno(Number(e.target.value))}>
+            {anoOptions.map((a) => <option key={a} value={a}>{a}</option>)}
+          </select>
+          <button className="btn-ghost" onClick={() => setOpenWizard(true)}>+ Novo Orçamento</button>
+          {orcamento?.status === 'em_aprovacao' && (
+            <button className="btn-action" onClick={() => void aprovarOrcamento()}>Aprovar</button>
+          )}
+          <a href={`/api/orcamento/exportar?ano=${ano}`} target="_blank" className="btn-ghost">Exportar</a>
         </div>
       </div>
 
-      <div className="grid gap-3 md:grid-cols-4">
-        <div className="rounded-2xl border bg-white p-4"><p className="text-xs text-slate-500">Total previsto</p><p className="text-2xl font-bold">{formatBRL(resumo.totalPrevisto)}</p></div>
-        <div className="rounded-2xl border bg-white p-4"><p className="text-xs text-slate-500">Total realizado</p><p className="text-2xl font-bold">{formatBRL(resumo.totalRealizado)}</p></div>
-        <div className="rounded-2xl border bg-white p-4"><p className="text-xs text-slate-500">% Consumido</p><p className="text-2xl font-bold">{resumo.percentualConsumido.toFixed(1)}%</p></div>
-        <div className="rounded-2xl border bg-white p-4"><p className="text-xs text-slate-500">Alertas ativos</p><p className="text-2xl font-bold">{alertasAtivos}</p></div>
+      <div className="kpis" style={{ gridTemplateColumns: 'repeat(4, 1fr)' }}>
+        <div className="kpi">
+          <div className="kpi-lbl">Total previsto</div>
+          <div className="kpi-val">{formatBRL(resumo.totalPrevisto)}</div>
+          <div className="kpi-delta">ano {ano}</div>
+        </div>
+        <div className="kpi">
+          <div className="kpi-lbl">Total realizado</div>
+          <div className="kpi-val" style={{ color: 'var(--teal)' }}>{formatBRL(resumo.totalRealizado)}</div>
+          <div className="kpi-delta up">executado</div>
+        </div>
+        <div className="kpi">
+          <div className="kpi-lbl">% Consumido</div>
+          <div className="kpi-val" style={{ color: resumo.percentualConsumido > 90 ? 'var(--red)' : resumo.percentualConsumido > 70 ? 'var(--gold)' : 'var(--navy)' }}>
+            {resumo.percentualConsumido.toFixed(1)}%
+          </div>
+          <div className={`kpi-delta ${resumo.percentualConsumido > 90 ? 'dn' : 'up'}`}>{resumo.percentualConsumido > 90 ? '⚠ atenção' : '✓ ok'}</div>
+        </div>
+        <div className="kpi">
+          <div className="kpi-lbl">Alertas ativos</div>
+          <div className="kpi-val" style={{ color: alertasAtivos > 0 ? 'var(--gold)' : 'var(--navy)' }}>{alertasAtivos}</div>
+          <div className={`kpi-delta ${alertasAtivos > 0 ? 'warn' : 'up'}`}>{alertasAtivos > 0 ? '⚠ pendentes' : '✓ nenhum'}</div>
+        </div>
       </div>
 
-      <div className="flex flex-wrap gap-2">
-        {[
-          ['geral', 'Visão Geral'],
-          ['categoria', 'Por Categoria'],
-          ['centro', 'Por Centro de Custo'],
-          ['mensal', 'Mensal'],
-          ['alertas', 'Alertas'],
-          ['suplementacoes', 'Suplementações'],
-        ].map(([k, l]) => (
-          <button key={k} className={`rounded-xl px-3 py-2 text-sm ${tab === k ? 'bg-blue-700 text-white' : 'border bg-white'}`} onClick={() => setTab(k as 'geral' | 'categoria' | 'centro' | 'mensal' | 'alertas' | 'suplementacoes')}>{l}</button>
+      {/* Tabs */}
+      <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 4 }}>
+        {TAB_LABELS.map(([k, l]) => (
+          <button
+            key={k}
+            onClick={() => setTab(k as typeof tab)}
+            style={{
+              padding: '7px 14px', borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: 'pointer', border: '1px solid',
+              background: tab === k ? 'var(--navy)' : '#fff',
+              color: tab === k ? '#fff' : 'var(--gray-500)',
+              borderColor: tab === k ? 'var(--navy)' : 'var(--gray-100)',
+            }}
+          >
+            {l}
+          </button>
         ))}
       </div>
 
       {tab === 'geral' && (
-        <div className="grid gap-3 md:grid-cols-2">
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 12 }}>
           {porCategoria.slice(0, 6).map((c) => (
-            <div key={c.categoria} className="rounded-2xl border bg-white p-4">
-              <p className="font-semibold">{c.categoria}</p>
-              <p className="text-sm text-slate-500">{formatBRL(c.realizado)} / {formatBRL(c.previsto)} • {c.pct.toFixed(1)}%</p>
-              <div className="mt-2 h-2 rounded bg-slate-100"><div className={`h-2 rounded ${c.pct > 100 ? 'bg-red-500' : c.pct >= 80 ? 'bg-amber-500' : 'bg-emerald-500'}`} style={{ width: `${Math.min(c.pct, 100)}%` }} /></div>
+            <div key={c.categoria} style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: 16 }}>
+              <div style={{ fontWeight: 700, fontSize: 13, color: 'var(--navy)', marginBottom: 4 }}>{c.categoria}</div>
+              <div style={{ fontSize: 12, color: 'var(--gray-400)', marginBottom: 8 }}>
+                {formatBRL(c.realizado)} / {formatBRL(c.previsto)} · {c.pct.toFixed(1)}%
+              </div>
+              <div style={{ height: 6, borderRadius: 4, background: 'var(--gray-100)' }}>
+                <div style={{ height: 6, borderRadius: 4, width: `${Math.min(c.pct, 100)}%`, background: progressColor(c.pct) }} />
+              </div>
             </div>
           ))}
         </div>
       )}
 
       {tab === 'categoria' && (
-        <div className="overflow-x-auto rounded-2xl border bg-white">
-          <table className="min-w-full text-sm"><thead><tr className="border-b bg-slate-50"><th className="p-2 text-left">Categoria</th><th className="p-2 text-right">Previsto</th><th className="p-2 text-right">Realizado</th><th className="p-2 text-right">Variação</th><th className="p-2 text-right">%</th><th className="p-2">Ações</th></tr></thead>
-            <tbody>{porCategoria.map((c) => <tr key={c.categoria} className="border-b"><td className="p-2">{c.categoria}</td><td className="p-2 text-right">{formatBRL(c.previsto)}</td><td className="p-2 text-right">{formatBRL(c.realizado)}</td><td className="p-2 text-right">{formatBRL(c.previsto - c.realizado)}</td><td className="p-2 text-right">{c.pct.toFixed(1)}%</td><td className="p-2 text-center"><button className="rounded border px-2 py-1 text-xs" onClick={() => { const l = linhas.find((x) => x.categoria === c.categoria); if (l) setEditLinha(l) }}>Editar</button></td></tr>)}</tbody>
-          </table>
+        <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, overflow: 'hidden' }}>
+          <div className="expenses-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>Categoria</th>
+                  <th style={{ textAlign: 'right' }}>Previsto</th>
+                  <th style={{ textAlign: 'right' }}>Realizado</th>
+                  <th style={{ textAlign: 'right' }}>Variação</th>
+                  <th style={{ textAlign: 'right' }}>%</th>
+                  <th style={{ textAlign: 'center' }}>Ações</th>
+                </tr>
+              </thead>
+              <tbody>
+                {porCategoria.map((c) => (
+                  <tr key={c.categoria}>
+                    <td style={{ fontWeight: 600 }}>{c.categoria}</td>
+                    <td style={{ textAlign: 'right', fontFamily: "'DM Mono',monospace" }}>{formatBRL(c.previsto)}</td>
+                    <td style={{ textAlign: 'right', fontFamily: "'DM Mono',monospace" }}>{formatBRL(c.realizado)}</td>
+                    <td style={{ textAlign: 'right', fontFamily: "'DM Mono',monospace", color: c.previsto - c.realizado < 0 ? 'var(--red)' : 'var(--teal)', fontWeight: 700 }}>{formatBRL(c.previsto - c.realizado)}</td>
+                    <td style={{ textAlign: 'right', color: progressColor(c.pct), fontWeight: 700 }}>{c.pct.toFixed(1)}%</td>
+                    <td style={{ textAlign: 'center' }}>
+                      <button className="btn-ghost" style={{ padding: '4px 10px', fontSize: 11 }} onClick={() => { const l = linhas.find((x) => x.categoria === c.categoria); if (l) setEditLinha(l) }}>Editar</button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
 
-      {tab === 'centro' && <div className="rounded-2xl border bg-white p-4 text-sm text-slate-600">Visão por centro de custo usa os mesmos dados de linhas com `centro_custo_id`.</div>}
+      {tab === 'centro' && (
+        <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: '20px 16px', fontSize: 13, color: 'var(--gray-400)' }}>
+          Visão por centro de custo usa os mesmos dados de linhas com <code>centro_custo_id</code>.
+        </div>
+      )}
 
       {tab === 'mensal' && (
-        <div className="rounded-2xl border bg-white p-4">
-          <div className="space-y-1 text-sm">{Array.from({ length: 12 }).map((_, i) => {
-            const m = i + 1
-            const mesLinhas = linhas.filter((l) => l.mes === m)
-            const p = mesLinhas.reduce((s, l) => s + Number(l.valor_previsto || 0), 0)
-            const r = mesLinhas.reduce((s, l) => s + Number(l.valor_realizado || 0), 0)
-            return <div key={m} className="flex justify-between border-b py-1"><span>{m.toString().padStart(2, '0')}/{ano}</span><span>{formatBRL(r)} / {formatBRL(p)}</span></div>
-          })}</div>
+        <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, overflow: 'hidden' }}>
+          <div className="expenses-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>Mês</th>
+                  <th style={{ textAlign: 'right' }}>Realizado</th>
+                  <th style={{ textAlign: 'right' }}>Previsto</th>
+                </tr>
+              </thead>
+              <tbody>
+                {Array.from({ length: 12 }).map((_, i) => {
+                  const m = i + 1
+                  const mesLinhas = linhas.filter((l) => l.mes === m)
+                  const p = mesLinhas.reduce((s, l) => s + Number(l.valor_previsto || 0), 0)
+                  const r = mesLinhas.reduce((s, l) => s + Number(l.valor_realizado || 0), 0)
+                  return (
+                    <tr key={m}>
+                      <td style={{ fontFamily: "'DM Mono',monospace" }}>{m.toString().padStart(2, '0')}/{ano}</td>
+                      <td style={{ textAlign: 'right', fontFamily: "'DM Mono',monospace", color: 'var(--teal)', fontWeight: 700 }}>{formatBRL(r)}</td>
+                      <td style={{ textAlign: 'right', fontFamily: "'DM Mono',monospace" }}>{formatBRL(p)}</td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
 
       {tab === 'alertas' && (
-        <div className="space-y-2">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+          {alertas.length === 0 && (
+            <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: '32px 16px', textAlign: 'center', color: 'var(--gray-400)', fontSize: 13 }}>
+              Nenhum alerta ativo.
+            </div>
+          )}
           {alertas.map((a) => (
-            <div key={a.id} className="rounded-2xl border bg-white p-4 text-sm">
-              <p><strong>{a.tipo}</strong> • {a.percentual_consumido?.toFixed(1)}% • Prev {formatBRL(Number(a.valor_previsto || 0))} • Real {formatBRL(Number(a.valor_realizado || 0))}</p>
-              <div className="mt-2 flex gap-2">
-                {!a.lido && <button className="rounded border px-2 py-1 text-xs" onClick={() => void marcarAlertaLido(a.id)}>Marcar como lido</button>}
-                <button className="rounded border px-2 py-1 text-xs" onClick={() => { const l = linhas.find((x) => x.id === a.orcamento_linha_id); if (l) setSupLinha(l) }}>Solicitar suplementação</button>
+            <div key={a.id} style={{ background: '#fff', border: `1px solid ${a.lido ? 'var(--gray-100)' : 'var(--gold)'}`, borderRadius: 12, padding: '14px 16px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
+                <span className={`tag ${a.lido ? 'gray' : 'green'}`}>{a.tipo}</span>
+                <span style={{ fontSize: 12, color: 'var(--gray-400)' }}>{a.percentual_consumido?.toFixed(1)}% consumido</span>
+              </div>
+              <div style={{ fontSize: 12, color: 'var(--gray-500)', marginBottom: 8 }}>
+                Previsto: {formatBRL(Number(a.valor_previsto || 0))} · Realizado: {formatBRL(Number(a.valor_realizado || 0))}
+              </div>
+              <div style={{ display: 'flex', gap: 8 }}>
+                {!a.lido && (
+                  <button className="btn-ghost" style={{ padding: '4px 10px', fontSize: 11 }} onClick={() => void marcarAlertaLido(a.id)}>Marcar como lido</button>
+                )}
+                <button className="btn-ghost" style={{ padding: '4px 10px', fontSize: 11 }} onClick={() => { const l = linhas.find((x) => x.id === a.orcamento_linha_id); if (l) setSupLinha(l) }}>Solicitar suplementação</button>
               </div>
             </div>
           ))}
@@ -167,12 +275,25 @@ export default function OrcamentoPage() {
       )}
 
       {tab === 'suplementacoes' && (
-        <div className="space-y-2">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+          {suplementacoes.length === 0 && (
+            <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: '32px 16px', textAlign: 'center', color: 'var(--gray-400)', fontSize: 13 }}>
+              Nenhuma suplementação registrada.
+            </div>
+          )}
           {suplementacoes.map((s) => (
-            <div key={s.id} className="rounded-2xl border bg-white p-4 text-sm">
-              <p><strong>{formatBRL(Number(s.valor_solicitado || 0))}</strong> • {s.status}</p>
-              <p className="text-slate-600">{s.justificativa}</p>
-              {s.status === 'pendente' && <div className="mt-2 flex gap-2"><button className="rounded border px-2 py-1 text-xs" onClick={() => void decidirSuplementacao(s.id, 'aprovado')}>Aprovar</button><button className="rounded border px-2 py-1 text-xs" onClick={() => void decidirSuplementacao(s.id, 'rejeitado')}>Rejeitar</button></div>}
+            <div key={s.id} style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: '14px 16px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+                <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--navy)', fontFamily: "'DM Mono',monospace" }}>{formatBRL(Number(s.valor_solicitado || 0))}</span>
+                <span className={`tag ${s.status === 'aprovado' ? 'green' : s.status === 'rejeitado' ? 'red' : 'gray'}`}>{s.status}</span>
+              </div>
+              <div style={{ fontSize: 12, color: 'var(--gray-400)', marginBottom: s.status === 'pendente' ? 10 : 0 }}>{s.justificativa}</div>
+              {s.status === 'pendente' && (
+                <div style={{ display: 'flex', gap: 8 }}>
+                  <button className="btn-action" style={{ padding: '4px 12px', fontSize: 11 }} onClick={() => void decidirSuplementacao(s.id, 'aprovado')}>Aprovar</button>
+                  <button className="btn-ghost" style={{ padding: '4px 12px', fontSize: 11 }} onClick={() => void decidirSuplementacao(s.id, 'rejeitado')}>Rejeitar</button>
+                </div>
+              )}
             </div>
           ))}
         </div>
@@ -181,6 +302,6 @@ export default function OrcamentoPage() {
       <OrcamentoWizard open={openWizard} onClose={() => setOpenWizard(false)} onSaved={carregar} categorias={CATS_PADRAO} />
       <EditarLinhaModal open={Boolean(editLinha)} onClose={() => setEditLinha(null)} linha={editLinha} onSaved={carregar} />
       <SuplementacaoModal open={Boolean(supLinha)} onClose={() => setSupLinha(null)} linha={supLinha ? { id: supLinha.id, categoria: supLinha.categoria, valor_previsto: Number(supLinha.valor_previsto || 0), valor_realizado: Number(supLinha.valor_realizado || 0) } : null} onSaved={carregar} />
-    </div>
+    </>
   )
 }

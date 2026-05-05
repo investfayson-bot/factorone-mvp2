@@ -8,7 +8,7 @@ import { ptBR } from 'date-fns/locale'
 type Met = Record<string, number | string>
 type Lancamento = { id: string; descricao: string; valor: number; origem: string; competencia: string; created_at: string; conta_id: string | null }
 
-const TABS = ['DRE Completo', 'Comparativo', 'Métricas', 'Histórico 12M'] as const
+const TABS = ['DRE Completo', 'Comparativo', 'Métricas', 'Histórico 12M', 'Exportações'] as const
 
 export default function RelatoriosPage() {
   const [tab, setTab] = useState<(typeof TABS)[number]>('DRE Completo')
@@ -24,6 +24,10 @@ export default function RelatoriosPage() {
   const [manualOpen, setManualOpen] = useState(false)
   const [plano, setPlano] = useState<Array<{ id: string; codigo: string; nome: string }>>([])
   const [manual, setManual] = useState({ conta_id: '', descricao: '', valor: '', tipo: 'credito', competencia: new Date().toISOString().slice(0, 10) })
+  const [expInicio, setExpInicio] = useState(new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().slice(0, 10))
+  const [expFim, setExpFim] = useState(new Date().toISOString().slice(0, 10))
+  const [expStatus, setExpStatus] = useState('')
+  const [expLoading, setExpLoading] = useState<string | null>(null)
 
   const carregar = useCallback(async () => {
     const { data: auth } = await supabase.auth.getUser()
@@ -98,6 +102,26 @@ export default function RelatoriosPage() {
     const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `dre_${competencia}.xlsx`; a.click(); URL.revokeObjectURL(a.href)
   }
 
+  async function exportarCSV(tipo: 'transacoes' | 'despesas') {
+    setExpLoading(tipo)
+    try {
+      const { data: sess } = await supabase.auth.getSession()
+      const params = new URLSearchParams({ inicio: expInicio, fim: expFim, ...(expStatus ? { status: expStatus } : {}) })
+      const res = await fetch(`/api/${tipo}/exportar?${params}`, {
+        headers: sess.session?.access_token ? { Authorization: `Bearer ${sess.session.access_token}` } : {},
+      })
+      if (!res.ok) { alert('Falha ao exportar'); return }
+      const blob = await res.blob()
+      const a = document.createElement('a')
+      a.href = URL.createObjectURL(blob)
+      a.download = `${tipo}_${expInicio}_${expFim}.csv`
+      a.click()
+      URL.revokeObjectURL(a.href)
+    } finally {
+      setExpLoading(null)
+    }
+  }
+
   async function salvarLancamentoManual() {
     const v = Number.parseFloat(manual.valor)
     if (!manual.conta_id || !manual.descricao || !v) return
@@ -147,23 +171,33 @@ export default function RelatoriosPage() {
       <div className="kpis">
         <div className="kpi">
           <div className="kpi-lbl">Receita Bruta</div>
-          <div className="kpi-val">{metricas ? `R$${(Number(metricas.receita_bruta||0)/1000).toFixed(0)}K` : 'R$2,84M'}</div>
-          <div className="kpi-delta up">↑ +18%</div>
+          <div className="kpi-val" style={{ color: 'var(--teal)' }}>
+            {metricas ? fmtBRL(Number(metricas.receita_bruta || 0)) : '—'}
+          </div>
+          <div className="kpi-delta up">{competencia}</div>
         </div>
         <div className="kpi">
           <div className="kpi-lbl">Margem Bruta</div>
-          <div className="kpi-val">{metricas ? `${Number(metricas.margem_bruta||0).toFixed(1)}%` : '44.7%'}</div>
-          <div className="kpi-delta up">↑ +2pp</div>
+          <div className="kpi-val">{metricas ? `${Number(metricas.margem_bruta || 0).toFixed(1)}%` : '—'}</div>
+          <div className="kpi-delta">sobre receita líquida</div>
         </div>
         <div className="kpi">
           <div className="kpi-lbl">EBITDA</div>
-          <div className="kpi-val">{metricas ? `R$${(Number(metricas.ebitda||0)/1000).toFixed(0)}K` : 'R$586K'}</div>
-          <div className="kpi-delta up">20.6%</div>
+          <div className="kpi-val" style={{ color: Number(metricas?.ebitda || 0) >= 0 ? 'var(--navy)' : 'var(--red)' }}>
+            {metricas ? fmtBRL(Number(metricas.ebitda || 0)) : '—'}
+          </div>
+          <div className={`kpi-delta ${Number(metricas?.ebitda || 0) >= 0 ? 'up' : 'dn'}`}>
+            {metricas ? `${Number(metricas.margem_ebitda || 0).toFixed(1)}% margem` : 'carregando'}
+          </div>
         </div>
         <div className="kpi">
           <div className="kpi-lbl">Lucro Líquido</div>
-          <div className="kpi-val">{metricas ? `R$${(Number(metricas.lucro_liquido||0)/1000).toFixed(0)}K` : 'R$349K'}</div>
-          <div className="kpi-delta up">↑ 12.3%</div>
+          <div className="kpi-val" style={{ color: Number(metricas?.lucro_liquido || 0) >= 0 ? 'var(--green)' : 'var(--red)' }}>
+            {metricas ? fmtBRL(Number(metricas.lucro_liquido || 0)) : '—'}
+          </div>
+          <div className={`kpi-delta ${Number(metricas?.lucro_liquido || 0) >= 0 ? 'up' : 'dn'}`}>
+            {metricas ? `${Number(metricas.margem_liquida || 0).toFixed(1)}% margem` : 'carregando'}
+          </div>
         </div>
       </div>
 
@@ -296,6 +330,96 @@ export default function RelatoriosPage() {
             </table>
           </div>
         </>
+      )}
+
+      {/* Exportações */}
+      {tab === 'Exportações' && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+          {/* Filtro de período */}
+          <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: '16px 20px' }}>
+            <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--navy)', marginBottom: 12 }}>Filtros do período</div>
+            <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                <label style={{ fontSize: 11, color: 'var(--gray-400)', fontWeight: 600 }}>Data início</label>
+                <input type="date" className="form-input" style={{ width: 150 }} value={expInicio} onChange={e => setExpInicio(e.target.value)} />
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                <label style={{ fontSize: 11, color: 'var(--gray-400)', fontWeight: 600 }}>Data fim</label>
+                <input type="date" className="form-input" style={{ width: 150 }} value={expFim} onChange={e => setExpFim(e.target.value)} />
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                <label style={{ fontSize: 11, color: 'var(--gray-400)', fontWeight: 600 }}>Status despesas</label>
+                <select className="form-input" style={{ width: 160 }} value={expStatus} onChange={e => setExpStatus(e.target.value)}>
+                  <option value="">Todos</option>
+                  <option value="pendente">Pendente</option>
+                  <option value="pago">Pago</option>
+                  <option value="vencida">Vencida</option>
+                  <option value="pendente_aprovacao">Pendente aprovação</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          {/* Cards de exportação */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 14 }}>
+
+            {/* DRE PDF */}
+            <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: 20 }}>
+              <div style={{ fontSize: 24, marginBottom: 10 }}>📄</div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy)', marginBottom: 4 }}>DRE — PDF</div>
+              <div style={{ fontSize: 12, color: 'var(--gray-400)', marginBottom: 16, lineHeight: 1.6 }}>Demonstrativo de Resultados em PDF com análise IA</div>
+              <button className="btn-action" style={{ width: '100%' }} onClick={() => void exportarPdf()}>
+                Baixar PDF
+              </button>
+            </div>
+
+            {/* DRE Excel */}
+            <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: 20 }}>
+              <div style={{ fontSize: 24, marginBottom: 10 }}>📊</div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy)', marginBottom: 4 }}>DRE — Excel</div>
+              <div style={{ fontSize: 12, color: 'var(--gray-400)', marginBottom: 16, lineHeight: 1.6 }}>DRE completo + comparativo 12 meses + métricas avançadas</div>
+              <button className="btn-action" style={{ width: '100%' }} onClick={() => void exportarExcel()}>
+                Baixar Excel (.xlsx)
+              </button>
+            </div>
+
+            {/* Transações CSV */}
+            <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: 20 }}>
+              <div style={{ fontSize: 24, marginBottom: 10 }}>🔄</div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy)', marginBottom: 4 }}>Transações — CSV</div>
+              <div style={{ fontSize: 12, color: 'var(--gray-400)', marginBottom: 16, lineHeight: 1.6 }}>Todas as transações do período filtrado (entradas e saídas)</div>
+              <button
+                className="btn-action"
+                style={{ width: '100%', opacity: expLoading === 'transacoes' ? 0.6 : 1 }}
+                disabled={expLoading === 'transacoes'}
+                onClick={() => void exportarCSV('transacoes')}
+              >
+                {expLoading === 'transacoes' ? 'Gerando…' : 'Baixar CSV'}
+              </button>
+            </div>
+
+            {/* Despesas CSV */}
+            <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: 20 }}>
+              <div style={{ fontSize: 24, marginBottom: 10 }}>💸</div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy)', marginBottom: 4 }}>Despesas — CSV</div>
+              <div style={{ fontSize: 12, color: 'var(--gray-400)', marginBottom: 16, lineHeight: 1.6 }}>Contas a pagar com fornecedor, categoria, status e centro de custo</div>
+              <button
+                className="btn-action"
+                style={{ width: '100%', opacity: expLoading === 'despesas' ? 0.6 : 1 }}
+                disabled={expLoading === 'despesas'}
+                onClick={() => void exportarCSV('despesas')}
+              >
+                {expLoading === 'despesas' ? 'Gerando…' : 'Baixar CSV'}
+              </button>
+            </div>
+
+          </div>
+
+          {/* Info */}
+          <div style={{ fontSize: 11, color: 'var(--gray-400)', padding: '0 4px', lineHeight: 1.7 }}>
+            Os arquivos CSV usam separador <code>;</code> e codificação UTF-8 com BOM — compatíveis com Excel, Google Sheets e LibreOffice.
+          </div>
+        </div>
       )}
 
       {/* Análise IA */}
