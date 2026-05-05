@@ -1,107 +1,164 @@
 'use client'
-import { useState } from 'react'
+
+import { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 
-type Integracao = { id: string; ic: string; nome: string; desc: string; ativo: boolean }
+type Status = Record<string, boolean>
 
-const INTEGRACOES: Integracao[] = [
-  { id: 'swap', ic: '💳', nome: 'Swap Corpway', desc: 'Conta PJ + cartões corporativos BaaS', ativo: true },
-  { id: 'claude', ic: '🧠', nome: 'FactorOne IA', desc: 'Motor do AI CFO — análise financeira', ativo: true },
-  { id: 'stripe', ic: '💰', nome: 'Stripe', desc: 'Cobrança de assinaturas FactorOne', ativo: true },
-  { id: 'celcoin', ic: '⚡', nome: 'Celcoin', desc: 'PIX, boleto, TED', ativo: true },
-  { id: 'remessa', ic: '🌐', nome: 'Remessa Online', desc: 'Conta Global USD — pagamentos internacionais', ativo: false },
-  { id: 'omie', ic: '🗄️', nome: 'Omie ERP', desc: 'Sync contábil automático com ERP', ativo: false },
-  { id: 'openfinance', ic: '🏦', nome: 'Open Finance', desc: 'Conexão com bancos externos via Bacen', ativo: false },
-  { id: 'nfeio', ic: '🧾', nome: 'NFe.io', desc: 'Emissão automática de NF-e e NFS-e', ativo: false },
+type Integration = {
+  id: string
+  icon: string
+  nome: string
+  desc: string
+  categoria: 'core' | 'bancario' | 'fiscal' | 'erp' | 'comunicacao'
+  statusKey?: string
+  badge?: string
+}
+
+const INTEGRACOES: Integration[] = [
+  { id: 'anthropic', icon: '🧠', nome: 'FactorOne IA (Claude)', desc: 'Motor do AI CFO — análise financeira, insights, chat.', categoria: 'core', statusKey: 'anthropic' },
+  { id: 'supabase', icon: '🗄️', nome: 'Supabase', desc: 'Banco de dados, autenticação e storage da plataforma.', categoria: 'core', statusKey: 'supabase' },
+  { id: 'openrouter', icon: '🔀', nome: 'OpenRouter', desc: 'Análise DRE via múltiplos modelos de IA.', categoria: 'core', statusKey: 'openrouter' },
+  { id: 'stripe', icon: '💳', nome: 'Stripe', desc: 'Cobrança de assinaturas e pagamentos do FactorOne.', categoria: 'core', statusKey: 'stripe' },
+  { id: 'resend', icon: '✉️', nome: 'Resend', desc: 'Emails transacionais — notificações, aprovações, alertas.', categoria: 'comunicacao', statusKey: 'resend' },
+  { id: 'nfeio', icon: '🧾', nome: 'NFe.io', desc: 'Emissão automática de NF-e e NFS-e.', categoria: 'fiscal', statusKey: 'nfeio' },
+  { id: 'openfinance', icon: '🏦', nome: 'Open Finance', desc: 'Conexão com bancos externos via Bacen — extrato automático.', categoria: 'bancario', badge: 'Em breve' },
+  { id: 'celcoin', icon: '⚡', nome: 'Celcoin', desc: 'PIX, boleto, TED — infraestrutura de pagamentos.', categoria: 'bancario', badge: 'Em breve' },
+  { id: 'remessa', icon: '🌐', nome: 'Remessa Online', desc: 'Conta Global USD — pagamentos internacionais.', categoria: 'bancario', badge: 'Em breve' },
+  { id: 'omie', icon: '🗂️', nome: 'Omie ERP', desc: 'Sync contábil automático com ERP.', categoria: 'erp', badge: 'Em breve' },
+  { id: 'whatsapp', icon: '💬', nome: 'WhatsApp Business', desc: 'Consultas financeiras e alertas via WhatsApp.', categoria: 'comunicacao', badge: 'Em breve' },
+  { id: 'zapier', icon: '⚙️', nome: 'Zapier / Make', desc: 'Automações com mais de 5.000 apps externos.', categoria: 'erp', badge: 'Em breve' },
 ]
 
+const CAT_LABELS: Record<string, string> = {
+  core: 'Plataforma Core',
+  bancario: 'Bancário & Pagamentos',
+  fiscal: 'Fiscal & NF-e',
+  erp: 'ERP & Automações',
+  comunicacao: 'Comunicação',
+}
+
 export default function IntegracoesPage() {
-  const [integracoes, setIntegracoes] = useState<Integracao[]>(INTEGRACOES)
+  const [status, setStatus] = useState<Status>({})
+  const [loading, setLoading] = useState(true)
 
-  function conectar(id: string) {
-    toast('Em breve! Integração em desenvolvimento.')
+  useEffect(() => {
+    fetch('/api/integracoes/status')
+      .then(r => r.ok ? r.json() as Promise<Status> : {})
+      .then(d => setStatus(d as Status))
+      .catch(() => {})
+      .finally(() => setLoading(false))
+  }, [])
+
+  const ativas = INTEGRACOES.filter(i => i.statusKey && status[i.statusKey]).length
+  const total = INTEGRACOES.filter(i => i.statusKey).length
+  const categorias = Array.from(new Set(INTEGRACOES.map(i => i.categoria)))
+
+  function acaoConectar(id: string) {
+    if (['openfinance', 'whatsapp', 'celcoin', 'remessa', 'omie', 'zapier'].includes(id)) {
+      toast('Em breve! Você será notificado quando estiver disponível.'); return
+    }
+    toast('Configure a variável de ambiente no painel Vercel (Settings → Environment Variables) e faça um novo deploy.', { duration: 5000 })
   }
-
-  function desconectar(id: string) {
-    setIntegracoes(prev => prev.map(i => i.id === id ? { ...i, ativo: false } : i))
-    toast('Integração desconectada.')
-  }
-
-  const ativas = integracoes.filter(i => i.ativo).length
-  const disponiveis = integracoes.filter(i => !i.ativo).length
 
   return (
     <>
       <div className="page-hdr">
         <div>
           <div className="page-title">Hub de Integrações</div>
-          <div className="page-sub">{ativas} ativas · {disponiveis} disponíveis</div>
+          <div className="page-sub">{loading ? '—' : `${ativas} de ${total} integrações ativas`}</div>
         </div>
       </div>
 
-      <div className="kpis">
+      {/* KPIs */}
+      <div className="kpis" style={{ gridTemplateColumns: 'repeat(3, 1fr)' }}>
         <div className="kpi">
           <div className="kpi-lbl">Ativas</div>
-          <div className="kpi-val" style={{ color: 'var(--green)' }}>{ativas}</div>
-          <div className="kpi-delta up">✓ conectadas</div>
+          <div className="kpi-val" style={{ color: 'var(--green)' }}>{loading ? '—' : ativas}</div>
+          <div className="kpi-delta up">configuradas</div>
         </div>
         <div className="kpi">
-          <div className="kpi-lbl">Disponíveis</div>
-          <div className="kpi-val">{disponiveis}</div>
-          <div className="kpi-delta warn">em breve</div>
+          <div className="kpi-lbl">Em breve</div>
+          <div className="kpi-val">{INTEGRACOES.filter(i => i.badge).length}</div>
+          <div className="kpi-delta">roadmap</div>
         </div>
         <div className="kpi">
-          <div className="kpi-lbl">Sync bancário</div>
-          <div className="kpi-val" style={{ color: 'var(--green)', fontSize: 14 }}>✓ Ativo</div>
-          <div className="kpi-delta up">Open Finance</div>
-        </div>
-        <div className="kpi">
-          <div className="kpi-lbl">IA CFO</div>
-          <div className="kpi-val" style={{ color: 'var(--green)', fontSize: 14 }}>✓ Online</div>
-          <div className="kpi-delta up">FactorOne IA</div>
+          <div className="kpi-lbl">Total</div>
+          <div className="kpi-val">{INTEGRACOES.length}</div>
+          <div className="kpi-delta up">integrações</div>
         </div>
       </div>
 
-      <div className="int-grid">
-        {integracoes.map(i => (
-          <div key={i.id} className={`int-card${i.ativo ? ' connected' : ''}`}>
-            <div className="int-ic">{i.ic}</div>
-            <div className="int-name">{i.nome}</div>
-            <div className="int-desc">{i.desc}</div>
-            <div className={`int-status ${i.ativo ? 'on' : 'off'}`}>
-              <div className="int-dot" />
-              {i.ativo ? 'Ativo' : 'Não conectado'}
+      {/* Grupos */}
+      {categorias.map(cat => {
+        const itens = INTEGRACOES.filter(i => i.categoria === cat)
+        return (
+          <div key={cat} style={{ marginBottom: 20 }}>
+            <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--gray-400)', letterSpacing: '.08em', textTransform: 'uppercase', fontFamily: "'DM Mono',monospace", marginBottom: 10 }}>
+              {CAT_LABELS[cat] ?? cat}
             </div>
-            {!i.ativo && (
-              <button
-                className="btn-action"
-                onClick={() => conectar(i.id)}
-                style={{ marginTop: 10, width: '100%', fontSize: 11, padding: '5px 0' }}
-              >+ Conectar</button>
-            )}
-            {i.ativo && (
-              <button
-                onClick={() => desconectar(i.id)}
-                style={{ marginTop: 10, width: '100%', fontSize: 11, padding: '5px 0', borderRadius: 7, border: '1px solid rgba(192,80,74,.2)', background: 'transparent', color: 'var(--red)', cursor: 'pointer' }}
-              >Desconectar</button>
-            )}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 10 }}>
+              {itens.map(item => {
+                const ativo = item.statusKey ? Boolean(status[item.statusKey]) : false
+                const emBreve = Boolean(item.badge)
+                return (
+                  <div key={item.id} style={{
+                    background: '#fff',
+                    border: `1px solid ${ativo ? 'rgba(45,155,111,.25)' : 'var(--gray-100)'}`,
+                    borderRadius: 12, padding: '14px 16px',
+                    opacity: emBreve ? 0.75 : 1,
+                    transition: 'box-shadow .15s',
+                  }}>
+                    <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12, marginBottom: 10 }}>
+                      <div style={{ fontSize: 22, lineHeight: 1, marginTop: 2 }}>{item.icon}</div>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 3 }}>
+                          <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy)' }}>{item.nome}</div>
+                          {item.badge && (
+                            <span style={{ fontSize: 8, fontWeight: 700, padding: '1px 6px', borderRadius: 20, background: 'rgba(124,58,237,.12)', color: '#7C3AED' }}>
+                              {item.badge}
+                            </span>
+                          )}
+                        </div>
+                        <div style={{ fontSize: 11, color: 'var(--gray-400)', lineHeight: 1.5 }}>{item.desc}</div>
+                      </div>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                      {item.statusKey ? (
+                        loading ? (
+                          <div style={{ height: 18, width: 80, background: 'var(--gray-100)', borderRadius: 20, animation: 'pulse 1.5s infinite' }} />
+                        ) : ativo ? (
+                          <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 10px', borderRadius: 20, background: 'rgba(45,155,111,.1)', color: 'var(--green)' }}>✓ Ativo</span>
+                        ) : (
+                          <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 10px', borderRadius: 20, background: 'var(--gray-100)', color: 'var(--gray-400)' }}>Não configurado</span>
+                        )
+                      ) : (
+                        <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 10px', borderRadius: 20, background: 'rgba(184,146,42,.1)', color: 'var(--gold)' }}>Em breve</span>
+                      )}
+                      {!ativo && (
+                        <button onClick={() => acaoConectar(item.id)} style={{
+                          fontSize: 11, padding: '3px 10px', borderRadius: 6, border: '1px solid var(--gray-100)',
+                          background: 'transparent', color: emBreve ? 'var(--gray-400)' : 'var(--teal)',
+                          cursor: 'pointer', fontWeight: 600,
+                        }}>
+                          {emBreve ? 'Avisar →' : 'Configurar →'}
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
           </div>
-        ))}
-      </div>
+        )
+      })}
 
-      {/* API Banner */}
-      <div style={{ background: 'linear-gradient(135deg,var(--navy) 0%,#243736 100%)', borderRadius: 14, padding: '18px 22px', marginTop: 16, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
-        <div>
-          <div style={{ fontSize: 14, fontWeight: 700, color: '#fff', marginBottom: 4 }}>FactorOne API</div>
-          <div style={{ fontSize: 12, color: 'rgba(255,255,255,.55)' }}>
-            Integre qualquer sistema via <strong style={{ color: 'rgba(255,255,255,.8)' }}>REST API + webhooks</strong>
-          </div>
+      {/* Instrução */}
+      {!loading && ativas < total && (
+        <div style={{ background: 'rgba(94,140,135,.04)', border: '1px solid rgba(94,140,135,.15)', borderRadius: 10, padding: '12px 16px', fontSize: 12, color: 'var(--gray-400)', lineHeight: 1.7 }}>
+          <strong style={{ color: 'var(--navy)' }}>Como ativar integrações:</strong> Adicione as variáveis de ambiente no painel Vercel → Settings → Environment Variables. Após salvar, dispare um novo deploy para as mudanças entrarem em vigor.
         </div>
-        <button
-          onClick={() => toast('Documentação da API em breve!')}
-          style={{ padding: '8px 18px', borderRadius: 8, background: 'var(--teal)', color: '#fff', border: 'none', fontSize: 12, fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap' }}
-        >Ver documentação →</button>
-      </div>
+      )}
     </>
   )
 }
