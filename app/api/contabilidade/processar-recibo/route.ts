@@ -1,14 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
-import OpenAI from 'openai'
+import Anthropic from '@anthropic-ai/sdk'
 import { createClient } from '@supabase/supabase-js'
 import { getSupabaseUser } from '@/lib/supabase-route'
 
 export const runtime = 'nodejs'
 
-const openrouter = new OpenAI({
-  baseURL: 'https://openrouter.ai/api/v1',
-  apiKey: process.env.OPENROUTER_API_KEY || '',
-})
+function getAnthropic() {
+  return new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! })
+}
 
 type OcrResult = {
   fornecedor: string
@@ -26,18 +25,14 @@ function toIsoDate(d: Date): string {
 
 function extractJson(raw: string): OcrResult | null {
   const tryParse = (text: string) => {
-    try {
-      return JSON.parse(text) as OcrResult
-    } catch {
-      return null
-    }
+    try { return JSON.parse(text) as OcrResult } catch { return null }
   }
-  const direct = tryParse(raw)
+  const clean = raw.replace(/```json|```/g, '').trim()
+  const direct = tryParse(clean)
   if (direct) return direct
-  const i = raw.indexOf('{')
-  const j = raw.lastIndexOf('}')
+  const i = clean.indexOf('{'); const j = clean.lastIndexOf('}')
   if (i === -1 || j <= i) return null
-  return tryParse(raw.slice(i, j + 1))
+  return tryParse(clean.slice(i, j + 1))
 }
 
 function normalize(v: Partial<OcrResult>): OcrResult {
@@ -62,8 +57,8 @@ function makePath(userId: string, name: string) {
 
 export async function POST(req: NextRequest) {
   try {
-    if (!process.env.OPENROUTER_API_KEY) {
-      return NextResponse.json({ error: 'OPENROUTER_API_KEY não configurada' }, { status: 500 })
+    if (!process.env.ANTHROPIC_API_KEY) {
+      return NextResponse.json({ error: 'ANTHROPIC_API_KEY não configurada' }, { status: 500 })
     }
 
     const { user, supabase } = await getSupabaseUser(req)
@@ -76,74 +71,68 @@ export async function POST(req: NextRequest) {
     const { data: u } = await supabase.from('usuarios').select('empresa_id').eq('id', user.id).maybeSingle()
     const empresaId = (u?.empresa_id as string) || user.id
 
-    const service =
-      process.env.SUPABASE_SERVICE_ROLE_KEY
-        ? createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY)
-        : supabase
+    const service = process.env.SUPABASE_SERVICE_ROLE_KEY
+      ? createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY)
+      : supabase
 
     const path = makePath(user.id, file.name || 'recibo.jpg')
     const buffer = Buffer.from(await file.arrayBuffer())
 
+    // Upload to storage
     const upload = await service.storage.from('recibos').upload(path, buffer, {
       contentType: file.type || 'image/jpeg',
       upsert: false,
     })
-    if (upload.error) return NextResponse.json({ error: upload.error.message }, { status: 400 })
+    if (upload.error) return NextResponse.json({ error: `Storage: ${upload.error.message}` }, { status: 400 })
 
     const { data: signed } = await service.storage.from('recibos').createSignedUrl(path, 60 * 60)
     const imagemUrl = signed?.signedUrl || path
 
+    // Create record
     const insertRecibo = await service
       .from('recibos_fotografados')
-      .insert({
-        empresa_id: empresaId,
-        user_id: user.id,
-        imagem_url: path,
-        status: 'processando',
-        origem: 'upload',
-      })
+      .insert({ empresa_id: empresaId, user_id: user.id, imagem_url: path, status: 'processando', origem: 'upload' })
       .select('id')
       .single()
     if (insertRecibo.error) return NextResponse.json({ error: insertRecibo.error.message }, { status: 400 })
 
+    // OCR via Anthropic vision (claude-haiku-4-5 for cost efficiency)
     const base64 = buffer.toString('base64')
-    const mime = file.type || 'image/jpeg'
-    const ocrPrompt = `Analise este recibo/nota fiscal e extraia:
-- fornecedor: nome da empresa/estabelecimento
-- cnpj: CNPJ se visível (formato XX.XXX.XXX/XXXX-XX)
-- valor: valor total pago (número decimal)
-- data: data da compra/emissão (formato YYYY-MM-DD)
-- categoria: classifique em uma das opções:
-  Alimentação, Transporte, Hospedagem,
-  Tecnologia/Software, Marketing, Fornecedores,
-  Folha de Pagamento, Impostos/Taxas,
-  Aluguel/Infraestrutura, Consultoria,
-  Material de Escritório, Outros
-- confianca: número de 0 a 1 indicando certeza
-- itens: array de {descricao, valor} se visíveis
+    const mediaType = (file.type as 'image/jpeg' | 'image/png' | 'image/webp' | 'image/gif') || 'image/jpeg'
 
-Responda SOMENTE em JSON válido, sem markdown.`
+    const ocrPrompt = `Analise este recibo/nota fiscal e extraia os dados em JSON.
+Responda APENAS com JSON válido, sem markdown, sem explicações.
 
-    const completion = await openrouter.chat.completions.create({
-      model: 'anthropic/claude-3-5-sonnet',
+Formato exato:
+{
+  "fornecedor": "nome do estabelecimento",
+  "cnpj": "XX.XXX.XXX/XXXX-XX ou null",
+  "valor": 0.00,
+  "data": "YYYY-MM-DD",
+  "categoria": "uma de: Alimentação, Transporte, Hospedagem, Tecnologia/Software, Marketing, Fornecedores, Folha de Pagamento, Impostos/Taxas, Aluguel/Infraestrutura, Consultoria, Material de Escritório, Outros",
+  "confianca": 0.0 a 1.0,
+  "itens": [{"descricao": "...", "valor": 0.00}]
+}`
+
+    const aiResponse = await getAnthropic().messages.create({
+      model: 'claude-haiku-4-5-20251001',
       max_tokens: 600,
-      messages: [
-        {
-          role: 'user',
-          content: [
-            { type: 'image_url', image_url: { url: `data:${mime};base64,${base64}` } },
-            { type: 'text', text: ocrPrompt },
-          ],
-        },
-      ],
+      messages: [{
+        role: 'user',
+        content: [
+          { type: 'image', source: { type: 'base64', media_type: mediaType, data: base64 } },
+          { type: 'text', text: ocrPrompt },
+        ],
+      }],
     })
 
-    const parsed = extractJson(completion.choices[0]?.message?.content ?? '{}')
+    const rawText = aiResponse.content[0].type === 'text' ? aiResponse.content[0].text : '{}'
+    const parsed = extractJson(rawText)
     const ocr = normalize(parsed || {})
 
     const statusRecibo = ocr.confianca >= 0.8 ? 'lancado' : 'extraido'
-
     let despesaId: string | null = null
+
     if (ocr.confianca >= 0.8) {
       const despesaInsert = await service
         .from('despesas')
@@ -172,19 +161,6 @@ Responda SOMENTE em JSON válido, sem markdown.`
         valor: ocr.valor,
         status: 'confirmada',
       })
-
-      const token = req.headers.get('authorization')?.replace(/^Bearer\s+/i, '')?.trim()
-      if (token) {
-        try {
-          await fetch(new URL('/api/dre/recalcular', req.url), {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-            body: JSON.stringify({ empresaId, competencia: `${ocr.data}T00:00:00.000Z` }),
-          })
-        } catch {
-          // não bloqueia retorno
-        }
-      }
     }
 
     await service
@@ -197,7 +173,7 @@ Responda SOMENTE em JSON válido, sem markdown.`
         data_extraida: ocr.data,
         categoria_sugerida: ocr.categoria,
         confianca_ocr: ocr.confianca,
-        texto_bruto: completion.choices[0]?.message?.content ?? null,
+        texto_bruto: rawText,
         despesa_id: despesaId,
       })
       .eq('id', insertRecibo.data.id)
@@ -220,4 +196,3 @@ Responda SOMENTE em JSON válido, sem markdown.`
     return NextResponse.json({ error: message }, { status: 500 })
   }
 }
-

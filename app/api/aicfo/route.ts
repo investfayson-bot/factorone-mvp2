@@ -3,9 +3,9 @@ import Anthropic from '@anthropic-ai/sdk'
 import { getSupabaseUser } from '@/lib/supabase-route'
 import { erroDesconhecido } from '@/lib/transacao-types'
 
-const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY || '',
-})
+function getAnthropic() {
+  return new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! })
+}
 
 export async function POST(req: NextRequest) {
   try {
@@ -86,7 +86,7 @@ REGRAS:
 DADOS FINANCEIROS DA EMPRESA:
 ${JSON.stringify(dadosContexto, null, 2)}`
 
-    const response = await anthropic.messages.create({
+    const response = await getAnthropic().messages.create({
       model: 'claude-sonnet-4-6',
       max_tokens: 1500,
       system: systemPrompt,

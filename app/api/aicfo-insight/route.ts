@@ -3,7 +3,9 @@ import Anthropic from '@anthropic-ai/sdk'
 import { getSupabaseUser } from '@/lib/supabase-route'
 import { calcularDAS } from '@/lib/fiscal/simples-nacional'
 
-const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY || '' })
+function getAnthropic() {
+  return new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! })
+}
 
 export async function POST(req: NextRequest) {
   try {
@@ -49,7 +51,7 @@ export async function POST(req: NextRequest) {
       })
     }
 
-    const response = await anthropic.messages.create({
+    const response = await getAnthropic().messages.create({
       model: 'claude-haiku-4-5-20251001',
       max_tokens: 400,
       system: `Você é o CFO IA da FactorOne. Hoje é ${hojeStr}.
