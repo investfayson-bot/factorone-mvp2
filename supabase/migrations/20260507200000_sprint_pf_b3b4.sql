@@ -24,7 +24,7 @@ CREATE POLICY "investimentos_pf_rls" ON public.investimentos_pf FOR ALL USING (u
 CREATE TABLE IF NOT EXISTS public.deducoes_ir_pf (
   id          uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id     uuid REFERENCES auth.users(id) ON DELETE CASCADE,
-  ano         int NOT NULL DEFAULT EXTRACT(YEAR FROM CURRENT_DATE),
+  ano         int NOT NULL DEFAULT date_part('year', now())::int,
   dependentes int DEFAULT 0,
   saude       decimal(15,2) DEFAULT 0,
   educacao    decimal(15,2) DEFAULT 0,
