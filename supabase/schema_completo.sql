@@ -25,6 +25,7 @@ CREATE TABLE IF NOT EXISTS public.empresas (
   stripe_subscription_id text,
   created_at   timestamptz DEFAULT now()
 );
+ALTER TABLE public.empresas ADD COLUMN IF NOT EXISTS user_id uuid REFERENCES auth.users(id) ON DELETE SET NULL;
 ALTER TABLE public.empresas ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "empresa_acesso" ON public.empresas;
 CREATE POLICY "empresa_acesso" ON public.empresas FOR ALL USING (
@@ -44,6 +45,8 @@ CREATE TABLE IF NOT EXISTS public.usuarios (
   whatsapp   text,
   created_at timestamptz DEFAULT now()
 );
+-- Adiciona coluna whatsapp em tabelas já existentes (idempotente)
+ALTER TABLE public.usuarios ADD COLUMN IF NOT EXISTS whatsapp text;
 CREATE UNIQUE INDEX IF NOT EXISTS idx_usuarios_whatsapp ON public.usuarios(whatsapp) WHERE whatsapp IS NOT NULL;
 CREATE INDEX IF NOT EXISTS idx_usuarios_empresa ON public.usuarios(empresa_id);
 ALTER TABLE public.usuarios ENABLE ROW LEVEL SECURITY;
@@ -131,6 +134,43 @@ CREATE TABLE IF NOT EXISTS public.despesas (
   created_by           uuid,
   created_at           timestamptz DEFAULT now()
 );
+-- Colunas adicionadas em sprints posteriores (idempotente para bancos existentes)
+ALTER TABLE public.despesas ADD COLUMN IF NOT EXISTS data_despesa date;
+ALTER TABLE public.despesas ADD COLUMN IF NOT EXISTS data_vencimento date;
+ALTER TABLE public.despesas ADD COLUMN IF NOT EXISTS data_pagamento date;
+ALTER TABLE public.despesas ADD COLUMN IF NOT EXISTS tipo_pagamento text;
+ALTER TABLE public.despesas ADD COLUMN IF NOT EXISTS forma_pagamento text DEFAULT 'outro';
+ALTER TABLE public.despesas ADD COLUMN IF NOT EXISTS centro_custo_id uuid;
+ALTER TABLE public.despesas ADD COLUMN IF NOT EXISTS responsavel_id uuid;
+ALTER TABLE public.despesas ADD COLUMN IF NOT EXISTS responsavel_nome text;
+ALTER TABLE public.despesas ADD COLUMN IF NOT EXISTS observacao text;
+ALTER TABLE public.despesas ADD COLUMN IF NOT EXISTS aprovado_por uuid;
+ALTER TABLE public.despesas ADD COLUMN IF NOT EXISTS aprovado_em timestamptz;
+ALTER TABLE public.despesas ADD COLUMN IF NOT EXISTS rejeitado_motivo text;
+ALTER TABLE public.despesas ADD COLUMN IF NOT EXISTS transaction_id uuid;
+ALTER TABLE public.despesas ADD COLUMN IF NOT EXISTS recorrente boolean DEFAULT false;
+ALTER TABLE public.despesas ADD COLUMN IF NOT EXISTS recorrencia_tipo text;
+ALTER TABLE public.despesas ADD COLUMN IF NOT EXISTS subcategoria text;
+ALTER TABLE public.despesas ADD COLUMN IF NOT EXISTS tags text[] DEFAULT '{}';
+ALTER TABLE public.despesas ADD COLUMN IF NOT EXISTS metadados jsonb DEFAULT '{}';
+ALTER TABLE public.despesas ADD COLUMN IF NOT EXISTS projeto text;
+ALTER TABLE public.despesas ADD COLUMN IF NOT EXISTS moeda text DEFAULT 'BRL';
+ALTER TABLE public.despesas ADD COLUMN IF NOT EXISTS valor_original numeric(15,2);
+ALTER TABLE public.despesas ADD COLUMN IF NOT EXISTS taxa_cambio numeric(15,6) DEFAULT 1;
+-- Migrar status legado
+UPDATE public.despesas SET status = 'pendente_aprovacao'
+WHERE status IS NULL OR status NOT IN ('pendente_aprovacao','aprovado','rejeitado','pago','cancelado');
+UPDATE public.despesas SET data_despesa = COALESCE(data, CURRENT_DATE) WHERE data_despesa IS NULL;
+-- Recriar constraints (DROP + ADD é idempotente)
+ALTER TABLE public.despesas DROP CONSTRAINT IF EXISTS despesas_status_check;
+ALTER TABLE public.despesas ADD CONSTRAINT despesas_status_check
+  CHECK (status IN ('pendente_aprovacao','aprovado','rejeitado','pago','cancelado'));
+ALTER TABLE public.despesas DROP CONSTRAINT IF EXISTS despesas_tipo_pagamento_check;
+ALTER TABLE public.despesas ADD CONSTRAINT despesas_tipo_pagamento_check
+  CHECK (tipo_pagamento IS NULL OR tipo_pagamento IN ('cartao','pix','transferencia','boleto','dinheiro','outro'));
+ALTER TABLE public.despesas DROP CONSTRAINT IF EXISTS despesas_recorrencia_check;
+ALTER TABLE public.despesas ADD CONSTRAINT despesas_recorrencia_check
+  CHECK (recorrencia_tipo IS NULL OR recorrencia_tipo IN ('semanal','bisemanal','mensal'));
 CREATE INDEX IF NOT EXISTS idx_despesas_empresa_status ON public.despesas(empresa_id, status);
 ALTER TABLE public.despesas ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "usuarios veem proprias despesas" ON public.despesas;
