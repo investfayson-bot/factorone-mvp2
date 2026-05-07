@@ -26,7 +26,7 @@ const INTEGRACOES: Integration[] = [
   { id: 'celcoin', icon: '⚡', nome: 'Celcoin', desc: 'PIX, boleto, TED — infraestrutura de pagamentos.', categoria: 'bancario', badge: 'Em breve' },
   { id: 'remessa', icon: '🌐', nome: 'Remessa Online', desc: 'Conta Global USD — pagamentos internacionais.', categoria: 'bancario', badge: 'Em breve' },
   { id: 'omie', icon: '🗂️', nome: 'Omie ERP', desc: 'Sync contábil automático com ERP.', categoria: 'erp', badge: 'Em breve' },
-  { id: 'whatsapp', icon: '💬', nome: 'WhatsApp Business', desc: 'Consultas financeiras e alertas via WhatsApp.', categoria: 'comunicacao', badge: 'Em breve' },
+  { id: 'whatsapp', icon: '💬', nome: 'WhatsApp Business', desc: 'Consultas financeiras e alertas via WhatsApp.', categoria: 'comunicacao', statusKey: 'whatsapp' },
   { id: 'zapier', icon: '⚙️', nome: 'Zapier / Make', desc: 'Automações com mais de 5.000 apps externos.', categoria: 'erp', badge: 'Em breve' },
 ]
 

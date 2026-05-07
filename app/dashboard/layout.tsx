@@ -52,6 +52,7 @@ function buildNavGroups(badges: { reembolsos: number; aprovacoes: number }): Nav
       label: 'Inteligência',
       items: [
         { href: '/dashboard/aicfo', icon: 'fa-robot', label: 'AI CFO' },
+        { href: '/dashboard/contadores', icon: 'fa-user-tie', label: 'Portal Contador' },
         { href: '/dashboard/integracoes', icon: 'fa-plug', label: 'Hub de Integrações' },
         { href: '/dashboard/marketplace', icon: 'fa-store', label: 'Marketplace', badge: 'NEW', badgeColor: '#7C3AED' },
       ],
@@ -78,6 +79,7 @@ const pageTitles: Record<string, string> = {
   '/dashboard/patrimonio': 'Patrimônio & Ativos',
   '/dashboard/fornecedores': 'Fornecedores & Pagamentos',
   '/dashboard/contabilidade': 'Contabilidade',
+  '/dashboard/contadores': 'Portal Contador',
 }
 
 function isActive(pathname: string, item: NavGroup['items'][0]) {
