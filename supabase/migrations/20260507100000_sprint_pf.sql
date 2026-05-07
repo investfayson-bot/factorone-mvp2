@@ -129,15 +129,19 @@ ALTER TABLE public.cartoes_pessoais ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "cartoes_pf_rls" ON public.cartoes_pessoais;
 CREATE POLICY "cartoes_pf_rls" ON public.cartoes_pessoais FOR ALL USING (user_id = auth.uid());
 
--- FK cartao_id em despesas_pessoais
+-- FK cartao_id em despesas_pessoais (garante que coluna existe antes da FK)
 DO $$ BEGIN
-  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name='cartoes_pessoais') THEN
-    ALTER TABLE public.despesas_pessoais
-      DROP CONSTRAINT IF EXISTS despesas_pf_cartao_fk;
-    ALTER TABLE public.despesas_pessoais
-      ADD CONSTRAINT despesas_pf_cartao_fk FOREIGN KEY (cartao_id) REFERENCES public.cartoes_pessoais(id) ON DELETE SET NULL;
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.columns
+    WHERE table_name='despesas_pessoais' AND column_name='cartao_id'
+  ) THEN
+    ALTER TABLE public.despesas_pessoais ADD COLUMN cartao_id uuid;
   END IF;
 END $$;
+ALTER TABLE public.despesas_pessoais DROP CONSTRAINT IF EXISTS despesas_pf_cartao_fk;
+ALTER TABLE public.despesas_pessoais
+  ADD CONSTRAINT despesas_pf_cartao_fk
+  FOREIGN KEY (cartao_id) REFERENCES public.cartoes_pessoais(id) ON DELETE SET NULL;
 
 -- 8. lifeos_interacoes_pf (log de mensagens WhatsApp PF)
 CREATE TABLE IF NOT EXISTS public.lifeos_interacoes_pf (
