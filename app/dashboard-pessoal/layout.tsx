@@ -35,14 +35,14 @@ const NAV: NavGroup[] = [
     label: 'Planejamento',
     items: [
       { href: '/dashboard-pessoal/metas', icon: 'fa-bullseye', label: 'Metas' },
-      { href: '/dashboard-pessoal/investimentos', icon: 'fa-seedling', label: 'Investimentos', badge: 'Em breve', badgeColor: '#7C3AED' },
+      { href: '/dashboard-pessoal/investimentos', icon: 'fa-seedling', label: 'Investimentos' },
     ],
   },
   {
     label: 'Ferramentas',
     items: [
-      { href: '/dashboard-pessoal/open-finance', icon: 'fa-building-columns', label: 'Open Finance', badge: 'Em breve', badgeColor: '#7C3AED' },
-      { href: '/dashboard-pessoal/ir', icon: 'fa-file-invoice', label: 'Imposto de Renda', badge: 'Em breve', badgeColor: '#7C3AED' },
+      { href: '/dashboard-pessoal/ir', icon: 'fa-file-invoice', label: 'Imposto de Renda' },
+      { href: '/dashboard-pessoal/open-finance', icon: 'fa-building-columns', label: 'Open Finance' },
     ],
   },
 ]
