@@ -55,43 +55,105 @@ DROP POLICY IF EXISTS "usuario_proprio" ON public.usuarios;
 CREATE POLICY "usuarios_self" ON public.usuarios FOR ALL USING (id = auth.uid());
 
 -- ============================================================
--- 3. TRANSAÇÕES (tabela principal)
+-- 3. TRANSAÇÕES
+-- Detecta automaticamente se transacoes é tabela ou view (depende
+-- de qual migration foi rodada antes). Se for view, a tabela real
+-- é transactions. Se for tabela, cria a view transactions em cima.
 -- ============================================================
-CREATE TABLE IF NOT EXISTS public.transacoes (
-  id          uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  empresa_id  uuid REFERENCES public.empresas(id) ON DELETE CASCADE,
-  descricao   text NOT NULL,
-  categoria   text DEFAULT 'Outros',
-  valor       numeric(15,2) NOT NULL,
-  tipo        text CHECK (tipo IN ('entrada','saida')) NOT NULL,
-  status      text DEFAULT 'confirmada',
-  data        date DEFAULT CURRENT_DATE,
-  due_date    date,
-  competencia date,
-  banco       text,
-  created_at  timestamptz DEFAULT now()
-);
-CREATE INDEX IF NOT EXISTS idx_transacoes_empresa_data ON public.transacoes(empresa_id, data DESC);
-ALTER TABLE public.transacoes ENABLE ROW LEVEL SECURITY;
-DROP POLICY IF EXISTS "empresa_own_transactions" ON public.transacoes;
-CREATE POLICY "empresa_own_transactions" ON public.transacoes FOR ALL USING (
-  empresa_id IN (SELECT empresa_id FROM public.usuarios WHERE id = auth.uid())
-  OR empresa_id IN (SELECT id FROM public.empresas WHERE user_id = auth.uid())
-);
+DO $$
+BEGIN
+  -- Só cria a tabela se não existir nada com esse nome (nem tabela nem view)
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.tables
+    WHERE table_schema = 'public' AND table_name = 'transacoes'
+  ) THEN
+    -- Também não existe transactions como tabela? Cria transacoes como tabela.
+    IF NOT EXISTS (
+      SELECT 1 FROM information_schema.tables
+      WHERE table_schema = 'public' AND table_name = 'transactions' AND table_type = 'BASE TABLE'
+    ) THEN
+      EXECUTE $sql$
+        CREATE TABLE public.transacoes (
+          id          uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+          empresa_id  uuid REFERENCES public.empresas(id) ON DELETE CASCADE,
+          descricao   text NOT NULL,
+          categoria   text DEFAULT 'Outros',
+          valor       numeric(15,2) NOT NULL,
+          tipo        text CHECK (tipo IN ('entrada','saida')) NOT NULL,
+          status      text DEFAULT 'confirmada',
+          data        date DEFAULT CURRENT_DATE,
+          due_date    date,
+          competencia date,
+          banco       text,
+          created_at  timestamptz DEFAULT now()
+        )
+      $sql$;
+    END IF;
+  END IF;
+END $$;
 
--- VIEW transactions (alias de leitura)
-CREATE OR REPLACE VIEW public.transactions AS
-SELECT
-  t.id, t.empresa_id, t.descricao, t.categoria, t.valor,
-  CASE WHEN t.tipo = 'entrada' THEN 'receita' ELSE 'despesa' END::text AS tipo,
-  CASE WHEN t.status IN ('confirmada','pago') THEN 'pago'
-       WHEN t.status = 'cancelado' THEN 'cancelado'
-       ELSE COALESCE(NULLIF(TRIM(t.status),''), 'pendente')
-  END::text AS status,
-  t.due_date,
-  COALESCE(t.competencia, t.data)::date AS competencia,
-  t.data, t.created_at
-FROM public.transacoes t;
+-- Adicionar colunas que foram incluídas em sprints posteriores (idempotente)
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1 FROM information_schema.tables
+    WHERE table_schema = 'public' AND table_name = 'transacoes' AND table_type = 'BASE TABLE'
+  ) THEN
+    EXECUTE 'ALTER TABLE public.transacoes ADD COLUMN IF NOT EXISTS due_date date';
+    EXECUTE 'ALTER TABLE public.transacoes ADD COLUMN IF NOT EXISTS competencia date';
+    EXECUTE 'ALTER TABLE public.transacoes ADD COLUMN IF NOT EXISTS banco text';
+    EXECUTE 'CREATE INDEX IF NOT EXISTS idx_transacoes_empresa_data ON public.transacoes(empresa_id, data DESC)';
+    EXECUTE 'ALTER TABLE public.transacoes ENABLE ROW LEVEL SECURITY';
+    EXECUTE $pol$
+      DROP POLICY IF EXISTS "empresa_own_transactions" ON public.transacoes;
+      CREATE POLICY "empresa_own_transactions" ON public.transacoes FOR ALL USING (
+        empresa_id IN (SELECT empresa_id FROM public.usuarios WHERE id = auth.uid())
+        OR empresa_id IN (SELECT id FROM public.empresas WHERE user_id = auth.uid())
+      )
+    $pol$;
+  ELSIF EXISTS (
+    SELECT 1 FROM information_schema.tables
+    WHERE table_schema = 'public' AND table_name = 'transactions' AND table_type = 'BASE TABLE'
+  ) THEN
+    -- transacoes é uma view; a tabela real é transactions — aplicar RLS lá
+    EXECUTE 'ALTER TABLE public.transactions ADD COLUMN IF NOT EXISTS due_date date';
+    EXECUTE 'ALTER TABLE public.transactions ADD COLUMN IF NOT EXISTS competencia date';
+    EXECUTE 'ALTER TABLE public.transactions ADD COLUMN IF NOT EXISTS banco text';
+    EXECUTE 'CREATE INDEX IF NOT EXISTS idx_transacoes_empresa_data ON public.transactions(empresa_id, data DESC)';
+    EXECUTE 'ALTER TABLE public.transactions ENABLE ROW LEVEL SECURITY';
+    EXECUTE $pol$
+      DROP POLICY IF EXISTS "empresa_own_transactions" ON public.transactions;
+      CREATE POLICY "empresa_own_transactions" ON public.transactions FOR ALL USING (
+        empresa_id IN (SELECT empresa_id FROM public.usuarios WHERE id = auth.uid())
+        OR empresa_id IN (SELECT id FROM public.empresas WHERE user_id = auth.uid())
+      )
+    $pol$;
+  END IF;
+END $$;
+
+-- VIEW transactions: só cria/substitui se transacoes for tabela real
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1 FROM information_schema.tables
+    WHERE table_schema = 'public' AND table_name = 'transacoes' AND table_type = 'BASE TABLE'
+  ) THEN
+    EXECUTE $sql$
+      CREATE OR REPLACE VIEW public.transactions AS
+      SELECT
+        t.id, t.empresa_id, t.descricao, t.categoria, t.valor,
+        CASE WHEN t.tipo = 'entrada' THEN 'receita' ELSE 'despesa' END::text AS tipo,
+        CASE WHEN t.status IN ('confirmada','pago') THEN 'pago'
+             WHEN t.status = 'cancelado' THEN 'cancelado'
+             ELSE COALESCE(NULLIF(TRIM(t.status),''), 'pendente')
+        END::text AS status,
+        t.due_date,
+        COALESCE(t.competencia, t.data)::date AS competencia,
+        t.data, t.created_at
+      FROM public.transacoes t
+    $sql$;
+  END IF;
+END $$;
 
 -- ============================================================
 -- 4. DESPESAS
