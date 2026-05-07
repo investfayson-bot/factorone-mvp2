@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
 
 type Contador = {
@@ -31,7 +31,6 @@ const DEFAULT_PERMS = {
 }
 
 export default function ContadoresPage() {
-  const supabase = createClientComponentClient()
   const [loading, setLoading] = useState(true)
   const [contadores, setContadores] = useState<Contador[]>([])
   const [empresaId, setEmpresaId] = useState<string>('')
