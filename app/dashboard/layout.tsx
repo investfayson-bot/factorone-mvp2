@@ -17,42 +17,52 @@ function buildNavGroups(badges: { reembolsos: number; aprovacoes: number }): Nav
       label: 'Core',
       items: [
         { href: '/dashboard', icon: 'fa-chart-line', label: 'Dashboard', match: (p) => p === '/dashboard' || p === '/dashboard/' },
-        { href: '/dashboard/cashflow', icon: 'fa-water', label: 'Cash Flow' },
+        { href: '/dashboard/aicfo', icon: 'fa-robot', label: 'AI CFO' },
       ],
     },
     {
       label: 'Financeiro',
       items: [
-        { href: '/dashboard/conta-pj', icon: 'fa-building-columns', label: 'Banco PJ' },
-        { href: '/dashboard/cartoes', icon: 'fa-credit-card', label: 'Cartões' },
+        { href: '/dashboard/cashflow', icon: 'fa-water', label: 'Cash Flow' },
         { href: '/dashboard/financeiro', icon: 'fa-arrow-right-arrow-left', label: 'Contas Pagar/Receber' },
         { href: '/dashboard/reembolsos', icon: 'fa-money-bill-transfer', label: 'Reembolsos', badge: badges.reembolsos > 0 ? String(badges.reembolsos) : undefined, badgeColor: 'var(--teal)' },
       ],
     },
     {
-      label: 'Gestão',
+      label: 'Banco & Cartões',
+      items: [
+        { href: '/dashboard/conta-pj', icon: 'fa-building-columns', label: 'Conta PJ' },
+        { href: '/dashboard/cartoes', icon: 'fa-credit-card', label: 'Cartões' },
+      ],
+    },
+    {
+      label: 'Operacional',
       items: [
         { href: '/dashboard/despesas', icon: 'fa-receipt', label: 'Despesas & Recibos' },
         { href: '/dashboard/aprovacoes', icon: 'fa-clipboard-check', label: 'Aprovações', badge: badges.aprovacoes > 0 ? String(badges.aprovacoes) : undefined, badgeColor: 'var(--teal)' },
         { href: '/dashboard/fornecedores', icon: 'fa-truck', label: 'Fornecedores' },
         { href: '/dashboard/orcamento', icon: 'fa-chart-pie', label: 'Orçamento' },
+      ],
+    },
+    {
+      label: 'Patrimônio & Ativos',
+      items: [
         { href: '/dashboard/patrimonio', icon: 'fa-building', label: 'Patrimônio' },
       ],
     },
     {
-      label: 'Contabilidade',
+      label: 'Contabilidade & Fiscal',
       items: [
         { href: '/dashboard/relatorios', icon: 'fa-file-invoice-dollar', label: 'DRE & Relatórios' },
         { href: '/dashboard/conciliacao', icon: 'fa-code-branch', label: 'Conciliação Bancária' },
         { href: '/dashboard/notas', icon: 'fa-landmark', label: 'Fiscal & NF-e' },
         { href: '/dashboard/contabilidade', icon: 'fa-calculator', label: 'Contabilidade' },
+        { href: '/dashboard/contadores', icon: 'fa-user-tie', label: 'Portal Contador' },
       ],
     },
     {
-      label: 'Inteligência',
+      label: 'Inteligência & Ecossistema',
       items: [
-        { href: '/dashboard/aicfo', icon: 'fa-robot', label: 'AI CFO' },
-        { href: '/dashboard/contadores', icon: 'fa-user-tie', label: 'Portal Contador' },
         { href: '/dashboard/integracoes', icon: 'fa-plug', label: 'Hub de Integrações' },
         { href: '/dashboard/marketplace', icon: 'fa-store', label: 'Marketplace', badge: 'NEW', badgeColor: '#7C3AED' },
       ],
