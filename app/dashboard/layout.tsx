@@ -57,7 +57,6 @@ function buildNavGroups(badges: { reembolsos: number; aprovacoes: number }): Nav
         { href: '/dashboard/conciliacao', icon: 'fa-code-branch', label: 'Conciliação Bancária' },
         { href: '/dashboard/notas', icon: 'fa-landmark', label: 'Fiscal & NF-e' },
         { href: '/dashboard/contabilidade', icon: 'fa-calculator', label: 'Contabilidade' },
-        { href: '/dashboard/contadores', icon: 'fa-user-tie', label: 'Portal Contador' },
       ],
     },
     {

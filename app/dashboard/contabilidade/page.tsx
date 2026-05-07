@@ -25,14 +25,14 @@ const TABS: [string, string][] = [
   ['visao', 'Visão Geral'],
   ['recibos', 'Recibos'],
   ['lancamentos', 'Lançamentos'],
-  ['contador', 'Portal Contador'],
   ['exportacoes', 'Exportações'],
   ['tributacao', 'Tributação IA'],
 ]
 
 export default function ContabilidadePage() {
   const toast = useToast()
-  const [tab, setTab] = useState<'visao' | 'recibos' | 'lancamentos' | 'contador' | 'exportacoes' | 'tributacao'>('visao')
+  const [tab, setTab] = useState<'visao' | 'recibos' | 'lancamentos' | 'exportacoes' | 'tributacao'>('visao')
+  const [bannerAberto, setBannerAberto] = useState(false)
   const [loadingUpload, setLoadingUpload] = useState(false)
   const [recibos, setRecibos] = useState<Array<{ id: string; status: string; fornecedor_extraido: string | null; valor_extraido: number | null; data_extraida: string | null; categoria_sugerida: string | null }>>([])
   const [contadores, setContadores] = useState<Array<{ id: string; nome: string; email: string; status: string; crc: string | null; token_acesso: string }>>([])
@@ -160,6 +160,62 @@ export default function ContabilidadePage() {
         </div>
       </div>
 
+      {/* Banner Portal Contador */}
+      <div style={{ background: 'linear-gradient(90deg, var(--navy) 0%, #1e3a5f 100%)', borderRadius: 12, padding: '16px 20px', marginBottom: 16, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <div style={{ width: 36, height: 36, borderRadius: 10, background: 'rgba(255,255,255,.12)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <i className="fa-solid fa-user-tie" style={{ color: '#fff', fontSize: 16 }} />
+          </div>
+          <div>
+            <div style={{ fontSize: 13, fontWeight: 700, color: '#fff' }}>Portal do Contador</div>
+            <div style={{ fontSize: 11, color: 'rgba(255,255,255,.6)', marginTop: 2 }}>
+              {contadores.length > 0 ? `${contadores.filter(c => c.status === 'ativo').length} contador(es) com acesso ativo` : 'Compartilhe acesso contábil com seu contador'}
+            </div>
+          </div>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+          {contadores.filter(c => c.status === 'ativo').map(c => (
+            <button
+              key={c.id}
+              type="button"
+              onClick={() => {
+                const url = `${window.location.origin}/contador/${c.token_acesso}`
+                void navigator.clipboard.writeText(url)
+                toast.success(`Link de ${c.nome} copiado`)
+              }}
+              style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'rgba(255,255,255,.1)', border: '1px solid rgba(255,255,255,.2)', borderRadius: 8, padding: '6px 12px', fontSize: 11, fontWeight: 600, color: '#fff', cursor: 'pointer' }}
+            >
+              <i className="fa-solid fa-link" style={{ fontSize: 10 }} />
+              {c.nome}
+            </button>
+          ))}
+          <button
+            type="button"
+            onClick={() => setBannerAberto(v => !v)}
+            style={{ background: 'var(--teal)', border: 'none', borderRadius: 8, padding: '7px 14px', fontSize: 11, fontWeight: 700, color: '#fff', cursor: 'pointer' }}
+          >
+            {bannerAberto ? 'Fechar' : '+ Convidar contador'}
+          </button>
+        </div>
+      </div>
+
+      {bannerAberto && (
+        <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: 16, marginBottom: 16 }}>
+          <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--navy)', marginBottom: 10 }}>Novo acesso para contador</div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 8, marginBottom: 10 }}>
+            <input className="form-input" placeholder="Nome" value={formCont.nome} onChange={(e) => setFormCont((f) => ({ ...f, nome: e.target.value }))} />
+            <input className="form-input" placeholder="Email" value={formCont.email} onChange={(e) => setFormCont((f) => ({ ...f, email: e.target.value }))} />
+            <input className="form-input" placeholder="CRC" value={formCont.crc} onChange={(e) => setFormCont((f) => ({ ...f, crc: e.target.value }))} />
+            <input className="form-input" placeholder="Telefone" value={formCont.telefone} onChange={(e) => setFormCont((f) => ({ ...f, telefone: e.target.value }))} />
+          </div>
+          <div style={{ textAlign: 'right' }}>
+            <LoadingButton loading={loadingConvite} loadingText="Convidando..." onClick={convidarContador} className="btn-action">
+              Gerar link de acesso
+            </LoadingButton>
+          </div>
+        </div>
+      )}
+
       <div className="kpis" style={{ gridTemplateColumns: 'repeat(4, 1fr)' }}>
         <div className="kpi">
           <div className="kpi-lbl">Lançamentos do mês</div>
@@ -253,32 +309,6 @@ export default function ContabilidadePage() {
       {tab === 'lancamentos' && (
         <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: '20px 16px', fontSize: 13, color: 'var(--gray-400)' }}>
           Tabela de lançamentos contábeis será conectada ao livro razão na próxima etapa.
-        </div>
-      )}
-
-      {tab === 'contador' && (
-        <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: 20 }}>
-          <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy)', marginBottom: 14 }}>Convidar contador</div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 8, marginBottom: 10 }}>
-            <input className="form-input" placeholder="Nome" value={formCont.nome} onChange={(e) => setFormCont((f) => ({ ...f, nome: e.target.value }))} />
-            <input className="form-input" placeholder="Email" value={formCont.email} onChange={(e) => setFormCont((f) => ({ ...f, email: e.target.value }))} />
-            <input className="form-input" placeholder="CRC" value={formCont.crc} onChange={(e) => setFormCont((f) => ({ ...f, crc: e.target.value }))} />
-            <input className="form-input" placeholder="Telefone" value={formCont.telefone} onChange={(e) => setFormCont((f) => ({ ...f, telefone: e.target.value }))} />
-          </div>
-          <div style={{ textAlign: 'right', marginBottom: 14 }}>
-            <LoadingButton loading={loadingConvite} loadingText="Convidando..." onClick={convidarContador} className="btn-action">
-              Convidar contador
-            </LoadingButton>
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-            {contadores.map((c) => (
-              <div key={c.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, border: '1px solid var(--gray-100)', borderRadius: 8, padding: '10px 12px', fontSize: 12 }}>
-                <span style={{ fontWeight: 700, color: 'var(--navy)' }}>{c.nome}</span>
-                <span style={{ color: 'var(--gray-400)' }}>{c.email}</span>
-                <span className="tag gray">{c.status}</span>
-              </div>
-            ))}
-          </div>
         </div>
       )}
 
