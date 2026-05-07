@@ -108,7 +108,7 @@ BEGIN
 END $$;
 
 -- 6. Índices de performance
-CREATE INDEX IF NOT EXISTS idx_transacoes_empresa_data ON public.transacoes(empresa_id, data DESC);
+CREATE INDEX IF NOT EXISTS idx_transacoes_empresa_data ON public.transactions(empresa_id, data DESC);
 CREATE INDEX IF NOT EXISTS idx_despesas_empresa_status ON public.despesas(empresa_id, status);
 CREATE INDEX IF NOT EXISTS idx_contas_pagar_empresa_venc ON public.contas_pagar(empresa_id, data_vencimento);
 CREATE INDEX IF NOT EXISTS idx_contas_receber_empresa_venc ON public.contas_receber(empresa_id, data_vencimento);
