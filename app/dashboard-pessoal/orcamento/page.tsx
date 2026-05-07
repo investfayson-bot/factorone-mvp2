@@ -30,7 +30,7 @@ export default function OrcamentoPage() {
     const all = new Set([...CATEGORIAS, ...Array.from(gastos.keys())])
     setLines(Array.from(all).map(cat => ({ categoria: cat, limite: limites.get(cat) ?? 0, gasto: gastos.get(cat) ?? 0 })))
     const init: Record<string, string> = {}
-    for (const [cat, lim] of limites.entries()) init[cat] = String(lim)
+    limites.forEach((lim, cat) => { init[cat] = String(lim) })
     setEditando(init)
   }, [])
 
