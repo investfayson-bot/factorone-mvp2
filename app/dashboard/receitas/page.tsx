@@ -1,32 +1,31 @@
 'use client'
 
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { supabase } from '@/lib/supabase'
-import { formatBRL } from '@/lib/currency-brl'
+import { formatBRL, maskBRLInput, parseBRLInput } from '@/lib/currency-brl'
+import toast from 'react-hot-toast'
 
 type Receita = {
-  id: string
-  empresa_id: string
-  descricao: string
-  categoria: string
-  valor: number
-  data: string
-  tipo: 'recorrente' | 'pontual' | 'projeto'
-  cliente: string | null
-  centro_custo: string | null
-  nota_fiscal: string | null
-  status: 'confirmada' | 'prevista' | 'cancelada'
-  created_at: string
+  id: string; empresa_id: string; descricao: string; categoria: string
+  valor: number; data: string; tipo: 'recorrente' | 'pontual' | 'projeto'
+  cliente: string | null; centro_custo: string | null; nota_fiscal: string | null
+  status: 'confirmada' | 'prevista' | 'cancelada'; created_at: string
+}
+
+type NFeResult = {
+  tipo: 'nfe' | 'nfse'; emitente: string; cnpj: string
+  valor: number; data: string; numero_nf: string; descricao: string; categoria: string
 }
 
 const CATEGORIAS = ['Produto', 'Serviço', 'Consultoria', 'Projeto', 'Assinatura', 'Comissão', 'Aluguel', 'Royalties', 'Outros']
 const TIPOS = { recorrente: 'Recorrente', pontual: 'Pontual', projeto: 'Projeto' }
-const STATUS_COLOR: Record<string, string> = { confirmada: 'green', prevista: 'gray', cancelada: 'red' }
 
 function mesLabel(m: string) {
   const [y, mo] = m.split('-')
   return new Date(Number(y), Number(mo) - 1).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })
 }
+
+const BLANK_FORM = { descricao: '', categoria: 'Serviço', valor: '', data: new Date().toISOString().slice(0, 10), tipo: 'pontual', cliente: '', centro_custo: '', nota_fiscal: '', status: 'confirmada' }
 
 export default function ReceitasPage() {
   const [empresaId, setEmpresaId] = useState('')
@@ -39,10 +38,13 @@ export default function ReceitasPage() {
   const [showForm, setShowForm] = useState(false)
   const [editItem, setEditItem] = useState<Receita | null>(null)
   const [saving, setSaving] = useState(false)
-  const [form, setForm] = useState({
-    descricao: '', categoria: 'Serviço', valor: '', data: new Date().toISOString().slice(0, 10),
-    tipo: 'pontual', cliente: '', centro_custo: '', nota_fiscal: '', status: 'confirmada',
-  })
+  const [form, setForm] = useState({ ...BLANK_FORM })
+  const [valorMask, setValorMask] = useState('')
+  // XML NF-e
+  const [xmlFile, setXmlFile] = useState<File | null>(null)
+  const [xmlLoading, setXmlLoading] = useState(false)
+  const [nfeResult, setNfeResult] = useState<NFeResult | null>(null)
+  const xmlRef = useRef<HTMLInputElement>(null)
 
   const carregar = useCallback(async () => {
     const { data: { user } } = await supabase.auth.getUser()
@@ -60,36 +62,71 @@ export default function ReceitasPage() {
   useEffect(() => { void carregar() }, [carregar])
 
   function abrirForm(r?: Receita) {
+    setNfeResult(null)
+    setXmlFile(null)
     if (r) {
       setEditItem(r)
       setForm({ descricao: r.descricao, categoria: r.categoria, valor: String(r.valor), data: r.data, tipo: r.tipo, cliente: r.cliente || '', centro_custo: r.centro_custo || '', nota_fiscal: r.nota_fiscal || '', status: r.status })
+      setValorMask(r.valor.toLocaleString('pt-BR', { minimumFractionDigits: 2 }))
     } else {
       setEditItem(null)
-      setForm({ descricao: '', categoria: 'Serviço', valor: '', data: new Date().toISOString().slice(0, 10), tipo: 'pontual', cliente: '', centro_custo: '', nota_fiscal: '', status: 'confirmada' })
+      setForm({ ...BLANK_FORM })
+      setValorMask('')
     }
     setShowForm(true)
   }
 
+  async function importarNFe() {
+    if (!xmlFile) { toast.error('Selecione um arquivo XML'); return }
+    setXmlLoading(true)
+    try {
+      const { data: sess } = await supabase.auth.getSession()
+      const fd = new FormData(); fd.append('file', xmlFile)
+      const res = await fetch('/api/receitas/importar-nfe', {
+        method: 'POST',
+        headers: sess.session?.access_token ? { Authorization: `Bearer ${sess.session.access_token}` } : undefined,
+        body: fd,
+      })
+      const out = await res.json() as NFeResult & { error?: string }
+      if (!res.ok) throw new Error(out.error || 'Falha ao processar XML')
+      setNfeResult(out)
+      setForm(f => ({
+        ...f,
+        descricao: out.descricao || f.descricao,
+        categoria: CATEGORIAS.includes(out.categoria) ? out.categoria : f.categoria,
+        data: out.data || f.data,
+        nota_fiscal: out.numero_nf || f.nota_fiscal,
+        cliente: out.emitente || f.cliente,
+      }))
+      setValorMask(out.valor > 0 ? maskBRLInput(String(Math.round(out.valor * 100))) : '')
+      toast.success('NF-e lida com sucesso. Confira os dados.')
+    } catch (e: unknown) {
+      toast.error(e instanceof Error ? e.message : 'Erro ao ler XML')
+    } finally {
+      setXmlLoading(false)
+    }
+  }
+
   async function salvar() {
-    if (!form.descricao || !form.valor || !form.data) return
+    const valor = parseBRLInput(valorMask)
+    if (!form.descricao || valor <= 0 || !form.data) { toast.error('Preencha descrição, valor e data'); return }
     setSaving(true)
     const payload = {
-      empresa_id: empresaId,
-      descricao: form.descricao, categoria: form.categoria,
-      valor: parseFloat(form.valor), data: form.data,
-      tipo: form.tipo, cliente: form.cliente || null,
-      centro_custo: form.centro_custo || null,
-      nota_fiscal: form.nota_fiscal || null,
-      status: form.status,
+      empresa_id: empresaId, descricao: form.descricao, categoria: form.categoria,
+      valor, data: form.data, tipo: form.tipo,
+      cliente: form.cliente || null, centro_custo: form.centro_custo || null,
+      nota_fiscal: form.nota_fiscal || null, status: form.status,
     }
     if (editItem) {
-      await supabase.from('receitas_pj').update(payload).eq('id', editItem.id)
+      const { error } = await supabase.from('receitas_pj').update(payload).eq('id', editItem.id)
+      if (error) toast.error(error.message)
+      else { toast.success('Receita atualizada'); setShowForm(false); void carregar() }
     } else {
-      await supabase.from('receitas_pj').insert(payload)
+      const { error } = await supabase.from('receitas_pj').insert(payload)
+      if (error) toast.error(error.message)
+      else { toast.success('Receita registrada'); setShowForm(false); void carregar() }
     }
     setSaving(false)
-    setShowForm(false)
-    void carregar()
   }
 
   async function excluir(id: string) {
@@ -128,6 +165,13 @@ export default function ReceitasPage() {
     return arr
   }, [])
 
+  const inp: React.CSSProperties = {
+    width: '100%', border: '1px solid var(--gray-100)', borderRadius: 8,
+    padding: '8px 12px', fontSize: 13, color: 'var(--navy)',
+    background: '#fff', boxSizing: 'border-box', outline: 'none',
+  }
+  const lbl: React.CSSProperties = { fontSize: 11, fontWeight: 600, color: 'var(--gray-500)', marginBottom: 4, display: 'block' }
+
   if (loading) return <div style={{ padding: 32, color: 'var(--gray-400)' }}>Carregando…</div>
 
   return (
@@ -138,7 +182,11 @@ export default function ReceitasPage() {
           <div className="page-sub">{mesLabel(mes)} · entradas confirmadas e previstas</div>
         </div>
         <div style={{ display: 'flex', gap: 8 }}>
-          <button className="btn-ghost" onClick={() => abrirForm()}>+ Nova receita</button>
+          <button className="btn-ghost" style={{ display: 'flex', alignItems: 'center', gap: 6 }} onClick={() => { abrirForm(); setTimeout(() => xmlRef.current?.click(), 200) }}>
+            <i className="fa-solid fa-file-code" style={{ fontSize: 12 }} />
+            Importar XML NF-e
+          </button>
+          <button className="btn-action" onClick={() => abrirForm()}>+ Nova receita</button>
         </div>
       </div>
 
@@ -245,7 +293,7 @@ export default function ReceitasPage() {
                   </td>
                   <td>
                     <div style={{ fontWeight: 600, fontSize: 12 }}>{r.descricao}</div>
-                    {r.nota_fiscal && <div style={{ fontSize: 10, color: 'var(--teal)' }}>NF: {r.nota_fiscal}</div>}
+                    {r.nota_fiscal && <div style={{ fontSize: 10, color: 'var(--teal)' }}>{r.nota_fiscal}</div>}
                   </td>
                   <td><span className="tag gray" style={{ fontSize: 9 }}>{r.categoria}</span></td>
                   <td style={{ fontSize: 12, color: 'var(--gray-500)' }}>{r.cliente || '—'}</td>
@@ -258,8 +306,7 @@ export default function ReceitasPage() {
                       value={r.status}
                       onChange={e => void alterarStatus(r.id, e.target.value)}
                       style={{
-                        fontSize: 9, fontWeight: 700, padding: '2px 6px', borderRadius: 20,
-                        border: '1px solid',
+                        fontSize: 9, fontWeight: 700, padding: '2px 6px', borderRadius: 20, border: '1px solid',
                         background: r.status === 'confirmada' ? 'rgba(45,155,111,.1)' : r.status === 'prevista' ? 'var(--gray-100)' : 'rgba(239,68,68,.1)',
                         color: r.status === 'confirmada' ? 'var(--green)' : r.status === 'prevista' ? 'var(--gray-500)' : 'var(--red)',
                         borderColor: r.status === 'confirmada' ? 'rgba(45,155,111,.2)' : r.status === 'prevista' ? 'var(--gray-200)' : 'rgba(239,68,68,.2)',
@@ -287,58 +334,125 @@ export default function ReceitasPage() {
       {/* Modal */}
       {showForm && (
         <div className="modal-bg" onClick={() => setShowForm(false)}>
-          <div className="modal-box" style={{ maxWidth: 520 }} onClick={e => e.stopPropagation()}>
-            <div className="modal-title">
-              {editItem ? 'Editar receita' : 'Nova receita'}
-              <button className="modal-close" onClick={() => setShowForm(false)}>×</button>
+          <div className="modal-box" style={{ maxWidth: 560, maxHeight: '92vh', overflowY: 'auto' }} onClick={e => e.stopPropagation()}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
+              <h3 className="modal-title">{editItem ? 'Editar receita' : 'Nova receita'}</h3>
+              <button className="modal-close" onClick={() => setShowForm(false)}><i className="fa-solid fa-xmark" /></button>
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+
+            {/* XML NF-e Zone */}
+            <div
+              style={{
+                border: xmlFile ? '2px solid var(--green)' : '2px dashed var(--gray-100)',
+                borderRadius: 12, padding: 16, marginBottom: 20, textAlign: 'center',
+                background: xmlFile ? 'rgba(45,155,111,0.04)' : '#fafafa', cursor: 'pointer',
+                transition: 'all 0.2s',
+              }}
+              onClick={() => xmlRef.current?.click()}
+            >
+              <input ref={xmlRef} type="file" accept=".xml,text/xml,application/xml" style={{ display: 'none' }}
+                onChange={e => { setXmlFile(e.target.files?.[0] ?? null); setNfeResult(null) }} />
+              {xmlFile ? (
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                    <i className="fa-solid fa-file-code" style={{ fontSize: 22, color: 'var(--green)' }} />
+                    <div style={{ textAlign: 'left' }}>
+                      <p style={{ fontWeight: 600, fontSize: 13, color: 'var(--navy)', margin: 0 }}>{xmlFile.name}</p>
+                      <p style={{ fontSize: 11, color: 'var(--gray-400)', margin: 0 }}>
+                        {nfeResult ? `${nfeResult.tipo === 'nfse' ? 'NFS-e' : 'NF-e'} · ${nfeResult.emitente}` : 'Clique para outro arquivo'}
+                      </p>
+                    </div>
+                  </div>
+                  {!nfeResult && (
+                    <button type="button" onClick={e => { e.stopPropagation(); void importarNFe() }} disabled={xmlLoading}
+                      style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '7px 14px', borderRadius: 8, border: 'none', cursor: 'pointer', fontWeight: 700, fontSize: 12, background: 'var(--green)', color: '#fff', opacity: xmlLoading ? 0.7 : 1 }}>
+                      <i className="fa-solid fa-wand-magic-sparkles" />
+                      {xmlLoading ? 'Lendo…' : 'Processar NF-e'}
+                    </button>
+                  )}
+                  {nfeResult && (
+                    <span style={{ display: 'flex', alignItems: 'center', gap: 5, color: 'var(--green)', fontSize: 12, fontWeight: 700 }}>
+                      <i className="fa-solid fa-circle-check" /> Dados preenchidos
+                    </span>
+                  )}
+                </div>
+              ) : (
+                <>
+                  <i className="fa-solid fa-file-import" style={{ fontSize: 28, color: 'var(--gray-400)', marginBottom: 8 }} />
+                  <p style={{ fontWeight: 600, fontSize: 13, color: 'var(--navy)', margin: '0 0 2px' }}>Importar XML de NF-e ou NFS-e</p>
+                  <p style={{ fontSize: 11, color: 'var(--gray-400)', margin: 0 }}>Clique para selecionar · preenche automaticamente emitente, valor e data</p>
+                </>
+              )}
+            </div>
+
+            {/* Dados extraídos */}
+            {nfeResult && (
+              <div style={{ margin: '0 0 16px', padding: '12px 14px', borderRadius: 10, background: '#f0fdf4', border: '1px solid #86efac' }}>
+                <p style={{ fontSize: 10, fontWeight: 700, color: '#166534', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: 6 }}>
+                  <i className="fa-solid fa-circle-check" style={{ marginRight: 4 }} />
+                  {nfeResult.tipo === 'nfse' ? 'NFS-e' : 'NF-e'} processada
+                </p>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3px 12px', fontSize: 12 }}>
+                  {[['Emitente', nfeResult.emitente], ['CNPJ', nfeResult.cnpj || '—'], ['Valor', formatBRL(nfeResult.valor)], ['Data', nfeResult.data], ['Número', nfeResult.numero_nf || '—']].map(([k, v]) => (
+                    <div key={k} style={{ display: 'flex', gap: 6 }}>
+                      <span style={{ color: '#166534', minWidth: 60 }}>{k}:</span>
+                      <span style={{ color: '#14532d', fontWeight: 600 }}>{v}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
               <div style={{ gridColumn: '1/-1' }}>
-                <label style={{ fontSize: 11, color: 'var(--gray-400)' }}>Descrição *</label>
-                <input className="form-input" placeholder="Ex: Consultoria cliente ABC" value={form.descricao} onChange={e => setForm(p => ({ ...p, descricao: e.target.value }))} />
+                <label style={lbl}>Descrição *</label>
+                <input style={inp} placeholder="Ex: Consultoria cliente ABC" value={form.descricao} onChange={e => setForm(p => ({ ...p, descricao: e.target.value }))} />
               </div>
               <div>
-                <label style={{ fontSize: 11, color: 'var(--gray-400)' }}>Valor R$ *</label>
-                <input className="form-input" type="number" placeholder="0,00" value={form.valor} onChange={e => setForm(p => ({ ...p, valor: e.target.value }))} />
+                <label style={lbl}>Valor R$ *</label>
+                <input style={inp} placeholder="0,00" inputMode="decimal" value={valorMask} onChange={e => setValorMask(maskBRLInput(e.target.value))} />
               </div>
               <div>
-                <label style={{ fontSize: 11, color: 'var(--gray-400)' }}>Data *</label>
-                <input className="form-input" type="date" value={form.data} onChange={e => setForm(p => ({ ...p, data: e.target.value }))} />
+                <label style={lbl}>Data *</label>
+                <input style={inp} type="date" value={form.data} onChange={e => setForm(p => ({ ...p, data: e.target.value }))} />
               </div>
               <div>
-                <label style={{ fontSize: 11, color: 'var(--gray-400)' }}>Categoria</label>
-                <select className="form-input" value={form.categoria} onChange={e => setForm(p => ({ ...p, categoria: e.target.value }))}>
+                <label style={lbl}>Categoria</label>
+                <select style={inp} value={form.categoria} onChange={e => setForm(p => ({ ...p, categoria: e.target.value }))}>
                   {CATEGORIAS.map(c => <option key={c} value={c}>{c}</option>)}
                 </select>
               </div>
               <div>
-                <label style={{ fontSize: 11, color: 'var(--gray-400)' }}>Tipo</label>
-                <select className="form-input" value={form.tipo} onChange={e => setForm(p => ({ ...p, tipo: e.target.value }))}>
+                <label style={lbl}>Tipo</label>
+                <select style={inp} value={form.tipo} onChange={e => setForm(p => ({ ...p, tipo: e.target.value }))}>
                   <option value="pontual">Pontual</option>
                   <option value="recorrente">Recorrente</option>
                   <option value="projeto">Projeto</option>
                 </select>
               </div>
               <div>
-                <label style={{ fontSize: 11, color: 'var(--gray-400)' }}>Status</label>
-                <select className="form-input" value={form.status} onChange={e => setForm(p => ({ ...p, status: e.target.value }))}>
+                <label style={lbl}>Status</label>
+                <select style={inp} value={form.status} onChange={e => setForm(p => ({ ...p, status: e.target.value }))}>
                   <option value="confirmada">Confirmada</option>
                   <option value="prevista">Prevista</option>
                   <option value="cancelada">Cancelada</option>
                 </select>
               </div>
               <div>
-                <label style={{ fontSize: 11, color: 'var(--gray-400)' }}>Cliente</label>
-                <input className="form-input" placeholder="Nome do cliente" value={form.cliente} onChange={e => setForm(p => ({ ...p, cliente: e.target.value }))} />
+                <label style={lbl}>Cliente / Emitente</label>
+                <input style={inp} placeholder="Nome do cliente" value={form.cliente} onChange={e => setForm(p => ({ ...p, cliente: e.target.value }))} />
               </div>
               <div>
-                <label style={{ fontSize: 11, color: 'var(--gray-400)' }}>Nota Fiscal nº</label>
-                <input className="form-input" placeholder="Número da NF" value={form.nota_fiscal} onChange={e => setForm(p => ({ ...p, nota_fiscal: e.target.value }))} />
+                <label style={lbl}>Nota Fiscal nº</label>
+                <input style={inp} placeholder="NF-e 12345 ou NFS-e 678" value={form.nota_fiscal} onChange={e => setForm(p => ({ ...p, nota_fiscal: e.target.value }))} />
               </div>
             </div>
-            <div className="modal-actions">
+
+            <div className="modal-actions" style={{ marginTop: 20 }}>
               <button className="btn-ghost" onClick={() => setShowForm(false)}>Cancelar</button>
-              <button className="btn-action" disabled={saving} onClick={() => void salvar()}>{saving ? 'Salvando…' : editItem ? 'Salvar' : 'Adicionar'}</button>
+              <button className="btn-action" disabled={saving} onClick={() => void salvar()}>
+                {saving ? 'Salvando…' : editItem ? 'Salvar' : 'Adicionar receita'}
+              </button>
             </div>
           </div>
         </div>
