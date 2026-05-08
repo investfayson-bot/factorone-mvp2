@@ -15,6 +15,9 @@ type Pendencias = { reembolsos: number; valorReembolsos: number; aprovacoes: num
 type ScoreComponente = { nome: string; pontos: number; max: number; descricao: string; detalhe: string }
 type ScoreData = { total: number; grade: string; componentes: ScoreComponente[] }
 type PatWidget = { total: number; valorContabil: number; depMes: number; frota: number; maquinas: number; imoveis: number; alertas: number }
+type CrmWidget = { abertas: number; pipeline: number; ganhaMes: number; ativPendentes: number }
+type MktWidget = { campanhasAtivas: number; gasto: number; receita: number; roas: number; leads: number }
+type LogWidget = { rotasAtivas: number; receitaFrete: number; pneusAlerta: number; entreguesMes: number }
 
 function tituloTx(t: TransacaoLista) {
   const d = (t.descricao || '').trim()
@@ -40,6 +43,9 @@ export default function DashboardPage() {
   const [score, setScore] = useState<ScoreData | null>(null)
   const [scoreExpanded, setScoreExpanded] = useState(false)
   const [patWidget, setPatWidget] = useState<PatWidget | null>(null)
+  const [crmWidget, setCrmWidget] = useState<CrmWidget | null>(null)
+  const [mktWidget, setMktWidget] = useState<MktWidget | null>(null)
+  const [logWidget, setLogWidget] = useState<LogWidget | null>(null)
   const router = useRouter()
 
   function irParaAlerta(alertId: string) {
@@ -144,6 +150,45 @@ export default function DashboardPage() {
           ).length,
         })
       }
+
+      // Widgets de setores: CRM, Marketing, Logística
+      const mesIso = now.toISOString().slice(0, 7)
+      const [crmOpR, crmAtvR, mktCampR, mktLeadsR, logRotasR, logPneusR] = await Promise.all([
+        supabase.from('crm_oportunidades').select('valor,etapa').eq('empresa_id', eid),
+        supabase.from('crm_atividades').select('id').eq('empresa_id', eid).eq('status', 'pendente'),
+        supabase.from('marketing_campanhas').select('status,gasto,receita_gerada').eq('empresa_id', eid),
+        supabase.from('marketing_leads').select('id').eq('empresa_id', eid),
+        supabase.from('logistica_rotas').select('status,valor_frete,created_at').eq('empresa_id', eid),
+        supabase.from('logistica_pneus').select('km_rodado,km_limite').eq('empresa_id', eid).eq('status', 'ativo'),
+      ])
+
+      const ops = (crmOpR.data ?? []) as Array<{ valor: number | null; etapa: string }>
+      setCrmWidget({
+        abertas: ops.filter(o => !['fechado_ganho', 'fechado_perdido'].includes(o.etapa)).length,
+        pipeline: ops.filter(o => !['fechado_ganho', 'fechado_perdido'].includes(o.etapa)).reduce((s, o) => s + Number(o.valor ?? 0), 0),
+        ganhaMes: ops.filter(o => o.etapa === 'fechado_ganho').reduce((s, o) => s + Number(o.valor ?? 0), 0),
+        ativPendentes: (crmAtvR.data ?? []).length,
+      })
+
+      const camps = (mktCampR.data ?? []) as Array<{ status: string; gasto: number; receita_gerada: number }>
+      const mktGasto = camps.reduce((s, c) => s + Number(c.gasto ?? 0), 0)
+      const mktReceita = camps.reduce((s, c) => s + Number(c.receita_gerada ?? 0), 0)
+      setMktWidget({
+        campanhasAtivas: camps.filter(c => c.status === 'ativa').length,
+        gasto: mktGasto,
+        receita: mktReceita,
+        roas: mktGasto > 0 ? mktReceita / mktGasto : 0,
+        leads: (mktLeadsR.data ?? []).length,
+      })
+
+      const rotas = (logRotasR.data ?? []) as Array<{ status: string; valor_frete: number | null; created_at: string }>
+      const logPneus = (logPneusR.data ?? []) as Array<{ km_rodado: number; km_limite: number }>
+      setLogWidget({
+        rotasAtivas: rotas.filter(r => r.status === 'em_transito').length,
+        receitaFrete: rotas.reduce((s, r) => s + Number(r.valor_frete ?? 0), 0),
+        pneusAlerta: logPneus.filter(p => p.km_rodado >= p.km_limite * 0.9).length,
+        entreguesMes: rotas.filter(r => r.status === 'entregue' && r.created_at.startsWith(mesIso)).length,
+      })
 
       // Score Financeiro
       const { data: sessData } = await supabase.auth.getSession()
@@ -301,6 +346,124 @@ export default function DashboardPage() {
             <div style={{ color: 'var(--teal)', fontSize: 13, fontWeight: 600, flexShrink: 0 }}>→</div>
           </div>
         </Link>
+      )}
+
+      {/* Setores — CRM, Marketing, Logística */}
+      {(crmWidget || mktWidget || logWidget) && (
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12, marginBottom: 16 }}>
+          {/* CRM */}
+          {crmWidget && (
+            <Link href="/dashboard/crm" style={{ textDecoration: 'none' }}>
+              <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: '14px 16px', cursor: 'pointer', height: '100%' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
+                  <div style={{ width: 28, height: 28, borderRadius: 8, background: '#ede9fe', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <i className="fa-solid fa-handshake" style={{ color: '#7C3AED', fontSize: 12 }} />
+                  </div>
+                  <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.07em' }}>CRM</div>
+                  <span style={{ fontSize: 9, fontWeight: 700, padding: '1px 5px', borderRadius: 10, background: '#ede9fe', color: '#7C3AED', marginLeft: 'auto' }}>PLUS</span>
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+                  <div>
+                    <div style={{ fontSize: 10, color: 'var(--gray-400)', marginBottom: 2 }}>Pipeline</div>
+                    <div style={{ fontSize: 16, fontWeight: 800, color: 'var(--navy)', fontFamily: "'DM Mono',monospace" }}>{fmtBRLCompact(crmWidget.pipeline)}</div>
+                  </div>
+                  <div>
+                    <div style={{ fontSize: 10, color: 'var(--gray-400)', marginBottom: 2 }}>Ganho</div>
+                    <div style={{ fontSize: 16, fontWeight: 800, color: 'var(--green)', fontFamily: "'DM Mono',monospace" }}>{fmtBRLCompact(crmWidget.ganhaMes)}</div>
+                  </div>
+                  <div>
+                    <div style={{ fontSize: 10, color: 'var(--gray-400)', marginBottom: 2 }}>Oportunidades</div>
+                    <div style={{ fontSize: 14, fontWeight: 700 }}>{crmWidget.abertas} abertas</div>
+                  </div>
+                  <div>
+                    <div style={{ fontSize: 10, color: 'var(--gray-400)', marginBottom: 2 }}>Atividades</div>
+                    <div style={{ fontSize: 14, fontWeight: 700, color: crmWidget.ativPendentes > 0 ? 'var(--gold)' : 'var(--navy)' }}>
+                      {crmWidget.ativPendentes} pend.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </Link>
+          )}
+
+          {/* Marketing */}
+          {mktWidget && (
+            <Link href="/dashboard/marketing" style={{ textDecoration: 'none' }}>
+              <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: '14px 16px', cursor: 'pointer', height: '100%' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
+                  <div style={{ width: 28, height: 28, borderRadius: 8, background: '#fef3c7', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <i className="fa-solid fa-bullhorn" style={{ color: 'var(--gold)', fontSize: 12 }} />
+                  </div>
+                  <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.07em' }}>Marketing</div>
+                  {mktWidget.campanhasAtivas > 0 && (
+                    <span style={{ fontSize: 9, fontWeight: 700, padding: '1px 6px', borderRadius: 10, background: '#dcfce7', color: 'var(--green)', marginLeft: 'auto' }}>
+                      {mktWidget.campanhasAtivas} ativa{mktWidget.campanhasAtivas > 1 ? 's' : ''}
+                    </span>
+                  )}
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+                  <div>
+                    <div style={{ fontSize: 10, color: 'var(--gray-400)', marginBottom: 2 }}>Investido</div>
+                    <div style={{ fontSize: 16, fontWeight: 800, color: 'var(--red)', fontFamily: "'DM Mono',monospace" }}>{fmtBRLCompact(mktWidget.gasto)}</div>
+                  </div>
+                  <div>
+                    <div style={{ fontSize: 10, color: 'var(--gray-400)', marginBottom: 2 }}>Receita</div>
+                    <div style={{ fontSize: 16, fontWeight: 800, color: 'var(--green)', fontFamily: "'DM Mono',monospace" }}>{fmtBRLCompact(mktWidget.receita)}</div>
+                  </div>
+                  <div>
+                    <div style={{ fontSize: 10, color: 'var(--gray-400)', marginBottom: 2 }}>ROAS</div>
+                    <div style={{ fontSize: 14, fontWeight: 700, color: mktWidget.roas >= 3 ? 'var(--green)' : mktWidget.roas >= 1 ? 'var(--gold)' : 'var(--red)' }}>
+                      {mktWidget.roas > 0 ? mktWidget.roas.toFixed(1) + 'x' : '—'}
+                    </div>
+                  </div>
+                  <div>
+                    <div style={{ fontSize: 10, color: 'var(--gray-400)', marginBottom: 2 }}>Leads</div>
+                    <div style={{ fontSize: 14, fontWeight: 700 }}>{mktWidget.leads}</div>
+                  </div>
+                </div>
+              </div>
+            </Link>
+          )}
+
+          {/* Logística */}
+          {logWidget && (
+            <Link href="/dashboard/logistica" style={{ textDecoration: 'none' }}>
+              <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: '14px 16px', cursor: 'pointer', height: '100%' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
+                  <div style={{ width: 28, height: 28, borderRadius: 8, background: '#e0f2fe', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <i className="fa-solid fa-truck-fast" style={{ color: 'var(--teal)', fontSize: 12 }} />
+                  </div>
+                  <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.07em' }}>Logística</div>
+                  {logWidget.rotasAtivas > 0 && (
+                    <span style={{ fontSize: 9, fontWeight: 700, padding: '1px 6px', borderRadius: 10, background: '#e0f2fe', color: 'var(--teal)', marginLeft: 'auto' }}>
+                      {logWidget.rotasAtivas} em trânsito
+                    </span>
+                  )}
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+                  <div>
+                    <div style={{ fontSize: 10, color: 'var(--gray-400)', marginBottom: 2 }}>Rec. Frete</div>
+                    <div style={{ fontSize: 16, fontWeight: 800, color: 'var(--teal)', fontFamily: "'DM Mono',monospace" }}>{fmtBRLCompact(logWidget.receitaFrete)}</div>
+                  </div>
+                  <div>
+                    <div style={{ fontSize: 10, color: 'var(--gray-400)', marginBottom: 2 }}>Entregues/mês</div>
+                    <div style={{ fontSize: 16, fontWeight: 800, color: 'var(--green)', fontFamily: "'DM Mono',monospace" }}>{logWidget.entreguesMes}</div>
+                  </div>
+                  <div>
+                    <div style={{ fontSize: 10, color: 'var(--gray-400)', marginBottom: 2 }}>Em trânsito</div>
+                    <div style={{ fontSize: 14, fontWeight: 700 }}>{logWidget.rotasAtivas}</div>
+                  </div>
+                  <div>
+                    <div style={{ fontSize: 10, color: 'var(--gray-400)', marginBottom: 2 }}>Pneus alerta</div>
+                    <div style={{ fontSize: 14, fontWeight: 700, color: logWidget.pneusAlerta > 0 ? 'var(--red)' : 'var(--gray-400)' }}>
+                      {logWidget.pneusAlerta > 0 ? `${logWidget.pneusAlerta} ⚠` : '—'}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </Link>
+          )}
+        </div>
       )}
 
       {/* Score Financeiro */}

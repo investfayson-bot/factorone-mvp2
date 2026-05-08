@@ -37,6 +37,25 @@ function buildNavGroups(badges: { reembolsos: number; aprovacoes: number }): Nav
       ],
     },
     {
+      label: 'Clientes & Vendas',
+      items: [
+        { href: '/dashboard/clientes', icon: 'fa-users', label: 'Clientes' },
+        { href: '/dashboard/crm', icon: 'fa-handshake', label: 'CRM', badge: 'PLUS', badgeColor: '#7C3AED' },
+      ],
+    },
+    {
+      label: 'Marketing',
+      items: [
+        { href: '/dashboard/marketing', icon: 'fa-bullhorn', label: 'Marketing' },
+      ],
+    },
+    {
+      label: 'Logística',
+      items: [
+        { href: '/dashboard/logistica', icon: 'fa-truck-fast', label: 'Logística' },
+      ],
+    },
+    {
       label: 'Operacional',
       items: [
         { href: '/dashboard/despesas', icon: 'fa-receipt', label: 'Despesas & Recibos' },
@@ -90,6 +109,11 @@ const pageTitles: Record<string, string> = {
   '/dashboard/fornecedores': 'Fornecedores & Pagamentos',
   '/dashboard/contabilidade': 'Contabilidade',
   '/dashboard/contadores': 'Portal Contador',
+  '/dashboard/clientes': 'Clientes',
+  '/dashboard/crm': 'CRM',
+  '/dashboard/marketing': 'Marketing',
+  '/dashboard/logistica': 'Logística',
+  '/dashboard/receitas': 'Receitas',
 }
 
 function isActive(pathname: string, item: NavGroup['items'][0]) {

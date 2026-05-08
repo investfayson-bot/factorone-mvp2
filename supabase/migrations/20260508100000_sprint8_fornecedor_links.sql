@@ -44,13 +44,13 @@ DROP POLICY IF EXISTS "fornecedor_links_public_read" ON public.fornecedor_links;
 CREATE POLICY "fornecedor_links_public_read" ON public.fornecedor_links FOR SELECT
   USING (true);
 
+-- Coluna origem em contas_pagar (para rastrear fonte) — deve vir ANTES da policy
+ALTER TABLE public.contas_pagar ADD COLUMN IF NOT EXISTS origem text;
+
 -- Escrita pública por token (fornecedor envia dados sem login)
 DROP POLICY IF EXISTS "contas_pagar_portal_insert" ON public.contas_pagar;
 CREATE POLICY "contas_pagar_portal_insert" ON public.contas_pagar FOR INSERT
   WITH CHECK (origem = 'portal_fornecedor');
-
--- Coluna origem em contas_pagar (para rastrear fonte)
-ALTER TABLE public.contas_pagar ADD COLUMN IF NOT EXISTS origem text;
 
 CREATE INDEX IF NOT EXISTS idx_fornecedor_links_token ON public.fornecedor_links(token);
 CREATE INDEX IF NOT EXISTS idx_fornecedor_links_empresa ON public.fornecedor_links(empresa_id);

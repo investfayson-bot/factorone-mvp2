@@ -4,6 +4,27 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import { formatBRL } from '@/lib/currency-brl'
 
+type FornecedorCad = {
+  id: string
+  razao_social: string
+  nome_fantasia: string | null
+  cnpj: string | null
+  email: string | null
+  telefone: string | null
+  whatsapp: string | null
+  categoria: string
+  contato_nome: string | null
+  contato_cargo: string | null
+  tipo_pagamento_pref: string
+  chave_pix: string | null
+  prazo_pagamento: number
+  status: string
+  avaliacao: number | null
+  notas: string | null
+  cidade: string | null
+  estado: string | null
+}
+
 type ContaPagar = {
   id: string
   descricao: string
@@ -60,7 +81,14 @@ function isVencida(c: ContaPagar) {
 export default function FornecedoresPage() {
   const [empresaId, setEmpresaId] = useState('')
   const [contas, setContas] = useState<ContaPagar[]>([])
-  const [tab, setTab] = useState<'fornecedores' | 'contas' | 'pagar'>('fornecedores')
+  const [tab, setTab] = useState<'fornecedores' | 'contas' | 'pagar' | 'cadastro'>('fornecedores')
+  const [fornecedoresCad, setFornecedoresCad] = useState<FornecedorCad[]>([])
+  const [modalForn, setModalForn] = useState(false)
+  const [fornForm, setFornForm] = useState({
+    razao_social: '', nome_fantasia: '', cnpj: '', email: '', telefone: '', whatsapp: '',
+    categoria: 'Fornecedores', contato_nome: '', contato_cargo: '', cidade: '', estado: '',
+    tipo_pagamento_pref: 'pix', chave_pix: '', prazo_pagamento: '30', avaliacao: '0', notas: '',
+  })
   const [filtroStatus, setFiltroStatus] = useState('todos')
   const [busca, setBusca] = useState('')
   const [modalNova, setModalNova] = useState(false)
@@ -83,12 +111,20 @@ export default function FornecedoresPage() {
     const { data: u } = await supabase.from('usuarios').select('empresa_id').eq('id', user.id).maybeSingle()
     const eid = (u?.empresa_id as string) || user.id
     setEmpresaId(eid)
-    const { data } = await supabase
-      .from('contas_pagar')
-      .select('id,descricao,fornecedor_nome,fornecedor_documento,categoria,valor,valor_pago,data_vencimento,data_pagamento,tipo_pagamento,chave_pix,codigo_barras,status,observacoes')
-      .eq('empresa_id', eid)
-      .order('data_vencimento', { ascending: false })
-    setContas((data || []) as ContaPagar[])
+    const [{ data: contasData }, { data: fornsData }] = await Promise.all([
+      supabase
+        .from('contas_pagar')
+        .select('id,descricao,fornecedor_nome,fornecedor_documento,categoria,valor,valor_pago,data_vencimento,data_pagamento,tipo_pagamento,chave_pix,codigo_barras,status,observacoes')
+        .eq('empresa_id', eid)
+        .order('data_vencimento', { ascending: false }),
+      supabase
+        .from('fornecedores')
+        .select('*')
+        .eq('empresa_id', eid)
+        .order('razao_social'),
+    ])
+    setContas((contasData || []) as ContaPagar[])
+    setFornecedoresCad((fornsData || []) as FornecedorCad[])
   }, [])
 
   useEffect(() => { void carregar() }, [carregar])
@@ -164,6 +200,34 @@ export default function FornecedoresPage() {
     await carregar()
   }
 
+  async function salvarFornecedor() {
+    if (!fornForm.razao_social) return
+    setSaving(true)
+    await supabase.from('fornecedores').insert({
+      empresa_id: empresaId,
+      razao_social: fornForm.razao_social,
+      nome_fantasia: fornForm.nome_fantasia || null,
+      cnpj: fornForm.cnpj || null,
+      email: fornForm.email || null,
+      telefone: fornForm.telefone || null,
+      whatsapp: fornForm.whatsapp || null,
+      categoria: fornForm.categoria,
+      contato_nome: fornForm.contato_nome || null,
+      contato_cargo: fornForm.contato_cargo || null,
+      cidade: fornForm.cidade || null,
+      estado: fornForm.estado || null,
+      tipo_pagamento_pref: fornForm.tipo_pagamento_pref,
+      chave_pix: fornForm.chave_pix || null,
+      prazo_pagamento: parseInt(fornForm.prazo_pagamento) || 30,
+      avaliacao: parseInt(fornForm.avaliacao) || null,
+      notas: fornForm.notas || null,
+    })
+    setSaving(false)
+    setModalForn(false)
+    setFornForm({ razao_social: '', nome_fantasia: '', cnpj: '', email: '', telefone: '', whatsapp: '', categoria: 'Fornecedores', contato_nome: '', contato_cargo: '', cidade: '', estado: '', tipo_pagamento_pref: 'pix', chave_pix: '', prazo_pagamento: '30', avaliacao: '0', notas: '' })
+    await carregar()
+  }
+
   async function gerarLink() {
     setLinkSaving(true)
     try {
@@ -192,6 +256,9 @@ export default function FornecedoresPage() {
           <button className="btn-ghost" style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12 }} onClick={() => { setModalLink(true); setLinkGerado(''); setLinkForm({ descricao: '', valor: '', data_vencimento: '', categoria: 'Fornecedores' }) }}>
             <i className="fa-solid fa-link" style={{ fontSize: 11 }} />
             Link de cobrança
+          </button>
+          <button className="btn-ghost" onClick={() => { setModalForn(true) }}>
+            <i className="fa-solid fa-user-plus" style={{ fontSize: 11 }} /> Cadastrar Fornecedor
           </button>
           <button className="btn-action" onClick={() => setModalNova(true)}>+ Nova Conta a Pagar</button>
         </div>
@@ -222,7 +289,7 @@ export default function FornecedoresPage() {
 
       {/* Tabs */}
       <div style={{ display: 'flex', gap: 6, marginBottom: 4 }}>
-        {([['fornecedores', 'Fornecedores'], ['contas', 'Contas a Pagar'], ['pagar', 'Histórico Pagamentos']] as [string, string][]).map(([k, l]) => (
+        {([['cadastro', 'Cadastro'], ['fornecedores', 'Por Fornecedor'], ['contas', 'Contas a Pagar'], ['pagar', 'Histórico Pagamentos']] as [string, string][]).map(([k, l]) => (
           <button key={k} onClick={() => setTab(k as typeof tab)} style={{
             padding: '7px 14px', borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: 'pointer', border: '1px solid',
             background: tab === k ? 'var(--navy)' : '#fff',
@@ -231,6 +298,60 @@ export default function FornecedoresPage() {
           }}>{l}</button>
         ))}
       </div>
+
+      {/* Tab: Cadastro de fornecedores (standalone) */}
+      {tab === 'cadastro' && (
+        <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, overflow: 'hidden' }}>
+          <div className="expenses-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>Razão Social</th><th>CNPJ</th><th>Categoria</th><th>Contato</th>
+                  <th>Cidade/UF</th><th>Pagamento</th><th>Avaliação</th><th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {fornecedoresCad.length === 0 && (
+                  <tr><td colSpan={8} style={{ textAlign: 'center', color: 'var(--gray-400)', padding: '32px 0' }}>
+                    Nenhum fornecedor cadastrado. Use o botão &quot;Cadastrar Fornecedor&quot; acima.
+                  </td></tr>
+                )}
+                {fornecedoresCad.map(f => (
+                  <tr key={f.id}>
+                    <td>
+                      <div style={{ fontWeight: 700 }}>{f.razao_social}</div>
+                      {f.nome_fantasia && <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>{f.nome_fantasia}</div>}
+                    </td>
+                    <td style={{ fontFamily: "'DM Mono',monospace", fontSize: 11 }}>{f.cnpj || '—'}</td>
+                    <td><span className="tag gray" style={{ fontSize: 10 }}>{f.categoria}</span></td>
+                    <td>
+                      <div style={{ fontSize: 12 }}>{f.contato_nome || '—'}</div>
+                      {f.contato_cargo && <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>{f.contato_cargo}</div>}
+                    </td>
+                    <td style={{ fontSize: 12 }}>{f.cidade ? `${f.cidade}/${f.estado}` : '—'}</td>
+                    <td>
+                      <div style={{ fontSize: 11 }}>{f.tipo_pagamento_pref?.toUpperCase()}</div>
+                      {f.prazo_pagamento && <div style={{ fontSize: 10, color: 'var(--gray-400)' }}>{f.prazo_pagamento}d prazo</div>}
+                    </td>
+                    <td>
+                      {f.avaliacao ? (
+                        <span style={{ color: 'var(--gold)', fontSize: 13, letterSpacing: -1 }}>
+                          {'★'.repeat(f.avaliacao)}{'☆'.repeat(5 - f.avaliacao)}
+                        </span>
+                      ) : '—'}
+                    </td>
+                    <td>
+                      <span className={`tag ${f.status === 'ativo' ? 'green' : f.status === 'bloqueado' ? 'red' : 'gray'}`} style={{ fontSize: 10 }}>
+                        {f.status}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
 
       {/* Tab: Fornecedores agrupados */}
       {tab === 'fornecedores' && (
@@ -379,6 +500,107 @@ export default function FornecedoresPage() {
                 ))}
               </tbody>
             </table>
+          </div>
+        </div>
+      )}
+
+      {/* Modal cadastrar fornecedor */}
+      {modalForn && (
+        <div className="modal-bg" onClick={() => setModalForn(false)}>
+          <div className="modal-box" style={{ width: 600, maxHeight: '90vh', overflowY: 'auto' }} onClick={e => e.stopPropagation()}>
+            <div className="modal-title">
+              Cadastrar Fornecedor
+              <button className="modal-close" onClick={() => setModalForn(false)}>×</button>
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+              <div style={{ gridColumn: '1 / -1' }}>
+                <label className="form-label">Razão Social *</label>
+                <input className="form-input" value={fornForm.razao_social} onChange={e => setFornForm(f => ({ ...f, razao_social: e.target.value }))} placeholder="Nome completo da empresa" />
+              </div>
+              <div>
+                <label className="form-label">Nome Fantasia</label>
+                <input className="form-input" value={fornForm.nome_fantasia} onChange={e => setFornForm(f => ({ ...f, nome_fantasia: e.target.value }))} placeholder="Como é conhecido" />
+              </div>
+              <div>
+                <label className="form-label">CNPJ</label>
+                <input className="form-input" value={fornForm.cnpj} onChange={e => setFornForm(f => ({ ...f, cnpj: e.target.value }))} placeholder="00.000.000/0001-00" />
+              </div>
+              <div>
+                <label className="form-label">E-mail</label>
+                <input className="form-input" type="email" value={fornForm.email} onChange={e => setFornForm(f => ({ ...f, email: e.target.value }))} placeholder="contato@fornecedor.com" />
+              </div>
+              <div>
+                <label className="form-label">Telefone</label>
+                <input className="form-input" value={fornForm.telefone} onChange={e => setFornForm(f => ({ ...f, telefone: e.target.value }))} placeholder="(11) 99999-9999" />
+              </div>
+              <div>
+                <label className="form-label">WhatsApp</label>
+                <input className="form-input" value={fornForm.whatsapp} onChange={e => setFornForm(f => ({ ...f, whatsapp: e.target.value }))} placeholder="(11) 99999-9999" />
+              </div>
+              <div>
+                <label className="form-label">Categoria</label>
+                <select className="form-input" value={fornForm.categoria} onChange={e => setFornForm(f => ({ ...f, categoria: e.target.value }))}>
+                  {CATS.map(c => <option key={c} value={c}>{c}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className="form-label">Contato Principal</label>
+                <input className="form-input" value={fornForm.contato_nome} onChange={e => setFornForm(f => ({ ...f, contato_nome: e.target.value }))} placeholder="Nome do contato" />
+              </div>
+              <div>
+                <label className="form-label">Cargo do Contato</label>
+                <input className="form-input" value={fornForm.contato_cargo} onChange={e => setFornForm(f => ({ ...f, contato_cargo: e.target.value }))} placeholder="Diretor comercial..." />
+              </div>
+              <div>
+                <label className="form-label">Cidade</label>
+                <input className="form-input" value={fornForm.cidade} onChange={e => setFornForm(f => ({ ...f, cidade: e.target.value }))} placeholder="São Paulo" />
+              </div>
+              <div>
+                <label className="form-label">Estado (UF)</label>
+                <input className="form-input" value={fornForm.estado} onChange={e => setFornForm(f => ({ ...f, estado: e.target.value }))} placeholder="SP" maxLength={2} />
+              </div>
+              <div>
+                <label className="form-label">Forma de Pagamento Preferida</label>
+                <select className="form-input" value={fornForm.tipo_pagamento_pref} onChange={e => setFornForm(f => ({ ...f, tipo_pagamento_pref: e.target.value }))}>
+                  <option value="pix">PIX</option>
+                  <option value="ted">TED</option>
+                  <option value="boleto">Boleto</option>
+                  <option value="cartao">Cartão</option>
+                  <option value="cheque">Cheque</option>
+                </select>
+              </div>
+              <div>
+                <label className="form-label">Prazo de Pagamento (dias)</label>
+                <input className="form-input" type="number" value={fornForm.prazo_pagamento} onChange={e => setFornForm(f => ({ ...f, prazo_pagamento: e.target.value }))} placeholder="30" />
+              </div>
+              {fornForm.tipo_pagamento_pref === 'pix' && (
+                <div style={{ gridColumn: '1 / -1' }}>
+                  <label className="form-label">Chave PIX</label>
+                  <input className="form-input" value={fornForm.chave_pix} onChange={e => setFornForm(f => ({ ...f, chave_pix: e.target.value }))} placeholder="CNPJ, CPF, e-mail ou chave aleatória" />
+                </div>
+              )}
+              <div>
+                <label className="form-label">Avaliação (1-5)</label>
+                <div style={{ display: 'flex', gap: 6, marginTop: 4 }}>
+                  {[1, 2, 3, 4, 5].map(n => (
+                    <button key={n} type="button" onClick={() => setFornForm(f => ({ ...f, avaliacao: String(n) }))} style={{
+                      fontSize: 20, background: 'none', border: 'none', cursor: 'pointer',
+                      color: parseInt(fornForm.avaliacao) >= n ? 'var(--gold)' : '#d1d5db',
+                    }}>★</button>
+                  ))}
+                </div>
+              </div>
+              <div style={{ gridColumn: '1 / -1' }}>
+                <label className="form-label">Notas</label>
+                <textarea className="form-input" rows={2} value={fornForm.notas} onChange={e => setFornForm(f => ({ ...f, notas: e.target.value }))} placeholder="Observações sobre o fornecedor..." style={{ resize: 'vertical' }} />
+              </div>
+            </div>
+            <div className="modal-actions">
+              <button className="btn-ghost" onClick={() => setModalForn(false)}>Cancelar</button>
+              <button className="btn-action" style={{ opacity: saving ? 0.6 : 1 }} disabled={saving} onClick={() => void salvarFornecedor()}>
+                {saving ? 'Salvando…' : 'Cadastrar Fornecedor'}
+              </button>
+            </div>
           </div>
         </div>
       )}
