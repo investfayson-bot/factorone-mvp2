@@ -531,18 +531,18 @@ export default function LogisticaPage() {
                         ) : <span style={{ fontSize: 11, color: 'var(--gray-400)' }}>—</span>}
                       </td>
                       <td>
-                        <div style={{ display: 'flex', gap: 6 }}>
+                        <div style={{ display: 'flex', gap: 5 }}>
                           {r.status === 'agendada' && (
-                            <button onClick={() => atualizarStatus(r.id, 'em_transito')} style={{ fontSize: 10, padding: '3px 8px', background: 'var(--teal)', color: '#fff', border: 'none', borderRadius: 6, cursor: 'pointer' }}>
-                              Iniciar
+                            <button className="btn-action" style={{ fontSize: 10, padding: '3px 10px' }} onClick={() => atualizarStatus(r.id, 'em_transito')}>
+                              <i className="fa-solid fa-play" style={{ marginRight: 4 }} />Iniciar
                             </button>
                           )}
                           {r.status === 'em_transito' && (
-                            <button onClick={() => atualizarStatus(r.id, 'entregue')} style={{ fontSize: 10, padding: '3px 8px', background: 'var(--green)', color: '#fff', border: 'none', borderRadius: 6, cursor: 'pointer' }}>
-                              Entregar
+                            <button className="btn-action" style={{ fontSize: 10, padding: '3px 10px', background: 'var(--green)', border: 'none' }} onClick={() => atualizarStatus(r.id, 'entregue')}>
+                              <i className="fa-solid fa-check" style={{ marginRight: 4 }} />Entregar
                             </button>
                           )}
-                          <button onClick={() => abrirEditarRota(r)} style={{ fontSize: 10, padding: '3px 8px', background: '#f1f5f9', color: 'var(--navy)', border: 'none', borderRadius: 6, cursor: 'pointer' }}>
+                          <button className="btn-ghost" style={{ fontSize: 10, padding: '3px 8px' }} onClick={() => abrirEditarRota(r)}>
                             <i className="fa-solid fa-pen" />
                           </button>
                         </div>

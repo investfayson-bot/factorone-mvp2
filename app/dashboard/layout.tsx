@@ -41,7 +41,7 @@ function buildNavGroups(badges: { reembolsos: number; aprovacoes: number }): Nav
       label: 'Clientes & Vendas',
       items: [
         { href: '/dashboard/clientes', icon: 'fa-users', label: 'Clientes' },
-        { href: '/dashboard/crm', icon: 'fa-handshake', label: 'CRM', badge: 'PLUS', badgeColor: '#7C3AED' },
+        { href: '/dashboard/crm', icon: 'fa-handshake', label: 'CRM', badge: 'PLUS', badgeColor: '#7C3AED', match: (p) => p.startsWith('/dashboard/crm') },
       ],
     },
     {
@@ -53,7 +53,7 @@ function buildNavGroups(badges: { reembolsos: number; aprovacoes: number }): Nav
     {
       label: 'Logística',
       items: [
-        { href: '/dashboard/logistica', icon: 'fa-truck-fast', label: 'Logística' },
+        { href: '/dashboard/logistica', icon: 'fa-truck-fast', label: 'Logística', badge: 'PLUS', badgeColor: '#7C3AED' },
       ],
     },
     {

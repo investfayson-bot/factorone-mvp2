@@ -45,7 +45,7 @@ function statusTagFin(status: string) {
 function FinanceiroInner() {
   const searchParams = useSearchParams()
   const tabParam = searchParams.get('tab')
-  const [tab, setTab] = useState<'resumo' | 'pagar' | 'receber' | 'conciliacao' | 'aging'>('resumo')
+  const [tab, setTab] = useState<'pagar' | 'receber' | 'conciliacao' | 'aging'>('pagar')
   const [pagar, setPagar] = useState<ContaPagar[]>([])
   const [receber, setReceber] = useState<ContaReceber[]>([])
   const [fStatusPagar, setFStatusPagar] = useState('todas')
@@ -56,7 +56,7 @@ function FinanceiroInner() {
   useEffect(() => {
     const t = tabParam
     if (t === 'pagar' || t === 'receber' || t === 'conciliacao' || t === 'aging') setTab(t)
-    else setTab('resumo')
+    else setTab('pagar')
   }, [tabParam])
 
   const carregar = useCallback(async () => {
@@ -74,11 +74,8 @@ function FinanceiroInner() {
   const kpis = useMemo(() => {
     const pagarPend = pagar.filter((x) => x.status === 'pendente' || x.status === 'vencida').reduce((s, x) => s + Number(x.valor || 0) - Number(x.valor_pago || 0), 0)
     const receberPend = receber.filter((x) => x.status === 'pendente' || x.status === 'vencida').reduce((s, x) => s + Number(x.valor || 0) - Number(x.valor_recebido || 0), 0)
-    const vencidasPagar = pagar.filter((x) => x.status === 'vencida').reduce((s, x) => s + Number(x.valor || 0), 0)
-    const vencidasReceber = receber.filter((x) => x.status === 'vencida').reduce((s, x) => s + Number(x.valor || 0), 0)
-    const recebidoMes = receber.filter((x) => x.status === 'recebida').reduce((s, x) => s + Number(x.valor_recebido || 0), 0)
-    const pagoMes = pagar.filter((x) => x.status === 'paga').reduce((s, x) => s + Number(x.valor_pago || 0), 0)
-    return { pagarPend, receberPend, vencidasPagar, vencidasReceber, recebidoMes, pagoMes }
+    const vencidasPagar = pagar.filter((x) => x.status === 'vencida').length
+    return { pagarPend, receberPend, vencidasPagar }
   }, [pagar, receber])
 
   async function registrarPagamento(id: string, valor: number) {
@@ -113,36 +110,14 @@ function FinanceiroInner() {
         </div>
       </div>
 
-      {/* KPIs */}
-      <div className="kpis" style={{ gridTemplateColumns: 'repeat(6, 1fr)' }}>
-        {[
-          { k: 'A pagar', v: kpis.pagarPend, warn: false },
-          { k: 'A receber', v: kpis.receberPend, warn: false },
-          { k: 'Vencidas pagar', v: kpis.vencidasPagar, warn: true },
-          { k: 'Vencidas receber', v: kpis.vencidasReceber, warn: true },
-          { k: 'Recebido mês', v: kpis.recebidoMes, warn: false },
-          { k: 'Pago mês', v: kpis.pagoMes, warn: false },
-        ].map((row) => (
-          <div key={row.k} className="kpi">
-            <div className="kpi-lbl">{row.k}</div>
-            <div className="kpi-val" style={{ color: row.warn && row.v > 0 ? 'var(--red)' : 'var(--navy)', fontSize: 18 }}>{formatBRL(row.v)}</div>
-            <div className={`kpi-delta ${row.warn && row.v > 0 ? 'dn' : 'up'}`}>{row.warn && row.v > 0 ? '⚠ atenção' : '✓ ok'}</div>
-          </div>
-        ))}
-      </div>
-
       {/* Tabs */}
-      <div style={{ display: 'flex', gap: 6, marginBottom: 14 }}>
-        {(['resumo', 'pagar', 'receber', 'conciliacao', 'aging'] as const).map((t) => (
-          <button key={t} className={`btn-action${tab !== t ? ' btn-ghost' : ''}`} style={{ fontSize: 11, padding: '5px 12px', textTransform: 'capitalize' }} onClick={() => setTab(t)}>{t}</button>
+      <div style={{ display: 'flex', gap: 6, marginBottom: 14, alignItems: 'center' }}>
+        {([['pagar', `A Pagar${kpis.pagarPend > 0 ? ` · ${formatBRL(kpis.pagarPend)}` : ''}`], ['receber', `A Receber${kpis.receberPend > 0 ? ` · ${formatBRL(kpis.receberPend)}` : ''}`], ['conciliacao', 'Conciliação'], ['aging', 'Aging']] as [typeof tab, string][]).map(([t, l]) => (
+          <button key={t} className={`btn-action${tab !== t ? ' btn-ghost' : ''}`} style={{ fontSize: 11, padding: '5px 12px' }} onClick={() => setTab(t)}>
+            {t === 'pagar' && kpis.vencidasPagar > 0 ? <><i className="fa-solid fa-circle-exclamation" style={{ color: tab === t ? '#fff' : 'var(--red)', marginRight: 4, fontSize: 9 }} />{l}</> : l}
+          </button>
         ))}
       </div>
-
-      {tab === 'resumo' && (
-        <div className="chart-card" style={{ fontSize: 13, color: 'var(--gray-500)' }}>
-          Resumo consolidado: use as abas acima para A Pagar, A Receber, Conciliação bancária e Aging Report.
-        </div>
-      )}
 
       {tab === 'pagar' && (
         <>
