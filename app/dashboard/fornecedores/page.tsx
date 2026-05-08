@@ -72,6 +72,10 @@ export default function FornecedoresPage() {
   })
   const [valorPagamento, setValorPagamento] = useState('')
   const [dataPagamento, setDataPagamento] = useState(new Date().toISOString().slice(0, 10))
+  const [modalLink, setModalLink] = useState(false)
+  const [linkGerado, setLinkGerado] = useState('')
+  const [linkForm, setLinkForm] = useState({ descricao: '', valor: '', data_vencimento: '', categoria: 'Fornecedores' })
+  const [linkSaving, setLinkSaving] = useState(false)
 
   const carregar = useCallback(async () => {
     const { data: { user } } = await supabase.auth.getUser()
@@ -160,6 +164,23 @@ export default function FornecedoresPage() {
     await carregar()
   }
 
+  async function gerarLink() {
+    setLinkSaving(true)
+    try {
+      const { data: sess } = await supabase.auth.getSession()
+      const res = await fetch('/api/fornecedores/gerar-link', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...(sess.session?.access_token ? { Authorization: `Bearer ${sess.session.access_token}` } : {}) },
+        body: JSON.stringify({ descricao: linkForm.descricao || undefined, valor: linkForm.valor ? Number(linkForm.valor.replace(',', '.')) : undefined, data_vencimento: linkForm.data_vencimento || undefined, categoria: linkForm.categoria }),
+      })
+      const out = await res.json() as { url?: string; error?: string }
+      if (out.url) setLinkGerado(out.url)
+      else alert(out.error || 'Erro ao gerar link')
+    } finally {
+      setLinkSaving(false)
+    }
+  }
+
   return (
     <>
       <div className="page-hdr">
@@ -167,7 +188,13 @@ export default function FornecedoresPage() {
           <div className="page-title">Fornecedores & Pagamentos</div>
           <div className="page-sub">Gestão de contas a pagar · {fornecedoresAgrupados.length} fornecedores</div>
         </div>
-        <button className="btn-action" onClick={() => setModalNova(true)}>+ Nova Conta a Pagar</button>
+        <div style={{ display: 'flex', gap: 8 }}>
+          <button className="btn-ghost" style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12 }} onClick={() => { setModalLink(true); setLinkGerado(''); setLinkForm({ descricao: '', valor: '', data_vencimento: '', categoria: 'Fornecedores' }) }}>
+            <i className="fa-solid fa-link" style={{ fontSize: 11 }} />
+            Link de cobrança
+          </button>
+          <button className="btn-action" onClick={() => setModalNova(true)}>+ Nova Conta a Pagar</button>
+        </div>
       </div>
 
       <div className="kpis" style={{ gridTemplateColumns: 'repeat(4, 1fr)' }}>
@@ -428,6 +455,71 @@ export default function FornecedoresPage() {
                 {saving ? 'Salvando…' : 'Salvar'}
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal gerar link de cobrança */}
+      {modalLink && (
+        <div className="modal-bg" onClick={() => setModalLink(false)}>
+          <div className="modal-box" style={{ width: 480 }} onClick={e => e.stopPropagation()}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
+              <h3 className="modal-title">Link de cobrança para fornecedor</h3>
+              <button className="modal-close" onClick={() => setModalLink(false)}><i className="fa-solid fa-xmark" /></button>
+            </div>
+            {!linkGerado ? (
+              <>
+                <p style={{ fontSize: 12, color: 'var(--gray-400)', marginBottom: 16, lineHeight: 1.6 }}>
+                  Gere um link único e envie para o fornecedor. Ele preenche os dados e a cobrança cai automaticamente no sistema.
+                </p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                  <div>
+                    <label style={{ fontSize: 11, fontWeight: 600, color: 'var(--gray-500)', marginBottom: 4, display: 'block' }}>Referência / Serviço (opcional)</label>
+                    <input className="form-input" placeholder="Ex.: Manutenção de equipamentos maio" value={linkForm.descricao} onChange={e => setLinkForm(f => ({ ...f, descricao: e.target.value }))} />
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                    <div>
+                      <label style={{ fontSize: 11, fontWeight: 600, color: 'var(--gray-500)', marginBottom: 4, display: 'block' }}>Valor sugerido (R$)</label>
+                      <input className="form-input" placeholder="0,00" value={linkForm.valor} onChange={e => setLinkForm(f => ({ ...f, valor: e.target.value }))} />
+                    </div>
+                    <div>
+                      <label style={{ fontSize: 11, fontWeight: 600, color: 'var(--gray-500)', marginBottom: 4, display: 'block' }}>Vencimento sugerido</label>
+                      <input type="date" className="form-input" value={linkForm.data_vencimento} onChange={e => setLinkForm(f => ({ ...f, data_vencimento: e.target.value }))} />
+                    </div>
+                    <div style={{ gridColumn: '1/-1' }}>
+                      <label style={{ fontSize: 11, fontWeight: 600, color: 'var(--gray-500)', marginBottom: 4, display: 'block' }}>Categoria</label>
+                      <select className="form-input" value={linkForm.categoria} onChange={e => setLinkForm(f => ({ ...f, categoria: e.target.value }))}>
+                        {CATS.map(c => <option key={c} value={c}>{c}</option>)}
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div className="modal-actions" style={{ marginTop: 20 }}>
+                  <button className="btn-ghost" onClick={() => setModalLink(false)}>Cancelar</button>
+                  <button className="btn-action" disabled={linkSaving} onClick={() => void gerarLink()}>
+                    {linkSaving ? 'Gerando…' : 'Gerar link'}
+                  </button>
+                </div>
+              </>
+            ) : (
+              <div>
+                <div style={{ padding: '16px 18px', borderRadius: 12, border: '1px solid var(--teal)', background: 'rgba(0,168,150,0.04)', marginBottom: 16 }}>
+                  <p style={{ fontSize: 11, fontWeight: 700, color: 'var(--teal)', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: 8 }}>
+                    <i className="fa-solid fa-circle-check" style={{ marginRight: 5 }} />Link gerado com sucesso
+                  </p>
+                  <p style={{ fontSize: 12, color: 'var(--navy)', wordBreak: 'break-all', fontFamily: "'DM Mono',monospace", margin: 0 }}>{linkGerado}</p>
+                </div>
+                <div style={{ display: 'flex', gap: 8 }}>
+                  <button className="btn-action" style={{ flex: 1 }} onClick={() => { void navigator.clipboard.writeText(linkGerado).then(() => alert('Link copiado!')) }}>
+                    <i className="fa-solid fa-copy" style={{ marginRight: 6 }} />Copiar link
+                  </button>
+                  <button className="btn-ghost" onClick={() => setModalLink(false)}>Fechar</button>
+                </div>
+                <p style={{ fontSize: 11, color: 'var(--gray-400)', marginTop: 12 }}>
+                  <i className="fa-solid fa-clock" style={{ marginRight: 5 }} />Link válido por 30 dias. Após uso único, expira automaticamente.
+                </p>
+              </div>
+            )}
           </div>
         </div>
       )}

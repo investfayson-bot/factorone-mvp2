@@ -117,16 +117,22 @@ export default function DashboardBancario({ empresaId, empresaNome, empresaCnpj,
 
       {/* Action buttons */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 8, marginBottom: 16 }}>
-        {[
-          { label: '📤 Pix', action: () => setModal('pix') },
-          { label: '📋 TED', action: () => setModal('ted') },
-          { label: '📄 Boleto', action: () => setModal('boleto') },
-          { label: '💰 Investir', action: () => setModal('investir') },
-          { label: '📊 Extrato', href: '/dashboard/conta-pj/extrato' },
-        ].map(b => b.href ? (
-          <Link key={b.label} href={b.href} className="btn-action btn-ghost" style={{ textAlign: 'center', fontSize: 12, textDecoration: 'none' }}>{b.label}</Link>
+        {([
+          { icon: 'fa-qrcode', label: 'PIX', action: () => setModal('pix') },
+          { icon: 'fa-arrow-right-arrow-left', label: 'TED', action: () => setModal('ted') },
+          { icon: 'fa-barcode', label: 'Boleto', action: () => setModal('boleto') },
+          { icon: 'fa-chart-line', label: 'Investir', action: () => setModal('investir') },
+          { icon: 'fa-list-ul', label: 'Extrato', href: '/dashboard/conta-pj/extrato' },
+        ] as { icon: string; label: string; action?: () => void; href?: string }[]).map(b => b.href ? (
+          <Link key={b.label} href={b.href} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5, padding: '10px 8px', borderRadius: 10, border: '1px solid var(--gray-100)', background: '#fff', textDecoration: 'none', color: 'var(--navy)', fontSize: 11, fontWeight: 600, transition: 'all .15s', cursor: 'pointer' }}>
+            <i className={`fa-solid ${b.icon}`} style={{ fontSize: 16, color: 'var(--teal)' }} />
+            {b.label}
+          </Link>
         ) : (
-          <button key={b.label} className="btn-action btn-ghost" style={{ fontSize: 12 }} onClick={b.action}>{b.label}</button>
+          <button key={b.label} onClick={b.action} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5, padding: '10px 8px', borderRadius: 10, border: '1px solid var(--gray-100)', background: '#fff', color: 'var(--navy)', fontSize: 11, fontWeight: 600, cursor: 'pointer', transition: 'all .15s' }}>
+            <i className={`fa-solid ${b.icon}`} style={{ fontSize: 16, color: 'var(--teal)' }} />
+            {b.label}
+          </button>
         ))}
       </div>
 
