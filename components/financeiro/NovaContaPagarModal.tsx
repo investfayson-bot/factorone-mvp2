@@ -6,6 +6,17 @@ import { supabase } from '@/lib/supabase'
 
 type Props = { open: boolean; onClose: () => void; onSaved: () => void }
 
+const CATS_PAGAR = [
+  { label: 'Fornecedores',       icon: 'fa-boxes-stacked' },
+  { label: 'Folha de Pagamento', icon: 'fa-users' },
+  { label: 'Impostos',           icon: 'fa-landmark' },
+  { label: 'Aluguel',            icon: 'fa-house' },
+  { label: 'Serviços',           icon: 'fa-screwdriver-wrench' },
+  { label: 'Materiais',          icon: 'fa-layer-group' },
+  { label: 'Tarifas Bancárias',  icon: 'fa-building-columns' },
+  { label: 'Outros',             icon: 'fa-cube' },
+]
+
 export default function NovaContaPagarModal({ open, onClose, onSaved }: Props) {
   const [fornecedor, setFornecedor] = useState('')
   const [documento, setDocumento] = useState('')
@@ -63,7 +74,19 @@ export default function NovaContaPagarModal({ open, onClose, onSaved }: Props) {
           <input className="form-input" placeholder="Fornecedor*" value={fornecedor} onChange={(e) => setFornecedor(e.target.value)} />
           <input className="form-input" placeholder="CNPJ/CPF fornecedor" value={documento} onChange={(e) => setDocumento(e.target.value)} />
           <input className="form-input" placeholder="Descrição*" value={descricao} onChange={(e) => setDescricao(e.target.value)} style={{ gridColumn: 'span 2' }} />
-          <input className="form-input" placeholder="Categoria" value={categoria} onChange={(e) => setCategoria(e.target.value)} />
+        </div>
+        <div style={{ marginBottom: 10 }}>
+          <label className="form-label">Categoria</label>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 7 }}>
+            {CATS_PAGAR.map((c) => (
+              <button key={c.label} type="button" onClick={() => setCategoria(c.label)} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5, padding: '9px 6px', borderRadius: 9, cursor: 'pointer', fontSize: 10, fontWeight: 600, border: categoria === c.label ? '2px solid var(--teal)' : '1px solid var(--gray-100)', background: categoria === c.label ? 'rgba(0,168,150,0.08)' : '#fafafa', color: categoria === c.label ? 'var(--teal)' : 'var(--gray-500)', transition: 'all 0.15s' }}>
+                <i className={`fa-solid ${c.icon}`} style={{ fontSize: 16 }} />
+                {c.label}
+              </button>
+            ))}
+          </div>
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 8 }}>
           <input className="form-input" placeholder="Valor*" value={valorMask} onChange={(e) => setValorMask(maskBRLInput(e.target.value))} />
           <div className="form-group" style={{ margin: 0 }}>
             <label className="form-label">Emissão</label>

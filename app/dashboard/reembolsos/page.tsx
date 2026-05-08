@@ -27,7 +27,15 @@ type NovoForm = {
 
 type Tab = 'pendentes' | 'aprovados' | 'pagar' | 'todos'
 
-const CATEGORIAS = ['Viagens', 'Alimentação', 'Material de Escritório', 'Tecnologia', 'Hospedagem', 'Transporte', 'Outros']
+const CATEGORIAS = [
+  { label: 'Viagens',               icon: 'fa-plane' },
+  { label: 'Alimentação',           icon: 'fa-utensils' },
+  { label: 'Material de Escritório',icon: 'fa-box-archive' },
+  { label: 'Tecnologia',            icon: 'fa-laptop' },
+  { label: 'Hospedagem',            icon: 'fa-bed' },
+  { label: 'Transporte',            icon: 'fa-car' },
+  { label: 'Outros',                icon: 'fa-cube' },
+]
 
 export default function ReembolsosPage() {
   const [empresaId, setEmpresaId] = useState('')
@@ -370,9 +378,26 @@ export default function ReembolsosPage() {
             </div>
             <div className="form-group">
               <label className="form-label">Categoria</label>
-              <select className="form-input" value={form.categoria} onChange={e => setForm(f => ({ ...f, categoria: e.target.value }))}>
-                {CATEGORIAS.map(c => <option key={c}>{c}</option>)}
-              </select>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 7 }}>
+                {CATEGORIAS.map((c) => (
+                  <button
+                    key={c.label}
+                    type="button"
+                    onClick={() => setForm(f => ({ ...f, categoria: c.label }))}
+                    style={{
+                      display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5,
+                      padding: '9px 6px', borderRadius: 9, cursor: 'pointer', fontSize: 10, fontWeight: 600,
+                      border: form.categoria === c.label ? '2px solid var(--teal)' : '1px solid var(--gray-100)',
+                      background: form.categoria === c.label ? 'rgba(0,168,150,0.08)' : '#fafafa',
+                      color: form.categoria === c.label ? 'var(--teal)' : 'var(--gray-500)',
+                      transition: 'all 0.15s',
+                    }}
+                  >
+                    <i className={`fa-solid ${c.icon}`} style={{ fontSize: 16 }} />
+                    {c.label}
+                  </button>
+                ))}
+              </div>
             </div>
             <div className="form-group">
               <label className="form-label">Observacao (opcional)</label>

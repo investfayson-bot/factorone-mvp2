@@ -192,7 +192,8 @@ export default function ContabilidadePage() {
           <button
             type="button"
             onClick={() => setBannerAberto(v => !v)}
-            style={{ background: 'var(--teal)', border: 'none', borderRadius: 8, padding: '7px 14px', fontSize: 11, fontWeight: 700, color: '#fff', cursor: 'pointer' }}
+            className={`btn-action${bannerAberto ? ' btn-ghost' : ''}`}
+            style={{ fontSize: 11, padding: '7px 14px' }}
           >
             {bannerAberto ? 'Fechar' : '+ Convidar contador'}
           </button>

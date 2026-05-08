@@ -331,12 +331,12 @@ export default function ConciliacaoPage() {
                   <td style={{ textAlign: 'right' }}>
                     <div style={{ display: 'flex', gap: 6, justifyContent: 'flex-end' }}>
                       {item.status !== 'conciliado' && (
-                        <button onClick={() => setModalTxId(item.id)} style={{ fontSize: 11, padding: '2px 8px', borderRadius: 6, border: '1px solid var(--gray-100)', background: 'transparent', color: 'var(--teal)', cursor: 'pointer', fontWeight: 600 }}>
+                        <button onClick={() => setModalTxId(item.id)} className="btn-action btn-ghost" style={{ fontSize: 11, padding: '2px 8px' }}>
                           Vincular
                         </button>
                       )}
                       {manual[item.id] && (
-                        <button onClick={() => desconciliar(item.id)} style={{ fontSize: 11, padding: '2px 8px', borderRadius: 6, border: '1px solid rgba(192,80,74,.2)', background: 'transparent', color: 'var(--red)', cursor: 'pointer' }}>
+                        <button onClick={() => desconciliar(item.id)} className="btn-action btn-ghost" style={{ fontSize: 11, padding: '2px 8px', color: 'var(--red)', borderColor: 'rgba(192,80,74,.3)' }}>
                           Remover
                         </button>
                       )}

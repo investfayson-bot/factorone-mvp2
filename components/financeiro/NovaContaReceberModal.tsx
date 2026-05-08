@@ -6,12 +6,23 @@ import { supabase } from '@/lib/supabase'
 
 type Props = { open: boolean; onClose: () => void; onSaved: () => void }
 
+const CATS_RECEBER = [
+  { label: 'Vendas',             icon: 'fa-bag-shopping' },
+  { label: 'Serviços',          icon: 'fa-screwdriver-wrench' },
+  { label: 'Aluguel',           icon: 'fa-house' },
+  { label: 'Comissão',          icon: 'fa-handshake' },
+  { label: 'Devolução',         icon: 'fa-rotate-left' },
+  { label: 'Transferência',     icon: 'fa-right-left' },
+  { label: 'Investimento',      icon: 'fa-chart-line' },
+  { label: 'Outros',            icon: 'fa-cube' },
+]
+
 export default function NovaContaReceberModal({ open, onClose, onSaved }: Props) {
   const [cliente, setCliente] = useState('')
   const [documento, setDocumento] = useState('')
   const [email, setEmail] = useState('')
   const [descricao, setDescricao] = useState('')
-  const [categoria, setCategoria] = useState('Receita Operacional')
+  const [categoria, setCategoria] = useState('Vendas')
   const [valorMask, setValorMask] = useState('')
   const [emissao, setEmissao] = useState(new Date().toISOString().slice(0, 10))
   const [vencimento, setVencimento] = useState(new Date().toISOString().slice(0, 10))
@@ -68,8 +79,27 @@ export default function NovaContaReceberModal({ open, onClose, onSaved }: Props)
           <input className="form-input" placeholder="CNPJ/CPF" value={documento} onChange={(e) => setDocumento(e.target.value)} />
           <input className="form-input" placeholder="Email cliente" value={email} onChange={(e) => setEmail(e.target.value)} style={{ gridColumn: 'span 2' }} />
           <input className="form-input" placeholder="Descrição*" value={descricao} onChange={(e) => setDescricao(e.target.value)} style={{ gridColumn: 'span 2' }} />
-          <input className="form-input" placeholder="Categoria" value={categoria} onChange={(e) => setCategoria(e.target.value)} />
+        </div>
+        <div style={{ marginBottom: 10 }}>
+          <label className="form-label">Categoria</label>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 7 }}>
+            {CATS_RECEBER.map((c) => (
+              <button key={c.label} type="button" onClick={() => setCategoria(c.label)} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5, padding: '9px 6px', borderRadius: 9, cursor: 'pointer', fontSize: 10, fontWeight: 600, border: categoria === c.label ? '2px solid var(--teal)' : '1px solid var(--gray-100)', background: categoria === c.label ? 'rgba(0,168,150,0.08)' : '#fafafa', color: categoria === c.label ? 'var(--teal)' : 'var(--gray-500)', transition: 'all 0.15s' }}>
+                <i className={`fa-solid ${c.icon}`} style={{ fontSize: 16 }} />
+                {c.label}
+              </button>
+            ))}
+          </div>
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 8 }}>
           <input className="form-input" placeholder="Valor*" value={valorMask} onChange={(e) => setValorMask(maskBRLInput(e.target.value))} />
+          <select className="form-input" value={tipo} onChange={(e) => setTipo(e.target.value)}>
+            <option value="boleto">Boleto</option>
+            <option value="pix">PIX</option>
+            <option value="cartao">Cartão</option>
+            <option value="transferencia">Transferência</option>
+            <option value="dinheiro">Dinheiro</option>
+          </select>
           <div className="form-group" style={{ margin: 0 }}>
             <label className="form-label">Emissão</label>
             <input type="date" className="form-input" value={emissao} onChange={(e) => setEmissao(e.target.value)} />
@@ -78,13 +108,6 @@ export default function NovaContaReceberModal({ open, onClose, onSaved }: Props)
             <label className="form-label">Vencimento</label>
             <input type="date" className="form-input" value={vencimento} onChange={(e) => setVencimento(e.target.value)} />
           </div>
-          <select className="form-input" value={tipo} onChange={(e) => setTipo(e.target.value)}>
-            <option value="boleto">Boleto</option>
-            <option value="pix">PIX</option>
-            <option value="cartao">Cartão</option>
-            <option value="transferencia">Transferência</option>
-            <option value="dinheiro">Dinheiro</option>
-          </select>
           <input className="form-input" placeholder="Chave PIX cobrança" value={pix} onChange={(e) => setPix(e.target.value)} />
           <input type="number" className="form-input" placeholder="Parcelas" value={parcelas} onChange={(e) => setParcelas(Number(e.target.value || 1))} />
           <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, color: 'var(--navy)', border: '1px solid var(--gray-100)', borderRadius: 8, padding: '8px 12px' }}>

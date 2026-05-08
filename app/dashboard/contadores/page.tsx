@@ -334,14 +334,16 @@ function ContadorCard({
           {ativo ? (
             <button
               onClick={onRevogar}
-              style={{ padding: '6px 12px', borderRadius: 6, border: '1px solid rgba(239,68,68,0.3)', background: 'transparent', color: 'var(--red)', fontSize: 12, cursor: 'pointer', fontWeight: 600 }}
+              className="btn-action btn-ghost"
+              style={{ padding: '6px 12px', fontSize: 12, color: 'var(--red)', borderColor: 'rgba(192,80,74,.3)' }}
             >
               Revogar
             </button>
           ) : (
             <button
               onClick={onReativar}
-              style={{ padding: '6px 12px', borderRadius: 6, border: '1px solid rgba(0,201,167,0.3)', background: 'transparent', color: 'var(--teal)', fontSize: 12, cursor: 'pointer', fontWeight: 600 }}
+              className="btn-action btn-ghost"
+              style={{ padding: '6px 12px', fontSize: 12 }}
             >
               Reativar
             </button>

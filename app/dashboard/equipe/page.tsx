@@ -170,7 +170,7 @@ export default function EquipePage() {
                   <td style={{ fontSize: 12 }}>{new Date(m.created_at).toLocaleDateString('pt-BR')}</td>
                   <td>
                     {m.status !== 'revogado' && (
-                      <button onClick={() => void revogar(m.id)} style={{ fontSize: 11, padding: '3px 10px', background: '#fee2e2', color: 'var(--red)', border: 'none', borderRadius: 6, cursor: 'pointer', fontWeight: 600 }}>
+                      <button onClick={() => void revogar(m.id)} className="btn-action btn-ghost" style={{ fontSize: 11, padding: '3px 10px', color: 'var(--red)', borderColor: 'rgba(192,80,74,.3)' }}>
                         Revogar
                       </button>
                     )}
