@@ -1,5 +1,4 @@
--- Sprint 11 — Automações de Notificação
--- Rode no SQL Editor do Supabase
+-- Sprint 11: Automacoes de Notificacao
 
 CREATE TABLE IF NOT EXISTS public.automacoes_regras (
   id          uuid PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -14,14 +13,20 @@ CREATE TABLE IF NOT EXISTS public.automacoes_regras (
     'meta_atingida'
   )),
   ativa       boolean DEFAULT true,
-  config      jsonb DEFAULT '{}',  -- { dias: 3, valor_limite: 5000, ... }
+  config      jsonb DEFAULT '{}',
   ultima_exec timestamptz,
   created_at  timestamptz DEFAULT now()
 );
 
 ALTER TABLE public.automacoes_regras ENABLE ROW LEVEL SECURITY;
-DROP POLICY IF EXISTS "automacoes_rls" ON public.automacoes_regras;
-CREATE POLICY "automacoes_rls" ON public.automacoes_regras FOR ALL
-  USING (empresa_id IN (SELECT empresa_id FROM public.usuarios WHERE id = auth.uid()));
 
-CREATE INDEX IF NOT EXISTS idx_automacoes_empresa ON public.automacoes_regras(empresa_id);
+DROP POLICY IF EXISTS "automacoes_rls" ON public.automacoes_regras;
+
+CREATE POLICY "automacoes_rls" ON public.automacoes_regras
+  FOR ALL
+  USING (empresa_id IN (
+    SELECT empresa_id FROM public.usuarios WHERE id = auth.uid()
+  ));
+
+CREATE INDEX IF NOT EXISTS automacoes_empresa_idx
+  ON public.automacoes_regras(empresa_id);
