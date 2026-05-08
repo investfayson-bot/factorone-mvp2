@@ -18,6 +18,7 @@ type PatWidget = { total: number; valorContabil: number; depMes: number; frota: 
 type CrmWidget = { abertas: number; pipeline: number; ganhaMes: number; ativPendentes: number }
 type MktWidget = { campanhasAtivas: number; gasto: number; receita: number; roas: number; leads: number }
 type LogWidget = { rotasAtivas: number; receitaFrete: number; pneusAlerta: number; entreguesMes: number }
+type ClientesWidget = { total: number; ativos: number; prospects: number; mrr: number }
 
 function tituloTx(t: TransacaoLista) {
   const d = (t.descricao || '').trim()
@@ -46,6 +47,7 @@ export default function DashboardPage() {
   const [crmWidget, setCrmWidget] = useState<CrmWidget | null>(null)
   const [mktWidget, setMktWidget] = useState<MktWidget | null>(null)
   const [logWidget, setLogWidget] = useState<LogWidget | null>(null)
+  const [clientesWidget, setClientesWidget] = useState<ClientesWidget | null>(null)
   const router = useRouter()
 
   function irParaAlerta(alertId: string) {
@@ -153,13 +155,14 @@ export default function DashboardPage() {
 
       // Widgets de setores: CRM, Marketing, Logística
       const mesIso = now.toISOString().slice(0, 7)
-      const [crmOpR, crmAtvR, mktCampR, mktLeadsR, logRotasR, logPneusR] = await Promise.all([
+      const [crmOpR, crmAtvR, mktCampR, mktLeadsR, logRotasR, logPneusR, clientesR] = await Promise.all([
         supabase.from('crm_oportunidades').select('valor,etapa').eq('empresa_id', eid),
         supabase.from('crm_atividades').select('id').eq('empresa_id', eid).eq('status', 'pendente'),
         supabase.from('marketing_campanhas').select('status,gasto,receita_gerada').eq('empresa_id', eid),
         supabase.from('marketing_leads').select('id').eq('empresa_id', eid),
         supabase.from('logistica_rotas').select('status,valor_frete,created_at').eq('empresa_id', eid),
         supabase.from('logistica_pneus').select('km_rodado,km_limite').eq('empresa_id', eid).eq('status', 'ativo'),
+        supabase.from('clientes').select('status,valor_contrato').eq('empresa_id', eid),
       ])
 
       const ops = (crmOpR.data ?? []) as Array<{ valor: number | null; etapa: string }>
@@ -183,6 +186,15 @@ export default function DashboardPage() {
 
       const rotas = (logRotasR.data ?? []) as Array<{ status: string; valor_frete: number | null; created_at: string }>
       const logPneus = (logPneusR.data ?? []) as Array<{ km_rodado: number; km_limite: number }>
+      const clts = (clientesR.data ?? []) as Array<{ status: string; valor_contrato: number | null }>
+      if (clts.length > 0) {
+        setClientesWidget({
+          total: clts.length,
+          ativos: clts.filter(c => c.status === 'ativo').length,
+          prospects: clts.filter(c => c.status === 'prospect').length,
+          mrr: clts.filter(c => c.status === 'ativo').reduce((s, c) => s + Number(c.valor_contrato ?? 0), 0),
+        })
+      }
       setLogWidget({
         rotasAtivas: rotas.filter(r => r.status === 'em_transito').length,
         receitaFrete: rotas.reduce((s, r) => s + Number(r.valor_frete ?? 0), 0),
@@ -344,6 +356,27 @@ export default function DashboardPage() {
               </div>
             )}
             <div style={{ color: 'var(--teal)', fontSize: 13, fontWeight: 600, flexShrink: 0 }}>→</div>
+          </div>
+        </Link>
+      )}
+
+      {/* Clientes widget */}
+      {clientesWidget && clientesWidget.total > 0 && (
+        <Link href="/dashboard/clientes" style={{ textDecoration: 'none', display: 'block', marginBottom: 12 }}>
+          <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: '12px 18px', display: 'flex', alignItems: 'center', gap: 20, cursor: 'pointer' }}>
+            <div style={{ width: 38, height: 38, borderRadius: 10, background: '#eff6ff', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <i className="fa-solid fa-users" style={{ color: '#2563eb', fontSize: 15 }} />
+            </div>
+            <div style={{ flex: 1, display: 'flex', gap: 28, flexWrap: 'wrap', alignItems: 'center' }}>
+              <div>
+                <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.07em' }}>Clientes</div>
+                <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--navy)' }}>{clientesWidget.total}</div>
+              </div>
+              <div><div style={{ fontSize: 10, color: 'var(--gray-400)' }}>Ativos</div><div style={{ fontWeight: 700, color: 'var(--green)' }}>{clientesWidget.ativos}</div></div>
+              <div><div style={{ fontSize: 10, color: 'var(--gray-400)' }}>Prospects</div><div style={{ fontWeight: 700, color: 'var(--gold)' }}>{clientesWidget.prospects}</div></div>
+              <div><div style={{ fontSize: 10, color: 'var(--gray-400)' }}>MRR Contratos</div><div style={{ fontWeight: 700, color: 'var(--teal)', fontFamily: "'DM Mono',monospace" }}>{fmtBRLCompact(clientesWidget.mrr)}</div></div>
+            </div>
+            <div style={{ color: 'var(--teal)', fontSize: 13, fontWeight: 600 }}>→</div>
           </div>
         </Link>
       )}

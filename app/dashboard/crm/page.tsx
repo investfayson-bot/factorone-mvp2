@@ -53,6 +53,9 @@ export default function CRMPage() {
   const [formOp, setFormOp] = useState({ titulo: '', cliente_id: '', valor: '', etapa: 'prospeccao', probabilidade: 10, data_fechamento: '', responsavel_nome: '', descricao: '' })
   const [formAtv, setFormAtv] = useState({ tipo: 'reuniao', titulo: '', cliente_id: '', oportunidade_id: '', data: new Date().toISOString().slice(0, 10), hora_inicio: '', hora_fim: '', local: '', descricao: '', responsavel_nome: '', status: 'pendente' })
   const [agendaMes, setAgendaMes] = useState(new Date().toISOString().slice(0, 7))
+  const [showInsight, setShowInsight] = useState(false)
+  const [insightText, setInsightText] = useState('')
+  const [insightLoading, setInsightLoading] = useState(false)
 
   const carregar = useCallback(async () => {
     const { data: { user } } = await supabase.auth.getUser()
@@ -156,6 +159,23 @@ export default function CRMPage() {
         <div style={{ display: 'flex', gap: 8 }}>
           <button className="btn-ghost" onClick={() => setShowAtv(true)} style={{ fontSize: 12 }}>
             <i className="fa-solid fa-calendar-plus" style={{ marginRight: 5, fontSize: 11 }} />Agendar
+          </button>
+          <button className="btn-ghost" style={{ fontSize: 12 }} onClick={async () => {
+            setShowInsight(true)
+            setInsightText('')
+            setInsightLoading(true)
+            try {
+              const { data: sess } = await supabase.auth.getSession()
+              const res = await fetch('/api/crm/insight', {
+                method: 'POST',
+                headers: { Authorization: `Bearer ${sess.session?.access_token ?? ''}` },
+              })
+              const d = await res.json() as { insight?: string }
+              setInsightText(d.insight ?? 'Sem dados suficientes.')
+            } catch { setInsightText('Erro ao gerar análise.') }
+            finally { setInsightLoading(false) }
+          }}>
+            <i className="fa-solid fa-robot" style={{ marginRight: 5, fontSize: 11 }} />IA Pipeline
           </button>
           <button className="btn-action" onClick={() => setShowOp(true)}>+ Nova oportunidade</button>
         </div>
@@ -351,6 +371,31 @@ export default function CRMPage() {
             <div className="modal-actions" style={{ marginTop: 20 }}>
               <button className="btn-ghost" onClick={() => setShowAtv(false)}>Cancelar</button>
               <button className="btn-action" disabled={savingAtv} onClick={() => void salvarAtv()}>{savingAtv ? 'Salvando…' : 'Agendar'}</button>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* Modal AI Pipeline Insight */}
+      {showInsight && (
+        <div className="modal-bg" onClick={() => setShowInsight(false)}>
+          <div className="modal-box" style={{ maxWidth: 560, width: '95%' }} onClick={e => e.stopPropagation()}>
+            <div className="modal-title">
+              <i className="fa-solid fa-robot" style={{ color: 'var(--teal)', marginRight: 8 }} />
+              Análise IA do Pipeline
+              <button className="modal-close" onClick={() => setShowInsight(false)}>×</button>
+            </div>
+            {insightLoading ? (
+              <div style={{ padding: '40px 0', textAlign: 'center', color: 'var(--gray-400)' }}>
+                <i className="fa-solid fa-spinner fa-spin" style={{ fontSize: 24, marginBottom: 12, display: 'block', color: 'var(--teal)' }} />
+                Analisando pipeline com FactorOne IA...
+              </div>
+            ) : (
+              <div style={{ fontSize: 13, lineHeight: 1.7, color: 'var(--navy)', whiteSpace: 'pre-wrap' }}>
+                {insightText}
+              </div>
+            )}
+            <div className="modal-actions" style={{ marginTop: 20 }}>
+              <button className="btn-ghost" onClick={() => setShowInsight(false)}>Fechar</button>
             </div>
           </div>
         </div>

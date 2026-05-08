@@ -52,6 +52,21 @@ type Checklist = {
 
 type Ativo = { id: string; nome: string; tipo_ativo: string }
 
+type Manutencao = {
+  id: string
+  ativo_id: string
+  tipo: string
+  descricao: string | null
+  data: string
+  km_ou_horas: number | null
+  valor: number
+  oficina: string | null
+  proxima_data: string | null
+  proximos_km_horas: number | null
+  concluida: boolean
+  veiculo_nome?: string
+}
+
 const STATUS_COLOR: Record<string, string> = {
   agendada: 'var(--gray-400)', em_transito: 'var(--teal)', entregue: 'var(--green)',
   cancelada: 'var(--red)', problema: 'var(--gold)',
@@ -85,7 +100,7 @@ function fmtNum(v: number | null, dec = 1) {
 }
 
 export default function LogisticaPage() {
-  const [tab, setTab] = useState<'dashboard' | 'rotas' | 'pneus' | 'checklist'>('dashboard')
+  const [tab, setTab] = useState<'dashboard' | 'rotas' | 'pneus' | 'checklist' | 'manutencao'>('dashboard')
   const [rotas, setRotas] = useState<Rota[]>([])
   const [pneus, setPneus] = useState<Pneu[]>([])
   const [checklists, setChecklists] = useState<Checklist[]>([])
@@ -94,6 +109,10 @@ export default function LogisticaPage() {
   const [loading, setLoading] = useState(true)
 
   // modals
+  const [manutencoes, setManutencoes] = useState<Manutencao[]>([])
+  const [showManut, setShowManut] = useState(false)
+  const [manuForm, setManuForm] = useState({ ativo_id: '', tipo: 'preventiva', descricao: '', data: new Date().toISOString().slice(0, 10), km_ou_horas: '', valor: '', oficina: '', proxima_data: '', proximos_km_horas: '' })
+
   const [showRota, setShowRota] = useState(false)
   const [showPneu, setShowPneu] = useState(false)
   const [showChecklist, setShowChecklist] = useState(false)
@@ -133,11 +152,12 @@ export default function LogisticaPage() {
       const eid = ur?.empresa_id ?? user.id
       setEmpresaId(eid)
 
-      const [rotasR, pneusR, cksR, ativosR] = await Promise.all([
+      const [rotasR, pneusR, cksR, ativosR, manutR] = await Promise.all([
         supabase.from('logistica_rotas').select('*').eq('empresa_id', eid).order('created_at', { ascending: false }),
         supabase.from('logistica_pneus').select('*, ativos(nome)').eq('empresa_id', eid),
         supabase.from('logistica_checklist').select('*, ativos(nome)').eq('empresa_id', eid).order('data', { ascending: false }),
         supabase.from('ativos').select('id, nome, tipo_ativo').eq('empresa_id', eid).in('tipo_ativo', ['veiculo_leve', 'veiculo_pesado']),
+        supabase.from('patrimonio_manutencoes').select('*, ativos(nome, tipo_ativo)').eq('empresa_id', eid).in('ativos.tipo_ativo', ['veiculo_leve', 'veiculo_pesado']).order('data', { ascending: false }),
       ])
 
       setRotas((rotasR.data ?? []) as Rota[])
@@ -148,6 +168,9 @@ export default function LogisticaPage() {
         ...c, veiculo_nome: c.ativos?.nome ?? '—',
       })))
       setAtivos((ativosR.data ?? []) as Ativo[])
+      setManutencoes(((manutR.data ?? []) as unknown as Array<Manutencao & { ativos: { nome: string; tipo_ativo: string } | null }>)
+        .filter(m => m.ativos?.tipo_ativo === 'veiculo_leve' || m.ativos?.tipo_ativo === 'veiculo_pesado')
+        .map(m => ({ ...m, veiculo_nome: m.ativos?.nome ?? '—' })))
     } finally {
       setLoading(false)
     }
@@ -259,6 +282,26 @@ export default function LogisticaPage() {
     }
   }
 
+  async function salvarManutencao() {
+    if (!manuForm.ativo_id || !manuForm.data) return
+    await supabase.from('patrimonio_manutencoes').insert({
+      empresa_id: empresaId,
+      ativo_id: manuForm.ativo_id,
+      tipo: manuForm.tipo,
+      descricao: manuForm.descricao || null,
+      data: manuForm.data,
+      km_ou_horas: manuForm.km_ou_horas ? parseFloat(manuForm.km_ou_horas) : null,
+      valor: parseFloat(manuForm.valor.replace(/\./g, '').replace(',', '.')) || 0,
+      oficina: manuForm.oficina || null,
+      proxima_data: manuForm.proxima_data || null,
+      proximos_km_horas: manuForm.proximos_km_horas ? parseFloat(manuForm.proximos_km_horas) : null,
+      concluida: true,
+    })
+    setShowManut(false)
+    setManuForm({ ativo_id: '', tipo: 'preventiva', descricao: '', data: new Date().toISOString().slice(0, 10), km_ou_horas: '', valor: '', oficina: '', proxima_data: '', proximos_km_horas: '' })
+    await carregar()
+  }
+
   function abrirEditarRota(r: Rota) {
     setRotaDetalhe(r)
     setRotaForm({
@@ -284,8 +327,12 @@ export default function LogisticaPage() {
     { key: 'dashboard', icon: 'fa-gauge', label: 'Dashboard' },
     { key: 'rotas', icon: 'fa-route', label: 'Rotas' },
     { key: 'pneus', icon: 'fa-circle-dot', label: 'Pneus' },
+    { key: 'manutencao', icon: 'fa-wrench', label: 'Manutenção' },
     { key: 'checklist', icon: 'fa-clipboard-check', label: 'Checklist' },
   ]
+
+  const custoManutMes = manutencoes.filter(m => m.data.startsWith(new Date().toISOString().slice(0, 7))).reduce((s, m) => s + Number(m.valor), 0)
+  const proximasManut = manutencoes.filter(m => m.proxima_data && m.proxima_data >= new Date().toISOString().slice(0, 10) && m.proxima_data <= new Date(Date.now() + 30 * 86400000).toISOString().slice(0, 10))
 
   return (
     <div className="page-hdr" style={{ display: 'block', padding: 0 }}>
@@ -298,6 +345,9 @@ export default function LogisticaPage() {
           </button>
           <button className="btn-ghost" onClick={() => setShowPneu(true)}>
             <i className="fa-solid fa-circle-dot" /> Pneu
+          </button>
+          <button className="btn-ghost" onClick={() => setShowManut(true)}>
+            <i className="fa-solid fa-wrench" /> Manutenção
           </button>
           <button className="btn-action" onClick={() => { setRotaDetalhe(null); setOcrResult(null); setShowRota(true) }}>
             <i className="fa-solid fa-plus" /> Nova Rota
@@ -326,6 +376,11 @@ export default function LogisticaPage() {
           <div className="kpi-label">Pneus Alerta</div>
           <div className="kpi-val" style={{ color: pneusAlerta > 0 ? 'var(--red)' : 'var(--green)' }}>{pneusAlerta}</div>
           <div className="kpi-sub">≥90% do limite</div>
+        </div>
+        <div className="kpi">
+          <div className="kpi-label">Manutenção/mês</div>
+          <div className="kpi-val" style={{ color: 'var(--gold)' }}>{fmt(custoManutMes)}</div>
+          <div className="kpi-sub">{proximasManut.length} agendadas 30d</div>
         </div>
       </div>
 
@@ -444,7 +499,7 @@ export default function LogisticaPage() {
                 <thead>
                   <tr>
                     <th>Código</th><th>Origem → Destino</th><th>Motorista</th><th>Carga</th>
-                    <th>Valor Frete</th><th>Status</th><th>Saída</th><th>Ações</th>
+                    <th>Valor Frete</th><th>Status</th><th>Saída</th><th>GPS</th><th>Ações</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -467,6 +522,14 @@ export default function LogisticaPage() {
                         </span>
                       </td>
                       <td style={{ fontSize: 12 }}>{r.data_saida ? new Date(r.data_saida).toLocaleDateString('pt-BR') : '—'}</td>
+                      <td>
+                        {r.lat_atual && r.lng_atual ? (
+                          <a href={`https://www.google.com/maps?q=${r.lat_atual},${r.lng_atual}`} target="_blank" rel="noopener noreferrer"
+                            style={{ fontSize: 11, color: 'var(--teal)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}>
+                            <i className="fa-solid fa-location-dot" /> Ver
+                          </a>
+                        ) : <span style={{ fontSize: 11, color: 'var(--gray-400)' }}>—</span>}
+                      </td>
                       <td>
                         <div style={{ display: 'flex', gap: 6 }}>
                           {r.status === 'agendada' && (
@@ -545,6 +608,53 @@ export default function LogisticaPage() {
         )}
 
         {/* ── CHECKLIST ── */}
+        {/* ── MANUTENÇÃO ── */}
+        {!loading && tab === 'manutencao' && (
+          <div>
+            {proximasManut.length > 0 && (
+              <div style={{ background: '#fffbeb', border: '1px solid rgba(184,146,42,.3)', borderRadius: 10, padding: '10px 16px', marginBottom: 14, display: 'flex', alignItems: 'center', gap: 10 }}>
+                <i className="fa-solid fa-triangle-exclamation" style={{ color: 'var(--gold)' }} />
+                <span style={{ fontSize: 13, fontWeight: 600 }}>{proximasManut.length} manutenção{proximasManut.length > 1 ? 'ões' : ''} agendada{proximasManut.length > 1 ? 's' : ''} nos próximos 30 dias</span>
+                <span style={{ fontSize: 12, color: 'var(--gray-400)', marginLeft: 4 }}>
+                  {proximasManut.map(m => m.veiculo_nome).join(', ')}
+                </span>
+              </div>
+            )}
+            {manutencoes.length === 0 ? (
+              <div style={{ textAlign: 'center', padding: 60, color: 'var(--gray-400)' }}>
+                <i className="fa-solid fa-wrench" style={{ fontSize: 40, marginBottom: 12, display: 'block' }} />
+                Nenhuma manutenção registrada
+              </div>
+            ) : (
+              <table className="expenses-table" style={{ width: '100%' }}>
+                <thead>
+                  <tr><th>Data</th><th>Veículo</th><th>Tipo</th><th>Descrição</th><th>Km/Horas</th><th>Oficina</th><th>Custo</th><th>Próxima</th></tr>
+                </thead>
+                <tbody>
+                  {manutencoes.map(m => (
+                    <tr key={m.id}>
+                      <td style={{ fontSize: 12 }}>{new Date(m.data + 'T12:00:00').toLocaleDateString('pt-BR')}</td>
+                      <td style={{ fontWeight: 600 }}>{m.veiculo_nome}</td>
+                      <td>
+                        <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 12, background: m.tipo === 'preventiva' ? '#dcfce7' : m.tipo === 'corretiva' ? '#fee2e2' : '#e0f2fe', color: m.tipo === 'preventiva' ? 'var(--green)' : m.tipo === 'corretiva' ? 'var(--red)' : 'var(--teal)', fontWeight: 600 }}>
+                          {m.tipo}
+                        </span>
+                      </td>
+                      <td style={{ fontSize: 12 }}>{m.descricao ?? '—'}</td>
+                      <td style={{ fontFamily: 'DM Mono, monospace', fontSize: 12 }}>{m.km_ou_horas ? fmtNum(m.km_ou_horas, 0) : '—'}</td>
+                      <td style={{ fontSize: 12 }}>{m.oficina ?? '—'}</td>
+                      <td style={{ fontWeight: 700, color: 'var(--red)', fontFamily: 'DM Mono, monospace' }}>{fmt(m.valor)}</td>
+                      <td style={{ fontSize: 12, color: m.proxima_data && m.proxima_data <= new Date(Date.now() + 7 * 86400000).toISOString().slice(0, 10) ? 'var(--red)' : 'inherit' }}>
+                        {m.proxima_data ? new Date(m.proxima_data + 'T12:00:00').toLocaleDateString('pt-BR') : '—'}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
+        )}
+
         {!loading && tab === 'checklist' && (
           <div>
             {checklists.length === 0 ? (
@@ -817,6 +927,72 @@ export default function LogisticaPage() {
             <div className="modal-actions">
               <button className="btn-ghost" onClick={() => setShowChecklist(false)}>Cancelar</button>
               <button className="btn-action" onClick={salvarChecklist}>
+                <i className="fa-solid fa-floppy-disk" /> Salvar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* ── MODAL MANUTENÇÃO ── */}
+      {showManut && (
+        <div className="modal-bg" onClick={() => setShowManut(false)}>
+          <div className="modal-box" style={{ maxWidth: 540, width: '95%' }} onClick={e => e.stopPropagation()}>
+            <div className="modal-title">
+              Registrar Manutenção
+              <button className="modal-close" onClick={() => setShowManut(false)}>×</button>
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+              <div style={{ gridColumn: '1 / -1' }}>
+                <label style={{ fontSize: 12, fontWeight: 600, display: 'block', marginBottom: 4 }}>Veículo *</label>
+                <select className="form-input" value={manuForm.ativo_id} onChange={e => setManuForm(f => ({ ...f, ativo_id: e.target.value }))}>
+                  <option value="">Selecionar veículo</option>
+                  {ativos.map(a => <option key={a.id} value={a.id}>{a.nome}</option>)}
+                </select>
+              </div>
+              <div>
+                <label style={{ fontSize: 12, fontWeight: 600, display: 'block', marginBottom: 4 }}>Tipo</label>
+                <select className="form-input" value={manuForm.tipo} onChange={e => setManuForm(f => ({ ...f, tipo: e.target.value }))}>
+                  <option value="preventiva">Preventiva</option>
+                  <option value="corretiva">Corretiva</option>
+                  <option value="calibracao">Calibração</option>
+                  <option value="vistoria">Vistoria</option>
+                  <option value="seguro">Seguro</option>
+                  <option value="ipva">IPVA</option>
+                  <option value="outros">Outros</option>
+                </select>
+              </div>
+              <div>
+                <label style={{ fontSize: 12, fontWeight: 600, display: 'block', marginBottom: 4 }}>Data *</label>
+                <input className="form-input" type="date" value={manuForm.data} onChange={e => setManuForm(f => ({ ...f, data: e.target.value }))} />
+              </div>
+              <div style={{ gridColumn: '1 / -1' }}>
+                <label style={{ fontSize: 12, fontWeight: 600, display: 'block', marginBottom: 4 }}>Descrição</label>
+                <input className="form-input" value={manuForm.descricao} onChange={e => setManuForm(f => ({ ...f, descricao: e.target.value }))} placeholder="Troca de óleo, revisão 50.000km..." />
+              </div>
+              <div>
+                <label style={{ fontSize: 12, fontWeight: 600, display: 'block', marginBottom: 4 }}>Km / Horas</label>
+                <input className="form-input" type="number" value={manuForm.km_ou_horas} onChange={e => setManuForm(f => ({ ...f, km_ou_horas: e.target.value }))} placeholder="0" />
+              </div>
+              <div>
+                <label style={{ fontSize: 12, fontWeight: 600, display: 'block', marginBottom: 4 }}>Custo (R$) *</label>
+                <input className="form-input" value={manuForm.valor} onChange={e => setManuForm(f => ({ ...f, valor: e.target.value }))} placeholder="0,00" />
+              </div>
+              <div>
+                <label style={{ fontSize: 12, fontWeight: 600, display: 'block', marginBottom: 4 }}>Oficina</label>
+                <input className="form-input" value={manuForm.oficina} onChange={e => setManuForm(f => ({ ...f, oficina: e.target.value }))} placeholder="Nome da oficina" />
+              </div>
+              <div>
+                <label style={{ fontSize: 12, fontWeight: 600, display: 'block', marginBottom: 4 }}>Próxima Manutenção</label>
+                <input className="form-input" type="date" value={manuForm.proxima_data} onChange={e => setManuForm(f => ({ ...f, proxima_data: e.target.value }))} />
+              </div>
+              <div>
+                <label style={{ fontSize: 12, fontWeight: 600, display: 'block', marginBottom: 4 }}>Próximos Km/Horas</label>
+                <input className="form-input" type="number" value={manuForm.proximos_km_horas} onChange={e => setManuForm(f => ({ ...f, proximos_km_horas: e.target.value }))} placeholder="0" />
+              </div>
+            </div>
+            <div className="modal-actions">
+              <button className="btn-ghost" onClick={() => setShowManut(false)}>Cancelar</button>
+              <button className="btn-action" onClick={salvarManutencao}>
                 <i className="fa-solid fa-floppy-disk" /> Salvar
               </button>
             </div>

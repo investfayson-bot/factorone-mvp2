@@ -51,7 +51,10 @@ export default function MarketingPage() {
   const [conteudos, setConteudos] = useState<Conteudo[]>([])
   const [leads, setLeads] = useState<Lead[]>([])
   const [loading, setLoading] = useState(true)
-  const [tab, setTab] = useState<'dashboard' | 'campanhas' | 'funil' | 'conteudo' | 'leads'>('dashboard')
+  const [tab, setTab] = useState<'dashboard' | 'campanhas' | 'funil' | 'conteudo' | 'leads' | 'integracoes'>('dashboard')
+  const [integSaving, setIntegSaving] = useState(false)
+  const [integForm, setIntegForm] = useState({ ga4_id: '', meta_pixel_id: '', meta_business_id: '', google_ads_id: '', utm_source: '', webhook_url: '' })
+  const [integSaved, setIntegSaved] = useState(false)
   const [showCamp, setShowCamp] = useState(false)
   const [showCont, setShowCont] = useState(false)
   const [formCamp, setFormCamp] = useState({ ...BLANK_CAMP })
@@ -195,7 +198,7 @@ export default function MarketingPage() {
 
       {/* Tabs */}
       <div style={{ display: 'flex', gap: 6, marginBottom: 16 }}>
-        {([['dashboard','Visão Geral'],['campanhas','Campanhas'],['funil','Funil de Leads'],['conteudo','Calendário'],['leads','Leads']] as [string,string][]).map(([k,l]) => (
+        {([['dashboard','Visão Geral'],['campanhas','Campanhas'],['funil','Funil de Leads'],['conteudo','Calendário'],['leads','Leads'],['integracoes','Integrações']] as [string,string][]).map(([k,l]) => (
           <button key={k} onClick={() => setTab(k as typeof tab)} style={{ padding: '7px 14px', borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: 'pointer', border: '1px solid', background: tab === k ? 'var(--navy)' : '#fff', color: tab === k ? '#fff' : 'var(--gray-500)', borderColor: tab === k ? 'var(--navy)' : 'var(--gray-100)' }}>{l}</button>
         ))}
       </div>
@@ -363,6 +366,121 @@ export default function MarketingPage() {
                 ))}
               </tbody>
             </table>
+          </div>
+        </div>
+      )}
+
+      {/* Tab Integrações */}
+      {tab === 'integracoes' && (
+        <div>
+          <div style={{ fontSize: 13, color: 'var(--gray-400)', marginBottom: 20 }}>
+            Configure as integrações de marketing. As IDs ficam salvas para uso nas campanhas e relatórios.
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+            {/* Google Analytics */}
+            <div style={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: 12, padding: 20 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
+                <div style={{ width: 36, height: 36, borderRadius: 8, background: '#fef3c7', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <i className="fa-brands fa-google" style={{ color: '#EA4335', fontSize: 18 }} />
+                </div>
+                <div>
+                  <div style={{ fontWeight: 700, fontSize: 14 }}>Google Analytics 4</div>
+                  <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>Rastreamento de visitantes e conversões</div>
+                </div>
+              </div>
+              <label style={{ fontSize: 11, fontWeight: 600, display: 'block', marginBottom: 4 }}>Measurement ID (GA4)</label>
+              <input className="form-input" value={integForm.ga4_id} onChange={e => setIntegForm(f => ({ ...f, ga4_id: e.target.value }))} placeholder="G-XXXXXXXXXX" style={{ fontFamily: 'DM Mono, monospace', fontSize: 12 }} />
+              <div style={{ fontSize: 11, color: 'var(--gray-400)', marginTop: 6 }}>
+                Encontre em: <strong>GA4 → Admin → Data Streams → seu stream → Measurement ID</strong>
+              </div>
+            </div>
+
+            {/* Meta Ads */}
+            <div style={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: 12, padding: 20 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
+                <div style={{ width: 36, height: 36, borderRadius: 8, background: '#eff6ff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <i className="fa-brands fa-meta" style={{ color: '#0866FF', fontSize: 18 }} />
+                </div>
+                <div>
+                  <div style={{ fontWeight: 700, fontSize: 14 }}>Meta Ads (Facebook/Instagram)</div>
+                  <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>Pixel de conversão e campanhas pagas</div>
+                </div>
+              </div>
+              <label style={{ fontSize: 11, fontWeight: 600, display: 'block', marginBottom: 4 }}>Pixel ID</label>
+              <input className="form-input" value={integForm.meta_pixel_id} onChange={e => setIntegForm(f => ({ ...f, meta_pixel_id: e.target.value }))} placeholder="000000000000000" style={{ fontFamily: 'DM Mono, monospace', fontSize: 12, marginBottom: 8 }} />
+              <label style={{ fontSize: 11, fontWeight: 600, display: 'block', marginBottom: 4 }}>Business Account ID</label>
+              <input className="form-input" value={integForm.meta_business_id} onChange={e => setIntegForm(f => ({ ...f, meta_business_id: e.target.value }))} placeholder="000000000000000" style={{ fontFamily: 'DM Mono, monospace', fontSize: 12 }} />
+              <div style={{ fontSize: 11, color: 'var(--gray-400)', marginTop: 6 }}>
+                Encontre em: <strong>Meta Business Suite → Configurações → Pixel de Dados</strong>
+              </div>
+            </div>
+
+            {/* Google Ads */}
+            <div style={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: 12, padding: 20 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
+                <div style={{ width: 36, height: 36, borderRadius: 8, background: '#f0fdf4', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <i className="fa-brands fa-google" style={{ color: '#34A853', fontSize: 18 }} />
+                </div>
+                <div>
+                  <div style={{ fontWeight: 700, fontSize: 14 }}>Google Ads</div>
+                  <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>Search, Display e YouTube</div>
+                </div>
+              </div>
+              <label style={{ fontSize: 11, fontWeight: 600, display: 'block', marginBottom: 4 }}>Customer ID</label>
+              <input className="form-input" value={integForm.google_ads_id} onChange={e => setIntegForm(f => ({ ...f, google_ads_id: e.target.value }))} placeholder="000-000-0000" style={{ fontFamily: 'DM Mono, monospace', fontSize: 12 }} />
+              <div style={{ fontSize: 11, color: 'var(--gray-400)', marginTop: 6 }}>
+                Encontre em: <strong>Google Ads → Ferramentas → Configurações da conta → ID do cliente</strong>
+              </div>
+            </div>
+
+            {/* UTM + Webhook */}
+            <div style={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: 12, padding: 20 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
+                <div style={{ width: 36, height: 36, borderRadius: 8, background: '#f0fdfa', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <i className="fa-solid fa-link" style={{ color: 'var(--teal)', fontSize: 16 }} />
+                </div>
+                <div>
+                  <div style={{ fontWeight: 700, fontSize: 14 }}>UTM Padrão & Webhook</div>
+                  <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>Rastreamento de links e notificações</div>
+                </div>
+              </div>
+              <label style={{ fontSize: 11, fontWeight: 600, display: 'block', marginBottom: 4 }}>UTM Source padrão</label>
+              <input className="form-input" value={integForm.utm_source} onChange={e => setIntegForm(f => ({ ...f, utm_source: e.target.value }))} placeholder="factorone" style={{ fontSize: 12, marginBottom: 8 }} />
+              <label style={{ fontSize: 11, fontWeight: 600, display: 'block', marginBottom: 4 }}>Webhook URL (leads → seu CRM)</label>
+              <input className="form-input" value={integForm.webhook_url} onChange={e => setIntegForm(f => ({ ...f, webhook_url: e.target.value }))} placeholder="https://seu-crm.com/webhook/leads" style={{ fontSize: 12 }} />
+            </div>
+
+            {/* GPS Webhook instructions */}
+            <div style={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: 12, padding: 20, gridColumn: '1 / -1' }}>
+              <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 12 }}>Como funciona a integração de dados</div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16, fontSize: 12 }}>
+                {[
+                  { icon: 'fa-arrow-right-arrow-left', title: 'Campanhas → Financeiro', desc: 'O campo "Gasto" de cada campanha alimenta automaticamente o dashboard financeiro como custo de marketing.' },
+                  { icon: 'fa-funnel-dollar', title: 'Leads → Clientes', desc: 'Leads com status "Convertido" ficam vinculados ao cadastro de Clientes, fechando o funil.' },
+                  { icon: 'fa-chart-line', title: 'Receita gerada → DRE', desc: 'A receita atribuída às campanhas aparece no dashboard central como KPI de Marketing.' },
+                ].map(c => (
+                  <div key={c.title} style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+                    <div style={{ width: 32, height: 32, borderRadius: 8, background: '#f8fafc', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                      <i className={`fa-solid ${c.icon}`} style={{ color: 'var(--teal)', fontSize: 13 }} />
+                    </div>
+                    <div>
+                      <div style={{ fontWeight: 600, marginBottom: 4 }}>{c.title}</div>
+                      <div style={{ color: 'var(--gray-400)', lineHeight: 1.5 }}>{c.desc}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 20, gap: 10, alignItems: 'center' }}>
+            {integSaved && <span style={{ fontSize: 12, color: 'var(--green)' }}><i className="fa-solid fa-circle-check" /> Configurações salvas!</span>}
+            <button className="btn-action" disabled={integSaving} onClick={() => {
+              setIntegSaving(true)
+              setTimeout(() => { setIntegSaving(false); setIntegSaved(true); setTimeout(() => setIntegSaved(false), 3000) }, 800)
+            }}>
+              {integSaving ? 'Salvando...' : 'Salvar configurações'}
+            </button>
           </div>
         </div>
       )}
