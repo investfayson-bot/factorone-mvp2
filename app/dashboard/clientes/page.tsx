@@ -43,6 +43,11 @@ export default function ClientesPage() {
   const [novoContato, setNovoContato] = useState({ nome: '', cargo: '', email: '', telefone: '', whatsapp: '', principal: false })
   const [savingContato, setSavingContato] = useState(false)
   const [view, setView] = useState<'lista' | 'kanban'>('lista')
+  const [modalPortal, setModalPortal] = useState(false)
+  const [portalClienteId, setPortalClienteId] = useState('')
+  const [portalUrl, setPortalUrl] = useState('')
+  const [portalLoading, setPortalLoading] = useState(false)
+  const [portalCopiado, setPortalCopiado] = useState(false)
 
   const carregar = useCallback(async () => {
     const { data: { user } } = await supabase.auth.getUser()
@@ -80,6 +85,23 @@ export default function ClientesPage() {
   async function excluir(id: string) {
     if (!confirm('Excluir este cliente?')) return
     await supabase.from('clientes').delete().eq('id', id); void carregar()
+  }
+
+  async function gerarPortal(clienteId: string) {
+    setPortalClienteId(clienteId)
+    setPortalUrl('')
+    setPortalCopiado(false)
+    setModalPortal(true)
+    setPortalLoading(true)
+    const { data: { session } } = await supabase.auth.getSession()
+    const res = await fetch('/api/clientes/gerar-link', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${session?.access_token}` },
+      body: JSON.stringify({ cliente_id: clienteId }),
+    })
+    const json = await res.json() as { url?: string; error?: string }
+    setPortalUrl(json.url ?? '')
+    setPortalLoading(false)
   }
 
   async function salvarContato() {
@@ -222,6 +244,7 @@ export default function ClientesPage() {
                       <div style={{ display: 'flex', gap: 4, justifyContent: 'center' }}>
                         <button className="btn-ghost" style={{ fontSize: 10, padding: '3px 8px' }} onClick={() => { setDetalhe(c); void carregarContatos(c.id) }}>Ver</button>
                         <button className="btn-ghost" style={{ fontSize: 10, padding: '3px 8px' }} onClick={() => abrirForm(c)}>Editar</button>
+                        <button className="btn-ghost" style={{ fontSize: 10, padding: '3px 8px', color: 'var(--teal)' }} onClick={() => void gerarPortal(c.id)} title="Portal do cliente"><i className="fa-solid fa-link" /></button>
                         <button className="btn-ghost" style={{ fontSize: 10, padding: '3px 8px', color: 'var(--red)' }} onClick={() => void excluir(c.id)}>✕</button>
                       </div>
                     </td>
@@ -322,6 +345,50 @@ export default function ClientesPage() {
               <button className="btn-ghost" onClick={() => setShowForm(false)}>Cancelar</button>
               <button className="btn-action" disabled={saving} onClick={() => void salvar()}>{saving ? 'Salvando…' : editItem ? 'Salvar' : 'Criar cliente'}</button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal portal do cliente */}
+      {modalPortal && (
+        <div className="modal-bg" onClick={() => setModalPortal(false)}>
+          <div className="modal-box" style={{ maxWidth: 480 }} onClick={e => e.stopPropagation()}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 20 }}>
+              <h3 className="modal-title">Portal do Cliente</h3>
+              <button className="modal-close" onClick={() => setModalPortal(false)}><i className="fa-solid fa-xmark" /></button>
+            </div>
+            {portalLoading ? (
+              <div style={{ textAlign: 'center', padding: '32px 0', color: 'var(--gray-400)' }}>
+                <i className="fa-solid fa-spinner fa-spin" style={{ fontSize: 24, marginBottom: 10, display: 'block' }} />
+                Gerando link seguro…
+              </div>
+            ) : portalUrl ? (
+              <>
+                <p style={{ fontSize: 13, color: 'var(--gray-500)', marginBottom: 16 }}>
+                  Compartilhe este link com o cliente. Ele terá acesso somente leitura às faturas, entregas e contratos. O link expira em 90 dias.
+                </p>
+                <div style={{ display: 'flex', gap: 8, alignItems: 'center', background: '#f8fafc', border: '1px solid var(--gray-100)', borderRadius: 8, padding: '10px 14px', marginBottom: 16 }}>
+                  <span style={{ flex: 1, fontSize: 12, fontFamily: 'monospace', color: 'var(--navy)', wordBreak: 'break-all' }}>{portalUrl}</span>
+                  <button
+                    className="btn-ghost"
+                    style={{ fontSize: 11, flexShrink: 0 }}
+                    onClick={() => { void navigator.clipboard.writeText(portalUrl); setPortalCopiado(true) }}
+                  >
+                    {portalCopiado ? <><i className="fa-solid fa-check" style={{ marginRight: 4, color: 'var(--green)' }} />Copiado</> : <><i className="fa-regular fa-copy" style={{ marginRight: 4 }} />Copiar</>}
+                  </button>
+                </div>
+                <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
+                  <a href={portalUrl} target="_blank" rel="noreferrer" className="btn-ghost" style={{ fontSize: 12, textDecoration: 'none' }}>
+                    <i className="fa-solid fa-arrow-up-right-from-square" style={{ marginRight: 5 }} />Abrir portal
+                  </a>
+                  <button className="btn-ghost" style={{ fontSize: 12 }} onClick={() => void gerarPortal(portalClienteId)}>
+                    <i className="fa-solid fa-rotate" style={{ marginRight: 5 }} />Novo link
+                  </button>
+                </div>
+              </>
+            ) : (
+              <p style={{ textAlign: 'center', color: 'var(--red)', fontSize: 13 }}>Erro ao gerar link. Tente novamente.</p>
+            )}
           </div>
         </div>
       )}

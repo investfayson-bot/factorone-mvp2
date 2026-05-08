@@ -8,7 +8,7 @@ import { ptBR } from 'date-fns/locale'
 type Met = Record<string, number | string>
 type Lancamento = { id: string; descricao: string; valor: number; origem: string; competencia: string; created_at: string; conta_id: string | null }
 
-const TABS = ['DRE Completo', 'Comparativo', 'Métricas', 'Histórico 12M', 'Exportações'] as const
+const TABS = ['DRE Completo', 'Comparativo', 'Métricas', 'Histórico 12M', 'Gerencial', 'Exportações'] as const
 
 export default function RelatoriosPage() {
   const [tab, setTab] = useState<(typeof TABS)[number]>('DRE Completo')
@@ -28,6 +28,14 @@ export default function RelatoriosPage() {
   const [expFim, setExpFim] = useState(new Date().toISOString().slice(0, 10))
   const [expStatus, setExpStatus] = useState('')
   const [expLoading, setExpLoading] = useState<string | null>(null)
+  const [gerencial, setGerencial] = useState<{
+    crm: { pipeline: number; abertas: number; ganhas: number; perdidas: number }
+    mkt: { investido: number; receita: number; leads: number }
+    log: { receita: number; em_transito: number; entregues: number }
+    clientes: { total: number; ativos: number; mrr: number }
+    equipe: { total: number; ativos: number }
+  } | null>(null)
+  const [gerLoading, setGerLoading] = useState(false)
 
   const carregar = useCallback(async () => {
     const { data: auth } = await supabase.auth.getUser()
@@ -48,6 +56,57 @@ export default function RelatoriosPage() {
   }, [competencia])
 
   useEffect(() => { void carregar() }, [carregar])
+
+  useEffect(() => {
+    if (tab === 'Gerencial' && empresaId && !gerencial) void carregarGerencial()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tab, empresaId])
+
+  async function carregarGerencial() {
+    setGerLoading(true)
+    const mesIni = `${competencia}-01`
+    const mesFim = new Date(new Date(`${competencia}-01`).getFullYear(), new Date(`${competencia}-01`).getMonth() + 1, 0).toISOString().slice(0, 10)
+    const [crmR, mktR, logR, cliR, eqR] = await Promise.all([
+      supabase.from('crm_oportunidades').select('etapa,valor').eq('empresa_id', empresaId),
+      supabase.from('marketing_campanhas').select('investimento,receita_gerada,leads_gerados').eq('empresa_id', empresaId).gte('data_inicio', mesIni).lte('data_inicio', mesFim),
+      supabase.from('logistica_rotas').select('status,valor_frete').eq('empresa_id', empresaId).gte('created_at', mesIni).lte('created_at', mesFim),
+      supabase.from('clientes').select('status,valor_contrato').eq('empresa_id', empresaId),
+      supabase.from('membros_equipe').select('status').eq('empresa_id', empresaId),
+    ])
+    const crm_ops = (crmR.data ?? []) as Array<{ etapa: string; valor: number | null }>
+    const mkt_camps = (mktR.data ?? []) as Array<{ investimento: number | null; receita_gerada: number | null; leads_gerados: number | null }>
+    const log_rotas = (logR.data ?? []) as Array<{ status: string; valor_frete: number | null }>
+    const clis = (cliR.data ?? []) as Array<{ status: string; valor_contrato: number | null }>
+    const equipe = (eqR.data ?? []) as Array<{ status: string }>
+    setGerencial({
+      crm: {
+        pipeline: crm_ops.filter(o => !['ganho','perdido'].includes(o.etapa)).reduce((s, o) => s + Number(o.valor || 0), 0),
+        abertas: crm_ops.filter(o => !['ganho','perdido'].includes(o.etapa)).length,
+        ganhas: crm_ops.filter(o => o.etapa === 'ganho').length,
+        perdidas: crm_ops.filter(o => o.etapa === 'perdido').length,
+      },
+      mkt: {
+        investido: mkt_camps.reduce((s, c) => s + Number(c.investimento || 0), 0),
+        receita: mkt_camps.reduce((s, c) => s + Number(c.receita_gerada || 0), 0),
+        leads: mkt_camps.reduce((s, c) => s + Number(c.leads_gerados || 0), 0),
+      },
+      log: {
+        receita: log_rotas.reduce((s, r) => s + Number(r.valor_frete || 0), 0),
+        em_transito: log_rotas.filter(r => r.status === 'em_transito').length,
+        entregues: log_rotas.filter(r => r.status === 'entregue').length,
+      },
+      clientes: {
+        total: clis.length,
+        ativos: clis.filter(c => c.status === 'ativo').length,
+        mrr: clis.filter(c => c.status === 'ativo').reduce((s, c) => s + Number(c.valor_contrato || 0), 0),
+      },
+      equipe: {
+        total: equipe.length,
+        ativos: equipe.filter(e => e.status === 'ativo').length,
+      },
+    })
+    setGerLoading(false)
+  }
 
   const linhas = useMemo(() => {
     const m = metricas ?? {}
@@ -330,6 +389,130 @@ export default function RelatoriosPage() {
             </table>
           </div>
         </>
+      )}
+
+      {/* Gerencial */}
+      {tab === 'Gerencial' && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+          {gerLoading && <div style={{ padding: 40, textAlign: 'center', color: 'var(--gray-400)' }}><i className="fa-solid fa-spinner fa-spin" /> Carregando…</div>}
+          {!gerLoading && gerencial && (
+            <>
+              {/* Financeiro */}
+              <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: '16px 20px' }}>
+                <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: 12 }}>Financeiro — {competencia}</div>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 12 }}>
+                  {[
+                    { l: 'Receita Bruta', v: fmtBRL(Number(metricas?.receita_bruta || 0)), c: 'var(--teal)' },
+                    { l: 'Despesas Op.', v: fmtBRL(Number(metricas?.despesas_operacionais || 0)), c: 'var(--gold)' },
+                    { l: 'EBITDA', v: fmtBRL(Number(metricas?.ebitda || 0)), c: Number(metricas?.ebitda || 0) >= 0 ? 'var(--green)' : 'var(--red)' },
+                    { l: 'Lucro Líquido', v: fmtBRL(Number(metricas?.lucro_liquido || 0)), c: Number(metricas?.lucro_liquido || 0) >= 0 ? 'var(--green)' : 'var(--red)' },
+                  ].map(k => (
+                    <div key={k.l}>
+                      <div style={{ fontSize: 11, color: 'var(--gray-400)', marginBottom: 4 }}>{k.l}</div>
+                      <div style={{ fontSize: 16, fontWeight: 800, color: k.c, fontFamily: 'monospace' }}>{k.v}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Grid setorial */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: 14 }}>
+                {/* CRM */}
+                <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: '16px 20px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
+                    <i className="fa-solid fa-handshake" style={{ color: '#7C3AED', fontSize: 14 }} />
+                    <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.06em' }}>CRM / Vendas</span>
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: 10 }}>
+                    {[
+                      { l: 'Pipeline', v: fmtBRL(gerencial.crm.pipeline) },
+                      { l: 'Em aberto', v: String(gerencial.crm.abertas) },
+                      { l: 'Ganhas', v: String(gerencial.crm.ganhas) },
+                      { l: 'Perdidas', v: String(gerencial.crm.perdidas) },
+                    ].map(k => (
+                      <div key={k.l}>
+                        <div style={{ fontSize: 10, color: 'var(--gray-400)', marginBottom: 2 }}>{k.l}</div>
+                        <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--navy)', fontFamily: 'monospace' }}>{k.v}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Marketing */}
+                <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: '16px 20px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
+                    <i className="fa-solid fa-bullhorn" style={{ color: 'var(--gold)', fontSize: 14 }} />
+                    <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.06em' }}>Marketing</span>
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: 10 }}>
+                    {[
+                      { l: 'Investido', v: fmtBRL(gerencial.mkt.investido) },
+                      { l: 'Receita gerada', v: fmtBRL(gerencial.mkt.receita) },
+                      { l: 'ROAS', v: gerencial.mkt.investido > 0 ? `${(gerencial.mkt.receita / gerencial.mkt.investido).toFixed(2)}x` : '—' },
+                      { l: 'Leads', v: String(gerencial.mkt.leads) },
+                    ].map(k => (
+                      <div key={k.l}>
+                        <div style={{ fontSize: 10, color: 'var(--gray-400)', marginBottom: 2 }}>{k.l}</div>
+                        <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--navy)', fontFamily: 'monospace' }}>{k.v}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Logística */}
+                <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: '16px 20px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
+                    <i className="fa-solid fa-truck-fast" style={{ color: 'var(--teal)', fontSize: 14 }} />
+                    <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.06em' }}>Logística</span>
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: 10 }}>
+                    {[
+                      { l: 'Frete no mês', v: fmtBRL(gerencial.log.receita) },
+                      { l: 'Em trânsito', v: String(gerencial.log.em_transito) },
+                      { l: 'Entregues', v: String(gerencial.log.entregues) },
+                      { l: 'Entrega rate', v: gerencial.log.em_transito + gerencial.log.entregues > 0 ? `${Math.round(gerencial.log.entregues / (gerencial.log.em_transito + gerencial.log.entregues) * 100)}%` : '—' },
+                    ].map(k => (
+                      <div key={k.l}>
+                        <div style={{ fontSize: 10, color: 'var(--gray-400)', marginBottom: 2 }}>{k.l}</div>
+                        <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--navy)', fontFamily: 'monospace' }}>{k.v}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Clientes + Equipe */}
+                <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: '16px 20px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
+                    <i className="fa-solid fa-users" style={{ color: 'var(--green)', fontSize: 14 }} />
+                    <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.06em' }}>Clientes & Equipe</span>
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: 10 }}>
+                    {[
+                      { l: 'Clientes', v: String(gerencial.clientes.total) },
+                      { l: 'Ativos', v: String(gerencial.clientes.ativos) },
+                      { l: 'MRR', v: fmtBRL(gerencial.clientes.mrr) },
+                      { l: 'Equipe ativa', v: `${gerencial.equipe.ativos}/${gerencial.equipe.total}` },
+                    ].map(k => (
+                      <div key={k.l}>
+                        <div style={{ fontSize: 10, color: 'var(--gray-400)', marginBottom: 2 }}>{k.l}</div>
+                        <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--navy)', fontFamily: 'monospace' }}>{k.v}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
+                <button className="btn-ghost" style={{ fontSize: 12 }} onClick={() => void exportarPdf()}>
+                  <i className="fa-solid fa-file-pdf" style={{ marginRight: 5 }} />Exportar PDF
+                </button>
+                <button className="btn-ghost" style={{ fontSize: 12 }} onClick={() => void exportarExcel()}>
+                  <i className="fa-solid fa-file-excel" style={{ marginRight: 5 }} />Exportar Excel
+                </button>
+              </div>
+            </>
+          )}
+        </div>
       )}
 
       {/* Exportações */}

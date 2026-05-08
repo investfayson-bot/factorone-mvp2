@@ -1,5 +1,6 @@
 'use client'
 import InsightFloating from '@/components/aicfo/InsightFloating'
+import NotificacoesDrawer, { useNotificacoes } from '@/components/dashboard/NotificacoesDrawer'
 import { useEffect, useState } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import type { User } from '@supabase/supabase-js'
@@ -86,6 +87,12 @@ function buildNavGroups(badges: { reembolsos: number; aprovacoes: number }): Nav
         { href: '/dashboard/marketplace', icon: 'fa-store', label: 'Marketplace', badge: 'NEW', badgeColor: '#7C3AED' },
       ],
     },
+    {
+      label: 'Configurações',
+      items: [
+        { href: '/dashboard/equipe', icon: 'fa-users-gear', label: 'Equipe' },
+      ],
+    },
   ]
 }
 
@@ -114,6 +121,7 @@ const pageTitles: Record<string, string> = {
   '/dashboard/marketing': 'Marketing',
   '/dashboard/logistica': 'Logística',
   '/dashboard/receitas': 'Receitas',
+  '/dashboard/equipe': 'Equipe',
 }
 
 function isActive(pathname: string, item: NavGroup['items'][0]) {
@@ -127,7 +135,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const router = useRouter()
   const [user, setUser] = useState<User | null>(null)
   const [empresaNome, setEmpresaNome] = useState('')
+  const [empresaId, setEmpresaId] = useState('')
   const [badges, setBadges] = useState({ reembolsos: 0, aprovacoes: 0 })
+  const [notifOpen, setNotifOpen] = useState(false)
+  const { count: notifCount, refresh: refreshNotif } = useNotificacoes(empresaId)
 
   useEffect(() => {
     supabase.auth.getUser().then(async ({ data: { user: u } }) => {
@@ -135,6 +146,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       setUser(u)
       const { data: row } = await supabase.from('usuarios').select('empresa_id').eq('id', u.id).maybeSingle()
       const eid = row?.empresa_id ?? u.id
+      setEmpresaId(eid)
       if (row?.empresa_id) {
         const { data: emp } = await supabase.from('empresas').select('nome').eq('id', row.empresa_id).maybeSingle()
         if (emp?.nome) setEmpresaNome(emp.nome as string)
@@ -206,6 +218,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <div className="topbar">
             <div className="topbar-title">{pageTitle}</div>
             <div className="live-badge"><div className="live-dot" /> LIVE</div>
+            <button onClick={() => setNotifOpen(true)} style={{ position: 'relative', background: 'none', border: 'none', cursor: 'pointer', padding: '4px 8px', borderRadius: 8, color: 'var(--gray-400)' }} title="Notificações">
+              <i className="fa-regular fa-bell" style={{ fontSize: 16 }} />
+              {notifCount > 0 && (
+                <span style={{ position: 'absolute', top: 0, right: 0, width: 16, height: 16, borderRadius: '50%', background: 'var(--red)', color: '#fff', fontSize: 9, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  {notifCount > 9 ? '9+' : notifCount}
+                </span>
+              )}
+            </button>
             <div className="topbar-av" onClick={sair} title="Sair">{initials}</div>
           </div>
           <div className="fo-content">
@@ -215,6 +235,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       </div>
 
       <InsightFloating />
+      <NotificacoesDrawer
+        empresaId={empresaId}
+        open={notifOpen}
+        onClose={() => setNotifOpen(false)}
+        onRead={refreshNotif}
+      />
     </>
   )
 }
