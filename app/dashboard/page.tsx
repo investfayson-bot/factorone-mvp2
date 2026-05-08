@@ -14,6 +14,7 @@ type Kpi = { receita: number; despesas: number; saldo: number; nfs: number }
 type Pendencias = { reembolsos: number; valorReembolsos: number; aprovacoes: number; saldoBanco: number; dasDias: number | null; dasValor: number | null }
 type ScoreComponente = { nome: string; pontos: number; max: number; descricao: string; detalhe: string }
 type ScoreData = { total: number; grade: string; componentes: ScoreComponente[] }
+type PatWidget = { total: number; valorContabil: number; depMes: number; frota: number; maquinas: number; imoveis: number; alertas: number }
 
 function tituloTx(t: TransacaoLista) {
   const d = (t.descricao || '').trim()
@@ -38,6 +39,7 @@ export default function DashboardPage() {
   const [pendencias, setPendencias] = useState<Pendencias>({ reembolsos: 0, valorReembolsos: 0, aprovacoes: 0, saldoBanco: 0, dasDias: null, dasValor: null })
   const [score, setScore] = useState<ScoreData | null>(null)
   const [scoreExpanded, setScoreExpanded] = useState(false)
+  const [patWidget, setPatWidget] = useState<PatWidget | null>(null)
   const router = useRouter()
 
   function irParaAlerta(alertId: string) {
@@ -118,6 +120,30 @@ export default function DashboardPage() {
         dasDias: dasVenc,
         dasValor: dasRaw?.das ?? null,
       })
+
+      // Patrimônio widget
+      const mesAtual = now.toISOString().slice(0, 7)
+      const em30 = new Date(Date.now() + 30 * 86400000).toISOString().slice(0, 10)
+      const [{ data: ativosData }, { data: depData }] = await Promise.all([
+        supabase.from('ativos').select('tipo_ativo,valor_contabil,status,seguro_vencimento,ipva_vencimento').eq('empresa_id', eid),
+        supabase.from('depreciacoes').select('valor_depreciacao').eq('empresa_id', eid).gte('competencia', mesAtual),
+      ])
+      if (ativosData) {
+        const atAtivos = (ativosData as Array<{ tipo_ativo: string; valor_contabil: number; status: string; seguro_vencimento: string | null; ipva_vencimento: string | null }>)
+          .filter(a => !['baixado', 'alienado', 'perdido', 'sucateado'].includes(a.status))
+        setPatWidget({
+          total: atAtivos.length,
+          valorContabil: atAtivos.reduce((s, a) => s + Number(a.valor_contabil || 0), 0),
+          depMes: ((depData ?? []) as Array<{ valor_depreciacao: number }>).reduce((s, d) => s + Number(d.valor_depreciacao || 0), 0),
+          frota: atAtivos.filter(a => a.tipo_ativo === 'veiculo_leve' || a.tipo_ativo === 'veiculo_pesado').length,
+          maquinas: atAtivos.filter(a => a.tipo_ativo === 'maquina').length,
+          imoveis: atAtivos.filter(a => a.tipo_ativo === 'imovel').length,
+          alertas: atAtivos.filter(a =>
+            (a.seguro_vencimento && a.seguro_vencimento <= em30) ||
+            (a.ipva_vencimento && a.ipva_vencimento <= em30)
+          ).length,
+        })
+      }
 
       // Score Financeiro
       const { data: sessData } = await supabase.auth.getSession()
@@ -247,6 +273,34 @@ export default function DashboardPage() {
             </Link>
           )}
         </div>
+      )}
+
+      {/* Patrimônio Widget */}
+      {patWidget && patWidget.total > 0 && (
+        <Link href="/dashboard/patrimonio" style={{ textDecoration: 'none', display: 'block', marginBottom: 16 }}>
+          <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: '12px 18px', display: 'flex', alignItems: 'center', gap: 20, cursor: 'pointer' }}>
+            <div style={{ width: 38, height: 38, borderRadius: 10, background: 'var(--navy)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <i className="fa-solid fa-landmark" style={{ color: '#fff', fontSize: 15 }} />
+            </div>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--gray-400)', letterSpacing: '.08em', textTransform: 'uppercase', marginBottom: 3 }}>Patrimônio & Ativos</div>
+              <div style={{ display: 'flex', gap: 20, flexWrap: 'wrap', alignItems: 'center' }}>
+                <div style={{ fontSize: 12 }}><span style={{ color: 'var(--gray-400)' }}>Total: </span><span style={{ fontWeight: 700 }}>{patWidget.total} ativos</span></div>
+                <div style={{ fontSize: 12 }}><span style={{ color: 'var(--gray-400)' }}>Contábil: </span><span style={{ fontWeight: 700, color: 'var(--teal)' }}>{fmtBRLCompact(patWidget.valorContabil)}</span></div>
+                <div style={{ fontSize: 12 }}><span style={{ color: 'var(--gray-400)' }}>Deprec./mês: </span><span style={{ fontWeight: 700, color: 'var(--red)' }}>{fmtBRLCompact(patWidget.depMes)}</span></div>
+                {patWidget.frota > 0 && <div style={{ fontSize: 12 }}><i className="fa-solid fa-truck" style={{ color: 'var(--gray-400)', marginRight: 4, fontSize: 10 }} /><span style={{ fontWeight: 700 }}>{patWidget.frota}</span></div>}
+                {patWidget.maquinas > 0 && <div style={{ fontSize: 12 }}><i className="fa-solid fa-gear" style={{ color: 'var(--gray-400)', marginRight: 4, fontSize: 10 }} /><span style={{ fontWeight: 700 }}>{patWidget.maquinas}</span></div>}
+                {patWidget.imoveis > 0 && <div style={{ fontSize: 12 }}><i className="fa-solid fa-building" style={{ color: 'var(--gray-400)', marginRight: 4, fontSize: 10 }} /><span style={{ fontWeight: 700 }}>{patWidget.imoveis}</span></div>}
+              </div>
+            </div>
+            {patWidget.alertas > 0 && (
+              <div style={{ background: 'rgba(239,68,68,.1)', color: 'var(--red)', borderRadius: 8, padding: '4px 10px', fontSize: 11, fontWeight: 700, flexShrink: 0 }}>
+                <i className="fa-solid fa-triangle-exclamation" style={{ marginRight: 4 }} />{patWidget.alertas} alerta{patWidget.alertas > 1 ? 's' : ''}
+              </div>
+            )}
+            <div style={{ color: 'var(--teal)', fontSize: 13, fontWeight: 600, flexShrink: 0 }}>→</div>
+          </div>
+        </Link>
       )}
 
       {/* Score Financeiro */}

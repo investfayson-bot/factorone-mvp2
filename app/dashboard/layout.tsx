@@ -24,6 +24,7 @@ function buildNavGroups(badges: { reembolsos: number; aprovacoes: number }): Nav
       label: 'Financeiro',
       items: [
         { href: '/dashboard/cashflow', icon: 'fa-water', label: 'Cash Flow' },
+        { href: '/dashboard/receitas', icon: 'fa-arrow-trend-up', label: 'Receitas' },
         { href: '/dashboard/financeiro', icon: 'fa-arrow-right-arrow-left', label: 'Contas Pagar/Receber' },
         { href: '/dashboard/reembolsos', icon: 'fa-money-bill-transfer', label: 'Reembolsos', badge: badges.reembolsos > 0 ? String(badges.reembolsos) : undefined, badgeColor: 'var(--teal)' },
       ],
