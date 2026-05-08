@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 
+type Tab = 'integracoes' | 'webhooks'
 type Status = Record<string, boolean>
 
 type Integration = {
@@ -38,11 +39,22 @@ const CAT_LABELS: Record<string, string> = {
   comunicacao: 'Comunicação',
 }
 
+const WEBHOOKS = [
+  { id: 'gps', nome: 'GPS de Frota', path: '/api/logistica/gps-update', method: 'POST', auth: 'x-api-key: $LOGISTICA_GPS_SECRET', desc: 'Recebe atualizações de posição e status de rotas.', modulo: 'Logística', icon: 'fa-location-dot', color: 'var(--teal)' },
+  { id: 'whatsapp', nome: 'WhatsApp Business', path: '/api/webhooks/whatsapp', method: 'POST/GET', auth: 'WHATSAPP_VERIFY_TOKEN', desc: 'Mensagens do WhatsApp Business API para o AI CFO.', modulo: 'Comunicação', icon: 'fa-comment', color: '#25D366' },
+  { id: 'lifeos', nome: 'LifeOS / n8n', path: '/api/lifeos/webhook', method: 'POST', auth: 'x-lifeos-secret: $LIFEOS_WEBHOOK_SECRET', desc: 'Webhook para automações externas via LifeOS ou n8n.', modulo: 'Automação', icon: 'fa-bolt', color: 'var(--gold)' },
+  { id: 'fornecedor', nome: 'Portal Fornecedor', path: '/fornecedor/[token]', method: 'GET/POST', auth: 'token na URL', desc: 'Fornecedores submetem dados e contas a pagar sem login.', modulo: 'Financeiro', icon: 'fa-truck', color: 'var(--navy)' },
+  { id: 'cliente', nome: 'Portal do Cliente', path: '/cliente/[token]', method: 'GET', auth: 'token na URL', desc: 'Clientes visualizam faturas, entregas e contratos.', modulo: 'Clientes', icon: 'fa-users', color: '#7C3AED' },
+]
+
 export default function IntegracoesPage() {
+  const [tab, setTab] = useState<Tab>('integracoes')
   const [status, setStatus] = useState<Status>({})
   const [loading, setLoading] = useState(true)
+  const [baseUrl, setBaseUrl] = useState('')
 
   useEffect(() => {
+    setBaseUrl(window.location.origin)
     fetch('/api/integracoes/status')
       .then(r => r.ok ? r.json() as Promise<Status> : {})
       .then(d => setStatus(d as Status))
@@ -69,6 +81,16 @@ export default function IntegracoesPage() {
           <div className="page-sub">{loading ? '—' : `${ativas} de ${total} integrações ativas`}</div>
         </div>
       </div>
+
+      {/* Tabs */}
+      <div style={{ display: 'flex', gap: 6, marginBottom: 16 }}>
+        {([['integracoes', 'Integrações'], ['webhooks', 'Webhooks & Endpoints']] as [Tab, string][]).map(([k, l]) => (
+          <button key={k} className={`btn-action${tab !== k ? ' btn-ghost' : ''}`} style={{ fontSize: 11, padding: '5px 12px' }} onClick={() => setTab(k)}>{l}</button>
+        ))}
+      </div>
+
+      {/* ── Integrações ── */}
+      {tab === 'integracoes' && <>
 
       {/* KPIs */}
       <div className="kpis" style={{ gridTemplateColumns: 'repeat(3, 1fr)' }}>
@@ -157,6 +179,45 @@ export default function IntegracoesPage() {
       {!loading && ativas < total && (
         <div style={{ background: 'rgba(94,140,135,.04)', border: '1px solid rgba(94,140,135,.15)', borderRadius: 10, padding: '12px 16px', fontSize: 12, color: 'var(--gray-400)', lineHeight: 1.7 }}>
           <strong style={{ color: 'var(--navy)' }}>Como ativar integrações:</strong> Adicione as variáveis de ambiente no painel Vercel → Settings → Environment Variables. Após salvar, dispare um novo deploy para as mudanças entrarem em vigor.
+        </div>
+      )}
+
+      </>}
+
+      {/* ── Webhooks & Endpoints ── */}
+      {tab === 'webhooks' && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+          <div style={{ fontSize: 12, color: 'var(--gray-500)', marginBottom: 4, lineHeight: 1.7 }}>
+            Endpoints públicos e webhooks ativos no FactorOne. Copie a URL completa para configurar em sistemas externos.
+          </div>
+          {WEBHOOKS.map(wh => (
+            <div key={wh.id} style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: '14px 18px', display: 'flex', alignItems: 'flex-start', gap: 14 }}>
+              <div style={{ width: 38, height: 38, borderRadius: 10, background: `${wh.color}18`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 2 }}>
+                <i className={`fa-solid ${wh.icon}`} style={{ color: wh.color, fontSize: 15 }} />
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4, flexWrap: 'wrap' }}>
+                  <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy)' }}>{wh.nome}</span>
+                  <span style={{ fontSize: 9, fontWeight: 700, padding: '1px 6px', borderRadius: 20, background: 'var(--gray-100)', color: 'var(--gray-500)' }}>{wh.modulo}</span>
+                  <span style={{ fontSize: 9, fontWeight: 700, padding: '1px 6px', borderRadius: 20, background: 'rgba(0,168,150,.1)', color: 'var(--teal)' }}>{wh.method}</span>
+                </div>
+                <div style={{ fontSize: 11, color: 'var(--gray-400)', marginBottom: 8 }}>{wh.desc}</div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#f8fafc', borderRadius: 6, padding: '6px 10px' }}>
+                  <code style={{ fontSize: 11, color: 'var(--navy)', flex: 1, wordBreak: 'break-all' }}>{baseUrl}{wh.path}</code>
+                  <button
+                    className="btn-ghost"
+                    style={{ fontSize: 10, padding: '2px 8px', flexShrink: 0 }}
+                    onClick={() => { void navigator.clipboard.writeText(`${baseUrl}${wh.path}`); toast.success('URL copiada') }}
+                  >
+                    <i className="fa-regular fa-copy" />
+                  </button>
+                </div>
+                <div style={{ fontSize: 10, color: 'var(--gray-400)', marginTop: 6 }}>
+                  <i className="fa-solid fa-lock" style={{ marginRight: 4 }} />Auth: {wh.auth}
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       )}
     </>

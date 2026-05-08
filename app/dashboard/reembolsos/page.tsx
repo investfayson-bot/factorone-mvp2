@@ -25,7 +25,9 @@ type NovoForm = {
   observacao: string
 }
 
-const CATEGORIAS = ['Viagens', 'Alimentacao', 'Material de Escritorio', 'Tecnologia', 'Hospedagem', 'Transporte', 'Outros']
+type Tab = 'pendentes' | 'aprovados' | 'pagar' | 'todos'
+
+const CATEGORIAS = ['Viagens', 'Alimentação', 'Material de Escritório', 'Tecnologia', 'Hospedagem', 'Transporte', 'Outros']
 
 export default function ReembolsosPage() {
   const [empresaId, setEmpresaId] = useState('')
@@ -33,10 +35,13 @@ export default function ReembolsosPage() {
   const [userName, setUserName]   = useState('')
   const [rows, setRows]           = useState<Reembolso[]>([])
   const [loading, setLoading]     = useState(true)
+  const [tab, setTab]             = useState<Tab>('pendentes')
   const [modalOpen, setModalOpen] = useState(false)
   const [salvando, setSalvando]   = useState(false)
   const [atualizando, setAtualizando] = useState<string | null>(null)
   const [arquivo, setArquivo]     = useState<File | null>(null)
+  const [modalMotivo, setModalMotivo] = useState<{ id: string; descricao: string } | null>(null)
+  const [motivo, setMotivo]       = useState('')
   const fileInputRef              = useRef<HTMLInputElement>(null)
   const [form, setForm] = useState<NovoForm>({
     descricao: '', valor: '', categoria: 'Viagens',
@@ -64,11 +69,17 @@ export default function ReembolsosPage() {
   useEffect(() => { void load() }, [load])
 
   async function notificar(tipo: string, item_id: string) {
+    const { data: { session } } = await supabase.auth.getSession()
     await fetch('/api/notificacoes/aprovacao', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...(session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : {}) },
       body: JSON.stringify({ tipo, item_id, tabela: 'reembolsos' }),
     }).catch(() => {})
+  }
+
+  async function criarNotifInApp(titulo: string, mensagem: string) {
+    if (!empresaId) return
+    await supabase.from('notificacoes').insert({ empresa_id: empresaId, titulo, mensagem, tipo: 'sucesso', modulo: 'reembolsos', link: '/dashboard/reembolsos' })
   }
 
   async function uploadComprovante(): Promise<string | null> {
@@ -122,16 +133,52 @@ export default function ReembolsosPage() {
     setRows(prev => prev.map(r => r.id === id ? { ...r, status: 'aprovado' } : r))
     toast.success('Reembolso aprovado')
     void notificar('reembolso_aprovado', id)
+    void criarNotifInApp('Reembolso aprovado', 'Aguardando registro de pagamento.')
     setAtualizando(null)
   }
 
-  async function rejeitar(id: string) {
+  function abrirMotivo(id: string, descricao: string) {
+    setMotivo('')
+    setModalMotivo({ id, descricao })
+  }
+
+  async function confirmarRejeicao() {
+    if (!modalMotivo) return
+    const { id } = modalMotivo
+    const m = motivo.trim() || 'Rejeitado pelo gestor'
     setAtualizando(id)
-    await supabase.from('reembolsos').update({ status: 'rejeitado', rejeitado_motivo: 'Rejeitado pelo gestor' }).eq('id', id)
+    await supabase.from('reembolsos').update({ status: 'rejeitado', rejeitado_motivo: m }).eq('id', id)
     setRows(prev => prev.map(r => r.id === id ? { ...r, status: 'rejeitado' } : r))
     toast('Reembolso rejeitado')
     void notificar('reembolso_rejeitado', id)
+    void criarNotifInApp('Reembolso rejeitado', `Motivo: ${m}`)
     setAtualizando(null)
+    setModalMotivo(null)
+  }
+
+  async function aprovarLotePendentes() {
+    const pend = rows.filter(r => r.status === 'pendente')
+    for (const r of pend) await aprovar(r.id)
+    toast.success(`${pend.length} reembolsos aprovados`)
+  }
+
+  function exportarCSV() {
+    const cols = ['Data', 'Solicitante', 'Descricao', 'Categoria', 'Valor', 'Status']
+    const csvRows = rows.map(r => [
+      r.data_despesa ?? r.created_at.slice(0, 10),
+      r.solicitante_nome ?? '',
+      `"${r.descricao.replace(/"/g, '""')}"`,
+      r.categoria,
+      String(r.valor),
+      r.status,
+    ].join(';'))
+    const bom = '﻿'
+    const content = bom + [cols.join(';'), ...csvRows].join('\r\n')
+    const a = document.createElement('a')
+    a.href = URL.createObjectURL(new Blob([content], { type: 'text/csv;charset=utf-8' }))
+    a.download = `reembolsos_${new Date().toISOString().slice(0, 10)}.csv`
+    a.click()
+    URL.revokeObjectURL(a.href)
   }
 
   async function marcarPago(item: Reembolso) {
@@ -153,10 +200,15 @@ export default function ReembolsosPage() {
     setAtualizando(null)
   }
 
-  const pendentes  = rows.filter(r => r.status === 'pendente').length
-  const aprovados  = rows.filter(r => r.status === 'aprovado').length
-  const pagos      = rows.filter(r => r.status === 'pago').length
+  const nPendentes = rows.filter(r => r.status === 'pendente').length
+  const nAprovados = rows.filter(r => r.status === 'aprovado').length
+  const nPagos     = rows.filter(r => r.status === 'pago').length
   const totalPend  = rows.filter(r => r.status === 'pendente').reduce((s, r) => s + Number(r.valor), 0)
+
+  const rowsFiltrados = tab === 'pendentes' ? rows.filter(r => r.status === 'pendente')
+    : tab === 'aprovados' ? rows.filter(r => r.status === 'aprovado')
+    : tab === 'pagar'     ? rows.filter(r => r.status === 'aprovado')
+    : rows
 
   function statusTag(s: string) {
     const map: Record<string, [string, string]> = {
@@ -171,57 +223,67 @@ export default function ReembolsosPage() {
 
   return (
     <>
-      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 18 }}>
+      <div className="page-hdr">
         <div>
-          <div style={{ fontFamily: "'Sora',sans-serif", fontSize: 17, fontWeight: 700, color: 'var(--navy)' }}>Reembolsos</div>
-          <div style={{ fontSize: 11, color: 'var(--gray-400)', fontFamily: "'DM Mono',monospace" }}>
-            {pendentes} pendentes · registro automatico de transacao ao pagar
-          </div>
+          <div className="page-title">Reembolsos</div>
+          <div className="page-sub">{nPendentes} pendentes · lançamento automático no DRE ao pagar</div>
         </div>
-        <button className="btn-action" onClick={() => setModalOpen(true)}>+ Solicitar reembolso</button>
+        <div style={{ display: 'flex', gap: 8 }}>
+          <button className="btn-ghost" style={{ fontSize: 12 }} onClick={exportarCSV}>
+            <i className="fa-solid fa-file-csv" style={{ marginRight: 5 }} />CSV
+          </button>
+          {nPendentes > 0 && (
+            <button className="btn-ghost" style={{ fontSize: 12 }} onClick={() => void aprovarLotePendentes()}>
+              <i className="fa-solid fa-check-double" style={{ marginRight: 5 }} />Aprovar todos
+            </button>
+          )}
+          <button className="btn-action" onClick={() => setModalOpen(true)}>+ Solicitar reembolso</button>
+        </div>
       </div>
 
-      <div className="kpis">
+      <div className="kpis" style={{ gridTemplateColumns: 'repeat(4,1fr)', marginBottom: 16 }}>
         <div className="kpi">
           <div className="kpi-lbl">Pendentes</div>
-          <div className="kpi-val" style={{ color: 'var(--gold)' }}>{pendentes}</div>
-          <div className="kpi-delta warn">{formatBRL(totalPend)}</div>
+          <div className="kpi-val" style={{ color: nPendentes > 0 ? 'var(--gold)' : 'var(--green)' }}>{nPendentes}</div>
+          <div className="kpi-delta">{formatBRL(totalPend)}</div>
         </div>
         <div className="kpi">
           <div className="kpi-lbl">Aprovados</div>
-          <div className="kpi-val" style={{ color: 'var(--teal)' }}>{aprovados}</div>
-          <div className="kpi-delta up">aguardando pagamento</div>
+          <div className="kpi-val" style={{ color: 'var(--teal)' }}>{nAprovados}</div>
+          <div className="kpi-delta">aguardando pagamento</div>
         </div>
         <div className="kpi">
           <div className="kpi-lbl">Pagos</div>
-          <div className="kpi-val" style={{ color: 'var(--green)' }}>{pagos}</div>
-          <div className="kpi-delta up">lancados no DRE</div>
+          <div className="kpi-val" style={{ color: 'var(--green)' }}>{nPagos}</div>
+          <div className="kpi-delta up">lançados no DRE</div>
         </div>
         <div className="kpi">
           <div className="kpi-lbl">Total</div>
           <div className="kpi-val">{rows.length}</div>
-          <div className="kpi-delta">solicitacoes</div>
+          <div className="kpi-delta">solicitações</div>
         </div>
       </div>
 
+      {/* Tabs */}
+      <div style={{ display: 'flex', gap: 6, marginBottom: 12 }}>
+        {([['pendentes', `Pendentes (${nPendentes})`], ['aprovados', `Aprovados (${nAprovados})`], ['pagar', `A pagar (${nAprovados})`], ['todos', 'Todos']] as [Tab, string][]).map(([k, l]) => (
+          <button key={k} className={`btn-action${tab !== k ? ' btn-ghost' : ''}`} style={{ fontSize: 11, padding: '5px 12px' }} onClick={() => setTab(k)}>{l}</button>
+        ))}
+      </div>
+
       <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: 16 }}>
-        <div style={{ fontSize: 9.5, fontWeight: 700, color: 'var(--gray-400)', letterSpacing: '.08em', textTransform: 'uppercase', fontFamily: "'DM Mono',monospace", marginBottom: 14 }}>
-          Solicitacoes
-        </div>
-
         {loading && <div style={{ padding: '24px 0', textAlign: 'center', color: 'var(--gray-400)', fontSize: 13 }}>Carregando...</div>}
-
-        {!loading && rows.length === 0 && (
-          <div style={{ padding: '24px 0', textAlign: 'center', color: 'var(--gray-400)', fontSize: 13 }}>
-            Nenhuma solicitacao ainda. Clique em "+ Solicitar reembolso" para comecar.
+        {!loading && rowsFiltrados.length === 0 && (
+          <div style={{ padding: '40px 0', textAlign: 'center', color: 'var(--gray-400)', fontSize: 13 }}>
+            <i className="fa-solid fa-inbox" style={{ fontSize: 28, marginBottom: 10, display: 'block' }} />
+            Nenhum reembolso nesta categoria
           </div>
         )}
-
-        {rows.map((item, idx) => {
+        {rowsFiltrados.map((item, idx) => {
           const bloqueado = atualizando === item.id
           const initials = (item.solicitante_nome || 'U').split(' ').map(p => p[0]).slice(0, 2).join('').toUpperCase()
           return (
-            <div key={item.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '11px 0', borderBottom: idx < rows.length - 1 ? '1px solid var(--gray-100)' : 'none', opacity: bloqueado ? 0.5 : 1 }}>
+            <div key={item.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '11px 0', borderBottom: idx < rowsFiltrados.length - 1 ? '1px solid var(--gray-100)' : 'none', opacity: bloqueado ? 0.5 : 1 }}>
               <div style={{ width: 34, height: 34, borderRadius: 8, background: 'var(--gray-100)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 800, color: 'var(--gray-500)', flexShrink: 0 }}>
                 {initials}
               </div>
@@ -230,27 +292,33 @@ export default function ReembolsosPage() {
                   {item.solicitante_nome ? `${item.solicitante_nome} — ` : ''}{item.descricao}
                 </div>
                 <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>
-                  {item.categoria}{item.data_despesa ? ` · ${item.data_despesa.split('-').reverse().join('/')}` : ''}
+                  {item.categoria}{item.data_despesa ? ` · ${new Date(item.data_despesa + 'T12:00:00').toLocaleDateString('pt-BR')}` : ''}
                 </div>
               </div>
-              <div style={{ textAlign: 'right', marginRight: 12 }}>
+              <div style={{ textAlign: 'right', marginRight: 8 }}>
                 <div style={{ fontWeight: 700, fontFamily: "'DM Mono',monospace", color: 'var(--navy)', marginBottom: 3 }}>{formatBRL(Number(item.valor))}</div>
                 {statusTag(item.status)}
               </div>
-              <div style={{ display: 'flex', gap: 5, alignItems: 'center' }}>
+              <div style={{ display: 'flex', gap: 5, alignItems: 'center', flexShrink: 0 }}>
                 {item.comprovante_url && (
-                  <button onClick={() => void abrirComprovante(item.comprovante_url!)} title="Ver comprovante" style={{ background: 'rgba(94,140,135,.1)', color: 'var(--teal2)', border: '1px solid rgba(94,140,135,.2)', borderRadius: 7, padding: '4px 8px', fontSize: 10.5, cursor: 'pointer' }}>
-                    Comprovante
+                  <button onClick={() => void abrirComprovante(item.comprovante_url!)} title="Ver comprovante" style={{ background: 'rgba(94,140,135,.1)', color: 'var(--teal)', border: '1px solid rgba(94,140,135,.2)', borderRadius: 7, padding: '4px 8px', fontSize: 10.5, cursor: 'pointer' }}>
+                    <i className="fa-solid fa-paperclip" />
                   </button>
                 )}
                 {item.status === 'pendente' && (
                   <>
-                    <button disabled={bloqueado} onClick={() => void aprovar(item.id)} style={{ background: 'rgba(45,155,111,.1)', color: 'var(--green)', border: '1px solid rgba(45,155,111,.25)', borderRadius: 7, padding: '4px 10px', fontSize: 10.5, fontWeight: 600, cursor: 'pointer' }}>Aprovar</button>
-                    <button disabled={bloqueado} onClick={() => void rejeitar(item.id)} style={{ background: 'rgba(192,80,74,.08)', color: 'var(--red)', border: '1px solid rgba(192,80,74,.2)', borderRadius: 7, padding: '4px 8px', fontSize: 10.5, cursor: 'pointer' }}>Rejeitar</button>
+                    <button disabled={bloqueado} onClick={() => void aprovar(item.id)} style={{ background: 'rgba(45,155,111,.1)', color: 'var(--green)', border: '1px solid rgba(45,155,111,.25)', borderRadius: 7, padding: '4px 10px', fontSize: 11, fontWeight: 600, cursor: 'pointer' }}>
+                      <i className="fa-solid fa-check" style={{ marginRight: 4 }} />Aprovar
+                    </button>
+                    <button disabled={bloqueado} onClick={() => abrirMotivo(item.id, item.descricao)} style={{ background: 'rgba(192,80,74,.08)', color: 'var(--red)', border: '1px solid rgba(192,80,74,.2)', borderRadius: 7, padding: '4px 8px', fontSize: 11, cursor: 'pointer' }}>
+                      <i className="fa-solid fa-xmark" />
+                    </button>
                   </>
                 )}
                 {item.status === 'aprovado' && (
-                  <button disabled={bloqueado} onClick={() => void marcarPago(item)} style={{ background: 'rgba(45,155,111,.1)', color: 'var(--green)', border: '1px solid rgba(45,155,111,.2)', borderRadius: 7, padding: '4px 10px', fontSize: 10.5, fontWeight: 600, cursor: 'pointer' }}>Registrar pagamento</button>
+                  <button disabled={bloqueado} onClick={() => void marcarPago(item)} style={{ background: 'rgba(45,155,111,.1)', color: 'var(--green)', border: '1px solid rgba(45,155,111,.2)', borderRadius: 7, padding: '4px 10px', fontSize: 11, fontWeight: 600, cursor: 'pointer' }}>
+                    <i className="fa-solid fa-money-bill" style={{ marginRight: 4 }} />Pagar
+                  </button>
                 )}
               </div>
             </div>
@@ -258,12 +326,33 @@ export default function ReembolsosPage() {
         })}
       </div>
 
+      {/* Modal motivo rejeição */}
+      {modalMotivo && (
+        <div className="modal-bg" onClick={() => setModalMotivo(null)}>
+          <div className="modal-box" style={{ maxWidth: 420 }} onClick={e => e.stopPropagation()}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
+              <h3 className="modal-title">Rejeitar reembolso</h3>
+              <button className="modal-close" onClick={() => setModalMotivo(null)}><i className="fa-solid fa-xmark" /></button>
+            </div>
+            <p style={{ fontSize: 13, color: 'var(--gray-500)', marginBottom: 14 }}><strong>{modalMotivo.descricao}</strong></p>
+            <label style={{ fontSize: 11, fontWeight: 600, color: 'var(--gray-500)', display: 'block', marginBottom: 6 }}>Motivo da rejeição</label>
+            <textarea style={{ width: '100%', border: '1px solid var(--gray-100)', borderRadius: 8, padding: '8px 12px', fontSize: 13, minHeight: 80, resize: 'vertical', boxSizing: 'border-box' }} placeholder="Descreva o motivo (opcional)" value={motivo} onChange={e => setMotivo(e.target.value)} />
+            <div className="modal-actions" style={{ marginTop: 16 }}>
+              <button className="btn-ghost" onClick={() => setModalMotivo(null)}>Cancelar</button>
+              <button className="btn-action" style={{ background: 'var(--red)', border: 'none' }} onClick={() => void confirmarRejeicao()}>
+                <i className="fa-solid fa-xmark" style={{ marginRight: 5 }} />Confirmar rejeição
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {modalOpen && (
         <div className="modal-bg" onClick={() => setModalOpen(false)}>
           <div className="modal-box" onClick={e => e.stopPropagation()}>
-            <div className="modal-title">
-              Solicitar Reembolso
-              <button className="modal-close" onClick={() => setModalOpen(false)}>x</button>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 20 }}>
+              <h3 className="modal-title">Solicitar Reembolso</h3>
+              <button className="modal-close" onClick={() => setModalOpen(false)}><i className="fa-solid fa-xmark" /></button>
             </div>
             <div className="form-group">
               <label className="form-label">Descricao</label>
