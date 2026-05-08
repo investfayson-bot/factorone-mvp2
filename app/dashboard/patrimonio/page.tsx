@@ -1073,7 +1073,7 @@ export default function PatrimonioPage() {
         </>
       )}
 
-      <NovoAtivoModal open={openNovo} onClose={() => setOpenNovo(false)} onDone={carregar} empresaId={empresaId} categorias={categorias} />
+      <NovoAtivoModal open={openNovo} onClose={() => setOpenNovo(false)} onDone={(tipo) => { void carregar(); if (tipo === 'veiculo_leve' || tipo === 'veiculo_pesado') setTab('frota'); else if (tipo === 'maquina' || tipo === 'equipamento') setTab('maquinas'); else if (tipo === 'imovel') setTab('imoveis'); }} empresaId={empresaId} categorias={categorias} />
       {detalhes && <DetalhesAtivoModal open={Boolean(detalhes)} onClose={() => setDetalhes(null)} ativo={{ id: detalhes.id, nome: detalhes.nome, categoria: categoriaNome(detalhes.categoria_id), foto_url: detalhes.foto_url, localizacao: detalhes.localizacao, responsavel_nome: detalhes.responsavel_nome, valor_contabil: Number(detalhes.valor_contabil || 0) }} />}
       {baixa && <BaixaAtivoModal open={Boolean(baixa)} onClose={() => setBaixa(null)} onDone={carregar} ativo={{ id: baixa.id, nome: baixa.nome, valor_contabil: Number(baixa.valor_contabil || 0), empresa_id: baixa.empresa_id }} />}
       {qr && <QRCodeAtivo open={Boolean(qr)} onClose={() => setQr(null)} qrCode={qr.qr_code} nome={qr.nome} />}

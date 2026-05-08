@@ -2,13 +2,16 @@
 
 import { useEffect, useMemo, useState } from 'react'
 import { supabase } from '@/lib/supabase'
-import { AlertTriangle, TrendingDown, X, Zap } from 'lucide-react'
 
 type AlertItem = { id: string; tone: 'red' | 'orange' | 'yellow'; title: string; detail: string }
-
 const STORAGE_KEY = 'factorone-dismissed-alerts'
-
 type Props = { empresaId: string; onAlertClick?: (alertId: string) => void }
+
+const TONE: Record<string, { bg: string; border: string; color: string; icon: string }> = {
+  red:    { bg: '#fff1f2', border: '#fecaca', color: '#7f1d1d', icon: 'fa-arrow-trend-down' },
+  orange: { bg: '#fff7ed', border: '#fed7aa', color: '#7c2d12', icon: 'fa-triangle-exclamation' },
+  yellow: { bg: '#fefce8', border: '#fde68a', color: '#713f12', icon: 'fa-bolt' },
+}
 
 export default function AnomalyAlerts({ empresaId, onAlertClick }: Props) {
   const [items, setItems] = useState<AlertItem[]>([])
@@ -18,9 +21,7 @@ export default function AnomalyAlerts({ empresaId, onAlertClick }: Props) {
     try {
       const raw = localStorage.getItem(STORAGE_KEY)
       if (raw) setDismissed(new Set(JSON.parse(raw) as string[]))
-    } catch {
-      /* ignore */
-    }
+    } catch { /* ignore */ }
   }, [])
 
   useEffect(() => {
@@ -31,7 +32,6 @@ export default function AnomalyAlerts({ empresaId, onAlertClick }: Props) {
         const now = new Date()
         const inicioMes = new Date(now.getFullYear(), now.getMonth(), 1)
         const fimMes = new Date(now.getFullYear(), now.getMonth() + 1, 0)
-
         const inicioM1 = new Date(now.getFullYear(), now.getMonth() - 1, 1)
         const fimM1 = new Date(now.getFullYear(), now.getMonth(), 0)
         const historicoInicio = new Date(now.getFullYear() - 2, now.getMonth(), 1)
@@ -47,41 +47,23 @@ export default function AnomalyAlerts({ empresaId, onAlertClick }: Props) {
         const t = txs || []
 
         const saidaM1 = t
-          .filter((row) => {
-            const dt = new Date(row.data + 'T12:00:00')
-            return row.tipo === 'saida' && dt >= inicioM1 && dt <= fimM1
-          })
+          .filter((row) => { const dt = new Date(row.data + 'T12:00:00'); return row.tipo === 'saida' && dt >= inicioM1 && dt <= fimM1 })
           .reduce((s, row) => s + Number(row.valor || 0), 0)
         const saidaM2 = t
-          .filter((row) => {
-            const dt = new Date(row.data + 'T12:00:00')
-            const i2 = new Date(now.getFullYear(), now.getMonth() - 2, 1)
-            const f2 = new Date(now.getFullYear(), now.getMonth() - 1, 0)
-            return row.tipo === 'saida' && dt >= i2 && dt <= f2
-          })
+          .filter((row) => { const dt = new Date(row.data + 'T12:00:00'); const i2 = new Date(now.getFullYear(), now.getMonth() - 2, 1); const f2 = new Date(now.getFullYear(), now.getMonth() - 1, 0); return row.tipo === 'saida' && dt >= i2 && dt <= f2 })
           .reduce((s, row) => s + Number(row.valor || 0), 0)
         const saidaM3 = t
-          .filter((row) => {
-            const dt = new Date(row.data + 'T12:00:00')
-            const i3 = new Date(now.getFullYear(), now.getMonth() - 3, 1)
-            const f3 = new Date(now.getFullYear(), now.getMonth() - 2, 0)
-            return row.tipo === 'saida' && dt >= i3 && dt <= f3
-          })
+          .filter((row) => { const dt = new Date(row.data + 'T12:00:00'); const i3 = new Date(now.getFullYear(), now.getMonth() - 3, 1); const f3 = new Date(now.getFullYear(), now.getMonth() - 2, 0); return row.tipo === 'saida' && dt >= i3 && dt <= f3 })
           .reduce((s, row) => s + Number(row.valor || 0), 0)
 
         const média = (saidaM1 + saidaM2 + saidaM3) / 3
-
         const saidaMesAtual = t
-          .filter((row) => {
-            const dt = new Date(row.data + 'T12:00:00')
-            return row.tipo === 'saida' && dt >= inicioMes && dt <= fimMes
-          })
+          .filter((row) => { const dt = new Date(row.data + 'T12:00:00'); return row.tipo === 'saida' && dt >= inicioMes && dt <= fimMes })
           .reduce((s, row) => s + Number(row.valor || 0), 0)
 
         if (média > 0 && saidaMesAtual > média * 1.3) {
           list.push({
-            id: 'despesa-acima-media',
-            tone: 'orange',
+            id: 'despesa-acima-media', tone: 'orange',
             title: 'Despesas acima do padrão',
             detail: `Despesas do mês ~${((saidaMesAtual / média - 1) * 100).toFixed(0)}% acima da média dos últimos 3 meses.`,
           })
@@ -94,52 +76,39 @@ export default function AnomalyAlerts({ empresaId, onAlertClick }: Props) {
           acc += row.tipo === 'entrada' ? Number(row.valor || 0) : -Number(row.valor || 0)
           pontos.push({ data: row.data, saldo: acc })
         })
-
         const hojeStr = now.toISOString().slice(0, 10)
-        const sete = new Date(now)
-        sete.setDate(sete.getDate() - 7)
+        const sete = new Date(now); sete.setDate(sete.getDate() - 7)
         const seteStr = sete.toISOString().slice(0, 10)
-
-        let saldoHoje = 0
-        let saldo7 = 0
+        let saldoHoje = 0, saldo7 = 0
         for (const p of pontos) {
           if (p.data <= hojeStr) saldoHoje = p.saldo
           if (p.data <= seteStr) saldo7 = p.saldo
         }
-
         if (saldo7 > 0 && saldoHoje < saldo7 * 0.8) {
           list.push({
-            id: 'saldo-caindo',
-            tone: 'red',
+            id: 'saldo-caindo', tone: 'red',
             title: 'Saldo acumulado em queda',
             detail: 'O saldo acumulado caiu mais de 20% em relação ao patamar de 7 dias atrás.',
           })
         }
 
-        const quinze = new Date(now)
-        quinze.setDate(quinze.getDate() - 15)
+        const quinze = new Date(now); quinze.setDate(quinze.getDate() - 15)
         const quinzeStr = quinze.toISOString().slice(0, 10)
         const receita15 = t
           .filter((row) => row.tipo === 'entrada' && row.data >= quinzeStr)
           .reduce((s, row) => s + Number(row.valor || 0), 0)
-
         if (receita15 === 0) {
           list.push({
-            id: 'sem-receita-15',
-            tone: 'yellow',
+            id: 'sem-receita-15', tone: 'yellow',
             title: 'Sem receitas recentes',
             detail: 'Nenhuma receita registrada nos últimos 15 dias.',
           })
         }
-      } catch {
-        /* silencioso */
-      }
+      } catch { /* silencioso */ }
       if (!cancelled) setItems(list)
     }
     if (empresaId) detect()
-    return () => {
-      cancelled = true
-    }
+    return () => { cancelled = true }
   }, [empresaId])
 
   const visible = useMemo(() => items.filter((i) => !dismissed.has(i.id)), [items, dismissed])
@@ -148,57 +117,42 @@ export default function AnomalyAlerts({ empresaId, onAlertClick }: Props) {
     const next = new Set(dismissed)
     next.add(id)
     setDismissed(next)
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(Array.from(next)))
-    } catch {
-      /* ignore */
-    }
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(Array.from(next))) } catch { /* ignore */ }
   }
 
   if (visible.length === 0) return null
 
-  const toneMap = {
-    red: 'border-red-200 bg-red-50 text-red-900',
-    orange: 'border-orange-200 bg-orange-50 text-orange-950',
-    yellow: 'border-amber-200 bg-amber-50 text-amber-950',
-  }
-
   return (
-    <div className="space-y-2">
-      {visible.map((a) => (
-        <div
-          key={a.id}
-          className={`flex items-start gap-3 rounded-2xl border px-4 py-3 shadow-sm ${toneMap[a.tone]}`}
-        >
-          <div className="mt-0.5 shrink-0">
-            {a.tone === 'red' ? (
-              <TrendingDown className="w-5 h-5" />
-            ) : a.tone === 'orange' ? (
-              <AlertTriangle className="w-5 h-5" />
-            ) : (
-              <Zap className="w-5 h-5" />
-            )}
-          </div>
-          <div className="flex-1 min-w-0">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+      {visible.map((a) => {
+        const t = TONE[a.tone]
+        return (
+          <div
+            key={a.id}
+            style={{ display: 'flex', alignItems: 'flex-start', gap: 12, borderRadius: 12, border: `1px solid ${t.border}`, background: t.bg, padding: '10px 14px' }}
+          >
+            <i className={`fa-solid ${t.icon}`} style={{ color: t.color, marginTop: 2, flexShrink: 0, fontSize: 14 }} />
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <button
+                type="button"
+                onClick={() => onAlertClick?.(a.id)}
+                style={{ textAlign: 'left', width: '100%', background: 'none', border: 'none', padding: 0, cursor: onAlertClick ? 'pointer' : 'default' }}
+              >
+                <p style={{ fontWeight: 600, fontSize: 13, color: t.color, margin: 0 }}>{a.title}</p>
+                <p style={{ fontSize: 12, color: t.color, opacity: 0.85, margin: '2px 0 0' }}>{a.detail}</p>
+              </button>
+            </div>
             <button
               type="button"
-              onClick={() => onAlertClick?.(a.id)}
-              className="w-full text-left rounded-lg transition hover:bg-black/5 p-1 -m-1"
+              onClick={() => dismiss(a.id)}
+              style={{ background: 'none', border: 'none', cursor: 'pointer', color: t.color, opacity: 0.6, padding: 2, flexShrink: 0 }}
+              aria-label="Dispensar alerta"
             >
-              <p className="font-semibold text-sm">{a.title}</p>
-              <p className="text-sm opacity-90 mt-0.5">{a.detail}</p>
+              <i className="fa-solid fa-xmark" style={{ fontSize: 13 }} />
             </button>
           </div>
-          <button
-            type="button"
-            onClick={() => dismiss(a.id)}
-            className="shrink-0 rounded-lg p-1 hover:bg-black/5 transition-colors"
-            aria-label="Dispensar alerta"
-          >
-            <X className="w-4 h-4" />
-          </button>
-        </div>
-      ))}
+        )
+      })}
     </div>
   )
 }
