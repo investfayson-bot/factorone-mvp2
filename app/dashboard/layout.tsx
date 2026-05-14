@@ -43,6 +43,7 @@ function buildNavGroups(badges: { reembolsos: number; aprovacoes: number }): Nav
       items: [
         { href: '/dashboard/clientes', icon: 'fa-users', label: 'Clientes' },
         { href: '/dashboard/crm', icon: 'fa-handshake', label: 'CRM', badge: 'PLUS', badgeColor: '#7C3AED', match: (p) => p.startsWith('/dashboard/crm') },
+        { href: '/dashboard/invoices', icon: 'fa-file-invoice-dollar', label: 'Invoices' },
       ],
     },
     {
@@ -127,6 +128,7 @@ const pageTitles: Record<string, string> = {
   '/dashboard/equipe': 'Equipe',
   '/dashboard/automacoes': 'Automações',
   '/dashboard/planos': 'Planos & Billing',
+  '/dashboard/invoices': 'Invoices',
 }
 
 function isActive(pathname: string, item: NavGroup['items'][0]) {
@@ -143,6 +145,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [empresaId, setEmpresaId] = useState('')
   const [badges, setBadges] = useState({ reembolsos: 0, aprovacoes: 0 })
   const [notifOpen, setNotifOpen] = useState(false)
+  const [sidebarOpen, setSidebarOpen] = useState(false)
   const { count: notifCount, refresh: refreshNotif } = useNotificacoes(empresaId)
 
   useEffect(() => {
@@ -178,10 +181,25 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   return (
     <>
       <div style={{ display: 'flex', height: '100vh', overflow: 'hidden' }}>
+        {/* Mobile sidebar overlay */}
+        {sidebarOpen && (
+          <div
+            style={{ position: 'fixed', inset: 0, zIndex: 998, background: 'rgba(15,23,42,.45)' }}
+            onClick={() => setSidebarOpen(false)}
+          />
+        )}
+
         {/* SIDEBAR */}
-        <aside className="sidebar">
+        <aside className="sidebar" style={{ transform: sidebarOpen ? 'translateX(0)' : undefined } as React.CSSProperties}>
           <div className="sb-logo">
             <div className="sb-logo-txt">Factor<span>One</span></div>
+            <button
+              onClick={() => setSidebarOpen(false)}
+              style={{ display: 'none', background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(255,255,255,.5)', padding: 4, marginLeft: 'auto' }}
+              className="sb-close-btn"
+            >
+              <i className="fa-solid fa-xmark" style={{ fontSize: 16 }} />
+            </button>
           </div>
           <nav className="sb-nav">
             {buildNavGroups(badges).map(group => (
@@ -192,6 +210,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                     key={item.href}
                     href={item.href}
                     className={`nav-item${isActive(pathname, item) ? ' active' : ''}`}
+                    onClick={() => setSidebarOpen(false)}
                   >
                     <i className={`fa-solid ${item.icon}`} />
                     <span style={{ flex: 1 }}>{item.label}</span>
@@ -221,6 +240,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         {/* MAIN */}
         <div className="fo-main">
           <div className="topbar">
+            <button
+              className="sb-hamburger"
+              onClick={() => setSidebarOpen(v => !v)}
+              style={{ display: 'none', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--navy)', padding: '4px 8px', borderRadius: 6 }}
+            >
+              <i className="fa-solid fa-bars" style={{ fontSize: 16 }} />
+            </button>
             <div className="topbar-title">{pageTitle}</div>
             <div className="live-badge"><div className="live-dot" /> LIVE</div>
             <button

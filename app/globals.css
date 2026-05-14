@@ -275,3 +275,28 @@ tr:hover td { background: rgba(94,140,135,.03); }
 /* ── KEYFRAMES ── */
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
 @keyframes fadeIn { from{opacity:0;transform:translateY(4px)} to{opacity:1;transform:translateY(0)} }
+
+/* ── MOBILE RESPONSIVE ── */
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    left: 0; top: 0; bottom: 0;
+    z-index: 999;
+    transform: translateX(-100%);
+    transition: transform .25s ease;
+    width: 240px !important;
+  }
+  .sidebar[style*="translateX(0)"] { transform: translateX(0) !important; }
+  .sb-close-btn { display: flex !important; }
+  .sb-hamburger { display: flex !important; }
+  .fo-main { width: 100vw !important; }
+  .topbar { gap: 8px; }
+  .topbar-title { font-size: 13px; }
+  .live-badge { display: none; }
+  .kpis { grid-template-columns: repeat(2, 1fr) !important; }
+  .fo-content { padding: 12px !important; }
+}
+@media (max-width: 480px) {
+  .kpis { grid-template-columns: 1fr 1fr !important; }
+  .page-hdr { flex-direction: column; gap: 8px; }
+}
