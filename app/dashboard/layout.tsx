@@ -1,6 +1,7 @@
 'use client'
 import InsightFloating from '@/components/aicfo/InsightFloating'
 import NotificacoesDrawer, { useNotificacoes } from '@/components/dashboard/NotificacoesDrawer'
+import GlobalSearch from '@/components/dashboard/GlobalSearch'
 import { useEffect, useState } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import type { User } from '@supabase/supabase-js'
@@ -222,6 +223,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <div className="topbar">
             <div className="topbar-title">{pageTitle}</div>
             <div className="live-badge"><div className="live-dot" /> LIVE</div>
+            <button
+              onClick={() => { const e = new KeyboardEvent('keydown', { key: 'k', ctrlKey: true, bubbles: true }); window.dispatchEvent(e) }}
+              style={{ display: 'flex', alignItems: 'center', gap: 7, background: 'var(--gray-100)', border: '1px solid var(--gray-200)', borderRadius: 8, padding: '4px 10px', cursor: 'pointer', color: 'var(--gray-500)', fontSize: 12 }}
+              title="Busca Global (Ctrl+K)"
+            >
+              <i className="fa-solid fa-magnifying-glass" style={{ fontSize: 11 }} />
+              <span>Buscar</span>
+              <kbd style={{ fontSize: 9, background: '#fff', border: '1px solid var(--gray-200)', borderRadius: 3, padding: '1px 4px', fontFamily: 'monospace', color: 'var(--gray-400)' }}>⌘K</kbd>
+            </button>
             <button onClick={() => setNotifOpen(true)} style={{ position: 'relative', background: 'none', border: 'none', cursor: 'pointer', padding: '4px 8px', borderRadius: 8, color: 'var(--gray-400)' }} title="Notificações">
               <i className="fa-regular fa-bell" style={{ fontSize: 16 }} />
               {notifCount > 0 && (
@@ -239,6 +249,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       </div>
 
       <InsightFloating />
+      <GlobalSearch empresaId={empresaId} />
       <NotificacoesDrawer
         empresaId={empresaId}
         open={notifOpen}
