@@ -54,7 +54,7 @@ export default function NotasDashboardPage() {
         <div className="kpi">
           <div className="kpi-lbl">NF-e emitidas</div>
           <div className="kpi-val">{nfeAutorizadasMes === null ? '—' : nfeAutorizadasMes}</div>
-          <div className="kpi-delta up">✓ autorizadas</div>
+          <div className="kpi-delta up">autorizadas</div>
         </div>
         <div className="kpi">
           <div className="kpi-lbl">Guias pagas</div>
@@ -64,12 +64,12 @@ export default function NotasDashboardPage() {
         <div className="kpi">
           <div className="kpi-lbl">Rejeições</div>
           <div className="kpi-val" style={{ color: rejeitadasMes ? 'var(--red)' : 'var(--navy)' }}>{rejeitadasMes === null ? '—' : rejeitadasMes}</div>
-          <div className={`kpi-delta ${rejeitadasMes ? 'dn' : 'up'}`}>{rejeitadasMes ? '⚠ verificar' : '✓ sem erros'}</div>
+          <div className={`kpi-delta ${rejeitadasMes ? 'dn' : 'up'}`}>{rejeitadasMes ? 'verificar' : 'sem erros'}</div>
         </div>
         <div className="kpi">
           <div className="kpi-lbl">SEFAZ</div>
           <div className="kpi-val" style={{ color: 'var(--green)', fontSize: 16 }}>● Online</div>
-          <div className="kpi-delta up">✓ transmitindo</div>
+          <div className="kpi-delta up">transmitindo</div>
         </div>
       </div>
 

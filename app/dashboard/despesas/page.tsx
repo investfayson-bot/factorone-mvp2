@@ -347,7 +347,7 @@ export default function DespesasPage() {
         <div className="kpi">
           <div className="kpi-lbl">A aprovar</div>
           <div className="kpi-val" style={{ color: 'var(--gold)' }}>{formatBRL(kpis.aAprovar)}</div>
-          <div className="kpi-delta warn">⚠ pendente</div>
+          <div className="kpi-delta warn">pendente</div>
         </div>
         <div className="kpi">
           <div className="kpi-lbl">A pagar</div>
@@ -359,7 +359,7 @@ export default function DespesasPage() {
           <div className="kpi-val" style={{ color: kpis.economia >= 0 ? 'var(--green)' : 'var(--red)' }}>
             {kpis.economia >= 0 ? '+' : ''}{kpis.economia.toFixed(1)}%
           </div>
-          <div className={`kpi-delta ${kpis.economia >= 0 ? 'up' : 'dn'}`}>{kpis.economia >= 0 ? '✓ economia' : '↑ mais gastos'}</div>
+          <div className={`kpi-delta ${kpis.economia >= 0 ? 'up' : 'dn'}`}>{kpis.economia >= 0 ? 'economia' : 'mais gastos'}</div>
         </div>
       </div>
 

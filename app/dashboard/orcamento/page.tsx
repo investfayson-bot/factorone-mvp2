@@ -134,12 +134,12 @@ export default function OrcamentoPage() {
           <div className="kpi-val" style={{ color: resumo.percentualConsumido > 90 ? 'var(--red)' : resumo.percentualConsumido > 70 ? 'var(--gold)' : 'var(--navy)' }}>
             {resumo.percentualConsumido.toFixed(1)}%
           </div>
-          <div className={`kpi-delta ${resumo.percentualConsumido > 90 ? 'dn' : 'up'}`}>{resumo.percentualConsumido > 90 ? '⚠ atenção' : '✓ ok'}</div>
+          <div className={`kpi-delta ${resumo.percentualConsumido > 90 ? 'dn' : 'up'}`}>{resumo.percentualConsumido > 90 ? 'atenção' : 'saudável'}</div>
         </div>
         <div className="kpi">
           <div className="kpi-lbl">Alertas ativos</div>
           <div className="kpi-val" style={{ color: alertasAtivos > 0 ? 'var(--gold)' : 'var(--navy)' }}>{alertasAtivos}</div>
-          <div className={`kpi-delta ${alertasAtivos > 0 ? 'warn' : 'up'}`}>{alertasAtivos > 0 ? '⚠ pendentes' : '✓ nenhum'}</div>
+          <div className={`kpi-delta ${alertasAtivos > 0 ? 'warn' : 'up'}`}>{alertasAtivos > 0 ? 'pendentes' : 'nenhum'}</div>
         </div>
       </div>
 

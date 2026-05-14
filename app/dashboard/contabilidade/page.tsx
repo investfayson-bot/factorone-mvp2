@@ -226,12 +226,12 @@ export default function ContabilidadePage() {
         <div className="kpi">
           <div className="kpi-lbl">Classificados %</div>
           <div className="kpi-val" style={{ color: kpi.classificadosPct >= 80 ? 'var(--teal)' : 'var(--gold)' }}>{kpi.classificadosPct.toFixed(0)}%</div>
-          <div className={`kpi-delta ${kpi.classificadosPct >= 80 ? 'up' : 'warn'}`}>{kpi.classificadosPct >= 80 ? '✓ ok' : '⚠ atenção'}</div>
+          <div className={`kpi-delta ${kpi.classificadosPct >= 80 ? 'up' : 'warn'}`}>{kpi.classificadosPct >= 80 ? 'saudável' : 'atenção'}</div>
         </div>
         <div className="kpi">
           <div className="kpi-lbl">Pendentes</div>
           <div className="kpi-val" style={{ color: kpi.pend > 0 ? 'var(--gold)' : 'var(--navy)' }}>{kpi.pend}</div>
-          <div className={`kpi-delta ${kpi.pend > 0 ? 'warn' : 'up'}`}>{kpi.pend > 0 ? '⚠ revisar' : '✓ ok'}</div>
+          <div className={`kpi-delta ${kpi.pend > 0 ? 'warn' : 'up'}`}>{kpi.pend > 0 ? 'revisar' : 'saudável'}</div>
         </div>
         <div className="kpi">
           <div className="kpi-lbl">Último fechamento</div>
@@ -263,10 +263,15 @@ export default function ContabilidadePage() {
         <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: 20 }}>
           <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy)', marginBottom: 16 }}>Fluxo contábil</div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12 }}>
-            {[['📷', 'Foto'], ['🧠', 'IA Extrai'], ['📊', 'DRE Atualizado'], ['👤', 'Contador Valida']].map(([icon, title]) => (
-              <div key={title} style={{ background: 'rgba(94,140,135,.04)', border: '1px solid var(--gray-100)', borderRadius: 10, padding: '14px 12px' }}>
-                <div style={{ fontSize: 20, marginBottom: 8 }}>{icon}</div>
-                <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--navy)' }}>{title}</div>
+            {[
+              { icon: 'fa-camera', label: 'Foto' },
+              { icon: 'fa-robot', label: 'IA Extrai' },
+              { icon: 'fa-chart-pie', label: 'DRE Atualizado' },
+              { icon: 'fa-user-tie', label: 'Contador Valida' },
+            ].map(({ icon, label }) => (
+              <div key={label} style={{ background: 'rgba(94,140,135,.04)', border: '1px solid var(--gray-100)', borderRadius: 10, padding: '14px 12px', textAlign: 'center' }}>
+                <i className={'fa-solid ' + icon} style={{ fontSize: 18, color: 'var(--teal)', marginBottom: 8, display: 'block' }} />
+                <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--navy)' }}>{label}</div>
               </div>
             ))}
           </div>
@@ -277,7 +282,7 @@ export default function ContabilidadePage() {
         <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: 20 }}>
           <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy)', marginBottom: 14 }}>Captura de recibos</div>
           <label style={{ display: 'flex', minHeight: 120, cursor: 'pointer', alignItems: 'center', justifyContent: 'center', borderRadius: 10, border: '2px dashed var(--gray-100)', background: '#fafafa', fontSize: 13, color: 'var(--gray-400)' }}>
-            <span>📎 Arraste ou selecione imagem/PDF</span>
+            <span style={{display:"flex",alignItems:"center",gap:8}}><i className="fa-solid fa-cloud-arrow-up" style={{fontSize:20,color:"var(--gray-300)"}} /> Arraste ou selecione imagem/PDF</span>
             <input
               type="file"
               accept="image/*,application/pdf"

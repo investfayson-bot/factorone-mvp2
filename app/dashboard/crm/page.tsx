@@ -25,7 +25,7 @@ const ETAPAS = [
   { id: 'qualificado', label: 'Qualificado', color: '#7C3AED', bg: 'rgba(124,58,237,.08)', prob: 30 },
   { id: 'proposta', label: 'Proposta', color: 'var(--gold)', bg: '#fffbeb', prob: 60 },
   { id: 'negociacao', label: 'Negociação', color: 'var(--teal)', bg: 'rgba(0,168,150,.08)', prob: 80 },
-  { id: 'fechado_ganho', label: 'Ganho ✓', color: 'var(--green)', bg: 'rgba(45,155,111,.08)', prob: 100 },
+  { id: 'fechado_ganho', label: 'Ganho', color: 'var(--green)', bg: 'rgba(45,155,111,.08)', prob: 100 },
   { id: 'fechado_perdido', label: 'Perdido ✗', color: 'var(--red)', bg: 'rgba(192,80,74,.08)', prob: 0 },
 ]
 

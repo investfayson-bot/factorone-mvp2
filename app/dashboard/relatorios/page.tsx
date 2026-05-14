@@ -548,7 +548,7 @@ export default function RelatoriosPage() {
 
             {/* DRE PDF */}
             <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: 20 }}>
-              <div style={{ fontSize: 24, marginBottom: 10 }}>📄</div>
+              <div style={{ marginBottom: 10 }}><i className="fa-solid fa-file-pdf" style={{ fontSize: 24, color: "#DC2626" }} /></div>
               <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy)', marginBottom: 4 }}>DRE — PDF</div>
               <div style={{ fontSize: 12, color: 'var(--gray-400)', marginBottom: 16, lineHeight: 1.6 }}>Demonstrativo de Resultados em PDF com análise IA</div>
               <button className="btn-action" style={{ width: '100%' }} onClick={() => void exportarPdf()}>
@@ -558,7 +558,7 @@ export default function RelatoriosPage() {
 
             {/* DRE Excel */}
             <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: 20 }}>
-              <div style={{ fontSize: 24, marginBottom: 10 }}>📊</div>
+              <div style={{ marginBottom: 10 }}><i className="fa-solid fa-file-excel" style={{ fontSize: 24, color: "#16A34A" }} /></div>
               <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy)', marginBottom: 4 }}>DRE — Excel</div>
               <div style={{ fontSize: 12, color: 'var(--gray-400)', marginBottom: 16, lineHeight: 1.6 }}>DRE completo + comparativo 12 meses + métricas avançadas</div>
               <button className="btn-action" style={{ width: '100%' }} onClick={() => void exportarExcel()}>
@@ -568,7 +568,7 @@ export default function RelatoriosPage() {
 
             {/* Transações CSV */}
             <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: 20 }}>
-              <div style={{ fontSize: 24, marginBottom: 10 }}>🔄</div>
+              <div style={{ marginBottom: 10 }}><i className="fa-solid fa-file-csv" style={{ fontSize: 24, color: "#0891B2" }} /></div>
               <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy)', marginBottom: 4 }}>Transações — CSV</div>
               <div style={{ fontSize: 12, color: 'var(--gray-400)', marginBottom: 16, lineHeight: 1.6 }}>Todas as transações do período filtrado (entradas e saídas)</div>
               <button
@@ -583,7 +583,7 @@ export default function RelatoriosPage() {
 
             {/* Despesas CSV */}
             <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: 20 }}>
-              <div style={{ fontSize: 24, marginBottom: 10 }}>💸</div>
+              <div style={{ marginBottom: 10 }}><i className="fa-solid fa-money-bill-transfer" style={{ fontSize: 24, color: "var(--teal)" }} /></div>
               <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy)', marginBottom: 4 }}>Despesas — CSV</div>
               <div style={{ fontSize: 12, color: 'var(--gray-400)', marginBottom: 16, lineHeight: 1.6 }}>Contas a pagar com fornecedor, categoria, status e centro de custo</div>
               <button

@@ -278,7 +278,7 @@ export default function FornecedoresPage() {
         <div className="kpi">
           <div className="kpi-lbl">Vencido</div>
           <div className="kpi-val" style={{ color: totalVencido > 0 ? 'var(--red)' : 'var(--navy)' }}>{formatBRL(totalVencido)}</div>
-          <div className={`kpi-delta ${totalVencido > 0 ? 'dn' : 'up'}`}>{totalVencido > 0 ? '⚠ atraso' : '✓ ok'}</div>
+          <div className={`kpi-delta ${totalVencido > 0 ? 'dn' : 'up'}`}>{totalVencido > 0 ? 'atraso' : 'saudável'}</div>
         </div>
         <div className="kpi">
           <div className="kpi-lbl">Vence este mês</div>

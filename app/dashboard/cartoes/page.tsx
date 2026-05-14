@@ -126,14 +126,14 @@ export default function CartoesPage() {
         <div className="kpi">
           <div className="kpi-lbl">Solicitações</div>
           <div className="kpi-val" style={{ color: pendentes > 0 ? 'var(--gold)' : 'var(--navy)' }}>{pendentes}</div>
-          <div className={`kpi-delta ${pendentes > 0 ? 'warn' : 'up'}`}>{pendentes > 0 ? '⚠ aguardando' : '✓ nenhuma'}</div>
+          <div className={`kpi-delta ${pendentes > 0 ? 'warn' : 'up'}`}>{pendentes > 0 ? 'aguardando' : 'nenhuma'}</div>
         </div>
       </div>
 
       {/* Cartões aprovados */}
       {aprovados.length === 0 ? (
         <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: '48px 24px', textAlign: 'center' }}>
-          <div style={{ fontSize: 32, marginBottom: 12 }}>💳</div>
+          <i className="fa-solid fa-credit-card" style={{ fontSize: 28, color: "var(--gray-300)", marginBottom: 12, display: "block", textAlign: "center" }} />
           <div style={{ fontFamily: "'Sora',sans-serif", fontSize: 15, fontWeight: 700, color: 'var(--navy)', marginBottom: 8 }}>Nenhum cartão ativo</div>
           <div style={{ fontSize: 12, color: 'var(--gray-400)', maxWidth: 360, margin: '0 auto 20px', lineHeight: 1.7 }}>
             Solicite cartões corporativos virtuais ou físicos para sua equipe. As solicitações são aprovadas pela administração.
@@ -154,7 +154,7 @@ export default function CartoesPage() {
                   <div className="vc-fill" style={{ width: `${pct}%`, background: pct >= 80 ? 'rgba(255,100,100,.8)' : 'rgba(255,255,255,.5)' }} />
                 </div>
                 <div style={{ fontSize: 8, color: 'rgba(255,255,255,.4)', marginTop: 4 }}>
-                  {pct >= 80 ? `⚠ ${pct}% utilizado` : `✓ OK`}
+                  {pct >= 80 ? `⚠ ${pct}% utilizado` : `OK`}
                 </div>
               </div>
             )
