@@ -138,7 +138,7 @@ export default function ContadoresPage() {
 
       {contadores.length === 0 && (
         <div style={{ textAlign: 'center', padding: '3rem 1rem', color: 'var(--gray-400)' }}>
-          <div style={{ fontSize: 48, marginBottom: 12 }}>🔑</div>
+          <i className="fa-solid fa-key" style={{ fontSize: 36, color: "var(--gold)", marginBottom: 12, display: "block" }} />
           <p style={{ fontWeight: 600, color: 'var(--gray-500)', marginBottom: 8 }}>Nenhum acesso criado</p>
           <p style={{ fontSize: 14 }}>Crie um link seguro para que seu contador visualize DRE, lançamentos e despesas.</p>
         </div>

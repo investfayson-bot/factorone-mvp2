@@ -136,7 +136,7 @@ export default function InvoicesPage() {
       <div style={S.card}>
         {invoices.length === 0 ? (
           <div style={{ textAlign:'center', padding:'40px 0', color:'#4A6260' }}>
-            <div style={{ fontSize:32, marginBottom:10 }}>📄</div>
+            <i className="fa-solid fa-file-invoice" style={{ fontSize: 28, color: "var(--gray-300)", marginBottom: 10, display: "block" }} />
             <div style={{ fontSize:13, marginBottom:6 }}>Nenhuma invoice criada ainda</div>
             <button style={S.btnPrimary} onClick={() => setModal(true)}>Criar primeira invoice</button>
           </div>
