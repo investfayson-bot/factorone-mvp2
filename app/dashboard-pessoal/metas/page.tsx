@@ -79,7 +79,7 @@ export default function MetasPage() {
 
       {metas.length === 0 ? (
         <div style={{ background: '#fff', border: '2px dashed var(--gray-100)', borderRadius: 16, padding: 48, textAlign: 'center' }}>
-          <div style={{ fontSize: 40, marginBottom: 12 }}>🎯</div>
+          <i className="fa-solid fa-bullseye" style={{ fontSize: 32, color: "var(--gray-300)", marginBottom: 12, display: "block" }} />
           <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--navy)', marginBottom: 8 }}>Nenhuma meta ainda</div>
           <div style={{ fontSize: 13, color: 'var(--gray-400)', marginBottom: 20 }}>Crie sua primeira meta — reserva de emergência, viagem, carro...</div>
           <button onClick={() => setModal(true)} className="btn-action">Criar primeira meta</button>
@@ -127,7 +127,7 @@ export default function MetasPage() {
                     </div>
                   )
                 )}
-                {concluida && <div style={{ fontSize: 12, color: 'var(--teal)', fontWeight: 700, textAlign: 'center', padding: '6px 0' }}>🎉 Meta alcançada!</div>}
+                {concluida && <div style={{ fontSize: 12, color: 'var(--teal)', fontWeight: 700, textAlign: 'center', padding: '6px 0' }}>Meta alcançada!</div>}
               </div>
             )
           })}

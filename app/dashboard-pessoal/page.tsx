@@ -69,7 +69,7 @@ export default function DashboardPessoalPage() {
     <>
       <div className="page-hdr">
         <div>
-          <div className="page-title">Olá, {nome.split(' ')[0] || 'você'} 👋</div>
+          <div className="page-title">Olá, {nome.split(' ')[0] || 'você'}</div>
           <div className="page-sub">Resumo financeiro do mês atual</div>
         </div>
         <Link href="/dashboard-pessoal/aicfo" style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'var(--navy)', color: '#fff', borderRadius: 10, padding: '8px 16px', fontSize: 12, fontWeight: 700, textDecoration: 'none' }}>

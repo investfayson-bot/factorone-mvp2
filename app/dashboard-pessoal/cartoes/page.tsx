@@ -78,7 +78,7 @@ export default function CartoesPage() {
 
       {cartoes.length === 0 ? (
         <div style={{ background: '#fff', border: '2px dashed var(--gray-100)', borderRadius: 16, padding: 48, textAlign: 'center' }}>
-          <div style={{ fontSize: 40, marginBottom: 12 }}>💳</div>
+          <i className="fa-solid fa-credit-card" style={{ fontSize: 32, color: "var(--gray-300)", marginBottom: 12, display: "block" }} />
           <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--navy)', marginBottom: 8 }}>Nenhum cartão cadastrado</div>
           <button onClick={() => setModal(true)} className="btn-action">Adicionar cartão</button>
         </div>

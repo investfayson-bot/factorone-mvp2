@@ -46,7 +46,7 @@ export default function OpenFinancePage() {
       {!temPluggyKey ? (
         <div style={{ background: 'linear-gradient(90deg, var(--navy) 0%, #1e3a5f 100%)', borderRadius: 14, padding: 24, marginBottom: 20 }}>
           <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
-            <div style={{ fontSize: 36 }}>🔌</div>
+            <i className="fa-solid fa-plug" style={{ fontSize: 28, color: "var(--gray-300)", display: "block" }} />
             <div style={{ flex: 1 }}>
               <div style={{ fontSize: 15, fontWeight: 700, color: '#fff', marginBottom: 6 }}>Open Finance via Pluggy</div>
               <div style={{ fontSize: 13, color: 'rgba(255,255,255,.7)', lineHeight: 1.6, marginBottom: 16 }}>
