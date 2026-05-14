@@ -193,6 +193,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <aside className="sidebar" style={{ transform: sidebarOpen ? 'translateX(0)' : undefined } as React.CSSProperties}>
           <div className="sb-logo">
             <div className="sb-logo-txt">Factor<span>One</span></div>
+            {empresaNome && (
+              <div style={{ fontSize: 10, color: 'rgba(255,255,255,.4)', marginTop: 2, fontWeight: 500, maxWidth: 120, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                {empresaNome}
+              </div>
+            )}
             <button
               onClick={() => setSidebarOpen(false)}
               style={{ display: 'none', background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(255,255,255,.5)', padding: 4, marginLeft: 'auto' }}

@@ -182,7 +182,7 @@ export default function ReceitasPage() {
           <div className="page-sub">{mesLabel(mes)} · entradas confirmadas e previstas</div>
         </div>
         <div style={{ display: 'flex', gap: 8 }}>
-          <button className="btn-ghost" style={{ display: 'flex', alignItems: 'center', gap: 6 }} onClick={() => { abrirForm(); setTimeout(() => xmlRef.current?.click(), 200) }}>
+          <button className="btn-action btn-ghost" style={{ display: 'flex', alignItems: 'center', gap: 6 }} onClick={() => { abrirForm(); setTimeout(() => xmlRef.current?.click(), 200) }}>
             <i className="fa-solid fa-file-code" style={{ fontSize: 12 }} />
             Importar XML NF-e
           </button>

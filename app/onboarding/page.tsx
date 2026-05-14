@@ -6,7 +6,7 @@ import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
 
 type Screen = 'splash' | 'perfil' | 'empresa' | 'financeiro' | 'pronto'
-type FinOpcao = 'open_finance' | 'manual' | 'pular' | null
+type FinOpcao = 'open_finance' | 'manual' | 'extrato' | 'pular' | null
 
 const SETORES = ['Tecnologia', 'Comércio', 'Serviços', 'Indústria', 'Saúde', 'Educação', 'Construção', 'Agronegócio', 'Transporte / Logística', 'Alimentação', 'Outro']
 const BANCOS  = ['Banco do Brasil', 'Bradesco', 'Caixa Econômica', 'Itaú', 'Santander', 'Nubank', 'Inter', 'Sicoob', 'XP', 'BTG Pactual', 'Outro']
@@ -28,7 +28,7 @@ export default function OnboardingPage() {
 
   const [empresa, setEmpresa] = useState({ nome: '', cnpj: '', setor: '', telefone: '' })
   const [finOpcao, setFinOpcao] = useState<FinOpcao>(null)
-  const [banco, setBanco]     = useState({ nome: '', tipo: 'corrente', saldo: '' })
+  const [banco, setBanco]     = useState({ nome: '', tipo: 'corrente' })
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
@@ -88,8 +88,6 @@ export default function OnboardingPage() {
           empresa_id: empresaId,
           nome: banco.nome,
           tipo: banco.tipo,
-          saldo_atual: Number(banco.saldo.replace(',', '.') || 0),
-          saldo_disponivel: Number(banco.saldo.replace(',', '.') || 0),
           ativa: true,
         })
       }
@@ -118,6 +116,11 @@ export default function OnboardingPage() {
           <div style={{ fontFamily: "'Sora',sans-serif", fontSize: 20, fontWeight: 800, color: '#fff', letterSpacing: '-.04em', marginBottom: 6 }}>
             Factor<span style={{ color: 'var(--teal)' }}>One</span>
           </div>
+          {empresa.nome && (
+            <div style={{ fontSize: 11, color: 'rgba(255,255,255,.5)', marginTop: 4, fontWeight: 500 }}>
+              {empresa.nome}
+            </div>
+          )}
           {userName && (
             <div style={{ fontSize: 11, color: 'rgba(255,255,255,.5)', marginBottom: 36 }}>{userName}</div>
           )}
@@ -337,7 +340,7 @@ export default function OnboardingPage() {
                 </div>
                 <div style={{ flex: 1 }}>
                   <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy)', marginBottom: 3 }}>Conta manual</div>
-                  <div style={{ fontSize: 11, color: 'var(--gray-400)', lineHeight: 1.5 }}>Informe banco, tipo e saldo inicial. Importe extratos depois via OFX/CSV.</div>
+                  <div style={{ fontSize: 11, color: 'var(--gray-400)', lineHeight: 1.5 }}>Informe banco e tipo de conta. Importe extratos depois via OFX/CSV.</div>
                 </div>
                 {finOpcao === 'manual' && <i className="fa-solid fa-circle-check" style={{ color: 'var(--navy)', fontSize: 18, alignSelf: 'center' }} />}
               </button>
@@ -351,22 +354,34 @@ export default function OnboardingPage() {
                       {BANCOS.map(b => <option key={b} value={b}>{b}</option>)}
                     </select>
                   </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-                    <div className="form-group" style={{ margin: 0 }}>
-                      <label className="form-label">Tipo</label>
-                      <select className="form-input" value={banco.tipo} onChange={e => setBanco(p => ({ ...p, tipo: e.target.value }))}>
-                        <option value="corrente">Conta Corrente</option>
-                        <option value="poupanca">Poupança</option>
-                        <option value="pagamentos">Pagamentos</option>
-                      </select>
-                    </div>
-                    <div className="form-group" style={{ margin: 0 }}>
-                      <label className="form-label">Saldo inicial (R$)</label>
-                      <input className="form-input" placeholder="0,00" value={banco.saldo} onChange={e => setBanco(p => ({ ...p, saldo: e.target.value }))} />
-                    </div>
+                  <div className="form-group" style={{ margin: 0 }}>
+                    <label className="form-label">Tipo</label>
+                    <select className="form-input" value={banco.tipo} onChange={e => setBanco(p => ({ ...p, tipo: e.target.value }))}>
+                      <option value="corrente">Conta Corrente</option>
+                      <option value="poupanca">Poupança</option>
+                      <option value="pagamentos">Pagamentos</option>
+                    </select>
                   </div>
                 </div>
               )}
+
+              {/* Importar Extrato */}
+              <button onClick={() => setFinOpcao(finOpcao === 'extrato' ? null : 'extrato')} style={{ display: 'flex', gap: 14, padding: '16px 18px', borderRadius: 10, cursor: 'pointer', border: finOpcao === 'extrato' ? '2px solid var(--gold)' : '1px solid var(--gray-100)', background: finOpcao === 'extrato' ? 'rgba(184,146,42,.03)' : '#fff', textAlign: 'left', width: '100%' }}>
+                <div style={{ width: 40, height: 40, borderRadius: 10, background: 'rgba(184,146,42,.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <i className="fa-solid fa-file-arrow-up" style={{ color: 'var(--gold)', fontSize: 15 }} />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy)', marginBottom: 3 }}>Importar Extrato</div>
+                  <div style={{ fontSize: 11, color: 'var(--gray-400)', lineHeight: 1.5 }}>Faça upload do extrato bancário (OFX/CSV) para importar transações automaticamente.</div>
+                  {finOpcao === 'extrato' && (
+                    <div style={{ marginTop: 10, padding: '9px 12px', background: 'rgba(184,146,42,.08)', borderRadius: 7, fontSize: 11, color: 'var(--gold)' }}>
+                      <i className="fa-solid fa-circle-info" style={{ marginRight: 6 }} />
+                      Acesse <strong>Conta PJ → Importar OFX/CSV</strong> para fazer o upload após o setup.
+                    </div>
+                  )}
+                </div>
+                {finOpcao === 'extrato' && <i className="fa-solid fa-circle-check" style={{ color: 'var(--gold)', fontSize: 18, alignSelf: 'center' }} />}
+              </button>
 
               {/* Pular */}
               <button onClick={() => setFinOpcao(finOpcao === 'pular' ? null : 'pular')} style={{ display: 'flex', gap: 14, padding: '14px 18px', borderRadius: 10, cursor: 'pointer', border: finOpcao === 'pular' ? '2px solid var(--gray-400)' : '1px dashed var(--gray-100)', background: '#fff', textAlign: 'left', width: '100%' }}>
@@ -384,7 +399,7 @@ export default function OnboardingPage() {
             <div style={{ display: 'flex', gap: 10, marginTop: 20 }}>
               <button className="btn-action btn-ghost" style={{ flex: 1 }} onClick={() => setScreen('empresa')}>Voltar</button>
               <button className="btn-action" style={{ flex: 2, opacity: (loading || !finOpcao) ? .6 : 1 }} onClick={() => void salvarFinanceiro()} disabled={loading || !finOpcao}>
-                {loading ? 'Salvando…' : finOpcao === 'pular' ? 'Pular e finalizar' : 'Continuar'}
+                {loading ? 'Salvando…' : finOpcao === 'pular' || finOpcao === 'extrato' ? 'Pular e finalizar' : 'Continuar'}
               </button>
             </div>
           </div>

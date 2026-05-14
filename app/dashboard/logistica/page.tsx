@@ -342,13 +342,13 @@ export default function LogisticaPage() {
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '20px 24px 0' }}>
         <h1 className="page-title" style={{ margin: 0 }}>Logística</h1>
         <div style={{ display: 'flex', gap: 8 }}>
-          <button className="btn-ghost" onClick={() => { setShowChecklist(true); setCkForm({ veiculo_id: '', rota_id: '', motorista: '', data: new Date().toISOString().slice(0, 10), itens: {} }) }}>
+          <button className="btn-action btn-ghost" onClick={() => { setShowChecklist(true); setCkForm({ veiculo_id: '', rota_id: '', motorista: '', data: new Date().toISOString().slice(0, 10), itens: {} }) }}>
             <i className="fa-solid fa-clipboard-check" /> Checklist
           </button>
-          <button className="btn-ghost" onClick={() => setShowPneu(true)}>
+          <button className="btn-action btn-ghost" onClick={() => setShowPneu(true)}>
             <i className="fa-solid fa-circle-dot" /> Pneu
           </button>
-          <button className="btn-ghost" onClick={() => setShowManut(true)}>
+          <button className="btn-action btn-ghost" onClick={() => setShowManut(true)}>
             <i className="fa-solid fa-wrench" /> Manutenção
           </button>
           <button className="btn-action" onClick={() => { setRotaDetalhe(null); setOcrResult(null); setShowRota(true) }}>
@@ -712,7 +712,7 @@ export default function LogisticaPage() {
           <div className="modal-box" style={{ maxWidth: 640, width: '95%' }} onClick={e => e.stopPropagation()}>
             <div className="modal-title">
               {rotaDetalhe ? 'Editar Rota' : 'Nova Rota'}
-              <button className="modal-close" onClick={() => { setShowRota(false); setRotaDetalhe(null); setOcrResult(null) }}>×</button>
+              <button className="modal-close" onClick={() => { setShowRota(false); setRotaDetalhe(null); setOcrResult(null) }}><i className="fa-solid fa-xmark" /></button>
             </div>
 
             {/* OCR Romaneio */}
@@ -814,7 +814,7 @@ export default function LogisticaPage() {
           <div className="modal-box" style={{ maxWidth: 520, width: '95%' }} onClick={e => e.stopPropagation()}>
             <div className="modal-title">
               Cadastrar Pneu
-              <button className="modal-close" onClick={() => setShowPneu(false)}>×</button>
+              <button className="modal-close" onClick={() => setShowPneu(false)}><i className="fa-solid fa-xmark" /></button>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
               <div style={{ gridColumn: '1 / -1' }}>
@@ -885,7 +885,7 @@ export default function LogisticaPage() {
           <div className="modal-box" style={{ maxWidth: 520, width: '95%' }} onClick={e => e.stopPropagation()}>
             <div className="modal-title">
               Checklist Veículo
-              <button className="modal-close" onClick={() => setShowChecklist(false)}>×</button>
+              <button className="modal-close" onClick={() => setShowChecklist(false)}><i className="fa-solid fa-xmark" /></button>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 16 }}>
               <div>
@@ -941,7 +941,7 @@ export default function LogisticaPage() {
           <div className="modal-box" style={{ maxWidth: 540, width: '95%' }} onClick={e => e.stopPropagation()}>
             <div className="modal-title">
               Registrar Manutenção
-              <button className="modal-close" onClick={() => setShowManut(false)}>×</button>
+              <button className="modal-close" onClick={() => setShowManut(false)}><i className="fa-solid fa-xmark" /></button>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
               <div style={{ gridColumn: '1 / -1' }}>

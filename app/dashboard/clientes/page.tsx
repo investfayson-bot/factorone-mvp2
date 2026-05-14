@@ -144,7 +144,7 @@ export default function ClientesPage() {
           <div className="page-sub">{kpis.total} clientes · {kpis.ativos} ativos · MRR {formatBRL(kpis.mrr)}</div>
         </div>
         <div style={{ display: 'flex', gap: 8 }}>
-          <button onClick={() => setView(v => v === 'lista' ? 'kanban' : 'lista')} className="btn-ghost" style={{ fontSize: 12 }}>
+          <button onClick={() => setView(v => v === 'lista' ? 'kanban' : 'lista')} className="btn-action btn-ghost">
             <i className={`fa-solid ${view === 'lista' ? 'fa-table-columns' : 'fa-list'}`} style={{ marginRight: 5 }} />{view === 'lista' ? 'Kanban' : 'Lista'}
           </button>
           <button className="btn-action" onClick={() => abrirForm()}>+ Novo cliente</button>
@@ -245,7 +245,7 @@ export default function ClientesPage() {
                         <button className="btn-ghost" style={{ fontSize: 10, padding: '3px 8px' }} onClick={() => { setDetalhe(c); void carregarContatos(c.id) }}>Ver</button>
                         <button className="btn-ghost" style={{ fontSize: 10, padding: '3px 8px' }} onClick={() => abrirForm(c)}>Editar</button>
                         <button className="btn-ghost" style={{ fontSize: 10, padding: '3px 8px', color: 'var(--teal)' }} onClick={() => void gerarPortal(c.id)} title="Portal do cliente"><i className="fa-solid fa-link" /></button>
-                        <button className="btn-ghost" style={{ fontSize: 10, padding: '3px 8px', color: 'var(--red)' }} onClick={() => void excluir(c.id)}>✕</button>
+                        <button className="btn-ghost" style={{ fontSize: 10, padding: '3px 8px', color: 'var(--red)' }} onClick={() => void excluir(c.id)}><i className="fa-solid fa-trash" style={{ fontSize: 9 }} /></button>
                       </div>
                     </td>
                   </tr>

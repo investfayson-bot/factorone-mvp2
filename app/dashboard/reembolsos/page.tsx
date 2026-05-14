@@ -237,11 +237,11 @@ export default function ReembolsosPage() {
           <div className="page-sub">{nPendentes} pendentes · lançamento automático no DRE ao pagar</div>
         </div>
         <div style={{ display: 'flex', gap: 8 }}>
-          <button className="btn-ghost" style={{ fontSize: 12 }} onClick={exportarCSV}>
+          <button className="btn-action btn-ghost" onClick={exportarCSV}>
             <i className="fa-solid fa-file-csv" style={{ marginRight: 5 }} />CSV
           </button>
           {nPendentes > 0 && (
-            <button className="btn-ghost" style={{ fontSize: 12 }} onClick={() => void aprovarLotePendentes()}>
+            <button className="btn-action btn-ghost" onClick={() => void aprovarLotePendentes()}>
               <i className="fa-solid fa-check-double" style={{ marginRight: 5 }} />Aprovar todos
             </button>
           )}

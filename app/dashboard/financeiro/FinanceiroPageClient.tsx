@@ -104,10 +104,6 @@ function FinanceiroInner() {
           <div className="page-title">Contas Pagar / Receber</div>
           <div className="page-sub">Conciliação bancária · Aging report · Tempo real</div>
         </div>
-        <div style={{ display: 'flex', gap: 8 }}>
-          <button className="btn-action btn-ghost" onClick={() => setOpenPagar(true)}>+ A pagar</button>
-          <button className="btn-action" onClick={() => setOpenReceber(true)}>+ A receber</button>
-        </div>
       </div>
 
       {/* Tabs */}
@@ -121,13 +117,14 @@ function FinanceiroInner() {
 
       {tab === 'pagar' && (
         <>
-          <div style={{ marginBottom: 10 }}>
+          <div style={{ marginBottom: 10, display: 'flex', alignItems: 'center', gap: 8 }}>
             <select className="form-input" style={{ width: 'auto', padding: '6px 10px', fontSize: 12 }} value={fStatusPagar} onChange={(e) => setFStatusPagar(e.target.value)}>
               <option value="todas">Todas</option>
               <option value="pendente">Pendente</option>
               <option value="vencida">Vencida</option>
               <option value="paga">Paga</option>
             </select>
+            <button className="btn-action" style={{ fontSize: 11, padding: '5px 12px', flexShrink: 0 }} onClick={() => setOpenPagar(true)}>+ A pagar</button>
           </div>
           <div className="expenses-table">
             <table>
@@ -160,13 +157,14 @@ function FinanceiroInner() {
 
       {tab === 'receber' && (
         <>
-          <div style={{ marginBottom: 10 }}>
+          <div style={{ marginBottom: 10, display: 'flex', alignItems: 'center', gap: 8 }}>
             <select className="form-input" style={{ width: 'auto', padding: '6px 10px', fontSize: 12 }} value={fStatusReceber} onChange={(e) => setFStatusReceber(e.target.value)}>
               <option value="todas">Todas</option>
               <option value="pendente">Pendente</option>
               <option value="vencida">Vencida</option>
               <option value="recebida">Recebida</option>
             </select>
+            <button className="btn-action" style={{ fontSize: 11, padding: '5px 12px', flexShrink: 0 }} onClick={() => setOpenReceber(true)}>+ A receber</button>
           </div>
           <div className="expenses-table">
             <table>
