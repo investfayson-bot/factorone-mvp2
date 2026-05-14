@@ -92,6 +92,7 @@ function buildNavGroups(badges: { reembolsos: number; aprovacoes: number }): Nav
       items: [
         { href: '/dashboard/equipe', icon: 'fa-users-gear', label: 'Equipe' },
         { href: '/dashboard/automacoes', icon: 'fa-robot', label: 'Automações' },
+        { href: '/dashboard/planos', icon: 'fa-star', label: 'Planos & Billing' },
       ],
     },
   ]
@@ -124,6 +125,7 @@ const pageTitles: Record<string, string> = {
   '/dashboard/receitas': 'Receitas',
   '/dashboard/equipe': 'Equipe',
   '/dashboard/automacoes': 'Automações',
+  '/dashboard/planos': 'Planos & Billing',
 }
 
 function isActive(pathname: string, item: NavGroup['items'][0]) {

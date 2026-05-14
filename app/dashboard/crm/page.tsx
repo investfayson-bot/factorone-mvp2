@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import { formatBRL } from '@/lib/currency-brl'
+import PlanoGate from '@/components/PlanoGate'
 
 type Op = {
   id: string; empresa_id: string; cliente_id: string | null; titulo: string
@@ -150,6 +151,7 @@ export default function CRMPage() {
   if (loading) return <div style={{ padding: 32, color: 'var(--gray-400)' }}>Carregando CRM…</div>
 
   return (
+    <PlanoGate feature="CRM & Pipeline de Vendas">
     <>
       <div className="page-hdr">
         <div>
@@ -401,5 +403,6 @@ export default function CRMPage() {
         </div>
       )}
     </>
+    </PlanoGate>
   )
 }

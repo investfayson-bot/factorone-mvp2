@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { emailDasAlert, emailSaldoBaixo } from '@/lib/email/notificacoes'
 
 export const runtime = 'nodejs'
 
@@ -101,6 +102,35 @@ export async function GET(req: NextRequest) {
   let totalNotif = 0
   for (const [empresaId, regrasList] of Object.entries(porEmpresa)) {
     totalNotif += await processarEmpresa(db, empresaId, regrasList)
+  }
+
+  // Email alerts globais por empresa
+  const { data: todasEmpresas } = await db.from('empresas').select('id,nome').eq('plano_ativo', true)
+  for (const emp of todasEmpresas ?? []) {
+    const { data: adminUser } = await db.from('usuarios').select('email').eq('empresa_id', emp.id).eq('papel', 'admin').maybeSingle()
+    const email = adminUser?.email
+    if (!email) continue
+
+    // DAS vencendo em <= 5 dias
+    try {
+      const { data: met } = await db.from('metricas_financeiras').select('impostos,competencia').eq('empresa_id', emp.id).order('competencia', { ascending: false }).limit(1).maybeSingle()
+      if (met && Number(met.impostos) > 0) {
+        const compDate = new Date(String(met.competencia))
+        const venc = new Date(compDate.getFullYear(), compDate.getMonth() + 1, 20)
+        const diff = Math.ceil((venc.getTime() - Date.now()) / 86400000)
+        if (diff >= 0 && diff <= 5) {
+          await emailDasAlert(email, emp.nome, Number(met.impostos), venc.toLocaleDateString('pt-BR'))
+        }
+      }
+    } catch { /* skip */ }
+
+    // Saldo baixo
+    try {
+      const { data: conta } = await db.from('contas_bancarias').select('saldo_atual').eq('empresa_id', emp.id).order('saldo_atual', { ascending: true }).limit(1).maybeSingle()
+      if (conta && Number(conta.saldo_atual) < 2000) {
+        await emailSaldoBaixo(email, emp.nome, Number(conta.saldo_atual), 2000)
+      }
+    } catch { /* skip */ }
   }
 
   return NextResponse.json({ empresas: Object.keys(porEmpresa).length, notificacoes: totalNotif })

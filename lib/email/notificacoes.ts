@@ -112,6 +112,100 @@ function buildHtml(cfg: typeof CONFIGS[TipoNotificacao], dados: EnviarNotificaca
 </html>`
 }
 
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://factorone-mvp2.vercel.app'
+
+function baseHtml(corHeader: string, titulo: string, corpo: string, para: string): string {
+  return `<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"></head>
+<body style="margin:0;padding:0;background:#f8fafc;font-family:'Helvetica Neue',Arial,sans-serif">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f8fafc;padding:32px 16px">
+    <tr><td align="center">
+      <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;border:1px solid #e2e8f0;overflow:hidden">
+        <tr><td style="background:${corHeader};padding:20px 28px">
+          <div style="color:rgba(255,255,255,.7);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px">FactorOne</div>
+          <div style="color:#fff;font-size:20px;font-weight:700">${titulo}</div>
+        </td></tr>
+        <tr><td style="padding:28px">${corpo}</td></tr>
+        <tr><td style="padding:14px 28px;border-top:1px solid #f1f5f9">
+          <p style="margin:0;font-size:11px;color:#94a3b8">Este email foi enviado para ${para} · FactorOne Finance OS</p>
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body></html>`
+}
+
+export async function emailBoasVindas(para: string, nomeEmpresa: string): Promise<boolean> {
+  if (!process.env.RESEND_API_KEY) return false
+  const corpo = `
+    <p style="margin:0 0 16px;font-size:15px;font-weight:700;color:#1a2b4a">Bem-vindo ao FactorOne, ${nomeEmpresa}!</p>
+    <p style="margin:0 0 20px;font-size:13px;line-height:1.7;color:#334155">Sua conta está configurada e pronta para uso. Veja por onde começar:</p>
+    ${[
+      ['fa-gauge-high', '#5E8C87', 'Dashboard', 'Visão geral do caixa, KPIs e saúde financeira'],
+      ['fa-robot', '#1A2B4A', 'AI CFO', 'Análises automáticas e insights em tempo real'],
+      ['fa-file-invoice-dollar', '#B8922A', 'DRE & Relatórios', 'Demonstrativo de resultados e exportação PDF'],
+    ].map(([,cor, titulo, desc]) => `
+      <div style="display:flex;gap:12px;align-items:center;padding:10px 14px;background:#f8fafc;border-radius:8px;margin-bottom:8px">
+        <div style="width:32px;height:32px;background:${cor};border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0"></div>
+        <div><div style="font-size:12px;font-weight:700;color:#1a2b4a">${titulo}</div><div style="font-size:11px;color:#6b7280">${desc}</div></div>
+      </div>`).join('')}
+    <div style="margin-top:22px">
+      <a href="${APP_URL}/dashboard" style="display:inline-block;background:#5E8C87;color:#fff;text-decoration:none;padding:11px 24px;border-radius:8px;font-size:13px;font-weight:700">
+        Acessar o dashboard →
+      </a>
+    </div>`
+  try {
+    const { error } = await getResend().emails.send({ from: FROM, to: para, subject: `Bem-vindo ao FactorOne, ${nomeEmpresa}!`, html: baseHtml('#1A2B4A', `Bem-vindo, ${nomeEmpresa}!`, corpo, para) })
+    return !error
+  } catch { return false }
+}
+
+export async function emailDasAlert(para: string, nomeEmpresa: string, valor: number, vencimento: string): Promise<boolean> {
+  if (!process.env.RESEND_API_KEY) return false
+  const corpo = `
+    <p style="margin:0 0 16px;font-size:14px;line-height:1.7;color:#334155">
+      O <strong>DAS (Simples Nacional)</strong> de <strong>${nomeEmpresa}</strong> vence em breve:
+    </p>
+    <div style="background:#FEF9EC;border:1px solid #F5C842;border-radius:8px;padding:16px 18px;margin-bottom:20px">
+      <div style="font-size:11px;color:#92680A;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px">Valor estimado</div>
+      <div style="font-size:24px;font-weight:800;color:#92680A;font-family:monospace">${formatBRL(valor)}</div>
+      <div style="font-size:12px;color:#92680A;margin-top:4px">Vencimento: ${vencimento}</div>
+    </div>
+    <a href="${APP_URL}/dashboard/contabilidade" style="display:inline-block;background:#B8922A;color:#fff;text-decoration:none;padding:11px 24px;border-radius:8px;font-size:13px;font-weight:700">
+      Ver detalhes no FactorOne →
+    </a>`
+  try {
+    const { error } = await getResend().emails.send({ from: FROM, to: para, subject: `⚠️ DAS vencendo — ${nomeEmpresa}`, html: baseHtml('#B8922A', 'DAS vencendo em breve', corpo, para) })
+    return !error
+  } catch { return false }
+}
+
+export async function emailSaldoBaixo(para: string, nomeEmpresa: string, saldo: number, limite: number): Promise<boolean> {
+  if (!process.env.RESEND_API_KEY) return false
+  const corpo = `
+    <p style="margin:0 0 16px;font-size:14px;line-height:1.7;color:#334155">
+      O saldo da conta de <strong>${nomeEmpresa}</strong> está abaixo do limite configurado:
+    </p>
+    <div style="background:#FEF2F2;border:1px solid #FCA5A5;border-radius:8px;padding:16px 18px;margin-bottom:20px">
+      <div style="display:flex;gap:24px">
+        <div>
+          <div style="font-size:11px;color:#991B1B;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px">Saldo atual</div>
+          <div style="font-size:22px;font-weight:800;color:#991B1B;font-family:monospace">${formatBRL(saldo)}</div>
+        </div>
+        <div>
+          <div style="font-size:11px;color:#991B1B;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px">Limite mínimo</div>
+          <div style="font-size:22px;font-weight:800;color:#991B1B;font-family:monospace">${formatBRL(limite)}</div>
+        </div>
+      </div>
+    </div>
+    <a href="${APP_URL}/dashboard/conta-pj" style="display:inline-block;background:#C0504A;color:#fff;text-decoration:none;padding:11px 24px;border-radius:8px;font-size:13px;font-weight:700">
+      Ver conta bancária →
+    </a>`
+  try {
+    const { error } = await getResend().emails.send({ from: FROM, to: para, subject: `🔴 Saldo baixo — ${nomeEmpresa}`, html: baseHtml('#C0504A', 'Alerta de saldo baixo', corpo, para) })
+    return !error
+  } catch { return false }
+}
+
 export async function enviarNotificacao({ tipo, para, dados }: EnviarNotificacaoParams): Promise<boolean> {
   if (!process.env.RESEND_API_KEY) return false
   const cfg = CONFIGS[tipo]

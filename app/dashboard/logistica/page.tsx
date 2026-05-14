@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useState, useRef } from 'react'
 import { supabase } from '@/lib/supabase'
+import PlanoGate from '@/components/PlanoGate'
 
 type Rota = {
   id: string
@@ -335,6 +336,7 @@ export default function LogisticaPage() {
   const proximasManut = manutencoes.filter(m => m.proxima_data && m.proxima_data >= new Date().toISOString().slice(0, 10) && m.proxima_data <= new Date(Date.now() + 30 * 86400000).toISOString().slice(0, 10))
 
   return (
+    <PlanoGate feature="Logística & Gestão de Frota">
     <div className="page-hdr" style={{ display: 'block', padding: 0 }}>
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '20px 24px 0' }}>
@@ -1000,5 +1002,6 @@ export default function LogisticaPage() {
         </div>
       )}
     </div>
+    </PlanoGate>
   )
 }

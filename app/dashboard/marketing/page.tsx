@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import { formatBRL } from '@/lib/currency-brl'
+import PlanoGate from '@/components/PlanoGate'
 
 type Campanha = {
   id: string; empresa_id: string; nome: string
@@ -150,6 +151,7 @@ export default function MarketingPage() {
   if (loading) return <div style={{ padding: 32, color: 'var(--gray-400)' }}>Carregando Marketing…</div>
 
   return (
+    <PlanoGate feature="Marketing & Campanhas">
     <>
       <div className="page-hdr">
         <div>
@@ -583,5 +585,6 @@ export default function MarketingPage() {
         </div>
       )}
     </>
+    </PlanoGate>
   )
 }

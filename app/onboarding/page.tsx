@@ -94,6 +94,11 @@ export default function OnboardingPage() {
         })
       }
       setScreen('pronto')
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        if (session?.access_token) {
+          fetch('/api/email/boas-vindas', { method: 'POST', headers: { Authorization: `Bearer ${session.access_token}` } }).catch(() => {})
+        }
+      })
     } catch { toast.error('Falha ao salvar dados bancários') }
     finally { setLoading(false) }
   }
