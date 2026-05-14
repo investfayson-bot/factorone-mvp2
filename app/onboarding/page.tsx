@@ -6,7 +6,7 @@ import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
 
 type Screen = 'splash' | 'perfil' | 'empresa' | 'financeiro' | 'pronto'
-type FinOpcao = 'open_finance' | 'manual' | 'extrato' | 'pular' | null
+type FinOpcao = 'open_finance' | 'manual' | 'extrato' | 'cartao' | 'pular' | null
 
 const SETORES = ['Tecnologia', 'Comércio', 'Serviços', 'Indústria', 'Saúde', 'Educação', 'Construção', 'Agronegócio', 'Transporte / Logística', 'Alimentação', 'Outro']
 const BANCOS  = ['Banco do Brasil', 'Bradesco', 'Caixa Econômica', 'Itaú', 'Santander', 'Nubank', 'Inter', 'Sicoob', 'XP', 'BTG Pactual', 'Outro']
@@ -383,6 +383,21 @@ export default function OnboardingPage() {
                 {finOpcao === 'extrato' && <i className="fa-solid fa-circle-check" style={{ color: 'var(--gold)', fontSize: 18, alignSelf: 'center' }} />}
               </button>
 
+              {/* Cartão de Crédito */}
+              <button onClick={() => setFinOpcao(finOpcao === 'cartao' ? null : 'cartao')} style={{ display: 'flex', gap: 14, padding: '16px 18px', borderRadius: 10, cursor: 'pointer', border: finOpcao === 'cartao' ? '2px solid #7C3AED' : '1px solid var(--gray-100)', background: finOpcao === 'cartao' ? 'rgba(124,58,237,.03)' : '#fff', textAlign: 'left', width: '100%' }}>
+                <div style={{ width: 40, height: 40, borderRadius: 10, background: finOpcao === 'cartao' ? 'rgba(124,58,237,.12)' : 'rgba(124,58,237,.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <i className="fa-solid fa-credit-card" style={{ color: '#7C3AED', fontSize: 14 }} />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy)', marginBottom: 3 }}>Cartão de Crédito</div>
+                  <div style={{ fontSize: 11, color: 'var(--gray-400)', lineHeight: 1.5 }}>Vincule seu cartão corporativo para controlar gastos, limites e faturas.</div>
+                  {finOpcao === 'cartao' && (
+                    <div style={{ fontSize: 10, color: '#7C3AED', marginTop: 6, fontWeight: 600 }}>Configure em Cartões Corporativos após o cadastro</div>
+                  )}
+                </div>
+                {finOpcao === 'cartao' && <i className="fa-solid fa-circle-check" style={{ color: '#7C3AED', fontSize: 18, alignSelf: 'center' }} />}
+              </button>
+
               {/* Pular */}
               <button onClick={() => setFinOpcao(finOpcao === 'pular' ? null : 'pular')} style={{ display: 'flex', gap: 14, padding: '14px 18px', borderRadius: 10, cursor: 'pointer', border: finOpcao === 'pular' ? '2px solid var(--gray-400)' : '1px dashed var(--gray-100)', background: '#fff', textAlign: 'left', width: '100%' }}>
                 <div style={{ width: 40, height: 40, borderRadius: 10, background: 'var(--gray-100)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
@@ -399,7 +414,7 @@ export default function OnboardingPage() {
             <div style={{ display: 'flex', gap: 10, marginTop: 20 }}>
               <button className="btn-action btn-ghost" style={{ flex: 1 }} onClick={() => setScreen('empresa')}>Voltar</button>
               <button className="btn-action" style={{ flex: 2, opacity: (loading || !finOpcao) ? .6 : 1 }} onClick={() => void salvarFinanceiro()} disabled={loading || !finOpcao}>
-                {loading ? 'Salvando…' : finOpcao === 'pular' || finOpcao === 'extrato' ? 'Pular e finalizar' : 'Continuar'}
+                {loading ? 'Salvando…' : finOpcao === 'pular' || finOpcao === 'extrato' || finOpcao === 'cartao' ? 'Pular e finalizar' : 'Continuar'}
               </button>
             </div>
           </div>
