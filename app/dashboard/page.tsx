@@ -285,7 +285,7 @@ export default function DashboardPage() {
           <div className="kpi-lbl">Runway</div>
           <div className="kpi-val">{runway != null ? `${runway > 30 ? Math.round(runway / 30) + 'm' : runway + 'd'}` : '—'}</div>
           <div className={`kpi-delta ${runway == null ? '' : runway < 90 ? 'warn' : 'up'}`}>
-            {runway == null ? 'sem saldo cadastrado' : runway < 90 ? '⚠ atenção' : '✓ ok'}
+            {runway == null ? 'sem saldo cadastrado' : runway < 90 ? 'atenção' : 'saudável'}
           </div>
         </div>
       </div>
@@ -489,7 +489,7 @@ export default function DashboardPage() {
                   <div>
                     <div style={{ fontSize: 10, color: 'var(--gray-400)', marginBottom: 2 }}>Pneus alerta</div>
                     <div style={{ fontSize: 14, fontWeight: 700, color: logWidget.pneusAlerta > 0 ? 'var(--red)' : 'var(--gray-400)' }}>
-                      {logWidget.pneusAlerta > 0 ? `${logWidget.pneusAlerta} ⚠` : '—'}
+                      {logWidget.pneusAlerta > 0 ? logWidget.pneusAlerta : '—'}{logWidget.pneusAlerta > 0 && <i className="fa-solid fa-triangle-exclamation" style={{ marginLeft: 4, fontSize: 10 }} />}
                     </div>
                   </div>
                 </div>
@@ -598,7 +598,7 @@ export default function DashboardPage() {
                 <div className="tx-sub">{t.categoria || '—'} · {new Date(t.data + 'T12:00:00').toLocaleDateString('pt-BR')}</div>
               </div>
               <div className={`tx-amount ${t.tipo === 'entrada' ? 'pos' : 'neg'}`}>
-                {t.tipo === 'entrada' ? '✓ +' : '-'}{fmtBRL(Number(t.valor))}
+                {t.tipo === 'entrada' ? '+' : '-'}{fmtBRL(Number(t.valor))}
               </div>
             </div>
           ))

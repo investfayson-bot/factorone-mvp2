@@ -409,7 +409,7 @@ export default function ReembolsosPage() {
                 onClick={() => fileInputRef.current?.click()}
                 style={{ border: '1.5px dashed var(--gray-200)', borderRadius: 9, padding: '12px 14px', cursor: 'pointer', background: arquivo ? 'rgba(45,155,111,.04)' : '#fafafa', display: 'flex', alignItems: 'center', gap: 10 }}
               >
-                <span style={{ fontSize: 18 }}>{arquivo ? '📎' : '⬆️'}</span>
+                <i className={`fa-solid ${arquivo ? 'fa-paperclip' : 'fa-cloud-arrow-up'}`} style={{ fontSize: 16, color: arquivo ? 'var(--green)' : 'var(--gray-400)' }} />
                 <div>
                   <div style={{ fontSize: 12, fontWeight: 600, color: arquivo ? 'var(--green)' : 'var(--navy)' }}>
                     {arquivo ? arquivo.name : 'Anexar recibo ou nota fiscal'}

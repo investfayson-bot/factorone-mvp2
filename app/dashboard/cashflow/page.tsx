@@ -205,7 +205,7 @@ export default function CashflowPage() {
       {/* Alerta */}
       {projecao30 < 5000 && transacoes.length > 0 && (
         <div className="alert-bar orange" style={{ marginBottom: 14 }}>
-          ⚠ Projeção de caixa para os próximos 30 dias está abaixo de R$ 5.000.
+          <i className="fa-solid fa-triangle-exclamation" style={{ marginRight: 6 }} />Projeção de caixa para os próximos 30 dias está abaixo de R$ 5.000.
         </div>
       )}
 
@@ -267,7 +267,7 @@ export default function CashflowPage() {
               <div style={{ height: 240, background: 'var(--gray-100)', borderRadius: 8, animation: 'pulse 1.5s infinite' }} />
             ) : transacoes.length === 0 ? (
               <div style={{ height: 240, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 12, color: 'var(--gray-400)' }}>
-                <div style={{ fontSize: 32 }}>💸</div>
+                <i className="fa-solid fa-money-bill-transfer" style={{ fontSize: 28, color: 'var(--gray-300)' }} />
                 <div style={{ fontSize: 13 }}>Nenhuma transação registrada.</div>
                 <button className="btn-action" onClick={() => setModalAberto(true)}>+ Registrar primeira transação</button>
               </div>
@@ -399,7 +399,7 @@ export default function CashflowPage() {
               <div style={{ height: 280, background: 'var(--gray-100)', borderRadius: 8, animation: 'pulse 1.5s infinite' }} />
             ) : diasChart.length === 0 ? (
               <div style={{ height: 280, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 8, color: 'var(--gray-400)' }}>
-                <div style={{ fontSize: 28 }}>📊</div>
+                <i className="fa-solid fa-chart-line" style={{ fontSize: 26, color: 'var(--gray-300)' }} />
                 <div style={{ fontSize: 13 }}>Sem dados suficientes para projeção.</div>
                 <div style={{ fontSize: 11 }}>Cadastre contas bancárias e transações históricas.</div>
               </div>
@@ -442,12 +442,12 @@ export default function CashflowPage() {
           {/* Aviso */}
           {previsao && previsao.d30 < 0 && (
             <div className="alert-bar orange">
-              ⚠ Previsão indica saldo negativo em 30 dias. Antecipe recebíveis ou reduza despesas.
+              <i className="fa-solid fa-triangle-exclamation" style={{ marginRight: 6 }} />Previsão indica saldo negativo em 30 dias. Antecipe recebíveis ou reduza despesas.
             </div>
           )}
           {previsao && previsao.d7 < 0 && (
             <div className="alert-bar" style={{ background: 'rgba(192,80,74,.08)', border: '1px solid rgba(192,80,74,.25)', color: 'var(--red)', borderRadius: 10, padding: '10px 14px', fontSize: 12, fontWeight: 600 }}>
-              🚨 Saldo negativo projetado em 7 dias. Ação imediata recomendada.
+              <i className="fa-solid fa-circle-exclamation" style={{ marginRight: 6 }} />Saldo negativo projetado em 7 dias. Ação imediata recomendada.
             </div>
           )}
 
