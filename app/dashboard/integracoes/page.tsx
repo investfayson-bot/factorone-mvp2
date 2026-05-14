@@ -9,6 +9,8 @@ type Status = Record<string, boolean>
 type Integration = {
   id: string
   icon: string
+  iconColor: string
+  iconBg: string
   nome: string
   desc: string
   categoria: 'core' | 'bancario' | 'fiscal' | 'erp' | 'comunicacao'
@@ -17,18 +19,18 @@ type Integration = {
 }
 
 const INTEGRACOES: Integration[] = [
-  { id: 'anthropic', icon: '🧠', nome: 'FactorOne IA (Claude)', desc: 'Motor do AI CFO — análise financeira, insights, chat.', categoria: 'core', statusKey: 'anthropic' },
-  { id: 'supabase', icon: '🗄️', nome: 'Supabase', desc: 'Banco de dados, autenticação e storage da plataforma.', categoria: 'core', statusKey: 'supabase' },
-  { id: 'openrouter', icon: '🔀', nome: 'OpenRouter', desc: 'Análise DRE via múltiplos modelos de IA.', categoria: 'core', statusKey: 'openrouter' },
-  { id: 'stripe', icon: '💳', nome: 'Stripe', desc: 'Cobrança de assinaturas e pagamentos do FactorOne.', categoria: 'core', statusKey: 'stripe' },
-  { id: 'resend', icon: '✉️', nome: 'Resend', desc: 'Emails transacionais — notificações, aprovações, alertas.', categoria: 'comunicacao', statusKey: 'resend' },
-  { id: 'nfeio', icon: '🧾', nome: 'NFe.io', desc: 'Emissão automática de NF-e e NFS-e.', categoria: 'fiscal', statusKey: 'nfeio' },
-  { id: 'openfinance', icon: '🏦', nome: 'Open Finance', desc: 'Conexão com bancos externos via Bacen — extrato automático.', categoria: 'bancario', badge: 'Em breve' },
-  { id: 'celcoin', icon: '⚡', nome: 'Celcoin', desc: 'PIX, boleto, TED — infraestrutura de pagamentos.', categoria: 'bancario', badge: 'Em breve' },
-  { id: 'remessa', icon: '🌐', nome: 'Remessa Online', desc: 'Conta Global USD — pagamentos internacionais.', categoria: 'bancario', badge: 'Em breve' },
-  { id: 'omie', icon: '🗂️', nome: 'Omie ERP', desc: 'Sync contábil automático com ERP.', categoria: 'erp', badge: 'Em breve' },
-  { id: 'whatsapp', icon: '💬', nome: 'WhatsApp Business', desc: 'Consultas financeiras e alertas via WhatsApp.', categoria: 'comunicacao', statusKey: 'whatsapp' },
-  { id: 'zapier', icon: '⚙️', nome: 'Zapier / Make', desc: 'Automações com mais de 5.000 apps externos.', categoria: 'erp', badge: 'Em breve' },
+  { id: 'anthropic',   icon: 'fa-robot',            iconColor: '#5E4AEC', iconBg: '#EDE9FE', nome: 'FactorOne IA (Claude)',   desc: 'Motor do AI CFO — análise financeira, insights, chat.',          categoria: 'core',        statusKey: 'anthropic'  },
+  { id: 'supabase',    icon: 'fa-database',          iconColor: '#3ECF8E', iconBg: '#D1FAE5', nome: 'Supabase',                desc: 'Banco de dados, autenticação e storage da plataforma.',           categoria: 'core',        statusKey: 'supabase'   },
+  { id: 'openrouter',  icon: 'fa-network-wired',     iconColor: '#FF6B35', iconBg: '#FFEDD5', nome: 'OpenRouter',              desc: 'Análise DRE via múltiplos modelos de IA.',                        categoria: 'core',        statusKey: 'openrouter' },
+  { id: 'stripe',      icon: 'fa-credit-card',       iconColor: '#635BFF', iconBg: '#EEF2FF', nome: 'Stripe',                  desc: 'Cobrança de assinaturas e pagamentos do FactorOne.',              categoria: 'core',        statusKey: 'stripe'     },
+  { id: 'resend',      icon: 'fa-envelope',          iconColor: '#1E293B', iconBg: '#F1F5F9', nome: 'Resend',                  desc: 'Emails transacionais — notificações, aprovações, alertas.',       categoria: 'comunicacao', statusKey: 'resend'     },
+  { id: 'whatsapp',    icon: 'fa-comment',           iconColor: '#25D366', iconBg: '#DCFCE7', nome: 'WhatsApp Business',       desc: 'Consultas financeiras e alertas via WhatsApp.',                   categoria: 'comunicacao', statusKey: 'whatsapp'   },
+  { id: 'nfeio',       icon: 'fa-file-invoice',      iconColor: 'var(--teal)', iconBg: '#CFFAFE', nome: 'NFe.io',              desc: 'Emissão automática de NF-e e NFS-e.',                             categoria: 'fiscal',      statusKey: 'nfeio'      },
+  { id: 'openfinance', icon: 'fa-building-columns',  iconColor: 'var(--navy)', iconBg: '#DBEAFE', nome: 'Open Finance',        desc: 'Conexão com bancos externos via Bacen — extrato automático.',     categoria: 'bancario',    badge: 'Em breve'       },
+  { id: 'celcoin',     icon: 'fa-bolt',              iconColor: 'var(--gold)', iconBg: '#FEF9C3', nome: 'Celcoin',             desc: 'PIX, boleto, TED — infraestrutura de pagamentos.',                categoria: 'bancario',    badge: 'Em breve'       },
+  { id: 'remessa',     icon: 'fa-globe',             iconColor: '#0891B2', iconBg: '#CFFAFE', nome: 'Remessa Online',          desc: 'Conta Global USD — pagamentos internacionais.',                   categoria: 'bancario',    badge: 'Em breve'       },
+  { id: 'omie',        icon: 'fa-boxes-stacked',     iconColor: '#EA580C', iconBg: '#FFEDD5', nome: 'Omie ERP',               desc: 'Sync contábil automático com ERP.',                               categoria: 'erp',         badge: 'Em breve'       },
+  { id: 'zapier',      icon: 'fa-gears',             iconColor: '#FF4A00', iconBg: '#FEF2F2', nome: 'Zapier / Make',           desc: 'Automações com mais de 5.000 apps externos.',                     categoria: 'erp',         badge: 'Em breve'       },
 ]
 
 const CAT_LABELS: Record<string, string> = {
@@ -132,7 +134,9 @@ export default function IntegracoesPage() {
                     transition: 'box-shadow .15s',
                   }}>
                     <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12, marginBottom: 10 }}>
-                      <div style={{ fontSize: 22, lineHeight: 1, marginTop: 2 }}>{item.icon}</div>
+                      <div style={{ width: 38, height: 38, borderRadius: 9, background: item.iconBg, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                        <i className={`fa-solid ${item.icon}`} style={{ color: item.iconColor, fontSize: 15 }} />
+                      </div>
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 3 }}>
                           <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy)' }}>{item.nome}</div>
@@ -150,7 +154,7 @@ export default function IntegracoesPage() {
                         loading ? (
                           <div style={{ height: 18, width: 80, background: 'var(--gray-100)', borderRadius: 20, animation: 'pulse 1.5s infinite' }} />
                         ) : ativo ? (
-                          <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 10px', borderRadius: 20, background: 'rgba(45,155,111,.1)', color: 'var(--green)' }}>✓ Ativo</span>
+                          <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 10px', borderRadius: 20, background: 'rgba(45,155,111,.1)', color: 'var(--green)', display: 'flex', alignItems: 'center', gap: 4 }}><i className="fa-solid fa-circle-check" style={{ fontSize: 9 }} /> Ativo</span>
                         ) : (
                           <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 10px', borderRadius: 20, background: 'var(--gray-100)', color: 'var(--gray-400)' }}>Não configurado</span>
                         )

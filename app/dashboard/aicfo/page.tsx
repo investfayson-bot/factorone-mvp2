@@ -12,6 +12,19 @@ const SUGESTOES = [
   'Como está meu fluxo de caixa?',
   'Quais são minhas maiores despesas?',
   'Detecte anomalias nos meus gastos',
+  'Faça uma análise de runway e risco',
+  'Qual minha margem líquida este mês?',
+  'Quais contas vencem nos próximos 7 dias?',
+  'Gere um resumo executivo do mês',
+]
+
+const ACOES_RAPIDAS = [
+  { label: 'Resumo do mês',       icon: 'fa-calendar-check',    msg: 'Gere um resumo executivo completo das finanças do mês atual' },
+  { label: 'Risco de caixa',      icon: 'fa-triangle-exclamation', msg: 'Analise o risco de caixa e calcule meu runway com projeção de 90 dias' },
+  { label: 'Top despesas',        icon: 'fa-receipt',           msg: 'Quais são as 5 maiores categorias de despesa e como posso reduzi-las?' },
+  { label: 'Anomalias',           icon: 'fa-magnifying-glass-chart', msg: 'Detecte anomalias e gastos atípicos nos últimos 30 dias' },
+  { label: 'Previsão receita',    icon: 'fa-arrow-trend-up',    msg: 'Com base no histórico, qual é a previsão de receita para o próximo mês?' },
+  { label: 'Oportunidades',       icon: 'fa-lightbulb',         msg: 'Identifique oportunidades de melhoria financeira no meu negócio' },
 ]
 
 export default function AICFOPage() {
@@ -89,7 +102,7 @@ export default function AICFOPage() {
         <div className="kpi">
           <div className="kpi-lbl">Saldo banco</div>
           <div className="kpi-val" style={{ color: ctx.saldo > 0 ? 'var(--navy)' : 'var(--red)' }}>{fmtBRLCompact(ctx.saldo)}</div>
-          <div className={`kpi-delta ${ctx.saldo > 0 ? 'up' : 'dn'}`}>{ctx.saldo > 0 ? '✓ disponível' : '⚠ atenção'}</div>
+          <div className={`kpi-delta ${ctx.saldo > 0 ? 'up' : 'dn'}`}>{ctx.saldo > 0 ? 'disponível' : 'atenção'}</div>
         </div>
         <div className="kpi">
           <div className="kpi-lbl">Receita mês</div>
@@ -109,7 +122,7 @@ export default function AICFOPage() {
         <div className="kpi">
           <div className="kpi-lbl">Runway</div>
           <div className="kpi-val" style={{ color: ctx.runway != null && ctx.runway < 90 ? 'var(--gold)' : 'var(--navy)' }}>{runwayLabel}</div>
-          <div className={`kpi-delta ${ctx.runway == null ? '' : ctx.runway < 90 ? 'warn' : 'up'}`}>{ctx.runway == null ? 'sem saldo' : ctx.runway < 90 ? '⚠ atenção' : '✓ ok'}</div>
+          <div className={`kpi-delta ${ctx.runway == null ? '' : ctx.runway < 90 ? 'warn' : 'up'}`}>{ctx.runway == null ? 'sem saldo' : ctx.runway < 90 ? 'atenção' : 'saudável'}</div>
         </div>
       </div>
 
@@ -125,10 +138,22 @@ export default function AICFOPage() {
           </div>
 
           {mensagens.length === 0 && (
-            <div className="quick-btns" style={{ paddingTop: 12 }}>
-              {SUGESTOES.map(s => (
-                <button key={s} className="quick-btn" onClick={() => void enviar(s)}>{s}</button>
-              ))}
+            <div style={{ padding: '16px 0 8px' }}>
+              <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.05em', marginBottom: 10 }}>Ações rápidas</div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 7 }}>
+                {ACOES_RAPIDAS.map(a => (
+                  <button
+                    key={a.label}
+                    onClick={() => void enviar(a.msg)}
+                    style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 6, padding: '10px 12px', border: '1px solid var(--gray-100)', borderRadius: 10, background: '#fff', cursor: 'pointer', textAlign: 'left', transition: 'all .15s' }}
+                    onMouseOver={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--teal)'; (e.currentTarget as HTMLButtonElement).style.background = 'rgba(94,140,135,.04)' }}
+                    onMouseOut={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--gray-100)'; (e.currentTarget as HTMLButtonElement).style.background = '#fff' }}
+                  >
+                    <i className={`fa-solid ${a.icon}`} style={{ color: 'var(--teal)', fontSize: 14 }} />
+                    <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--navy)', lineHeight: 1.3 }}>{a.label}</span>
+                  </button>
+                ))}
+              </div>
             </div>
           )}
 
@@ -181,9 +206,9 @@ export default function AICFOPage() {
             <div className="ai-ctx-item"><span className="ai-ctx-lbl">Runway</span><span className="ai-ctx-val">{runwayLabel}</span></div>
           </div>
           <div className="ai-ctx-card">
-            <div className="ai-ctx-title">Sugestões rápidas</div>
-            {SUGESTOES.map(s => (
-              <button key={s} className="quick-btn" style={{ display: 'block', width: '100%', marginBottom: 6, textAlign: 'left' }} onClick={() => void enviar(s)}>{s}</button>
+            <div className="ai-ctx-title">Perguntas sugeridas</div>
+            {SUGESTOES.slice(0, 6).map(s => (
+              <button key={s} className="quick-btn" style={{ display: 'block', width: '100%', marginBottom: 6, textAlign: 'left', fontSize: 11, lineHeight: 1.4 }} onClick={() => void enviar(s)}>{s}</button>
             ))}
           </div>
         </div>
