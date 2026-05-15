@@ -8,9 +8,11 @@ import type { User } from '@supabase/supabase-js'
 import { supabase } from '@/lib/supabase'
 import Link from 'next/link'
 
+type NavItem = { href: string; icon: string; label: string; badge?: string; badgeColor?: string; match?: (p: string) => boolean }
 type NavGroup = {
   label: string
-  items: Array<{ href: string; icon: string; label: string; badge?: string; badgeColor?: string; match?: (p: string) => boolean }>
+  collapsible?: boolean
+  items: NavItem[]
 }
 
 function buildNavGroups(badges: { reembolsos: number; aprovacoes: number }): NavGroup[] {
@@ -33,6 +35,7 @@ function buildNavGroups(badges: { reembolsos: number; aprovacoes: number }): Nav
     },
     {
       label: 'Banco PJ',
+      collapsible: true,
       items: [
         { href: '/dashboard/conta-pj', icon: 'fa-gauge-high', label: 'Visão Geral', match: (p) => p === '/dashboard/conta-pj' },
         { href: '/dashboard/conta-pj/extrato', icon: 'fa-list-ul', label: 'Extrato' },
@@ -51,14 +54,9 @@ function buildNavGroups(badges: { reembolsos: number; aprovacoes: number }): Nav
       ],
     },
     {
-      label: 'Marketing',
+      label: 'Apps & Marketplace',
       items: [
-        { href: '/dashboard/marketing', icon: 'fa-bullhorn', label: 'Marketing' },
-      ],
-    },
-    {
-      label: 'Logística',
-      items: [
+        { href: '/dashboard/marketing', icon: 'fa-bullhorn', label: 'Marketing', badge: 'PLUS', badgeColor: '#7C3AED' },
         { href: '/dashboard/logistica', icon: 'fa-truck-fast', label: 'Logística', badge: 'PLUS', badgeColor: '#7C3AED' },
       ],
     },
@@ -149,6 +147,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const router = useRouter()
   const [user, setUser] = useState<User | null>(null)
   const [empresaNome, setEmpresaNome] = useState('')
+  const [collapsedGroups, setCollapsedGroups] = useState<Record<string, boolean>>({})
+
+  function toggleGroup(label: string, groups: NavGroup[]) {
+    const group = groups.find(g => g.label === label)
+    const inGroup = group?.items.some(i => isActive(pathname, i))
+    setCollapsedGroups(prev => ({ ...prev, [label]: !prev[label] }))
+    if (inGroup) setCollapsedGroups(prev => ({ ...prev, [label]: false }))
+  }
   const [empresaId, setEmpresaId] = useState('')
   const [badges, setBadges] = useState({ reembolsos: 0, aprovacoes: 0 })
   const [notifOpen, setNotifOpen] = useState(false)
@@ -214,27 +220,39 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             </button>
           </div>
           <nav className="sb-nav">
-            {buildNavGroups(badges).map(group => (
-              <div key={group.label}>
-                <div className="nav-section">{group.label}</div>
-                {group.items.map(item => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className={`nav-item${isActive(pathname, item) ? ' active' : ''}`}
-                    onClick={() => setSidebarOpen(false)}
-                  >
-                    <i className={`fa-solid ${item.icon}`} />
-                    <span style={{ flex: 1 }}>{item.label}</span>
-                    {item.badge && (
-                      <span style={{ fontSize: 8, fontWeight: 700, padding: '1px 5px', borderRadius: 20, background: item.badgeColor, color: '#fff' }}>
-                        {item.badge}
-                      </span>
-                    )}
-                  </Link>
-                ))}
-              </div>
-            ))}
+            {buildNavGroups(badges).map(group => {
+              const inGroup = group.items.some(i => isActive(pathname, i))
+              const isCollapsed = group.collapsible && collapsedGroups[group.label] && !inGroup
+              return (
+                <div key={group.label}>
+                  {group.collapsible ? (
+                    <div className="nav-section" onClick={() => toggleGroup(group.label, buildNavGroups(badges))}
+                      style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between', userSelect: 'none' }}>
+                      <span>{group.label}</span>
+                      <i className={`fa-solid fa-chevron-${isCollapsed ? 'right' : 'down'}`} style={{ fontSize: 8, opacity: .5 }} />
+                    </div>
+                  ) : (
+                    <div className="nav-section">{group.label}</div>
+                  )}
+                  {!isCollapsed && group.items.map(item => (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className={`nav-item${isActive(pathname, item) ? ' active' : ''}${group.collapsible ? ' nav-item-sub' : ''}`}
+                      onClick={() => setSidebarOpen(false)}
+                    >
+                      <i className={`fa-solid ${item.icon}`} />
+                      <span style={{ flex: 1 }}>{item.label}</span>
+                      {item.badge && (
+                        <span style={{ fontSize: 8, fontWeight: 700, padding: '1px 5px', borderRadius: 20, background: item.badgeColor, color: '#fff' }}>
+                          {item.badge}
+                        </span>
+                      )}
+                    </Link>
+                  ))}
+                </div>
+              )
+            })}
           </nav>
           <div className="sb-footer">
             <div className="sb-co" onClick={sair} title="Clique para sair">

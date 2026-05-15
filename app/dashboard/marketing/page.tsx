@@ -3,7 +3,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import { formatBRL } from '@/lib/currency-brl'
-import PlanoGate from '@/components/PlanoGate'
 
 type Campanha = {
   id: string; empresa_id: string; nome: string
@@ -151,7 +150,6 @@ export default function MarketingPage() {
   if (loading) return <div style={{ padding: 32, color: 'var(--gray-400)' }}>Carregando Marketing…</div>
 
   return (
-    <PlanoGate feature="Marketing & Campanhas">
     <>
       <div className="page-hdr">
         <div>
@@ -159,7 +157,7 @@ export default function MarketingPage() {
           <div className="page-sub">{kpis.campanhasAtivas} campanhas ativas · {kpis.leads} leads · ROAS {kpis.roas.toFixed(2)}x</div>
         </div>
         <div style={{ display: 'flex', gap: 8 }}>
-          <button className="btn-ghost" style={{ fontSize: 12 }} onClick={() => setShowCont(true)}>
+          <button className="btn-action btn-ghost" style={{ fontSize: 12 }} onClick={() => setShowCont(true)}>
             <i className="fa-solid fa-pen-to-square" style={{ marginRight: 5, fontSize: 11 }} />Conteúdo
           </button>
           <button className="btn-action" onClick={() => setShowCamp(true)}>+ Nova campanha</button>
@@ -324,9 +322,9 @@ export default function MarketingPage() {
       {tab === 'conteudo' && (
         <>
           <div style={{ display: 'flex', gap: 8, marginBottom: 12, alignItems: 'center' }}>
-            <button onClick={() => { const d = new Date(calMes + '-01'); d.setMonth(d.getMonth() - 1); setCalMes(d.toISOString().slice(0, 7)) }} className="btn-ghost" style={{ fontSize: 12, padding: '5px 10px' }}>‹</button>
+            <button onClick={() => { const d = new Date(calMes + '-01'); d.setMonth(d.getMonth() - 1); setCalMes(d.toISOString().slice(0, 7)) }} className="btn-action btn-ghost" style={{ fontSize: 12, padding: '5px 10px' }}>‹</button>
             <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy)', minWidth: 140, textAlign: 'center' }}>{new Date(calMes + '-01').toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}</span>
-            <button onClick={() => { const d = new Date(calMes + '-01'); d.setMonth(d.getMonth() + 1); setCalMes(d.toISOString().slice(0, 7)) }} className="btn-ghost" style={{ fontSize: 12, padding: '5px 10px' }}>›</button>
+            <button onClick={() => { const d = new Date(calMes + '-01'); d.setMonth(d.getMonth() + 1); setCalMes(d.toISOString().slice(0, 7)) }} className="btn-action btn-ghost" style={{ fontSize: 12, padding: '5px 10px' }}>›</button>
           </div>
           {contCalMes.length === 0 && <div style={{ textAlign: 'center', padding: '40px 0', color: 'var(--gray-400)', fontSize: 13 }}>Nenhum conteúdo agendado. <button onClick={() => setShowCont(true)} style={{ color: 'var(--teal)', background: 'none', border: 'none', cursor: 'pointer', fontSize: 13 }}>Planejar →</button></div>}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 10 }}>
@@ -524,7 +522,7 @@ export default function MarketingPage() {
               </div>
             </div>
             <div className="modal-actions" style={{ marginTop: 20 }}>
-              <button className="btn-ghost" onClick={() => setShowCamp(false)}>Cancelar</button>
+              <button className="btn-action btn-ghost" onClick={() => setShowCamp(false)}>Cancelar</button>
               <button className="btn-action" disabled={saving} onClick={() => void salvarCampanha()}>{saving ? 'Salvando…' : 'Criar campanha'}</button>
             </div>
           </div>
@@ -578,13 +576,12 @@ export default function MarketingPage() {
               </div>
             </div>
             <div className="modal-actions" style={{ marginTop: 20 }}>
-              <button className="btn-ghost" onClick={() => setShowCont(false)}>Cancelar</button>
+              <button className="btn-action btn-ghost" onClick={() => setShowCont(false)}>Cancelar</button>
               <button className="btn-action" disabled={saving} onClick={() => void salvarConteudo()}>{saving ? 'Salvando…' : 'Salvar'}</button>
             </div>
           </div>
         </div>
       )}
     </>
-    </PlanoGate>
   )
 }

@@ -3,7 +3,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import { formatBRL } from '@/lib/currency-brl'
-import PlanoGate from '@/components/PlanoGate'
 
 type Op = {
   id: string; empresa_id: string; cliente_id: string | null; titulo: string
@@ -26,7 +25,7 @@ const ETAPAS = [
   { id: 'proposta', label: 'Proposta', color: 'var(--gold)', bg: '#fffbeb', prob: 60 },
   { id: 'negociacao', label: 'Negociação', color: 'var(--teal)', bg: 'rgba(0,168,150,.08)', prob: 80 },
   { id: 'fechado_ganho', label: 'Ganho', color: 'var(--green)', bg: 'rgba(45,155,111,.08)', prob: 100 },
-  { id: 'fechado_perdido', label: 'Perdido ✗', color: 'var(--red)', bg: 'rgba(192,80,74,.08)', prob: 0 },
+  { id: 'fechado_perdido', label: 'Perdido', color: 'var(--red)', bg: 'rgba(192,80,74,.08)', prob: 0 },
 ]
 
 const TIPO_ATI = [
@@ -151,7 +150,6 @@ export default function CRMPage() {
   if (loading) return <div style={{ padding: 32, color: 'var(--gray-400)' }}>Carregando CRM…</div>
 
   return (
-    <PlanoGate feature="CRM & Pipeline de Vendas">
     <>
       <div className="page-hdr">
         <div>
@@ -159,10 +157,10 @@ export default function CRMPage() {
           <div className="page-sub">{kpis.abertas} oportunidades abertas · {kpis.pendentes} atividades pendentes</div>
         </div>
         <div style={{ display: 'flex', gap: 8 }}>
-          <button className="btn-ghost" onClick={() => setShowAtv(true)} style={{ fontSize: 12 }}>
+          <button className="btn-action btn-ghost" onClick={() => setShowAtv(true)} style={{ fontSize: 12 }}>
             <i className="fa-solid fa-calendar-plus" style={{ marginRight: 5, fontSize: 11 }} />Agendar
           </button>
-          <button className="btn-ghost" style={{ fontSize: 12 }} onClick={async () => {
+          <button className="btn-action btn-ghost" style={{ fontSize: 12 }} onClick={async () => {
             setShowInsight(true)
             setInsightText('')
             setInsightLoading(true)
@@ -235,11 +233,11 @@ export default function CRMPage() {
       {tab === 'agenda' && (
         <>
           <div style={{ display: 'flex', gap: 8, marginBottom: 12, alignItems: 'center' }}>
-            <button onClick={() => { const d = new Date(agendaMes + '-01'); d.setMonth(d.getMonth() - 1); setAgendaMes(d.toISOString().slice(0, 7)) }} className="btn-ghost" style={{ fontSize: 12, padding: '5px 10px' }}>‹</button>
+            <button onClick={() => { const d = new Date(agendaMes + '-01'); d.setMonth(d.getMonth() - 1); setAgendaMes(d.toISOString().slice(0, 7)) }} className="btn-action btn-ghost" style={{ fontSize: 12, padding: '5px 10px' }}>‹</button>
             <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy)', minWidth: 140, textAlign: 'center' }}>
               {new Date(agendaMes + '-01').toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}
             </span>
-            <button onClick={() => { const d = new Date(agendaMes + '-01'); d.setMonth(d.getMonth() + 1); setAgendaMes(d.toISOString().slice(0, 7)) }} className="btn-ghost" style={{ fontSize: 12, padding: '5px 10px' }}>›</button>
+            <button onClick={() => { const d = new Date(agendaMes + '-01'); d.setMonth(d.getMonth() + 1); setAgendaMes(d.toISOString().slice(0, 7)) }} className="btn-action btn-ghost" style={{ fontSize: 12, padding: '5px 10px' }}>›</button>
           </div>
           {agendaDias.length === 0 && (
             <div style={{ textAlign: 'center', padding: '40px 0', color: 'var(--gray-400)', fontSize: 13 }}>
@@ -338,7 +336,7 @@ export default function CRMPage() {
               <div style={{ gridColumn: '1/-1' }}><label style={lbl}>Descrição</label><textarea style={{ ...inp, minHeight: 60, resize: 'vertical' }} placeholder="Contexto da oportunidade" value={formOp.descricao} onChange={e => setFormOp(f => ({ ...f, descricao: e.target.value }))} /></div>
             </div>
             <div className="modal-actions" style={{ marginTop: 20 }}>
-              <button className="btn-ghost" onClick={() => setShowOp(false)}>Cancelar</button>
+              <button className="btn-action btn-ghost" onClick={() => setShowOp(false)}>Cancelar</button>
               <button className="btn-action" disabled={savingOp} onClick={() => void salvarOp()}>{savingOp ? 'Salvando…' : 'Criar oportunidade'}</button>
             </div>
           </div>
@@ -371,7 +369,7 @@ export default function CRMPage() {
               <div style={{ gridColumn: '1/-1' }}><label style={lbl}>Responsável</label><input style={inp} placeholder="Quem conduz" value={formAtv.responsavel_nome} onChange={e => setFormAtv(f => ({ ...f, responsavel_nome: e.target.value }))} /></div>
             </div>
             <div className="modal-actions" style={{ marginTop: 20 }}>
-              <button className="btn-ghost" onClick={() => setShowAtv(false)}>Cancelar</button>
+              <button className="btn-action btn-ghost" onClick={() => setShowAtv(false)}>Cancelar</button>
               <button className="btn-action" disabled={savingAtv} onClick={() => void salvarAtv()}>{savingAtv ? 'Salvando…' : 'Agendar'}</button>
             </div>
           </div>
@@ -384,7 +382,7 @@ export default function CRMPage() {
             <div className="modal-title">
               <i className="fa-solid fa-robot" style={{ color: 'var(--teal)', marginRight: 8 }} />
               Análise IA do Pipeline
-              <button className="modal-close" onClick={() => setShowInsight(false)}>×</button>
+              <button className="modal-close" onClick={() => setShowInsight(false)}><i className="fa-solid fa-xmark" /></button>
             </div>
             {insightLoading ? (
               <div style={{ padding: '40px 0', textAlign: 'center', color: 'var(--gray-400)' }}>
@@ -397,12 +395,11 @@ export default function CRMPage() {
               </div>
             )}
             <div className="modal-actions" style={{ marginTop: 20 }}>
-              <button className="btn-ghost" onClick={() => setShowInsight(false)}>Fechar</button>
+              <button className="btn-action btn-ghost" onClick={() => setShowInsight(false)}>Fechar</button>
             </div>
           </div>
         </div>
       )}
     </>
-    </PlanoGate>
   )
 }

@@ -106,11 +106,12 @@ function FinanceiroInner() {
         </div>
       </div>
 
-      {/* Tabs */}
-      <div style={{ display: 'flex', gap: 6, marginBottom: 14, alignItems: 'center' }}>
+      {/* Section nav — discrete links, no pill bar */}
+      <div style={{ display: 'flex', gap: 4, marginBottom: 16, borderBottom: '2px solid var(--gray-100)', paddingBottom: 0 }}>
         {([['pagar', `A Pagar${kpis.pagarPend > 0 ? ` · ${formatBRL(kpis.pagarPend)}` : ''}`], ['receber', `A Receber${kpis.receberPend > 0 ? ` · ${formatBRL(kpis.receberPend)}` : ''}`], ['conciliacao', 'Conciliação'], ['aging', 'Aging']] as [typeof tab, string][]).map(([t, l]) => (
-          <button key={t} className={`btn-action${tab !== t ? ' btn-ghost' : ''}`} style={{ fontSize: 11, padding: '5px 12px' }} onClick={() => setTab(t)}>
-            {t === 'pagar' && kpis.vencidasPagar > 0 ? <><i className="fa-solid fa-circle-exclamation" style={{ color: tab === t ? '#fff' : 'var(--red)', marginRight: 4, fontSize: 9 }} />{l}</> : l}
+          <button key={t} onClick={() => setTab(t)}
+            style={{ fontSize: 12, fontWeight: tab === t ? 700 : 500, color: tab === t ? 'var(--teal)' : 'var(--gray-400)', background: 'none', border: 'none', cursor: 'pointer', padding: '8px 14px', borderBottom: `2px solid ${tab === t ? 'var(--teal)' : 'transparent'}`, marginBottom: -2, transition: 'all .15s', whiteSpace: 'nowrap' }}>
+            {t === 'pagar' && kpis.vencidasPagar > 0 ? <><i className="fa-solid fa-circle-exclamation" style={{ color: 'var(--red)', marginRight: 4, fontSize: 9 }} />{l}</> : l}
           </button>
         ))}
       </div>

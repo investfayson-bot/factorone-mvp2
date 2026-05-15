@@ -1,6 +1,6 @@
 'use client'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts'
+import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer } from 'recharts'
 import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
 import { formatBRL } from '@/lib/currency-brl'
@@ -32,6 +32,12 @@ const FUNCIONALIDADES = [
   { emoji: '🔌', label: 'Integrações', desc: 'Integre com sistemas e plataformas', href: '/dashboard/integracoes' },
 ]
 
+const CARGOS = ['Sócio Administrador', 'Diretor', 'Gerente', 'Procurador', 'Representante Legal']
+const SEGMENTOS = ['Tecnologia', 'Varejo', 'Serviços', 'Saúde', 'Educação', 'Alimentação', 'Construção', 'Transporte', 'Financeiro', 'Outro']
+const ESTADOS = ['AC','AL','AP','AM','BA','CE','DF','ES','GO','MA','MT','MS','MG','PA','PB','PR','PE','PI','RJ','RN','RS','RO','RR','SC','SP','SE','TO']
+
+const STEP_LABELS = ['Informações da empresa', 'Dados dos responsáveis', 'Endereço da empresa', 'Documentos', 'Confirmação de dados']
+
 function buildChartData(txs: Tx[]) {
   const map: Record<string, { entrada: number; saida: number }> = {}
   const today = new Date()
@@ -46,11 +52,79 @@ function buildChartData(txs: Tx[]) {
     if (t.tipo === 'credito') map[key].entrada += Number(t.valor)
     else map[key].saida += Number(t.valor)
   })
-  return Object.entries(map).map(([date, v]) => ({
-    date: date.slice(5),
-    entrada: v.entrada,
-    saida: v.saida,
-  }))
+  return Object.entries(map).map(([date, v]) => ({ date: date.slice(5), entrada: v.entrada, saida: v.saida }))
+}
+
+function StepIndicator({ step, goTo }: { step: number; goTo: (s: number) => void }) {
+  return (
+    <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'center', marginBottom: 36, gap: 0 }}>
+      {STEP_LABELS.map((label, i) => {
+        const n = i + 1
+        const done = n < step
+        const active = n === step
+        return (
+          <div key={n} style={{ display: 'flex', alignItems: 'flex-start', flex: n < 5 ? 1 : 0 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', minWidth: 52 }}>
+              <button
+                onClick={() => done && goTo(n)}
+                style={{
+                  width: 32, height: 32, borderRadius: '50%', border: 'none', cursor: done ? 'pointer' : 'default',
+                  background: done ? 'var(--teal)' : active ? 'var(--navy)' : 'var(--gray-100)',
+                  color: done || active ? '#fff' : 'var(--gray-400)',
+                  fontWeight: 700, fontSize: 13, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  transition: 'all .2s', flexShrink: 0,
+                }}
+              >
+                {done ? <i className="fa-solid fa-check" style={{ fontSize: 12 }} /> : n}
+              </button>
+              <div style={{ fontSize: 10, fontWeight: active ? 700 : 500, color: active ? 'var(--navy)' : done ? 'var(--teal)' : 'var(--gray-400)', marginTop: 6, textAlign: 'center', maxWidth: 80, lineHeight: 1.3 }}>
+                {label}
+              </div>
+            </div>
+            {n < 5 && (
+              <div style={{ flex: 1, height: 2, background: done ? 'var(--teal)' : 'var(--gray-100)', marginTop: 15, marginLeft: 4, marginRight: 4, borderRadius: 2, transition: 'background .2s' }} />
+            )}
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+
+function FieldGroup({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div style={{ marginBottom: 16 }}>
+      <label style={{ fontSize: 11, fontWeight: 600, color: 'var(--gray-500)', display: 'block', marginBottom: 6 }}>{label}</label>
+      {children}
+    </div>
+  )
+}
+
+function FileUploadBox({ label, accept, value, onChange }: { label: string; accept: string; value: string; onChange: (name: string) => void }) {
+  const ref = useRef<HTMLInputElement>(null)
+  return (
+    <div
+      onClick={() => ref.current?.click()}
+      style={{ border: `1.5px dashed ${value ? 'var(--teal)' : 'var(--gray-200)'}`, borderRadius: 10, padding: '18px 16px', textAlign: 'center', cursor: 'pointer', background: value ? 'rgba(0,168,150,.04)' : 'var(--gray-50)', transition: 'all .15s', marginBottom: 12 }}
+    >
+      <input ref={ref} type="file" accept={accept} style={{ display: 'none' }} onChange={e => { if (e.target.files?.[0]) onChange(e.target.files[0].name) }} />
+      {value ? (
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+          <i className="fa-solid fa-circle-check" style={{ color: 'var(--teal)', fontSize: 16 }} />
+          <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--teal)' }}>{value}</span>
+        </div>
+      ) : (
+        <>
+          <i className="fa-solid fa-cloud-arrow-up" style={{ fontSize: 22, color: 'var(--gray-300)', marginBottom: 8 }} />
+          <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--gray-500)', marginBottom: 4 }}>
+            <span style={{ color: 'var(--teal)' }}>Clique para enviar</span>
+          </div>
+          <div style={{ fontSize: 10, color: 'var(--gray-400)' }}>PDF, PNG ou JPG até 10MB</div>
+        </>
+      )}
+      <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--gray-500)', marginTop: value ? 0 : 6 }}>{label}</div>
+    </div>
+  )
 }
 
 export default function ContaPJPage() {
@@ -59,19 +133,23 @@ export default function ContaPJPage() {
   const [empresa, setEmpresa] = useState<Empresa>({ nome: '', cnpj: null, email: null, setor: null })
   const [conta, setConta] = useState<Conta | null>(null)
   const [txs, setTxs] = useState<Tx[]>([])
-  const [aReceber, setAReceber] = useState(0)
-  const [aPagar, setAPagar] = useState(0)
+  const [entradasMes, setEntradasMes] = useState(0)
+  const [saidasMes, setSaidasMes] = useState(0)
+  const [numCartoes, setNumCartoes] = useState(0)
   const [hide, setHide] = useState(false)
   const [extratoTab, setExtratoTab] = useState<'todas' | 'entradas' | 'saidas'>('todas')
   const [userName, setUserName] = useState('')
 
-  // Wizard state (when no account)
-  const [wizardStep, setWizardStep] = useState(1)
-  const [wizardConexao, setWizardConexao] = useState<'open_finance' | 'extrato' | 'manual' | null>(null)
-  const [editEmp, setEditEmp] = useState(false)
-  const [empForm, setEmpForm] = useState({ nome: '', cnpj: '', email: '' })
-  const [savingEmp, setSavingEmp] = useState(false)
-  const fileRef = useRef<HTMLInputElement>(null)
+  // Wizard state
+  const [wStep, setWStep] = useState(1)
+  const [wSuccess, setWSuccess] = useState(false)
+  const [wTermos, setWTermos] = useState(false)
+  const [cepLoading, setCepLoading] = useState(false)
+  const [w1, setW1] = useState({ cnpj: '', razaoSocial: '', nomeFantasia: '', segmento: '' })
+  const [w2, setW2] = useState({ nome: '', cpf: '', cargo: 'Sócio Administrador', email: '', telefone: '' })
+  const [w3, setW3] = useState({ cep: '', endereco: '', numero: '', complemento: '', bairro: '', cidade: '', estado: '' })
+  const [w4, setW4] = useState({ contrato: '', docResp: '', comprovante: '' })
+  const [wEditSection, setWEditSection] = useState<null | 1 | 2>(null)
 
   const carregar = useCallback(async () => {
     setLoading(true)
@@ -84,38 +162,57 @@ export default function ContaPJPage() {
     setEmpresaId(eid)
 
     const since30 = new Date(); since30.setDate(since30.getDate() - 30)
-    const [empR, contaR, txR, aReceberR, aPagarR] = await Promise.all([
+    const mes0 = new Date(); mes0.setDate(1)
+    const [empR, contaR, txR, cartoesR] = await Promise.all([
       supabase.from('empresas').select('nome,cnpj,email,setor').eq('id', eid).maybeSingle(),
       supabase.from('contas_bancarias').select('id,saldo_disponivel,saldo,agencia,numero_conta,digito,status').eq('empresa_id', eid).order('created_at', { ascending: false }).limit(1).maybeSingle(),
       supabase.from('extrato_bancario').select('id,tipo,descricao,valor,data_transacao,contraparte_nome').eq('empresa_id', eid).gte('data_transacao', since30.toISOString().slice(0, 10)).order('data_transacao', { ascending: false }).limit(100),
-      supabase.from('contas_receber').select('valor').eq('empresa_id', eid).eq('status', 'pendente'),
-      supabase.from('contas_pagar').select('valor').eq('empresa_id', eid).eq('status', 'pendente'),
+      supabase.from('solicitacoes_cartao').select('id', { count: 'exact', head: true }).eq('empresa_id', eid).eq('status', 'aprovado'),
     ])
     const emp = empR.data as Empresa | null
     setEmpresa({ nome: emp?.nome ?? '', cnpj: emp?.cnpj ?? null, email: emp?.email ?? null, setor: emp?.setor ?? null })
-    setEmpForm({ nome: emp?.nome ?? '', cnpj: emp?.cnpj ?? '', email: emp?.email ?? '' })
+    setW1(prev => ({ ...prev, cnpj: emp?.cnpj ?? '', razaoSocial: emp?.nome ?? '', segmento: emp?.setor ?? '' }))
+    setW2(prev => ({ ...prev, email: emp?.email ?? '' }))
     setConta((contaR.data as Conta) ?? null)
-    setTxs((txR.data ?? []) as Tx[])
-    setAReceber((aReceberR.data ?? []).reduce((s, r) => s + Number(r.valor || 0), 0))
-    setAPagar((aPagarR.data ?? []).reduce((s, r) => s + Number(r.valor || 0), 0))
+    const allTxs = (txR.data ?? []) as Tx[]
+    setTxs(allTxs)
+    const mes0Str = mes0.toISOString().slice(0, 10)
+    setEntradasMes(allTxs.filter(t => t.tipo === 'credito' && t.data_transacao >= mes0Str).reduce((s, t) => s + Number(t.valor), 0))
+    setSaidasMes(allTxs.filter(t => t.tipo === 'debito' && t.data_transacao >= mes0Str).reduce((s, t) => s + Number(t.valor), 0))
+    setNumCartoes(cartoesR.count ?? 0)
     setLoading(false)
   }, [])
 
   useEffect(() => { void carregar() }, [carregar])
 
-  async function salvarEmpresa() {
-    setSavingEmp(true)
-    await supabase.from('empresas').update({ nome: empForm.nome, cnpj: empForm.cnpj || null, email: empForm.email || null }).eq('id', empresaId)
-    await carregar()
-    setEditEmp(false)
-    toast.success('Dados atualizados')
-    setSavingEmp(false)
+  async function buscarCep(cep: string) {
+    const raw = cep.replace(/\D/g, '')
+    if (raw.length !== 8) return
+    setCepLoading(true)
+    try {
+      const res = await fetch(`https://viacep.com.br/ws/${raw}/json/`)
+      const data = await res.json()
+      if (!data.erro) {
+        setW3(p => ({ ...p, endereco: data.logradouro ?? p.endereco, bairro: data.bairro ?? p.bairro, cidade: data.localidade ?? p.cidade, estado: data.uf ?? p.estado }))
+      }
+    } catch { /* ignore */ }
+    setCepLoading(false)
   }
 
   async function criarContaManual() {
+    await supabase.from('empresas').update({
+      nome: w1.razaoSocial || undefined,
+      cnpj: w1.cnpj || undefined,
+      setor: w1.segmento || undefined,
+      email: w2.email || undefined,
+    }).eq('id', empresaId)
     await supabase.from('contas_bancarias').insert({ empresa_id: empresaId, tipo: 'corrente', status: 'ativa', saldo: 0, saldo_disponivel: 0 })
     await carregar()
-    toast.success('Conta criada!')
+  }
+
+  async function finalizarWizard() {
+    await criarContaManual()
+    setWSuccess(true)
   }
 
   function copiarPix() {
@@ -126,155 +223,333 @@ export default function ContaPJPage() {
 
   if (loading) return <div style={{ padding: 32, color: 'var(--gray-400)', fontSize: 13 }}>Carregando…</div>
 
+  // ─── SUCCESS SCREEN ──────────────────────────────────────────────────────
+  if (wSuccess) return (
+    <div style={{ maxWidth: 520, margin: '40px auto', padding: '0 16px', textAlign: 'center' }}>
+      <div style={{ width: 72, height: 72, borderRadius: '50%', background: 'linear-gradient(135deg,var(--teal),#2D9B6F)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
+        <i className="fa-solid fa-check" style={{ fontSize: 32, color: '#fff' }} />
+      </div>
+      <div style={{ fontSize: 24, fontWeight: 800, color: 'var(--navy)', fontFamily: "'Sora',sans-serif", marginBottom: 8 }}>
+        Conta PJ criada com sucesso!
+      </div>
+      <div style={{ fontSize: 13, color: 'var(--gray-400)', marginBottom: 28 }}>
+        Sua conta está pronta para uso. Confira os dados abaixo.
+      </div>
+      <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 14, padding: 24, marginBottom: 20, textAlign: 'left' }}>
+        <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.04em', marginBottom: 14 }}>Dados da conta</div>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 14 }}>
+          <div>
+            <div style={{ fontSize: 10, color: 'var(--gray-400)', marginBottom: 3 }}>Empresa</div>
+            <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy)' }}>{w1.razaoSocial || empresa.nome}</div>
+          </div>
+          <div>
+            <div style={{ fontSize: 10, color: 'var(--gray-400)', marginBottom: 3 }}>Segmento</div>
+            <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--navy)' }}>{w1.segmento || empresa.setor || '—'}</div>
+          </div>
+          {conta?.agencia && (
+            <>
+              <div>
+                <div style={{ fontSize: 10, color: 'var(--gray-400)', marginBottom: 3 }}>Agência</div>
+                <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--navy)', fontFamily: 'monospace' }}>{conta.agencia}</div>
+              </div>
+              <div>
+                <div style={{ fontSize: 10, color: 'var(--gray-400)', marginBottom: 3 }}>Conta</div>
+                <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--navy)', fontFamily: 'monospace' }}>{conta.numero_conta}{conta.digito ? `-${conta.digito}` : ''}</div>
+              </div>
+            </>
+          )}
+        </div>
+        <div style={{ borderTop: '1px solid var(--gray-100)', paddingTop: 14 }}>
+          <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--gray-500)', marginBottom: 10 }}>O que você pode fazer agora:</div>
+          {['Realizar pagamentos e PIX', 'Conectar via Open Finance', 'Solicitar cartão corporativo', 'Gerir suas finanças'].map(item => (
+            <div key={item} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8, fontSize: 12, color: 'var(--navy)' }}>
+              <i className="fa-solid fa-check" style={{ color: 'var(--teal)', fontSize: 11 }} />
+              {item}
+            </div>
+          ))}
+        </div>
+      </div>
+      <div style={{ display: 'flex', gap: 10, justifyContent: 'center' }}>
+        <button className="btn-action" onClick={() => setWSuccess(false)} style={{ flex: 1 }}>
+          <i className="fa-solid fa-gauge-high" style={{ marginRight: 8 }} />Acessar minha conta
+        </button>
+        <Link href="/dashboard/conta-pj/conectar-banco" className="btn-action btn-ghost" style={{ flex: 1, textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+          <i className="fa-solid fa-link" style={{ marginRight: 8 }} />Explorar funcionalidades
+        </Link>
+      </div>
+      <div style={{ fontSize: 11, color: 'var(--gray-400)', marginTop: 16 }}>
+        As funcionalidades serão analisadas e liberadas em até 24h.
+      </div>
+    </div>
+  )
+
   // ─── WIZARD (no account) ─────────────────────────────────────────────────
   if (!conta) return (
-    <div style={{ maxWidth: 560, margin: '0 auto', padding: '32px 16px' }}>
-      <div style={{ display: 'flex', gap: 6, marginBottom: 32 }}>
-        {[1, 2, 3].map(s => (
-          <div key={s} style={{ flex: 1, height: 4, borderRadius: 4, background: s <= wizardStep ? 'var(--teal)' : 'var(--gray-200)', transition: 'background .2s' }} />
-        ))}
-      </div>
+    <div style={{ maxWidth: wStep === 5 ? 900 : 640, margin: '0 auto', padding: '24px 16px' }}>
+      <StepIndicator step={wStep} goTo={setWStep} />
 
-      {wizardStep === 1 && (
-        <>
-          <div style={{ textAlign: 'center', marginBottom: 28 }}>
-            <div style={{ fontSize: 32, marginBottom: 12 }}>🏦</div>
-            <div style={{ fontSize: 20, fontWeight: 800, color: 'var(--navy)', fontFamily: "'Sora',sans-serif" }}>Abrir Conta PJ</div>
-            <div style={{ fontSize: 13, color: 'var(--gray-400)', marginTop: 6 }}>Confirme os dados da sua empresa para continuar</div>
+      {/* STEP 1 — Informações da empresa */}
+      {wStep === 1 && (
+        <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 14, padding: '28px 32px' }}>
+          <div style={{ fontSize: 15, fontWeight: 800, color: 'var(--navy)', fontFamily: "'Sora',sans-serif", marginBottom: 4 }}>Informações da empresa</div>
+          <div style={{ fontSize: 12, color: 'var(--gray-400)', marginBottom: 24 }}>Dados básicos para abrir sua conta PJ gratuita.</div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 20px' }}>
+            <FieldGroup label="CNPJ">
+              <input className="form-input" placeholder="00.000.000/0001-00" value={w1.cnpj}
+                onChange={e => setW1(p => ({ ...p, cnpj: maskCpfCnpj(e.target.value) }))} />
+            </FieldGroup>
+            <FieldGroup label="Segmento">
+              <select className="form-input" value={w1.segmento} onChange={e => setW1(p => ({ ...p, segmento: e.target.value }))}>
+                <option value="">Selecione o segmento</option>
+                {SEGMENTOS.map(s => <option key={s} value={s}>{s}</option>)}
+              </select>
+            </FieldGroup>
+            <FieldGroup label="Razão Social">
+              <input className="form-input" placeholder="Minha Empresa LTDA" value={w1.razaoSocial}
+                onChange={e => setW1(p => ({ ...p, razaoSocial: e.target.value }))} />
+            </FieldGroup>
+            <FieldGroup label="Nome Fantasia (opcional)">
+              <input className="form-input" placeholder="Minha Empresa" value={w1.nomeFantasia}
+                onChange={e => setW1(p => ({ ...p, nomeFantasia: e.target.value }))} />
+            </FieldGroup>
           </div>
-          <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: 20, marginBottom: 16 }}>
-            <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.04em', marginBottom: 14 }}>Dados da empresa</div>
-            {[
-              { label: 'Razão Social', value: empresa.nome || '—', icon: '🏢' },
-              { label: 'CNPJ', value: empresa.cnpj || 'Não informado', icon: '🪪' },
-              { label: 'Setor', value: empresa.setor || 'Não informado', icon: '💼' },
-              { label: 'E-mail', value: empresa.email || 'Não informado', icon: '📧' },
-            ].map(row => (
-              <div key={row.label} style={{ display: 'flex', gap: 12, alignItems: 'center', paddingBottom: 12, borderBottom: '1px solid var(--gray-100)', marginBottom: 12 }}>
-                <span style={{ fontSize: 18, width: 32, textAlign: 'center' }}>{row.icon}</span>
-                <div>
-                  <div style={{ fontSize: 10, color: 'var(--gray-400)', fontWeight: 600, marginBottom: 1 }}>{row.label}</div>
-                  <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--navy)' }}>{row.value}</div>
-                </div>
-              </div>
-            ))}
-            <button className="btn-action btn-ghost" style={{ fontSize: 11, padding: '5px 12px' }} onClick={() => setEditEmp(true)}>
-              <i className="fa-solid fa-pen" style={{ marginRight: 5 }} />Editar dados
-            </button>
-          </div>
-          <button className="btn-action" style={{ width: '100%' }} onClick={() => setWizardStep(2)}>
-            Confirmar e continuar <i className="fa-solid fa-arrow-right" style={{ marginLeft: 8 }} />
-          </button>
-        </>
-      )}
-
-      {wizardStep === 2 && (
-        <>
-          <div style={{ textAlign: 'center', marginBottom: 28 }}>
-            <div style={{ fontSize: 32, marginBottom: 12 }}>🔗</div>
-            <div style={{ fontSize: 20, fontWeight: 800, color: 'var(--navy)', fontFamily: "'Sora',sans-serif" }}>Como quer conectar seu banco?</div>
-            <div style={{ fontSize: 13, color: 'var(--gray-400)', marginTop: 6 }}>Escolha a forma de integração bancária</div>
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 24 }}>
-            {([
-              { key: 'open_finance', emoji: '🔗', color: 'var(--teal)', title: 'Open Finance', desc: 'Conexão automática em tempo real via API oficial (Pluggy)' },
-              { key: 'extrato', emoji: '📁', color: 'var(--gold)', title: 'Importar Extrato', desc: 'Upload do extrato OFX ou CSV exportado pelo seu banco' },
-              { key: 'manual', emoji: '✏️', color: 'var(--navy)', title: 'Cadastro Manual', desc: 'Informe agência e conta sem integração automática' },
-            ] as const).map(opt => (
-              <button key={opt.key} onClick={() => setWizardConexao(opt.key)}
-                style={{ display: 'flex', gap: 14, alignItems: 'center', padding: '14px 16px', borderRadius: 10, border: `2px solid ${wizardConexao === opt.key ? opt.color : 'var(--gray-100)'}`, background: wizardConexao === opt.key ? 'var(--gray-50)' : '#fff', cursor: 'pointer', textAlign: 'left' }}
-              >
-                <span style={{ fontSize: 24, width: 40, textAlign: 'center' }}>{opt.emoji}</span>
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy)', marginBottom: 2 }}>{opt.title}</div>
-                  <div style={{ fontSize: 11, color: 'var(--gray-400)', lineHeight: 1.5 }}>{opt.desc}</div>
-                </div>
-                {wizardConexao === opt.key && <i className="fa-solid fa-circle-check" style={{ color: opt.color, fontSize: 18 }} />}
-              </button>
-            ))}
-          </div>
-          <div style={{ display: 'flex', gap: 8 }}>
-            <button className="btn-action btn-ghost" style={{ flex: 1 }} onClick={() => setWizardStep(1)}>Voltar</button>
-            <button className="btn-action" style={{ flex: 2 }} disabled={!wizardConexao} onClick={() => setWizardStep(3)}>
+          <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 8 }}>
+            <button className="btn-action" style={{ minWidth: 160 }} onClick={() => setWStep(2)}>
               Continuar <i className="fa-solid fa-arrow-right" style={{ marginLeft: 8 }} />
             </button>
           </div>
-        </>
+          <div style={{ marginTop: 20, padding: '12px 16px', background: 'rgba(45,155,111,.06)', borderRadius: 8, display: 'flex', gap: 10, alignItems: 'center' }}>
+            <i className="fa-solid fa-shield-halved" style={{ color: 'var(--green)', fontSize: 16, flexShrink: 0 }} />
+            <span style={{ fontSize: 11, color: 'var(--gray-500)' }}>Abertura 100% digital e gratuita · Sem mensalidades ou tarifas escondidas</span>
+          </div>
+        </div>
       )}
 
-      {wizardStep === 3 && (
-        <>
-          <div style={{ textAlign: 'center', marginBottom: 28 }}>
-            <div style={{ fontSize: 32, marginBottom: 12 }}>✅</div>
-            <div style={{ fontSize: 20, fontWeight: 800, color: 'var(--navy)', fontFamily: "'Sora',sans-serif" }}>Quase lá!</div>
-            <div style={{ fontSize: 13, color: 'var(--gray-400)', marginTop: 6 }}>Conta PJ para <strong>{empresa.nome}</strong></div>
+      {/* STEP 2 — Dados dos responsáveis */}
+      {wStep === 2 && (
+        <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 14, padding: '28px 32px' }}>
+          <div style={{ fontSize: 15, fontWeight: 800, color: 'var(--navy)', fontFamily: "'Sora',sans-serif", marginBottom: 4 }}>Dados dos responsáveis</div>
+          <div style={{ fontSize: 12, color: 'var(--gray-400)', marginBottom: 24 }}>Informações do sócio ou administrador.</div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 20px' }}>
+            <div style={{ gridColumn: '1 / -1' }}>
+              <FieldGroup label="Nome completo">
+                <input className="form-input" placeholder="João da Silva" value={w2.nome}
+                  onChange={e => setW2(p => ({ ...p, nome: e.target.value }))} />
+              </FieldGroup>
+            </div>
+            <FieldGroup label="CPF">
+              <input className="form-input" placeholder="000.000.000-00" value={w2.cpf}
+                onChange={e => setW2(p => ({ ...p, cpf: maskCpfCnpj(e.target.value) }))} />
+            </FieldGroup>
+            <FieldGroup label="Cargo">
+              <select className="form-input" value={w2.cargo} onChange={e => setW2(p => ({ ...p, cargo: e.target.value }))}>
+                {CARGOS.map(c => <option key={c} value={c}>{c}</option>)}
+              </select>
+            </FieldGroup>
+            <FieldGroup label="E-mail">
+              <input className="form-input" type="email" placeholder="joao@minhaempresa.com" value={w2.email}
+                onChange={e => setW2(p => ({ ...p, email: e.target.value }))} />
+            </FieldGroup>
+            <FieldGroup label="Telefone">
+              <input className="form-input" placeholder="(11) 99999-9999" value={w2.telefone}
+                onChange={e => setW2(p => ({ ...p, telefone: e.target.value }))} />
+            </FieldGroup>
           </div>
-          <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: 20, marginBottom: 16 }}>
-            {wizardConexao === 'open_finance' && (
-              <div style={{ textAlign: 'center', padding: '12px 0' }}>
-                <div style={{ fontSize: 32, marginBottom: 10 }}>🔗</div>
-                <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--navy)', marginBottom: 6 }}>Conectar via Open Finance</div>
-                <div style={{ fontSize: 12, color: 'var(--gray-400)', marginBottom: 16 }}>Você será redirecionado para autorizar a conexão com seu banco</div>
-                <Link href="/dashboard/conta-pj/conectar-banco" className="btn-action" style={{ display: 'inline-block' }}>
-                  <i className="fa-solid fa-link" style={{ marginRight: 8 }} />Conectar banco
-                </Link>
-              </div>
-            )}
-            {wizardConexao === 'extrato' && (
-              <div style={{ textAlign: 'center', padding: '12px 0' }}>
-                <div style={{ fontSize: 32, marginBottom: 10 }}>📁</div>
-                <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--navy)', marginBottom: 6 }}>Importar extrato bancário</div>
-                <div style={{ fontSize: 12, color: 'var(--gray-400)', marginBottom: 16 }}>Exporte o OFX/CSV pelo seu internet banking e importe aqui</div>
-                <button className="btn-action" onClick={() => void (async () => { await criarContaManual() })()}>
-                  <i className="fa-solid fa-upload" style={{ marginRight: 8 }} />Criar conta e importar
+          <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end', marginTop: 8 }}>
+            <button className="btn-action btn-ghost" style={{ minWidth: 100 }} onClick={() => setWStep(1)}>Voltar</button>
+            <button className="btn-action" style={{ minWidth: 160 }} onClick={() => setWStep(3)}>
+              Continuar <i className="fa-solid fa-arrow-right" style={{ marginLeft: 8 }} />
+            </button>
+          </div>
+          <div style={{ marginTop: 20, padding: '12px 16px', background: 'rgba(45,155,111,.06)', borderRadius: 8, display: 'flex', gap: 10, alignItems: 'center' }}>
+            <i className="fa-solid fa-shield-halved" style={{ color: 'var(--green)', fontSize: 16, flexShrink: 0 }} />
+            <span style={{ fontSize: 11, color: 'var(--gray-500)' }}>Precisamos dessas informações para garantir a segurança da sua conta.</span>
+          </div>
+        </div>
+      )}
+
+      {/* STEP 3 — Endereço da empresa */}
+      {wStep === 3 && (
+        <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 14, padding: '28px 32px' }}>
+          <div style={{ fontSize: 15, fontWeight: 800, color: 'var(--navy)', fontFamily: "'Sora',sans-serif", marginBottom: 4 }}>Endereço da empresa</div>
+          <div style={{ fontSize: 12, color: 'var(--gray-400)', marginBottom: 24 }}>Confirme o endereço da sua empresa.</div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 20px' }}>
+            <FieldGroup label="CEP">
+              <div style={{ display: 'flex', gap: 8 }}>
+                <input className="form-input" placeholder="01234-567" value={w3.cep}
+                  onChange={e => setW3(p => ({ ...p, cep: e.target.value }))} style={{ flex: 1 }} />
+                <button className="btn-action btn-ghost" style={{ fontSize: 11, padding: '6px 12px', flexShrink: 0 }}
+                  onClick={() => void buscarCep(w3.cep)} disabled={cepLoading}>
+                  {cepLoading ? '…' : 'Buscar CEP'}
                 </button>
               </div>
-            )}
-            {wizardConexao === 'manual' && (
-              <div>
-                <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy)', marginBottom: 14 }}>✏️ Dados bancários</div>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 16 }}>
-                  {['Banco', 'Agência', 'Conta', 'Dígito'].map(f => (
-                    <div key={f}>
-                      <label style={{ fontSize: 11, fontWeight: 600, color: 'var(--gray-500)', display: 'block', marginBottom: 5 }}>{f}</label>
-                      <input className="form-input" placeholder={f} />
-                    </div>
-                  ))}
+            </FieldGroup>
+            <div />
+            <div style={{ gridColumn: '1 / -1' }}>
+              <FieldGroup label="Endereço">
+                <input className="form-input" placeholder="Rua das Empresas" value={w3.endereco}
+                  onChange={e => setW3(p => ({ ...p, endereco: e.target.value }))} />
+              </FieldGroup>
+            </div>
+            <FieldGroup label="Número">
+              <input className="form-input" placeholder="123" value={w3.numero}
+                onChange={e => setW3(p => ({ ...p, numero: e.target.value }))} />
+            </FieldGroup>
+            <FieldGroup label="Complemento (opcional)">
+              <input className="form-input" placeholder="Sala 45" value={w3.complemento}
+                onChange={e => setW3(p => ({ ...p, complemento: e.target.value }))} />
+            </FieldGroup>
+            <FieldGroup label="Bairro">
+              <input className="form-input" placeholder="Centro" value={w3.bairro}
+                onChange={e => setW3(p => ({ ...p, bairro: e.target.value }))} />
+            </FieldGroup>
+            <div />
+            <FieldGroup label="Cidade">
+              <input className="form-input" placeholder="São Paulo" value={w3.cidade}
+                onChange={e => setW3(p => ({ ...p, cidade: e.target.value }))} />
+            </FieldGroup>
+            <FieldGroup label="Estado">
+              <select className="form-input" value={w3.estado} onChange={e => setW3(p => ({ ...p, estado: e.target.value }))}>
+                <option value="">UF</option>
+                {ESTADOS.map(uf => <option key={uf} value={uf}>{uf}</option>)}
+              </select>
+            </FieldGroup>
+          </div>
+          <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end', marginTop: 8 }}>
+            <button className="btn-action btn-ghost" style={{ minWidth: 100 }} onClick={() => setWStep(2)}>Voltar</button>
+            <button className="btn-action" style={{ minWidth: 160 }} onClick={() => setWStep(4)}>
+              Continuar <i className="fa-solid fa-arrow-right" style={{ marginLeft: 8 }} />
+            </button>
+          </div>
+          <div style={{ marginTop: 20, padding: '12px 16px', background: 'rgba(45,155,111,.06)', borderRadius: 8, display: 'flex', gap: 10, alignItems: 'center' }}>
+            <i className="fa-solid fa-shield-halved" style={{ color: 'var(--green)', fontSize: 16, flexShrink: 0 }} />
+            <span style={{ fontSize: 11, color: 'var(--gray-500)' }}>Endereço utilizado para validação e documentos oficiais.</span>
+          </div>
+        </div>
+      )}
+
+      {/* STEP 4 — Documentos */}
+      {wStep === 4 && (
+        <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 14, padding: '28px 32px' }}>
+          <div style={{ fontSize: 15, fontWeight: 800, color: 'var(--navy)', fontFamily: "'Sora',sans-serif", marginBottom: 4 }}>Documentos</div>
+          <div style={{ fontSize: 12, color: 'var(--gray-400)', marginBottom: 24 }}>Documentos da empresa e dos sócios.</div>
+          <FileUploadBox
+            label="Contrato Social ou Estatuto"
+            accept=".pdf,.png,.jpg,.jpeg"
+            value={w4.contrato}
+            onChange={name => setW4(p => ({ ...p, contrato: name }))}
+          />
+          <FileUploadBox
+            label="Documento de responsável (RG ou CNH)"
+            accept=".pdf,.png,.jpg,.jpeg"
+            value={w4.docResp}
+            onChange={name => setW4(p => ({ ...p, docResp: name }))}
+          />
+          <FileUploadBox
+            label="Comprovante de endereço"
+            accept=".pdf,.png,.jpg,.jpeg"
+            value={w4.comprovante}
+            onChange={name => setW4(p => ({ ...p, comprovante: name }))}
+          />
+          <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end', marginTop: 16 }}>
+            <button className="btn-action btn-ghost" style={{ minWidth: 100 }} onClick={() => setWStep(3)}>Voltar</button>
+            <button className="btn-action" style={{ minWidth: 160 }} onClick={() => setWStep(5)}>
+              Continuar <i className="fa-solid fa-arrow-right" style={{ marginLeft: 8 }} />
+            </button>
+          </div>
+          <div style={{ marginTop: 20, padding: '12px 16px', background: 'rgba(45,155,111,.06)', borderRadius: 8, display: 'flex', gap: 10, alignItems: 'center' }}>
+            <i className="fa-solid fa-lock" style={{ color: 'var(--green)', fontSize: 16, flexShrink: 0 }} />
+            <span style={{ fontSize: 11, color: 'var(--gray-500)' }}>Documentos protegidos com segurança e criptografia de ponta.</span>
+          </div>
+        </div>
+      )}
+
+      {/* STEP 5 — Confirmação */}
+      {wStep === 5 && (
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: 20, alignItems: 'start' }}>
+          {/* Left: review */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+            {/* Dados da empresa */}
+            <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 14, padding: '22px 24px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+                <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy)' }}>Dados da empresa</div>
+                <button className="btn-action btn-ghost" style={{ fontSize: 11, padding: '4px 12px' }} onClick={() => setWStep(1)}>
+                  <i className="fa-solid fa-pen" style={{ marginRight: 5, fontSize: 10 }} />Editar
+                </button>
+              </div>
+              {[
+                { label: 'Razão Social', value: w1.razaoSocial },
+                { label: 'CNPJ', value: w1.cnpj },
+                { label: 'Nome Fantasia', value: w1.nomeFantasia || '—' },
+                { label: 'Segmento', value: w1.segmento },
+                { label: 'Endereço', value: [w3.endereco, w3.numero, w3.complemento].filter(Boolean).join(', ') || '—' },
+                { label: 'Cidade/UF', value: w3.cidade && w3.estado ? `${w3.cidade} - ${w3.estado}` : '—' },
+              ].map(row => (
+                <div key={row.label} style={{ display: 'flex', gap: 12, marginBottom: 10 }}>
+                  <div style={{ fontSize: 11, color: 'var(--gray-400)', minWidth: 100 }}>{row.label}</div>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--navy)' }}>{row.value || '—'}</div>
                 </div>
-                <button className="btn-action" style={{ width: '100%' }} onClick={() => void criarContaManual()}>
-                  <i className="fa-solid fa-floppy-disk" style={{ marginRight: 8 }} />Salvar e abrir conta
+              ))}
+            </div>
+            {/* Responsável */}
+            <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 14, padding: '22px 24px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+                <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy)' }}>Responsável</div>
+                <button className="btn-action btn-ghost" style={{ fontSize: 11, padding: '4px 12px' }} onClick={() => setWStep(2)}>
+                  <i className="fa-solid fa-pen" style={{ marginRight: 5, fontSize: 10 }} />Editar
                 </button>
               </div>
-            )}
+              {[
+                { label: 'Nome', value: w2.nome },
+                { label: 'CPF', value: w2.cpf },
+                { label: 'Cargo', value: w2.cargo },
+                { label: 'E-mail', value: w2.email },
+                { label: 'Telefone', value: w2.telefone },
+              ].map(row => (
+                <div key={row.label} style={{ display: 'flex', gap: 12, marginBottom: 10 }}>
+                  <div style={{ fontSize: 11, color: 'var(--gray-400)', minWidth: 100 }}>{row.label}</div>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--navy)' }}>{row.value || '—'}</div>
+                </div>
+              ))}
+            </div>
           </div>
-          {wizardConexao !== 'manual' && (
-            <button className="btn-action btn-ghost" style={{ width: '100%' }} onClick={() => setWizardStep(2)}>Voltar</button>
-          )}
-        </>
-      )}
 
-      {editEmp && (
-        <div className="modal-bg" onClick={() => setEditEmp(false)}>
-          <div className="modal-box" style={{ maxWidth: 440 }} onClick={e => e.stopPropagation()}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 20 }}>
-              <h3 className="modal-title">Dados da empresa</h3>
-              <button className="modal-close" onClick={() => setEditEmp(false)}><i className="fa-solid fa-xmark" /></button>
+          {/* Right: finalizar */}
+          <div style={{ background: 'var(--navy)', borderRadius: 14, padding: '28px 24px', color: '#fff', position: 'sticky', top: 20 }}>
+            <div style={{ fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,.5)', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: 14 }}>Revise seus dados antes de finalizar.</div>
+            <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 4 }}>{w1.razaoSocial || 'Empresa'}</div>
+            <div style={{ fontSize: 11, color: 'rgba(255,255,255,.6)', marginBottom: 4 }}>{w1.cnpj || '—'}</div>
+            <div style={{ fontSize: 11, color: 'rgba(255,255,255,.6)', marginBottom: 4 }}>{w1.segmento || '—'}</div>
+            {w3.cidade && <div style={{ fontSize: 11, color: 'rgba(255,255,255,.6)', marginBottom: 16 }}>{w3.cidade}{w3.estado ? ` - ${w3.estado}` : ''}</div>}
+            <div style={{ borderTop: '1px solid rgba(255,255,255,.12)', paddingTop: 16, marginBottom: 16 }}>
+              <div style={{ fontSize: 11, color: 'rgba(255,255,255,.5)', marginBottom: 4 }}>Responsável</div>
+              <div style={{ fontSize: 12, fontWeight: 600 }}>{w2.nome || '—'}</div>
+              <div style={{ fontSize: 11, color: 'rgba(255,255,255,.5)', marginTop: 2 }}>{w2.cpf || '—'}</div>
+              <div style={{ fontSize: 11, color: 'rgba(255,255,255,.5)', marginTop: 2 }}>{w2.email || '—'}</div>
             </div>
-            {[
-              { label: 'Razão Social', key: 'nome', placeholder: 'Nome da empresa' },
-              { label: 'CNPJ', key: 'cnpj', placeholder: '00.000.000/0001-00' },
-              { label: 'E-mail', key: 'email', placeholder: 'contato@empresa.com' },
-            ].map(f => (
-              <div key={f.key} style={{ marginBottom: 14 }}>
-                <label style={{ fontSize: 11, fontWeight: 600, color: 'var(--gray-500)', display: 'block', marginBottom: 6 }}>{f.label}</label>
-                <input className="form-input" placeholder={f.placeholder} value={empForm[f.key as keyof typeof empForm]}
-                  onChange={e => { const v = f.key === 'cnpj' ? maskCpfCnpj(e.target.value) : e.target.value; setEmpForm(p => ({ ...p, [f.key]: v })) }} />
-              </div>
-            ))}
-            <div className="modal-actions" style={{ marginTop: 16 }}>
-              <button className="btn-action btn-ghost" onClick={() => setEditEmp(false)}>Cancelar</button>
-              <button className="btn-action" disabled={savingEmp} onClick={() => void salvarEmpresa()}>{savingEmp ? 'Salvando…' : 'Salvar'}</button>
+            <div style={{ display: 'flex', gap: 8, alignItems: 'flex-start', marginBottom: 18 }}>
+              <input
+                type="checkbox" id="termos" checked={wTermos} onChange={e => setWTermos(e.target.checked)}
+                style={{ marginTop: 2, accentColor: 'var(--teal)', width: 14, height: 14, flexShrink: 0 }}
+              />
+              <label htmlFor="termos" style={{ fontSize: 11, color: 'rgba(255,255,255,.65)', lineHeight: 1.5, cursor: 'pointer' }}>
+                Declaro que li e concordo com os <span style={{ color: 'var(--teal)', textDecoration: 'underline', cursor: 'pointer' }}>Termos de Uso</span> e <span style={{ color: 'var(--teal)', textDecoration: 'underline', cursor: 'pointer' }}>Política de Privacidade</span>.
+              </label>
             </div>
+            <button
+              className="btn-action"
+              style={{ width: '100%', background: 'var(--teal)', opacity: wTermos ? 1 : 0.5 }}
+              disabled={!wTermos}
+              onClick={() => void finalizarWizard()}
+            >
+              <i className="fa-solid fa-check" style={{ marginRight: 8 }} />Finalizar cadastro
+            </button>
+            <div style={{ marginTop: 12, fontSize: 10, color: 'rgba(255,255,255,.4)', textAlign: 'center', lineHeight: 1.5 }}>
+              As funcionalidades serão analisadas e liberadas em até 24h.
+            </div>
+            <button className="btn-action btn-ghost" style={{ width: '100%', marginTop: 8, color: 'rgba(255,255,255,.6)', borderColor: 'rgba(255,255,255,.2)', fontSize: 12 }} onClick={() => setWStep(4)}>
+              Voltar
+            </button>
           </div>
         </div>
       )}
@@ -283,17 +558,13 @@ export default function ContaPJPage() {
 
   // ─── VISÃO GERAL DASHBOARD ───────────────────────────────────────────────
   const saldo = conta.saldo_disponivel ?? conta.saldo ?? 0
-  const saldoTotal = saldo + aReceber - aPagar
+  const txsMes = txs.filter(t => { const m = new Date(); m.setDate(1); return t.data_transacao >= m.toISOString().slice(0, 10) })
   const chartData = buildChartData(txs)
   const txsRecentes = txs.slice(0, 5)
   const extratoFiltered = txs.filter(t =>
     extratoTab === 'todas' ? true : extratoTab === 'entradas' ? t.tipo === 'credito' : t.tipo === 'debito'
   ).slice(0, 6)
 
-  const txIcons: Record<string, string> = {
-    'pix': '⚡', 'transferencia': '↔️', 'pagamento': '💰', 'cobranca': '📋',
-    'credito': '📈', 'debito': '📉',
-  }
   function txIcon(tx: Tx) {
     const d = tx.descricao.toLowerCase()
     if (d.includes('pix')) return '⚡'
@@ -329,30 +600,28 @@ export default function ContaPJPage() {
       {/* KPIs */}
       <div className="kpis" style={{ gridTemplateColumns: 'repeat(4,1fr)', marginBottom: 20 }}>
         <div className="kpi">
-          <div className="kpi-lbl">Saldo disponível</div>
-          <div className="kpi-val" style={{ color: 'var(--navy)', fontSize: hide ? 20 : undefined }}>
+          <div className="kpi-lbl">💰 Saldo disponível</div>
+          <div className="kpi-val" style={{ color: 'var(--navy)' }}>
             {hide ? '••••••' : formatBRL(saldo)}
           </div>
-          <div className="kpi-delta" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-            <button onClick={() => setHide(h => !h)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 10, color: 'var(--gray-400)', padding: 0 }}>
-              <i className={`fa-solid ${hide ? 'fa-eye' : 'fa-eye-slash'}`} style={{ marginRight: 4 }} />{hide ? 'Mostrar' : 'Ocultar'}
-            </button>
-          </div>
+          <button onClick={() => setHide(h => !h)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 10, color: 'var(--gray-400)', padding: 0 }}>
+            <i className={`fa-solid ${hide ? 'fa-eye' : 'fa-eye-slash'}`} style={{ marginRight: 4 }} />{hide ? 'Mostrar' : 'Ocultar'}
+          </button>
         </div>
         <div className="kpi">
-          <div className="kpi-lbl">A receber</div>
-          <div className="kpi-val" style={{ color: 'var(--green)' }}>{formatBRL(aReceber)}</div>
-          <Link href="/dashboard/financeiro" style={{ fontSize: 10, color: 'var(--teal)', textDecoration: 'none' }}>Ver detalhes →</Link>
+          <div className="kpi-lbl">📥 Entradas do mês</div>
+          <div className="kpi-val" style={{ color: 'var(--green)' }}>{formatBRL(entradasMes)}</div>
+          <div className="kpi-delta">{txsMes.filter(t => t.tipo === 'credito').length} transações</div>
         </div>
         <div className="kpi">
-          <div className="kpi-lbl">A pagar</div>
-          <div className="kpi-val" style={{ color: 'var(--red)' }}>{formatBRL(aPagar)}</div>
-          <Link href="/dashboard/financeiro" style={{ fontSize: 10, color: 'var(--teal)', textDecoration: 'none' }}>Ver detalhes →</Link>
+          <div className="kpi-lbl">📤 Saídas do mês</div>
+          <div className="kpi-val" style={{ color: 'var(--red)' }}>{formatBRL(saidasMes)}</div>
+          <div className="kpi-delta">{txsMes.filter(t => t.tipo === 'debito').length} transações</div>
         </div>
         <div className="kpi">
-          <div className="kpi-lbl">Saldo total</div>
-          <div className="kpi-val" style={{ color: saldoTotal >= 0 ? 'var(--green)' : 'var(--red)' }}>{formatBRL(saldoTotal)}</div>
-          <div className="kpi-delta">saldo + a receber − a pagar</div>
+          <div className="kpi-lbl">💳 Cartões corporativos</div>
+          <div className="kpi-val" style={{ color: 'var(--navy)' }}>{numCartoes}</div>
+          <Link href="/dashboard/cartoes" style={{ fontSize: 10, color: 'var(--teal)', textDecoration: 'none' }}>Gerenciar cartões →</Link>
         </div>
       </div>
 
@@ -371,18 +640,14 @@ export default function ContaPJPage() {
 
       {/* CONTENT GRID */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 360px', gap: 16, marginBottom: 20, alignItems: 'start' }}>
-        {/* LEFT: movimentações + chart */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-          {/* Movimentações recentes */}
           <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, overflow: 'hidden' }}>
             <div style={{ padding: '14px 20px', borderBottom: '1px solid var(--gray-100)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy)' }}>Movimentações recentes</span>
               <Link href="/dashboard/conta-pj/extrato" style={{ fontSize: 11, color: 'var(--teal)', textDecoration: 'none' }}>Ver extrato completo →</Link>
             </div>
             {txsRecentes.length === 0 ? (
-              <div style={{ padding: '32px 20px', textAlign: 'center', color: 'var(--gray-400)', fontSize: 12 }}>
-                📭 Nenhuma movimentação nos últimos 30 dias
-              </div>
+              <div style={{ padding: '32px 20px', textAlign: 'center', color: 'var(--gray-400)', fontSize: 12 }}>📭 Nenhuma movimentação nos últimos 30 dias</div>
             ) : (
               <div>
                 {txsRecentes.map(tx => (
@@ -403,7 +668,6 @@ export default function ContaPJPage() {
             )}
           </div>
 
-          {/* Gráfico fluxo de caixa */}
           <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: '16px 20px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
               <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy)' }}>📊 Gráfico de fluxo de caixa</span>
@@ -411,26 +675,19 @@ export default function ContaPJPage() {
             </div>
             <div style={{ display: 'flex', gap: 16, marginBottom: 12 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, color: 'var(--gray-500)' }}>
-                <div style={{ width: 10, height: 10, borderRadius: 2, background: 'var(--green)' }} />
-                Entradas
+                <div style={{ width: 10, height: 10, borderRadius: 2, background: 'var(--green)' }} /> Entradas
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, color: 'var(--gray-500)' }}>
-                <div style={{ width: 10, height: 10, borderRadius: 2, background: 'var(--red)' }} />
-                Saídas
+                <div style={{ width: 10, height: 10, borderRadius: 2, background: 'var(--red)' }} /> Saídas
               </div>
             </div>
             {chartData.every(d => d.entrada === 0 && d.saida === 0) ? (
-              <div style={{ height: 120, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gray-300)', fontSize: 12 }}>
-                📭 Sem dados para exibir — importe seu extrato
-              </div>
+              <div style={{ height: 120, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gray-300)', fontSize: 12 }}>📭 Sem dados — importe seu extrato</div>
             ) : (
               <ResponsiveContainer width="100%" height={120}>
                 <BarChart data={chartData} barGap={1} barCategoryGap="20%">
                   <XAxis dataKey="date" tick={{ fontSize: 9, fill: 'var(--gray-300)' }} axisLine={false} tickLine={false} interval={6} />
-                  <Tooltip
-                    formatter={(v: number, name: string) => [formatBRL(v), name === 'entrada' ? 'Entrada' : 'Saída']}
-                    contentStyle={{ fontSize: 11, borderRadius: 8, border: '1px solid var(--gray-100)' }}
-                  />
+                  <Tooltip formatter={(v: number, name: string) => [formatBRL(v), name === 'entrada' ? 'Entrada' : 'Saída']} contentStyle={{ fontSize: 11, borderRadius: 8, border: '1px solid var(--gray-100)' }} />
                   <Bar dataKey="entrada" fill="var(--green)" radius={[3, 3, 0, 0]} maxBarSize={12} />
                   <Bar dataKey="saida" fill="var(--red)" radius={[3, 3, 0, 0]} maxBarSize={12} />
                 </BarChart>
@@ -439,7 +696,6 @@ export default function ContaPJPage() {
           </div>
         </div>
 
-        {/* RIGHT: Extrato rápido */}
         <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, overflow: 'hidden' }}>
           <div style={{ padding: '14px 20px', borderBottom: '1px solid var(--gray-100)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy)' }}>Extrato rápido</span>
@@ -463,7 +719,7 @@ export default function ContaPJPage() {
                   <span style={{ fontSize: 14 }}>{txIcon(tx)}</span>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--navy)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{tx.descricao}</div>
-                    <div style={{ fontSize: 10, color: 'var(--gray-400)' }}>{new Date(tx.data_transacao + 'T12:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}</div>
+                    <div style={{ fontSize: 10, color: 'var(--gray-400)' }}>{new Date(tx.data_transacao + 'T12:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' })}</div>
                   </div>
                   <span style={{ fontFamily: 'monospace', fontWeight: 700, fontSize: 12, color: tx.tipo === 'credito' ? 'var(--green)' : 'var(--red)', flexShrink: 0 }}>
                     {tx.tipo === 'credito' ? '+' : '-'}{formatBRL(Number(tx.valor))}
@@ -480,7 +736,7 @@ export default function ContaPJPage() {
         <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy)', marginBottom: 16 }}>Funcionalidades disponíveis</div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: 10 }}>
           {FUNCIONALIDADES.map(f => (
-            <Link key={f.label} href={f.href} style={{ display: 'flex', gap: 10, alignItems: 'flex-start', padding: '12px 14px', borderRadius: 10, border: '1px solid var(--gray-100)', textDecoration: 'none', background: '#fafafa', transition: 'background .15s' }}
+            <Link key={f.label} href={f.href} style={{ display: 'flex', gap: 10, alignItems: 'flex-start', padding: '12px 14px', borderRadius: 10, border: '1px solid var(--gray-100)', textDecoration: 'none', background: '#fafafa' }}
               onMouseEnter={e => (e.currentTarget.style.background = 'var(--gray-50)')}
               onMouseLeave={e => (e.currentTarget.style.background = '#fafafa')}
             >
