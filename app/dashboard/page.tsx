@@ -9,6 +9,7 @@ import AnomalyAlerts from '@/components/dashboard/AnomalyAlerts'
 import EntradasSaidasChart from '@/components/dashboard/EntradasSaidasChart'
 import { DashboardErrorBoundary } from '@/components/dashboard/DashboardErrorBoundary'
 import type { TransacaoLista } from '@/lib/transacao-types'
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, LabelList } from 'recharts'
 
 type Kpi = { receita: number; despesas: number; saldo: number; nfs: number }
 type Pendencias = { reembolsos: number; valorReembolsos: number; aprovacoes: number; saldoBanco: number; dasDias: number | null; dasValor: number | null }
@@ -560,18 +561,42 @@ export default function DashboardPage() {
           </DashboardErrorBoundary>
         </div>
         <div className="chart-card">
-          <div className="chart-title">DRE Resumo</div>
-          <div className="dre-rows">
-            {dreLinhas.map(r => (
-              <div key={r.l} className="dre-row">
-                <span className="dre-l">{r.l}</span>
-                <span className={`dre-v ${r.cls}`}>{r.v}</span>
-              </div>
-            ))}
-          </div>
-          <div style={{ marginTop: 12, paddingTop: 10, borderTop: '1px solid var(--gray-100)' }}>
-            <Link href="/dashboard/relatorios" style={{ fontSize: 11, color: 'var(--teal)', textDecoration: 'none' }}>
-              Ver DRE completo →
+          <div className="chart-title">Receita vs Despesas — Atual vs Anterior</div>
+          {(() => {
+            const dreChartData = [
+              { name: 'Receita', atual: kpiAtual.receita, anterior: kpiAnt.receita, color: '#2D9B6F' },
+              { name: 'Despesas', atual: kpiAtual.despesas, anterior: kpiAnt.despesas, color: '#C0504A' },
+              { name: 'Lucro', atual: dreMes.liquido, anterior: dreMes.liquidoAnt, color: dreMes.liquido >= 0 ? '#2D9B6F' : '#C0504A' },
+            ]
+            return (
+              <ResponsiveContainer width="100%" height={160}>
+                <BarChart data={dreChartData} barGap={4} barCategoryGap="30%" margin={{ top: 4, right: 4, bottom: 0, left: 0 }}>
+                  <XAxis dataKey="name" tick={{ fontSize: 10, fill: 'var(--gray-400)' }} axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fontSize: 9, fill: 'var(--gray-300)' }} axisLine={false} tickLine={false} tickFormatter={v => fmtBRLCompact(v)} width={52} />
+                  <Tooltip
+                    formatter={(v: number, name: string) => [fmtBRLCompact(v), name === 'atual' ? 'Mês atual' : 'Mês anterior']}
+                    contentStyle={{ fontSize: 11, borderRadius: 8, border: '1px solid var(--gray-100)', background: '#fff' }}
+                    labelStyle={{ fontWeight: 700, color: 'var(--navy)', fontSize: 11 }}
+                  />
+                  <Bar dataKey="anterior" fill="var(--gray-100)" radius={[3, 3, 0, 0]} maxBarSize={18} />
+                  <Bar dataKey="atual" radius={[3, 3, 0, 0]} maxBarSize={18}>
+                    {dreChartData.map((entry, i) => (
+                      <Cell key={i} fill={entry.color} fillOpacity={0.85} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            )
+          })()}
+          <div style={{ display: 'flex', gap: 16, marginTop: 8 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 10, color: 'var(--gray-400)' }}>
+              <div style={{ width: 10, height: 10, borderRadius: 2, background: 'var(--gray-200)' }} /> Mês anterior
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 10, color: 'var(--gray-400)' }}>
+              <div style={{ width: 10, height: 10, borderRadius: 2, background: 'var(--teal)' }} /> Mês atual
+            </div>
+            <Link href="/dashboard/relatorios" style={{ fontSize: 11, color: 'var(--teal)', textDecoration: 'none', marginLeft: 'auto' }}>
+              DRE completo →
             </Link>
           </div>
         </div>
@@ -611,7 +636,7 @@ export default function DashboardPage() {
           <div className="modal-box" onClick={e => e.stopPropagation()}>
             <div className="modal-title">
               Detalhe da transação
-              <button className="modal-close" onClick={() => setSelectedTx(null)}>×</button>
+              <button className="modal-close" onClick={() => setSelectedTx(null)}><i className="fa-solid fa-xmark" /></button>
             </div>
             {[
               { l: 'Descrição', v: selectedTx.descricao || '—' },

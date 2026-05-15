@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
+import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend } from 'recharts'
 import { supabase } from '@/lib/supabase'
 import { fmtBRLCompact } from '@/lib/dre-calculations'
 
@@ -10,7 +11,7 @@ type Row = { mes: string; entradas: number; saidas: number }
 function mesKey(d: Date) { return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}` }
 function labelMes(key: string) {
   const [y, m] = key.split('-').map(Number)
-  return new Date(y, m - 1, 1).toLocaleDateString('pt-BR', { month: 'short', year: '2-digit' })
+  return new Date(y, m - 1, 1).toLocaleDateString('pt-BR', { month: 'short' })
 }
 
 export default function EntradasSaidasChart({ empresaId }: Props) {
@@ -37,7 +38,11 @@ export default function EntradasSaidasChart({ empresaId }: Props) {
           if (t.tipo === 'entrada') cur.e += Number(t.valor) || 0
           else cur.s += Number(t.valor) || 0
         }
-        if (!cancelled) setRows(Array.from(acc.entries()).sort(([a], [b]) => a.localeCompare(b)).map(([mes, v]) => ({ mes: labelMes(mes), entradas: v.e, saidas: v.s })))
+        if (!cancelled) setRows(
+          Array.from(acc.entries())
+            .sort(([a], [b]) => a.localeCompare(b))
+            .map(([mes, v]) => ({ mes: labelMes(mes), entradas: v.e, saidas: v.s }))
+        )
       } catch (err) {
         if (!cancelled) setError(err instanceof Error ? err.message : 'Erro')
       } finally {
@@ -50,32 +55,45 @@ export default function EntradasSaidasChart({ empresaId }: Props) {
 
   const chartData = useMemo(() => rows, [rows])
 
-  if (loading) return <div style={{ height: 120, background: 'var(--gray-100)', borderRadius: 8 }} />
+  if (loading) return <div style={{ height: 160, background: 'var(--gray-100)', borderRadius: 8, animation: 'pulse 1.5s infinite' }} />
   if (error || !chartData.some(r => r.entradas + r.saidas > 0)) {
-    return <div style={{ height: 120, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gray-400)', fontSize: 12 }}>Sem transações no período.</div>
+    return <div style={{ height: 160, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gray-400)', fontSize: 12 }}>Sem transações no período.</div>
   }
 
-  const maxVal = Math.max(...chartData.flatMap(r => [r.entradas, r.saidas]), 1)
-
   return (
-    <div className="cf-bars" style={{ height: 120, alignItems: 'flex-end' }}>
-      {chartData.map(m => (
-        <div key={m.mes} className="cf-col">
-          <div className="cf-bgrp">
-            <div
-              className="cf-bar i"
-              style={{ height: Math.round((m.entradas / maxVal) * 90) }}
-              title={`Entradas: ${fmtBRLCompact(m.entradas)}`}
-            />
-            <div
-              className="cf-bar o"
-              style={{ height: Math.round((m.saidas / maxVal) * 90) }}
-              title={`Saídas: ${fmtBRLCompact(m.saidas)}`}
-            />
-          </div>
-          <div className="cf-lbl">{m.mes}</div>
+    <div>
+      <div style={{ display: 'flex', gap: 16, marginBottom: 10 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, color: 'var(--gray-500)' }}>
+          <div style={{ width: 10, height: 10, borderRadius: 2, background: 'var(--green)' }} /> Entradas
         </div>
-      ))}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, color: 'var(--gray-500)' }}>
+          <div style={{ width: 10, height: 10, borderRadius: 2, background: 'var(--red)' }} /> Saídas
+        </div>
+      </div>
+      <ResponsiveContainer width="100%" height={160}>
+        <AreaChart data={chartData} margin={{ top: 4, right: 4, bottom: 0, left: 0 }}>
+          <defs>
+            <linearGradient id="gradEntradas" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="5%" stopColor="#2D9B6F" stopOpacity={0.25} />
+              <stop offset="95%" stopColor="#2D9B6F" stopOpacity={0} />
+            </linearGradient>
+            <linearGradient id="gradSaidas" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="5%" stopColor="#C0504A" stopOpacity={0.18} />
+              <stop offset="95%" stopColor="#C0504A" stopOpacity={0} />
+            </linearGradient>
+          </defs>
+          <CartesianGrid strokeDasharray="3 3" stroke="var(--gray-100)" vertical={false} />
+          <XAxis dataKey="mes" tick={{ fontSize: 10, fill: 'var(--gray-400)' }} axisLine={false} tickLine={false} />
+          <YAxis tick={{ fontSize: 9, fill: 'var(--gray-300)' }} axisLine={false} tickLine={false} tickFormatter={v => fmtBRLCompact(v)} width={52} />
+          <Tooltip
+            formatter={(v: number, name: string) => [fmtBRLCompact(v), name === 'entradas' ? 'Entradas' : 'Saídas']}
+            contentStyle={{ fontSize: 11, borderRadius: 8, border: '1px solid var(--gray-100)', background: '#fff' }}
+            labelStyle={{ fontWeight: 700, color: 'var(--navy)', fontSize: 11 }}
+          />
+          <Area type="monotone" dataKey="entradas" stroke="#2D9B6F" strokeWidth={2} fill="url(#gradEntradas)" dot={false} activeDot={{ r: 4 }} />
+          <Area type="monotone" dataKey="saidas" stroke="#C0504A" strokeWidth={2} fill="url(#gradSaidas)" dot={false} activeDot={{ r: 4 }} />
+        </AreaChart>
+      </ResponsiveContainer>
     </div>
   )
 }

@@ -1,6 +1,6 @@
 'use client'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer } from 'recharts'
+import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer, LineChart, Line, CartesianGrid, YAxis, AreaChart, Area } from 'recharts'
 import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
 import { formatBRL } from '@/lib/currency-brl'
@@ -37,6 +37,27 @@ const SEGMENTOS = ['Tecnologia', 'Varejo', 'Serviços', 'Saúde', 'Educação', 
 const ESTADOS = ['AC','AL','AP','AM','BA','CE','DF','ES','GO','MA','MT','MS','MG','PA','PB','PR','PE','PI','RJ','RN','RS','RO','RR','SC','SP','SE','TO']
 
 const STEP_LABELS = ['Informações da empresa', 'Dados dos responsáveis', 'Endereço da empresa', 'Documentos', 'Confirmação de dados']
+
+function buildBalanceTrend(txs: Tx[], saldoAtual: number) {
+  const sorted = [...txs].sort((a, b) => a.data_transacao.localeCompare(b.data_transacao))
+  const totalDelta = sorted.reduce((s, t) => s + (t.tipo === 'credito' ? Number(t.valor) : -Number(t.valor)), 0)
+  let running = saldoAtual - totalDelta
+  const map: Record<string, number> = {}
+  for (const t of sorted) {
+    const key = t.data_transacao.slice(0, 10)
+    running += t.tipo === 'credito' ? Number(t.valor) : -Number(t.valor)
+    map[key] = running
+  }
+  const today = new Date()
+  const result: { date: string; saldo: number }[] = []
+  for (let i = 29; i >= 0; i--) {
+    const d = new Date(today); d.setDate(d.getDate() - i)
+    const key = d.toISOString().slice(0, 10)
+    if (map[key] !== undefined) result.push({ date: key.slice(5), saldo: map[key] })
+    else if (result.length > 0) result.push({ date: key.slice(5), saldo: result[result.length - 1].saldo })
+  }
+  return result
+}
 
 function buildChartData(txs: Tx[]) {
   const map: Record<string, { entrada: number; saida: number }> = {}
@@ -138,6 +159,7 @@ export default function ContaPJPage() {
   const [numCartoes, setNumCartoes] = useState(0)
   const [hide, setHide] = useState(false)
   const [extratoTab, setExtratoTab] = useState<'todas' | 'entradas' | 'saidas'>('todas')
+  const [chartTab, setChartTab] = useState<'saldo' | 'fluxo'>('fluxo')
   const [userName, setUserName] = useState('')
 
   // Wizard state
@@ -669,30 +691,73 @@ export default function ContaPJPage() {
           </div>
 
           <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: '16px 20px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-              <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy)' }}>📊 Gráfico de fluxo de caixa</span>
-              <span style={{ fontSize: 11, color: 'var(--gray-400)' }}>Últimos 30 dias</span>
-            </div>
-            <div style={{ display: 'flex', gap: 16, marginBottom: 12 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, color: 'var(--gray-500)' }}>
-                <div style={{ width: 10, height: 10, borderRadius: 2, background: 'var(--green)' }} /> Entradas
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+              <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy)' }}>📊 Análise financeira</span>
+              <div style={{ display: 'flex', gap: 4 }}>
+                {(['fluxo', 'saldo'] as const).map(t => (
+                  <button key={t} onClick={() => setChartTab(t)}
+                    style={{ fontSize: 10, fontWeight: chartTab === t ? 700 : 500, padding: '3px 10px', borderRadius: 6, border: `1px solid ${chartTab === t ? 'var(--teal)' : 'var(--gray-200)'}`, background: chartTab === t ? 'var(--teal)' : '#fff', color: chartTab === t ? '#fff' : 'var(--gray-400)', cursor: 'pointer' }}>
+                    {t === 'fluxo' ? 'Fluxo 30d' : 'Saldo 30d'}
+                  </button>
+                ))}
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, color: 'var(--gray-500)' }}>
-                <div style={{ width: 10, height: 10, borderRadius: 2, background: 'var(--red)' }} /> Saídas
-              </div>
             </div>
-            {chartData.every(d => d.entrada === 0 && d.saida === 0) ? (
-              <div style={{ height: 120, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gray-300)', fontSize: 12 }}>📭 Sem dados — importe seu extrato</div>
-            ) : (
-              <ResponsiveContainer width="100%" height={120}>
-                <BarChart data={chartData} barGap={1} barCategoryGap="20%">
-                  <XAxis dataKey="date" tick={{ fontSize: 9, fill: 'var(--gray-300)' }} axisLine={false} tickLine={false} interval={6} />
-                  <Tooltip formatter={(v: number, name: string) => [formatBRL(v), name === 'entrada' ? 'Entrada' : 'Saída']} contentStyle={{ fontSize: 11, borderRadius: 8, border: '1px solid var(--gray-100)' }} />
-                  <Bar dataKey="entrada" fill="var(--green)" radius={[3, 3, 0, 0]} maxBarSize={12} />
-                  <Bar dataKey="saida" fill="var(--red)" radius={[3, 3, 0, 0]} maxBarSize={12} />
-                </BarChart>
-              </ResponsiveContainer>
+            {chartTab === 'fluxo' && (
+              <>
+                <div style={{ display: 'flex', gap: 16, marginBottom: 10 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, color: 'var(--gray-500)' }}>
+                    <div style={{ width: 10, height: 10, borderRadius: 2, background: 'var(--green)' }} /> Entradas
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, color: 'var(--gray-500)' }}>
+                    <div style={{ width: 10, height: 10, borderRadius: 2, background: 'var(--red)' }} /> Saídas
+                  </div>
+                </div>
+                {chartData.every(d => d.entrada === 0 && d.saida === 0) ? (
+                  <div style={{ height: 130, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gray-300)', fontSize: 12 }}>📭 Sem dados — importe seu extrato</div>
+                ) : (
+                  <ResponsiveContainer width="100%" height={130}>
+                    <BarChart data={chartData} barGap={1} barCategoryGap="20%">
+                      <CartesianGrid strokeDasharray="3 3" stroke="var(--gray-100)" vertical={false} />
+                      <XAxis dataKey="date" tick={{ fontSize: 9, fill: 'var(--gray-300)' }} axisLine={false} tickLine={false} interval={6} />
+                      <YAxis tick={{ fontSize: 9, fill: 'var(--gray-300)' }} axisLine={false} tickLine={false} tickFormatter={v => formatBRL(v).replace('R$ ', '')} width={48} />
+                      <Tooltip formatter={(v: number, name: string) => [formatBRL(v), name === 'entrada' ? 'Entrada' : 'Saída']} contentStyle={{ fontSize: 11, borderRadius: 8, border: '1px solid var(--gray-100)' }} />
+                      <Bar dataKey="entrada" fill="var(--green)" radius={[3, 3, 0, 0]} maxBarSize={10} />
+                      <Bar dataKey="saida" fill="var(--red)" radius={[3, 3, 0, 0]} maxBarSize={10} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                )}
+              </>
             )}
+            {chartTab === 'saldo' && (() => {
+              const balanceData = buildBalanceTrend(txs, saldo)
+              const hasBal = balanceData.length > 1
+              return hasBal ? (
+                <>
+                  <div style={{ display: 'flex', gap: 16, marginBottom: 10 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, color: 'var(--gray-500)' }}>
+                      <div style={{ width: 10, height: 10, borderRadius: 2, background: 'var(--teal)' }} /> Evolução do saldo
+                    </div>
+                  </div>
+                  <ResponsiveContainer width="100%" height={130}>
+                    <AreaChart data={balanceData}>
+                      <defs>
+                        <linearGradient id="gradSaldo" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#00A896" stopOpacity={0.25} />
+                          <stop offset="95%" stopColor="#00A896" stopOpacity={0} />
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid strokeDasharray="3 3" stroke="var(--gray-100)" vertical={false} />
+                      <XAxis dataKey="date" tick={{ fontSize: 9, fill: 'var(--gray-300)' }} axisLine={false} tickLine={false} interval={6} />
+                      <YAxis tick={{ fontSize: 9, fill: 'var(--gray-300)' }} axisLine={false} tickLine={false} tickFormatter={v => formatBRL(v).replace('R$ ', '')} width={48} />
+                      <Tooltip formatter={(v: number) => [formatBRL(v), 'Saldo']} contentStyle={{ fontSize: 11, borderRadius: 8, border: '1px solid var(--gray-100)' }} />
+                      <Area type="monotone" dataKey="saldo" stroke="#00A896" strokeWidth={2} fill="url(#gradSaldo)" dot={false} activeDot={{ r: 4 }} />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                </>
+              ) : (
+                <div style={{ height: 130, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gray-300)', fontSize: 12 }}>📭 Sem histórico de transações</div>
+              )
+            })()}
           </div>
         </div>
 
