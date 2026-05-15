@@ -32,10 +32,14 @@ function buildNavGroups(badges: { reembolsos: number; aprovacoes: number }): Nav
       ],
     },
     {
-      label: 'Banco & Cartões',
+      label: 'Banco PJ',
       items: [
-        { href: '/dashboard/conta-pj', icon: 'fa-building-columns', label: 'Conta PJ' },
-        { href: '/dashboard/cartoes', icon: 'fa-credit-card', label: 'Cartões' },
+        { href: '/dashboard/conta-pj', icon: 'fa-gauge-high', label: 'Visão Geral', match: (p) => p === '/dashboard/conta-pj' },
+        { href: '/dashboard/conta-pj/extrato', icon: 'fa-list-ul', label: 'Extrato' },
+        { href: '/dashboard/conta-pj/transferencias', icon: 'fa-bolt', label: 'PIX / Transferências' },
+        { href: '/dashboard/conta-pj/conectar-banco', icon: 'fa-link', label: 'Open Finance' },
+        { href: '/dashboard/cartoes', icon: 'fa-credit-card', label: 'Cartões Corporativos' },
+        { href: '/dashboard/conciliacao', icon: 'fa-code-branch', label: 'Conciliação' },
       ],
     },
     {
@@ -77,7 +81,6 @@ function buildNavGroups(badges: { reembolsos: number; aprovacoes: number }): Nav
       label: 'Contabilidade & Fiscal',
       items: [
         { href: '/dashboard/relatorios', icon: 'fa-file-invoice-dollar', label: 'DRE & Relatórios' },
-        { href: '/dashboard/conciliacao', icon: 'fa-code-branch', label: 'Conciliação Bancária' },
         { href: '/dashboard/notas', icon: 'fa-landmark', label: 'Fiscal & NF-e' },
         { href: '/dashboard/contabilidade', icon: 'fa-calculator', label: 'Contabilidade' },
       ],
@@ -103,7 +106,11 @@ function buildNavGroups(badges: { reembolsos: number; aprovacoes: number }): Nav
 const pageTitles: Record<string, string> = {
   '/dashboard': 'Dashboard',
   '/dashboard/cashflow': 'Cash Flow Intelligence',
-  '/dashboard/conta-pj': 'Banco PJ',
+  '/dashboard/conta-pj': 'Banco PJ — Visão Geral',
+  '/dashboard/conta-pj/extrato': 'Banco PJ — Extrato',
+  '/dashboard/conta-pj/transferencias': 'Banco PJ — PIX & Transferências',
+  '/dashboard/conta-pj/conectar-banco': 'Banco PJ — Open Finance',
+  '/dashboard/conta-pj/investimentos': 'Banco PJ — Investimentos',
   '/dashboard/cartoes': 'Cartões Corporativos',
   '/dashboard/financeiro': 'Contas a Pagar / Receber',
   '/dashboard/reembolsos': 'Reembolsos',
