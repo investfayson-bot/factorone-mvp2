@@ -306,43 +306,89 @@ export default function OnboardingPage() {
         {/* STEP: Dados financeiros */}
         {screen === 'financeiro' && (
           <div style={{ width: '100%', maxWidth: 520 }}>
-            <div style={{ marginBottom: 28 }}>
-              <div style={{ fontSize: 22, fontFamily: "'Sora',sans-serif", fontWeight: 800, color: 'var(--navy)', marginBottom: 6 }}>Como quer importar seus dados bancários?</div>
-              <div style={{ fontSize: 13, color: 'var(--gray-400)' }}>Conecte seu banco ou adicione uma conta manualmente. Pode pular e fazer depois.</div>
+            <div style={{ marginBottom: 24 }}>
+              <div style={{ fontSize: 22, fontFamily: "'Sora',sans-serif", fontWeight: 800, color: 'var(--navy)', marginBottom: 6 }}>Traga seus dados financeiros</div>
+              <div style={{ fontSize: 13, color: 'var(--gray-400)', lineHeight: 1.6 }}>Escolha como conectar sua conta bancária — você pode mudar isso depois.</div>
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-              {/* Open Finance */}
-              <button onClick={() => setFinOpcao(finOpcao === 'open_finance' ? null : 'open_finance')} style={{ display: 'flex', gap: 14, padding: '16px 18px', borderRadius: 10, cursor: 'pointer', border: finOpcao === 'open_finance' ? '2px solid var(--teal)' : '1px solid var(--gray-100)', background: finOpcao === 'open_finance' ? 'rgba(94,140,135,.04)' : '#fff', textAlign: 'left', width: '100%' }}>
-                <div style={{ width: 40, height: 40, borderRadius: 10, background: 'rgba(94,140,135,.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  <i className="fa-solid fa-plug" style={{ color: 'var(--teal)', fontSize: 15 }} />
+
+              {/* HERO: Conectar meu banco */}
+              <button
+                onClick={() => setFinOpcao(finOpcao === 'open_finance' ? null : 'open_finance')}
+                style={{ display: 'flex', gap: 16, padding: '18px 20px', borderRadius: 12, cursor: 'pointer', border: finOpcao === 'open_finance' ? '2px solid var(--teal)' : '1.5px solid var(--gray-100)', background: finOpcao === 'open_finance' ? 'rgba(0,168,150,.05)' : 'linear-gradient(135deg,#f8fffe 0%,#f0faf9 100%)', textAlign: 'left', width: '100%', position: 'relative', overflow: 'hidden' }}
+              >
+                <div style={{ position: 'absolute', top: 10, right: 12, fontSize: 9, fontWeight: 700, background: 'var(--teal)', color: '#fff', padding: '2px 8px', borderRadius: 20 }}>RECOMENDADO</div>
+                <div style={{ width: 48, height: 48, borderRadius: 12, background: 'rgba(0,168,150,.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <i className="fa-solid fa-building-columns" style={{ color: 'var(--teal)', fontSize: 18 }} />
                 </div>
-                <div style={{ flex: 1 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 3 }}>
-                    <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy)' }}>Open Finance</span>
-                    <span style={{ fontSize: 9, background: 'rgba(94,140,135,.15)', color: 'var(--teal)', borderRadius: 4, padding: '2px 7px', fontWeight: 700 }}>EM BREVE</span>
-                  </div>
-                  <div style={{ fontSize: 11, color: 'var(--gray-400)', lineHeight: 1.5 }}>Conecte seu banco automaticamente — saldo, extrato e transações em tempo real.</div>
+                <div style={{ flex: 1, paddingRight: 60 }}>
+                  <div style={{ fontSize: 14, fontWeight: 800, color: 'var(--navy)', marginBottom: 4 }}>Conectar meu banco</div>
+                  <div style={{ fontSize: 11, color: 'var(--gray-400)', lineHeight: 1.6 }}>Sincronize automaticamente via Open Finance — saldo, extrato e transações em tempo real.</div>
                   {finOpcao === 'open_finance' && (
-                    <div style={{ marginTop: 10, padding: '9px 12px', background: 'rgba(94,140,135,.08)', borderRadius: 7, fontSize: 11, color: 'var(--teal)' }}>
+                    <div style={{ marginTop: 10, padding: '8px 12px', background: 'rgba(0,168,150,.08)', borderRadius: 7, fontSize: 11, color: 'var(--teal)' }}>
                       <i className="fa-solid fa-circle-info" style={{ marginRight: 6 }} />
-                      Configure em <strong>Conta PJ → Open Finance</strong> após o setup inicial.
+                      Finalize o setup — configure a conexão em <strong>Conta PJ</strong>.
                     </div>
                   )}
                 </div>
-                {finOpcao === 'open_finance' && <i className="fa-solid fa-circle-check" style={{ color: 'var(--teal)', fontSize: 18, alignSelf: 'center' }} />}
+                {finOpcao === 'open_finance' && <i className="fa-solid fa-circle-check" style={{ color: 'var(--teal)', fontSize: 20, alignSelf: 'center', flexShrink: 0 }} />}
               </button>
 
-              {/* Manual */}
-              <button onClick={() => setFinOpcao(finOpcao === 'manual' ? null : 'manual')} style={{ display: 'flex', gap: 14, padding: '16px 18px', borderRadius: 10, cursor: 'pointer', border: finOpcao === 'manual' ? '2px solid var(--navy)' : '1px solid var(--gray-100)', background: finOpcao === 'manual' ? 'rgba(26,43,74,.03)' : '#fff', textAlign: 'left', width: '100%' }}>
-                <div style={{ width: 40, height: 40, borderRadius: 10, background: 'rgba(26,43,74,.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  <i className="fa-solid fa-building-columns" style={{ color: 'var(--navy)', fontSize: 15 }} />
+              {/* Importar extrato */}
+              <button
+                onClick={() => setFinOpcao(finOpcao === 'extrato' ? null : 'extrato')}
+                style={{ display: 'flex', gap: 16, padding: '16px 20px', borderRadius: 12, cursor: 'pointer', border: finOpcao === 'extrato' ? '2px solid var(--gold)' : '1.5px solid var(--gray-100)', background: finOpcao === 'extrato' ? 'rgba(184,146,42,.04)' : '#fff', textAlign: 'left', width: '100%' }}
+              >
+                <div style={{ width: 48, height: 48, borderRadius: 12, background: 'rgba(184,146,42,.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <i className="fa-solid fa-file-import" style={{ color: 'var(--gold)', fontSize: 18 }} />
                 </div>
                 <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy)', marginBottom: 3 }}>Conta manual</div>
-                  <div style={{ fontSize: 11, color: 'var(--gray-400)', lineHeight: 1.5 }}>Informe banco e tipo de conta. Importe extratos depois via OFX/CSV.</div>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--navy)', marginBottom: 4 }}>Importar dados financeiros</div>
+                  <div style={{ fontSize: 11, color: 'var(--gray-400)', lineHeight: 1.6 }}>Faça upload do extrato OFX ou CSV exportado pelo seu internet banking. Categorizamos tudo por IA.</div>
+                  {finOpcao === 'extrato' && (
+                    <div style={{ marginTop: 10, padding: '8px 12px', background: 'rgba(184,146,42,.08)', borderRadius: 7, fontSize: 11, color: 'var(--gold)' }}>
+                      <i className="fa-solid fa-circle-info" style={{ marginRight: 6 }} />
+                      Após o setup, vá em <strong>Conta PJ → Importar OFX/CSV</strong>.
+                    </div>
+                  )}
                 </div>
-                {finOpcao === 'manual' && <i className="fa-solid fa-circle-check" style={{ color: 'var(--navy)', fontSize: 18, alignSelf: 'center' }} />}
+                {finOpcao === 'extrato' && <i className="fa-solid fa-circle-check" style={{ color: 'var(--gold)', fontSize: 20, alignSelf: 'center', flexShrink: 0 }} />}
+              </button>
+
+              {/* Cartão corporativo */}
+              <button
+                onClick={() => setFinOpcao(finOpcao === 'cartao' ? null : 'cartao')}
+                style={{ display: 'flex', gap: 16, padding: '16px 20px', borderRadius: 12, cursor: 'pointer', border: finOpcao === 'cartao' ? '2px solid #7C3AED' : '1.5px solid var(--gray-100)', background: finOpcao === 'cartao' ? 'rgba(124,58,237,.04)' : '#fff', textAlign: 'left', width: '100%' }}
+              >
+                <div style={{ width: 48, height: 48, borderRadius: 12, background: 'rgba(124,58,237,.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <i className="fa-solid fa-credit-card" style={{ color: '#7C3AED', fontSize: 17 }} />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--navy)', marginBottom: 4 }}>Começar pelo cartão corporativo</div>
+                  <div style={{ fontSize: 11, color: 'var(--gray-400)', lineHeight: 1.6 }}>Vincule seu cartão e comece controlando gastos, limites e faturas imediatamente.</div>
+                  {finOpcao === 'cartao' && (
+                    <div style={{ marginTop: 8, fontSize: 10, color: '#7C3AED', fontWeight: 600 }}>
+                      <i className="fa-solid fa-arrow-right" style={{ marginRight: 5 }} />Configure em Cartões após o cadastro
+                    </div>
+                  )}
+                </div>
+                {finOpcao === 'cartao' && <i className="fa-solid fa-circle-check" style={{ color: '#7C3AED', fontSize: 20, alignSelf: 'center', flexShrink: 0 }} />}
+              </button>
+
+              {/* Cadastrar conta manualmente — secondary */}
+              <button
+                onClick={() => setFinOpcao(finOpcao === 'manual' ? null : 'manual')}
+                style={{ display: 'flex', gap: 14, padding: '13px 18px', borderRadius: 10, cursor: 'pointer', border: finOpcao === 'manual' ? '2px solid var(--navy)' : '1px solid var(--gray-100)', background: finOpcao === 'manual' ? 'rgba(26,43,74,.03)' : '#fafafa', textAlign: 'left', width: '100%' }}
+              >
+                <div style={{ width: 36, height: 36, borderRadius: 8, background: 'rgba(26,43,74,.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <i className="fa-solid fa-pen-to-square" style={{ color: 'var(--navy)', fontSize: 13 }} />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--navy)' }}>Cadastrar conta manualmente</div>
+                  <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>Informe banco e tipo de conta. Importe extratos depois.</div>
+                </div>
+                {finOpcao === 'manual' && <i className="fa-solid fa-circle-check" style={{ color: 'var(--navy)', fontSize: 16, alignSelf: 'center', flexShrink: 0 }} />}
               </button>
 
               {finOpcao === 'manual' && (
@@ -364,57 +410,17 @@ export default function OnboardingPage() {
                   </div>
                 </div>
               )}
-
-              {/* Importar Extrato */}
-              <button onClick={() => setFinOpcao(finOpcao === 'extrato' ? null : 'extrato')} style={{ display: 'flex', gap: 14, padding: '16px 18px', borderRadius: 10, cursor: 'pointer', border: finOpcao === 'extrato' ? '2px solid var(--gold)' : '1px solid var(--gray-100)', background: finOpcao === 'extrato' ? 'rgba(184,146,42,.03)' : '#fff', textAlign: 'left', width: '100%' }}>
-                <div style={{ width: 40, height: 40, borderRadius: 10, background: 'rgba(184,146,42,.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  <i className="fa-solid fa-file-arrow-up" style={{ color: 'var(--gold)', fontSize: 15 }} />
-                </div>
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy)', marginBottom: 3 }}>Importar Extrato</div>
-                  <div style={{ fontSize: 11, color: 'var(--gray-400)', lineHeight: 1.5 }}>Faça upload do extrato bancário (OFX/CSV) para importar transações automaticamente.</div>
-                  {finOpcao === 'extrato' && (
-                    <div style={{ marginTop: 10, padding: '9px 12px', background: 'rgba(184,146,42,.08)', borderRadius: 7, fontSize: 11, color: 'var(--gold)' }}>
-                      <i className="fa-solid fa-circle-info" style={{ marginRight: 6 }} />
-                      Acesse <strong>Conta PJ → Importar OFX/CSV</strong> para fazer o upload após o setup.
-                    </div>
-                  )}
-                </div>
-                {finOpcao === 'extrato' && <i className="fa-solid fa-circle-check" style={{ color: 'var(--gold)', fontSize: 18, alignSelf: 'center' }} />}
-              </button>
-
-              {/* Cartão de Crédito */}
-              <button onClick={() => setFinOpcao(finOpcao === 'cartao' ? null : 'cartao')} style={{ display: 'flex', gap: 14, padding: '16px 18px', borderRadius: 10, cursor: 'pointer', border: finOpcao === 'cartao' ? '2px solid #7C3AED' : '1px solid var(--gray-100)', background: finOpcao === 'cartao' ? 'rgba(124,58,237,.03)' : '#fff', textAlign: 'left', width: '100%' }}>
-                <div style={{ width: 40, height: 40, borderRadius: 10, background: finOpcao === 'cartao' ? 'rgba(124,58,237,.12)' : 'rgba(124,58,237,.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  <i className="fa-solid fa-credit-card" style={{ color: '#7C3AED', fontSize: 14 }} />
-                </div>
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy)', marginBottom: 3 }}>Cartão de Crédito</div>
-                  <div style={{ fontSize: 11, color: 'var(--gray-400)', lineHeight: 1.5 }}>Vincule seu cartão corporativo para controlar gastos, limites e faturas.</div>
-                  {finOpcao === 'cartao' && (
-                    <div style={{ fontSize: 10, color: '#7C3AED', marginTop: 6, fontWeight: 600 }}>Configure em Cartões Corporativos após o cadastro</div>
-                  )}
-                </div>
-                {finOpcao === 'cartao' && <i className="fa-solid fa-circle-check" style={{ color: '#7C3AED', fontSize: 18, alignSelf: 'center' }} />}
-              </button>
-
-              {/* Pular */}
-              <button onClick={() => setFinOpcao(finOpcao === 'pular' ? null : 'pular')} style={{ display: 'flex', gap: 14, padding: '14px 18px', borderRadius: 10, cursor: 'pointer', border: finOpcao === 'pular' ? '2px solid var(--gray-400)' : '1px dashed var(--gray-100)', background: '#fff', textAlign: 'left', width: '100%' }}>
-                <div style={{ width: 40, height: 40, borderRadius: 10, background: 'var(--gray-100)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  <i className="fa-solid fa-forward" style={{ color: 'var(--gray-400)', fontSize: 14 }} />
-                </div>
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--gray-500)' }}>Pular por agora</div>
-                  <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>Configure em Conta PJ depois.</div>
-                </div>
-                {finOpcao === 'pular' && <i className="fa-solid fa-circle-check" style={{ color: 'var(--gray-400)', fontSize: 18, alignSelf: 'center' }} />}
-              </button>
             </div>
 
             <div style={{ display: 'flex', gap: 10, marginTop: 20 }}>
               <button className="btn-action btn-ghost" style={{ flex: 1 }} onClick={() => setScreen('empresa')}>Voltar</button>
               <button className="btn-action" style={{ flex: 2, opacity: (loading || !finOpcao) ? .6 : 1 }} onClick={() => void salvarFinanceiro()} disabled={loading || !finOpcao}>
                 {loading ? 'Salvando…' : finOpcao === 'pular' || finOpcao === 'extrato' || finOpcao === 'cartao' ? 'Pular e finalizar' : 'Continuar'}
+              </button>
+            </div>
+            <div style={{ textAlign: 'center', marginTop: 14 }}>
+              <button onClick={() => { setFinOpcao('pular'); void salvarFinanceiro() }} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 12, color: 'var(--gray-400)', textDecoration: 'underline' }}>
+                Configurar isso depois
               </button>
             </div>
           </div>
