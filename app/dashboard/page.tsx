@@ -9,7 +9,13 @@ import AnomalyAlerts from '@/components/dashboard/AnomalyAlerts'
 import EntradasSaidasChart from '@/components/dashboard/EntradasSaidasChart'
 import { DashboardErrorBoundary } from '@/components/dashboard/DashboardErrorBoundary'
 import type { TransacaoLista } from '@/lib/transacao-types'
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, LabelList } from 'recharts'
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, AreaChart, Area, CartesianGrid } from 'recharts'
+
+function mesKey(d: Date) { return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}` }
+function labelMes(key: string) {
+  const [y, m] = key.split('-').map(Number)
+  return new Date(y, m - 1, 1).toLocaleDateString('pt-BR', { month: 'short' })
+}
 
 type Kpi = { receita: number; despesas: number; saldo: number; nfs: number }
 type Pendencias = { reembolsos: number; valorReembolsos: number; aprovacoes: number; saldoBanco: number; dasDias: number | null; dasValor: number | null }
@@ -49,6 +55,8 @@ export default function DashboardPage() {
   const [mktWidget, setMktWidget] = useState<MktWidget | null>(null)
   const [logWidget, setLogWidget] = useState<LogWidget | null>(null)
   const [clientesWidget, setClientesWidget] = useState<ClientesWidget | null>(null)
+  const [trend12, setTrend12] = useState<{ mes: string; receita: number; despesas: number }[]>([])
+  const [topCats, setTopCats] = useState<{ cat: string; val: number }[]>([])
   const router = useRouter()
 
   function irParaAlerta(alertId: string) {
@@ -110,6 +118,27 @@ export default function DashboardPage() {
       const saldoBanco = Number(contaPri?.saldo_disponivel ?? contaPri?.saldo ?? 0)
       const despDia = ka.despesas / 30
       setRunway(saldoBanco > 0 && despDia > 0 ? Math.min(999, Math.floor(saldoBanco / despDia)) : null)
+
+      // 12-month trend + category breakdown
+      const start12 = new Date(now.getFullYear(), now.getMonth() - 11, 1).toISOString().slice(0, 10)
+      const { data: t12 } = await supabase.from('transacoes').select('data,tipo,valor,categoria').eq('empresa_id', eid).gte('data', start12)
+      const monthMap = new Map<string, { r: number; d: number }>()
+      for (let i = 11; i >= 0; i--) monthMap.set(mesKey(new Date(now.getFullYear(), now.getMonth() - i, 1)), { r: 0, d: 0 })
+      for (const t of t12 || []) {
+        const key = (t.data as string).slice(0, 7)
+        if (!monthMap.has(key)) continue
+        const cur = monthMap.get(key)!
+        if (t.tipo === 'entrada') cur.r += Number(t.valor) || 0
+        else cur.d += Number(t.valor) || 0
+      }
+      setTrend12(Array.from(monthMap.entries()).map(([k, v]) => ({ mes: labelMes(k), receita: v.r, despesas: v.d })))
+      const catMap = new Map<string, number>()
+      for (const t of tAtual || []) {
+        if (t.tipo !== 'saida') continue
+        const cat = (t.categoria as string) || 'Outros'
+        catMap.set(cat, (catMap.get(cat) || 0) + Number(t.valor) || 0)
+      }
+      setTopCats(Array.from(catMap.entries()).sort((a, b) => b[1] - a[1]).slice(0, 5).map(([cat, val]) => ({ cat, val })))
 
       // Pendências: reembolsos, aprovações, DAS
       const [rPendRes, aPendRes, dasRaw] = await Promise.all([
@@ -599,6 +628,68 @@ export default function DashboardPage() {
               DRE completo →
             </Link>
           </div>
+        </div>
+      </div>
+
+      {/* Segunda linha de gráficos */}
+      <div className="charts-row" style={{ gridTemplateColumns: '2fr 1fr' }}>
+        {/* Tendência 12 meses */}
+        <div className="chart-card">
+          <div className="chart-title">Tendência — Receita vs Despesas · 12 meses</div>
+          <div style={{ display: 'flex', gap: 16, marginBottom: 10 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 10, color: 'var(--gray-500)' }}>
+              <div style={{ width: 8, height: 8, borderRadius: 2, background: 'var(--green)' }} /> Receita
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 10, color: 'var(--gray-500)' }}>
+              <div style={{ width: 8, height: 8, borderRadius: 2, background: 'var(--red)' }} /> Despesas
+            </div>
+          </div>
+          {trend12.every(d => d.receita === 0 && d.despesas === 0) ? (
+            <div style={{ height: 140, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gray-300)', fontSize: 12 }}>Sem dados no período.</div>
+          ) : (
+            <ResponsiveContainer width="100%" height={140}>
+              <AreaChart data={trend12} margin={{ top: 4, right: 4, bottom: 0, left: 0 }}>
+                <defs>
+                  <linearGradient id="gradR12" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#2D9B6F" stopOpacity={0.2} />
+                    <stop offset="95%" stopColor="#2D9B6F" stopOpacity={0} />
+                  </linearGradient>
+                  <linearGradient id="gradD12" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#C0504A" stopOpacity={0.15} />
+                    <stop offset="95%" stopColor="#C0504A" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--gray-100)" vertical={false} />
+                <XAxis dataKey="mes" tick={{ fontSize: 9, fill: 'var(--gray-400)' }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fontSize: 9, fill: 'var(--gray-300)' }} axisLine={false} tickLine={false} tickFormatter={v => fmtBRLCompact(v)} width={52} />
+                <Tooltip formatter={(v: number, name: string) => [fmtBRLCompact(v), name === 'receita' ? 'Receita' : 'Despesas']} contentStyle={{ fontSize: 11, borderRadius: 8, border: '1px solid var(--gray-100)', background: '#fff' }} labelStyle={{ fontWeight: 700, color: 'var(--navy)', fontSize: 11 }} />
+                <Area type="monotone" dataKey="receita" stroke="#2D9B6F" strokeWidth={2} fill="url(#gradR12)" dot={false} activeDot={{ r: 3 }} />
+                <Area type="monotone" dataKey="despesas" stroke="#C0504A" strokeWidth={2} fill="url(#gradD12)" dot={false} activeDot={{ r: 3 }} />
+              </AreaChart>
+            </ResponsiveContainer>
+          )}
+        </div>
+
+        {/* Top categorias de despesas */}
+        <div className="chart-card">
+          <div className="chart-title">Top categorias · Mês atual</div>
+          {topCats.length === 0 ? (
+            <div style={{ height: 140, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gray-300)', fontSize: 12 }}>Sem despesas categorizadas.</div>
+          ) : (
+            <ResponsiveContainer width="100%" height={140}>
+              <BarChart data={topCats} layout="vertical" margin={{ top: 0, right: 8, bottom: 0, left: 0 }}>
+                <XAxis type="number" tick={{ fontSize: 9, fill: 'var(--gray-300)' }} axisLine={false} tickLine={false} tickFormatter={v => fmtBRLCompact(v)} />
+                <YAxis type="category" dataKey="cat" tick={{ fontSize: 9, fill: 'var(--gray-500)' }} axisLine={false} tickLine={false} width={72} />
+                <Tooltip formatter={(v: number) => [fmtBRLCompact(v), 'Despesa']} contentStyle={{ fontSize: 11, borderRadius: 8, border: '1px solid var(--gray-100)', background: '#fff' }} />
+                <Bar dataKey="val" radius={[0, 4, 4, 0]} maxBarSize={16}>
+                  {topCats.map((_, i) => (
+                    <Cell key={i} fill={['#C0504A', '#B8922A', '#7C3AED', '#00A896', '#1A2B4A'][i % 5]} fillOpacity={0.8} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          )}
+          <Link href="/dashboard/despesas" style={{ fontSize: 11, color: 'var(--teal)', textDecoration: 'none', display: 'block', marginTop: 8 }}>Ver todas as despesas →</Link>
         </div>
       </div>
 
