@@ -38,6 +38,7 @@ function buildNavGroups(badges: { reembolsos: number; aprovacoes: number }): Nav
       collapsible: true,
       items: [
         { href: '/dashboard/conta-pj', icon: 'fa-gauge-high', label: 'Visão Geral', match: (p) => p === '/dashboard/conta-pj' },
+        { href: '/dashboard/conta-pj/abrir', icon: 'fa-plus-circle', label: 'Abrir conta PJ', badge: 'GRÁTIS', badgeColor: 'var(--green)' },
         { href: '/dashboard/conta-pj/extrato', icon: 'fa-list-ul', label: 'Extrato' },
         { href: '/dashboard/conta-pj/transferencias', icon: 'fa-bolt', label: 'PIX / Transferências' },
         { href: '/dashboard/conta-pj/conectar-banco', icon: 'fa-link', label: 'Open Finance' },
@@ -105,6 +106,7 @@ const pageTitles: Record<string, string> = {
   '/dashboard': 'Dashboard',
   '/dashboard/cashflow': 'Cash Flow Intelligence',
   '/dashboard/conta-pj': 'Banco PJ — Visão Geral',
+  '/dashboard/conta-pj/abrir': 'Banco PJ — Abrir Conta',
   '/dashboard/conta-pj/extrato': 'Banco PJ — Extrato',
   '/dashboard/conta-pj/transferencias': 'Banco PJ — PIX & Transferências',
   '/dashboard/conta-pj/conectar-banco': 'Banco PJ — Open Finance',
