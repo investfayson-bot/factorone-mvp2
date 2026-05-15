@@ -1,6 +1,24 @@
 'use client'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, AreaChart, Area } from 'recharts'
+
+const CHART_DATA = [
+  { mes: 'Jan', entradas: 12400, saidas: 8200 },
+  { mes: 'Fev', entradas: 15800, saidas: 9100 },
+  { mes: 'Mar', entradas: 11200, saidas: 10500 },
+  { mes: 'Abr', entradas: 18600, saidas: 7800 },
+  { mes: 'Mai', entradas: 21300, saidas: 11200 },
+  { mes: 'Jun', entradas: 19800, saidas: 9600 },
+]
+
+const BALANCE_DATA = [
+  { dia: '01', saldo: 8200 }, { dia: '05', saldo: 11400 }, { dia: '08', saldo: 9800 },
+  { dia: '12', saldo: 14200 }, { dia: '15', saldo: 12600 }, { dia: '18', saldo: 16800 },
+  { dia: '22', saldo: 15300 }, { dia: '25', saldo: 18900 }, { dia: '28', saldo: 20530 },
+]
+
+function fmtK(v: number) { return v >= 1000 ? `R$${(v / 1000).toFixed(0)}k` : `R$${v}` }
 
 const FEATURES = [
   {
@@ -206,6 +224,63 @@ export default function AbrirContaPJPage() {
                   <span style={{ fontSize: 10, fontWeight: 700, color: a.color }}>{a.label}</span>
                 </div>
               ))}
+            </div>
+          </div>
+
+          {/* Gráficos */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+            {/* Fluxo de caixa BarChart */}
+            <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 14, padding: '16px 18px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+                <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--navy)' }}>📊 Gráfico de fluxo de caixa</span>
+                <span style={{ fontSize: 9, color: 'var(--teal)', fontWeight: 600 }}>CONECTAR NOVOS BANCOS →</span>
+              </div>
+              <div style={{ display: 'flex', gap: 12, marginBottom: 8 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 10, color: 'var(--gray-500)' }}>
+                  <div style={{ width: 8, height: 8, borderRadius: 2, background: 'var(--green)' }} /> Entradas
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 10, color: 'var(--gray-500)' }}>
+                  <div style={{ width: 8, height: 8, borderRadius: 2, background: 'var(--red)' }} /> Saídas
+                </div>
+              </div>
+              <ResponsiveContainer width="100%" height={110}>
+                <BarChart data={CHART_DATA} barGap={2} barCategoryGap="25%">
+                  <CartesianGrid strokeDasharray="3 3" stroke="var(--gray-100)" vertical={false} />
+                  <XAxis dataKey="mes" tick={{ fontSize: 9, fill: 'var(--gray-300)' }} axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fontSize: 8, fill: 'var(--gray-300)' }} axisLine={false} tickLine={false} tickFormatter={fmtK} width={36} />
+                  <Tooltip formatter={(v: number, name: string) => [fmtK(v), name === 'entradas' ? 'Entradas' : 'Saídas']} contentStyle={{ fontSize: 10, borderRadius: 8, border: '1px solid var(--gray-100)' }} />
+                  <Bar dataKey="entradas" fill="var(--green)" radius={[3, 3, 0, 0]} maxBarSize={14} />
+                  <Bar dataKey="saidas" fill="var(--red)" radius={[3, 3, 0, 0]} maxBarSize={14} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+
+            {/* Evolução do saldo AreaChart */}
+            <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 14, padding: '16px 18px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+                <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--navy)' }}>📈 Evolução do saldo</span>
+                <span style={{ fontSize: 9, color: 'var(--gray-400)' }}>Últimos 30 dias</span>
+              </div>
+              <div style={{ display: 'flex', gap: 12, marginBottom: 8 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 10, color: 'var(--gray-500)' }}>
+                  <div style={{ width: 8, height: 8, borderRadius: 2, background: 'var(--teal)' }} /> Saldo disponível
+                </div>
+              </div>
+              <ResponsiveContainer width="100%" height={110}>
+                <AreaChart data={BALANCE_DATA}>
+                  <defs>
+                    <linearGradient id="gradSaldoAbrir" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#00A896" stopOpacity={0.25} />
+                      <stop offset="95%" stopColor="#00A896" stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" stroke="var(--gray-100)" vertical={false} />
+                  <XAxis dataKey="dia" tick={{ fontSize: 9, fill: 'var(--gray-300)' }} axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fontSize: 8, fill: 'var(--gray-300)' }} axisLine={false} tickLine={false} tickFormatter={fmtK} width={36} />
+                  <Tooltip formatter={(v: number) => [fmtK(v), 'Saldo']} contentStyle={{ fontSize: 10, borderRadius: 8, border: '1px solid var(--gray-100)' }} />
+                  <Area type="monotone" dataKey="saldo" stroke="#00A896" strokeWidth={2} fill="url(#gradSaldoAbrir)" dot={false} activeDot={{ r: 3 }} />
+                </AreaChart>
+              </ResponsiveContainer>
             </div>
           </div>
 
