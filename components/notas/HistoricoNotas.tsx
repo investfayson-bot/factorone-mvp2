@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { supabase } from '@/lib/supabase'
+import Modal from '@/components/ui/Modal'
 
 export type NotaEmitidaRow = {
   id: string
@@ -165,39 +166,39 @@ export default function HistoricoNotas() {
       </div>
 
       {/* Email modal */}
-      {emailModal && (
-        <div className="modal-bg" onClick={() => setEmailModal(null)}>
-          <div className="modal-box" onClick={e => e.stopPropagation()}>
-            <div className="modal-title">
-              Enviar por e-mail
-              <button className="modal-close" onClick={() => setEmailModal(null)}>×</button>
-            </div>
-            <input type="email" className="form-input" placeholder="email@empresa.com" value={emailModal.email} onChange={(e) => setEmailModal({ ...emailModal, email: e.target.value })} style={{ marginBottom: 12 }} />
-            <div className="modal-actions">
-              <button type="button" className="btn-action btn-ghost" onClick={() => setEmailModal(null)}>Fechar</button>
-              <button type="button" disabled={loadingEmail} className="btn-action" onClick={enviarEmail} style={{ opacity: loadingEmail ? .6 : 1 }}>Enviar</button>
-            </div>
-          </div>
-        </div>
-      )}
+      <Modal
+        open={!!emailModal}
+        onClose={() => setEmailModal(null)}
+        title="Enviar por e-mail"
+        footer={
+          <>
+            <button type="button" className="btn-action btn-ghost" onClick={() => setEmailModal(null)}>Fechar</button>
+            <button type="button" disabled={loadingEmail} className="btn-action" onClick={enviarEmail} style={{ opacity: loadingEmail ? .6 : 1 }}>Enviar</button>
+          </>
+        }
+      >
+        {emailModal && (
+          <input type="email" className="form-input" placeholder="email@empresa.com" value={emailModal.email} onChange={(e) => setEmailModal({ ...emailModal, email: e.target.value })} style={{ marginBottom: 12 }} />
+        )}
+      </Modal>
 
       {/* Cancel modal */}
-      {cancelModal && (
-        <div className="modal-bg" onClick={() => setCancelModal(null)}>
-          <div className="modal-box" onClick={e => e.stopPropagation()}>
-            <div className="modal-title">
-              Cancelar nota
-              <button className="modal-close" onClick={() => setCancelModal(null)}>×</button>
-            </div>
-            <div style={{ fontSize: 12, color: 'var(--gray-400)', marginBottom: 8 }}>Justificativa (mín. 15 caracteres)</div>
-            <textarea className="form-input" value={cancelModal.j} onChange={(e) => setCancelModal({ ...cancelModal, j: e.target.value })} style={{ minHeight: 80, resize: 'vertical', marginBottom: 12 }} />
-            <div className="modal-actions">
-              <button type="button" className="btn-action btn-ghost" onClick={() => setCancelModal(null)}>Voltar</button>
-              <button type="button" disabled={cancelModal.j.trim().length < 15} onClick={cancelar} style={{ background: 'var(--red)', color: '#fff', border: 'none', borderRadius: 8, padding: '7px 16px', fontSize: 12, fontWeight: 600, cursor: 'pointer', opacity: cancelModal.j.trim().length < 15 ? .5 : 1 }}>Confirmar cancelamento</button>
-            </div>
-          </div>
-        </div>
-      )}
+      <Modal
+        open={!!cancelModal}
+        onClose={() => setCancelModal(null)}
+        title="Cancelar nota"
+        footer={
+          <>
+            <button type="button" className="btn-action btn-ghost" onClick={() => setCancelModal(null)}>Voltar</button>
+            <button type="button" disabled={(cancelModal?.j.trim().length ?? 0) < 15} onClick={cancelar} style={{ background: 'var(--red)', color: '#fff', border: 'none', borderRadius: 8, padding: '7px 16px', fontSize: 12, fontWeight: 600, cursor: 'pointer', opacity: (cancelModal?.j.trim().length ?? 0) < 15 ? .5 : 1 }}>Confirmar cancelamento</button>
+          </>
+        }
+      >
+        <div style={{ fontSize: 12, color: 'var(--gray-400)', marginBottom: 8 }}>Justificativa (mín. 15 caracteres)</div>
+        {cancelModal && (
+          <textarea className="form-input" value={cancelModal.j} onChange={(e) => setCancelModal({ ...cancelModal, j: e.target.value })} style={{ minHeight: 80, resize: 'vertical', marginBottom: 12 }} />
+        )}
+      </Modal>
     </div>
   )
 }

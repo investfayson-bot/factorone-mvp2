@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { maskBRLInput, parseBRLInput } from '@/lib/currency-brl'
 import { supabase } from '@/lib/supabase'
+import Modal from '@/components/ui/Modal'
 
 type Props = { open: boolean; onClose: () => void; onSaved: () => void }
 
@@ -34,7 +35,6 @@ export default function NovaContaReceberModal({ open, onClose, onSaved }: Props)
   const [juros, setJuros] = useState('0.0033')
   const [multa, setMulta] = useState('0.02')
   const [obs, setObs] = useState('')
-  if (!open) return null
 
   async function salvar() {
     const { data: sess } = await supabase.auth.getSession()
@@ -68,12 +68,18 @@ export default function NovaContaReceberModal({ open, onClose, onSaved }: Props)
   }
 
   return (
-    <div className="modal-bg" onClick={onClose}>
-      <div className="modal-box" style={{ maxWidth: 600, maxHeight: '90vh', overflowY: 'auto' }} onClick={e => e.stopPropagation()}>
-        <div className="modal-title">
-          Nova Conta a Receber
-          <button className="modal-close" onClick={onClose}>×</button>
-        </div>
+    <Modal
+      open={open}
+      onClose={onClose}
+      title="Nova Conta a Receber"
+      size="lg"
+      footer={
+        <>
+          <button className="btn-action btn-ghost" onClick={onClose}>Cancelar</button>
+          <button className="btn-action" onClick={() => void salvar()}>Salvar</button>
+        </>
+      }
+    >
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 8 }}>
           <input className="form-input" placeholder="Cliente*" value={cliente} onChange={(e) => setCliente(e.target.value)} />
           <input className="form-input" placeholder="CNPJ/CPF" value={documento} onChange={(e) => setDocumento(e.target.value)} />
@@ -126,11 +132,6 @@ export default function NovaContaReceberModal({ open, onClose, onSaved }: Props)
           <input className="form-input" placeholder="Multa (ex: 0.02)" value={multa} onChange={(e) => setMulta(e.target.value)} />
           <textarea className="form-input" placeholder="Observações" value={obs} onChange={(e) => setObs(e.target.value)} style={{ gridColumn: 'span 2', minHeight: 60, resize: 'vertical' }} />
         </div>
-        <div className="modal-actions">
-          <button className="btn-action btn-ghost" onClick={onClose}>Cancelar</button>
-          <button className="btn-action" onClick={() => void salvar()}>Salvar</button>
-        </div>
-      </div>
-    </div>
+    </Modal>
   )
 }

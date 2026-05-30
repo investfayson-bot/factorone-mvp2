@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import { formatBRL } from '@/lib/currency-brl'
 import toast from 'react-hot-toast'
+import Modal from '@/components/ui/Modal'
 
 type Solicitacao = {
   id: string
@@ -241,13 +242,19 @@ export default function CartoesPage() {
       </div>
 
       {/* Modal solicitar cartão */}
-      {modalOpen && (
-        <div className="modal-bg" onClick={() => setModalOpen(false)}>
-          <div className="modal-box" onClick={e => e.stopPropagation()}>
-            <div className="modal-title">
-              Solicitar Cartão Virtual
-              <button className="modal-close" onClick={() => setModalOpen(false)}>×</button>
-            </div>
+      <Modal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        title="Solicitar Cartão Virtual"
+        footer={
+          <>
+            <button className="btn-ghost" onClick={() => setModalOpen(false)}>Cancelar</button>
+            <button className="btn-action" disabled={saving} style={{ opacity: saving ? 0.6 : 1 }} onClick={() => void solicitarCartao()}>
+              {saving ? 'Enviando…' : 'Solicitar'}
+            </button>
+          </>
+        }
+      >
             <div className="form-group">
               <label className="form-label">Nome do cartão *</label>
               <input className="form-input" placeholder="Ex: Marketing Digital" value={form.nome_cartao} onChange={e => setForm(f => ({ ...f, nome_cartao: e.target.value }))} />
@@ -265,15 +272,7 @@ export default function CartoesPage() {
             <div style={{ background: 'rgba(94,140,135,.05)', border: '1px solid rgba(94,140,135,.15)', borderRadius: 8, padding: '10px 12px', fontSize: 12, color: 'var(--gray-400)', lineHeight: 1.6, marginBottom: 4 }}>
               A solicitação será analisada pela administração. Cartões virtuais ficam disponíveis para uso imediato após aprovação.
             </div>
-            <div className="modal-actions">
-              <button className="btn-ghost" onClick={() => setModalOpen(false)}>Cancelar</button>
-              <button className="btn-action" disabled={saving} style={{ opacity: saving ? 0.6 : 1 }} onClick={() => void solicitarCartao()}>
-                {saving ? 'Enviando…' : 'Solicitar'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      </Modal>
     </>
   )
 }

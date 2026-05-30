@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
 import { formatBRL } from '@/lib/currency-brl'
+import Modal from '@/components/ui/Modal'
 
 type Reembolso = {
   id: string
@@ -355,13 +356,17 @@ export default function ReembolsosPage() {
         </div>
       )}
 
-      {modalOpen && (
-        <div className="modal-bg" onClick={() => setModalOpen(false)}>
-          <div className="modal-box" onClick={e => e.stopPropagation()}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 20 }}>
-              <h3 className="modal-title">Solicitar Reembolso</h3>
-              <button className="modal-close" onClick={() => setModalOpen(false)}><i className="fa-solid fa-xmark" /></button>
-            </div>
+      <Modal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        title="Solicitar Reembolso"
+        footer={
+          <>
+            <button className="btn-action btn-ghost" onClick={() => setModalOpen(false)}>Cancelar</button>
+            <button className="btn-action" onClick={() => void solicitar()} disabled={salvando}>{salvando ? 'Enviando...' : 'Enviar solicitacao'}</button>
+          </>
+        }
+      >
             <div className="form-group">
               <label className="form-label">Descricao</label>
               <input className="form-input" placeholder="Ex: Hotel Sao Paulo · 2 noites" value={form.descricao} onChange={e => setForm(f => ({ ...f, descricao: e.target.value }))} />
@@ -434,13 +439,7 @@ export default function ReembolsosPage() {
                 onChange={e => setArquivo(e.target.files?.[0] ?? null)}
               />
             </div>
-            <div className="modal-actions">
-              <button className="btn-action btn-ghost" onClick={() => setModalOpen(false)}>Cancelar</button>
-              <button className="btn-action" onClick={() => void solicitar()} disabled={salvando}>{salvando ? 'Enviando...' : 'Enviar solicitacao'}</button>
-            </div>
-          </div>
-        </div>
-      )}
+      </Modal>
     </>
   )
 }

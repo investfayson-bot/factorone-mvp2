@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import { formatBRL } from '@/lib/currency-brl'
+import Modal from '@/components/ui/Modal'
 
 type Props = {
   open: boolean
@@ -26,17 +27,9 @@ export default function DetalhesAtivoModal({ open, onClose, ativo }: Props) {
     })()
   }, [open, ativo.id])
 
-  if (!open) return null
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-      <div className="max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-2xl bg-white p-5">
-        <div className="flex items-start justify-between">
-          <div>
-            <h3 className="text-xl font-bold">{ativo.nome}</h3>
-            <p className="text-sm text-slate-500">{ativo.categoria || 'Sem categoria'} • {ativo.localizacao || 'Sem localização'}</p>
-          </div>
-          <button className="rounded border px-3 py-2" onClick={onClose}>Fechar</button>
-        </div>
+    <Modal open={open} onClose={onClose} title={ativo.nome} size="xl">
+        <p className="text-sm text-slate-500">{ativo.categoria || 'Sem categoria'} • {ativo.localizacao || 'Sem localização'}</p>
         <div className="mt-4 grid gap-4 md:grid-cols-2">
           <div className="rounded-xl border p-4">
             <h4 className="font-semibold">Dados gerais</h4>
@@ -56,7 +49,6 @@ export default function DetalhesAtivoModal({ open, onClose, ativo }: Props) {
             {manutencoes.map((m, i) => <div key={String(i)} className="flex justify-between"><span>{m.data_manutencao} • {m.tipo} • {m.descricao}</span><span>{formatBRL(Number(m.custo || 0))}</span></div>)}
           </div>
         </div>
-      </div>
-    </div>
+    </Modal>
   )
 }

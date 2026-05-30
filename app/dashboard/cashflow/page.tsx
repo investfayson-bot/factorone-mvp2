@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import { Area, AreaChart, CartesianGrid, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import toast from 'react-hot-toast'
+import Modal from '@/components/ui/Modal'
 
 type Transacao = {
   id: string
@@ -601,13 +602,17 @@ export default function CashflowPage() {
       )}
 
       {/* Modal nova transação */}
-      {modalAberto && (
-        <div className="modal-bg" onClick={() => setModalAberto(false)}>
-          <div className="modal-box" onClick={e => e.stopPropagation()}>
-            <div className="modal-title">
-              Nova transação
-              <button className="modal-close" onClick={() => setModalAberto(false)}>×</button>
-            </div>
+      <Modal
+        open={modalAberto}
+        onClose={() => setModalAberto(false)}
+        title="Nova transação"
+        footer={
+          <>
+            <button className="btn-action btn-ghost" onClick={() => setModalAberto(false)}>Cancelar</button>
+            <button className="btn-action" onClick={() => void criarTransacao()}>Registrar</button>
+          </>
+        }
+      >
             <div className="form-group">
               <label className="form-label">Descrição *</label>
               <input className="form-input" placeholder="Ex: Pagamento cliente XYZ" value={form.descricao} onChange={e => setForm(f => ({ ...f, descricao: e.target.value }))} />
@@ -637,13 +642,7 @@ export default function CashflowPage() {
                 <input className="form-input" type="date" value={form.data} onChange={e => setForm(f => ({ ...f, data: e.target.value }))} />
               </div>
             </div>
-            <div className="modal-actions">
-              <button className="btn-action btn-ghost" onClick={() => setModalAberto(false)}>Cancelar</button>
-              <button className="btn-action" onClick={() => void criarTransacao()}>Registrar</button>
-            </div>
-          </div>
-        </div>
-      )}
+      </Modal>
     </>
   )
 }

@@ -6,6 +6,7 @@ import toast from 'react-hot-toast'
 import NovaDespesaModal, { type DespesaEdit } from '@/components/despesas/NovaDespesaModal'
 import { formatBRL } from '@/lib/currency-brl'
 import { CATEGORIAS_PADRAO } from '@/lib/despesas-categorizacao'
+import Modal from '@/components/ui/Modal'
 import * as XLSX from 'xlsx'
 
 type DespesaRow = {
@@ -501,22 +502,20 @@ export default function DespesasPage() {
         onCentroCriado={(c) => setCentros((prev) => [...prev, c])}
       />
 
-      {rejeitar && (
-        <div className="modal-bg" onClick={() => { setRejeitar(null); setMotivoRejeicao('') }}>
-          <div className="modal-box" onClick={e => e.stopPropagation()}>
-            <div className="modal-title">
-              Rejeitar despesa
-              <button className="modal-close" onClick={() => { setRejeitar(null); setMotivoRejeicao('') }}>×</button>
-            </div>
+      <Modal
+        open={!!rejeitar}
+        onClose={() => { setRejeitar(null); setMotivoRejeicao('') }}
+        title="Rejeitar despesa"
+        footer={
+          <>
+            <button className="btn-action btn-ghost" onClick={() => { setRejeitar(null); setMotivoRejeicao('') }}>Cancelar</button>
+            <button className="btn-action" style={{ background: 'var(--red)' }} onClick={confirmarRejeitar}>Rejeitar</button>
+          </>
+        }
+      >
             <p style={{ fontSize: 12, color: 'var(--gray-500)', marginBottom: 12 }}>Informe o motivo (visível no histórico).</p>
             <textarea value={motivoRejeicao} onChange={e => setMotivoRejeicao(e.target.value)} rows={3} className="form-input" style={{ resize: 'vertical', height: 80 }} placeholder="Motivo da rejeição" />
-            <div className="modal-actions">
-              <button className="btn-action btn-ghost" onClick={() => { setRejeitar(null); setMotivoRejeicao('') }}>Cancelar</button>
-              <button className="btn-action" style={{ background: 'var(--red)' }} onClick={confirmarRejeitar}>Rejeitar</button>
-            </div>
-          </div>
-        </div>
-      )}
+      </Modal>
     </>
   )
 }

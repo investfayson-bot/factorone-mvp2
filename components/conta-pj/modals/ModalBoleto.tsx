@@ -4,6 +4,7 @@ import { supabase } from '@/lib/supabase'
 import { maskBRLInput, parseBRLInput } from '@/lib/currency-brl'
 import { useToast } from '@/components/ui/useToast'
 import LoadingButton from '@/components/ui/LoadingButton'
+import Modal from '@/components/ui/Modal'
 
 type Props = { open: boolean; onClose: () => void; empresaId?: string; contaId?: string; onDone?: () => void }
 export default function ModalBoleto({ open, onClose, empresaId, contaId, onDone }: Props) {
@@ -11,7 +12,6 @@ export default function ModalBoleto({ open, onClose, empresaId, contaId, onDone 
   const [codigo, setCodigo] = useState('')
   const [valorMask, setValorMask] = useState('')
   const [loading, setLoading] = useState(false)
-  if (!open) return null
   const digits = codigo.replace(/\D/g, '')
   const vencido = false
 
@@ -44,14 +44,13 @@ export default function ModalBoleto({ open, onClose, empresaId, contaId, onDone 
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-      <div className="w-full max-w-lg rounded-2xl bg-white p-5">
-        <h3 className="font-bold">Pagamento de Boleto</h3>
-        <input className="mt-2 w-full rounded border px-3 py-2" placeholder="Código de barras" value={codigo} onChange={(e) => setCodigo(e.target.value)} />
-        <input className="mt-2 w-full rounded border px-3 py-2" placeholder="Valor do boleto" value={valorMask} onChange={(e) => setValorMask(maskBRLInput(e.target.value))} />
-        <p className="mt-2 text-sm text-slate-600">Dígitos: {digits.length}/48</p>
-        {vencido && <p className="mt-2 rounded bg-amber-50 p-2 text-xs text-amber-800">Boleto vencido: juros estimados aplicados.</p>}
-        <div className="mt-3 flex justify-end gap-2">
+    <Modal
+      open={open}
+      onClose={onClose}
+      title="Pagamento de Boleto"
+      size="lg"
+      footer={
+        <>
           <button className="rounded border px-3 py-2" onClick={onClose}>Fechar</button>
           <LoadingButton
             loading={loading}
@@ -61,8 +60,13 @@ export default function ModalBoleto({ open, onClose, empresaId, contaId, onDone 
           >
             Confirmar pagamento
           </LoadingButton>
-        </div>
-      </div>
-    </div>
+        </>
+      }
+    >
+        <input className="mt-2 w-full rounded border px-3 py-2" placeholder="Código de barras" value={codigo} onChange={(e) => setCodigo(e.target.value)} />
+        <input className="mt-2 w-full rounded border px-3 py-2" placeholder="Valor do boleto" value={valorMask} onChange={(e) => setValorMask(maskBRLInput(e.target.value))} />
+        <p className="mt-2 text-sm text-slate-600">Dígitos: {digits.length}/48</p>
+        {vencido && <p className="mt-2 rounded bg-amber-50 p-2 text-xs text-amber-800">Boleto vencido: juros estimados aplicados.</p>}
+    </Modal>
   )
 }

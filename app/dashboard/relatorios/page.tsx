@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
+import Modal from '@/components/ui/Modal'
 
 type Met = Record<string, number | string>
 type Lancamento = { id: string; descricao: string; valor: number; origem: string; competencia: string; created_at: string; conta_id: string | null }
@@ -615,16 +616,15 @@ export default function RelatoriosPage() {
       )}
 
       {/* Modal drill */}
-      {drillOpen && (
-        <div className="modal-bg" onClick={() => setDrillOpen(false)}>
-          <div className="modal-box" style={{ width: 680 }} onClick={e => e.stopPropagation()}>
-            <div className="modal-title">
-              {drillConta} — {competencia}
-              <div style={{ display: 'flex', gap: 8 }}>
-                <button className="btn-action btn-ghost" style={{ fontSize: 11, padding: '4px 10px' }} onClick={() => setManualOpen(true)}>+ Lançamento manual</button>
-                <button className="modal-close" onClick={() => setDrillOpen(false)}>×</button>
-              </div>
-            </div>
+      <Modal
+        open={drillOpen}
+        onClose={() => setDrillOpen(false)}
+        title={`${drillConta} — ${competencia}`}
+        size="xl"
+        footer={
+          <button className="btn-action btn-ghost" style={{ fontSize: 11, padding: '4px 10px' }} onClick={() => setManualOpen(true)}>+ Lançamento manual</button>
+        }
+      >
             <div style={{ maxHeight: 300, overflowY: 'auto' }}>
               <div className="expenses-table">
                 <table>
@@ -644,18 +644,20 @@ export default function RelatoriosPage() {
                 </table>
               </div>
             </div>
-          </div>
-        </div>
-      )}
+      </Modal>
 
       {/* Modal lançamento manual */}
-      {manualOpen && (
-        <div className="modal-bg" onClick={() => setManualOpen(false)}>
-          <div className="modal-box" onClick={e => e.stopPropagation()}>
-            <div className="modal-title">
-              Novo lançamento manual
-              <button className="modal-close" onClick={() => setManualOpen(false)}>×</button>
-            </div>
+      <Modal
+        open={manualOpen}
+        onClose={() => setManualOpen(false)}
+        title="Novo lançamento manual"
+        footer={
+          <>
+            <button className="btn-action btn-ghost" onClick={() => setManualOpen(false)}>Cancelar</button>
+            <button className="btn-action" onClick={() => void salvarLancamentoManual()}>Salvar</button>
+          </>
+        }
+      >
             <div className="form-group">
               <label className="form-label">Conta</label>
               <select className="form-input" value={manual.conta_id} onChange={(e) => setManual((m) => ({ ...m, conta_id: e.target.value }))}>
@@ -683,13 +685,7 @@ export default function RelatoriosPage() {
               <label className="form-label">Competência</label>
               <input type="date" className="form-input" value={manual.competencia} onChange={(e) => setManual((m) => ({ ...m, competencia: e.target.value }))} />
             </div>
-            <div className="modal-actions">
-              <button className="btn-action btn-ghost" onClick={() => setManualOpen(false)}>Cancelar</button>
-              <button className="btn-action" onClick={() => void salvarLancamentoManual()}>Salvar</button>
-            </div>
-          </div>
-        </div>
-      )}
+      </Modal>
     </>
   )
 }

@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import { maskBRLInput, parseBRLInput } from '@/lib/currency-brl'
+import Modal from '@/components/ui/Modal'
 
 type Props = {
   open: boolean
@@ -16,7 +17,6 @@ export default function BaixaAtivoModal({ open, onClose, onDone, ativo }: Props)
   const [dataBaixa, setDataBaixa] = useState(new Date().toISOString().slice(0, 10))
   const [valorMask, setValorMask] = useState('')
   const [obs, setObs] = useState('')
-  if (!open) return null
 
   async function confirmar() {
     const valorBaixa = parseBRLInput(valorMask)
@@ -40,9 +40,18 @@ export default function BaixaAtivoModal({ open, onClose, onDone, ativo }: Props)
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-      <div className="w-full max-w-md rounded-2xl bg-white p-5">
-        <h3 className="font-bold">Baixa de ativo</h3>
+    <Modal
+      open={open}
+      onClose={onClose}
+      title="Baixa de ativo"
+      size="md"
+      footer={
+        <>
+          <button className="rounded border px-3 py-2" onClick={onClose}>Cancelar</button>
+          <button className="rounded bg-red-600 px-3 py-2 text-white" onClick={() => void confirmar()}>Confirmar baixa</button>
+        </>
+      }
+    >
         <select className="mt-2 w-full rounded border px-3 py-2" value={motivo} onChange={(e) => setMotivo(e.target.value)}>
           <option value="sucateamento">Sucateamento</option>
           <option value="alienacao">Alienação</option>
@@ -53,11 +62,6 @@ export default function BaixaAtivoModal({ open, onClose, onDone, ativo }: Props)
         <input type="date" className="mt-2 w-full rounded border px-3 py-2" value={dataBaixa} onChange={(e) => setDataBaixa(e.target.value)} />
         <input className="mt-2 w-full rounded border px-3 py-2" placeholder="Valor de alienação" value={valorMask} onChange={(e) => setValorMask(maskBRLInput(e.target.value))} />
         <textarea className="mt-2 w-full rounded border px-3 py-2" placeholder="Observações" value={obs} onChange={(e) => setObs(e.target.value)} />
-        <div className="mt-3 flex justify-end gap-2">
-          <button className="rounded border px-3 py-2" onClick={onClose}>Cancelar</button>
-          <button className="rounded bg-red-600 px-3 py-2 text-white" onClick={() => void confirmar()}>Confirmar baixa</button>
-        </div>
-      </div>
-    </div>
+    </Modal>
   )
 }

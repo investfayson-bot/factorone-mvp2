@@ -8,6 +8,7 @@ import { calcDREFromTransacoes, fmtBRL, fmtBRLCompact, variacaoPct, type Transac
 import AnomalyAlerts from '@/components/dashboard/AnomalyAlerts'
 import EntradasSaidasChart from '@/components/dashboard/EntradasSaidasChart'
 import { DashboardErrorBoundary } from '@/components/dashboard/DashboardErrorBoundary'
+import Modal from '@/components/ui/Modal'
 import type { TransacaoLista } from '@/lib/transacao-types'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, AreaChart, Area, CartesianGrid } from 'recharts'
 
@@ -722,14 +723,18 @@ export default function DashboardPage() {
       </div>
 
       {/* Modal detalhe transação */}
-      {selectedTx && (
-        <div className="modal-bg" onClick={() => setSelectedTx(null)}>
-          <div className="modal-box" onClick={e => e.stopPropagation()}>
-            <div className="modal-title">
-              Detalhe da transação
-              <button className="modal-close" onClick={() => setSelectedTx(null)}><i className="fa-solid fa-xmark" /></button>
-            </div>
-            {[
+      <Modal
+        open={!!selectedTx}
+        onClose={() => setSelectedTx(null)}
+        title="Detalhe da transação"
+        footer={
+          <>
+            <button className="btn-action btn-ghost" onClick={() => setSelectedTx(null)}>Fechar</button>
+            <button className="btn-action" onClick={() => { setSelectedTx(null); router.push('/dashboard/cashflow') }}>Abrir Cash Flow</button>
+          </>
+        }
+      >
+            {selectedTx && [
               { l: 'Descrição', v: selectedTx.descricao || '—' },
               { l: 'Categoria', v: selectedTx.categoria || '—' },
               { l: 'Tipo', v: selectedTx.tipo === 'entrada' ? 'Entrada' : 'Saída' },
@@ -741,13 +746,7 @@ export default function DashboardPage() {
                 <span style={{ fontWeight: 600, color: 'var(--navy)', fontSize: 12 }}>{v}</span>
               </div>
             ))}
-            <div className="modal-actions">
-              <button className="btn-action btn-ghost" onClick={() => setSelectedTx(null)}>Fechar</button>
-              <button className="btn-action" onClick={() => { setSelectedTx(null); router.push('/dashboard/cashflow') }}>Abrir Cash Flow</button>
-            </div>
-          </div>
-        </div>
-      )}
+      </Modal>
     </>
   )
 }

@@ -1,6 +1,7 @@
 'use client'
 
 import { useMemo, useState } from 'react'
+import Modal from '@/components/ui/Modal'
 
 type Props = {
   open: boolean
@@ -19,7 +20,6 @@ export default function OrcamentoWizard({ open, onClose, onSaved, categorias }: 
     Object.fromEntries(categorias.map((c) => [c, 0]))
   )
   const total = useMemo(() => Object.values(valores).reduce((s, v) => s + Number(v || 0), 0), [valores])
-  if (!open) return null
 
   async function salvar(status: 'rascunho' | 'em_aprovacao') {
     const res = await fetch('/api/orcamento/criar', {
@@ -41,9 +41,26 @@ export default function OrcamentoWizard({ open, onClose, onSaved, categorias }: 
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-      <div className="w-full max-w-3xl rounded-2xl bg-white p-5">
-        <h3 className="text-lg font-bold">Orçamento anual</h3>
+    <Modal
+      open={open}
+      onClose={onClose}
+      title="Orçamento anual"
+      size="xl"
+      footer={
+        <div className="flex justify-between" style={{ width: '100%' }}>
+          <button className="rounded border px-3 py-2" onClick={() => setStep((s) => Math.max(1, s - 1))}>Anterior</button>
+          <div className="flex gap-2">
+            <button className="rounded border px-3 py-2" onClick={onClose}>Cancelar</button>
+            {step < 4 ? <button className="rounded bg-blue-700 px-3 py-2 text-white" onClick={() => setStep((s) => Math.min(4, s + 1))}>Próximo</button> : (
+              <>
+                <button className="rounded border px-3 py-2" onClick={() => void salvar('rascunho')}>Salvar rascunho</button>
+                <button className="rounded bg-emerald-600 px-3 py-2 text-white" onClick={() => void salvar('em_aprovacao')}>Enviar para aprovação</button>
+              </>
+            )}
+          </div>
+        </div>
+      }
+    >
         <p className="text-sm text-slate-500">Passo {step}/4</p>
 
         {step === 1 && (
@@ -77,20 +94,6 @@ export default function OrcamentoWizard({ open, onClose, onSaved, categorias }: 
             <p><strong>Total geral:</strong> R$ {total.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
           </div>
         )}
-
-        <div className="mt-4 flex justify-between">
-          <button className="rounded border px-3 py-2" onClick={() => setStep((s) => Math.max(1, s - 1))}>Anterior</button>
-          <div className="flex gap-2">
-            <button className="rounded border px-3 py-2" onClick={onClose}>Cancelar</button>
-            {step < 4 ? <button className="rounded bg-blue-700 px-3 py-2 text-white" onClick={() => setStep((s) => Math.min(4, s + 1))}>Próximo</button> : (
-              <>
-                <button className="rounded border px-3 py-2" onClick={() => void salvar('rascunho')}>Salvar rascunho</button>
-                <button className="rounded bg-emerald-600 px-3 py-2 text-white" onClick={() => void salvar('em_aprovacao')}>Enviar para aprovação</button>
-              </>
-            )}
-          </div>
-        </div>
-      </div>
-    </div>
+    </Modal>
   )
 }

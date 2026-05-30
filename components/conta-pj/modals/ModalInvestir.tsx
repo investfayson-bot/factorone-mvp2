@@ -4,6 +4,7 @@ import { maskBRLInput, parseBRLInput, formatBRL } from '@/lib/currency-brl'
 import { supabase } from '@/lib/supabase'
 import { useToast } from '@/components/ui/useToast'
 import LoadingButton from '@/components/ui/LoadingButton'
+import Modal from '@/components/ui/Modal'
 
 type Props = { open: boolean; onClose: () => void; empresaId: string; contaId: string; onDone: () => void }
 export default function ModalInvestir({ open, onClose, empresaId, contaId, onDone }: Props) {
@@ -22,7 +23,6 @@ export default function ModalInvestir({ open, onClose, empresaId, contaId, onDon
     const liquido = bruto - ir
     return { bruto, ir, liquido, rent: valor ? ((liquido - valor) / valor) * 100 : 0 }
   }, [valor, prazo, percentual])
-  if (!open) return null
 
   async function aplicar() {
     if (valor <= 0) return toast.warning('Informe valor válido')
@@ -39,19 +39,13 @@ export default function ModalInvestir({ open, onClose, empresaId, contaId, onDon
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-      <div className="w-full max-w-xl rounded-2xl bg-white p-5">
-        <h3 className="font-bold">Investir agora</h3>
-        <input className="mt-2 w-full rounded border px-3 py-2" value={valorMask} onChange={(e) => setValorMask(maskBRLInput(e.target.value))} />
-        <div className="mt-2 grid grid-cols-3 gap-2">
-          <select className="rounded border px-3 py-2" value={tipo} onChange={(e) => setTipo(e.target.value)}><option value="cdb">CDB</option><option value="lci">LCI</option><option value="lca">LCA</option><option value="tesouro_direto">Tesouro Selic</option></select>
-          <select className="rounded border px-3 py-2" value={prazo} onChange={(e) => setPrazo(Number(e.target.value))}>{[30, 60, 90, 180, 360].map((d) => <option key={d} value={d}>{d} dias</option>)}</select>
-          <select className="rounded border px-3 py-2" value={percentual} onChange={(e) => setPercentual(Number(e.target.value))}>{[100, 102, 104, 110].map((p) => <option key={p} value={p}>{p}% CDI</option>)}</select>
-        </div>
-        <div className="mt-3 rounded-xl bg-slate-50 p-3 text-sm">
-          <p>Valor bruto: {formatBRL(resultado.bruto)}</p><p>IR estimado: {formatBRL(resultado.ir)}</p><p>Valor líquido: {formatBRL(resultado.liquido)}</p><p>Rentabilidade líquida: {resultado.rent.toFixed(2)}%</p>
-        </div>
-        <div className="mt-3 flex justify-end gap-2">
+    <Modal
+      open={open}
+      onClose={onClose}
+      title="Investir agora"
+      size="xl"
+      footer={
+        <>
           <button className="rounded border px-3 py-2" onClick={onClose}>Cancelar</button>
           <LoadingButton
             loading={loading}
@@ -61,8 +55,18 @@ export default function ModalInvestir({ open, onClose, empresaId, contaId, onDon
           >
             Aplicar agora
           </LoadingButton>
+        </>
+      }
+    >
+        <input className="mt-2 w-full rounded border px-3 py-2" value={valorMask} onChange={(e) => setValorMask(maskBRLInput(e.target.value))} />
+        <div className="mt-2 grid grid-cols-3 gap-2">
+          <select className="rounded border px-3 py-2" value={tipo} onChange={(e) => setTipo(e.target.value)}><option value="cdb">CDB</option><option value="lci">LCI</option><option value="lca">LCA</option><option value="tesouro_direto">Tesouro Selic</option></select>
+          <select className="rounded border px-3 py-2" value={prazo} onChange={(e) => setPrazo(Number(e.target.value))}>{[30, 60, 90, 180, 360].map((d) => <option key={d} value={d}>{d} dias</option>)}</select>
+          <select className="rounded border px-3 py-2" value={percentual} onChange={(e) => setPercentual(Number(e.target.value))}>{[100, 102, 104, 110].map((p) => <option key={p} value={p}>{p}% CDI</option>)}</select>
         </div>
-      </div>
-    </div>
+        <div className="mt-3 rounded-xl bg-slate-50 p-3 text-sm">
+          <p>Valor bruto: {formatBRL(resultado.bruto)}</p><p>IR estimado: {formatBRL(resultado.ir)}</p><p>Valor líquido: {formatBRL(resultado.liquido)}</p><p>Rentabilidade líquida: {resultado.rent.toFixed(2)}%</p>
+        </div>
+    </Modal>
   )
 }
