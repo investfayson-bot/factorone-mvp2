@@ -211,14 +211,15 @@ export default function DespesasPage() {
   async function marcarPago(id: string) {
     const row = rows.find((r) => r.id === id)
     if (!row) return
+    if (!empresaId) { toast.error('Empresa não identificada. Recarregue a página antes de pagar.'); return }
     const hoje = new Date().toISOString().slice(0, 10)
     const { data: tx, error: e1 } = await supabase.from('transacoes').insert({ empresa_id: empresaId, data: hoje, descricao: `Despesa: ${row.descricao}`, categoria: row.categoria, tipo: 'saida', valor: row.valor, status: 'confirmada' }).select('id').single()
     if (e1) { toast.error(e1.message); return }
     const { error: e2 } = await supabase.from('despesas').update({ status: 'pago', data_pagamento: hoje, transaction_id: tx?.id ?? null }).eq('id', id)
     if (!e2) {
-      await supabase.from('lancamentos').insert({ empresa_id: empresaId || userId, descricao: `Despesa paga - ${row.descricao}`, valor: row.valor, tipo: 'debito', competencia: hoje, transaction_id: tx?.id ?? null, despesa_id: id, origem: 'despesa' })
+      await supabase.from('lancamentos').insert({ empresa_id: empresaId, descricao: `Despesa paga - ${row.descricao}`, valor: row.valor, tipo: 'debito', competencia: hoje, transaction_id: tx?.id ?? null, despesa_id: id, origem: 'despesa' })
       const { data: sess } = await supabase.auth.getSession()
-      await fetch('/api/dre/recalcular', { method: 'POST', headers: { 'Content-Type': 'application/json', ...(sess.session?.access_token ? { Authorization: `Bearer ${sess.session.access_token}` } : {}) }, body: JSON.stringify({ empresaId: empresaId || userId, competencia: hoje }) })
+      await fetch('/api/dre/recalcular', { method: 'POST', headers: { 'Content-Type': 'application/json', ...(sess.session?.access_token ? { Authorization: `Bearer ${sess.session.access_token}` } : {}) }, body: JSON.stringify({ empresaId: empresaId, competencia: hoje }) })
       await fetch('/api/orcamento/atualizar-realizado', { method: 'POST', headers: { 'Content-Type': 'application/json', ...(sess.session?.access_token ? { Authorization: `Bearer ${sess.session.access_token}` } : {}) }, body: JSON.stringify({ categoria: row.categoria, mes: Number(hoje.slice(5, 7)), ano: Number(hoje.slice(0, 4)), valor: Number(row.valor || 0) }) })
     }
     if (e2) toast.error(e2.message); else { toast.success('Marcado como pago e lançado no fluxo de caixa'); void load() }
@@ -228,6 +229,7 @@ export default function DespesasPage() {
   async function marcarPagoLote() {
     const pendentes = Array.from(selected).filter((id) => { const r = rows.find((x) => x.id === id); return r && (r.status === 'aprovado' || r.status === 'pendente_aprovacao') })
     if (!pendentes.length) { toast.error('Selecione despesas aprovadas ou pendentes para pagar'); return }
+    if (!empresaId) { toast.error('Empresa não identificada. Recarregue a página antes de pagar.'); return }
     const hoje = new Date().toISOString().slice(0, 10)
     for (const id of pendentes) {
       const row = rows.find((r) => r.id === id)
