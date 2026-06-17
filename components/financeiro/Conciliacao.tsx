@@ -57,6 +57,22 @@ export default function Conciliacao() {
     await carregar()
   }
 
+  async function lancarLote() {
+    if (!extratos.length) return
+    if (!confirm(`Lançar ${extratos.length} extrato(s) não conciliado(s) no caixa? Isso cria uma transação para cada um.`)) return
+    const h = await authHeaders()
+    const res = await fetch('/api/conciliacao/lancar-lote', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...h },
+      body: JSON.stringify({}),
+    })
+    const payload = await res.json().catch(() => ({}))
+    if (!res.ok) return alert(payload.error || 'Falha no lote')
+    alert(`${payload.conciliados} extrato(s) lançado(s) no caixa.`)
+    setSelectedExtrato(null)
+    await carregar()
+  }
+
   async function lancarNoCaixa(ex: Extrato) {
     const h = await authHeaders()
     const res = await fetch('/api/conciliacao/lancar', {
@@ -82,9 +98,14 @@ export default function Conciliacao() {
       <div style={card}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
           <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--navy)' }}>Extrato (não conciliados)</div>
-          {extratos[0]?.conta_id && (
-            <button className="btn-action" style={{ fontSize: 10, padding: '3px 10px' }} onClick={() => void conciliarAutomatico(extratos[0].conta_id)}>✨ Auto-conciliar</button>
-          )}
+          <div style={{ display: 'flex', gap: 6 }}>
+            {extratos.length > 0 && (
+              <button className="btn-action btn-ghost" style={{ fontSize: 10, padding: '3px 10px' }} onClick={() => void lancarLote()}>+ Lançar todos</button>
+            )}
+            {extratos[0]?.conta_id && (
+              <button className="btn-action" style={{ fontSize: 10, padding: '3px 10px' }} onClick={() => void conciliarAutomatico(extratos[0].conta_id)}>✨ Auto-conciliar</button>
+            )}
+          </div>
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
           {extratos.map((e) => (
