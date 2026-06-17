@@ -8,7 +8,7 @@ type Investimento = { id: string; nome: string; tipo: string; instituicao: strin
 
 const TIPOS = ['CDB','Poupança','Ações','FIIs','Tesouro Direto','Cripto','Outros']
 const LIQUIDEZ = ['diária','no vencimento','longo prazo']
-const TIPO_ICON: Record<string, string> = { 'CDB': '🏦', 'Poupança': '💰', 'Ações': '📈', 'FIIs': '🏢', 'Tesouro Direto': '🇧🇷', 'Cripto': '₿', 'Outros': '💼' }
+const TIPO_ICON: Record<string, string> = { 'CDB': 'fa-building-columns', 'Poupança': 'fa-piggy-bank', 'Ações': 'fa-arrow-trend-up', 'FIIs': 'fa-building', 'Tesouro Direto': 'fa-landmark', 'Cripto': 'fa-bitcoin-sign', 'Outros': 'fa-briefcase' }
 const EMPTY = { nome: '', tipo: 'CDB', instituicao: '', valor_aplicado: '', valor_atual: '', data_aplicacao: new Date().toISOString().slice(0,10), vencimento: '', rentabilidade: '', liquidez: 'diária' }
 
 export default function InvestimentosPage() {
@@ -112,7 +112,7 @@ export default function InvestimentosPage() {
               return (
                 <div key={tipo}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, marginBottom: 4 }}>
-                    <span style={{ fontWeight: 600 }}>{TIPO_ICON[tipo]} {tipo}</span>
+                    <span style={{ fontWeight: 600 }}><i className={`fa-solid ${TIPO_ICON[tipo]}`} style={{ marginRight: 6, color: 'var(--gray-400)' }} />{tipo}</span>
                     <span style={{ color: 'var(--gray-400)' }}>{formatBRL(total)} · {pct.toFixed(1)}%</span>
                   </div>
                   <div style={{ height: 8, borderRadius: 4, background: 'var(--gray-100)' }}>
@@ -136,7 +136,7 @@ export default function InvestimentosPage() {
         porTipo.map(({ tipo, items: grupo }) => (
           <div key={tipo} style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, overflow: 'hidden', marginBottom: 12 }}>
             <div style={{ padding: '10px 16px', borderBottom: '1px solid var(--gray-100)', fontSize: 12, fontWeight: 700, color: 'var(--navy)' }}>
-              {TIPO_ICON[tipo]} {tipo}
+<i className={`fa-solid ${TIPO_ICON[tipo]}`} style={{ marginRight: 6, color: 'var(--gray-400)' }} />{tipo}
             </div>
             <table className="expenses-table">
               <thead><tr><th>Nome</th><th>Instituição</th><th>Rentabilidade</th><th>Liquidez</th><th>Aplicado</th><th>Atual</th><th>Ganho</th><th></th></tr></thead>

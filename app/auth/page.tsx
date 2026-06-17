@@ -172,7 +172,7 @@ export default function AuthPage() {
                   onClick={() => setMostrarSenha(!mostrarSenha)}
                   style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--gray-400)', fontSize: 12 }}
                 >
-                  {mostrarSenha ? '🙈' : '👁'}
+                  <i className={`fa-solid ${mostrarSenha ? 'fa-eye-slash' : 'fa-eye'}`} />
                 </button>
               </div>
             </div>
@@ -204,7 +204,7 @@ export default function AuthPage() {
             className="btn-action btn-ghost"
             style={{ width: '100%', padding: '10px 0', fontSize: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}
           >
-            ⚡ Usar conta demo
+            <i className="fa-solid fa-bolt" /> Usar conta demo
           </button>
 
           <div style={{ marginTop: 20, paddingTop: 16, borderTop: '1px solid var(--gray-100)', textAlign: 'center', fontSize: 11, color: 'var(--gray-400)' }}>
