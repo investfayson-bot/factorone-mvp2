@@ -308,8 +308,9 @@ export default function PatrimonioPage() {
       const base64 = (reader.result as string).split(',')[1]
       const mediaType = file.type || 'image/jpeg'
       try {
+        const { data: sess } = await supabase.auth.getSession()
         const res = await fetch('/api/patrimonio/ocr-documento', {
-          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          method: 'POST', headers: { 'Content-Type': 'application/json', ...(sess.session?.access_token ? { Authorization: `Bearer ${sess.session.access_token}` } : {}) },
           body: JSON.stringify({ imageBase64: base64, mediaType }),
         })
         const { extracted } = await res.json() as { extracted: Record<string, unknown> }

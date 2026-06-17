@@ -1,10 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Anthropic from '@anthropic-ai/sdk'
+import { getSupabaseUser } from '@/lib/supabase-route'
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY || '' })
 
 export async function POST(req: NextRequest) {
   try {
+    const { user } = await getSupabaseUser(req)
+    if (!user) return NextResponse.json({ error: 'Não autenticado' }, { status: 401 })
     const body = await req.json() as { imageBase64?: string; mediaType?: string }
     if (!body.imageBase64) return NextResponse.json({ error: 'imageBase64 obrigatório' }, { status: 400 })
 
