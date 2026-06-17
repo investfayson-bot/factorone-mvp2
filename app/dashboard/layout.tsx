@@ -144,6 +144,7 @@ const pageTitles: Record<string, string> = {
   '/dashboard/propostas': 'Propostas Comerciais',
   '/dashboard/pipeline': 'Sales Pipeline',
   '/dashboard/tax': 'Tax Compliance',
+  '/dashboard/simples': 'Simples Nacional — DAS',
   '/dashboard/receitas': 'Receitas',
   '/dashboard/equipe': 'Equipe',
   '/dashboard/automacoes': 'Automações',

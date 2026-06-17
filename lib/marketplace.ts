@@ -37,6 +37,7 @@ export const MARKET_APPS: MarketApp[] = [
   { id: 'payroll',   name: 'Folha de Pagamento',     icon: 'fa-users-gear',         iconColor: '#6B21A8', iconBg: '#EDE9FE', rating: 4.7, rev: 98,  desc: 'Holerites, encargos, eSocial e FGTS.',              badge: 'popular', cat: 'rh',          navGroup: 'Configurações',          href: '/dashboard/folha',              hasPage: true  },
   { id: 'hr',        name: 'RH & Benefícios',        icon: 'fa-heart-pulse',        iconColor: '#BE123C', iconBg: '#FFE4E6', rating: 4.6, rev: 90,  desc: 'Férias, ponto, benefícios e colaboradores.',        badge: '',        cat: 'rh',          navGroup: 'Configurações',          href: '/dashboard/rh',                 hasPage: true  },
   { id: 'tax',       name: 'Tax Compliance',         icon: 'fa-scale-balanced',     iconColor: '#1D4ED8', iconBg: '#DBEAFE', rating: 4.8, rev: 69,  desc: 'Conformidade fiscal e obrigações acessórias.',      badge: 'new',     cat: 'fiscal',      navGroup: 'Contabilidade & Fiscal', href: '/dashboard/tax',                hasPage: true  },
+  { id: 'simples',   name: 'Simples Nacional (DAS)', icon: 'fa-calculator',         iconColor: '#1D4ED8', iconBg: '#DBEAFE', rating: 4.7, rev: 58,  desc: 'Estimador de DAS e alíquota efetiva (Anexos I–V).', badge: 'new',     cat: 'fiscal',      navGroup: 'Contabilidade & Fiscal', href: '/dashboard/simples',            hasPage: true  },
 ]
 
 import { supabase } from '@/lib/supabase'
