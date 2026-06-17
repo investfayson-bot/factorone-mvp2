@@ -57,6 +57,19 @@ export default function Conciliacao() {
     await carregar()
   }
 
+  async function lancarNoCaixa(ex: Extrato) {
+    const h = await authHeaders()
+    const res = await fetch('/api/conciliacao/lancar', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...h },
+      body: JSON.stringify({ extrato_id: ex.id }),
+    })
+    const payload = await res.json().catch(() => ({}))
+    if (!res.ok) return alert(payload.error || 'Falha ao lançar')
+    setSelectedExtrato(null)
+    await carregar()
+  }
+
   const destaque = selectedExtrato
     ? pendentes.filter((p) => {
         const diffVal = Math.abs(Number(selectedExtrato.valor || 0) - Number(p.valor || 0)) / Math.max(Number(selectedExtrato.valor || 1), 1)
@@ -89,7 +102,14 @@ export default function Conciliacao() {
       </div>
 
       <div style={card}>
-        <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--navy)', marginBottom: 12 }}>Lançamentos internos pendentes</div>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+          <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--navy)' }}>Lançamentos internos pendentes</div>
+          {selectedExtrato && (
+            <button className="btn-action" style={{ fontSize: 10, padding: '3px 10px' }} onClick={() => void lancarNoCaixa(selectedExtrato)}>
+              + Lançar no caixa
+            </button>
+          )}
+        </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
           {(selectedExtrato ? destaque : pendentes).map((p) => (
             <div key={p.id} style={{ borderRadius: 8, border: selectedExtrato ? '1px solid var(--gold)' : '1px solid var(--gray-100)', background: selectedExtrato ? 'rgba(184,146,42,.06)' : '#fff', padding: '8px 10px' }}>
