@@ -30,7 +30,7 @@ Dados atuais: ${JSON.stringify(body.metricasAtuais)}
 Historico: ${JSON.stringify(body.historico3Meses)}`
 
     const completion = await openrouter.chat.completions.create({
-      model: 'anthropic/claude-3.5-sonnet',
+      model: 'anthropic/claude-sonnet-4.5',
       response_format: { type: 'json_object' },
       temperature: 0.2,
       messages: [
@@ -44,7 +44,10 @@ Historico: ${JSON.stringify(body.historico3Meses)}`
     })
 
     const raw = completion.choices[0]?.message?.content || '{}'
-    return NextResponse.json({ success: true, analise: JSON.parse(raw) })
+    // Alguns modelos envolvem o JSON em cercas markdown (```json ... ```); extrai o objeto.
+    const match = raw.match(/\{[\s\S]*\}/)
+    const analise = JSON.parse(match ? match[0] : raw)
+    return NextResponse.json({ success: true, analise })
   } catch (e: unknown) {
     return NextResponse.json({ error: erroDesconhecido(e) }, { status: 500 })
   }

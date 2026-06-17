@@ -63,7 +63,7 @@ async function extrairImagem(file: File): Promise<Extracao> {
 merchant (string), amount (number), issue_date (YYYY-MM-DD|null), due_date (YYYY-MM-DD|null), description (string), confidence (0 a 1).`
 
   const completion = await openrouter.chat.completions.create({
-    model: 'google/gemini-2.0-flash-001',
+    model: 'google/gemini-2.5-flash',
     temperature: 0,
     response_format: { type: 'json_object' },
     messages: [
@@ -103,7 +103,7 @@ Texto:
 ${text}`
 
   const completion = await openrouter.chat.completions.create({
-    model: 'anthropic/claude-3.5-sonnet',
+    model: 'anthropic/claude-sonnet-4.5',
     temperature: 0,
     response_format: { type: 'json_object' },
     messages: [{ role: 'user', content: prompt }],
