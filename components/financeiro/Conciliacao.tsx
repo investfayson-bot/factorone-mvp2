@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
 import { formatBRL } from '@/lib/currency-brl'
 
@@ -99,6 +100,7 @@ export default function Conciliacao() {
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
           <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--navy)' }}>Extrato (não conciliados)</div>
           <div style={{ display: 'flex', gap: 6 }}>
+            <Link href="/dashboard/conciliacao/relatorio" className="btn-action btn-ghost" style={{ fontSize: 10, padding: '3px 10px' }}>📊 Relatório</Link>
             {extratos.length > 0 && (
               <button className="btn-action btn-ghost" style={{ fontSize: 10, padding: '3px 10px' }} onClick={() => void lancarLote()}>+ Lançar todos</button>
             )}
