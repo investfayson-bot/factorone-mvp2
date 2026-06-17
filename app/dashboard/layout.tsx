@@ -7,6 +7,7 @@ import { usePathname, useRouter } from 'next/navigation'
 import type { User } from '@supabase/supabase-js'
 import { supabase } from '@/lib/supabase'
 import Link from 'next/link'
+import { MARKET_APPS, getInstalledIds } from '@/lib/marketplace'
 
 type NavItem = { href: string; icon: string; label: string; badge?: string; badgeColor?: string; match?: (p: string) => boolean }
 type NavGroup = {
@@ -15,8 +16,8 @@ type NavGroup = {
   items: NavItem[]
 }
 
-function buildNavGroups(badges: { reembolsos: number; aprovacoes: number }): NavGroup[] {
-  return [
+function buildNavGroups(badges: { reembolsos: number; aprovacoes: number }, installedIds: string[] = []): NavGroup[] {
+  const groups: NavGroup[] = [
     {
       label: 'Core',
       items: [
@@ -51,15 +52,7 @@ function buildNavGroups(badges: { reembolsos: number; aprovacoes: number }): Nav
       label: 'Clientes & Vendas',
       items: [
         { href: '/dashboard/clientes', icon: 'fa-users', label: 'Clientes' },
-        { href: '/dashboard/crm', icon: 'fa-handshake', label: 'CRM', badge: 'PLUS', badgeColor: '#7C3AED', match: (p) => p.startsWith('/dashboard/crm') },
         { href: '/dashboard/invoices', icon: 'fa-file-invoice-dollar', label: 'Invoices' },
-      ],
-    },
-    {
-      label: 'Apps & Marketplace',
-      items: [
-        { href: '/dashboard/marketing', icon: 'fa-bullhorn', label: 'Marketing', badge: 'PLUS', badgeColor: '#7C3AED' },
-        { href: '/dashboard/logistica', icon: 'fa-truck-fast', label: 'Logística', badge: 'PLUS', badgeColor: '#7C3AED' },
       ],
     },
     {
@@ -101,6 +94,17 @@ function buildNavGroups(badges: { reembolsos: number; aprovacoes: number }): Nav
       ],
     },
   ]
+
+  // Apps instalados pelo Marketplace aparecem no seu grupo funcional.
+  for (const app of MARKET_APPS) {
+    if (!installedIds.includes(app.id)) continue
+    const item: NavItem = { href: app.href, icon: app.icon, label: app.name, badge: 'APP', badgeColor: '#7C3AED' }
+    let group = groups.find(g => g.label === app.navGroup)
+    if (!group) { group = { label: app.navGroup, items: [] }; groups.push(group) }
+    if (!group.items.some(i => i.href === item.href)) group.items.push(item)
+  }
+
+  return groups
 }
 
 const pageTitles: Record<string, string> = {
@@ -160,6 +164,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   }
   const [empresaId, setEmpresaId] = useState('')
   const [badges, setBadges] = useState({ reembolsos: 0, aprovacoes: 0 })
+  const [installedIds, setInstalledIds] = useState<string[]>([])
+
+  useEffect(() => {
+    const sync = () => setInstalledIds(getInstalledIds())
+    sync()
+    window.addEventListener('fo-apps-changed', sync)
+    window.addEventListener('storage', sync)
+    return () => { window.removeEventListener('fo-apps-changed', sync); window.removeEventListener('storage', sync) }
+  }, [])
   const [notifOpen, setNotifOpen] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const { count: notifCount, refresh: refreshNotif } = useNotificacoes(empresaId)
@@ -223,13 +236,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             </button>
           </div>
           <nav className="sb-nav">
-            {buildNavGroups(badges).map(group => {
+            {buildNavGroups(badges, installedIds).map(group => {
               const inGroup = group.items.some(i => isActive(pathname, i))
               const isCollapsed = group.collapsible && collapsedGroups[group.label] && !inGroup
               return (
                 <div key={group.label}>
                   {group.collapsible ? (
-                    <div className="nav-section" onClick={() => toggleGroup(group.label, buildNavGroups(badges))}
+                    <div className="nav-section" onClick={() => toggleGroup(group.label, buildNavGroups(badges, installedIds))}
                       style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between', userSelect: 'none' }}>
                       <span>{group.label}</span>
                       <i className={`fa-solid fa-chevron-${isCollapsed ? 'right' : 'down'}`} style={{ fontSize: 8, opacity: .5 }} />

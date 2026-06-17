@@ -1,0 +1,64 @@
+// Catálogo único do Marketplace + estado de instalação (persistido em localStorage).
+// Usado pela página /dashboard/marketplace e pela sidebar (app instalado vira item de menu).
+
+export type MarketCat = 'financeiro' | 'operacional' | 'vendas' | 'rh' | 'fiscal'
+
+export type MarketApp = {
+  id: string
+  name: string
+  icon: string
+  iconColor: string
+  iconBg: string
+  rating: number
+  rev: number
+  desc: string
+  badge: 'popular' | 'new' | ''
+  cat: MarketCat
+  /** Grupo da sidebar onde o app aparece quando instalado. */
+  navGroup: string
+  /** Destino do app. Página real quando existe; senão, placeholder /dashboard/app/[id]. */
+  href: string
+  /** true se há uma página dedicada (não placeholder). */
+  hasPage: boolean
+}
+
+export const MARKET_APPS: MarketApp[] = [
+  { id: 'crm',       name: 'CRM',                    icon: 'fa-handshake',          iconColor: '#1E40AF', iconBg: '#DBEAFE', rating: 4.8, rev: 120, desc: 'Gestão de leads, contatos e pipeline de vendas.',   badge: 'popular', cat: 'vendas',      navGroup: 'Clientes & Vendas',      href: '/dashboard/crm',                hasPage: true  },
+  { id: 'mkt',       name: 'Marketing',              icon: 'fa-bullhorn',           iconColor: '#C2410C', iconBg: '#FFEDD5', rating: 4.7, rev: 105, desc: 'Automatize campanhas de email e anúncios.',         badge: 'new',     cat: 'vendas',      navGroup: 'Clientes & Vendas',      href: '/dashboard/marketing',          hasPage: true  },
+  { id: 'logistica', name: 'Logística',              icon: 'fa-truck-fast',         iconColor: '#0E7490', iconBg: '#CFFAFE', rating: 4.7, rev: 92,  desc: 'Rotas, fretes, entregas e rastreamento GPS.',       badge: 'new',     cat: 'operacional', navGroup: 'Operacional',            href: '/dashboard/logistica',          hasPage: true  },
+  { id: 'sales',     name: 'Sales Pipeline',         icon: 'fa-arrow-trend-up',     iconColor: '#166534', iconBg: '#DCFCE7', rating: 4.9, rev: 85,  desc: 'Acompanhe e preveja oportunidades de venda.',       badge: 'new',     cat: 'vendas',      navGroup: 'Clientes & Vendas',      href: '/dashboard/app/sales',          hasPage: false },
+  { id: 'prop',      name: 'Propostas Comerciais',   icon: 'fa-file-signature',     iconColor: '#BE185D', iconBg: '#FCE7F3', rating: 4.8, rev: 88,  desc: 'Crie e envie propostas e orçamentos.',              badge: '',        cat: 'vendas',      navGroup: 'Clientes & Vendas',      href: '/dashboard/app/prop',           hasPage: false },
+  { id: 'ar',        name: 'Contas a Receber Plus',  icon: 'fa-file-invoice-dollar',iconColor: '#065F46', iconBg: '#D1FAE5', rating: 4.6, rev: 75,  desc: 'Automatize cobranças e controle inadimplência.',    badge: '',        cat: 'financeiro',  navGroup: 'Financeiro',             href: '/dashboard/financeiro/receber', hasPage: true  },
+  { id: 'sub',       name: 'Subscription Billing',   icon: 'fa-rotate',             iconColor: '#1E3A5F', iconBg: '#E0E7FF', rating: 4.7, rev: 102, desc: 'Assinaturas e cobranças recorrentes.',              badge: 'new',     cat: 'financeiro',  navGroup: 'Financeiro',             href: '/dashboard/app/sub',            hasPage: false },
+  { id: 'budget',    name: 'Budget & Forecast',      icon: 'fa-chart-pie',          iconColor: '#0E7490', iconBg: '#CFFAFE', rating: 4.5, rev: 64,  desc: 'Planejamento orçamentário e previsão.',             badge: '',        cat: 'financeiro',  navGroup: 'Financeiro',             href: '/dashboard/orcamento',          hasPage: true  },
+  { id: 'inv',       name: 'Gestão de Estoque',      icon: 'fa-boxes-stacked',      iconColor: '#92400E', iconBg: '#FEF3C7', rating: 4.6, rev: 75,  desc: 'Controle de produtos, pedidos e movimentações.',    badge: '',        cat: 'operacional', navGroup: 'Operacional',            href: '/dashboard/app/inv',            hasPage: false },
+  { id: 'contract',  name: 'Contratos Digitais',     icon: 'fa-file-contract',      iconColor: '#374151', iconBg: '#F3F4F6', rating: 4.4, rev: 55,  desc: 'Gestão com assinatura digital integrada.',          badge: '',        cat: 'operacional', navGroup: 'Operacional',            href: '/dashboard/app/contract',       hasPage: false },
+  { id: 'payroll',   name: 'Folha de Pagamento',     icon: 'fa-users-gear',         iconColor: '#6B21A8', iconBg: '#EDE9FE', rating: 4.7, rev: 98,  desc: 'Holerites, encargos, eSocial e FGTS.',              badge: 'popular', cat: 'rh',          navGroup: 'Configurações',          href: '/dashboard/app/payroll',        hasPage: false },
+  { id: 'hr',        name: 'RH & Benefícios',        icon: 'fa-heart-pulse',        iconColor: '#BE123C', iconBg: '#FFE4E6', rating: 4.6, rev: 90,  desc: 'Férias, ponto, benefícios e colaboradores.',        badge: '',        cat: 'rh',          navGroup: 'Configurações',          href: '/dashboard/app/hr',             hasPage: false },
+  { id: 'tax',       name: 'Tax Compliance',         icon: 'fa-scale-balanced',     iconColor: '#1D4ED8', iconBg: '#DBEAFE', rating: 4.8, rev: 69,  desc: 'Conformidade fiscal e obrigações acessórias.',      badge: 'new',     cat: 'fiscal',      navGroup: 'Contabilidade & Fiscal', href: '/dashboard/app/tax',            hasPage: false },
+]
+
+export function appById(id: string): MarketApp | undefined {
+  return MARKET_APPS.find(a => a.id === id)
+}
+
+const KEY = 'fo_installed_apps'
+
+export function getInstalledIds(): string[] {
+  if (typeof window === 'undefined') return []
+  try { return JSON.parse(localStorage.getItem(KEY) || '[]') } catch { return [] }
+}
+
+export function isInstalled(id: string): boolean {
+  return getInstalledIds().includes(id)
+}
+
+/** Alterna instalação, persiste e avisa a sidebar. Retorna o novo estado (instalado?). */
+export function toggleInstalled(id: string): boolean {
+  const current = getInstalledIds()
+  const nowInstalled = !current.includes(id)
+  const next = nowInstalled ? [...current, id] : current.filter(x => x !== id)
+  localStorage.setItem(KEY, JSON.stringify(next))
+  window.dispatchEvent(new Event('fo-apps-changed'))
+  return nowInstalled
+}
