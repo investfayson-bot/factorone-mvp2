@@ -37,6 +37,30 @@ export default function IRPage() {
   const [ano] = useState(new Date().getFullYear())
   const [deducoes, setDeducoes] = useState({ dependentes: 0, saude: 0, educacao: 0, inss: 0, previdencia: 0, outros: 0 })
   const [saving, setSaving] = useState(false)
+  const [importando, setImportando] = useState(false)
+
+  async function importarGastos() {
+    if (!userId) return
+    setImportando(true)
+    try {
+      const ini = `${ano}-01-01`, fim = `${ano}-12-31`
+      const { data } = await supabase
+        .from('despesas_pessoais')
+        .select('valor, categoria, data_despesa')
+        .eq('user_id', userId)
+        .gte('data_despesa', ini).lte('data_despesa', fim)
+        .in('categoria', ['Saúde', 'Educação'])
+      const saude = (data ?? []).filter(d => d.categoria === 'Saúde').reduce((s, d) => s + Number(d.valor), 0)
+      const educacao = (data ?? []).filter(d => d.categoria === 'Educação').reduce((s, d) => s + Number(d.valor), 0)
+      if (!saude && !educacao) { toast('Nenhum gasto de Saúde/Educação encontrado no ano.'); return }
+      setDeducoes(d => ({ ...d, saude, educacao }))
+      toast.success(`Importado: ${formatBRL(saude)} saúde + ${formatBRL(educacao)} educação. Revise e salve.`)
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : 'Falha ao importar')
+    } finally {
+      setImportando(false)
+    }
+  }
 
   const carregar = useCallback(async (uid: string) => {
     const [perfil, ded] = await Promise.all([
@@ -75,7 +99,10 @@ export default function IRPage() {
           <div className="page-title">Imposto de Renda {ano}</div>
           <div className="page-sub">Estimativa IRPF com tabela progressiva 2024</div>
         </div>
-        <button onClick={salvar} className="btn-action" disabled={saving}>{saving ? 'Salvando...' : 'Salvar deduções'}</button>
+        <div style={{ display: 'flex', gap: 8 }}>
+          <button onClick={importarGastos} className="btn-action btn-ghost" disabled={importando}>{importando ? 'Importando...' : 'Importar gastos do ano'}</button>
+          <button onClick={salvar} className="btn-action" disabled={saving}>{saving ? 'Salvando...' : 'Salvar deduções'}</button>
+        </div>
       </div>
 
       {renda === 0 && (
