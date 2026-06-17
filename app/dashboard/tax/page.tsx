@@ -16,19 +16,16 @@ function PagarBtn({ row, ctx }: { row: Row; ctx: RowActionCtx }) {
     setLoading(true)
     try {
       const valor = Number(row.valor ?? 0)
-      // lança a saída no fluxo de caixa (extrato_bancario), na conta ativa
-      const conta = await supabase.from('contas_bancarias').select('id').eq('empresa_id', ctx.empresaId).eq('status', 'ativa').maybeSingle()
-      const { error: e1 } = await supabase.from('extrato_bancario').upsert({
+      // lança a saída no fluxo de caixa (transacoes — fonte do Cash Flow)
+      const { error: e1 } = await supabase.from('transacoes').insert({
         empresa_id: ctx.empresaId,
-        conta_bancaria_id: conta.data?.id ?? null,
-        tipo: 'debito',
-        descricao: String(row.nome ?? 'Imposto'),
-        data_transacao: new Date().toISOString().slice(0, 10),
-        valor,
+        descricao: `Pagamento: ${String(row.nome ?? 'Imposto')}`,
         categoria: 'Impostos',
-        origem: 'tax',
-        belvo_tx_id: `tax:${row.id}`, // dedupe: 1 lançamento por obrigação
-      }, { onConflict: 'belvo_tx_id' })
+        tipo: 'saida',
+        valor,
+        status: 'pago',
+        data: new Date().toISOString().slice(0, 10),
+      })
       if (e1) throw e1
       const { error: e2 } = await supabase.from('tax_obrigacoes').update({ status: 'entregue' }).eq('id', row.id as string)
       if (e2) throw e2

@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import { formatBRL } from '@/lib/currency-brl'
+import toast from 'react-hot-toast'
 
 type FornecedorCad = {
   id: string
@@ -182,17 +183,24 @@ export default function FornecedoresPage() {
     const v = Number(valorPagamento.replace(',', '.'))
     if (!v || !dataPagamento) return
     setSaving(true)
-    const valorTotal = Number(modalPagar.valor || 0)
-    const novoStatus = v >= valorTotal - Number(modalPagar.valor_pago || 0) ? 'paga' : 'parcialmente_paga'
-    await supabase.from('contas_pagar').update({
-      valor_pago: Number(modalPagar.valor_pago || 0) + v,
-      data_pagamento: dataPagamento,
-      status: novoStatus,
-    }).eq('id', modalPagar.id)
-    setSaving(false)
-    setModalPagar(null)
-    setValorPagamento('')
-    await carregar()
+    try {
+      // usa o endpoint oficial: marca a conta, lança a saída no caixa (transacoes) e recalcula o DRE
+      const { data: sess } = await supabase.auth.getSession()
+      const res = await fetch(`/api/financeiro/pagar/${modalPagar.id}/pagar`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...(sess.session?.access_token ? { Authorization: `Bearer ${sess.session.access_token}` } : {}) },
+        body: JSON.stringify({ valor_pago: v, data_pagamento: dataPagamento, tipo_pagamento: modalPagar.tipo_pagamento }),
+      })
+      if (!res.ok) { const d = await res.json().catch(() => ({})); throw new Error(d.error || 'Falha ao registrar pagamento') }
+      toast.success(`Pagamento de ${formatBRL(v)} lançado no caixa.`)
+      setModalPagar(null)
+      setValorPagamento('')
+      await carregar()
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : 'Falha ao registrar pagamento')
+    } finally {
+      setSaving(false)
+    }
   }
 
   async function cancelarConta(id: string) {
