@@ -220,7 +220,7 @@ export default function NovaDespesaModal({
           style={{
             border: file ? '2px solid var(--teal)' : '2px dashed var(--gray-100)',
             borderRadius: 12, padding: 16, marginBottom: 20, textAlign: 'center',
-            background: file ? 'rgba(0,168,150,0.04)' : '#fafafa', cursor: 'pointer',
+            background: file ? 'rgba(94,140,135,0.04)' : '#fafafa', cursor: 'pointer',
             transition: 'all 0.2s',
           }}
           onClick={() => fileRef.current?.click()}

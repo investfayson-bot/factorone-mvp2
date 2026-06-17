@@ -78,7 +78,7 @@ export default function InvoicesPage() {
       padding: '8px 16px',
       borderRadius: 8,
       border: 'none',
-      background: '#C8F135',
+      background: 'var(--gold)',
       color: '#000',
       fontSize: 12,
       fontWeight: 700,
@@ -122,7 +122,7 @@ export default function InvoicesPage() {
       <div style={{ display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:10, marginBottom:14 }}>
         {[
           { l:'A Receber', v:fmt(totalAberto), c:'#22C97A' },
-          { l:'Recebido', v:fmt(totalPago), c:'#C8F135' },
+          { l:'Recebido', v:fmt(totalPago), c:'var(--gold)' },
           { l:'Vencidas', v:invoices.filter(i=>i.status==='vencida').length, c:'#FF4F4F' },
           { l:'Total emitido', v:fmt(invoices.reduce((a,i)=>a+i.valor,0)), c:'#E4E8E7' },
         ].map(({ l, v, c }) => (

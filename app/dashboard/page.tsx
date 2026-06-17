@@ -684,7 +684,7 @@ export default function DashboardPage() {
                 <Tooltip formatter={(v: number) => [fmtBRLCompact(v), 'Despesa']} contentStyle={{ fontSize: 11, borderRadius: 8, border: '1px solid var(--gray-100)', background: '#fff' }} />
                 <Bar dataKey="val" radius={[0, 4, 4, 0]} maxBarSize={16}>
                   {topCats.map((_, i) => (
-                    <Cell key={i} fill={['#C0504A', '#B8922A', '#7C3AED', '#00A896', '#1A2B4A'][i % 5]} fillOpacity={0.8} />
+                    <Cell key={i} fill={['#C0504A', '#B8922A', '#7C3AED', 'var(--teal)', '#1A2B4A'][i % 5]} fillOpacity={0.8} />
                   ))}
                 </Bar>
               </BarChart>

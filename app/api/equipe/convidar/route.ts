@@ -49,13 +49,13 @@ export async function POST(req: NextRequest) {
       html: `
         <div style="font-family: Inter, sans-serif; max-width: 480px; margin: 0 auto; padding: 32px 24px;">
           <div style="font-size: 22px; font-weight: 800; color: #0d1b2a; margin-bottom: 8px;">
-            Factor<span style="color: #00A896">One</span>
+            Factor<span style="color: var(--teal)">One</span>
           </div>
           <h2 style="color: #0d1b2a; margin: 24px 0 8px;">Você foi convidado!</h2>
           <p style="color: #64748b; font-size: 14px; line-height: 1.6;">
             <strong>${user.email}</strong> convidou você para acessar o workspace <strong>${nomeEmpresa}</strong> no FactorOne com o role de <strong>${role}</strong>.
           </p>
-          <a href="${linkAceite}" style="display: inline-block; margin: 24px 0; padding: 12px 28px; background: #00A896; color: #fff; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 14px;">
+          <a href="${linkAceite}" style="display: inline-block; margin: 24px 0; padding: 12px 28px; background: var(--teal); color: #fff; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 14px;">
             Aceitar convite →
           </a>
           <p style="color: #94a3b8; font-size: 12px;">Este link expira em 7 dias. Se não reconhece este convite, ignore este e-mail.</p>

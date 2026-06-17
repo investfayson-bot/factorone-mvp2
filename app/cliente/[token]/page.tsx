@@ -73,7 +73,7 @@ export default function ClientePortalPage({ params }: { params: Promise<{ token:
       {/* Header */}
       <div style={{ background: '#0d1b2a', padding: '18px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div style={{ fontSize: 20, fontWeight: 800, color: '#fff' }}>
-          Factor<span style={{ color: '#00A896' }}>One</span>
+          Factor<span style={{ color: 'var(--teal)' }}>One</span>
           <span style={{ fontSize: 12, fontWeight: 400, color: '#94a3b8', marginLeft: 12 }}>{data.empresa_nome}</span>
         </div>
         <div style={{ fontSize: 12, color: '#94a3b8' }}>Portal do Cliente</div>
@@ -91,7 +91,7 @@ export default function ClientePortalPage({ params }: { params: Promise<{ token:
             {data.cliente.valor_contrato && (
               <div style={{ textAlign: 'right' }}>
                 <div style={{ fontSize: 11, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '.06em' }}>Contrato</div>
-                <div style={{ fontSize: 22, fontWeight: 800, color: '#00A896' }}>{fmt(data.cliente.valor_contrato)}</div>
+                <div style={{ fontSize: 22, fontWeight: 800, color: 'var(--teal)' }}>{fmt(data.cliente.valor_contrato)}</div>
               </div>
             )}
           </div>
@@ -221,7 +221,7 @@ export default function ClientePortalPage({ params }: { params: Promise<{ token:
         )}
 
         <div style={{ textAlign: 'center', marginTop: 32, fontSize: 12, color: '#94a3b8' }}>
-          Powered by <strong style={{ color: '#00A896' }}>FactorOne</strong>
+          Powered by <strong style={{ color: 'var(--teal)' }}>FactorOne</strong>
         </div>
       </div>
     </div>

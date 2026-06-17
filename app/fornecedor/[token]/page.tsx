@@ -78,7 +78,7 @@ export default function FornecedorPortalPage({ params }: { params: Promise<{ tok
       {/* Header */}
       <div style={{ background: '#0A192F', padding: '16px 24px', display: 'flex', alignItems: 'center', gap: 12 }}>
         <div style={{ fontFamily: 'Sora, sans-serif', fontSize: 18, fontWeight: 800, color: '#fff' }}>
-          Factor<span style={{ color: '#00A896' }}>One</span>
+          Factor<span style={{ color: 'var(--teal)' }}>One</span>
         </div>
         <div style={{ width: 1, height: 20, background: 'rgba(255,255,255,0.15)' }} />
         <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)' }}>Portal do Fornecedor</div>
@@ -110,7 +110,7 @@ export default function FornecedorPortalPage({ params }: { params: Promise<{ tok
           <>
             {/* Card intro */}
             <div style={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: 16, padding: 28, marginBottom: 20, boxShadow: '0 1px 4px rgba(0,0,0,.06)' }}>
-              <p style={{ fontSize: 11, fontWeight: 700, color: '#00A896', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: 6 }}>Convite de {info.empresa_nome}</p>
+              <p style={{ fontSize: 11, fontWeight: 700, color: 'var(--teal)', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: 6 }}>Convite de {info.empresa_nome}</p>
               <h1 style={{ fontSize: 20, fontWeight: 800, color: '#0f172a', margin: '0 0 8px', fontFamily: 'Sora, sans-serif' }}>Envie sua fatura</h1>
               <p style={{ fontSize: 13, color: '#64748b', lineHeight: 1.6, margin: 0 }}>
                 Preencha os dados abaixo. Sua fatura será cadastrada automaticamente no sistema financeiro de <strong>{info.empresa_nome}</strong>.
@@ -179,7 +179,7 @@ export default function FornecedorPortalPage({ params }: { params: Promise<{ tok
                   onClick={() => void enviar()}
                   style={{
                     padding: '13px 24px', borderRadius: 10, border: 'none',
-                    background: '#00A896', color: '#fff', fontSize: 14, fontWeight: 700,
+                    background: 'var(--teal)', color: '#fff', fontSize: 14, fontWeight: 700,
                     cursor: sending ? 'not-allowed' : 'pointer', opacity: sending ? 0.7 : 1,
                     width: '100%',
                   }}

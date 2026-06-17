@@ -203,7 +203,7 @@ export default function IntegracoesPage() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4, flexWrap: 'wrap' }}>
                   <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy)' }}>{wh.nome}</span>
                   <span style={{ fontSize: 9, fontWeight: 700, padding: '1px 6px', borderRadius: 20, background: 'var(--gray-100)', color: 'var(--gray-500)' }}>{wh.modulo}</span>
-                  <span style={{ fontSize: 9, fontWeight: 700, padding: '1px 6px', borderRadius: 20, background: 'rgba(0,168,150,.1)', color: 'var(--teal)' }}>{wh.method}</span>
+                  <span style={{ fontSize: 9, fontWeight: 700, padding: '1px 6px', borderRadius: 20, background: 'rgba(94,140,135,.1)', color: 'var(--teal)' }}>{wh.method}</span>
                 </div>
                 <div style={{ fontSize: 11, color: 'var(--gray-400)', marginBottom: 8 }}>{wh.desc}</div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#f8fafc', borderRadius: 6, padding: '6px 10px' }}>

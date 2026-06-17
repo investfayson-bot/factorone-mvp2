@@ -182,7 +182,7 @@ export default function AutomacoesPage() {
       </div>
 
       {/* Info */}
-      <div style={{ background: 'rgba(0,168,150,.04)', border: '1px solid rgba(0,168,150,.15)', borderRadius: 10, padding: '12px 16px', fontSize: 12, color: 'var(--gray-500)', marginBottom: 16, lineHeight: 1.7 }}>
+      <div style={{ background: 'rgba(94,140,135,.04)', border: '1px solid rgba(94,140,135,.15)', borderRadius: 10, padding: '12px 16px', fontSize: 12, color: 'var(--gray-500)', marginBottom: 16, lineHeight: 1.7 }}>
         <i className="fa-solid fa-circle-info" style={{ color: 'var(--teal)', marginRight: 6 }} />
         As automações geram notificações no sino do topo. Clique em <strong>Executar agora</strong> para rodar manualmente, ou configure uma tarefa cron em <code>/api/automacoes/processar</code> com Authorization header.
       </div>
@@ -194,8 +194,8 @@ export default function AutomacoesPage() {
           const info = TIPOS[regra.tipo]
           if (!info) return null
           return (
-            <div key={regra.id} style={{ background: '#fff', border: `1px solid ${regra.ativa ? 'rgba(0,168,150,.2)' : 'var(--gray-100)'}`, borderRadius: 12, padding: '14px 18px', display: 'flex', alignItems: 'center', gap: 14 }}>
-              <div style={{ width: 40, height: 40, borderRadius: 10, background: regra.ativa ? 'rgba(0,168,150,.08)' : 'var(--gray-100)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            <div key={regra.id} style={{ background: '#fff', border: `1px solid ${regra.ativa ? 'rgba(94,140,135,.2)' : 'var(--gray-100)'}`, borderRadius: 12, padding: '14px 18px', display: 'flex', alignItems: 'center', gap: 14 }}>
+              <div style={{ width: 40, height: 40, borderRadius: 10, background: regra.ativa ? 'rgba(94,140,135,.08)' : 'var(--gray-100)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                 <i className={`fa-solid ${info.icon}`} style={{ color: regra.ativa ? info.color : 'var(--gray-400)', fontSize: 16 }} />
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>

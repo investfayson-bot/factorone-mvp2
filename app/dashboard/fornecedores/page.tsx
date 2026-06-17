@@ -733,7 +733,7 @@ export default function FornecedoresPage() {
               </>
             ) : (
               <div>
-                <div style={{ padding: '16px 18px', borderRadius: 12, border: '1px solid var(--teal)', background: 'rgba(0,168,150,0.04)', marginBottom: 16 }}>
+                <div style={{ padding: '16px 18px', borderRadius: 12, border: '1px solid var(--teal)', background: 'rgba(94,140,135,0.04)', marginBottom: 16 }}>
                   <p style={{ fontSize: 11, fontWeight: 700, color: 'var(--teal)', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: 8 }}>
                     <i className="fa-solid fa-circle-check" style={{ marginRight: 5 }} />Link gerado com sucesso
                   </p>

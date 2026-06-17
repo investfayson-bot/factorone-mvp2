@@ -22,7 +22,7 @@ type Tab = 'pendentes' | 'historico'
 
 function nivel(valor: number) {
   if (valor <= 500)  return { label: 'Auto',    color: 'var(--green)',  bg: 'rgba(45,155,111,.1)' }
-  if (valor <= 5000) return { label: 'Nível 1', color: 'var(--teal)',   bg: 'rgba(0,168,150,.12)' }
+  if (valor <= 5000) return { label: 'Nível 1', color: 'var(--teal)',   bg: 'rgba(94,140,135,.12)' }
   return               { label: 'Nível 2',       color: '#7C3AED',       bg: 'rgba(124,58,237,.12)' }
 }
 

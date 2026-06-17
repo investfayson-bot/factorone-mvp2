@@ -319,17 +319,17 @@ export default function OnboardingPage() {
               {/* HERO: Conectar meu banco */}
               <button
                 onClick={() => setFinOpcao(finOpcao === 'open_finance' ? null : 'open_finance')}
-                style={{ display: 'flex', gap: 16, padding: '18px 20px', borderRadius: 12, cursor: 'pointer', border: finOpcao === 'open_finance' ? '2px solid var(--teal)' : '1.5px solid var(--gray-100)', background: finOpcao === 'open_finance' ? 'rgba(0,168,150,.05)' : 'linear-gradient(135deg,#f8fffe 0%,#f0faf9 100%)', textAlign: 'left', width: '100%', position: 'relative', overflow: 'hidden' }}
+                style={{ display: 'flex', gap: 16, padding: '18px 20px', borderRadius: 12, cursor: 'pointer', border: finOpcao === 'open_finance' ? '2px solid var(--teal)' : '1.5px solid var(--gray-100)', background: finOpcao === 'open_finance' ? 'rgba(94,140,135,.05)' : 'linear-gradient(135deg,#f8fffe 0%,#f0faf9 100%)', textAlign: 'left', width: '100%', position: 'relative', overflow: 'hidden' }}
               >
                 <div style={{ position: 'absolute', top: 10, right: 12, fontSize: 9, fontWeight: 700, background: 'var(--teal)', color: '#fff', padding: '2px 8px', borderRadius: 20 }}>RECOMENDADO</div>
-                <div style={{ width: 48, height: 48, borderRadius: 12, background: 'rgba(0,168,150,.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <div style={{ width: 48, height: 48, borderRadius: 12, background: 'rgba(94,140,135,.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                   <i className="fa-solid fa-building-columns" style={{ color: 'var(--teal)', fontSize: 18 }} />
                 </div>
                 <div style={{ flex: 1, paddingRight: 60 }}>
                   <div style={{ fontSize: 14, fontWeight: 800, color: 'var(--navy)', marginBottom: 4 }}>Conectar meu banco</div>
                   <div style={{ fontSize: 11, color: 'var(--gray-400)', lineHeight: 1.6 }}>Sincronize automaticamente via Open Finance — saldo, extrato e transações em tempo real.</div>
                   {finOpcao === 'open_finance' && (
-                    <div style={{ marginTop: 10, padding: '8px 12px', background: 'rgba(0,168,150,.08)', borderRadius: 7, fontSize: 11, color: 'var(--teal)' }}>
+                    <div style={{ marginTop: 10, padding: '8px 12px', background: 'rgba(94,140,135,.08)', borderRadius: 7, fontSize: 11, color: 'var(--teal)' }}>
                       <i className="fa-solid fa-circle-info" style={{ marginRight: 6 }} />
                       Finalize o setup — configure a conexão em <strong>Conta PJ</strong>.
                     </div>

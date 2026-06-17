@@ -68,7 +68,7 @@ export default function AceitarConvitePage({ params }: { params: Promise<{ token
     <div style={{ minHeight: '100vh', background: '#f8fafc', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
       <div style={{ background: '#fff', borderRadius: 16, boxShadow: '0 4px 24px rgba(0,0,0,.08)', padding: '40px 36px', maxWidth: 420, width: '100%', textAlign: 'center' }}>
         <div style={{ fontSize: 24, fontWeight: 800, color: '#0d1b2a', marginBottom: 24 }}>
-          Factor<span style={{ color: '#00A896' }}>One</span>
+          Factor<span style={{ color: 'var(--teal)' }}>One</span>
         </div>
 
         {estado === 'loading' && (
@@ -123,7 +123,7 @@ export default function AceitarConvitePage({ params }: { params: Promise<{ token
               <button
                 onClick={fazerLogin}
                 disabled={loginLoading}
-                style={{ background: '#00A896', color: '#fff', border: 'none', borderRadius: 8, padding: '12px', fontWeight: 700, fontSize: 14, cursor: 'pointer', marginTop: 4 }}
+                style={{ background: 'var(--teal)', color: '#fff', border: 'none', borderRadius: 8, padding: '12px', fontWeight: 700, fontSize: 14, cursor: 'pointer', marginTop: 4 }}
               >
                 {loginLoading ? 'Entrando...' : 'Aceitar convite'}
               </button>

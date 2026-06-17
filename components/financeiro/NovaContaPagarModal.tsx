@@ -85,7 +85,7 @@ export default function NovaContaPagarModal({ open, onClose, onSaved }: Props) {
           <label className="form-label">Categoria</label>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 7 }}>
             {CATS_PAGAR.map((c) => (
-              <button key={c.label} type="button" onClick={() => setCategoria(c.label)} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5, padding: '9px 6px', borderRadius: 9, cursor: 'pointer', fontSize: 10, fontWeight: 600, border: categoria === c.label ? '2px solid var(--teal)' : '1px solid var(--gray-100)', background: categoria === c.label ? 'rgba(0,168,150,0.08)' : '#fafafa', color: categoria === c.label ? 'var(--teal)' : 'var(--gray-500)', transition: 'all 0.15s' }}>
+              <button key={c.label} type="button" onClick={() => setCategoria(c.label)} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5, padding: '9px 6px', borderRadius: 9, cursor: 'pointer', fontSize: 10, fontWeight: 600, border: categoria === c.label ? '2px solid var(--teal)' : '1px solid var(--gray-100)', background: categoria === c.label ? 'rgba(94,140,135,0.08)' : '#fafafa', color: categoria === c.label ? 'var(--teal)' : 'var(--gray-500)', transition: 'all 0.15s' }}>
                 <i className={`fa-solid ${c.icon}`} style={{ fontSize: 16 }} />
                 {c.label}
               </button>

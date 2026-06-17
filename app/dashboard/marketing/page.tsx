@@ -25,7 +25,7 @@ type Lead = {
 const TIPO_CAMP: Record<string, { label: string; icon: string; color: string }> = {
   google_ads:  { label: 'Google Ads',  icon: 'fa-google',    color: '#4285F4' },
   meta_ads:    { label: 'Meta Ads',    icon: 'fa-meta',      color: '#0866FF' },
-  email:       { label: 'E-mail',      icon: 'fa-envelope',  color: '#00A896' },
+  email:       { label: 'E-mail',      icon: 'fa-envelope',  color: 'var(--teal)' },
   seo:         { label: 'SEO',         icon: 'fa-magnifying-glass-chart', color: '#FF6B35' },
   social:      { label: 'Social',      icon: 'fa-share-nodes', color: '#7C3AED' },
   outro:       { label: 'Outro',       icon: 'fa-bullhorn',  color: '#64748b' },
@@ -35,7 +35,7 @@ const STATUS_CONT: Record<string, { label: string; color: string; bg: string }> 
   ideia:      { label: 'Ideia',     color: '#94a3b8', bg: '#f1f5f9' },
   producao:   { label: 'Produção',  color: '#F59E0B', bg: '#fffbeb' },
   revisao:    { label: 'Revisão',   color: '#7C3AED', bg: 'rgba(124,58,237,.08)' },
-  agendado:   { label: 'Agendado',  color: 'var(--teal)', bg: 'rgba(0,168,150,.08)' },
+  agendado:   { label: 'Agendado',  color: 'var(--teal)', bg: 'rgba(94,140,135,.08)' },
   publicado:  { label: 'Publicado', color: 'var(--green)', bg: 'rgba(45,155,111,.08)' },
   cancelado:  { label: 'Cancelado', color: 'var(--red)', bg: 'rgba(192,80,74,.08)' },
 }

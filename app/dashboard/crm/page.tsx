@@ -23,7 +23,7 @@ const ETAPAS = [
   { id: 'prospeccao', label: 'Prospecção', color: '#94a3b8', bg: '#f1f5f9', prob: 10 },
   { id: 'qualificado', label: 'Qualificado', color: '#7C3AED', bg: 'rgba(124,58,237,.08)', prob: 30 },
   { id: 'proposta', label: 'Proposta', color: 'var(--gold)', bg: '#fffbeb', prob: 60 },
-  { id: 'negociacao', label: 'Negociação', color: 'var(--teal)', bg: 'rgba(0,168,150,.08)', prob: 80 },
+  { id: 'negociacao', label: 'Negociação', color: 'var(--teal)', bg: 'rgba(94,140,135,.08)', prob: 80 },
   { id: 'fechado_ganho', label: 'Ganho', color: 'var(--green)', bg: 'rgba(45,155,111,.08)', prob: 100 },
   { id: 'fechado_perdido', label: 'Perdido', color: 'var(--red)', bg: 'rgba(192,80,74,.08)', prob: 0 },
 ]
@@ -354,7 +354,7 @@ export default function CRMPage() {
             {/* Tipo seletor */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 6, marginBottom: 16 }}>
               {TIPO_ATI.map(t => (
-                <button key={t.v} type="button" onClick={() => setFormAtv(f => ({ ...f, tipo: t.v }))} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, padding: '8px 4px', borderRadius: 8, border: formAtv.tipo === t.v ? '2px solid var(--teal)' : '1px solid var(--gray-100)', background: formAtv.tipo === t.v ? 'rgba(0,168,150,.06)' : '#fafafa', cursor: 'pointer', fontSize: 10, fontWeight: 600, color: formAtv.tipo === t.v ? 'var(--teal)' : 'var(--gray-500)' }}>
+                <button key={t.v} type="button" onClick={() => setFormAtv(f => ({ ...f, tipo: t.v }))} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, padding: '8px 4px', borderRadius: 8, border: formAtv.tipo === t.v ? '2px solid var(--teal)' : '1px solid var(--gray-100)', background: formAtv.tipo === t.v ? 'rgba(94,140,135,.06)' : '#fafafa', cursor: 'pointer', fontSize: 10, fontWeight: 600, color: formAtv.tipo === t.v ? 'var(--teal)' : 'var(--gray-500)' }}>
                   <i className={`fa-solid ${t.i}`} style={{ fontSize: 15 }} />{t.l}
                 </button>
               ))}

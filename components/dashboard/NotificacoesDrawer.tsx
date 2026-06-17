@@ -118,7 +118,7 @@ export default function NotificacoesDrawer({ empresaId, open, onClose, onRead }:
                 onClick={() => { if (!n.lida) void marcarLida(n.id) }}
                 style={{
                   padding: '14px 20px', borderBottom: '1px solid #f1f5f9', cursor: n.lida ? 'default' : 'pointer',
-                  background: n.lida ? '#fff' : 'rgba(0,168,150,.03)',
+                  background: n.lida ? '#fff' : 'rgba(94,140,135,.03)',
                   display: 'flex', gap: 12, alignItems: 'flex-start',
                 }}
               >

@@ -48,7 +48,7 @@ const FEATURES = [
     desc: 'Verificação KYC completa com análise de sócios e documentos conforme regulamentação.',
     icon: 'fa-lock',
     color: 'var(--teal)',
-    bg: 'rgba(0,168,150,.05)',
+    bg: 'rgba(94,140,135,.05)',
     items: ['Verificação de identidade', 'Checagem de sócios/diretores', 'Documentos com criptografia', 'KYC/AML Compliance'],
   },
   {
@@ -87,7 +87,7 @@ const ECOSYSTEM = [
   {
     title: 'Integrações e Ferramentas',
     color: 'var(--teal)',
-    bg: 'rgba(0,168,150,.04)',
+    bg: 'rgba(94,140,135,.04)',
     services: [
       { icon: 'fa-plug', name: 'ERP Full', href: '/dashboard/integracoes' },
       { icon: 'fa-link', name: 'Open Finance', href: '/dashboard/conta-pj/conectar-banco' },
@@ -121,7 +121,7 @@ export default function AbrirContaPJPage() {
       {/* HERO */}
       <div style={{ background: 'linear-gradient(135deg, var(--navy) 0%, #1a3a6b 100%)', borderRadius: 16, padding: '32px 36px', marginBottom: 24, color: '#fff', position: 'relative', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', top: -40, right: -40, width: 200, height: 200, borderRadius: '50%', background: 'rgba(255,255,255,.04)' }} />
-        <div style={{ position: 'absolute', bottom: -60, right: 80, width: 160, height: 160, borderRadius: '50%', background: 'rgba(0,168,150,.12)' }} />
+        <div style={{ position: 'absolute', bottom: -60, right: 80, width: 160, height: 160, borderRadius: '50%', background: 'rgba(94,140,135,.12)' }} />
         <div style={{ position: 'relative', zIndex: 1 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
             <div style={{ width: 40, height: 40, borderRadius: 10, background: 'rgba(255,255,255,.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20 }}></div>
@@ -212,12 +212,12 @@ export default function AbrirContaPJPage() {
             <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.04em', marginBottom: 14 }}>Ações rápidas</div>
             <div style={{ display: 'flex', gap: 10 }}>
               {[
-                { emoji: 'fa-bolt', label: 'PIX', color: 'var(--teal)', bg: 'rgba(0,168,150,.1)' },
+                { emoji: 'fa-bolt', label: 'PIX', color: 'var(--teal)', bg: 'rgba(94,140,135,.1)' },
                 { emoji: 'fa-sack-dollar', label: 'Pagar', color: 'var(--navy)', bg: 'rgba(26,43,74,.08)' },
                 { emoji: 'fa-clipboard-list', label: 'Cobrar', color: 'var(--gold)', bg: 'rgba(184,146,42,.1)' },
                 { emoji: 'fa-right-left', label: 'Transferir', color: '#7C3AED', bg: 'rgba(124,58,237,.08)' },
                 { emoji: 'fa-chart-column', label: 'Extrato', color: 'var(--green)', bg: 'rgba(45,155,111,.08)' },
-                { emoji: 'fa-link', label: 'Open Finance', color: 'var(--teal)', bg: 'rgba(0,168,150,.08)' },
+                { emoji: 'fa-link', label: 'Open Finance', color: 'var(--teal)', bg: 'rgba(94,140,135,.08)' },
               ].map(a => (
                 <div key={a.label} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5, padding: '10px 14px', borderRadius: 10, background: a.bg, flex: 1 }}>
                   <span style={{ fontSize: 20 }}><i className={`fa-solid ${a.emoji}`} /></span>
@@ -270,15 +270,15 @@ export default function AbrirContaPJPage() {
                 <AreaChart data={BALANCE_DATA}>
                   <defs>
                     <linearGradient id="gradSaldoAbrir" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#00A896" stopOpacity={0.25} />
-                      <stop offset="95%" stopColor="#00A896" stopOpacity={0} />
+                      <stop offset="5%" stopColor="var(--teal)" stopOpacity={0.25} />
+                      <stop offset="95%" stopColor="var(--teal)" stopOpacity={0} />
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="var(--gray-100)" vertical={false} />
                   <XAxis dataKey="dia" tick={{ fontSize: 9, fill: 'var(--gray-300)' }} axisLine={false} tickLine={false} />
                   <YAxis tick={{ fontSize: 8, fill: 'var(--gray-300)' }} axisLine={false} tickLine={false} tickFormatter={fmtK} width={36} />
                   <Tooltip formatter={(v: number) => [fmtK(v), 'Saldo']} contentStyle={{ fontSize: 10, borderRadius: 8, border: '1px solid var(--gray-100)' }} />
-                  <Area type="monotone" dataKey="saldo" stroke="#00A896" strokeWidth={2} fill="url(#gradSaldoAbrir)" dot={false} activeDot={{ r: 3 }} />
+                  <Area type="monotone" dataKey="saldo" stroke="var(--teal)" strokeWidth={2} fill="url(#gradSaldoAbrir)" dot={false} activeDot={{ r: 3 }} />
                 </AreaChart>
               </ResponsiveContainer>
             </div>

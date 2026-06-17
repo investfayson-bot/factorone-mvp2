@@ -122,7 +122,7 @@ export default function EquipePage() {
             </thead>
             <tbody>
               {/* Current user (owner) */}
-              <tr style={{ background: 'rgba(0,168,150,.03)' }}>
+              <tr style={{ background: 'rgba(94,140,135,.03)' }}>
                 <td>
                   <div style={{ fontWeight: 700 }}>{currentUserEmail}</div>
                   <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>Você (proprietário)</div>

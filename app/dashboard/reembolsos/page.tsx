@@ -393,7 +393,7 @@ export default function ReembolsosPage() {
                       display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5,
                       padding: '9px 6px', borderRadius: 9, cursor: 'pointer', fontSize: 10, fontWeight: 600,
                       border: form.categoria === c.label ? '2px solid var(--teal)' : '1px solid var(--gray-100)',
-                      background: form.categoria === c.label ? 'rgba(0,168,150,0.08)' : '#fafafa',
+                      background: form.categoria === c.label ? 'rgba(94,140,135,0.08)' : '#fafafa',
                       color: form.categoria === c.label ? 'var(--teal)' : 'var(--gray-500)',
                       transition: 'all 0.15s',
                     }}

@@ -12,12 +12,12 @@ type Conta = { id: string; saldo_disponivel: number; saldo: number; agencia: str
 type Tx = { id: string; tipo: 'credito' | 'debito'; descricao: string; data_transacao: string; valor: number; contraparte_nome?: string | null }
 
 const ACOES = [
-  { label: 'PIX', emoji: 'fa-bolt', href: '/dashboard/conta-pj/transferencias', bg: 'rgba(0,168,150,.1)', color: 'var(--teal)' },
+  { label: 'PIX', emoji: 'fa-bolt', href: '/dashboard/conta-pj/transferencias', bg: 'rgba(94,140,135,.1)', color: 'var(--teal)' },
   { label: 'Pagar', emoji: 'fa-sack-dollar', href: '/dashboard/financeiro', bg: 'rgba(26,43,74,.08)', color: 'var(--navy)' },
   { label: 'Cobrar', emoji: 'fa-clipboard-list', href: '/dashboard/financeiro', bg: 'rgba(184,146,42,.1)', color: 'var(--gold)' },
   { label: 'Transferir', emoji: 'fa-right-left', href: '/dashboard/conta-pj/transferencias', bg: 'rgba(124,58,237,.08)', color: '#7C3AED' },
   { label: 'Extrato', emoji: 'fa-chart-column', href: '/dashboard/conta-pj/extrato', bg: 'rgba(45,155,111,.08)', color: 'var(--green)' },
-  { label: 'Open Finance', emoji: 'fa-link', href: '/dashboard/conta-pj/conectar-banco', bg: 'rgba(0,168,150,.08)', color: 'var(--teal)' },
+  { label: 'Open Finance', emoji: 'fa-link', href: '/dashboard/conta-pj/conectar-banco', bg: 'rgba(94,140,135,.08)', color: 'var(--teal)' },
 ]
 
 const FUNCIONALIDADES = [
@@ -126,7 +126,7 @@ function FileUploadBox({ label, accept, value, onChange }: { label: string; acce
   return (
     <div
       onClick={() => ref.current?.click()}
-      style={{ border: `1.5px dashed ${value ? 'var(--teal)' : 'var(--gray-200)'}`, borderRadius: 10, padding: '18px 16px', textAlign: 'center', cursor: 'pointer', background: value ? 'rgba(0,168,150,.04)' : 'var(--gray-50)', transition: 'all .15s', marginBottom: 12 }}
+      style={{ border: `1.5px dashed ${value ? 'var(--teal)' : 'var(--gray-200)'}`, borderRadius: 10, padding: '18px 16px', textAlign: 'center', cursor: 'pointer', background: value ? 'rgba(94,140,135,.04)' : 'var(--gray-50)', transition: 'all .15s', marginBottom: 12 }}
     >
       <input ref={ref} type="file" accept={accept} style={{ display: 'none' }} onChange={e => { if (e.target.files?.[0]) onChange(e.target.files[0].name) }} />
       {value ? (
@@ -742,15 +742,15 @@ export default function ContaPJPage() {
                     <AreaChart data={balanceData}>
                       <defs>
                         <linearGradient id="gradSaldo" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="#00A896" stopOpacity={0.25} />
-                          <stop offset="95%" stopColor="#00A896" stopOpacity={0} />
+                          <stop offset="5%" stopColor="var(--teal)" stopOpacity={0.25} />
+                          <stop offset="95%" stopColor="var(--teal)" stopOpacity={0} />
                         </linearGradient>
                       </defs>
                       <CartesianGrid strokeDasharray="3 3" stroke="var(--gray-100)" vertical={false} />
                       <XAxis dataKey="date" tick={{ fontSize: 9, fill: 'var(--gray-300)' }} axisLine={false} tickLine={false} interval={6} />
                       <YAxis tick={{ fontSize: 9, fill: 'var(--gray-300)' }} axisLine={false} tickLine={false} tickFormatter={v => formatBRL(v).replace('R$ ', '')} width={48} />
                       <Tooltip formatter={(v: number) => [formatBRL(v), 'Saldo']} contentStyle={{ fontSize: 11, borderRadius: 8, border: '1px solid var(--gray-100)' }} />
-                      <Area type="monotone" dataKey="saldo" stroke="#00A896" strokeWidth={2} fill="url(#gradSaldo)" dot={false} activeDot={{ r: 4 }} />
+                      <Area type="monotone" dataKey="saldo" stroke="var(--teal)" strokeWidth={2} fill="url(#gradSaldo)" dot={false} activeDot={{ r: 4 }} />
                     </AreaChart>
                   </ResponsiveContainer>
                 </>
