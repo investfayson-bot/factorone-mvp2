@@ -136,6 +136,8 @@ const pageTitles: Record<string, string> = {
   '/dashboard/crm': 'CRM',
   '/dashboard/marketing': 'Marketing',
   '/dashboard/logistica': 'Logística',
+  '/dashboard/estoque': 'Gestão de Estoque',
+  '/dashboard/folha': 'Folha de Pagamento',
   '/dashboard/receitas': 'Receitas',
   '/dashboard/equipe': 'Equipe',
   '/dashboard/automacoes': 'Automações',
