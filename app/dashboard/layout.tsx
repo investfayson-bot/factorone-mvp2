@@ -7,7 +7,7 @@ import { usePathname, useRouter } from 'next/navigation'
 import type { User } from '@supabase/supabase-js'
 import { supabase } from '@/lib/supabase'
 import Link from 'next/link'
-import { MARKET_APPS, getInstalledIds } from '@/lib/marketplace'
+import { MARKET_APPS, fetchInstalledIds } from '@/lib/marketplace'
 
 type NavItem = { href: string; icon: string; label: string; badge?: string; badgeColor?: string; match?: (p: string) => boolean }
 type NavGroup = {
@@ -167,11 +167,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [installedIds, setInstalledIds] = useState<string[]>([])
 
   useEffect(() => {
-    const sync = () => setInstalledIds(getInstalledIds())
+    const sync = () => { void fetchInstalledIds().then(setInstalledIds) }
     sync()
     window.addEventListener('fo-apps-changed', sync)
-    window.addEventListener('storage', sync)
-    return () => { window.removeEventListener('fo-apps-changed', sync); window.removeEventListener('storage', sync) }
+    return () => { window.removeEventListener('fo-apps-changed', sync) }
   }, [])
   const [notifOpen, setNotifOpen] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(false)

@@ -38,27 +38,33 @@ export const MARKET_APPS: MarketApp[] = [
   { id: 'tax',       name: 'Tax Compliance',         icon: 'fa-scale-balanced',     iconColor: '#1D4ED8', iconBg: '#DBEAFE', rating: 4.8, rev: 69,  desc: 'Conformidade fiscal e obrigações acessórias.',      badge: 'new',     cat: 'fiscal',      navGroup: 'Contabilidade & Fiscal', href: '/dashboard/app/tax',            hasPage: false },
 ]
 
+import { supabase } from '@/lib/supabase'
+
 export function appById(id: string): MarketApp | undefined {
   return MARKET_APPS.find(a => a.id === id)
 }
 
-const KEY = 'fo_installed_apps'
-
-export function getInstalledIds(): string[] {
-  if (typeof window === 'undefined') return []
-  try { return JSON.parse(localStorage.getItem(KEY) || '[]') } catch { return [] }
+async function authHeaders(): Promise<Record<string, string>> {
+  const { data } = await supabase.auth.getSession()
+  const token = data.session?.access_token
+  return { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) }
 }
 
-export function isInstalled(id: string): boolean {
-  return getInstalledIds().includes(id)
+/** Lista os apps instalados (por empresa/usuário, via banco com RLS). */
+export async function fetchInstalledIds(): Promise<string[]> {
+  try {
+    const res = await fetch('/api/apps', { headers: await authHeaders() })
+    const d = await res.json()
+    return res.ok ? (d.apps ?? []) : []
+  } catch { return [] }
 }
 
-/** Alterna instalação, persiste e avisa a sidebar. Retorna o novo estado (instalado?). */
-export function toggleInstalled(id: string): boolean {
-  const current = getInstalledIds()
-  const nowInstalled = !current.includes(id)
-  const next = nowInstalled ? [...current, id] : current.filter(x => x !== id)
-  localStorage.setItem(KEY, JSON.stringify(next))
-  window.dispatchEvent(new Event('fo-apps-changed'))
-  return nowInstalled
+/** Instala/desinstala no banco e avisa a sidebar. */
+export async function setInstalled(appId: string, install: boolean): Promise<void> {
+  await fetch('/api/apps', {
+    method: install ? 'POST' : 'DELETE',
+    headers: await authHeaders(),
+    body: JSON.stringify({ app_id: appId }),
+  })
+  if (typeof window !== 'undefined') window.dispatchEvent(new Event('fo-apps-changed'))
 }

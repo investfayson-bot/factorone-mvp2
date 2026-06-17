@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import toast from 'react-hot-toast'
-import { MARKET_APPS, getInstalledIds, toggleInstalled, type MarketApp } from '@/lib/marketplace'
+import { MARKET_APPS, fetchInstalledIds, setInstalled, type MarketApp } from '@/lib/marketplace'
 
 type Filter = 'all' | 'financeiro' | 'operacional' | 'vendas' | 'rh' | 'fiscal'
 
@@ -16,16 +16,27 @@ const FILTERS: { key: Filter; label: string }[] = [
 ]
 
 export default function MarketplacePage() {
-  const [installed, setInstalled] = useState<string[]>([])
+  const [installed, setInstalledState] = useState<string[]>([])
+  const [busy, setBusy] = useState<string | null>(null)
   const [filter, setFilter] = useState<Filter>('all')
   const [search, setSearch] = useState('')
 
-  useEffect(() => { setInstalled(getInstalledIds()) }, [])
+  useEffect(() => { fetchInstalledIds().then(setInstalledState) }, [])
 
-  function onToggle(a: MarketApp) {
-    const nowInstalled = toggleInstalled(a.id)
-    setInstalled(getInstalledIds())
-    toast.success(nowInstalled ? `${a.name} adicionado ao menu!` : `${a.name} removido.`)
+  async function onToggle(a: MarketApp) {
+    const willInstall = !installed.includes(a.id)
+    setBusy(a.id)
+    // otimista
+    setInstalledState(prev => willInstall ? [...prev, a.id] : prev.filter(x => x !== a.id))
+    try {
+      await setInstalled(a.id, willInstall)
+      toast.success(willInstall ? `${a.name} adicionado ao menu!` : `${a.name} removido.`)
+    } catch {
+      setInstalledState(await fetchInstalledIds()) // reverte em caso de erro
+      toast.error('Falha ao atualizar. Tente de novo.')
+    } finally {
+      setBusy(null)
+    }
   }
 
   const visible = MARKET_APPS
@@ -136,12 +147,13 @@ export default function MarketplacePage() {
                 )}
                 <button
                   onClick={() => onToggle(a)}
+                  disabled={busy === a.id}
                   style={{
-                    padding: '5px 14px', borderRadius: 8, fontSize: 11.5, fontWeight: 600, cursor: 'pointer',
+                    padding: '5px 14px', borderRadius: 8, fontSize: 11.5, fontWeight: 600, cursor: busy === a.id ? 'default' : 'pointer',
                     border: isOn ? '1px solid rgba(45,155,111,.3)' : 'none',
                     background: isOn ? 'rgba(45,155,111,.1)' : 'var(--navy)',
                     color: isOn ? 'var(--green)' : '#fff',
-                    display: 'flex', alignItems: 'center', gap: 5,
+                    display: 'flex', alignItems: 'center', gap: 5, opacity: busy === a.id ? .6 : 1,
                   }}
                 >
                   <i className={`fa-solid ${isOn ? 'fa-check' : 'fa-plus'}`} style={{ fontSize: 10 }} />
