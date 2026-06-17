@@ -47,13 +47,18 @@ export async function POST(req: NextRequest) {
       // Cria/acha uma conta bancária nativa por banco conectado (open_finance_id = id da conta na Belvo).
       const { data: bcontas } = await supabase
         .from('belvo_contas')
-        .select('belvo_id, nome, instituicao, categoria, saldo')
+        .select('belvo_id, nome, instituicao, categoria, saldo, disponivel')
       const mapaConta = new Map<string, string>() // belvo account id -> contas_bancarias.id
       for (const bc of bcontas ?? []) {
         const belvoId = bc.belvo_id as string
+        const saldo = bc.saldo ?? 0
+        const disponivel = bc.disponivel ?? bc.saldo ?? 0
         const existente = await supabase.from('contas_bancarias').select('id').eq('empresa_id', empresaId).eq('open_finance_id', belvoId).maybeSingle()
         let contaId = existente.data?.id as string | undefined
-        if (!contaId) {
+        if (contaId) {
+          // Atualiza o saldo a cada sync.
+          await supabase.from('contas_bancarias').update({ saldo, saldo_disponivel: disponivel }).eq('id', contaId)
+        } else {
           const cat = (bc.categoria as string | null ?? '').toUpperCase()
           const tipo = cat.includes('SAV') || cat.includes('POUP') ? 'poupanca' : 'corrente'
           const nova = await supabase.from('contas_bancarias').insert({
@@ -61,7 +66,8 @@ export async function POST(req: NextRequest) {
             banco_nome: (bc.instituicao as string | null) || (bc.nome as string | null) || 'Banco (Open Finance)',
             tipo,
             open_finance_id: belvoId,
-            saldo: bc.saldo ?? 0,
+            saldo,
+            saldo_disponivel: disponivel,
             status: 'ativa',
           }).select('id').maybeSingle()
           contaId = nova.data?.id as string | undefined
