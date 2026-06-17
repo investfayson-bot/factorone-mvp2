@@ -22,7 +22,7 @@ function buildNavGroups(badges: { reembolsos: number; aprovacoes: number }): Nav
       items: [
         { href: '/dashboard', icon: 'fa-chart-line', label: 'Dashboard', match: (p) => p === '/dashboard' || p === '/dashboard/' },
         { href: '/dashboard/aicfo', icon: 'fa-robot', label: 'AI CFO' },
-        { href: '/hub', icon: 'fa-hexagon-nodes', label: 'FactorHub', badge: 'NOVO', badgeColor: '#7C3AED' },
+        // FactorHub temporariamente fora da plataforma (código mantido em app/hub/*)
       ],
     },
     {
