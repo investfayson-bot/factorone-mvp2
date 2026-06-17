@@ -26,6 +26,8 @@ export type KpiDef = {
 }
 type Row = Record<string, unknown>
 
+export type RowActionCtx = { empresaId: string; reload: () => void }
+
 export type CrudConfig = {
   table: string
   titulo: string
@@ -36,6 +38,8 @@ export type CrudConfig = {
   fields: FieldDef[]
   columns: ColDef[]
   kpis: KpiDef[]
+  /** Ações extras por linha (ex.: marcar como paga). Renderizadas antes do excluir. */
+  actions?: (row: Row, ctx: RowActionCtx) => React.ReactNode
 }
 
 const th: React.CSSProperties = { textAlign: 'left', padding: '10px 14px', fontWeight: 600 }
@@ -172,8 +176,9 @@ export default function GenericCrud(cfg: CrudConfig) {
                     else content = (v === null || v === undefined || v === '') ? '—' : String(v)
                     return <td key={c.key} style={{ ...td, textAlign: c.align ?? 'left', fontWeight: i === 0 ? 600 : 400, color: i === 0 ? 'var(--navy)' : c.align === 'right' ? 'var(--navy)' : 'var(--gray-600,#4b5563)' }}>{content}</td>
                   })}
-                  <td style={{ ...td, textAlign: 'right' }}>
-                    <button onClick={() => remover(r.id as string)} title="Remover" style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--gray-400)' }}>
+                  <td style={{ ...td, textAlign: 'right', whiteSpace: 'nowrap' }}>
+                    {cfg.actions?.(r, { empresaId, reload: carregar })}
+                    <button onClick={() => remover(r.id as string)} title="Remover" style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--gray-400)', marginLeft: 8 }}>
                       <i className="fa-solid fa-trash" style={{ fontSize: 12 }} />
                     </button>
                   </td>
