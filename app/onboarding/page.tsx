@@ -6,10 +6,9 @@ import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
 
 type Screen = 'splash' | 'perfil' | 'empresa' | 'financeiro' | 'pronto'
-type FinOpcao = 'open_finance' | 'manual' | 'extrato' | 'cartao' | 'pular' | null
+type FinOpcao = 'open_finance' | 'pular' | null
 
 const SETORES = ['Tecnologia', 'Comércio', 'Serviços', 'Indústria', 'Saúde', 'Educação', 'Construção', 'Agronegócio', 'Transporte / Logística', 'Alimentação', 'Outro']
-const BANCOS  = ['Banco do Brasil', 'Bradesco', 'Caixa Econômica', 'Itaú', 'Santander', 'Nubank', 'Inter', 'Sicoob', 'XP', 'BTG Pactual', 'Outro']
 
 const PJ_STEPS = [
   { key: 'perfil',     label: 'Tipo de conta'   },
@@ -28,7 +27,6 @@ export default function OnboardingPage() {
 
   const [empresa, setEmpresa] = useState({ nome: '', cnpj: '', setor: '', telefone: '' })
   const [finOpcao, setFinOpcao] = useState<FinOpcao>(null)
-  const [banco, setBanco]     = useState({ nome: '', tipo: 'corrente' })
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
@@ -37,6 +35,19 @@ export default function OnboardingPage() {
       setUserName(n)
     })
   }, [])
+
+  // Tipo de conta escolhido ANTES do login (tela de auth) — pula a etapa de seleção.
+  const [tipoConsumido, setTipoConsumido] = useState(false)
+  useEffect(() => {
+    if (tipoConsumido) return
+    const tipo = localStorage.getItem('fo_account_type')
+    if (tipo !== 'pessoal' && tipo !== 'empresarial') return
+    setTipoConsumido(true)
+    localStorage.removeItem('fo_account_type')
+    if (tipo === 'pessoal') void escolherPessoal()
+    else void escolherEmpresarial()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tipoConsumido])
 
   /* ── helpers ── */
   async function iniciar() { setScreen('perfil') }
@@ -83,14 +94,6 @@ export default function OnboardingPage() {
   async function salvarFinanceiro() {
     setLoading(true)
     try {
-      if (finOpcao === 'manual' && banco.nome) {
-        await supabase.from('contas_bancarias').insert({
-          empresa_id: empresaId,
-          nome: banco.nome,
-          tipo: banco.tipo,
-          ativa: true,
-        })
-      }
       setScreen('pronto')
       supabase.auth.getSession().then(({ data: { session } }) => {
         if (session?.access_token) {
@@ -335,87 +338,12 @@ export default function OnboardingPage() {
                 {finOpcao === 'open_finance' && <i className="fa-solid fa-circle-check" style={{ color: 'var(--teal)', fontSize: 20, alignSelf: 'center', flexShrink: 0 }} />}
               </button>
 
-              {/* Importar extrato */}
-              <button
-                onClick={() => setFinOpcao(finOpcao === 'extrato' ? null : 'extrato')}
-                style={{ display: 'flex', gap: 16, padding: '16px 20px', borderRadius: 12, cursor: 'pointer', border: finOpcao === 'extrato' ? '2px solid var(--gold)' : '1.5px solid var(--gray-100)', background: finOpcao === 'extrato' ? 'rgba(184,146,42,.04)' : '#fff', textAlign: 'left', width: '100%' }}
-              >
-                <div style={{ width: 48, height: 48, borderRadius: 12, background: 'rgba(184,146,42,.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  <i className="fa-solid fa-file-import" style={{ color: 'var(--gold)', fontSize: 18 }} />
-                </div>
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--navy)', marginBottom: 4 }}>Importar dados financeiros</div>
-                  <div style={{ fontSize: 11, color: 'var(--gray-400)', lineHeight: 1.6 }}>Faça upload do extrato OFX ou CSV exportado pelo seu internet banking. Categorizamos tudo por IA.</div>
-                  {finOpcao === 'extrato' && (
-                    <div style={{ marginTop: 10, padding: '8px 12px', background: 'rgba(184,146,42,.08)', borderRadius: 7, fontSize: 11, color: 'var(--gold)' }}>
-                      <i className="fa-solid fa-circle-info" style={{ marginRight: 6 }} />
-                      Após o setup, vá em <strong>Conta PJ → Importar OFX/CSV</strong>.
-                    </div>
-                  )}
-                </div>
-                {finOpcao === 'extrato' && <i className="fa-solid fa-circle-check" style={{ color: 'var(--gold)', fontSize: 20, alignSelf: 'center', flexShrink: 0 }} />}
-              </button>
-
-              {/* Cartão corporativo */}
-              <button
-                onClick={() => setFinOpcao(finOpcao === 'cartao' ? null : 'cartao')}
-                style={{ display: 'flex', gap: 16, padding: '16px 20px', borderRadius: 12, cursor: 'pointer', border: finOpcao === 'cartao' ? '2px solid #7C3AED' : '1.5px solid var(--gray-100)', background: finOpcao === 'cartao' ? 'rgba(124,58,237,.04)' : '#fff', textAlign: 'left', width: '100%' }}
-              >
-                <div style={{ width: 48, height: 48, borderRadius: 12, background: 'rgba(124,58,237,.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  <i className="fa-solid fa-credit-card" style={{ color: '#7C3AED', fontSize: 17 }} />
-                </div>
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--navy)', marginBottom: 4 }}>Começar pelo cartão corporativo</div>
-                  <div style={{ fontSize: 11, color: 'var(--gray-400)', lineHeight: 1.6 }}>Vincule seu cartão e comece controlando gastos, limites e faturas imediatamente.</div>
-                  {finOpcao === 'cartao' && (
-                    <div style={{ marginTop: 8, fontSize: 10, color: '#7C3AED', fontWeight: 600 }}>
-                      <i className="fa-solid fa-arrow-right" style={{ marginRight: 5 }} />Configure em Cartões após o cadastro
-                    </div>
-                  )}
-                </div>
-                {finOpcao === 'cartao' && <i className="fa-solid fa-circle-check" style={{ color: '#7C3AED', fontSize: 20, alignSelf: 'center', flexShrink: 0 }} />}
-              </button>
-
-              {/* Cadastrar conta manualmente — secondary */}
-              <button
-                onClick={() => setFinOpcao(finOpcao === 'manual' ? null : 'manual')}
-                style={{ display: 'flex', gap: 14, padding: '13px 18px', borderRadius: 10, cursor: 'pointer', border: finOpcao === 'manual' ? '2px solid var(--navy)' : '1px solid var(--gray-100)', background: finOpcao === 'manual' ? 'rgba(26,43,74,.03)' : '#fafafa', textAlign: 'left', width: '100%' }}
-              >
-                <div style={{ width: 36, height: 36, borderRadius: 8, background: 'rgba(26,43,74,.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  <i className="fa-solid fa-pen-to-square" style={{ color: 'var(--navy)', fontSize: 13 }} />
-                </div>
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--navy)' }}>Cadastrar conta manualmente</div>
-                  <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>Informe banco e tipo de conta. Importe extratos depois.</div>
-                </div>
-                {finOpcao === 'manual' && <i className="fa-solid fa-circle-check" style={{ color: 'var(--navy)', fontSize: 16, alignSelf: 'center', flexShrink: 0 }} />}
-              </button>
-
-              {finOpcao === 'manual' && (
-                <div style={{ background: '#F8FAFC', border: '1px solid var(--gray-100)', borderRadius: 10, padding: '16px 18px', display: 'flex', flexDirection: 'column', gap: 12 }}>
-                  <div className="form-group" style={{ margin: 0 }}>
-                    <label className="form-label">Banco</label>
-                    <select className="form-input" value={banco.nome} onChange={e => setBanco(p => ({ ...p, nome: e.target.value }))}>
-                      <option value="">Selecione</option>
-                      {BANCOS.map(b => <option key={b} value={b}>{b}</option>)}
-                    </select>
-                  </div>
-                  <div className="form-group" style={{ margin: 0 }}>
-                    <label className="form-label">Tipo</label>
-                    <select className="form-input" value={banco.tipo} onChange={e => setBanco(p => ({ ...p, tipo: e.target.value }))}>
-                      <option value="corrente">Conta Corrente</option>
-                      <option value="poupanca">Poupança</option>
-                      <option value="pagamentos">Pagamentos</option>
-                    </select>
-                  </div>
-                </div>
-              )}
             </div>
 
             <div style={{ display: 'flex', gap: 10, marginTop: 20 }}>
               <button className="btn-action btn-ghost" style={{ flex: 1 }} onClick={() => setScreen('empresa')}>Voltar</button>
               <button className="btn-action" style={{ flex: 2, opacity: (loading || !finOpcao) ? .6 : 1 }} onClick={() => void salvarFinanceiro()} disabled={loading || !finOpcao}>
-                {loading ? 'Salvando…' : finOpcao === 'pular' || finOpcao === 'extrato' || finOpcao === 'cartao' ? 'Pular e finalizar' : 'Continuar'}
+                {loading ? 'Salvando…' : 'Continuar'}
               </button>
             </div>
             <div style={{ textAlign: 'center', marginTop: 14 }}>
