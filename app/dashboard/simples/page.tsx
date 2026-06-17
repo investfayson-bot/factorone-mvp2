@@ -80,7 +80,9 @@ export default function SimplesPage() {
   const [anexo, setAnexo] = useState('III')
   const [rbt12, setRbt12] = useState('')
   const [receitaMes, setReceitaMes] = useState('')
+  const [competencia, setCompetencia] = useState(new Date().toISOString().slice(0, 7))
   const [estimando, setEstimando] = useState(false)
+  const [registrando, setRegistrando] = useState(false)
 
   useEffect(() => {
     supabase.auth.getUser().then(async ({ data: { user } }) => {
@@ -116,6 +118,37 @@ export default function SimplesPage() {
   const r = calcular(Number(rbt12) || 0, Number(receitaMes) || 0, anexo)
   const faixas = ANEXOS[anexo].faixas
 
+  // DAS vence no dia 20 do mês seguinte à competência.
+  function vencimentoDAS(comp: string): string {
+    const [y, m] = comp.split('-').map(Number)
+    const prox = new Date(Date.UTC(y, m, 20)) // m (0-based+1) = mês seguinte
+    return prox.toISOString().slice(0, 10)
+  }
+
+  async function registrarDAS() {
+    if (!empresaId) return
+    if (r.das <= 0) { toast.error('Calcule um DAS maior que zero antes de registrar.'); return }
+    setRegistrando(true)
+    try {
+      const nome = `DAS Simples Nacional ${competencia}`
+      const venc = vencimentoDAS(competencia)
+      const payload = { empresa_id: empresaId, nome, tipo: 'DAS', competencia, vencimento: venc, valor: Number(r.das.toFixed(2)), status: 'pendente' }
+      // evita duplicar a mesma competência
+      const { data: existente } = await supabase
+        .from('tax_obrigacoes')
+        .select('id').eq('empresa_id', empresaId).eq('tipo', 'DAS').eq('competencia', competencia).maybeSingle()
+      const { error } = existente
+        ? await supabase.from('tax_obrigacoes').update(payload).eq('id', existente.id)
+        : await supabase.from('tax_obrigacoes').insert(payload)
+      if (error) throw error
+      toast.success(`DAS de ${competencia} ${existente ? 'atualizado' : 'registrado'} no Tax Compliance (vence ${venc}).`)
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : 'Falha ao registrar')
+    } finally {
+      setRegistrando(false)
+    }
+  }
+
   return (
     <div style={{ maxWidth: 920 }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 18, gap: 12, flexWrap: 'wrap' }}>
@@ -145,6 +178,13 @@ export default function SimplesPage() {
             <label className="form-label">Receita do mês (R$)</label>
             <input className="form-input" type="number" value={receitaMes} onChange={e => setReceitaMes(e.target.value)} placeholder="Ex.: 50000" />
           </div>
+          <div className="form-group" style={{ margin: 0 }}>
+            <label className="form-label">Competência</label>
+            <input className="form-input" type="month" value={competencia} onChange={e => setCompetencia(e.target.value)} />
+          </div>
+          <button onClick={registrarDAS} className="btn-action" disabled={registrando || r.das <= 0} style={{ borderRadius: 8, opacity: (registrando || r.das <= 0) ? .6 : 1 }}>
+            {registrando ? 'Registrando…' : 'Registrar DAS no Tax Compliance'}
+          </button>
         </div>
 
         {/* Resultado */}
