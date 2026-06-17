@@ -272,8 +272,8 @@ export default function RelatoriosPage() {
               <button key={l.linha} className="dre-section" style={{ width: '100%', textAlign: 'left', background: 'none', border: 'none', cursor: 'pointer', borderBottom: '1px solid var(--gray-100)', paddingBottom: 7, paddingTop: 7 }} onClick={() => void abrirDrill(l.linha)}>
                 <span className={isTotalLine(l.linha) ? 'dre-total' : 'dre-sub'}>{l.linha}</span>
                 <div style={{ display: 'flex', gap: 24, alignItems: 'center' }}>
-                  <span style={{ fontFamily: "'DM Mono', monospace", fontWeight: isTotalLine(l.linha) ? 800 : 600, color: l.atual >= 0 ? 'var(--green)' : 'var(--red)', fontSize: isTotalLine(l.linha) ? 14 : 13 }}>{fmtBRL(l.atual)}</span>
-                  <span style={{ fontFamily: "'DM Mono', monospace", color: 'var(--gray-400)', fontSize: 12, minWidth: 80 }}>{fmtBRL(ant)}</span>
+                  <span style={{ fontFamily: "'Inter', sans-serif", fontWeight: isTotalLine(l.linha) ? 800 : 600, color: l.atual >= 0 ? 'var(--green)' : 'var(--red)', fontSize: isTotalLine(l.linha) ? 14 : 13 }}>{fmtBRL(l.atual)}</span>
+                  <span style={{ fontFamily: "'Inter', sans-serif", color: 'var(--gray-400)', fontSize: 12, minWidth: 80 }}>{fmtBRL(ant)}</span>
                   <span style={{ fontSize: 11, color: vari >= 0 ? 'var(--green)' : 'var(--red)', fontWeight: 600, minWidth: 50 }}>{vari >= 0 ? '+' : ''}{vari.toFixed(1)}%</span>
                 </div>
               </button>
@@ -317,7 +317,7 @@ export default function RelatoriosPage() {
                 <div key={h.mes} style={{ marginBottom: 8 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, marginBottom: 3 }}>
                     <span>{h.mes}</span>
-                    <span style={{ fontFamily: "'DM Mono',monospace", fontWeight: 700, color: h.lucro >= 0 ? 'var(--green)' : 'var(--red)' }}>{fmtBRL(h.lucro)}</span>
+                    <span style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, color: h.lucro >= 0 ? 'var(--green)' : 'var(--red)' }}>{fmtBRL(h.lucro)}</span>
                   </div>
                   <div style={{ height: 4, background: 'var(--gray-100)', borderRadius: 2 }}>
                     <div style={{ height: '100%', width: `${pct}%`, background: h.lucro >= 0 ? 'var(--green)' : 'var(--red)', borderRadius: 2 }} />
@@ -345,7 +345,7 @@ export default function RelatoriosPage() {
               <thead><tr><th>Métrica</th><th>Valor</th></tr></thead>
               <tbody>
                 {['ebitda', 'ebit', 'lair', 'capital_investido', 'capital_empregado'].map((k) => (
-                  <tr key={k}><td>{k}</td><td style={{ fontFamily: "'DM Mono', monospace" }}>{Number(metricas?.[k] || 0).toLocaleString('pt-BR')}</td></tr>
+                  <tr key={k}><td>{k}</td><td style={{ fontFamily: "'Inter', sans-serif" }}>{Number(metricas?.[k] || 0).toLocaleString('pt-BR')}</td></tr>
                 ))}
               </tbody>
             </table>
@@ -381,10 +381,10 @@ export default function RelatoriosPage() {
               <tbody>
                 {histChart.map((h) => (
                   <tr key={h.mes}>
-                    <td style={{ fontFamily: "'DM Mono', monospace" }}>{h.mes}</td>
+                    <td style={{ fontFamily: "'Inter', sans-serif" }}>{h.mes}</td>
                     <td style={{ color: 'var(--green)', fontWeight: 600 }}>{fmtBRL(h.receita)}</td>
                     <td style={{ color: h.lucro >= 0 ? 'var(--green)' : 'var(--red)', fontWeight: 600 }}>{fmtBRL(h.lucro)}</td>
-                    <td style={{ fontFamily: "'DM Mono', monospace" }}>{h.margem.toFixed(2)}%</td>
+                    <td style={{ fontFamily: "'Inter', sans-serif" }}>{h.margem.toFixed(2)}%</td>
                   </tr>
                 ))}
               </tbody>
@@ -638,7 +638,7 @@ export default function RelatoriosPage() {
                         <td>{new Date(r.created_at).toLocaleDateString('pt-BR')}</td>
                         <td>{r.descricao}</td>
                         <td><span className="tag gray">{r.origem}</span></td>
-                        <td style={{ fontFamily: "'DM Mono', monospace", fontWeight: 600 }}>{fmtBRL(Number(r.valor || 0))}</td>
+                        <td style={{ fontFamily: "'Inter', sans-serif", fontWeight: 600 }}>{fmtBRL(Number(r.valor || 0))}</td>
                       </tr>
                     ))}
                   </tbody>

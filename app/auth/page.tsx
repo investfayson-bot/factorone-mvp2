@@ -93,7 +93,7 @@ export default function AuthPage() {
             ))}
           </div>
         </div>
-        <div style={{ fontSize: 10, color: 'rgba(255,255,255,.2)', fontFamily: "'DM Mono',monospace", marginTop: 32 }}>
+        <div style={{ fontSize: 10, color: 'rgba(255,255,255,.2)', fontFamily: "'Inter', sans-serif", marginTop: 32 }}>
           FACTORONE · FINANCE OS v2
         </div>
       </div>

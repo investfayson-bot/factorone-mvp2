@@ -140,7 +140,7 @@ function FinanceiroInner() {
                     <td style={{ fontWeight: 600 }}>{c.fornecedor_nome}</td>
                     <td>{c.descricao}</td>
                     <td>{c.categoria}</td>
-                    <td style={{ fontFamily: "'DM Mono', monospace" }}>{c.data_vencimento}</td>
+                    <td style={{ fontFamily: "'Inter', sans-serif" }}>{c.data_vencimento}</td>
                     <td style={{ fontWeight: 700, color: 'var(--red)', fontFamily: "'Sora', sans-serif" }}>{formatBRL(Number(c.valor || 0))}</td>
                     <td>{statusTagFin(c.status)}</td>
                     <td>
@@ -179,8 +179,8 @@ function FinanceiroInner() {
                   <tr key={c.id}>
                     <td style={{ fontWeight: 600 }}>{c.cliente_nome}</td>
                     <td>{c.descricao}</td>
-                    <td style={{ fontFamily: "'DM Mono', monospace" }}>{c.data_vencimento}</td>
-                    <td style={{ color: c.dias_atraso > 0 ? 'var(--red)' : 'var(--navy)', fontFamily: "'DM Mono', monospace" }}>{c.dias_atraso || 0}</td>
+                    <td style={{ fontFamily: "'Inter', sans-serif" }}>{c.data_vencimento}</td>
+                    <td style={{ color: c.dias_atraso > 0 ? 'var(--red)' : 'var(--navy)', fontFamily: "'Inter', sans-serif" }}>{c.dias_atraso || 0}</td>
                     <td style={{ fontWeight: 700, color: 'var(--green)', fontFamily: "'Sora', sans-serif" }}>{formatBRL(Number(c.valor || 0))}</td>
                     <td>{statusTagFin(c.status)}</td>
                     <td>

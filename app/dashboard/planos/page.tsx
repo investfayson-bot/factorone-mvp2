@@ -143,7 +143,7 @@ export default function PlanosPage() {
               )}
               <div style={{ fontFamily: "'Sora',sans-serif", fontSize: 18, fontWeight: 800, color: '#fff', marginBottom: 6 }}>{p.nome}</div>
               <div style={{ display: 'flex', alignItems: 'baseline', gap: 4 }}>
-                <span style={{ fontFamily: "'DM Mono',monospace", fontSize: 28, fontWeight: 800, color: '#fff' }}>{p.preco}</span>
+                <span style={{ fontFamily: "'Inter', sans-serif", fontSize: 28, fontWeight: 800, color: '#fff' }}>{p.preco}</span>
               </div>
               <div style={{ fontSize: 10, color: 'rgba(255,255,255,.65)', marginTop: 2 }}>{p.subPreco}</div>
             </div>

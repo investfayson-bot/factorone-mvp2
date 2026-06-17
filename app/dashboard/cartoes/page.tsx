@@ -185,8 +185,8 @@ export default function CartoesPage() {
                   <tr key={s.id}>
                     <td style={{ fontWeight: 600 }}>{s.nome_cartao}</td>
                     <td style={{ color: 'var(--gray-400)', fontSize: 12 }}>{s.setor || '—'}</td>
-                    <td style={{ textAlign: 'right', fontFamily: "'DM Mono',monospace", fontWeight: 700 }}>{formatBRL(Number(s.limite_sugerido || 0))}</td>
-                    <td style={{ fontFamily: "'DM Mono',monospace", fontSize: 11, color: 'var(--gray-400)' }}>{new Date(s.created_at).toLocaleDateString('pt-BR')}</td>
+                    <td style={{ textAlign: 'right', fontFamily: "'Inter', sans-serif", fontWeight: 700 }}>{formatBRL(Number(s.limite_sugerido || 0))}</td>
+                    <td style={{ fontFamily: "'Inter', sans-serif", fontSize: 11, color: 'var(--gray-400)' }}>{new Date(s.created_at).toLocaleDateString('pt-BR')}</td>
                     <td style={{ textAlign: 'center' }}>
                       <div style={{ display: 'flex', justifyContent: 'center', gap: 6 }}>
                         <button className="btn-action" style={{ fontSize: 11, padding: '3px 10px' }} onClick={() => void aprovarSolicitacao(s.id)}>Aprovar</button>
@@ -204,10 +204,10 @@ export default function CartoesPage() {
       {/* Transações do mês */}
       <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, overflow: 'hidden' }}>
         <div style={{ padding: '10px 14px', borderBottom: '1px solid var(--gray-100)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div style={{ fontSize: 9.5, fontWeight: 700, color: 'var(--gray-400)', letterSpacing: '.08em', textTransform: 'uppercase', fontFamily: "'DM Mono',monospace" }}>
+          <div style={{ fontSize: 9.5, fontWeight: 700, color: 'var(--gray-400)', letterSpacing: '.08em', textTransform: 'uppercase', fontFamily: "'Inter', sans-serif" }}>
             Despesas no cartão — mês atual ({despesas.length})
           </div>
-          <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--red)', fontFamily: "'DM Mono',monospace" }}>{formatBRL(totalGasto)}</span>
+          <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--red)', fontFamily: "'Inter', sans-serif" }}>{formatBRL(totalGasto)}</span>
         </div>
         <div className="expenses-table">
           <table>
@@ -229,8 +229,8 @@ export default function CartoesPage() {
                   <td style={{ fontWeight: 600, fontSize: 12 }}>{d.descricao}</td>
                   <td style={{ color: 'var(--gray-500)', fontSize: 12 }}>{d.fornecedor || '—'}</td>
                   <td><span className="tag gray" style={{ fontSize: 10 }}>{d.categoria || '—'}</span></td>
-                  <td style={{ fontFamily: "'DM Mono',monospace", fontSize: 11 }}>{new Date(d.data_vencimento + 'T12:00:00').toLocaleDateString('pt-BR')}</td>
-                  <td style={{ textAlign: 'right', fontFamily: "'DM Mono',monospace", fontWeight: 700, color: 'var(--red)' }}>{formatBRL(Number(d.valor || 0))}</td>
+                  <td style={{ fontFamily: "'Inter', sans-serif", fontSize: 11 }}>{new Date(d.data_vencimento + 'T12:00:00').toLocaleDateString('pt-BR')}</td>
+                  <td style={{ textAlign: 'right', fontFamily: "'Inter', sans-serif", fontWeight: 700, color: 'var(--red)' }}>{formatBRL(Number(d.valor || 0))}</td>
                   <td style={{ textAlign: 'center' }}>
                     <span className={`tag ${d.status === 'pago' ? 'green' : d.status === 'vencida' ? 'red' : 'gray'}`}>{d.status}</span>
                   </td>

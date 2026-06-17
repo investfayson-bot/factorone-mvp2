@@ -195,9 +195,9 @@ export default function OrcamentoPage() {
                 {porCategoria.map((c) => (
                   <tr key={c.categoria}>
                     <td style={{ fontWeight: 600 }}>{c.categoria}</td>
-                    <td style={{ textAlign: 'right', fontFamily: "'DM Mono',monospace" }}>{formatBRL(c.previsto)}</td>
-                    <td style={{ textAlign: 'right', fontFamily: "'DM Mono',monospace" }}>{formatBRL(c.realizado)}</td>
-                    <td style={{ textAlign: 'right', fontFamily: "'DM Mono',monospace", color: c.previsto - c.realizado < 0 ? 'var(--red)' : 'var(--teal)', fontWeight: 700 }}>{formatBRL(c.previsto - c.realizado)}</td>
+                    <td style={{ textAlign: 'right', fontFamily: "'Inter', sans-serif" }}>{formatBRL(c.previsto)}</td>
+                    <td style={{ textAlign: 'right', fontFamily: "'Inter', sans-serif" }}>{formatBRL(c.realizado)}</td>
+                    <td style={{ textAlign: 'right', fontFamily: "'Inter', sans-serif", color: c.previsto - c.realizado < 0 ? 'var(--red)' : 'var(--teal)', fontWeight: 700 }}>{formatBRL(c.previsto - c.realizado)}</td>
                     <td style={{ textAlign: 'right', color: progressColor(c.pct), fontWeight: 700 }}>{c.pct.toFixed(1)}%</td>
                     <td style={{ textAlign: 'center' }}>
                       <button className="btn-ghost" style={{ padding: '4px 10px', fontSize: 11 }} onClick={() => { const l = linhas.find((x) => x.categoria === c.categoria); if (l) setEditLinha(l) }}>Editar</button>
@@ -235,9 +235,9 @@ export default function OrcamentoPage() {
                   const r = mesLinhas.reduce((s, l) => s + Number(l.valor_realizado || 0), 0)
                   return (
                     <tr key={m}>
-                      <td style={{ fontFamily: "'DM Mono',monospace" }}>{m.toString().padStart(2, '0')}/{ano}</td>
-                      <td style={{ textAlign: 'right', fontFamily: "'DM Mono',monospace", color: 'var(--teal)', fontWeight: 700 }}>{formatBRL(r)}</td>
-                      <td style={{ textAlign: 'right', fontFamily: "'DM Mono',monospace" }}>{formatBRL(p)}</td>
+                      <td style={{ fontFamily: "'Inter', sans-serif" }}>{m.toString().padStart(2, '0')}/{ano}</td>
+                      <td style={{ textAlign: 'right', fontFamily: "'Inter', sans-serif", color: 'var(--teal)', fontWeight: 700 }}>{formatBRL(r)}</td>
+                      <td style={{ textAlign: 'right', fontFamily: "'Inter', sans-serif" }}>{formatBRL(p)}</td>
                     </tr>
                   )
                 })}
@@ -284,7 +284,7 @@ export default function OrcamentoPage() {
           {suplementacoes.map((s) => (
             <div key={s.id} style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: '14px 16px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
-                <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--navy)', fontFamily: "'DM Mono',monospace" }}>{formatBRL(Number(s.valor_solicitado || 0))}</span>
+                <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--navy)', fontFamily: "'Inter', sans-serif" }}>{formatBRL(Number(s.valor_solicitado || 0))}</span>
                 <span className={`tag ${s.status === 'aprovado' ? 'green' : s.status === 'rejeitado' ? 'red' : 'gray'}`}>{s.status}</span>
               </div>
               <div style={{ fontSize: 12, color: 'var(--gray-400)', marginBottom: s.status === 'pendente' ? 10 : 0 }}>{s.justificativa}</div>

@@ -160,7 +160,7 @@ export default function EmitirNFe() {
       {/* Preview + emit */}
       <div style={{ background: 'var(--navy)', borderRadius: 12, padding: 18, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, marginBottom: 14 }}>
         <div>
-          <div style={{ fontSize: 9.5, color: 'rgba(255,255,255,.5)', textTransform: 'uppercase', fontFamily: "'DM Mono',monospace", marginBottom: 4 }}>Preview</div>
+          <div style={{ fontSize: 9.5, color: 'rgba(255,255,255,.5)', textTransform: 'uppercase', fontFamily: "'Inter', sans-serif", marginBottom: 4 }}>Preview</div>
           <div style={{ fontSize: 16, fontWeight: 700, color: '#fff' }}>Total: {totais.total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</div>
           <div style={{ fontSize: 11, color: 'rgba(255,255,255,.6)' }}>ICMS estimado: {totais.icms.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</div>
         </div>

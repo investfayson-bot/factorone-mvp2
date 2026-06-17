@@ -269,7 +269,7 @@ export default function ConciliacaoPage() {
       {/* Tabela principal */}
       <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, overflow: 'hidden' }}>
         <div style={{ padding: '10px 14px', borderBottom: '1px solid var(--gray-100)', display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
-          <div style={{ fontSize: 9.5, fontWeight: 700, color: 'var(--gray-400)', letterSpacing: '.08em', textTransform: 'uppercase', fontFamily: "'DM Mono',monospace", flex: 1 }}>
+          <div style={{ fontSize: 9.5, fontWeight: 700, color: 'var(--gray-400)', letterSpacing: '.08em', textTransform: 'uppercase', fontFamily: "'Inter', sans-serif", flex: 1 }}>
             Transações ({filtrados.length})
           </div>
           {(['todos', 'conciliado', 'pendente', 'divergencia'] as const).map(s => (
@@ -310,7 +310,7 @@ export default function ConciliacaoPage() {
                 </td></tr>
               ) : filtrados.map(item => (
                 <tr key={item.id}>
-                  <td style={{ fontFamily: "'DM Mono',monospace", fontSize: 11, color: 'var(--gray-400)' }}>
+                  <td style={{ fontFamily: "'Inter', sans-serif", fontSize: 11, color: 'var(--gray-400)' }}>
                     {new Date(item.data + 'T12:00:00').toLocaleDateString('pt-BR')}
                   </td>
                   <td style={{ fontWeight: 600, fontSize: 12 }}>{item.descBanco}</td>
@@ -320,7 +320,7 @@ export default function ConciliacaoPage() {
                       <span style={{ marginLeft: 6, fontSize: 9, color: 'var(--gold)', fontWeight: 700 }}>Δ{item.diffPct}%</span>
                     )}
                   </td>
-                  <td style={{ textAlign: 'right', fontFamily: "'DM Mono',monospace", fontWeight: 700, color: item.tipo === 'entrada' ? 'var(--green)' : 'var(--red)' }}>
+                  <td style={{ textAlign: 'right', fontFamily: "'Inter', sans-serif", fontWeight: 700, color: item.tipo === 'entrada' ? 'var(--green)' : 'var(--red)' }}>
                     {item.tipo === 'entrada' ? '+' : '-'}{fmt(item.valor)}
                   </td>
                   <td style={{ textAlign: 'center' }}>

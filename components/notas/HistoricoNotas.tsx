@@ -127,7 +127,7 @@ export default function HistoricoNotas() {
             <thead>
               <tr style={{ background: 'var(--gray-50, #f8f9fa)' }}>
                 {['Número', 'Tipo', 'Destinatário', 'Valor', 'Status', 'Data', 'Ações'].map((h) => (
-                  <th key={h} style={{ textAlign: 'left', padding: '10px 12px', fontSize: 10, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', fontFamily: "'DM Mono',monospace", borderBottom: '1px solid var(--gray-100)' }}>{h}</th>
+                  <th key={h} style={{ textAlign: 'left', padding: '10px 12px', fontSize: 10, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', fontFamily: "'Inter', sans-serif", borderBottom: '1px solid var(--gray-100)' }}>{h}</th>
                 ))}
               </tr>
             </thead>
@@ -136,10 +136,10 @@ export default function HistoricoNotas() {
                 <tr><td colSpan={7} style={{ padding: '24px 12px', textAlign: 'center', color: 'var(--gray-400)', fontSize: 12 }}>Nenhuma nota emitida no período.</td></tr>
               ) : rows.map((r) => (
                 <tr key={r.id} style={{ borderTop: '1px solid var(--gray-100)' }}>
-                  <td style={{ padding: '10px 12px', color: 'var(--navy)', fontFamily: "'DM Mono',monospace" }}>{r.numero || '—'}</td>
+                  <td style={{ padding: '10px 12px', color: 'var(--navy)', fontFamily: "'Inter', sans-serif" }}>{r.numero || '—'}</td>
                   <td style={{ padding: '10px 12px' }}><span className="tag" style={{ background: 'var(--gray-100)', color: 'var(--gray-400)' }}>{r.tipo === 'nfe' ? 'NF-e' : 'NFS-e'}</span></td>
                   <td style={{ padding: '10px 12px', color: 'var(--navy)', maxWidth: 180, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{r.destinatario_nome}</td>
-                  <td style={{ padding: '10px 12px', color: 'var(--navy)', fontFamily: "'DM Mono',monospace", fontWeight: 600 }}>
+                  <td style={{ padding: '10px 12px', color: 'var(--navy)', fontFamily: "'Inter', sans-serif", fontWeight: 600 }}>
                     {Number(r.valor_total).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                   </td>
                   <td style={{ padding: '10px 12px' }}><BadgeStatus r={r} /></td>

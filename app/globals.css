@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
 /* ── RESET ── */
@@ -27,6 +27,8 @@ body {
   background: var(--cream);
   color: var(--navy);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-variant-numeric: tabular-nums;
 }
 
 /* ── SIDEBAR ── */
@@ -90,7 +92,7 @@ body {
 .dre-row { display: flex; justify-content: space-between; padding: 5px 0; font-size: 11.5px; border-bottom: 1px solid var(--gray-100); }
 .dre-row:last-child { border: none; font-weight: 700; }
 .dre-l { color: var(--gray-500); }
-.dre-v { font-weight: 700; font-family: 'DM Mono', monospace; }
+.dre-v { font-weight: 700; font-family: 'Inter', sans-serif; }
 .dre-v.g { color: var(--green); }
 .dre-v.r { color: var(--red); }
 .dre-v.am { color: var(--gold); }
@@ -98,7 +100,7 @@ body {
 /* ── TRANSACTIONS ── */
 .txs-card { background: #fff; border: 1px solid var(--gray-100); border-radius: 12px; overflow: hidden; }
 .txs-header { padding: 12px 16px; border-bottom: 1px solid var(--gray-100); display: flex; align-items: center; justify-content: space-between; }
-.txs-title { font-size: 9.5px; font-weight: 700; color: var(--gray-400); letter-spacing: .1em; text-transform: uppercase; font-family: 'DM Mono', monospace; }
+.txs-title { font-size: 9.5px; font-weight: 700; color: var(--gray-400); letter-spacing: .1em; text-transform: uppercase; font-family: 'Inter', sans-serif; }
 .tx-item { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid var(--gray-100); cursor: pointer; }
 .tx-item:last-child { border: none; }
 .tx-item:hover { background: rgba(94,140,135,.03); }
@@ -111,7 +113,7 @@ body {
 .tx-amount.warn { color: var(--gold); }
 
 /* ── TAGS ── */
-.tag { display: inline-flex; padding: 2px 8px; border-radius: 20px; font-size: 10px; font-weight: 600; font-family: 'DM Mono', monospace; }
+.tag { display: inline-flex; padding: 2px 8px; border-radius: 20px; font-size: 10px; font-weight: 600; font-family: 'Inter', sans-serif; }
 .tag.green { background: rgba(45,155,111,.12); color: #2D9B6F; }
 .tag.amber { background: rgba(184,146,42,.12); color: #B8922A; }
 .tag.blue { background: rgba(94,140,135,.12); color: var(--teal2); }
@@ -153,11 +155,11 @@ body {
 .quick-btn:hover { border-color: var(--teal); color: var(--teal); }
 .ai-sidebar { display: flex; flex-direction: column; gap: 10px; }
 .ai-ctx-card { background: #fff; border: 1px solid var(--gray-100); border-radius: 12px; padding: 14px; }
-.ai-ctx-title { font-size: 9px; font-weight: 700; color: var(--gray-400); letter-spacing: .1em; text-transform: uppercase; font-family: 'DM Mono', monospace; margin-bottom: 10px; }
+.ai-ctx-title { font-size: 9px; font-weight: 700; color: var(--gray-400); letter-spacing: .1em; text-transform: uppercase; font-family: 'Inter', sans-serif; margin-bottom: 10px; }
 .ai-ctx-item { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid var(--gray-100); font-size: 11.5px; }
 .ai-ctx-item:last-child { border: none; }
 .ai-ctx-lbl { color: var(--gray-500); }
-.ai-ctx-val { font-weight: 600; color: var(--navy); font-family: 'DM Mono', monospace; }
+.ai-ctx-val { font-weight: 600; color: var(--navy); font-family: 'Inter', sans-serif; }
 
 /* ── MODAL ── */
 .modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,.5); display: flex; align-items: center; justify-content: center; z-index: 9999; backdrop-filter: blur(4px); }
@@ -166,7 +168,7 @@ body {
 .modal-close { background: none; border: none; cursor: pointer; font-size: 18px; color: var(--gray-400); line-height: 1; }
 .modal-close:hover { color: var(--navy); }
 .form-group { margin-bottom: 12px; }
-.form-label { font-size: 10px; font-weight: 700; color: var(--gray-400); text-transform: uppercase; letter-spacing: .06em; font-family: 'DM Mono', monospace; display: block; margin-bottom: 5px; }
+.form-label { font-size: 10px; font-weight: 700; color: var(--gray-400); text-transform: uppercase; letter-spacing: .06em; font-family: 'Inter', sans-serif; display: block; margin-bottom: 5px; }
 .form-input { width: 100%; padding: 9px 12px; border: 1.5px solid var(--gray-200); border-radius: 8px; font-size: 13px; font-family: 'Inter', sans-serif; color: var(--navy); outline: none; transition: border-color .15s; background: #fff; }
 .form-input:focus { border-color: var(--teal); }
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
@@ -182,7 +184,7 @@ body {
 /* ── EXPENSES TABLE ── */
 .expenses-table { background: #fff; border: 1px solid var(--gray-100); border-radius: 12px; overflow: hidden; }
 table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
-th { text-align: left; padding: 9px 14px; font-size: 9px; font-weight: 700; color: var(--gray-400); letter-spacing: .08em; text-transform: uppercase; border-bottom: 1px solid var(--gray-100); font-family: 'DM Mono', monospace; background: var(--cream); }
+th { text-align: left; padding: 9px 14px; font-size: 9px; font-weight: 700; color: var(--gray-400); letter-spacing: .08em; text-transform: uppercase; border-bottom: 1px solid var(--gray-100); font-family: 'Inter', sans-serif; background: var(--cream); }
 td { padding: 11px 14px; border-bottom: 1px solid var(--gray-100); color: var(--navy); }
 tr:last-child td { border: none; }
 tr:hover td { background: rgba(94,140,135,.03); }
@@ -192,7 +194,7 @@ tr:hover td { background: rgba(94,140,135,.03); }
 .fiscal-item:last-child { border: none; }
 .fiscal-name { font-size: 12.5px; font-weight: 600; color: var(--navy); }
 .fiscal-sub { font-size: 10.5px; color: var(--gray-400); }
-.fbadge { font-size: 9.5px; font-weight: 700; padding: 3px 9px; border-radius: 20px; font-family: 'DM Mono', monospace; }
+.fbadge { font-size: 9.5px; font-weight: 700; padding: 3px 9px; border-radius: 20px; font-family: 'Inter', sans-serif; }
 .fb-ok { background: rgba(45,155,111,.12); color: #2D9B6F; }
 .fb-warn { background: rgba(184,146,42,.12); color: #B8922A; }
 
@@ -213,7 +215,7 @@ tr:hover td { background: rgba(94,140,135,.03); }
 .bank-card.dark { background: linear-gradient(135deg,#1A2B2A 0%,#243736 100%); color: #fff; }
 .bank-card.teal { background: linear-gradient(135deg,rgba(94,140,135,.12) 0%,rgba(94,140,135,.22) 100%); border: 1px solid rgba(94,140,135,.25); }
 .bank-card.light { background: #fff; border: 1px solid var(--gray-100); }
-.bc-lbl { font-size: 8.5px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; font-family: 'DM Mono',monospace; margin-bottom: 6px; opacity: .55; }
+.bc-lbl { font-size: 8.5px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; font-family: 'Inter', sans-serif; margin-bottom: 6px; opacity: .55; }
 .bc-val { font-family: 'Sora',sans-serif; font-size: 26px; font-weight: 900; letter-spacing: -.04em; line-height: 1; margin-bottom: 4px; }
 .bc-sub { font-size: 10px; opacity: .45; }
 .bank-card.dark .bc-lbl,.bank-card.dark .bc-val,.bank-card.dark .bc-sub { color: #fff; }
@@ -221,14 +223,14 @@ tr:hover td { background: rgba(94,140,135,.03); }
 .bank-card.light .bc-lbl,.bank-card.light .bc-sub { color: var(--gray-400); } .bank-card.light .bc-val { color: var(--navy); }
 
 /* ── VIRTUAL CARDS ── */
-.vcards-label { font-size: 9.5px; font-weight: 700; color: var(--gray-400); letter-spacing: .1em; text-transform: uppercase; font-family: 'DM Mono',monospace; margin-bottom: 10px; }
+.vcards-label { font-size: 9.5px; font-weight: 700; color: var(--gray-400); letter-spacing: .1em; text-transform: uppercase; font-family: 'Inter', sans-serif; margin-bottom: 10px; }
 .vcards { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; margin-bottom: 16px; }
 .vcard { border-radius: 10px; padding: 13px 14px; position: relative; overflow: hidden; }
 .vc-marketing { background: linear-gradient(135deg,#1A2B2A 0%,#2D4A48 100%); }
 .vc-viagens { background: linear-gradient(135deg,#2A1F40 0%,#3D2E60 100%); }
 .vc-manutencao { background: linear-gradient(135deg,#3A2010 0%,#5C3520 100%); }
 .vc-fornecedor { background: linear-gradient(135deg,#102818 0%,#1A4230 100%); }
-.vc-lbl { font-size: 8px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: rgba(255,255,255,.4); font-family: 'DM Mono',monospace; margin-bottom: 4px; }
+.vc-lbl { font-size: 8px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: rgba(255,255,255,.4); font-family: 'Inter', sans-serif; margin-bottom: 4px; }
 .vc-val { font-family: 'Sora',sans-serif; font-size: 17px; font-weight: 900; color: #fff; letter-spacing: -.03em; margin-bottom: 2px; }
 .vc-used { font-size: 8.5px; color: rgba(255,255,255,.35); margin-bottom: 8px; }
 .vc-bar { height: 3px; background: rgba(255,255,255,.12); border-radius: 2px; overflow: hidden; }
@@ -248,10 +250,10 @@ tr:hover td { background: rgba(94,140,135,.03); }
 .cf-bar { border-radius: 3px 3px 0 0; flex: 1; }
 .cf-bar.i { background: var(--teal); } .cf-bar.o { background: rgba(184,146,42,.4); }
 .cf-bar.proj-i { background: rgba(94,140,135,.35); } .cf-bar.proj-o { background: rgba(184,146,42,.18); }
-.cf-lbl { font-size: 9px; color: var(--gray-400); margin-top: 4px; font-family: 'DM Mono',monospace; }
+.cf-lbl { font-size: 9px; color: var(--gray-400); margin-top: 4px; font-family: 'Inter', sans-serif; }
 
 /* ── INVOICE STATUS ── */
-.inv-status { display: inline-flex; padding: 2px 8px; border-radius: 20px; font-size: 10px; font-weight: 700; font-family: 'DM Mono',monospace; }
+.inv-status { display: inline-flex; padding: 2px 8px; border-radius: 20px; font-size: 10px; font-weight: 700; font-family: 'Inter', sans-serif; }
 .inv-status.paga { background: rgba(45,155,111,.12); color: #2D9B6F; }
 .inv-status.pendente { background: rgba(184,146,42,.12); color: #B8922A; }
 .inv-status.vencida { background: rgba(192,80,74,.12); color: #C0504A; }
@@ -265,7 +267,7 @@ tr:hover td { background: rgba(94,140,135,.03); }
 .int-ic { font-size: 22px; margin-bottom: 8px; }
 .int-name { font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 3px; }
 .int-desc { font-size: 11px; color: var(--gray-400); margin-bottom: 10px; line-height: 1.5; }
-.int-status { font-size: 9.5px; font-weight: 700; font-family: 'DM Mono',monospace; display: flex; align-items: center; gap: 4px; }
+.int-status { font-size: 9.5px; font-weight: 700; font-family: 'Inter', sans-serif; display: flex; align-items: center; gap: 4px; }
 .int-status.on { color: var(--green); } .int-status.off { color: var(--gray-400); }
 .int-dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
 

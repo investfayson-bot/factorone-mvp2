@@ -229,10 +229,10 @@ export default function ClientesPage() {
                       <div style={{ fontWeight: 700, fontSize: 12 }}>{c.nome}</div>
                       {c.email && <div style={{ fontSize: 10, color: 'var(--gray-400)' }}>{c.email}</div>}
                     </td>
-                    <td style={{ fontFamily: "'DM Mono',monospace", fontSize: 11, color: 'var(--gray-400)' }}>{c.cnpj_cpf || '—'}</td>
+                    <td style={{ fontFamily: "'Inter', sans-serif", fontSize: 11, color: 'var(--gray-400)' }}>{c.cnpj_cpf || '—'}</td>
                     <td><span className="tag gray" style={{ fontSize: 9 }}>{c.segmento || '—'}</span></td>
                     <td style={{ fontSize: 12 }}>{c.telefone || c.whatsapp || '—'}</td>
-                    <td style={{ textAlign: 'right', fontFamily: "'DM Mono',monospace", color: 'var(--green)', fontWeight: 700, fontSize: 12 }}>
+                    <td style={{ textAlign: 'right', fontFamily: "'Inter', sans-serif", color: 'var(--green)', fontWeight: 700, fontSize: 12 }}>
                       {c.valor_contrato ? formatBRL(Number(c.valor_contrato)) : '—'}
                     </td>
                     <td style={{ textAlign: 'center' }}>

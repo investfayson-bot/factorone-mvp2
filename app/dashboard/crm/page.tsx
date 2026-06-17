@@ -210,14 +210,14 @@ export default function CRMPage() {
             <div key={col.id} style={{ minWidth: 180 }}>
               <div style={{ padding: '8px 10px', background: col.bg, borderRadius: '10px 10px 0 0', border: `1px solid ${col.color}20`, borderBottom: `2px solid ${col.color}` }}>
                 <p style={{ fontSize: 10, fontWeight: 800, color: col.color, textTransform: 'uppercase', letterSpacing: '.07em', margin: '0 0 2px' }}>{col.label}</p>
-                <p style={{ fontSize: 11, fontWeight: 700, color: 'var(--navy)', margin: 0, fontFamily: "'DM Mono',monospace" }}>{formatBRL(col.total)}</p>
+                <p style={{ fontSize: 11, fontWeight: 700, color: 'var(--navy)', margin: 0, fontFamily: "'Inter', sans-serif" }}>{formatBRL(col.total)}</p>
               </div>
               <div style={{ background: '#fafafa', border: `1px solid ${col.color}20`, borderTop: 'none', borderRadius: '0 0 10px 10px', minHeight: 200, padding: 8, display: 'flex', flexDirection: 'column', gap: 6 }}>
                 {col.ops.map(op => (
                   <div key={op.id} style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 8, padding: '10px 10px 8px' }}>
                     <p style={{ fontWeight: 700, fontSize: 11, color: 'var(--navy)', margin: '0 0 3px', lineHeight: 1.3 }}>{op.titulo}</p>
                     {op.clientes && <p style={{ fontSize: 10, color: 'var(--teal)', margin: '0 0 3px' }}>{op.clientes.nome}</p>}
-                    {op.valor && <p style={{ fontSize: 11, fontWeight: 700, color: 'var(--green)', fontFamily: "'DM Mono',monospace", margin: '0 0 6px' }}>{formatBRL(Number(op.valor))}</p>}
+                    {op.valor && <p style={{ fontSize: 11, fontWeight: 700, color: 'var(--green)', fontFamily: "'Inter', sans-serif", margin: '0 0 6px' }}>{formatBRL(Number(op.valor))}</p>}
                     <select value={op.etapa} onChange={e => void moverEtapa(op.id, e.target.value)} style={{ fontSize: 9, padding: '2px 4px', borderRadius: 5, border: '1px solid var(--gray-100)', color: 'var(--gray-500)', width: '100%' }}>
                       {ETAPAS.map(e => <option key={e.id} value={e.id}>{e.label}</option>)}
                     </select>
@@ -292,7 +292,7 @@ export default function CRMPage() {
                 {atividades.length === 0 && <tr><td colSpan={6} style={{ textAlign: 'center', padding: '32px 0', color: 'var(--gray-400)' }}>Nenhuma atividade.</td></tr>}
                 {atividades.slice(0, 50).map(a => (
                   <tr key={a.id} style={{ opacity: a.status === 'cancelada' ? 0.5 : 1 }}>
-                    <td style={{ fontFamily: "'DM Mono',monospace", fontSize: 11 }}>{new Date(a.data + 'T12:00:00').toLocaleDateString('pt-BR')}</td>
+                    <td style={{ fontFamily: "'Inter', sans-serif", fontSize: 11 }}>{new Date(a.data + 'T12:00:00').toLocaleDateString('pt-BR')}</td>
                     <td>
                       <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 11 }}>
                         <i className={`fa-solid ${TIPO_ICON[a.tipo] || 'fa-circle'}`} style={{ color: 'var(--teal)', fontSize: 10 }} />

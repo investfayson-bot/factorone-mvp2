@@ -75,7 +75,7 @@ export default function UsoPage() {
         ].map((k) => (
           <div key={k.label} style={{ ...card, padding: '14px 18px' }}>
             <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: 6 }}>{k.label}</div>
-            <div style={{ fontSize: 22, fontWeight: 800, color: 'var(--navy)', fontFamily: "'DM Mono',monospace" }}>{k.value}</div>
+            <div style={{ fontSize: 22, fontWeight: 800, color: 'var(--navy)', fontFamily: "'Inter', sans-serif" }}>{k.value}</div>
           </div>
         ))}
       </div>
@@ -98,7 +98,7 @@ export default function UsoPage() {
               <thead>
                 <tr style={{ background: 'var(--gray-50,#f8f9fa)' }}>
                   {['Agente', 'Chamadas', 'Prompt tokens', 'Completion tokens', 'Total tokens', 'Custo (USD)'].map((h) => (
-                    <th key={h} style={{ padding: '8px 12px', textAlign: 'left', fontSize: 10, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', fontFamily: "'DM Mono',monospace", borderBottom: '1px solid var(--gray-100)', whiteSpace: 'nowrap' }}>{h}</th>
+                    <th key={h} style={{ padding: '8px 12px', textAlign: 'left', fontSize: 10, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', fontFamily: "'Inter', sans-serif", borderBottom: '1px solid var(--gray-100)', whiteSpace: 'nowrap' }}>{h}</th>
                   ))}
                 </tr>
               </thead>
@@ -116,11 +116,11 @@ export default function UsoPage() {
                           </div>
                         </div>
                       </td>
-                      <td style={{ padding: '10px 12px', fontFamily: "'DM Mono',monospace", color: 'var(--navy)' }}>{s.chamadas.toLocaleString('pt-BR')}</td>
-                      <td style={{ padding: '10px 12px', fontFamily: "'DM Mono',monospace", color: 'var(--gray-500)' }}>{s.prompt_tokens.toLocaleString('pt-BR')}</td>
-                      <td style={{ padding: '10px 12px', fontFamily: "'DM Mono',monospace", color: 'var(--gray-500)' }}>{s.completion_tokens.toLocaleString('pt-BR')}</td>
-                      <td style={{ padding: '10px 12px', fontFamily: "'DM Mono',monospace", fontWeight: 600, color: 'var(--navy)' }}>{s.total_tokens.toLocaleString('pt-BR')}</td>
-                      <td style={{ padding: '10px 12px', fontFamily: "'DM Mono',monospace", color: s.custo_usd > 0.1 ? 'var(--gold)' : 'var(--navy)' }}>${s.custo_usd.toFixed(4)}</td>
+                      <td style={{ padding: '10px 12px', fontFamily: "'Inter', sans-serif", color: 'var(--navy)' }}>{s.chamadas.toLocaleString('pt-BR')}</td>
+                      <td style={{ padding: '10px 12px', fontFamily: "'Inter', sans-serif", color: 'var(--gray-500)' }}>{s.prompt_tokens.toLocaleString('pt-BR')}</td>
+                      <td style={{ padding: '10px 12px', fontFamily: "'Inter', sans-serif", color: 'var(--gray-500)' }}>{s.completion_tokens.toLocaleString('pt-BR')}</td>
+                      <td style={{ padding: '10px 12px', fontFamily: "'Inter', sans-serif", fontWeight: 600, color: 'var(--navy)' }}>{s.total_tokens.toLocaleString('pt-BR')}</td>
+                      <td style={{ padding: '10px 12px', fontFamily: "'Inter', sans-serif", color: s.custo_usd > 0.1 ? 'var(--gold)' : 'var(--navy)' }}>${s.custo_usd.toFixed(4)}</td>
                     </tr>
                   )
                 })}
@@ -140,7 +140,7 @@ export default function UsoPage() {
             <thead>
               <tr style={{ background: 'var(--gray-50,#f8f9fa)' }}>
                 {['Data', 'Agente', 'Modelo', 'Tokens', 'Custo (USD)'].map((h) => (
-                  <th key={h} style={{ padding: '8px 12px', textAlign: 'left', fontSize: 10, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', fontFamily: "'DM Mono',monospace", borderBottom: '1px solid var(--gray-100)', whiteSpace: 'nowrap' }}>{h}</th>
+                  <th key={h} style={{ padding: '8px 12px', textAlign: 'left', fontSize: 10, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', fontFamily: "'Inter', sans-serif", borderBottom: '1px solid var(--gray-100)', whiteSpace: 'nowrap' }}>{h}</th>
                 ))}
               </tr>
             </thead>
@@ -149,7 +149,7 @@ export default function UsoPage() {
                 const agente = AGENTES.find((a) => a.id === r.agente_id)
                 return (
                   <tr key={i} style={{ borderTop: '1px solid var(--gray-100)' }}>
-                    <td style={{ padding: '8px 12px', color: 'var(--gray-500)', fontFamily: "'DM Mono',monospace" }}>{new Date(r.created_at).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}</td>
+                    <td style={{ padding: '8px 12px', color: 'var(--gray-500)', fontFamily: "'Inter', sans-serif" }}>{new Date(r.created_at).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}</td>
                     <td style={{ padding: '8px 12px' }}>
                       {agente ? (
                         <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
@@ -158,9 +158,9 @@ export default function UsoPage() {
                         </span>
                       ) : r.agente_id}
                     </td>
-                    <td style={{ padding: '8px 12px', color: 'var(--gray-400)', fontFamily: "'DM Mono',monospace" }}>{r.modelo}</td>
-                    <td style={{ padding: '8px 12px', fontFamily: "'DM Mono',monospace", color: 'var(--navy)' }}>{Number(r.total_tokens).toLocaleString('pt-BR')}</td>
-                    <td style={{ padding: '8px 12px', fontFamily: "'DM Mono',monospace", color: 'var(--navy)' }}>${Number(r.custo_usd).toFixed(6)}</td>
+                    <td style={{ padding: '8px 12px', color: 'var(--gray-400)', fontFamily: "'Inter', sans-serif" }}>{r.modelo}</td>
+                    <td style={{ padding: '8px 12px', fontFamily: "'Inter', sans-serif", color: 'var(--navy)' }}>{Number(r.total_tokens).toLocaleString('pt-BR')}</td>
+                    <td style={{ padding: '8px 12px', fontFamily: "'Inter', sans-serif", color: 'var(--navy)' }}>${Number(r.custo_usd).toFixed(6)}</td>
                   </tr>
                 )
               })}

@@ -210,7 +210,7 @@ export default function SimplesPage() {
             ].map(x => (
               <div key={x.label} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, padding: '6px 0', borderBottom: '1px solid var(--gray-100)' }}>
                 <span style={{ color: 'var(--gray-400)' }}>{x.label}</span>
-                <span style={{ color: 'var(--navy)', fontFamily: "'DM Mono',monospace" }}>{x.valor}</span>
+                <span style={{ color: 'var(--navy)', fontFamily: "'Inter', sans-serif" }}>{x.valor}</span>
               </div>
             ))}
           </div>

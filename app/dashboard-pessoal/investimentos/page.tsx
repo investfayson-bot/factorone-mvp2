@@ -150,9 +150,9 @@ export default function InvestimentosPage() {
                       <td style={{ color: 'var(--gray-400)', fontSize: 11 }}>{inv.instituicao || '—'}</td>
                       <td style={{ fontSize: 11 }}>{inv.rentabilidade || '—'}</td>
                       <td><span className="tag gray" style={{ fontSize: 9 }}>{inv.liquidez}</span></td>
-                      <td style={{ fontFamily: "'DM Mono',monospace" }}>{formatBRL(Number(inv.valor_aplicado))}</td>
-                      <td style={{ fontFamily: "'DM Mono',monospace", fontWeight: 700 }}>{formatBRL(Number(inv.valor_atual))}</td>
-                      <td style={{ fontFamily: "'DM Mono',monospace", color: ganho >= 0 ? 'var(--teal)' : 'var(--red)', fontSize: 11 }}>
+                      <td style={{ fontFamily: "'Inter', sans-serif" }}>{formatBRL(Number(inv.valor_aplicado))}</td>
+                      <td style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700 }}>{formatBRL(Number(inv.valor_atual))}</td>
+                      <td style={{ fontFamily: "'Inter', sans-serif", color: ganho >= 0 ? 'var(--teal)' : 'var(--red)', fontSize: 11 }}>
                         {ganho >= 0 ? '+' : ''}{formatBRL(ganho)} ({ganhoPct >= 0 ? '+' : ''}{ganhoPct.toFixed(1)}%)
                       </td>
                       <td style={{ display: 'flex', gap: 4 }}>

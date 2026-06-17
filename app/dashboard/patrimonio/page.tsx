@@ -478,7 +478,7 @@ export default function PatrimonioPage() {
                           </span>
                         ) : '—'}
                       </td>
-                      <td style={{ fontFamily: "'DM Mono',monospace", fontSize: 11 }}>{doc.created_at?.slice(0, 10)}</td>
+                      <td style={{ fontFamily: "'Inter', sans-serif", fontSize: 11 }}>{doc.created_at?.slice(0, 10)}</td>
                     </tr>
                   )
                 })}
@@ -540,7 +540,7 @@ export default function PatrimonioPage() {
                 <div key={v.id} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, marginBottom: 4 }}>
                   <span className={`tag ${STATUS_COLORS[v.status] || 'gray'}`} style={{ fontSize: 9 }}>{STATUS_LABEL[v.status]}</span>
                   <span style={{ flex: 1, fontWeight: 600 }}>{v.nome}</span>
-                  <span style={{ fontFamily: "'DM Mono',monospace" }}>{v.placa || '—'}</span>
+                  <span style={{ fontFamily: "'Inter', sans-serif" }}>{v.placa || '—'}</span>
                 </div>
               ))}
             </div>
@@ -554,7 +554,7 @@ export default function PatrimonioPage() {
                 <div key={m.id} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, marginBottom: 4 }}>
                   <span className={`tag ${STATUS_COLORS[m.status] || 'gray'}`} style={{ fontSize: 9 }}>{STATUS_LABEL[m.status]}</span>
                   <span style={{ flex: 1, fontWeight: 600 }}>{m.nome}</span>
-                  <span style={{ fontFamily: "'DM Mono',monospace", color: 'var(--gray-400)' }}>{Number(m.horas_operacao || 0).toLocaleString('pt-BR')}h</span>
+                  <span style={{ fontFamily: "'Inter', sans-serif", color: 'var(--gray-400)' }}>{Number(m.horas_operacao || 0).toLocaleString('pt-BR')}h</span>
                 </div>
               ))}
             </div>
@@ -581,7 +581,7 @@ export default function PatrimonioPage() {
               {alertas.map(({ ativo, msgs }) => (
                 <div key={ativo.id} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, marginBottom: 4 }}>
                   <span style={{ fontWeight: 600 }}>{ativo.nome}</span>
-                  <span style={{ fontFamily: "'DM Mono',monospace", fontSize: 11, color: 'var(--gray-400)' }}>{ativo.placa || ''}</span>
+                  <span style={{ fontFamily: "'Inter', sans-serif", fontSize: 11, color: 'var(--gray-400)' }}>{ativo.placa || ''}</span>
                   {msgs.map((m, i) => <span key={i} style={{ color: 'var(--red)', background: 'rgba(239,68,68,.1)', borderRadius: 4, padding: '1px 6px', fontSize: 11 }}>{m}</span>)}
                 </div>
               ))}
@@ -594,7 +594,7 @@ export default function PatrimonioPage() {
               {Object.entries(TAXA_DEP).map(([tipo, taxa]) => (
                 <div key={tipo} style={{ background: 'var(--gray-50)', borderRadius: 8, padding: '8px 12px' }}>
                   <div style={{ fontSize: 11, color: 'var(--gray-500)' }}>{TIPO_LABEL[tipo]}</div>
-                  <div style={{ fontSize: 16, fontWeight: 700, fontFamily: "'DM Mono',monospace", color: 'var(--navy)' }}>{taxa}% a.a.</div>
+                  <div style={{ fontSize: 16, fontWeight: 700, fontFamily: "'Inter', sans-serif", color: 'var(--navy)' }}>{taxa}% a.a.</div>
                   <div style={{ fontSize: 10, color: 'var(--gray-400)' }}>Vida útil: {Math.round(100 / taxa)} anos</div>
                 </div>
               ))}
@@ -671,11 +671,11 @@ export default function PatrimonioPage() {
                         {abastecimentos.length === 0 && <tr><td colSpan={7} style={{ textAlign: 'center', color: 'var(--gray-400)', padding: '24px 0' }}>Nenhum abastecimento.</td></tr>}
                         {abastecimentos.map(ab => (
                           <tr key={ab.id}>
-                            <td style={{ fontFamily: "'DM Mono',monospace", fontSize: 11 }}>{ab.data}</td>
-                            <td style={{ fontFamily: "'DM Mono',monospace", fontSize: 11 }}>{ab.km_atual ? Number(ab.km_atual).toLocaleString('pt-BR') : '—'}</td>
-                            <td style={{ fontFamily: "'DM Mono',monospace", fontSize: 11 }}>{Number(ab.litros).toFixed(1)}L</td>
-                            <td style={{ textAlign: 'right', fontFamily: "'DM Mono',monospace" }}>{formatBRL(Number(ab.valor_total))}</td>
-                            <td style={{ textAlign: 'right', fontFamily: "'DM Mono',monospace", fontSize: 11, color: 'var(--gray-400)' }}>{ab.preco_litro ? `R$ ${Number(ab.preco_litro).toFixed(3)}` : '—'}</td>
+                            <td style={{ fontFamily: "'Inter', sans-serif", fontSize: 11 }}>{ab.data}</td>
+                            <td style={{ fontFamily: "'Inter', sans-serif", fontSize: 11 }}>{ab.km_atual ? Number(ab.km_atual).toLocaleString('pt-BR') : '—'}</td>
+                            <td style={{ fontFamily: "'Inter', sans-serif", fontSize: 11 }}>{Number(ab.litros).toFixed(1)}L</td>
+                            <td style={{ textAlign: 'right', fontFamily: "'Inter', sans-serif" }}>{formatBRL(Number(ab.valor_total))}</td>
+                            <td style={{ textAlign: 'right', fontFamily: "'Inter', sans-serif", fontSize: 11, color: 'var(--gray-400)' }}>{ab.preco_litro ? `R$ ${Number(ab.preco_litro).toFixed(3)}` : '—'}</td>
                             <td style={{ fontSize: 11 }}>{ab.posto || '—'}</td>
                             <td><span className="tag gray" style={{ fontSize: 9 }}>{ab.combustivel}</span></td>
                           </tr>
@@ -718,10 +718,10 @@ export default function PatrimonioPage() {
                         {itinerarios.length === 0 && <tr><td colSpan={6} style={{ textAlign: 'center', color: 'var(--gray-400)', padding: '24px 0' }}>Nenhum itinerário.</td></tr>}
                         {itinerarios.map(it => (
                           <tr key={it.id}>
-                            <td style={{ fontFamily: "'DM Mono',monospace", fontSize: 11 }}>{it.data}</td>
+                            <td style={{ fontFamily: "'Inter', sans-serif", fontSize: 11 }}>{it.data}</td>
                             <td style={{ fontSize: 12 }}>{it.origem || '—'} → {it.destino || '—'}</td>
-                            <td style={{ fontFamily: "'DM Mono',monospace", fontSize: 11 }}>{it.km_percorrido ? `${Number(it.km_percorrido).toLocaleString('pt-BR')} km` : '—'}</td>
-                            <td style={{ textAlign: 'right', fontFamily: "'DM Mono',monospace", color: 'var(--green)', fontWeight: 700 }}>{formatBRL(Number(it.valor_frete || 0))}</td>
+                            <td style={{ fontFamily: "'Inter', sans-serif", fontSize: 11 }}>{it.km_percorrido ? `${Number(it.km_percorrido).toLocaleString('pt-BR')} km` : '—'}</td>
+                            <td style={{ textAlign: 'right', fontFamily: "'Inter', sans-serif", color: 'var(--green)', fontWeight: 700 }}>{formatBRL(Number(it.valor_frete || 0))}</td>
                             <td style={{ fontSize: 11 }}>{it.motorista || '—'}</td>
                             <td><span className={`tag ${it.status === 'concluido' ? 'green' : 'gray'}`} style={{ fontSize: 9 }}>{it.status}</span></td>
                           </tr>
@@ -767,7 +767,7 @@ export default function PatrimonioPage() {
                       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6, fontSize: 11, marginBottom: 8 }}>
                         <div><span style={{ color: 'var(--gray-400)' }}>Modelo</span><br /><span style={{ fontWeight: 600 }}>{v.modelo || '—'}</span></div>
                         <div><span style={{ color: 'var(--gray-400)' }}>Ano</span><br /><span style={{ fontWeight: 600 }}>{v.ano_fabricacao || '—'}</span></div>
-                        <div><span style={{ color: 'var(--gray-400)' }}>Odômetro</span><br /><span style={{ fontFamily: "'DM Mono',monospace" }}>{Number(v.km_atual || 0).toLocaleString('pt-BR')} km</span></div>
+                        <div><span style={{ color: 'var(--gray-400)' }}>Odômetro</span><br /><span style={{ fontFamily: "'Inter', sans-serif" }}>{Number(v.km_atual || 0).toLocaleString('pt-BR')} km</span></div>
                         <div><span style={{ color: 'var(--gray-400)' }}>Contábil</span><br /><span style={{ color: 'var(--teal)', fontWeight: 700 }}>{formatBRL(Number(v.valor_contabil || 0))}</span></div>
                       </div>
                       <div style={{ height: 4, borderRadius: 2, background: 'var(--gray-100)', marginBottom: 6 }}>
@@ -848,10 +848,10 @@ export default function PatrimonioPage() {
                         {operacoes.length === 0 && <tr><td colSpan={6} style={{ textAlign: 'center', color: 'var(--gray-400)', padding: '24px 0' }}>Nenhuma operação.</td></tr>}
                         {operacoes.map(op => (
                           <tr key={op.id}>
-                            <td style={{ fontFamily: "'DM Mono',monospace", fontSize: 11 }}>{op.data}</td>
-                            <td style={{ fontFamily: "'DM Mono',monospace", fontSize: 11 }}>{Number(op.horas_inicio).toFixed(1)}h</td>
-                            <td style={{ fontFamily: "'DM Mono',monospace", fontSize: 11 }}>{Number(op.horas_fim).toFixed(1)}h</td>
-                            <td style={{ textAlign: 'right', fontFamily: "'DM Mono',monospace", color: 'var(--teal)', fontWeight: 700 }}>{(Number(op.horas_fim) - Number(op.horas_inicio)).toFixed(1)}h</td>
+                            <td style={{ fontFamily: "'Inter', sans-serif", fontSize: 11 }}>{op.data}</td>
+                            <td style={{ fontFamily: "'Inter', sans-serif", fontSize: 11 }}>{Number(op.horas_inicio).toFixed(1)}h</td>
+                            <td style={{ fontFamily: "'Inter', sans-serif", fontSize: 11 }}>{Number(op.horas_fim).toFixed(1)}h</td>
+                            <td style={{ textAlign: 'right', fontFamily: "'Inter', sans-serif", color: 'var(--teal)', fontWeight: 700 }}>{(Number(op.horas_fim) - Number(op.horas_inicio)).toFixed(1)}h</td>
                             <td style={{ fontSize: 11 }}>{op.operador || '—'}</td>
                             <td style={{ fontSize: 11 }}>{op.producao || '—'}</td>
                           </tr>
@@ -891,7 +891,7 @@ export default function PatrimonioPage() {
                         <span className={`tag ${STATUS_COLORS[m.status] || 'gray'}`} style={{ marginLeft: 'auto', fontSize: 9 }}>{STATUS_LABEL[m.status]}</span>
                       </div>
                       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6, fontSize: 11, marginBottom: 8 }}>
-                        <div><span style={{ color: 'var(--gray-400)' }}>Horas</span><br /><span style={{ fontFamily: "'DM Mono',monospace" }}>{Number(m.horas_operacao || 0).toLocaleString('pt-BR')} h</span></div>
+                        <div><span style={{ color: 'var(--gray-400)' }}>Horas</span><br /><span style={{ fontFamily: "'Inter', sans-serif" }}>{Number(m.horas_operacao || 0).toLocaleString('pt-BR')} h</span></div>
                         <div><span style={{ color: 'var(--gray-400)' }}>Contábil</span><br /><span style={{ color: 'var(--teal)', fontWeight: 700 }}>{formatBRL(Number(m.valor_contabil || 0))}</span></div>
                       </div>
                       <div style={{ height: 4, borderRadius: 2, background: 'var(--gray-100)' }}>
@@ -1022,7 +1022,7 @@ export default function PatrimonioPage() {
                         <span className={`tag ${STATUS_COLORS[im.status] || 'gray'}`} style={{ marginLeft: 'auto', fontSize: 9 }}>{STATUS_LABEL[im.status]}</span>
                       </div>
                       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6, fontSize: 11, marginBottom: 8 }}>
-                        <div><span style={{ color: 'var(--gray-400)' }}>Aquisição</span><br /><span style={{ fontFamily: "'DM Mono',monospace", fontWeight: 600 }}>{formatBRL(Number(im.valor_aquisicao || 0))}</span></div>
+                        <div><span style={{ color: 'var(--gray-400)' }}>Aquisição</span><br /><span style={{ fontFamily: "'Inter', sans-serif", fontWeight: 600 }}>{formatBRL(Number(im.valor_aquisicao || 0))}</span></div>
                         <div><span style={{ color: 'var(--gray-400)' }}>Contábil</span><br /><span style={{ color: 'var(--teal)', fontWeight: 700 }}>{formatBRL(Number(im.valor_contabil || 0))}</span></div>
                       </div>
                       <div style={{ height: 4, borderRadius: 2, background: 'var(--gray-100)' }}>
@@ -1122,10 +1122,10 @@ function ManutencaoTable({ manutencoes }: { manutencoes: ManutencaoP[] }) {
             <tr key={m.id}>
               <td><span className="tag gray" style={{ fontSize: 9 }}>{m.tipo}</span></td>
               <td style={{ fontSize: 12 }}>{m.descricao || '—'}</td>
-              <td style={{ fontFamily: "'DM Mono',monospace", fontSize: 11 }}>{m.data}</td>
-              <td style={{ textAlign: 'right', fontFamily: "'DM Mono',monospace" }}>{formatBRL(Number(m.valor || 0))}</td>
+              <td style={{ fontFamily: "'Inter', sans-serif", fontSize: 11 }}>{m.data}</td>
+              <td style={{ textAlign: 'right', fontFamily: "'Inter', sans-serif" }}>{formatBRL(Number(m.valor || 0))}</td>
               <td style={{ fontSize: 11 }}>{m.oficina || '—'}</td>
-              <td style={{ fontFamily: "'DM Mono',monospace", fontSize: 11, color: 'var(--gray-400)' }}>{m.proxima_data || '—'}</td>
+              <td style={{ fontFamily: "'Inter', sans-serif", fontSize: 11, color: 'var(--gray-400)' }}>{m.proxima_data || '—'}</td>
             </tr>
           ))}
         </tbody>
@@ -1158,7 +1158,7 @@ function AtivoTable({ ativos, categorias, onDetalhes, onBaixa, onQr }: {
             return (
               <tr key={a.id}>
                 <td><span className="tag gray" style={{ fontSize: 9 }}>{TIPO_LABEL[a.tipo_ativo] || a.tipo_ativo}</span></td>
-                <td style={{ fontFamily: "'DM Mono',monospace", fontSize: 11 }}>{a.codigo_interno || '—'}</td>
+                <td style={{ fontFamily: "'Inter', sans-serif", fontSize: 11 }}>{a.codigo_interno || '—'}</td>
                 <td>
                   <div style={{ fontWeight: 600, fontSize: 12 }}>{a.nome}</div>
                   {a.placa && <div style={{ fontSize: 10, color: 'var(--gray-400)' }}>{a.placa}</div>}
@@ -1167,8 +1167,8 @@ function AtivoTable({ ativos, categorias, onDetalhes, onBaixa, onQr }: {
                   </div>
                 </td>
                 <td style={{ fontSize: 12 }}>{categorias.find(c => c.id === a.categoria_id)?.nome || '—'}</td>
-                <td style={{ textAlign: 'right', fontFamily: "'DM Mono',monospace" }}>{formatBRL(Number(a.valor_aquisicao || 0))}</td>
-                <td style={{ textAlign: 'right', fontFamily: "'DM Mono',monospace", color: 'var(--teal)', fontWeight: 700 }}>{formatBRL(Number(a.valor_contabil || 0))}</td>
+                <td style={{ textAlign: 'right', fontFamily: "'Inter', sans-serif" }}>{formatBRL(Number(a.valor_aquisicao || 0))}</td>
+                <td style={{ textAlign: 'right', fontFamily: "'Inter', sans-serif", color: 'var(--teal)', fontWeight: 700 }}>{formatBRL(Number(a.valor_contabil || 0))}</td>
                 <td style={{ textAlign: 'center' }}><span className={`tag ${STATUS_COLORS[a.status] || 'gray'}`}>{STATUS_LABEL[a.status] || a.status}</span></td>
                 <td style={{ textAlign: 'center' }}>
                   <div style={{ display: 'flex', justifyContent: 'center', gap: 4 }}>

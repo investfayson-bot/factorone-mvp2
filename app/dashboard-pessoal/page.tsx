@@ -163,7 +163,7 @@ export default function DashboardPessoalPage() {
             {assinaturas.filter(a => a.ativa).slice(0, 4).map(a => (
               <div key={a.nome} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, padding: '6px 0', borderBottom: '1px solid var(--gray-100)' }}>
                 <span style={{ fontWeight: 600 }}>📺 {a.nome}</span>
-                <span style={{ fontFamily: "'DM Mono',monospace", color: 'var(--red)' }}>{formatBRL(Number(a.valor))}</span>
+                <span style={{ fontFamily: "'Inter', sans-serif", color: 'var(--red)' }}>{formatBRL(Number(a.valor))}</span>
               </div>
             ))}
             {assinaturas.filter(a => a.ativa).length === 0 && (

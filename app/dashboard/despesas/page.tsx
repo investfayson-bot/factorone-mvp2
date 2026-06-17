@@ -370,7 +370,7 @@ export default function DespesasPage() {
       <div className="cf-chart-card" style={{ marginBottom: 14 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
           <div className="chart-title" style={{ marginBottom: 0 }}>Categorização de Gastos</div>
-          <div style={{ fontSize: 10, color: 'var(--gray-400)', fontFamily: "'DM Mono', monospace" }}>
+          <div style={{ fontSize: 10, color: 'var(--gray-400)', fontFamily: "'Inter', sans-serif" }}>
             {categorizacao.pendentesN} pendentes · IA 94% automático
           </div>
         </div>
@@ -382,7 +382,7 @@ export default function DespesasPage() {
               <li key={it.nome}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, marginBottom: 4 }}>
                   <span style={{ fontWeight: 600, color: 'var(--navy)' }}>{it.nome}</span>
-                  <span style={{ fontFamily: "'DM Mono', monospace", color: 'var(--gray-500)' }}>{formatBRL(it.valor)} · {it.pct.toFixed(1)}%</span>
+                  <span style={{ fontFamily: "'Inter', sans-serif", color: 'var(--gray-500)' }}>{formatBRL(it.valor)} · {it.pct.toFixed(1)}%</span>
                 </div>
                 <div style={{ height: 6, background: 'var(--gray-100)', borderRadius: 3, overflow: 'hidden' }}>
                   <div style={{ height: '100%', width: `${Math.min(100, it.pct)}%`, background: 'var(--teal)', borderRadius: 3 }} />
