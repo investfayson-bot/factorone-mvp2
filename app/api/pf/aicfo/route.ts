@@ -1,26 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Anthropic from '@anthropic-ai/sdk'
-import { createClient } from '@supabase/supabase-js'
+import { getSupabaseUser } from '@/lib/supabase-route'
 
 function getAnthropic() {
   return new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! })
 }
 
-function db() {
-  return createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!)
-}
-
 export async function POST(req: NextRequest) {
   try {
-    const { mensagem, user_id, historico = [] } = await req.json() as {
+    const { user, supabase } = await getSupabaseUser(req)
+    if (!user) return NextResponse.json({ error: 'Não autenticado' }, { status: 401 })
+
+    const { mensagem, historico = [] } = await req.json() as {
       mensagem: string
-      user_id: string
       historico: { role: 'user' | 'assistant'; content: string }[]
     }
 
-    if (!mensagem || !user_id) return NextResponse.json({ error: 'mensagem e user_id obrigatórios' }, { status: 400 })
+    if (!mensagem) return NextResponse.json({ error: 'mensagem obrigatória' }, { status: 400 })
 
-    const supabase = db()
+    const user_id = user.id
     const agora = new Date()
     const ini = `${agora.getFullYear()}-${String(agora.getMonth() + 1).padStart(2, '0')}-01`
     const mesAtual = agora.toISOString().slice(0, 7)

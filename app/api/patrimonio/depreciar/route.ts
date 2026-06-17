@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
   if (!user) return NextResponse.json({ error: 'Não autenticado' }, { status: 401 })
   const body = (await req.json()) as { empresaId?: string; competencia?: string }
   const { data: u } = await supabase.from('usuarios').select('empresa_id').eq('id', user.id).maybeSingle()
-  const empresaId = body.empresaId || (u?.empresa_id as string) || user.id
+  const empresaId = (u?.empresa_id as string) || user.id
   const competenciaStr = body.competencia || new Date().toISOString().slice(0, 7)
   const competencia = competenciaToDate(competenciaStr)
 

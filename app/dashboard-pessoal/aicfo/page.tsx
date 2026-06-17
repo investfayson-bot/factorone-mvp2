@@ -33,10 +33,11 @@ export default function AICFOPessoalPage() {
     setMsgs(prev => [...prev, { role: 'user', content: msg }])
     setLoading(true)
     try {
+      const { data: { session } } = await supabase.auth.getSession()
       const res = await fetch('/api/pf/aicfo', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ mensagem: msg, user_id: userId, historico: msgs.slice(-8) }),
+        headers: { 'Content-Type': 'application/json', ...(session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : {}) },
+        body: JSON.stringify({ mensagem: msg, historico: msgs.slice(-8) }),
       })
       const data = await res.json() as { resposta?: string; error?: string }
       setMsgs(prev => [...prev, { role: 'assistant', content: data.resposta ?? data.error ?? 'Erro ao processar' }])
