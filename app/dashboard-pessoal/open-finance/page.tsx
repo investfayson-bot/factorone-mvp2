@@ -6,14 +6,14 @@ import { formatBRL } from '@/lib/currency-brl'
 type Conexao = { id: string; banco: string; status: string; ultimo_sync: string | null }
 
 const BANCOS_SUPORTADOS = [
-  { nome: 'Nubank', icon: '🟣', desc: 'Conta, cartão e investimentos' },
-  { nome: 'Itaú', icon: '🟠', desc: 'Conta corrente e poupança' },
-  { nome: 'Bradesco', icon: '🔴', desc: 'Conta corrente e cartão' },
-  { nome: 'Banco do Brasil', icon: '🟡', desc: 'Conta corrente e poupança' },
-  { nome: 'Santander', icon: '🔴', desc: 'Conta corrente e cartão' },
-  { nome: 'Inter', icon: '🟠', desc: 'Conta digital e investimentos' },
-  { nome: 'C6 Bank', icon: '⚫', desc: 'Conta digital e cartão' },
-  { nome: 'XP Investimentos', icon: '🔵', desc: 'Carteira de investimentos' },
+  { nome: 'Nubank', icon: 'fa-circle', desc: 'Conta, cartão e investimentos' },
+  { nome: 'Itaú', icon: 'fa-circle', desc: 'Conta corrente e poupança' },
+  { nome: 'Bradesco', icon: 'fa-circle', desc: 'Conta corrente e cartão' },
+  { nome: 'Banco do Brasil', icon: 'fa-circle', desc: 'Conta corrente e poupança' },
+  { nome: 'Santander', icon: 'fa-circle', desc: 'Conta corrente e cartão' },
+  { nome: 'Inter', icon: 'fa-circle', desc: 'Conta digital e investimentos' },
+  { nome: 'C6 Bank', icon: 'fa-circle', desc: 'Conta digital e cartão' },
+  { nome: 'XP Investimentos', icon: 'fa-circle', desc: 'Carteira de investimentos' },
 ]
 
 export default function OpenFinancePage() {
@@ -95,7 +95,7 @@ export default function OpenFinancePage() {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(200px,1fr))', gap: 10 }}>
           {BANCOS_SUPORTADOS.map(b => (
             <div key={b.nome} style={{ border: '1px solid var(--gray-100)', borderRadius: 10, padding: '12px 14px', display: 'flex', alignItems: 'center', gap: 10 }}>
-              <span style={{ fontSize: 22 }}>{b.icon}</span>
+              <span style={{ fontSize: 22 }}><i className={`fa-solid ${b.icon}`} /></span>
               <div>
                 <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--navy)' }}>{b.nome}</div>
                 <div style={{ fontSize: 10, color: 'var(--gray-400)' }}>{b.desc}</div>

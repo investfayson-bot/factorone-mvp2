@@ -82,7 +82,7 @@ export default function PortalContadorPage() {
     return (
       <div style={{ minHeight: '100vh', background: '#f8fafc', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <div style={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: 16, padding: '40px 32px', textAlign: 'center', maxWidth: 380 }}>
-          <div style={{ fontSize: 32, marginBottom: 16 }}>🔒</div>
+          <div style={{ fontSize: 32, marginBottom: 16, color: '#64748b' }}><i className="fa-solid fa-lock" /></div>
           <div style={{ fontWeight: 700, fontSize: 16, color: '#1e293b', marginBottom: 8 }}>Acesso inválido</div>
           <div style={{ fontSize: 13, color: '#64748b' }}>Token expirado ou inválido. Solicite um novo link de acesso ao seu cliente.</div>
         </div>
@@ -94,7 +94,7 @@ export default function PortalContadorPage() {
     return (
       <div style={{ minHeight: '100vh', background: '#f8fafc', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <div style={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: 16, padding: '40px 32px', textAlign: 'center', maxWidth: 380 }}>
-          <div style={{ fontSize: 32, marginBottom: 16 }}>⛔</div>
+          <div style={{ fontSize: 32, marginBottom: 16, color: '#C0504A' }}><i className="fa-solid fa-ban" /></div>
           <div style={{ fontWeight: 700, fontSize: 16, color: '#1e293b', marginBottom: 8 }}>Acesso revogado</div>
           <div style={{ fontSize: 13, color: '#64748b' }}>O cliente revogou seu acesso a este portal. Entre em contato para solicitar reativação.</div>
         </div>

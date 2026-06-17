@@ -206,7 +206,7 @@ export default function ContabilidadePage() {
         <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: 20 }}>
           <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy)', marginBottom: 16 }}>Fluxo contábil</div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12 }}>
-            {[['📷', 'Foto'], ['🧠', 'IA Extrai'], ['📊', 'DRE Atualizado'], ['👤', 'Contador Valida']].map(([icon, title]) => (
+            {[['fa-camera', 'Foto'], ['fa-brain', 'IA Extrai'], ['fa-chart-column', 'DRE Atualizado'], ['fa-user', 'Contador Valida']].map(([icon, title]) => (
               <div key={title} style={{ background: 'rgba(94,140,135,.04)', border: '1px solid var(--gray-100)', borderRadius: 10, padding: '14px 12px' }}>
                 <div style={{ fontSize: 20, marginBottom: 8 }}>{icon}</div>
                 <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--navy)' }}>{title}</div>
@@ -220,7 +220,7 @@ export default function ContabilidadePage() {
         <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: 20 }}>
           <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy)', marginBottom: 14 }}>Captura de recibos</div>
           <label style={{ display: 'flex', minHeight: 120, cursor: 'pointer', alignItems: 'center', justifyContent: 'center', borderRadius: 10, border: '2px dashed var(--gray-100)', background: '#fafafa', fontSize: 13, color: 'var(--gray-400)' }}>
-            <span>📎 Arraste ou selecione imagem/PDF</span>
+            <span>Arraste ou selecione imagem/PDF</span>
             <input
               type="file"
               accept="image/*,application/pdf"

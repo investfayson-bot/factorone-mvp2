@@ -50,7 +50,7 @@ export default function AICFOPessoalPage() {
     <div style={{ display: 'flex', flexDirection: 'column', height: 'calc(100vh - 110px)' }}>
       {/* Header */}
       <div style={{ background: 'linear-gradient(90deg, var(--navy) 0%, #1e3a5f 100%)', borderRadius: 12, padding: '16px 20px', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 12 }}>
-        <div style={{ width: 40, height: 40, borderRadius: 10, background: 'rgba(255,255,255,.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20 }}>🤖</div>
+        <div style={{ width: 40, height: 40, borderRadius: 10, background: 'rgba(255,255,255,.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20 }}></div>
         <div>
           <div style={{ fontSize: 14, fontWeight: 700, color: '#fff' }}>AI CFO Pessoal</div>
           <div style={{ fontSize: 11, color: 'rgba(255,255,255,.6)' }}>Seu consultor financeiro pessoal — pergunte qualquer coisa sobre seu dinheiro</div>

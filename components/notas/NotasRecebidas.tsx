@@ -105,17 +105,17 @@ export default function NotasRecebidas() {
       {/* Upload options */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 10, marginBottom: 14 }}>
         <button type="button" onClick={() => fileRef.current?.click()} style={{ ...card, margin: 0, cursor: 'pointer', textAlign: 'left' }}>
-          <div style={{ fontSize: 18, marginBottom: 8 }}>📄</div>
+          <div style={{ fontSize: 18, marginBottom: 8, color: 'var(--teal)' }}><i className="fa-solid fa-file-lines" /></div>
           <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--navy)' }}>Arquivo</div>
           <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>XML, PDF ou imagem</div>
         </button>
         <button type="button" onClick={() => camRef.current?.click()} style={{ ...card, margin: 0, cursor: 'pointer', textAlign: 'left' }}>
-          <div style={{ fontSize: 18, marginBottom: 8 }}>📷</div>
+          <div style={{ fontSize: 18, marginBottom: 8, color: 'var(--teal)' }}><i className="fa-solid fa-camera" /></div>
           <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--navy)' }}>Câmera / Foto</div>
           <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>Capture a NF</div>
         </button>
         <div style={{ ...card, margin: 0 }}>
-          <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--navy)', marginBottom: 8 }}>📋 Colar texto</div>
+          <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--navy)', marginBottom: 8 }}>Colar texto</div>
           <textarea
             value={texto}
             onChange={(e) => { setTexto(e.target.value); setPreview(e.target.value.slice(0, 200)); setImagemPreview('') }}
@@ -132,7 +132,7 @@ export default function NotasRecebidas() {
       {/* Preview + analyze */}
       <div style={card}>
         <div style={{ fontSize: 11, color: 'var(--gray-400)', marginBottom: 10 }}>
-          ✉ Encaminhar para: <span style={{ color: 'var(--navy)', fontWeight: 600 }}>nf@factorone.com.br</span>
+          Encaminhar para: <span style={{ color: 'var(--navy)', fontWeight: 600 }}>nf@factorone.com.br</span>
         </div>
         {imagemPreview ? (
           // eslint-disable-next-line @next/next/no-img-element
@@ -141,7 +141,7 @@ export default function NotasRecebidas() {
           <div style={{ fontSize: 11, color: 'var(--gray-400)', marginBottom: 12 }}>{preview || 'Sem preview ainda'}</div>
         )}
         <button type="button" onClick={analisar} disabled={loading || !texto} className="btn-action" style={{ opacity: loading || !texto ? .5 : 1 }}>
-          {loading ? 'Analisando...' : '✦ Analisar Nota Fiscal'}
+          {loading ? 'Analisando...' : 'Analisar Nota Fiscal'}
         </button>
       </div>
 

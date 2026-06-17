@@ -126,7 +126,7 @@ export default function EmitirNFSe() {
         <div style={{ fontSize: 22, fontWeight: 800, color: '#fff', marginBottom: 4 }}>{preview.liquido.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</div>
         <div style={{ fontSize: 11, color: 'rgba(255,255,255,.5)', marginBottom: 14 }}>ISS {preview.iss.toFixed(2)} | IR {preview.ir.toFixed(2)} | PIS/COFINS {preview.pc.toFixed(2)}</div>
         <button type="button" disabled={loading} onClick={emitir} className="btn-action" style={{ opacity: loading ? .6 : 1 }}>
-          {loading ? 'Emitindo...' : '⚡ Emitir NFS-e'}
+          {loading ? 'Emitindo...' : 'Emitir NFS-e'}
         </button>
       </div>
 

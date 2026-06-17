@@ -165,7 +165,7 @@ export default function EmitirNFe() {
           <div style={{ fontSize: 11, color: 'rgba(255,255,255,.6)' }}>ICMS estimado: {totais.icms.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</div>
         </div>
         <button type="button" disabled={loading} onClick={emitir} className="btn-action" style={{ opacity: loading ? .6 : 1, flexShrink: 0 }}>
-          {loading ? 'Emitindo...' : '⚡ Emitir NF-e'}
+          {loading ? 'Emitindo...' : 'Emitir NF-e'}
         </button>
       </div>
 

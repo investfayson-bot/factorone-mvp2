@@ -152,7 +152,7 @@ export default function HistoricoNotas() {
                       {r.pdf_url && (
                         <a href={r.pdf_url} target="_blank" rel="noreferrer" title="PDF" style={{ padding: '4px 7px', borderRadius: 6, border: '1px solid var(--gray-100)', background: '#fff', color: 'var(--navy)', fontSize: 11, textDecoration: 'none' }}>PDF</a>
                       )}
-                      <button type="button" title="E-mail" onClick={() => setEmailModal({ id: r.id, email: '' })} style={{ padding: '4px 7px', borderRadius: 6, border: '1px solid var(--gray-100)', background: '#fff', color: 'var(--navy)', fontSize: 11, cursor: 'pointer' }}>✉</button>
+                      <button type="button" title="E-mail" onClick={() => setEmailModal({ id: r.id, email: '' })} style={{ padding: '4px 7px', borderRadius: 6, border: '1px solid var(--gray-100)', background: '#fff', color: 'var(--navy)', fontSize: 11, cursor: 'pointer' }}></button>
                       {r.status !== 'cancelada' && r.status !== 'rejeitada' && (
                         <button type="button" title="Cancelar" onClick={() => setCancelModal({ id: r.id, j: '' })} style={{ padding: '4px 7px', borderRadius: 6, border: '1px solid rgba(192,80,74,.2)', background: '#fff', color: 'var(--red)', fontSize: 11, cursor: 'pointer' }}>✕</button>
                       )}

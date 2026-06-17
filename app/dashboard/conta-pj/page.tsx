@@ -12,24 +12,24 @@ type Conta = { id: string; saldo_disponivel: number; saldo: number; agencia: str
 type Tx = { id: string; tipo: 'credito' | 'debito'; descricao: string; data_transacao: string; valor: number; contraparte_nome?: string | null }
 
 const ACOES = [
-  { label: 'PIX', emoji: '⚡', href: '/dashboard/conta-pj/transferencias', bg: 'rgba(0,168,150,.1)', color: 'var(--teal)' },
-  { label: 'Pagar', emoji: '💰', href: '/dashboard/financeiro', bg: 'rgba(26,43,74,.08)', color: 'var(--navy)' },
-  { label: 'Cobrar', emoji: '📋', href: '/dashboard/financeiro', bg: 'rgba(184,146,42,.1)', color: 'var(--gold)' },
-  { label: 'Transferir', emoji: '↔️', href: '/dashboard/conta-pj/transferencias', bg: 'rgba(124,58,237,.08)', color: '#7C3AED' },
-  { label: 'Extrato', emoji: '📊', href: '/dashboard/conta-pj/extrato', bg: 'rgba(45,155,111,.08)', color: 'var(--green)' },
-  { label: 'Open Finance', emoji: '🔗', href: '/dashboard/conta-pj/conectar-banco', bg: 'rgba(0,168,150,.08)', color: 'var(--teal)' },
+  { label: 'PIX', emoji: 'fa-bolt', href: '/dashboard/conta-pj/transferencias', bg: 'rgba(0,168,150,.1)', color: 'var(--teal)' },
+  { label: 'Pagar', emoji: 'fa-sack-dollar', href: '/dashboard/financeiro', bg: 'rgba(26,43,74,.08)', color: 'var(--navy)' },
+  { label: 'Cobrar', emoji: 'fa-clipboard-list', href: '/dashboard/financeiro', bg: 'rgba(184,146,42,.1)', color: 'var(--gold)' },
+  { label: 'Transferir', emoji: 'fa-right-left', href: '/dashboard/conta-pj/transferencias', bg: 'rgba(124,58,237,.08)', color: '#7C3AED' },
+  { label: 'Extrato', emoji: 'fa-chart-column', href: '/dashboard/conta-pj/extrato', bg: 'rgba(45,155,111,.08)', color: 'var(--green)' },
+  { label: 'Open Finance', emoji: 'fa-link', href: '/dashboard/conta-pj/conectar-banco', bg: 'rgba(0,168,150,.08)', color: 'var(--teal)' },
 ]
 
 const FUNCIONALIDADES = [
-  { emoji: '⚡', label: 'PIX', desc: 'Envie e receba 24h por dia', href: '/dashboard/conta-pj/transferencias' },
-  { emoji: '💰', label: 'Pagamentos', desc: 'Pague contas, boletos e tributos', href: '/dashboard/financeiro' },
-  { emoji: '↔️', label: 'Transferências', desc: 'TED, DOC e transferências internas', href: '/dashboard/conta-pj/transferencias' },
-  { emoji: '📄', label: 'Cobranças', desc: 'Emita cobranças e boletos', href: '/dashboard/financeiro' },
-  { emoji: '🔗', label: 'Open Finance', desc: 'Conecte contas de outros bancos', href: '/dashboard/conta-pj/conectar-banco' },
-  { emoji: '💳', label: 'Cartões', desc: 'Peça cartões para sua empresa', href: '/dashboard/cartoes' },
-  { emoji: '📊', label: 'Relatórios', desc: 'Relatórios financeiros completos', href: '/dashboard/relatorios' },
-  { emoji: '💸', label: 'Gestão de Caixa', desc: 'Controle seu fluxo de caixa', href: '/dashboard/cashflow' },
-  { emoji: '🔌', label: 'Integrações', desc: 'Integre com sistemas e plataformas', href: '/dashboard/integracoes' },
+  { emoji: 'fa-bolt', label: 'PIX', desc: 'Envie e receba 24h por dia', href: '/dashboard/conta-pj/transferencias' },
+  { emoji: 'fa-sack-dollar', label: 'Pagamentos', desc: 'Pague contas, boletos e tributos', href: '/dashboard/financeiro' },
+  { emoji: 'fa-right-left', label: 'Transferências', desc: 'TED, DOC e transferências internas', href: '/dashboard/conta-pj/transferencias' },
+  { emoji: 'fa-file-lines', label: 'Cobranças', desc: 'Emita cobranças e boletos', href: '/dashboard/financeiro' },
+  { emoji: 'fa-link', label: 'Open Finance', desc: 'Conecte contas de outros bancos', href: '/dashboard/conta-pj/conectar-banco' },
+  { emoji: 'fa-credit-card', label: 'Cartões', desc: 'Peça cartões para sua empresa', href: '/dashboard/cartoes' },
+  { emoji: 'fa-chart-column', label: 'Relatórios', desc: 'Relatórios financeiros completos', href: '/dashboard/relatorios' },
+  { emoji: 'fa-money-bill-wave', label: 'Gestão de Caixa', desc: 'Controle seu fluxo de caixa', href: '/dashboard/cashflow' },
+  { emoji: 'fa-plug', label: 'Integrações', desc: 'Integre com sistemas e plataformas', href: '/dashboard/integracoes' },
 ]
 
 const CARGOS = ['Sócio Administrador', 'Diretor', 'Gerente', 'Procurador', 'Representante Legal']
@@ -589,11 +589,11 @@ export default function ContaPJPage() {
 
   function txIcon(tx: Tx) {
     const d = tx.descricao.toLowerCase()
-    if (d.includes('pix')) return '⚡'
-    if (d.includes('transfer')) return '↔️'
-    if (d.includes('pagament')) return '💰'
-    if (d.includes('cobran')) return '📋'
-    return tx.tipo === 'credito' ? '📥' : '📤'
+    if (d.includes('pix')) return 'fa-bolt'
+    if (d.includes('transfer')) return 'fa-right-left'
+    if (d.includes('pagament')) return 'fa-sack-dollar'
+    if (d.includes('cobran')) return 'fa-clipboard-list'
+    return tx.tipo === 'credito' ? 'fa-inbox' : 'fa-paper-plane'
   }
 
   return (
@@ -602,7 +602,7 @@ export default function ContaPJPage() {
       <div className="page-hdr" style={{ flexWrap: 'wrap', gap: 12 }}>
         <div>
           <div style={{ fontSize: 20, fontWeight: 800, color: 'var(--navy)', fontFamily: "'Sora',sans-serif" }}>
-            Olá, {empresa.nome || userName}! 👋
+            Olá, {empresa.nome || userName}! 
           </div>
           <div style={{ fontSize: 12, color: 'var(--gray-400)', marginTop: 2 }}>
             Bem-vindo à sua conta PJ gratuita
@@ -611,7 +611,7 @@ export default function ContaPJPage() {
         </div>
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
           <button className="btn-action btn-ghost" onClick={copiarPix} style={{ fontSize: 12 }}>
-            ⚡ PIX copia e cola
+            PIX copia e cola
           </button>
           <Link href="/dashboard/conta-pj/transferencias" className="btn-action" style={{ fontSize: 12, textDecoration: 'none' }}>
             ↔️ Nova transferência
@@ -622,7 +622,7 @@ export default function ContaPJPage() {
       {/* KPIs */}
       <div className="kpis" style={{ gridTemplateColumns: 'repeat(4,1fr)', marginBottom: 20 }}>
         <div className="kpi">
-          <div className="kpi-lbl">💰 Saldo disponível</div>
+          <div className="kpi-lbl">Saldo disponível</div>
           <div className="kpi-val" style={{ color: 'var(--navy)' }}>
             {hide ? '••••••' : formatBRL(saldo)}
           </div>
@@ -631,17 +631,17 @@ export default function ContaPJPage() {
           </button>
         </div>
         <div className="kpi">
-          <div className="kpi-lbl">📥 Entradas do mês</div>
+          <div className="kpi-lbl">Entradas do mês</div>
           <div className="kpi-val" style={{ color: 'var(--green)' }}>{formatBRL(entradasMes)}</div>
           <div className="kpi-delta">{txsMes.filter(t => t.tipo === 'credito').length} transações</div>
         </div>
         <div className="kpi">
-          <div className="kpi-lbl">📤 Saídas do mês</div>
+          <div className="kpi-lbl">Saídas do mês</div>
           <div className="kpi-val" style={{ color: 'var(--red)' }}>{formatBRL(saidasMes)}</div>
           <div className="kpi-delta">{txsMes.filter(t => t.tipo === 'debito').length} transações</div>
         </div>
         <div className="kpi">
-          <div className="kpi-lbl">💳 Cartões corporativos</div>
+          <div className="kpi-lbl">Cartões corporativos</div>
           <div className="kpi-val" style={{ color: 'var(--navy)' }}>{numCartoes}</div>
           <Link href="/dashboard/cartoes" style={{ fontSize: 10, color: 'var(--teal)', textDecoration: 'none' }}>Gerenciar cartões →</Link>
         </div>
@@ -653,7 +653,7 @@ export default function ContaPJPage() {
         <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
           {ACOES.map(a => (
             <Link key={a.label} href={a.href} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, padding: '12px 16px', borderRadius: 10, background: a.bg, border: '1px solid transparent', textDecoration: 'none', minWidth: 72, cursor: 'pointer', transition: 'opacity .15s' }}>
-              <span style={{ fontSize: 22 }}>{a.emoji}</span>
+              <span style={{ fontSize: 22 }}><i className={`fa-solid ${a.emoji}`} /></span>
               <span style={{ fontSize: 11, fontWeight: 700, color: a.color }}>{a.label}</span>
             </Link>
           ))}
@@ -669,7 +669,7 @@ export default function ContaPJPage() {
               <Link href="/dashboard/conta-pj/extrato" style={{ fontSize: 11, color: 'var(--teal)', textDecoration: 'none' }}>Ver extrato completo →</Link>
             </div>
             {txsRecentes.length === 0 ? (
-              <div style={{ padding: '32px 20px', textAlign: 'center', color: 'var(--gray-400)', fontSize: 12 }}>📭 Nenhuma movimentação nos últimos 30 dias</div>
+              <div style={{ padding: '32px 20px', textAlign: 'center', color: 'var(--gray-400)', fontSize: 12 }}>Nenhuma movimentação nos últimos 30 dias</div>
             ) : (
               <div>
                 {txsRecentes.map(tx => (
@@ -692,7 +692,7 @@ export default function ContaPJPage() {
 
           <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: '16px 20px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-              <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy)' }}>📊 Análise financeira</span>
+              <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy)' }}>Análise financeira</span>
               <div style={{ display: 'flex', gap: 4 }}>
                 {(['fluxo', 'saldo'] as const).map(t => (
                   <button key={t} onClick={() => setChartTab(t)}
@@ -713,7 +713,7 @@ export default function ContaPJPage() {
                   </div>
                 </div>
                 {chartData.every(d => d.entrada === 0 && d.saida === 0) ? (
-                  <div style={{ height: 130, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gray-300)', fontSize: 12 }}>📭 Sem dados — importe seu extrato</div>
+                  <div style={{ height: 130, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gray-300)', fontSize: 12 }}>Sem dados — importe seu extrato</div>
                 ) : (
                   <ResponsiveContainer width="100%" height={130}>
                     <BarChart data={chartData} barGap={1} barCategoryGap="20%">
@@ -755,7 +755,7 @@ export default function ContaPJPage() {
                   </ResponsiveContainer>
                 </>
               ) : (
-                <div style={{ height: 130, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gray-300)', fontSize: 12 }}>📭 Sem histórico de transações</div>
+                <div style={{ height: 130, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gray-300)', fontSize: 12 }}>Sem histórico de transações</div>
               )
             })()}
           </div>
@@ -771,12 +771,12 @@ export default function ContaPJPage() {
               <button key={tab} onClick={() => setExtratoTab(tab)}
                 className={`btn-action${extratoTab !== tab ? ' btn-ghost' : ''}`}
                 style={{ fontSize: 10, padding: '3px 10px', textTransform: 'capitalize' }}>
-                {tab === 'todas' ? 'Todas' : tab === 'entradas' ? '📥 Entradas' : '📤 Saídas'}
+                {tab === 'todas' ? 'Todas' : tab === 'entradas' ? 'Entradas' : 'Saídas'}
               </button>
             ))}
           </div>
           {extratoFiltered.length === 0 ? (
-            <div style={{ padding: '24px 16px', textAlign: 'center', color: 'var(--gray-400)', fontSize: 12 }}>📭 Sem movimentações</div>
+            <div style={{ padding: '24px 16px', textAlign: 'center', color: 'var(--gray-400)', fontSize: 12 }}>Sem movimentações</div>
           ) : (
             <div>
               {extratoFiltered.map(tx => (
@@ -805,7 +805,7 @@ export default function ContaPJPage() {
               onMouseEnter={e => (e.currentTarget.style.background = 'var(--gray-50)')}
               onMouseLeave={e => (e.currentTarget.style.background = '#fafafa')}
             >
-              <span style={{ fontSize: 20, flexShrink: 0, marginTop: 1 }}>{f.emoji}</span>
+              <span style={{ fontSize: 20, flexShrink: 0, marginTop: 1 }}><i className={`fa-solid ${f.emoji}`} /></span>
               <div>
                 <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--navy)', marginBottom: 2 }}>{f.label}</div>
                 <div style={{ fontSize: 10, color: 'var(--gray-400)', lineHeight: 1.4 }}>{f.desc}</div>

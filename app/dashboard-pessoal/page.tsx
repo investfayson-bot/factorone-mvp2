@@ -6,9 +6,9 @@ import { formatBRL } from '@/lib/currency-brl'
 import Link from 'next/link'
 
 const CATS_ICON: Record<string, string> = {
-  'Alimentação': '🍔', 'Transporte': '🚗', 'Moradia': '🏠', 'Saúde': '💊',
-  'Lazer': '🎬', 'Educação': '📚', 'Vestuário': '👕', 'Assinaturas': '📺',
-  'Outros': '📦',
+  'Alimentação': 'fa-burger', 'Transporte': 'fa-car', 'Moradia': 'fa-house', 'Saúde': 'fa-pills',
+  'Lazer': 'fa-film', 'Educação': 'fa-book', 'Vestuário': 'fa-shirt', 'Assinaturas': 'fa-tv',
+  'Outros': 'fa-box',
 }
 
 export default function DashboardPessoalPage() {
@@ -115,7 +115,7 @@ export default function DashboardPessoalPage() {
                 return (
                   <div key={g.categoria}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, marginBottom: 4 }}>
-                      <span style={{ fontWeight: 600 }}>{CATS_ICON[g.categoria] ?? '📦'} {g.categoria}</span>
+                      <span style={{ fontWeight: 600 }}>{CATS_ICON[g.categoria] ?? 'fa-box'} {g.categoria}</span>
                       <span style={{ color: 'var(--gray-400)' }}>{formatBRL(g.valor)} · {pct.toFixed(0)}%</span>
                     </div>
                     <div style={{ height: 6, borderRadius: 4, background: 'var(--gray-100)' }}>
@@ -162,7 +162,7 @@ export default function DashboardPessoalPage() {
             </div>
             {assinaturas.filter(a => a.ativa).slice(0, 4).map(a => (
               <div key={a.nome} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, padding: '6px 0', borderBottom: '1px solid var(--gray-100)' }}>
-                <span style={{ fontWeight: 600 }}>📺 {a.nome}</span>
+                <span style={{ fontWeight: 600 }}>{a.nome}</span>
                 <span style={{ fontFamily: "'Inter', sans-serif", color: 'var(--red)' }}>{formatBRL(Number(a.valor))}</span>
               </div>
             ))}

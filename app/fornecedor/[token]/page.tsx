@@ -96,7 +96,7 @@ export default function FornecedorPortalPage({ params }: { params: Promise<{ tok
         ) : enviado ? (
           <div style={{ textAlign: 'center', padding: 60 }}>
             <div style={{ width: 72, height: 72, borderRadius: '50%', background: '#f0fdf4', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
-              <span style={{ fontSize: 36 }}>✅</span>
+              <span style={{ fontSize: 36 }}></span>
             </div>
             <h2 style={{ fontSize: 22, fontWeight: 700, color: '#0f172a', marginBottom: 10 }}>Fatura enviada com sucesso!</h2>
             <p style={{ color: '#64748b', fontSize: 14, lineHeight: 1.6 }}>

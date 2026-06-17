@@ -73,7 +73,7 @@ export function RespostaIA({ data, pergunta = '' }: { data: RespostaData; pergun
  {data.cards?.map((card, i) => (
  <div key={i} className={`rounded-xl border border-gray-200 bg-white shadow-sm ${grande ? 'p-5' : 'p-3'}`}>
  <div className={`flex items-center gap-2 ${grande ? 'mb-4' : 'mb-2'}`}>
- {card.emoji && <span className={grande ? 'text-2xl' : 'text-base'}>{card.emoji}</span>}
+ {card.emoji && <span className={grande ? 'text-2xl' : 'text-base'}><i className={`fa-solid ${card.emoji}`} /></span>}
  <span className={`font-bold text-slate-800 ${grande ? 'text-sm' : 'text-xs'}`}>{card.titulo}</span>
  </div>
  <div className="space-y-2">
@@ -92,7 +92,7 @@ export function RespostaIA({ data, pergunta = '' }: { data: RespostaData; pergun
  const Alertas = ({ grande }: { grande?: boolean }) => (
  data.alertas?.length > 0 ? (
  <div className={`rounded-xl border border-amber-200 bg-amber-50 ${grande ? 'p-4' : 'p-3'} space-y-1`}>
- {grande && <p className="text-xs font-bold text-amber-700 uppercase mb-2">️ Alertas</p>}
+ {grande && <p className="text-xs font-bold text-amber-700 uppercase mb-2">Alertas</p>}
  {data.alertas.map((a, i) => (
  <p key={i} className={`text-amber-700 ${grande ? 'text-sm' : 'text-[11px]'}`}>
  {grande ? '• ' : '️ '}{a}

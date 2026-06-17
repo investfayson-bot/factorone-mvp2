@@ -7,8 +7,8 @@ import toast from 'react-hot-toast'
 type Meta = { id: string; nome: string; descricao: string | null; valor_meta: number; valor_atual: number; prazo: string | null; categoria: string; icone: string }
 
 const CATEGORIAS = ['Reserva','Viagem','Bem','Educação','Investimento','Outros']
-const ICONES = ['🎯','✈️','🏠','🚗','📚','💰','🏖️','💍','📱','🎓']
-const EMPTY = { nome: '', descricao: '', valor_meta: '', valor_atual: '', prazo: '', categoria: 'Reserva', icone: '🎯' }
+const ICONES = ['fa-bullseye','fa-plane','fa-house','fa-car','fa-book','fa-sack-dollar','fa-umbrella-beach','fa-ring','fa-mobile-screen','fa-graduation-cap']
+const EMPTY = { nome: '', descricao: '', valor_meta: '', valor_atual: '', prazo: '', categoria: 'Reserva', icone: 'fa-bullseye' }
 
 export default function MetasPage() {
   const [metas, setMetas] = useState<Meta[]>([])
