@@ -3,6 +3,7 @@ import { getSupabaseUser } from '@/lib/supabase-route'
 
 type BTx = {
   belvo_id: string
+  conta_belvo_id: string | null
   data: string | null
   descricao: string | null
   estabelecimento: string | null
@@ -24,7 +25,7 @@ export async function POST(req: NextRequest) {
 
     const { data: txs } = await supabase
       .from('belvo_transacoes')
-      .select('belvo_id, data, descricao, estabelecimento, categoria, conta, tipo, valor')
+      .select('belvo_id, conta_belvo_id, data, descricao, estabelecimento, categoria, conta, tipo, valor')
       .order('data', { ascending: false })
       .limit(2000)
 
@@ -43,10 +44,37 @@ export async function POST(req: NextRequest) {
     const abs = (t: BTx) => Math.abs(Number(t.valor ?? 0))
 
     if (isPJ && empresaId) {
-      const conta = await supabase.from('contas_bancarias').select('id').eq('empresa_id', empresaId).eq('status', 'ativa').maybeSingle()
+      // Cria/acha uma conta bancária nativa por banco conectado (open_finance_id = id da conta na Belvo).
+      const { data: bcontas } = await supabase
+        .from('belvo_contas')
+        .select('belvo_id, nome, instituicao, categoria, saldo')
+      const mapaConta = new Map<string, string>() // belvo account id -> contas_bancarias.id
+      for (const bc of bcontas ?? []) {
+        const belvoId = bc.belvo_id as string
+        const existente = await supabase.from('contas_bancarias').select('id').eq('empresa_id', empresaId).eq('open_finance_id', belvoId).maybeSingle()
+        let contaId = existente.data?.id as string | undefined
+        if (!contaId) {
+          const cat = (bc.categoria as string | null ?? '').toUpperCase()
+          const tipo = cat.includes('SAV') || cat.includes('POUP') ? 'poupanca' : 'corrente'
+          const nova = await supabase.from('contas_bancarias').insert({
+            empresa_id: empresaId,
+            banco_nome: (bc.instituicao as string | null) || (bc.nome as string | null) || 'Banco (Open Finance)',
+            tipo,
+            open_finance_id: belvoId,
+            saldo: bc.saldo ?? 0,
+            status: 'ativa',
+          }).select('id').maybeSingle()
+          contaId = nova.data?.id as string | undefined
+        }
+        if (contaId) mapaConta.set(belvoId, contaId)
+      }
+      // Fallback: primeira conta ativa (caso a transação não traga conta vinculável).
+      const fallback = await supabase.from('contas_bancarias').select('id').eq('empresa_id', empresaId).eq('status', 'ativa').maybeSingle()
+      const fallbackId = fallback.data?.id ?? null
+
       const rows = lista.map(t => ({
         empresa_id: empresaId,
-        conta_bancaria_id: conta.data?.id ?? null,
+        conta_bancaria_id: (t.conta_belvo_id && mapaConta.get(t.conta_belvo_id)) || fallbackId,
         tipo: isOut(t) ? 'debito' : 'credito',
         descricao: desc(t),
         data_transacao: t.data,
@@ -57,7 +85,7 @@ export async function POST(req: NextRequest) {
       }))
       const { error } = await supabase.from('extrato_bancario').upsert(rows, { onConflict: 'belvo_tx_id' })
       if (error) return NextResponse.json({ error: error.message }, { status: 400 })
-      return NextResponse.json({ sincronizadas: rows.length, destino: 'extrato_bancario' })
+      return NextResponse.json({ sincronizadas: rows.length, destino: 'extrato_bancario', contas: mapaConta.size })
     }
 
     // PF
