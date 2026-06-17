@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Typecheck
+        run: npx tsc --noEmit
+
+      # Informativo: o next build (Next 16) nao roda eslint, entao lint nao
+      # quebra o deploy na Vercel. Reporta avisos sem travar o CI ate a
+      # divida de lint pre-existente ser limpa.
+      - name: Lint
+        run: npm run lint
+        continue-on-error: true
+
+      - name: Build
+        run: npm run build
+        env:
+          # Valores fake só para o build passar no CI (prerender de módulos
+          # que instanciam clients no escopo do módulo). Segredos reais ficam
+          # na Vercel.
+          NEXT_PUBLIC_SUPABASE_URL: https://example.supabase.co
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ci-dummy-anon-key
+          SUPABASE_SERVICE_ROLE_KEY: ci-dummy-service-key
+          NEXT_PUBLIC_APP_URL: http://localhost:3000

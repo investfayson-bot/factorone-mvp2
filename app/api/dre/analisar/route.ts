@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import OpenAI from 'openai'
 import { erroDesconhecido } from '@/lib/transacao-types'
+import { getSupabaseUser } from '@/lib/supabase-route'
 
 const openrouter = new OpenAI({
   baseURL: 'https://openrouter.ai/api/v1',
@@ -9,6 +10,8 @@ const openrouter = new OpenAI({
 
 export async function POST(req: NextRequest) {
   try {
+    const { user } = await getSupabaseUser(req)
+    if (!user) return NextResponse.json({ error: 'Não autenticado' }, { status: 401 })
     if (!process.env.OPENROUTER_API_KEY) {
       return NextResponse.json({ error: 'OPENROUTER_API_KEY não configurada' }, { status: 500 })
     }

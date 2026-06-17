@@ -6,7 +6,7 @@ const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY || '' })
 
 function autenticar(req: NextRequest): boolean {
   const secret = process.env.LIFEOS_WEBHOOK_SECRET
-  if (!secret) return true
+  if (!secret) return false
   return req.headers.get('x-lifeos-secret') === secret
 }
 

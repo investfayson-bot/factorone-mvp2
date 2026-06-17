@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import React from 'react'
 import ReactPDF from '@react-pdf/renderer'
 import { erroDesconhecido } from '@/lib/transacao-types'
+import { getSupabaseUser } from '@/lib/supabase-route'
 
 const { Document, Page, Text, View, StyleSheet, renderToBuffer } = ReactPDF
 
@@ -85,6 +86,8 @@ function Footer(pageText: string) {
 
 export async function POST(req: NextRequest) {
   try {
+    const { user } = await getSupabaseUser(req)
+    if (!user) return NextResponse.json({ error: 'Não autenticado' }, { status: 401 })
     const body = (await req.json()) as {
       empresaNome: string
       periodo: string
