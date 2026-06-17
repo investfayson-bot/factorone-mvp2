@@ -67,6 +67,8 @@ export default function ConexoesPage() {
   const [erro, setErro] = useState('')
   const [status, setStatus] = useState('')
   const [periodoDias, setPeriodoDias] = useState(365)
+  const [sincronizando, setSincronizando] = useState(false)
+  const [okSync, setOkSync] = useState('')
 
   const authHeaders = useCallback(async () => {
     const { data: sess } = await supabase.auth.getSession()
@@ -142,6 +144,22 @@ export default function ConexoesPage() {
     }
   }
 
+  async function sincronizar() {
+    setErro(''); setOkSync(''); setSincronizando(true)
+    try {
+      const headers = await authHeaders()
+      const res = await fetch('/api/belvo/sync', { method: 'POST', headers })
+      const d = await res.json()
+      if (!res.ok) throw new Error(d.error || 'Falha ao sincronizar')
+      const destino = d.destino === 'extrato_bancario' ? 'extrato bancário' : 'finanças pessoais'
+      setOkSync(`${d.sincronizadas} transação(ões) sincronizadas para ${destino}.`)
+    } catch (e) {
+      setErro(e instanceof Error ? e.message : 'Erro ao sincronizar')
+    } finally {
+      setSincronizando(false)
+    }
+  }
+
   async function conectar() {
     setErro(''); setLoading(true)
     try {
@@ -180,8 +198,14 @@ export default function ConexoesPage() {
             {PERIODOS.map(p => <option key={p.dias} value={p.dias}>{p.label}</option>)}
           </select>
         </label>
+        {transacoes.length > 0 && (
+          <button onClick={sincronizar} disabled={sincronizando} className="btn-action btn-ghost" style={{ borderRadius: 8, padding: '10px 16px' }}>
+            {sincronizando ? 'Importando…' : 'Importar para o FactorOne'}
+          </button>
+        )}
       </div>
 
+      {okSync && <div style={{ marginTop: 16, padding: 12, borderRadius: 8, background: 'rgba(45,155,111,.1)', color: '#2D9B6F', fontSize: 13 }}>{okSync}</div>}
       {status && <div style={{ marginTop: 16, padding: 12, borderRadius: 8, background: '#EFF6F5', color: 'var(--navy)', fontSize: 13 }}>{status}</div>}
       {erro && <div style={{ marginTop: 16, padding: 12, borderRadius: 8, background: '#FEE2E2', color: '#991B1B', fontSize: 13 }}>{erro}</div>}
 
