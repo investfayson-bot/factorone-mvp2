@@ -74,18 +74,18 @@ export default function AuthPage() {
   return (
     <div style={{ display: 'flex', minHeight: '100vh', background: 'var(--cream)' }}>
       {/* Left panel — brand */}
-      <div style={{ width: 400, minWidth: 400, background: 'var(--navy)', display: 'flex', flexDirection: 'column', padding: '36px 32px' }}>
-        <div style={{ marginBottom: 'auto' }}>
-          <div style={{ fontFamily: "'Sora',sans-serif", fontSize: 22, fontWeight: 800, color: '#fff', letterSpacing: '-.04em', marginBottom: 40 }}>
+      <div style={{ width: 400, minWidth: 400, background: 'var(--navy)', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 24, padding: '36px 32px', maxHeight: '100vh', overflowY: 'auto' }}>
+        <div>
+          <div style={{ fontFamily: "'Sora',sans-serif", fontSize: 22, fontWeight: 800, color: '#fff', letterSpacing: '-.04em', marginBottom: 24 }}>
             Factor<span style={{ color: 'var(--teal)' }}>One</span>
           </div>
-          <div style={{ fontFamily: "'Sora',sans-serif", fontSize: 26, fontWeight: 800, color: '#fff', lineHeight: 1.25, marginBottom: 14 }}>
+          <div style={{ fontFamily: "'Sora',sans-serif", fontSize: 25, fontWeight: 800, color: '#fff', lineHeight: 1.25, marginBottom: 12 }}>
             Finance OS<br />com Inteligência<br />Artificial
           </div>
-          <div style={{ fontSize: 13, color: 'rgba(255,255,255,.5)', lineHeight: 1.65, marginBottom: 36 }}>
+          <div style={{ fontSize: 13, color: 'rgba(255,255,255,.5)', lineHeight: 1.6, marginBottom: 22 }}>
             Automatizando a gestão financeira das empresas modernas.
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             {FEATURES.map(f => (
               <div key={f} style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
                 <span style={{ color: 'var(--teal)', fontSize: 13, fontWeight: 700, marginTop: 1, flexShrink: 0 }}>✓</span>
@@ -94,8 +94,8 @@ export default function AuthPage() {
             ))}
           </div>
         </div>
-        <div style={{ display: 'flex', justifyContent: 'center', marginTop: 28 }}>
-          <FinanceHero width={300} />
+        <div style={{ display: 'flex', justifyContent: 'center', flexShrink: 0 }}>
+          <FinanceHero width={250} />
         </div>
         <div style={{ fontSize: 10, color: 'rgba(255,255,255,.25)', letterSpacing: '.08em', marginTop: 28 }}>
           FACTORONE · FINANCE OS
