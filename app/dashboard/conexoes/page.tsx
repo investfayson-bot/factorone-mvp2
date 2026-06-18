@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase'
+import { ConnectBank } from '@/components/ui/Illustration'
 
 type Conta = {
   id: string
@@ -210,6 +211,14 @@ export default function ConexoesPage() {
       {erro && <div style={{ marginTop: 16, padding: 12, borderRadius: 8, background: '#FEE2E2', color: '#991B1B', fontSize: 13 }}>{erro}</div>}
 
       <div id="belvo" style={{ marginTop: 16 }} />
+
+      {links.length === 0 && contas.length === 0 && transacoes.length === 0 && !status && (
+        <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: '32px 20px', marginTop: 16, textAlign: 'center' }}>
+          <ConnectBank width={240} />
+          <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--navy)', marginTop: 8 }}>Nenhum banco conectado</div>
+          <div style={{ fontSize: 12, color: 'var(--gray-400)', marginTop: 4 }}>Clique em &quot;Conectar banco&quot; para importar saldos e transações via Open Finance.</div>
+        </div>
+      )}
 
       {contas.length > 0 && (
         <section style={{ marginTop: 24 }}>

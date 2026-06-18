@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import toast from 'react-hot-toast'
 import { MARKET_APPS, fetchInstalledIds, setInstalled, type MarketApp } from '@/lib/marketplace'
+import { EmptyState } from '@/components/ui/Illustration'
 
 type Filter = 'all' | 'financeiro' | 'operacional' | 'vendas' | 'rh' | 'fiscal'
 
@@ -165,9 +166,8 @@ export default function MarketplacePage() {
           )
         })}
         {visible.length === 0 && (
-          <div style={{ gridColumn: '1/-1', textAlign: 'center', padding: '40px 0', color: 'var(--gray-400)' }}>
-            <i className="fa-solid fa-store" style={{ fontSize: 28, marginBottom: 10, display: 'block' }} />
-            Nenhum app encontrado
+          <div style={{ gridColumn: '1/-1', textAlign: 'center', padding: '40px 0' }}>
+            <EmptyState label="Nenhum app encontrado" />
           </div>
         )}
       </div>

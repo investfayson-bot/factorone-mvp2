@@ -3,6 +3,7 @@ export const dynamic = 'force-dynamic'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
+import { OnboardingHero } from '@/components/ui/Illustration'
 import toast from 'react-hot-toast'
 
 type Screen = 'splash' | 'perfil' | 'empresa' | 'financeiro' | 'pronto'
@@ -172,8 +173,8 @@ export default function OnboardingPage() {
         {screen === 'splash' && (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', maxWidth: 560, width: '100%', textAlign: 'center' }}>
             {/* Ilustração */}
-            <div style={{ width: 120, height: 120, background: 'linear-gradient(135deg, var(--navy) 0%, #2A4A7A 100%)', borderRadius: 28, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 28, boxShadow: '0 8px 32px rgba(26,43,74,.2)' }}>
-              <i className="fa-solid fa-chart-line" style={{ color: 'var(--teal)', fontSize: 48 }} />
+            <div style={{ marginBottom: 20 }}>
+              <OnboardingHero width={280} />
             </div>
 
             {/* Logo */}

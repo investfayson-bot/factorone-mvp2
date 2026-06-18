@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import { formatBRL } from '@/lib/currency-brl'
+import { EmptyState } from '@/components/ui/Illustration'
 import toast from 'react-hot-toast'
 
 type Produto = {
@@ -128,9 +129,8 @@ export default function EstoquePage() {
         {loading ? (
           <div style={{ padding: 30, textAlign: 'center', color: 'var(--gray-400)', fontSize: 13 }}>Carregando…</div>
         ) : produtos.length === 0 ? (
-          <div style={{ padding: 36, textAlign: 'center', color: 'var(--gray-400)' }}>
-            <i className="fa-solid fa-boxes-stacked" style={{ fontSize: 26, marginBottom: 10, display: 'block' }} />
-            Nenhum produto cadastrado.
+          <div style={{ padding: 36, textAlign: 'center' }}>
+            <EmptyState label="Nenhum produto cadastrado." />
           </div>
         ) : (
           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>

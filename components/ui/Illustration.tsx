@@ -1,9 +1,57 @@
 // Ilustrações flat (estilo unDraw) na paleta FactorOne — SVG inline, sem assets externos.
 
+const NAVY = '#1C2B2A'
 const TEAL = '#5E8C87'
 const TEAL_SOFT = '#8FB3AF'
+const TEAL_BG = '#E3EEEC'
 const CREAM = '#F5F6F5'
 const GOLD = '#B8922A'
+
+/** Ilustração de boas-vindas/configuração para fundos claros (ex.: onboarding). */
+export function OnboardingHero({ width = 280 }: { width?: number }) {
+  return (
+    <svg width={width} viewBox="0 0 280 200" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Configurar conta">
+      <ellipse cx="140" cy="178" rx="96" ry="12" fill={TEAL_BG} />
+      {/* prancheta */}
+      <rect x="86" y="34" width="108" height="130" rx="12" fill="#fff" stroke="#E3EEEC" strokeWidth="2" />
+      <rect x="116" y="26" width="48" height="18" rx="6" fill={TEAL} />
+      {/* itens do checklist */}
+      {[64, 92, 120].map((y, i) => (
+        <g key={y}>
+          <circle cx="106" cy={y} r="8" fill={i < 2 ? TEAL : TEAL_BG} />
+          {i < 2 && <path d={`M102 ${y}l3 3 5-6`} stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none" />}
+          <rect x="122" y={y - 4} width={i === 2 ? 40 : 56} height="7" rx="3.5" fill={i < 2 ? '#D7E3E1' : '#E9EFEE'} />
+        </g>
+      ))}
+      {/* moeda/seta flutuante */}
+      <circle cx="206" cy="70" r="26" fill={TEAL} />
+      <path d="M206 58v24M198 66h12a5 5 0 010 10h-12M198 76h12a5 5 0 010 10h-14" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+      <rect x="60" y="96" width="34" height="34" rx="9" fill={GOLD} transform="rotate(-8 60 96)" />
+      <path d="M70 116l5 5 9-11" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" fill="none" transform="rotate(-8 60 96)" />
+    </svg>
+  )
+}
+
+/** Ilustração de conexão bancária / Open Finance (fundos claros). */
+export function ConnectBank({ width = 240 }: { width?: number }) {
+  return (
+    <svg width={width} viewBox="0 0 240 160" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Conectar banco">
+      <ellipse cx="120" cy="146" rx="80" ry="10" fill={TEAL_BG} />
+      {/* banco */}
+      <rect x="34" y="58" width="68" height="64" rx="8" fill="#fff" stroke="#E3EEEC" strokeWidth="2" />
+      <path d="M34 58l34-22 34 22" fill={TEAL} />
+      <rect x="46" y="74" width="8" height="34" fill={TEAL_SOFT} /><rect x="64" y="74" width="8" height="34" fill={TEAL_SOFT} /><rect x="82" y="74" width="8" height="34" fill={TEAL_SOFT} />
+      {/* app/celular */}
+      <rect x="150" y="46" width="56" height="86" rx="10" fill={NAVY} />
+      <rect x="156" y="56" width="44" height="60" rx="4" fill="#fff" />
+      <rect x="162" y="64" width="20" height="6" rx="3" fill={TEAL} /><rect x="162" y="78" width="32" height="5" rx="2.5" fill="#E3EEEC" /><rect x="162" y="90" width="26" height="5" rx="2.5" fill="#E3EEEC" />
+      {/* conexao */}
+      <path d="M102 90h48" stroke={GOLD} strokeWidth="3" strokeDasharray="2 6" strokeLinecap="round" />
+      <circle cx="126" cy="90" r="11" fill={GOLD} />
+      <path d="M122 90l3 3 5-6" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+    </svg>
+  )
+}
 
 /** Ilustração financeira para fundos escuros (ex.: painel do login). */
 export function FinanceHero({ width = 320 }: { width?: number }) {
