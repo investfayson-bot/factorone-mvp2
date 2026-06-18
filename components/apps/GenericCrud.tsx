@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import { formatBRL } from '@/lib/currency-brl'
+import { EmptyState } from '@/components/ui/Illustration'
 import toast from 'react-hot-toast'
 
 export type FieldDef = {
@@ -153,9 +154,8 @@ export default function GenericCrud(cfg: CrudConfig) {
         {loading ? (
           <div style={{ padding: 30, textAlign: 'center', color: 'var(--gray-400)', fontSize: 13 }}>Carregando…</div>
         ) : rows.length === 0 ? (
-          <div style={{ padding: 36, textAlign: 'center', color: 'var(--gray-400)' }}>
-            <i className={`fa-solid ${cfg.icon}`} style={{ fontSize: 26, marginBottom: 10, display: 'block' }} />
-            {cfg.emptyLabel}
+          <div style={{ padding: 36, textAlign: 'center' }}>
+            <EmptyState label={cfg.emptyLabel} />
           </div>
         ) : (
           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>

@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
+import { FinanceHero } from '@/components/ui/Illustration'
 
 type TipoConta = 'pessoal' | 'empresarial' | null
 
@@ -93,8 +94,11 @@ export default function AuthPage() {
             ))}
           </div>
         </div>
-        <div style={{ fontSize: 10, color: 'rgba(255,255,255,.2)', fontFamily: "'Inter', sans-serif", marginTop: 32 }}>
-          FACTORONE · FINANCE OS v2
+        <div style={{ display: 'flex', justifyContent: 'center', marginTop: 28 }}>
+          <FinanceHero width={300} />
+        </div>
+        <div style={{ fontSize: 10, color: 'rgba(255,255,255,.25)', letterSpacing: '.08em', marginTop: 28 }}>
+          FACTORONE · FINANCE OS
         </div>
       </div>
 
