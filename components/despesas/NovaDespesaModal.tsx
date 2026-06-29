@@ -134,11 +134,14 @@ export default function NovaDespesaModal({
       const comprovante_url = await uploadComprovante()
       if (file && !comprovante_url) { setLoading(false); return }
       const categoriaFinal = form.categoria || sugerirCategoriaDespesa(form.descricao, categorias)
-      const respNome = membros.find((m) => m.id === (form.responsavel_id || userId))?.nome || userName
+      const respId = form.responsavel_id || userId
+      const respNome = membros.find((m) => m.id === respId)?.nome || userName
+      // Verificar se o responsável existe na tabela usuarios antes de usar como FK
+      const { data: respExists } = await supabase.from('usuarios').select('id').eq('id', respId).maybeSingle()
       const payload = {
         empresa_id: empresaId, descricao: form.descricao.trim(), valor,
         categoria: categoriaFinal, centro_custo_id: centroDisponivel ? form.centro_custo_id || null : null,
-        responsavel_id: form.responsavel_id || userId, responsavel_nome: respNome,
+        responsavel_id: respExists ? respId : null, responsavel_nome: respNome,
         tipo_pagamento: form.tipo_pagamento || null, data_despesa: form.data_despesa,
         data: form.data_despesa, data_vencimento: form.recorrente ? null : form.data_vencimento || null,
         observacao: form.observacao?.trim() || null, recorrente: form.recorrente,

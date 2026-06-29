@@ -603,112 +603,130 @@ export default function DashboardPage() {
       {/* Charts row */}
       <div className="charts-row">
         <div className="chart-card" style={{ minWidth: 0 }}>
-          <div className="chart-title">Entradas vs Saídas — 6 meses</div>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+            <div>
+              <div className="chart-title">Entradas vs Saídas</div>
+              <div style={{ fontSize: 10, color: '#7A8F8E', marginTop: 2 }}>Últimos 6 meses</div>
+            </div>
+            <div style={{ display: 'flex', gap: 12 }}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 10, color: '#3A5150' }}><span style={{ width: 8, height: 8, borderRadius: 2, background: '#5E8C87', display: 'inline-block' }} />Entradas</span>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 10, color: '#3A5150' }}><span style={{ width: 8, height: 8, borderRadius: 2, background: '#E74C3C', display: 'inline-block' }} />Saídas</span>
+            </div>
+          </div>
           <DashboardErrorBoundary title="Gráfico">
             <EntradasSaidasChart empresaId={empresaId} />
           </DashboardErrorBoundary>
         </div>
         <div className="chart-card">
-          <div className="chart-title">Receita vs Despesas — Atual vs Anterior</div>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+            <div>
+              <div className="chart-title">Receita vs Despesas</div>
+              <div style={{ fontSize: 10, color: '#7A8F8E', marginTop: 2 }}>Atual vs mês anterior</div>
+            </div>
+            <Link href="/dashboard/relatorios" style={{ fontSize: 10, color: '#5E8C87', textDecoration: 'none', fontWeight: 600 }}>DRE →</Link>
+          </div>
           {(() => {
             const dreChartData = [
-              { name: 'Receita', atual: kpiAtual.receita, anterior: kpiAnt.receita, color: '#2D9B6F' },
-              { name: 'Despesas', atual: kpiAtual.despesas, anterior: kpiAnt.despesas, color: '#C0504A' },
-              { name: 'Lucro', atual: dreMes.liquido, anterior: dreMes.liquidoAnt, color: dreMes.liquido >= 0 ? '#2D9B6F' : '#C0504A' },
+              { name: 'Receita', atual: kpiAtual.receita, anterior: kpiAnt.receita },
+              { name: 'Despesas', atual: kpiAtual.despesas, anterior: kpiAnt.despesas },
+              { name: 'Lucro', atual: dreMes.liquido, anterior: dreMes.liquidoAnt },
             ]
+            const colors = ['#5E8C87', '#E74C3C', dreMes.liquido >= 0 ? '#5E8C87' : '#E74C3C']
             return (
               <ResponsiveContainer width="100%" height={160}>
                 <BarChart data={dreChartData} barGap={4} barCategoryGap="30%" margin={{ top: 4, right: 4, bottom: 0, left: 0 }}>
-                  <XAxis dataKey="name" tick={{ fontSize: 10, fill: 'var(--gray-400)' }} axisLine={false} tickLine={false} />
-                  <YAxis tick={{ fontSize: 9, fill: 'var(--gray-300)' }} axisLine={false} tickLine={false} tickFormatter={v => fmtBRLCompact(v)} width={52} />
+                  <XAxis dataKey="name" tick={{ fontSize: 10, fill: '#7A8F8E' }} axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fontSize: 9, fill: '#AAB8B7' }} axisLine={false} tickLine={false} tickFormatter={v => fmtBRLCompact(v)} width={52} />
                   <Tooltip
                     formatter={(v: number, name: string) => [fmtBRLCompact(v), name === 'atual' ? 'Mês atual' : 'Mês anterior']}
-                    contentStyle={{ fontSize: 11, borderRadius: 8, border: '1px solid var(--gray-100)', background: '#fff' }}
-                    labelStyle={{ fontWeight: 700, color: 'var(--navy)', fontSize: 11 }}
+                    contentStyle={{ fontSize: 11, borderRadius: 10, border: '0.5px solid #E2E8E7', background: '#fff', boxShadow: '0 4px 16px rgba(0,0,0,0.08)' }}
+                    labelStyle={{ fontWeight: 700, color: '#1C2B2A', fontSize: 11 }}
                   />
-                  <Bar dataKey="anterior" fill="var(--gray-100)" radius={[3, 3, 0, 0]} maxBarSize={18} />
-                  <Bar dataKey="atual" radius={[3, 3, 0, 0]} maxBarSize={18}>
-                    {dreChartData.map((entry, i) => (
-                      <Cell key={i} fill={entry.color} fillOpacity={0.85} />
-                    ))}
+                  <Bar dataKey="anterior" fill="#EEF2F1" radius={[4, 4, 0, 0]} maxBarSize={18} />
+                  <Bar dataKey="atual" radius={[4, 4, 0, 0]} maxBarSize={18}>
+                    {dreChartData.map((_, i) => <Cell key={i} fill={colors[i]} />)}
                   </Bar>
                 </BarChart>
               </ResponsiveContainer>
             )
           })()}
-          <div style={{ display: 'flex', gap: 16, marginTop: 8 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 10, color: 'var(--gray-400)' }}>
-              <div style={{ width: 10, height: 10, borderRadius: 2, background: 'var(--gray-200)' }} /> Mês anterior
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 10, color: 'var(--gray-400)' }}>
-              <div style={{ width: 10, height: 10, borderRadius: 2, background: 'var(--teal)' }} /> Mês atual
-            </div>
-            <Link href="/dashboard/relatorios" style={{ fontSize: 11, color: 'var(--teal)', textDecoration: 'none', marginLeft: 'auto' }}>
-              DRE completo →
-            </Link>
+          <div style={{ display: 'flex', gap: 16, marginTop: 10 }}>
+            <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 10, color: '#7A8F8E' }}><span style={{ width: 8, height: 8, borderRadius: 2, background: '#EEF2F1', border: '0.5px solid #E2E8E7', display: 'inline-block' }} />Mês anterior</span>
+            <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 10, color: '#7A8F8E' }}><span style={{ width: 8, height: 8, borderRadius: 2, background: '#5E8C87', display: 'inline-block' }} />Mês atual</span>
           </div>
         </div>
       </div>
 
       {/* Segunda linha de gráficos */}
       <div className="charts-row" style={{ gridTemplateColumns: '2fr 1fr' }}>
-        {/* Tendência 12 meses */}
         <div className="chart-card">
-          <div className="chart-title">Tendência — Receita vs Despesas · 12 meses</div>
-          <div style={{ display: 'flex', gap: 16, marginBottom: 10 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 10, color: 'var(--gray-500)' }}>
-              <div style={{ width: 8, height: 8, borderRadius: 2, background: 'var(--green)' }} /> Receita
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+            <div>
+              <div className="chart-title">Tendência 12 meses</div>
+              <div style={{ fontSize: 10, color: '#7A8F8E', marginTop: 2 }}>Receita vs Despesas</div>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 10, color: 'var(--gray-500)' }}>
-              <div style={{ width: 8, height: 8, borderRadius: 2, background: 'var(--red)' }} /> Despesas
+            <div style={{ display: 'flex', gap: 12 }}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 10, color: '#3A5150' }}><span style={{ width: 8, height: 8, borderRadius: 2, background: '#5E8C87', display: 'inline-block' }} />Receita</span>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 10, color: '#3A5150' }}><span style={{ width: 8, height: 8, borderRadius: 2, background: '#E74C3C', display: 'inline-block' }} />Despesas</span>
             </div>
           </div>
           {trend12.every(d => d.receita === 0 && d.despesas === 0) ? (
-            <div style={{ height: 140, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gray-300)', fontSize: 12 }}>Sem dados no período.</div>
+            <div style={{ height: 140, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#AAB8B7', fontSize: 12 }}>Sem dados no período.</div>
           ) : (
             <ResponsiveContainer width="100%" height={140}>
               <AreaChart data={trend12} margin={{ top: 4, right: 4, bottom: 0, left: 0 }}>
                 <defs>
                   <linearGradient id="gradR12" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#2D9B6F" stopOpacity={0.2} />
-                    <stop offset="95%" stopColor="#2D9B6F" stopOpacity={0} />
+                    <stop offset="5%" stopColor="#5E8C87" stopOpacity={0.2} />
+                    <stop offset="95%" stopColor="#5E8C87" stopOpacity={0} />
                   </linearGradient>
                   <linearGradient id="gradD12" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#C0504A" stopOpacity={0.15} />
-                    <stop offset="95%" stopColor="#C0504A" stopOpacity={0} />
+                    <stop offset="5%" stopColor="#E74C3C" stopOpacity={0.15} />
+                    <stop offset="95%" stopColor="#E74C3C" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="var(--gray-100)" vertical={false} />
-                <XAxis dataKey="mes" tick={{ fontSize: 9, fill: 'var(--gray-400)' }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fontSize: 9, fill: 'var(--gray-300)' }} axisLine={false} tickLine={false} tickFormatter={v => fmtBRLCompact(v)} width={52} />
-                <Tooltip formatter={(v: number, name: string) => [fmtBRLCompact(v), name === 'receita' ? 'Receita' : 'Despesas']} contentStyle={{ fontSize: 11, borderRadius: 8, border: '1px solid var(--gray-100)', background: '#fff' }} labelStyle={{ fontWeight: 700, color: 'var(--navy)', fontSize: 11 }} />
-                <Area type="monotone" dataKey="receita" stroke="#2D9B6F" strokeWidth={2} fill="url(#gradR12)" dot={false} activeDot={{ r: 3 }} />
-                <Area type="monotone" dataKey="despesas" stroke="#C0504A" strokeWidth={2} fill="url(#gradD12)" dot={false} activeDot={{ r: 3 }} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#F0F4F3" vertical={false} />
+                <XAxis dataKey="mes" tick={{ fontSize: 9, fill: '#7A8F8E' }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fontSize: 9, fill: '#AAB8B7' }} axisLine={false} tickLine={false} tickFormatter={v => fmtBRLCompact(v)} width={52} />
+                <Tooltip
+                  formatter={(v: number, name: string) => [fmtBRLCompact(v), name === 'receita' ? 'Receita' : 'Despesas']}
+                  contentStyle={{ fontSize: 11, borderRadius: 10, border: '0.5px solid #E2E8E7', background: '#fff', boxShadow: '0 4px 16px rgba(0,0,0,0.08)' }}
+                  labelStyle={{ fontWeight: 700, color: '#1C2B2A', fontSize: 11 }}
+                />
+                <Area type="monotone" dataKey="receita" stroke="#5E8C87" strokeWidth={2} fill="url(#gradR12)" dot={false} activeDot={{ r: 4, fill: '#5E8C87', stroke: '#fff', strokeWidth: 2 }} />
+                <Area type="monotone" dataKey="despesas" stroke="#E74C3C" strokeWidth={2} fill="url(#gradD12)" dot={false} activeDot={{ r: 4, fill: '#E74C3C', stroke: '#fff', strokeWidth: 2 }} />
               </AreaChart>
             </ResponsiveContainer>
           )}
         </div>
 
-        {/* Top categorias de despesas */}
         <div className="chart-card">
-          <div className="chart-title">Top categorias · Mês atual</div>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+            <div>
+              <div className="chart-title">Top categorias</div>
+              <div style={{ fontSize: 10, color: '#7A8F8E', marginTop: 2 }}>Despesas do mês</div>
+            </div>
+            <Link href="/dashboard/despesas" style={{ fontSize: 10, color: '#5E8C87', textDecoration: 'none', fontWeight: 600 }}>Ver →</Link>
+          </div>
           {topCats.length === 0 ? (
-            <div style={{ height: 140, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gray-300)', fontSize: 12 }}>Sem despesas categorizadas.</div>
+            <div style={{ height: 140, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#AAB8B7', fontSize: 12 }}>Sem despesas categorizadas.</div>
           ) : (
             <ResponsiveContainer width="100%" height={140}>
               <BarChart data={topCats} layout="vertical" margin={{ top: 0, right: 8, bottom: 0, left: 0 }}>
-                <XAxis type="number" tick={{ fontSize: 9, fill: 'var(--gray-300)' }} axisLine={false} tickLine={false} tickFormatter={v => fmtBRLCompact(v)} />
-                <YAxis type="category" dataKey="cat" tick={{ fontSize: 9, fill: 'var(--gray-500)' }} axisLine={false} tickLine={false} width={72} />
-                <Tooltip formatter={(v: number) => [fmtBRLCompact(v), 'Despesa']} contentStyle={{ fontSize: 11, borderRadius: 8, border: '1px solid var(--gray-100)', background: '#fff' }} />
+                <XAxis type="number" tick={{ fontSize: 9, fill: '#AAB8B7' }} axisLine={false} tickLine={false} tickFormatter={v => fmtBRLCompact(v)} />
+                <YAxis type="category" dataKey="cat" tick={{ fontSize: 9, fill: '#7A8F8E' }} axisLine={false} tickLine={false} width={72} />
+                <Tooltip
+                  formatter={(v: number) => [fmtBRLCompact(v), 'Despesa']}
+                  contentStyle={{ fontSize: 11, borderRadius: 10, border: '0.5px solid #E2E8E7', background: '#fff', boxShadow: '0 4px 16px rgba(0,0,0,0.08)' }}
+                />
                 <Bar dataKey="val" radius={[0, 4, 4, 0]} maxBarSize={16}>
                   {topCats.map((_, i) => (
-                    <Cell key={i} fill={['#C0504A', '#B8922A', '#7C3AED', 'var(--teal)', '#1A2B4A'][i % 5]} fillOpacity={0.8} />
+                    <Cell key={i} fill={['#5E8C87', '#D97706', '#7C3AED', '#2563eb', '#E74C3C'][i % 5]} fillOpacity={0.85} />
                   ))}
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
           )}
-          <Link href="/dashboard/despesas" style={{ fontSize: 11, color: 'var(--teal)', textDecoration: 'none', display: 'block', marginTop: 8 }}>Ver todas as despesas →</Link>
         </div>
       </div>
 
