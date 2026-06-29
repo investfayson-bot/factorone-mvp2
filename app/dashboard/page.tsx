@@ -286,30 +286,55 @@ export default function DashboardPage() {
 
       {/* KPIs */}
       <div className="kpis">
-        <div className="kpi">
-          <div className="kpi-lbl">Receita Mensal</div>
+        {/* Receita */}
+        <div className="kpi" style={{ borderTop: '3px solid #5E8C87' }}>
+          <div className="kpi-lbl">
+            Receita Mensal
+            <div style={{ width: 28, height: 28, borderRadius: 8, background: '#EAF5F3', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <i className="fa-solid fa-arrow-trend-up" style={{ fontSize: 12, color: '#5E8C87' }} />
+            </div>
+          </div>
           <div className="kpi-val">{fmtBRLCompact(kpiAtual.receita)}</div>
           <div className={`kpi-delta ${receitaVar === null ? '' : receitaVar >= 0 ? 'up' : 'dn'}`}>
-            {receitaVar === null ? '1º mês' : `${receitaVar >= 0 ? '↑' : '↓'} ${receitaVar >= 0 ? '+' : ''}${receitaVar.toFixed(1)}%`}
+            {receitaVar === null ? '1º mês' : `${receitaVar >= 0 ? '↑' : '↓'} ${receitaVar >= 0 ? '+' : ''}${receitaVar.toFixed(1)}% vs mês anterior`}
           </div>
         </div>
-        <div className="kpi">
-          <div className="kpi-lbl">Lucro Líquido</div>
+        {/* Lucro */}
+        <div className="kpi" style={{ borderTop: `3px solid ${dreMes.liquido >= 0 ? '#5E8C87' : '#E74C3C'}` }}>
+          <div className="kpi-lbl">
+            Lucro Líquido
+            <div style={{ width: 28, height: 28, borderRadius: 8, background: dreMes.liquido >= 0 ? '#EAF5F3' : '#FEE2E2', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <i className="fa-solid fa-chart-line" style={{ fontSize: 12, color: dreMes.liquido >= 0 ? '#5E8C87' : '#E74C3C' }} />
+            </div>
+          </div>
           <div className="kpi-val">{fmtBRLCompact(dreMes.liquido)}</div>
           <div className={`kpi-delta ${dreMes.liquido >= 0 ? 'up' : 'dn'}`}>
-            {(() => { const v = variacaoPct(dreMes.liquido, dreMes.liquidoAnt); return v === null ? '1º mês' : `${v >= 0 ? '↑ +' : '↓ '}${v.toFixed(1)}%` })()}
+            {dreMes.receitaBruta > 0 ? `Margem ${((dreMes.liquido / dreMes.receitaBruta) * 100).toFixed(1)}%` : '—'}
+            {(() => { const v = variacaoPct(dreMes.liquido, dreMes.liquidoAnt); return v === null ? '' : ` · ${v >= 0 ? '↑ +' : '↓ '}${v.toFixed(1)}%` })()}
           </div>
         </div>
-        <div className="kpi">
-          <div className="kpi-lbl">Fluxo 30 dias</div>
+        {/* Fluxo */}
+        <div className="kpi" style={{ borderTop: `3px solid ${fluxo30 >= 0 ? '#5E8C87' : '#D97706'}` }}>
+          <div className="kpi-lbl">
+            Fluxo 30 dias
+            <div style={{ width: 28, height: 28, borderRadius: 8, background: fluxo30 >= 0 ? '#EAF5F3' : '#FEF3C7', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <i className="fa-solid fa-water" style={{ fontSize: 12, color: fluxo30 >= 0 ? '#5E8C87' : '#D97706' }} />
+            </div>
+          </div>
           <div className="kpi-val">{fmtBRLCompact(fluxo30)}</div>
-          <div className={`kpi-delta ${fluxo30 >= 0 ? 'up' : 'dn'}`}>{fluxo30 >= 0 ? '↑ positivo' : '↓ negativo'}</div>
+          <div className={`kpi-delta ${fluxo30 >= 0 ? 'up' : 'warn'}`}>{fluxo30 >= 0 ? '↑ caixa positivo' : '↓ atenção ao caixa'}</div>
         </div>
-        <div className="kpi">
-          <div className="kpi-lbl">Runway</div>
-          <div className="kpi-val">{runway != null ? `${runway > 30 ? Math.round(runway / 30) + 'm' : runway + 'd'}` : '—'}</div>
+        {/* Runway */}
+        <div className="kpi" style={{ borderTop: `3px solid ${runway == null ? '#E2E8E7' : runway < 90 ? '#D97706' : '#5E8C87'}` }}>
+          <div className="kpi-lbl">
+            Runway
+            <div style={{ width: 28, height: 28, borderRadius: 8, background: runway != null && runway < 90 ? '#FEF3C7' : '#EAF5F3', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <i className="fa-solid fa-gauge-high" style={{ fontSize: 12, color: runway != null && runway < 90 ? '#D97706' : '#5E8C87' }} />
+            </div>
+          </div>
+          <div className="kpi-val">{runway != null ? `${runway > 30 ? Math.round(runway / 30) + ' meses' : runway + ' dias'}` : '—'}</div>
           <div className={`kpi-delta ${runway == null ? '' : runway < 90 ? 'warn' : 'up'}`}>
-            {runway == null ? 'sem saldo cadastrado' : runway < 90 ? 'atenção' : 'saudável'}
+            {runway == null ? 'cadastre saldo bancário' : runway < 90 ? '⚠ menos de 3 meses' : '✓ situação saudável'}
           </div>
         </div>
       </div>
