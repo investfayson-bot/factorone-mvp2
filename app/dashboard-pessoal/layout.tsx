@@ -29,6 +29,7 @@ const NAV: NavGroup[] = [
     items: [
       { href: '/dashboard-pessoal/cartoes', icon: 'fa-credit-card', label: 'Cartões' },
       { href: '/dashboard-pessoal/assinaturas', icon: 'fa-rotate', label: 'Assinaturas & Fixos' },
+      { href: '/dashboard-pessoal/planos', icon: 'fa-star', label: 'Meu Plano' },
     ],
   },
   {
@@ -55,6 +56,7 @@ const PAGE_TITLES: Record<string, string> = {
   '/dashboard-pessoal/orcamento': 'Orçamento',
   '/dashboard-pessoal/cartoes': 'Cartões',
   '/dashboard-pessoal/assinaturas': 'Assinaturas & Fixos',
+  '/dashboard-pessoal/planos': 'Meu Plano',
   '/dashboard-pessoal/metas': 'Metas Financeiras',
 }
 
