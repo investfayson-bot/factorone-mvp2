@@ -258,13 +258,6 @@ export default function DashboardPage() {
   const mesAno = new Date().toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })
 
   const receitaVar = variacaoPct(kpiAtual.receita, kpiAnt.receita)
-  const dreLinhas = [
-    { l: 'Receita', v: fmtBRLCompact(dreMes.receitaBruta), cls: 'g' },
-    { l: '(-) CMV', v: dreMes.cmv > 0 ? `-${fmtBRLCompact(dreMes.cmv)}` : '—', cls: 'r' },
-    { l: 'Lucro Bruto', v: fmtBRLCompact(dreMes.lucroBruto), cls: 'g' },
-    { l: 'EBITDA', v: fmtBRLCompact(dreMes.ebitda), cls: 'am' },
-    { l: 'Líquido', v: fmtBRLCompact(dreMes.liquido), cls: dreMes.liquido >= 0 ? 'g' : 'r' },
-  ]
 
   if (loading || !user || !empresaId) {
     return (
@@ -720,6 +713,55 @@ export default function DashboardPage() {
             </div>
           ))
         )}
+      </div>
+
+      {/* Atalhos rápidos + AI insight */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 14 }}>
+        <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 12, padding: '14px 16px' }}>
+          <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--navy)', marginBottom: 12, fontFamily: "'Space Grotesk', sans-serif" }}>Atalhos rápidos</div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+            {[
+              { href: '/dashboard/despesas', icon: 'fa-file-invoice', label: 'Nova despesa', bg: '#EAF5F3', color: 'var(--teal)' },
+              { href: '/dashboard/financeiro/receber', icon: 'fa-arrow-down-circle', label: 'Registrar recebimento', bg: '#EAF5F3', color: 'var(--teal)' },
+              { href: '/dashboard/relatorios', icon: 'fa-chart-bar', label: 'Ver DRE', bg: '#E6F1FB', color: '#2563eb' },
+              { href: '/dashboard/conciliacao', icon: 'fa-building-columns', label: 'Conciliar', bg: '#EAF5F3', color: 'var(--teal)' },
+              { href: '/dashboard/contadores', icon: 'fa-calculator', label: 'Portal Contador', bg: '#F3F0FF', color: '#7C3AED' },
+              { href: '/dashboard/aicfo', icon: 'fa-robot', label: 'Perguntar ao AI', bg: '#1C2B2A', color: '#7EBDB8' },
+            ].map(item => (
+              <Link key={item.href} href={item.href} style={{ textDecoration: 'none' }}>
+                <div style={{ padding: '8px 10px', background: '#F8FAFA', borderRadius: 8, border: '0.5px solid #E2E8E7', display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', transition: 'background 0.15s' }}>
+                  <div style={{ width: 26, height: 26, borderRadius: 6, background: item.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <i className={`fa-solid ${item.icon}`} style={{ fontSize: 11, color: item.color }} />
+                  </div>
+                  <span style={{ fontSize: 11, color: '#3A5150', fontWeight: 500 }}>{item.label}</span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+
+        <Link href="/dashboard/aicfo" style={{ textDecoration: 'none' }}>
+          <div style={{ background: 'var(--navy)', borderRadius: 12, padding: '14px 16px', height: '100%', display: 'flex', flexDirection: 'column', gap: 10, cursor: 'pointer' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <div style={{ width: 30, height: 30, borderRadius: 8, background: 'rgba(94,140,135,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <i className="fa-solid fa-robot" style={{ fontSize: 13, color: '#7EBDB8' }} />
+              </div>
+              <div>
+                <div style={{ fontSize: 12, fontWeight: 600, color: '#fff', fontFamily: "'Space Grotesk', sans-serif" }}>FactorOne AI</div>
+                <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.45)' }}>CFO digital · análise em tempo real</div>
+              </div>
+            </div>
+            <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.65)', lineHeight: 1.6, flex: 1 }}>
+              {dreMes.liquido < 0
+                ? `Resultado líquido negativo em ${fmtBRLCompact(Math.abs(dreMes.liquido))} este mês. Recomendo revisar as principais categorias de despesa.`
+                : `Receita ${fmtBRLCompact(kpiAtual.receita)} com margem líquida de ${dreMes.receitaBruta > 0 ? ((dreMes.liquido / dreMes.receitaBruta) * 100).toFixed(1) : '0'}%. ${runway != null && runway < 6 ? `Atenção: runway de ${runway} meses.` : 'Saúde financeira dentro do esperado.'}`
+              }
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 11, color: '#7EBDB8', fontWeight: 600 }}>
+              <i className="fa-solid fa-arrow-right" style={{ fontSize: 10 }} /> Analisar com IA
+            </div>
+          </div>
+        </Link>
       </div>
 
       {/* Modal detalhe transação */}

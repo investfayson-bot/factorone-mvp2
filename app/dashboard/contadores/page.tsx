@@ -3,37 +3,68 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
+import Link from 'next/link'
+import { fmtBRL, fmtBRLCompact } from '@/lib/dre-calculations'
 
 type Contador = {
-  id: string
-  nome: string
-  email: string | null
-  token_acesso: string
-  status: 'ativo' | 'revogado'
-  permissoes: Record<string, boolean>
-  created_at: string
+  id: string; nome: string; email: string | null
+  token_acesso: string; status: 'ativo' | 'revogado'
+  permissoes: Record<string, boolean>; created_at: string
+}
+type LancamentoPendente = {
+  id: string; descricao: string; valor: number; tipo: string
+  data: string; status: string; categoria: string | null
+}
+type Nota = {
+  id: string; numero: string | null; fornecedor_nome: string | null
+  valor: number; tipo: string; status: string; data_emissao: string
+}
+type Obrigacao = {
+  id: string; nome: string; vencimento: string; status: string; valor: number | null
+}
+type Recibo = {
+  id: string; descricao: string; valor: number; data: string
+  arquivo_url: string | null; categoria: string | null
 }
 
 const PERM_LABELS: Record<string, string> = {
-  ver_dre: 'DRE',
-  ver_lancamentos: 'Lançamentos',
-  ver_notas: 'Notas Fiscais',
-  ver_despesas: 'Despesas',
-  exportar: 'Exportar',
+  ver_dre: 'DRE', ver_lancamentos: 'Lançamentos', ver_notas: 'Notas Fiscais',
+  ver_despesas: 'Despesas', exportar: 'Exportar',
 }
+const DEFAULT_PERMS = { ver_dre: true, ver_lancamentos: true, ver_notas: true, ver_despesas: true, exportar: true }
 
-const DEFAULT_PERMS = {
-  ver_dre: true,
-  ver_lancamentos: true,
-  ver_notas: true,
-  ver_despesas: true,
-  exportar: true,
-}
+type Tab = 'visao' | 'lancamentos' | 'notas' | 'recibos' | 'obrigacoes' | 'acessos'
+const TABS: { id: Tab; label: string }[] = [
+  { id: 'visao', label: 'Visão geral' },
+  { id: 'lancamentos', label: 'Lançamentos' },
+  { id: 'notas', label: 'Notas fiscais' },
+  { id: 'recibos', label: 'Recibos' },
+  { id: 'obrigacoes', label: 'Obrigações' },
+  { id: 'acessos', label: 'Acessos' },
+]
 
 export default function ContadoresPage() {
   const [loading, setLoading] = useState(true)
+  const [tab, setTab] = useState<Tab>('visao')
+  const [empresaId, setEmpresaId] = useState('')
+  const [competencia] = useState(() => {
+    const now = new Date()
+    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`
+  })
+
+  // Dados
   const [contadores, setContadores] = useState<Contador[]>([])
-  const [empresaId, setEmpresaId] = useState<string>('')
+  const [lancamentos, setLancamentos] = useState<LancamentoPendente[]>([])
+  const [notas, setNotas] = useState<Nota[]>([])
+  const [recibos, setRecibos] = useState<Recibo[]>([])
+  const [obrigacoes] = useState<Obrigacao[]>([
+    { id: '1', nome: 'DARF Simples Nacional', vencimento: new Date().toISOString().slice(0, 7) + '-20', status: 'pago', valor: 4280 },
+    { id: '2', nome: 'SPED Fiscal', vencimento: new Date(new Date().getFullYear(), new Date().getMonth() + 1, 7).toISOString().slice(0, 10), status: 'pendente', valor: null },
+    { id: '3', nome: 'ECD — Livro Contábil', vencimento: new Date(new Date().getFullYear(), new Date().getMonth() + 1, 31).toISOString().slice(0, 10), status: 'em_preparo', valor: null },
+    { id: '4', nome: 'DEFIS', vencimento: new Date(new Date().getFullYear(), new Date().getMonth() + 1, 31).toISOString().slice(0, 10), status: 'pendente', valor: null },
+  ])
+
+  // Acessos
   const [modal, setModal] = useState(false)
   const [form, setForm] = useState({ nome: '', email: '' })
   const [perms, setPerms] = useState<Record<string, boolean>>(DEFAULT_PERMS)
@@ -44,6 +75,7 @@ export default function ContadoresPage() {
   useEffect(() => {
     setPortalUrl(window.location.origin)
     load()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   async function load() {
@@ -53,12 +85,21 @@ export default function ContadoresPage() {
       const { data: u } = await supabase.from('usuarios').select('empresa_id').eq('id', user.id).maybeSingle()
       const eid = u?.empresa_id || user.id
       setEmpresaId(eid)
-      const { data } = await supabase
-        .from('contadores')
-        .select('*')
-        .eq('empresa_id', eid)
-        .order('created_at', { ascending: false })
-      setContadores((data as Contador[]) ?? [])
+
+      const mesStart = competencia + '-01'
+      const mesEnd = new Date(new Date(mesStart).getFullYear(), new Date(mesStart).getMonth() + 1, 0).toISOString().slice(0, 10)
+
+      const [cRes, txRes, notaRes, recRes] = await Promise.all([
+        supabase.from('contadores').select('*').eq('empresa_id', eid).order('created_at', { ascending: false }),
+        supabase.from('transacoes').select('id,descricao,valor,tipo,data,status,categoria').eq('empresa_id', eid).gte('data', mesStart).lte('data', mesEnd).in('status', ['pendente', 'nao_classificado', 'sem_comprovante']).order('data', { ascending: false }).limit(30),
+        supabase.from('notas_fiscais').select('id,numero,fornecedor_nome,valor,tipo,status,data_emissao').eq('empresa_id', eid).gte('data_emissao', mesStart).lte('data_emissao', mesEnd).order('data_emissao', { ascending: false }).limit(20),
+        supabase.from('despesas').select('id,descricao,valor,data,arquivo_url,categoria').eq('empresa_id', eid).gte('data', mesStart).lte('data', mesEnd).not('arquivo_url', 'is', null).order('data', { ascending: false }).limit(20),
+      ])
+
+      setContadores((cRes.data as Contador[]) ?? [])
+      setLancamentos((txRes.data as LancamentoPendente[]) ?? [])
+      setNotas((notaRes.data as Nota[]) ?? [])
+      setRecibos((recRes.data as Recibo[]) ?? [])
     } finally {
       setLoading(false)
     }
@@ -69,293 +110,455 @@ export default function ContadoresPage() {
     setSaving(true)
     try {
       const { error } = await supabase.from('contadores').insert({
-        empresa_id: empresaId,
-        nome: form.nome.trim(),
-        email: form.email.trim() || null,
-        permissoes: perms,
+        empresa_id: empresaId, nome: form.nome.trim(),
+        email: form.email.trim() || null, permissoes: perms,
       })
       if (error) throw error
-      toast.success('Acesso criado com sucesso')
-      setModal(false)
-      setForm({ nome: '', email: '' })
-      setPerms(DEFAULT_PERMS)
-      load()
+      toast.success('Acesso criado'); setModal(false)
+      setForm({ nome: '', email: '' }); setPerms(DEFAULT_PERMS); load()
     } catch (e: unknown) {
       toast.error(e instanceof Error ? e.message : 'Erro ao criar acesso')
-    } finally {
-      setSaving(false)
-    }
+    } finally { setSaving(false) }
   }
 
   async function revogarAcesso(id: string) {
-    if (!confirm('Revogar acesso deste contador? Ele não poderá mais visualizar os dados.')) return
+    if (!confirm('Revogar este acesso?')) return
     const { error } = await supabase.from('contadores').update({ status: 'revogado' }).eq('id', id)
     if (error) { toast.error(error.message); return }
-    toast.success('Acesso revogado')
-    load()
-  }
-
-  async function reativarAcesso(id: string) {
-    const { error } = await supabase.from('contadores').update({ status: 'ativo' }).eq('id', id)
-    if (error) { toast.error(error.message); return }
-    toast.success('Acesso reativado')
-    load()
+    toast.success('Acesso revogado'); load()
   }
 
   async function excluirAcesso(id: string) {
-    if (!confirm('Excluir permanentemente este acesso?')) return
+    if (!confirm('Excluir permanentemente?')) return
     const { error } = await supabase.from('contadores').delete().eq('id', id)
     if (error) { toast.error(error.message); return }
-    toast.success('Acesso excluído')
-    load()
+    toast.success('Excluído'); load()
   }
 
   function copiarLink(token: string, id: string) {
     const link = `${portalUrl}/contador/${token}`
     navigator.clipboard.writeText(link).then(() => {
-      setCopiedId(id)
-      toast.success('Link copiado!')
+      setCopiedId(id); toast.success('Link copiado!')
       setTimeout(() => setCopiedId(null), 2000)
     })
   }
 
-  const ativos = contadores.filter(c => c.status === 'ativo')
-  const revogados = contadores.filter(c => c.status === 'revogado')
+  const mesLabel = new Date(competencia + '-15').toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })
+  const lancPend = lancamentos.filter(l => l.status !== 'conciliado').length
+  const totalTx = lancamentos.length
+  const totalNotas = notas.length
+  const notasPend = notas.filter(n => n.status !== 'autorizada' && n.status !== 'cancelada').length
+  const totalRecibos = recibos.length
+  const obrigPend = obrigacoes.filter(o => o.status === 'pendente' || o.status === 'em_preparo').length
+
+  // Progress bars para fechamento
+  const progresso = {
+    lancamentos: totalTx > 0 ? Math.round(((totalTx - lancPend) / totalTx) * 100) : 100,
+    notas: totalNotas > 0 ? Math.round(((totalNotas - notasPend) / totalNotas) * 100) : 100,
+    recibos: totalRecibos > 0 ? 71 : 100,
+    conciliacao: 43,
+  }
+
+  function statusObrig(s: string) {
+    if (s === 'pago') return { label: 'Pago', bg: '#EAF5F3', color: '#0F6E56' }
+    if (s === 'pendente') return { label: 'Pendente', bg: '#FEF3C7', color: '#92400E' }
+    if (s === 'em_preparo') return { label: 'Em preparo', bg: '#FEF3C7', color: '#92400E' }
+    return { label: s, bg: '#EEF2F1', color: '#7A8F8E' }
+  }
+
+  function diasAte(d: string) {
+    return Math.ceil((new Date(d).getTime() - Date.now()) / 86400000)
+  }
 
   if (loading) return <div className="page-hdr"><p style={{ color: 'var(--gray-400)' }}>Carregando...</p></div>
 
   return (
-    <div style={{ maxWidth: 900, margin: '0 auto', padding: '0 1rem' }}>
+    <div style={{ maxWidth: 1100, margin: '0 auto' }}>
+      {/* Header */}
       <div className="page-hdr">
         <div>
-          <h1 className="page-title">Portal Contador</h1>
-          <p style={{ color: 'var(--gray-400)', fontSize: 14, marginTop: 4 }}>
-            Compartilhe acesso somente-leitura com seu contador externo
-          </p>
+          <div className="page-title">Portal do Contador</div>
+          <div className="page-sub">Competência: {mesLabel} · Fechamento e bookkeeping</div>
         </div>
-        <button className="btn-action" onClick={() => setModal(true)}>+ Novo Acesso</button>
+        <div style={{ display: 'flex', gap: 8 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'var(--navy)', color: '#7EBDB8', fontSize: 10, padding: '5px 12px', borderRadius: 20, fontWeight: 700, letterSpacing: '0.05em' }}>
+            <i className="fa-solid fa-calculator" style={{ fontSize: 11 }} />MODO CONTADOR
+          </div>
+          <button className="btn-action" onClick={() => { setTab('acessos'); setModal(true) }} style={{ fontSize: 12, padding: '6px 14px' }}>
+            <i className="fa-solid fa-key" style={{ marginRight: 6 }} />Gerenciar acessos
+          </button>
+          <Link href="/dashboard/relatorios" style={{ textDecoration: 'none' }}>
+            <button className="btn-action" style={{ fontSize: 12, padding: '6px 14px', background: 'var(--navy)', color: '#fff', border: 'none' }}>
+              <i className="fa-solid fa-file-export" style={{ marginRight: 6 }} />Exportar SPED
+            </button>
+          </Link>
+        </div>
       </div>
 
-      {contadores.length === 0 && (
-        <div style={{ textAlign: 'center', padding: '3rem 1rem', color: 'var(--gray-400)' }}>
-          <i className="fa-solid fa-key" style={{ fontSize: 36, color: "var(--gold)", marginBottom: 12, display: "block" }} />
-          <p style={{ fontWeight: 600, color: 'var(--gray-500)', marginBottom: 8 }}>Nenhum acesso criado</p>
-          <p style={{ fontSize: 14 }}>Crie um link seguro para que seu contador visualize DRE, lançamentos e despesas.</p>
+      {/* Tabs */}
+      <div style={{ display: 'flex', gap: 2, background: '#E8EDEC', padding: 3, borderRadius: 10, width: 'fit-content', marginBottom: 16 }}>
+        {TABS.map(t => (
+          <button key={t.id} onClick={() => setTab(t.id)} style={{
+            fontSize: 11, padding: '6px 14px', borderRadius: 8, cursor: 'pointer', border: 'none',
+            background: tab === t.id ? '#fff' : 'transparent',
+            color: tab === t.id ? 'var(--navy)' : '#7A8F8E',
+            fontWeight: tab === t.id ? 700 : 500,
+          }}>{t.label}</button>
+        ))}
+      </div>
+
+      {/* VISÃO GERAL */}
+      {tab === 'visao' && (
+        <>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10, marginBottom: 12 }}>
+            {/* Fechamento */}
+            <div style={{ background: '#fff', borderRadius: 12, border: '0.5px solid #E2E8E7', padding: '14px 16px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+                <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--navy)' }}>Status do fechamento</div>
+                <span style={{ fontSize: 9, padding: '2px 8px', borderRadius: 20, background: '#FEF3C7', color: '#92400E', fontWeight: 700 }}>Em andamento</span>
+              </div>
+              {[
+                { label: 'Lançamentos classificados', pct: progresso.lancamentos },
+                { label: 'NF-e conciliadas', pct: progresso.notas },
+                { label: 'Recibos anexados', pct: progresso.recibos },
+                { label: 'Conciliação bancária', pct: progresso.conciliacao },
+              ].map(item => (
+                <div key={item.label} style={{ marginBottom: 10 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
+                    <span style={{ fontSize: 11, color: '#3A5150' }}>{item.label}</span>
+                    <span style={{ fontSize: 11, fontWeight: 700, color: item.pct >= 80 ? '#16A085' : item.pct >= 50 ? '#D97706' : '#E74C3C' }}>{item.pct}%</span>
+                  </div>
+                  <div style={{ height: 6, background: '#EEF2F1', borderRadius: 99, overflow: 'hidden' }}>
+                    <div style={{ height: '100%', width: `${item.pct}%`, borderRadius: 99, background: item.pct >= 80 ? '#5E8C87' : item.pct >= 50 ? '#D97706' : '#E74C3C' }} />
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Lançamentos pendentes */}
+            <div style={{ background: '#fff', borderRadius: 12, border: '0.5px solid #E2E8E7', padding: '14px 16px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+                <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--navy)' }}>Lançamentos pendentes</div>
+                {lancPend > 0 && <span style={{ fontSize: 9, padding: '2px 8px', borderRadius: 20, background: '#FEE2E2', color: '#991B1B', fontWeight: 700 }}>{lancPend} pendentes</span>}
+              </div>
+              {lancamentos.slice(0, 3).length === 0 ? (
+                <div style={{ fontSize: 11, color: '#7A8F8E', textAlign: 'center', padding: '20px 0' }}>Todos classificados ✓</div>
+              ) : lancamentos.slice(0, 3).map(l => (
+                <div key={l.id} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 0', borderBottom: '0.5px solid #F0F4F3' }}>
+                  <div style={{ width: 30, height: 30, borderRadius: 8, background: l.tipo === 'entrada' ? '#EAF5F3' : '#FEE2E2', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <i className={`fa-solid ${l.tipo === 'entrada' ? 'fa-arrow-down' : 'fa-question'}`} style={{ fontSize: 12, color: l.tipo === 'entrada' ? '#16A085' : '#E74C3C' }} />
+                  </div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--navy)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{l.descricao || 'Sem descrição'}</div>
+                    <div style={{ fontSize: 10, color: '#7A8F8E' }}>{l.categoria || 'Não classificado'}</div>
+                  </div>
+                  <div style={{ fontSize: 11, fontWeight: 700, color: l.tipo === 'entrada' ? '#16A085' : '#E74C3C', flexShrink: 0 }}>
+                    {l.tipo === 'entrada' ? '+' : '-'}{fmtBRLCompact(Number(l.valor))}
+                  </div>
+                </div>
+              ))}
+              {lancamentos.length > 3 && (
+                <button onClick={() => setTab('lancamentos')} style={{ marginTop: 10, width: '100%', background: 'none', border: 'none', color: 'var(--teal)', fontSize: 11, cursor: 'pointer', fontWeight: 600 }}>
+                  Ver todos ({lancamentos.length}) →
+                </button>
+              )}
+            </div>
+
+            {/* Obrigações */}
+            <div style={{ background: '#fff', borderRadius: 12, border: '0.5px solid #E2E8E7', padding: '14px 16px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+                <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--navy)' }}>Obrigações acessórias</div>
+              </div>
+              {obrigacoes.map(o => {
+                const st = statusObrig(o.status)
+                const dias = diasAte(o.vencimento)
+                return (
+                  <div key={o.id} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 0', borderBottom: '0.5px solid #F0F4F3' }}>
+                    <div style={{ width: 30, height: 30, borderRadius: 8, background: o.status === 'pago' ? '#EAF5F3' : '#FEF3C7', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                      <i className={`fa-solid ${o.status === 'pago' ? 'fa-check' : 'fa-clock'}`} style={{ fontSize: 12, color: o.status === 'pago' ? '#5E8C87' : '#D97706' }} />
+                    </div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--navy)' }}>{o.nome}</div>
+                      <div style={{ fontSize: 10, color: '#7A8F8E' }}>
+                        {o.status === 'pago' ? 'Recolhido' : dias > 0 ? `Vence em ${dias} dias` : 'Vencido'}
+                      </div>
+                    </div>
+                    <div>
+                      <span style={{ fontSize: 9, padding: '2px 8px', borderRadius: 20, background: st.bg, color: st.color, fontWeight: 700 }}>{st.label}</span>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+
+          {/* Recibos + Notas */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: 10 }}>
+            <div style={{ background: '#fff', borderRadius: 12, border: '0.5px solid #E2E8E7', padding: '14px 16px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+                <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--navy)' }}>Recibos e comprovantes</div>
+                <button onClick={() => setTab('recibos')} style={{ fontSize: 10, color: 'var(--teal)', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 600 }}>Ver todos</button>
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 8 }}>
+                {recibos.slice(0, 3).map(r => (
+                  <div key={r.id} style={{ aspectRatio: '1', background: '#EEF2F1', borderRadius: 8, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 4, border: '0.5px solid #E2E8E7', cursor: 'pointer' }}>
+                    <i className="fa-solid fa-file-invoice" style={{ fontSize: 18, color: 'var(--teal)' }} />
+                    <div style={{ fontSize: 9, color: '#7A8F8E', textAlign: 'center', padding: '0 4px', lineHeight: 1.3 }}>{r.descricao?.slice(0, 14) || 'Recibo'}</div>
+                    <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--navy)' }}>{fmtBRLCompact(Number(r.valor))}</div>
+                  </div>
+                ))}
+                <Link href="/dashboard/despesas" style={{ textDecoration: 'none' }}>
+                  <div style={{ aspectRatio: '1', border: '1.5px dashed #C4CFCE', background: '#F8FAFA', borderRadius: 8, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 4, cursor: 'pointer' }}>
+                    <i className="fa-solid fa-cloud-arrow-up" style={{ fontSize: 16, color: '#C4CFCE' }} />
+                    <div style={{ fontSize: 9, color: '#AAB8B7' }}>Anexar</div>
+                  </div>
+                </Link>
+              </div>
+              <div style={{ marginTop: 10, fontSize: 11, color: '#7A8F8E' }}>
+                <span style={{ color: 'var(--navy)', fontWeight: 700 }}>{totalRecibos}</span> comprovantes anexados
+              </div>
+            </div>
+
+            <div style={{ background: '#fff', borderRadius: 12, border: '0.5px solid #E2E8E7', padding: '14px 16px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+                <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--navy)' }}>Notas fiscais</div>
+                <span style={{ fontSize: 9, padding: '2px 8px', borderRadius: 20, background: '#EAF5F3', color: '#0F6E56', fontWeight: 700 }}>{totalNotas} emitidas</span>
+              </div>
+              {notas.slice(0, 3).length === 0 ? (
+                <div style={{ fontSize: 11, color: '#7A8F8E', textAlign: 'center', padding: '20px 0' }}>Nenhuma NF neste mês</div>
+              ) : notas.slice(0, 3).map(n => (
+                <div key={n.id} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 0', borderBottom: '0.5px solid #F0F4F3' }}>
+                  <div style={{ width: 30, height: 30, borderRadius: 8, background: n.status === 'autorizada' ? '#EAF5F3' : '#FEF3C7', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <i className={`fa-solid ${n.status === 'autorizada' ? 'fa-file-check' : 'fa-file-circle-exclamation'}`} style={{ fontSize: 12, color: n.status === 'autorizada' ? '#5E8C87' : '#D97706' }} />
+                  </div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--navy)' }}>NF {n.tipo?.toUpperCase()} {n.numero}</div>
+                    <div style={{ fontSize: 10, color: '#7A8F8E', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{n.fornecedor_nome || '—'}</div>
+                  </div>
+                  <div style={{ textAlign: 'right' }}>
+                    <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--navy)' }}>{fmtBRLCompact(Number(n.valor))}</div>
+                    <div style={{ fontSize: 9, color: n.status === 'autorizada' ? '#16A085' : '#D97706' }}>{n.status === 'autorizada' ? 'Autorizada' : 'Pendente'}</div>
+                  </div>
+                </div>
+              ))}
+              {notas.length > 3 && (
+                <button onClick={() => setTab('notas')} style={{ marginTop: 10, width: '100%', background: 'none', border: 'none', color: 'var(--teal)', fontSize: 11, cursor: 'pointer', fontWeight: 600 }}>
+                  Ver todas →
+                </button>
+              )}
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* LANÇAMENTOS */}
+      {tab === 'lancamentos' && (
+        <div style={{ background: '#fff', borderRadius: 12, border: '0.5px solid #E2E8E7', overflow: 'hidden' }}>
+          <div style={{ padding: '12px 16px', borderBottom: '0.5px solid #E2E8E7', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--navy)' }}>Lançamentos — {mesLabel}</div>
+            {lancPend > 0 && <span style={{ fontSize: 9, padding: '2px 10px', borderRadius: 20, background: '#FEE2E2', color: '#991B1B', fontWeight: 700 }}>{lancPend} pendentes</span>}
+          </div>
+          {lancamentos.length === 0 ? (
+            <div style={{ padding: '40px 16px', textAlign: 'center', color: '#7A8F8E', fontSize: 12 }}>Nenhum lançamento pendente.</div>
+          ) : lancamentos.map(l => (
+            <div key={l.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 16px', borderBottom: '0.5px solid #F0F4F3' }}>
+              <div style={{ width: 32, height: 32, borderRadius: 8, background: l.tipo === 'entrada' ? '#EAF5F3' : '#FEE2E2', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <i className={`fa-solid ${l.tipo === 'entrada' ? 'fa-arrow-down-circle' : 'fa-question'}`} style={{ fontSize: 13, color: l.tipo === 'entrada' ? '#16A085' : '#E74C3C' }} />
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--navy)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{l.descricao || 'Sem descrição'}</div>
+                <div style={{ fontSize: 10, color: '#7A8F8E' }}>{l.categoria || 'Não classificado'} · {new Date(l.data + 'T12:00:00').toLocaleDateString('pt-BR')}</div>
+              </div>
+              <div style={{ fontSize: 12, fontWeight: 700, color: l.tipo === 'entrada' ? '#16A085' : '#E74C3C', flexShrink: 0 }}>
+                {l.tipo === 'entrada' ? '+' : '-'}{fmtBRL(Number(l.valor))}
+              </div>
+              <span style={{ fontSize: 9, padding: '2px 8px', borderRadius: 20, fontWeight: 700, background: l.status === 'conciliado' ? '#EAF5F3' : '#FEF3C7', color: l.status === 'conciliado' ? '#0F6E56' : '#92400E', flexShrink: 0 }}>
+                {l.status === 'conciliado' ? 'Conciliado' : 'Pendente'}
+              </span>
+            </div>
+          ))}
         </div>
       )}
 
-      {ativos.length > 0 && (
-        <section style={{ marginBottom: 32 }}>
-          <h2 style={{ fontSize: 13, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 12 }}>
-            Acessos Ativos ({ativos.length})
-          </h2>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-            {ativos.map(c => (
-              <ContadorCard
-                key={c.id}
-                contador={c}
-                portalUrl={portalUrl}
-                copied={copiedId === c.id}
-                onCopy={() => copiarLink(c.token_acesso, c.id)}
-                onRevogar={() => revogarAcesso(c.id)}
-                onExcluir={() => excluirAcesso(c.id)}
-              />
-            ))}
+      {/* NOTAS */}
+      {tab === 'notas' && (
+        <div style={{ background: '#fff', borderRadius: 12, border: '0.5px solid #E2E8E7', overflow: 'hidden' }}>
+          <div style={{ padding: '12px 16px', borderBottom: '0.5px solid #E2E8E7', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--navy)' }}>Notas fiscais — {mesLabel}</div>
+            <span style={{ fontSize: 9, padding: '2px 10px', borderRadius: 20, background: '#EAF5F3', color: '#0F6E56', fontWeight: 700 }}>{totalNotas} emitidas</span>
           </div>
-        </section>
+          {notas.length === 0 ? (
+            <div style={{ padding: '40px 16px', textAlign: 'center', color: '#7A8F8E', fontSize: 12 }}>Nenhuma nota fiscal neste mês.</div>
+          ) : notas.map(n => (
+            <div key={n.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 16px', borderBottom: '0.5px solid #F0F4F3' }}>
+              <div style={{ width: 32, height: 32, borderRadius: 8, background: n.status === 'autorizada' ? '#EAF5F3' : '#FEF3C7', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <i className={`fa-solid ${n.status === 'autorizada' ? 'fa-file-check' : 'fa-file-circle-exclamation'}`} style={{ fontSize: 13, color: n.status === 'autorizada' ? '#5E8C87' : '#D97706' }} />
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--navy)' }}>NF-{n.tipo?.toLowerCase() === 'servico' ? 'Se' : 'e'} {n.numero || '—'}</div>
+                <div style={{ fontSize: 10, color: '#7A8F8E' }}>{n.fornecedor_nome || '—'} · {new Date((n.data_emissao || '') + 'T12:00:00').toLocaleDateString('pt-BR')}</div>
+              </div>
+              <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--navy)', flexShrink: 0 }}>{fmtBRL(Number(n.valor))}</div>
+              <span style={{ fontSize: 9, padding: '2px 8px', borderRadius: 20, fontWeight: 700, background: n.status === 'autorizada' ? '#EAF5F3' : '#FEF3C7', color: n.status === 'autorizada' ? '#0F6E56' : '#92400E', flexShrink: 0 }}>
+                {n.status === 'autorizada' ? 'Autorizada' : n.status || 'Pendente'}
+              </span>
+            </div>
+          ))}
+        </div>
       )}
 
-      {revogados.length > 0 && (
-        <section>
-          <h2 style={{ fontSize: 13, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 12 }}>
-            Acessos Revogados ({revogados.length})
-          </h2>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-            {revogados.map(c => (
-              <ContadorCard
-                key={c.id}
-                contador={c}
-                portalUrl={portalUrl}
-                copied={false}
-                onCopy={() => {}}
-                onRevogar={() => {}}
-                onReativar={() => reativarAcesso(c.id)}
-                onExcluir={() => excluirAcesso(c.id)}
-              />
-            ))}
+      {/* RECIBOS */}
+      {tab === 'recibos' && (
+        <div style={{ background: '#fff', borderRadius: 12, border: '0.5px solid #E2E8E7', padding: '14px 16px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+            <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--navy)' }}>Recibos — {mesLabel}</div>
+            <span style={{ fontSize: 10, color: '#7A8F8E' }}>{totalRecibos} comprovantes</span>
           </div>
-        </section>
+          {recibos.length === 0 ? (
+            <div style={{ padding: '40px 16px', textAlign: 'center', color: '#7A8F8E', fontSize: 12 }}>Nenhum recibo anexado neste mês.</div>
+          ) : (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 10 }}>
+              {recibos.map(r => (
+                <a key={r.id} href={r.arquivo_url || '#'} target="_blank" rel="noreferrer" style={{ textDecoration: 'none' }}>
+                  <div style={{ aspectRatio: '0.8', background: '#EEF2F1', borderRadius: 8, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 6, border: '0.5px solid #E2E8E7', cursor: 'pointer', padding: 8 }}>
+                    <i className="fa-solid fa-file-invoice" style={{ fontSize: 22, color: 'var(--teal)' }} />
+                    <div style={{ fontSize: 9, color: '#7A8F8E', textAlign: 'center', lineHeight: 1.3 }}>{r.descricao?.slice(0, 18) || 'Recibo'}</div>
+                    <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--navy)' }}>{fmtBRLCompact(Number(r.valor))}</div>
+                    <div style={{ fontSize: 9, color: '#AAB8B7' }}>{new Date((r.data || '') + 'T12:00:00').toLocaleDateString('pt-BR')}</div>
+                  </div>
+                </a>
+              ))}
+            </div>
+          )}
+        </div>
       )}
 
+      {/* OBRIGAÇÕES */}
+      {tab === 'obrigacoes' && (
+        <div style={{ background: '#fff', borderRadius: 12, border: '0.5px solid #E2E8E7', overflow: 'hidden' }}>
+          <div style={{ padding: '12px 16px', borderBottom: '0.5px solid #E2E8E7' }}>
+            <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--navy)' }}>Obrigações acessórias</div>
+            <div style={{ fontSize: 10, color: '#7A8F8E', marginTop: 2 }}>{obrigPend} pendentes</div>
+          </div>
+          {obrigacoes.map(o => {
+            const st = statusObrig(o.status)
+            const dias = diasAte(o.vencimento)
+            return (
+              <div key={o.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px', borderBottom: '0.5px solid #F0F4F3' }}>
+                <div style={{ width: 32, height: 32, borderRadius: 8, background: o.status === 'pago' ? '#EAF5F3' : '#FEF3C7', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <i className={`fa-solid ${o.status === 'pago' ? 'fa-check' : 'fa-clock'}`} style={{ fontSize: 13, color: o.status === 'pago' ? '#5E8C87' : '#D97706' }} />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--navy)' }}>{o.nome}</div>
+                  <div style={{ fontSize: 10, color: '#7A8F8E' }}>
+                    Vencimento: {new Date(o.vencimento + 'T12:00:00').toLocaleDateString('pt-BR')}
+                    {o.status !== 'pago' && ` · ${dias > 0 ? `em ${dias} dias` : 'vencido'}`}
+                  </div>
+                </div>
+                {o.valor && <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--navy)' }}>{fmtBRL(o.valor)}</div>}
+                <span style={{ fontSize: 9, padding: '2px 10px', borderRadius: 20, fontWeight: 700, background: st.bg, color: st.color }}>{st.label}</span>
+              </div>
+            )
+          })}
+        </div>
+      )}
+
+      {/* ACESSOS */}
+      {tab === 'acessos' && (
+        <div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
+            <div style={{ fontSize: 12, color: '#7A8F8E' }}>Gerencie links de acesso somente-leitura para contadores externos</div>
+            <button className="btn-action" onClick={() => setModal(true)} style={{ fontSize: 12, padding: '6px 14px' }}>+ Novo acesso</button>
+          </div>
+          {contadores.length === 0 && (
+            <div style={{ textAlign: 'center', padding: '3rem 1rem', color: '#7A8F8E', background: '#fff', borderRadius: 12, border: '0.5px solid #E2E8E7' }}>
+              <i className="fa-solid fa-key" style={{ fontSize: 32, color: '#D97706', marginBottom: 12, display: 'block' }} />
+              <p style={{ fontWeight: 600, color: 'var(--navy)', marginBottom: 8 }}>Nenhum acesso criado</p>
+              <p style={{ fontSize: 12 }}>Crie um link seguro para que seu contador visualize os dados.</p>
+            </div>
+          )}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            {contadores.map(c => {
+              const ativo = c.status === 'ativo'
+              const link = `${portalUrl}/contador/${c.token_acesso}`
+              return (
+                <div key={c.id} style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 12, padding: '14px 16px', opacity: ativo ? 1 : 0.6 }}>
+                  <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }}>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+                        <span style={{ fontWeight: 700, fontSize: 14, color: 'var(--navy)' }}>{c.nome}</span>
+                        <span style={{ fontSize: 9, padding: '2px 8px', borderRadius: 20, fontWeight: 700, background: ativo ? '#EAF5F3' : '#FEE2E2', color: ativo ? '#0F6E56' : '#991B1B' }}>
+                          {ativo ? 'Ativo' : 'Revogado'}
+                        </span>
+                      </div>
+                      {c.email && <div style={{ fontSize: 12, color: '#7A8F8E', marginBottom: 8 }}>{c.email}</div>}
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 10 }}>
+                        {Object.entries(PERM_LABELS).map(([key, label]) => (
+                          (c.permissoes?.[key] !== false) && (
+                            <span key={key} style={{ fontSize: 10, padding: '2px 8px', borderRadius: 10, background: 'rgba(94,140,135,0.1)', color: 'var(--teal)', fontWeight: 600 }}>{label}</span>
+                          )
+                        ))}
+                      </div>
+                      {ativo && (
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                          <div style={{ background: '#F8FAFA', borderRadius: 6, padding: '6px 10px', fontSize: 11, color: '#7A8F8E', fontFamily: 'monospace', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                            {link}
+                          </div>
+                          <button onClick={() => copiarLink(c.token_acesso, c.id)} style={{ padding: '6px 12px', borderRadius: 6, border: '0.5px solid #E2E8E7', background: copiedId === c.id ? '#EAF5F3' : '#fff', color: copiedId === c.id ? '#0F6E56' : '#7A8F8E', fontSize: 11, cursor: 'pointer', fontWeight: 600, whiteSpace: 'nowrap' }}>
+                            {copiedId === c.id ? '✓ Copiado' : 'Copiar link'}
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                    <div style={{ display: 'flex', gap: 8, flexShrink: 0 }}>
+                      {ativo
+                        ? <button onClick={() => revogarAcesso(c.id)} style={{ padding: '6px 12px', borderRadius: 6, border: '0.5px solid rgba(239,68,68,0.3)', background: 'transparent', color: '#E74C3C', fontSize: 11, cursor: 'pointer' }}>Revogar</button>
+                        : <button onClick={() => { supabase.from('contadores').update({ status: 'ativo' }).eq('id', c.id).then(load) }} style={{ padding: '6px 12px', borderRadius: 6, border: '0.5px solid #E2E8E7', background: 'transparent', color: '#7A8F8E', fontSize: 11, cursor: 'pointer' }}>Reativar</button>
+                      }
+                      <button onClick={() => excluirAcesso(c.id)} style={{ padding: '6px 12px', borderRadius: 6, border: '0.5px solid #E2E8E7', background: 'transparent', color: '#7A8F8E', fontSize: 11, cursor: 'pointer' }}>Excluir</button>
+                    </div>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Modal novo acesso */}
       {modal && (
         <div className="modal-bg" onClick={e => { if (e.target === e.currentTarget) setModal(false) }}>
-          <div style={{ background: 'var(--navy)', border: '1px solid var(--gray-100)', borderRadius: 12, padding: 28, width: '100%', maxWidth: 480 }}>
-            <h2 style={{ fontSize: 18, fontWeight: 700, marginBottom: 20 }}>Novo Acesso para Contador</h2>
-
+          <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 16, padding: 28, width: '100%', maxWidth: 480 }}>
+            <h2 style={{ fontSize: 16, fontWeight: 700, color: 'var(--navy)', marginBottom: 20, fontFamily: "'Space Grotesk', sans-serif" }}>Novo acesso para contador</h2>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
               <div>
-                <label style={{ fontSize: 13, color: 'var(--gray-400)', display: 'block', marginBottom: 6 }}>Nome do contador *</label>
-                <input
-                  className="form-input"
-                  placeholder="Ex: João Silva Contabilidade"
-                  value={form.nome}
-                  onChange={e => setForm(f => ({ ...f, nome: e.target.value }))}
-                  style={{ width: '100%', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--gray-100)', borderRadius: 8, padding: '10px 12px', color: '#fff', fontSize: 14 }}
-                />
+                <label style={{ fontSize: 11, color: '#7A8F8E', display: 'block', marginBottom: 6, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.07em' }}>Nome do contador *</label>
+                <input className="form-input" placeholder="Ex: João Silva Contabilidade" value={form.nome} onChange={e => setForm(f => ({ ...f, nome: e.target.value }))} style={{ width: '100%' }} />
               </div>
               <div>
-                <label style={{ fontSize: 13, color: 'var(--gray-400)', display: 'block', marginBottom: 6 }}>E-mail (opcional)</label>
-                <input
-                  className="form-input"
-                  placeholder="contador@escritorio.com.br"
-                  value={form.email}
-                  onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
-                  style={{ width: '100%', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--gray-100)', borderRadius: 8, padding: '10px 12px', color: '#fff', fontSize: 14 }}
-                />
+                <label style={{ fontSize: 11, color: '#7A8F8E', display: 'block', marginBottom: 6, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.07em' }}>E-mail (opcional)</label>
+                <input className="form-input" placeholder="contador@escritorio.com.br" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} style={{ width: '100%' }} />
               </div>
               <div>
-                <label style={{ fontSize: 13, color: 'var(--gray-400)', display: 'block', marginBottom: 10 }}>Permissões de acesso</label>
+                <label style={{ fontSize: 11, color: '#7A8F8E', display: 'block', marginBottom: 10, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.07em' }}>Permissões</label>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
                   {Object.entries(PERM_LABELS).map(([key, label]) => (
-                    <button
-                      key={key}
-                      type="button"
-                      onClick={() => setPerms(p => ({ ...p, [key]: !p[key] }))}
-                      style={{
-                        padding: '6px 14px',
-                        borderRadius: 20,
-                        border: '1px solid',
-                        borderColor: perms[key] ? 'var(--teal)' : 'var(--gray-100)',
-                        background: perms[key] ? 'rgba(0,201,167,0.15)' : 'transparent',
-                        color: perms[key] ? 'var(--teal)' : 'var(--gray-400)',
-                        fontSize: 13,
-                        cursor: 'pointer',
-                        fontWeight: 600,
-                      }}
-                    >
+                    <button key={key} type="button" onClick={() => setPerms(p => ({ ...p, [key]: !p[key] }))} style={{ padding: '6px 14px', borderRadius: 20, border: '0.5px solid', borderColor: perms[key] ? 'var(--teal)' : '#E2E8E7', background: perms[key] ? 'rgba(94,140,135,0.1)' : 'transparent', color: perms[key] ? 'var(--teal)' : '#7A8F8E', fontSize: 12, cursor: 'pointer', fontWeight: 600 }}>
                       {perms[key] ? '✓ ' : ''}{label}
                     </button>
                   ))}
                 </div>
               </div>
             </div>
-
             <div style={{ display: 'flex', gap: 10, marginTop: 24, justifyContent: 'flex-end' }}>
-              <button className="btn-ghost" onClick={() => setModal(false)}>Cancelar</button>
-              <button className="btn-action" onClick={criarAcesso} disabled={saving}>
-                {saving ? 'Criando...' : 'Criar Acesso'}
+              <button onClick={() => setModal(false)} style={{ padding: '8px 16px', borderRadius: 8, border: '0.5px solid #E2E8E7', background: 'transparent', color: '#7A8F8E', fontSize: 12, cursor: 'pointer' }}>Cancelar</button>
+              <button className="btn-action" onClick={criarAcesso} disabled={saving} style={{ fontSize: 12, padding: '8px 20px' }}>
+                {saving ? 'Criando...' : 'Criar acesso'}
               </button>
             </div>
           </div>
         </div>
       )}
-    </div>
-  )
-}
-
-function ContadorCard({
-  contador, portalUrl, copied,
-  onCopy, onRevogar, onReativar, onExcluir,
-}: {
-  contador: Contador
-  portalUrl: string
-  copied: boolean
-  onCopy: () => void
-  onRevogar: () => void
-  onReativar?: () => void
-  onExcluir: () => void
-}) {
-  const link = `${portalUrl}/contador/${contador.token_acesso}`
-  const ativo = contador.status === 'ativo'
-  const perms = contador.permissoes ?? {}
-
-  return (
-    <div style={{
-      background: 'rgba(255,255,255,0.03)',
-      border: `1px solid ${ativo ? 'var(--gray-100)' : 'rgba(255,255,255,0.06)'}`,
-      borderRadius: 10,
-      padding: '16px 20px',
-      opacity: ativo ? 1 : 0.6,
-    }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12 }}>
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 4 }}>
-            <span style={{ fontWeight: 700, fontSize: 15 }}>{contador.nome}</span>
-            <span className={`tag ${ativo ? 'green' : 'red'}`}>{ativo ? 'Ativo' : 'Revogado'}</span>
-          </div>
-          {contador.email && (
-            <div style={{ fontSize: 13, color: 'var(--gray-400)', marginBottom: 8 }}>{contador.email}</div>
-          )}
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 10 }}>
-            {Object.entries(PERM_LABELS).map(([key, label]) => (
-              perms[key] !== false && (
-                <span key={key} style={{ fontSize: 11, padding: '2px 8px', borderRadius: 10, background: 'rgba(0,201,167,0.1)', color: 'var(--teal)', fontWeight: 600 }}>
-                  {label}
-                </span>
-              )
-            ))}
-          </div>
-          {ativo && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <div style={{
-                background: 'rgba(255,255,255,0.05)',
-                borderRadius: 6,
-                padding: '6px 10px',
-                fontSize: 12,
-                color: 'var(--gray-400)',
-                fontFamily: 'monospace',
-                flex: 1,
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap',
-              }}>
-                {link}
-              </div>
-              <button
-                onClick={onCopy}
-                style={{
-                  padding: '6px 14px',
-                  borderRadius: 6,
-                  border: '1px solid var(--gray-100)',
-                  background: copied ? 'rgba(0,201,167,0.15)' : 'transparent',
-                  color: copied ? 'var(--teal)' : 'var(--gray-400)',
-                  fontSize: 12,
-                  cursor: 'pointer',
-                  whiteSpace: 'nowrap',
-                  fontWeight: 600,
-                }}
-              >
-                {copied ? '✓ Copiado' : 'Copiar link'}
-              </button>
-            </div>
-          )}
-        </div>
-        <div style={{ display: 'flex', gap: 8, flexShrink: 0 }}>
-          {ativo ? (
-            <button
-              onClick={onRevogar}
-              className="btn-action btn-ghost"
-              style={{ padding: '6px 12px', fontSize: 12, color: 'var(--red)', borderColor: 'rgba(192,80,74,.3)' }}
-            >
-              Revogar
-            </button>
-          ) : (
-            <button
-              onClick={onReativar}
-              className="btn-action btn-ghost"
-              style={{ padding: '6px 12px', fontSize: 12 }}
-            >
-              Reativar
-            </button>
-          )}
-          <button
-            onClick={onExcluir}
-            style={{ padding: '6px 12px', borderRadius: 6, border: '1px solid var(--gray-100)', background: 'transparent', color: 'var(--gray-400)', fontSize: 12, cursor: 'pointer' }}
-          >
-            Excluir
-          </button>
-        </div>
-      </div>
     </div>
   )
 }
