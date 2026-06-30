@@ -211,7 +211,7 @@ export default function AprovacoesPage() {
                   )}
                 </div>
                 <div style={{ textAlign: 'right', marginRight: 8 }}>
-                  <div style={{ fontWeight: 700, fontFamily: "'Inter', sans-serif", fontSize: 14, color: 'var(--navy)' }}>{formatBRL(Number(item.valor))}</div>
+                  <div style={{ fontWeight: 700, fontFamily: "'Manrope', 'Inter', sans-serif", fontSize: 14, color: 'var(--navy)' }}>{formatBRL(Number(item.valor))}</div>
                   <span style={{ fontSize: 10, padding: '2px 8px', borderRadius: 20, background: n.bg, color: n.color, fontWeight: 600 }}>{n.label}</span>
                 </div>
                 <div style={{ display: 'flex', gap: 5, flexShrink: 0 }}>
@@ -252,7 +252,7 @@ export default function AprovacoesPage() {
                       <div style={{ fontSize: 10, color: 'var(--gray-400)' }}>{h.categoria}</div>
                     </td>
                     <td style={{ fontSize: 12, color: 'var(--gray-500)' }}>{h.responsavel_nome || '—'}</td>
-                    <td style={{ textAlign: 'right', fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 12 }}>{formatBRL(Number(h.valor))}</td>
+                    <td style={{ textAlign: 'right', fontFamily: "'Manrope', 'Inter', sans-serif", fontWeight: 700, fontSize: 12 }}>{formatBRL(Number(h.valor))}</td>
                     <td style={{ textAlign: 'center' }}>
                       <span style={{ fontSize: 10, fontWeight: 700, padding: '3px 8px', borderRadius: 20, background: h.status === 'aprovado' ? 'rgba(45,155,111,.1)' : 'rgba(192,80,74,.1)', color: h.status === 'aprovado' ? 'var(--green)' : 'var(--red)' }}>
                         {h.status === 'aprovado' ? 'Aprovado' : 'Rejeitado'}

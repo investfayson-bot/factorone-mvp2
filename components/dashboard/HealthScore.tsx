@@ -128,7 +128,7 @@ export default function HealthScore({ empresaId }: Props) {
 
   return (
     <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: 20, height: '100%' }}>
-      <div style={{ fontSize: 9, fontWeight: 700, color: 'var(--gray-400)', letterSpacing: '.08em', textTransform: 'uppercase', fontFamily: "'Inter', sans-serif", marginBottom: 14 }}>
+      <div style={{ fontSize: 9, fontWeight: 700, color: 'var(--gray-400)', letterSpacing: '.08em', textTransform: 'uppercase', fontFamily: "'Manrope', 'Inter', sans-serif", marginBottom: 14 }}>
         Saúde Financeira
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', paddingBlock: 8 }}>
@@ -146,11 +146,11 @@ export default function HealthScore({ empresaId }: Props) {
             />
           </svg>
           <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-            <span style={{ fontFamily: "'Sora', sans-serif", fontSize: 30, fontWeight: 800, color: ring.color, lineHeight: 1 }}>{score}</span>
-            <span style={{ fontSize: 9, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.06em', fontFamily: "'Inter', sans-serif" }}>/ 100</span>
+            <span style={{ fontFamily: "'Space Grotesk', 'Sora', sans-serif", fontSize: 30, fontWeight: 800, color: ring.color, lineHeight: 1 }}>{score}</span>
+            <span style={{ fontSize: 9, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.06em', fontFamily: "'Manrope', 'Inter', sans-serif" }}>/ 100</span>
           </div>
         </div>
-        <p style={{ marginTop: 10, fontSize: 12, fontWeight: 700, color: ring.color, fontFamily: "'Inter', sans-serif", letterSpacing: '.04em' }}>{label}</p>
+        <p style={{ marginTop: 10, fontSize: 12, fontWeight: 700, color: ring.color, fontFamily: "'Manrope', 'Inter', sans-serif", letterSpacing: '.04em' }}>{label}</p>
       </div>
     </div>
   )

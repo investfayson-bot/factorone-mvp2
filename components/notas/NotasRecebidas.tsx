@@ -157,7 +157,7 @@ export default function NotasRecebidas() {
               { label: 'Valor', val: `R$ ${(resultado.valor_total || 0).toLocaleString('pt-BR')}` },
             ].map(({ label, val }) => (
               <div key={label}>
-                <div style={{ fontSize: 10, color: 'var(--gray-400)', textTransform: 'uppercase', fontFamily: "'Inter', sans-serif" }}>{label}</div>
+                <div style={{ fontSize: 10, color: 'var(--gray-400)', textTransform: 'uppercase', fontFamily: "'Manrope', 'Inter', sans-serif" }}>{label}</div>
                 <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--navy)' }}>{val}</div>
               </div>
             ))}
@@ -180,7 +180,7 @@ export default function NotasRecebidas() {
         <div className="expenses-table">
           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12 }}>
             <thead>
-              <tr style={{ color: 'var(--gray-400)', fontSize: 10, textTransform: 'uppercase', fontFamily: "'Inter', sans-serif" }}>
+              <tr style={{ color: 'var(--gray-400)', fontSize: 10, textTransform: 'uppercase', fontFamily: "'Manrope', 'Inter', sans-serif" }}>
                 <th style={{ textAlign: 'left', padding: '6px 0', fontWeight: 600 }}>Data</th>
                 <th style={{ textAlign: 'left', padding: '6px 0', fontWeight: 600 }}>Emitente</th>
                 <th style={{ textAlign: 'left', padding: '6px 0', fontWeight: 600 }}>Valor</th>
@@ -194,7 +194,7 @@ export default function NotasRecebidas() {
                   <tr key={n.id} style={{ borderTop: '1px solid var(--gray-100)' }}>
                     <td style={{ padding: '8px 0', color: 'var(--navy)' }}>{n.data_emissao || '-'}</td>
                     <td style={{ padding: '8px 0', color: 'var(--navy)' }}>{n.emitente_nome || '-'}</td>
-                    <td style={{ padding: '8px 0', color: 'var(--navy)', fontFamily: "'Inter', sans-serif" }}>R$ {(n.valor_total || 0).toLocaleString('pt-BR')}</td>
+                    <td style={{ padding: '8px 0', color: 'var(--navy)', fontFamily: "'Manrope', 'Inter', sans-serif" }}>R$ {(n.valor_total || 0).toLocaleString('pt-BR')}</td>
                     <td style={{ padding: '8px 0' }}>
                       <span className="tag" style={{ background: sc.bg, color: sc.color }}>{n.status || 'pendente'}</span>
                     </td>

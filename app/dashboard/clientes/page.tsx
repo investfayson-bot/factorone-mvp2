@@ -399,7 +399,7 @@ export default function ClientesPage() {
           <div className="modal-box" style={{ maxWidth: 620, maxHeight: '92vh', overflowY: 'auto' }} onClick={e => e.stopPropagation()}>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
               <div>
-                <h3 style={{ fontSize: 18, fontWeight: 800, color: '#1C2B2A', fontFamily: 'Sora', margin: 0 }}>{detalhe.nome}</h3>
+                <h3 style={{ fontSize: 18, fontWeight: 800, color: '#1C2B2A', fontFamily: "'Space Grotesk', sans-serif", margin: 0 }}>{detalhe.nome}</h3>
                 <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 8px', borderRadius: 20, background: STATUS_BG[detalhe.status], color: STATUS_COLOR[detalhe.status] }}>{STATUS_LABEL[detalhe.status]}</span>
               </div>
               <div style={{ display: 'flex', gap: 8 }}>

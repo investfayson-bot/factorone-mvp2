@@ -14,7 +14,7 @@ export default function AppPlaceholderPage() {
       <div style={{ width: 64, height: 64, borderRadius: 16, background: app?.iconBg ?? 'var(--gray-100)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 18px' }}>
         <i className={`fa-solid ${app?.icon ?? 'fa-cube'}`} style={{ color: app?.iconColor ?? 'var(--gray-500)', fontSize: 26 }} />
       </div>
-      <h1 style={{ fontFamily: "'Sora',sans-serif", fontSize: 22, fontWeight: 800, color: 'var(--navy)', marginBottom: 6 }}>
+      <h1 style={{ fontFamily: "'Space Grotesk', 'Sora', sans-serif", fontSize: 22, fontWeight: 800, color: 'var(--navy)', marginBottom: 6 }}>
         {app?.name ?? 'Aplicativo'}
       </h1>
       <p style={{ fontSize: 13, color: 'var(--gray-500)', lineHeight: 1.6, marginBottom: 22 }}>

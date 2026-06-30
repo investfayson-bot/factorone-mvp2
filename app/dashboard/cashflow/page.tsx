@@ -300,7 +300,7 @@ export default function CashflowPage() {
           {/* Filtros + tabela */}
           <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, overflow: 'hidden' }}>
             <div style={{ padding: '12px 16px', borderBottom: '1px solid var(--gray-100)', display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
-              <div style={{ fontSize: 9.5, fontWeight: 700, color: 'var(--gray-400)', letterSpacing: '.08em', textTransform: 'uppercase', fontFamily: "'Inter', sans-serif", flex: 1 }}>
+              <div style={{ fontSize: 9.5, fontWeight: 700, color: 'var(--gray-400)', letterSpacing: '.08em', textTransform: 'uppercase', fontFamily: "'Manrope', 'Inter', sans-serif", flex: 1 }}>
                 Lançamentos ({filtradas.length})
               </div>
               <select className="form-input" style={{ width: 'auto', padding: '5px 10px', fontSize: 11 }} value={filtroPeriodo} onChange={e => setFiltroPeriodo(e.target.value as '30' | '90' | '365')}>
@@ -346,10 +346,10 @@ export default function CashflowPage() {
                         <td style={{ fontWeight: 600 }}>{t.descricao}</td>
                         <td style={{ color: 'var(--gray-500)' }}>{t.categoria || '—'}</td>
                         <td><span className={`tag ${t.tipo === 'entrada' ? 'green' : 'red'}`}>{t.tipo === 'entrada' ? 'Entrada' : 'Saída'}</span></td>
-                        <td style={{ textAlign: 'right', fontWeight: 700, fontFamily: "'Inter', sans-serif", color: t.tipo === 'entrada' ? 'var(--green)' : 'var(--red)' }}>
+                        <td style={{ textAlign: 'right', fontWeight: 700, fontFamily: "'Manrope', 'Inter', sans-serif", color: t.tipo === 'entrada' ? 'var(--green)' : 'var(--red)' }}>
                           {t.tipo === 'entrada' ? '+' : '-'}{fmt(Number(t.valor))}
                         </td>
-                        <td style={{ textAlign: 'right', fontFamily: "'Inter', sans-serif", color: 'var(--navy)' }}>{fmt(saldoRow)}</td>
+                        <td style={{ textAlign: 'right', fontFamily: "'Manrope', 'Inter', sans-serif", color: 'var(--navy)' }}>{fmt(saldoRow)}</td>
                       </tr>
                     )
                   })}
@@ -362,7 +362,7 @@ export default function CashflowPage() {
           {insightIA && (
             <div style={{ background: 'rgba(94,140,135,.06)', border: '1px solid rgba(94,140,135,.2)', borderRadius: 12, padding: '16px 18px' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
-                <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--teal2)', letterSpacing: '.08em', textTransform: 'uppercase', fontFamily: "'Inter', sans-serif" }}>FactorOne IA — Análise de Fluxo</div>
+                <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--teal2)', letterSpacing: '.08em', textTransform: 'uppercase', fontFamily: "'Manrope', 'Inter', sans-serif" }}>FactorOne IA — Análise de Fluxo</div>
                 <button onClick={() => setInsightIA('')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--gray-400)', fontSize: 16, lineHeight: 1 }}>×</button>
               </div>
               <p style={{ fontSize: 13, color: 'var(--navy)', lineHeight: 1.7, whiteSpace: 'pre-line' }}>{insightIA}</p>
@@ -476,7 +476,7 @@ export default function CashflowPage() {
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, alignItems: 'start' }}>
             {/* Painel esquerdo: adicionar cenários */}
             <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, overflow: 'hidden' }}>
-              <div style={{ padding: '10px 14px', borderBottom: '1px solid var(--gray-100)', fontSize: 11, fontWeight: 700, color: 'var(--navy)', letterSpacing: '.04em', textTransform: 'uppercase', fontFamily: "'Inter', sans-serif" }}>
+              <div style={{ padding: '10px 14px', borderBottom: '1px solid var(--gray-100)', fontSize: 11, fontWeight: 700, color: 'var(--navy)', letterSpacing: '.04em', textTransform: 'uppercase', fontFamily: "'Manrope', 'Inter', sans-serif" }}>
                 Adicionar cenário hipotético
               </div>
               <div style={{ padding: '14px' }}>

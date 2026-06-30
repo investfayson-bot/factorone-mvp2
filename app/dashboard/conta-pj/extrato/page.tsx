@@ -71,7 +71,7 @@ export default function ExtratoCompletoPage() {
       {/* Filtros + tabela */}
       <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, overflow: 'hidden' }}>
         <div style={{ padding: '12px 16px', borderBottom: '1px solid var(--gray-100)', display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
-          <div style={{ fontSize: 9.5, fontWeight: 700, color: 'var(--gray-400)', letterSpacing: '.08em', textTransform: 'uppercase', fontFamily: "'Inter', sans-serif", flex: 1 }}>
+          <div style={{ fontSize: 9.5, fontWeight: 700, color: 'var(--gray-400)', letterSpacing: '.08em', textTransform: 'uppercase', fontFamily: "'Manrope', 'Inter', sans-serif", flex: 1 }}>
             Lançamentos ({filtered.length})
           </div>
           <select className="form-input" style={{ width: 'auto', padding: '5px 10px', fontSize: 11 }} value={periodo} onChange={e => setPeriodo(e.target.value)}>
@@ -105,13 +105,13 @@ export default function ExtratoCompletoPage() {
                 <tr><td colSpan={6} style={{ textAlign: 'center', color: 'var(--gray-400)', padding: '32px 0' }}>Nenhuma movimentação no período.</td></tr>
               ) : filtered.map(r => (
                 <tr key={r.id}>
-                  <td style={{ fontFamily: "'Inter', sans-serif", fontSize: 11 }}>{new Date(r.data_transacao).toLocaleString('pt-BR')}</td>
+                  <td style={{ fontFamily: "'Manrope', 'Inter', sans-serif", fontSize: 11 }}>{new Date(r.data_transacao).toLocaleString('pt-BR')}</td>
                   <td style={{ fontWeight: 600 }}>{r.descricao}</td>
                   <td style={{ color: 'var(--gray-500)' }}>{r.contraparte_nome || '—'}</td>
-                  <td style={{ textAlign: 'right', fontWeight: 700, fontFamily: "'Inter', sans-serif", color: r.tipo === 'credito' ? 'var(--green)' : 'var(--red)' }}>
+                  <td style={{ textAlign: 'right', fontWeight: 700, fontFamily: "'Manrope', 'Inter', sans-serif", color: r.tipo === 'credito' ? 'var(--green)' : 'var(--red)' }}>
                     {r.tipo === 'credito' ? '+' : '-'}{formatBRL(Number(r.valor || 0))}
                   </td>
-                  <td style={{ textAlign: 'right', fontFamily: "'Inter', sans-serif" }}>{formatBRL(Number(r.saldo_apos || 0))}</td>
+                  <td style={{ textAlign: 'right', fontFamily: "'Manrope', 'Inter', sans-serif" }}>{formatBRL(Number(r.saldo_apos || 0))}</td>
                   <td style={{ textAlign: 'center' }}>
                     <span className={`tag ${r.conciliado ? 'green' : 'gray'}`}>{r.conciliado ? 'Sim' : 'Não'}</span>
                   </td>
