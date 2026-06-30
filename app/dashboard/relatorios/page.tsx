@@ -232,7 +232,7 @@ export default function RelatoriosPage() {
       <div className="kpis">
         <div className="kpi">
           <div className="kpi-lbl">Receita Bruta</div>
-          <div className="kpi-val" style={{ color: 'var(--teal)' }}>
+          <div className="kpi-val" style={{ color: '#5E8C87' }}>
             {metricas ? fmtBRL(Number(metricas.receita_bruta || 0)) : '—'}
           </div>
           <div className="kpi-delta up">{competencia}</div>
@@ -264,17 +264,59 @@ export default function RelatoriosPage() {
 
       {/* DRE Completo */}
       {tab === 'DRE Completo' && (
-        <div className="dre-full">
-          {linhas.map((l) => {
+        <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 14, overflow: 'hidden' }}>
+          <div style={{ padding: '12px 16px', borderBottom: '0.5px solid #E2E8E7', background: '#F8FAFA', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div style={{ fontSize: 12, fontWeight: 600, color: '#1C2B2A', fontFamily: "'Space Grotesk', sans-serif" }}>Demonstrativo de Resultado</div>
+            <div style={{ fontSize: 10, color: '#7A8F8E' }}>Clique em uma linha para ver os lançamentos</div>
+          </div>
+          {linhas.map((l, i) => {
             const ant = Number(historico[1]?.[l.chave] || 0)
             const vari = variacao(l.atual, ant)
+            const isTotal = isTotalLine(l.linha)
+            const isNeg = l.linha.startsWith('(-)') || l.linha.startsWith('(-)')
             return (
-              <button key={l.linha} className="dre-section" style={{ width: '100%', textAlign: 'left', background: 'none', border: 'none', cursor: 'pointer', borderBottom: '1px solid var(--gray-100)', paddingBottom: 7, paddingTop: 7 }} onClick={() => void abrirDrill(l.linha)}>
-                <span className={isTotalLine(l.linha) ? 'dre-total' : 'dre-sub'}>{l.linha}</span>
-                <div style={{ display: 'flex', gap: 24, alignItems: 'center' }}>
-                  <span style={{ fontFamily: "'Inter', sans-serif", fontWeight: isTotalLine(l.linha) ? 800 : 600, color: l.atual >= 0 ? 'var(--green)' : 'var(--red)', fontSize: isTotalLine(l.linha) ? 14 : 13 }}>{fmtBRL(l.atual)}</span>
-                  <span style={{ fontFamily: "'Inter', sans-serif", color: 'var(--gray-400)', fontSize: 12, minWidth: 80 }}>{fmtBRL(ant)}</span>
-                  <span style={{ fontSize: 11, color: vari >= 0 ? 'var(--green)' : 'var(--red)', fontWeight: 600, minWidth: 50 }}>{vari >= 0 ? '+' : ''}{vari.toFixed(1)}%</span>
+              <button
+                key={l.linha}
+                style={{
+                  width: '100%', textAlign: 'left', background: isTotal ? '#F8FAFA' : '#fff',
+                  border: 'none', cursor: 'pointer',
+                  borderBottom: i < linhas.length - 1 ? '0.5px solid #F0F4F3' : 'none',
+                  padding: `${isTotal ? 12 : 10}px 16px`,
+                  display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                  transition: 'background 0.1s',
+                }}
+                onClick={() => void abrirDrill(l.linha)}
+                onMouseEnter={e => (e.currentTarget.style.background = '#F4F6F5')}
+                onMouseLeave={e => (e.currentTarget.style.background = isTotal ? '#F8FAFA' : '#fff')}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  {!isTotal && (
+                    <div style={{ width: 3, height: 16, borderRadius: 99, background: isNeg ? '#E74C3C' : '#5E8C87', flexShrink: 0 }} />
+                  )}
+                  <span style={{
+                    fontSize: isTotal ? 12 : 11,
+                    fontWeight: isTotal ? 700 : 500,
+                    color: isTotal ? '#1C2B2A' : '#3A5150',
+                    fontFamily: isTotal ? "'Space Grotesk', sans-serif" : 'inherit',
+                    paddingLeft: isTotal ? 11 : 0,
+                  }}>{l.linha}</span>
+                </div>
+                <div style={{ display: 'flex', gap: 20, alignItems: 'center' }}>
+                  <span style={{
+                    fontFamily: "'Space Grotesk', sans-serif",
+                    fontWeight: isTotal ? 700 : 600,
+                    color: l.atual >= 0 ? '#5E8C87' : '#E74C3C',
+                    fontSize: isTotal ? 14 : 12,
+                    minWidth: 110, textAlign: 'right',
+                  }}>{fmtBRL(l.atual)}</span>
+                  <span style={{ fontFamily: "'Space Grotesk', sans-serif", color: '#AAB8B7', fontSize: 11, minWidth: 90, textAlign: 'right' }}>{fmtBRL(ant)}</span>
+                  <span style={{
+                    fontSize: 10, fontWeight: 600, minWidth: 52, textAlign: 'right',
+                    padding: '2px 6px', borderRadius: 20,
+                    background: vari >= 0 ? '#EAF5F3' : '#FEE2E2',
+                    color: vari >= 0 ? '#0F6E56' : '#991B1B',
+                  }}>{vari >= 0 ? '+' : ''}{vari.toFixed(1)}%</span>
+                  <i className="fa-solid fa-chevron-right" style={{ fontSize: 9, color: '#C4CFCE' }} />
                 </div>
               </button>
             )
@@ -382,7 +424,7 @@ export default function RelatoriosPage() {
                 {histChart.map((h) => (
                   <tr key={h.mes}>
                     <td style={{ fontFamily: "'Inter', sans-serif" }}>{h.mes}</td>
-                    <td style={{ color: 'var(--green)', fontWeight: 600 }}>{fmtBRL(h.receita)}</td>
+                    <td style={{ color: '#5E8C87', fontWeight: 600 }}>{fmtBRL(h.receita)}</td>
                     <td style={{ color: h.lucro >= 0 ? 'var(--green)' : 'var(--red)', fontWeight: 600 }}>{fmtBRL(h.lucro)}</td>
                     <td style={{ fontFamily: "'Inter', sans-serif" }}>{h.margem.toFixed(2)}%</td>
                   </tr>
@@ -396,12 +438,12 @@ export default function RelatoriosPage() {
       {/* Gerencial */}
       {tab === 'Gerencial' && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-          {gerLoading && <div style={{ padding: 40, textAlign: 'center', color: 'var(--gray-400)' }}><i className="fa-solid fa-spinner fa-spin" /> Carregando…</div>}
+          {gerLoading && <div style={{ padding: 40, textAlign: 'center', color: '#7A8F8E' }}><i className="fa-solid fa-spinner fa-spin" /> Carregando…</div>}
           {!gerLoading && gerencial && (
             <>
               {/* Financeiro */}
-              <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: '16px 20px' }}>
-                <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: 12 }}>Financeiro — {competencia}</div>
+              <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 12, padding: '16px 20px' }}>
+                <div style={{ fontSize: 11, fontWeight: 700, color: '#7A8F8E', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: 12 }}>Financeiro — {competencia}</div>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 12 }}>
                   {[
                     { l: 'Receita Bruta', v: fmtBRL(Number(metricas?.receita_bruta || 0)), c: 'var(--teal)' },
@@ -410,7 +452,7 @@ export default function RelatoriosPage() {
                     { l: 'Lucro Líquido', v: fmtBRL(Number(metricas?.lucro_liquido || 0)), c: Number(metricas?.lucro_liquido || 0) >= 0 ? 'var(--green)' : 'var(--red)' },
                   ].map(k => (
                     <div key={k.l}>
-                      <div style={{ fontSize: 11, color: 'var(--gray-400)', marginBottom: 4 }}>{k.l}</div>
+                      <div style={{ fontSize: 11, color: '#7A8F8E', marginBottom: 4 }}>{k.l}</div>
                       <div style={{ fontSize: 16, fontWeight: 800, color: k.c, fontFamily: 'monospace' }}>{k.v}</div>
                     </div>
                   ))}
@@ -420,10 +462,10 @@ export default function RelatoriosPage() {
               {/* Grid setorial */}
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: 14 }}>
                 {/* CRM */}
-                <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: '16px 20px' }}>
+                <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 12, padding: '16px 20px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
                     <i className="fa-solid fa-handshake" style={{ color: '#7C3AED', fontSize: 14 }} />
-                    <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.06em' }}>CRM / Vendas</span>
+                    <span style={{ fontSize: 11, fontWeight: 700, color: '#7A8F8E', textTransform: 'uppercase', letterSpacing: '.06em' }}>CRM / Vendas</span>
                   </div>
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: 10 }}>
                     {[
@@ -433,18 +475,18 @@ export default function RelatoriosPage() {
                       { l: 'Perdidas', v: String(gerencial.crm.perdidas) },
                     ].map(k => (
                       <div key={k.l}>
-                        <div style={{ fontSize: 10, color: 'var(--gray-400)', marginBottom: 2 }}>{k.l}</div>
-                        <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--navy)', fontFamily: 'monospace' }}>{k.v}</div>
+                        <div style={{ fontSize: 10, color: '#7A8F8E', marginBottom: 2 }}>{k.l}</div>
+                        <div style={{ fontSize: 14, fontWeight: 700, color: '#1C2B2A', fontFamily: 'monospace' }}>{k.v}</div>
                       </div>
                     ))}
                   </div>
                 </div>
 
                 {/* Marketing */}
-                <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: '16px 20px' }}>
+                <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 12, padding: '16px 20px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
-                    <i className="fa-solid fa-bullhorn" style={{ color: 'var(--gold)', fontSize: 14 }} />
-                    <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.06em' }}>Marketing</span>
+                    <i className="fa-solid fa-bullhorn" style={{ color: '#D97706', fontSize: 14 }} />
+                    <span style={{ fontSize: 11, fontWeight: 700, color: '#7A8F8E', textTransform: 'uppercase', letterSpacing: '.06em' }}>Marketing</span>
                   </div>
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: 10 }}>
                     {[
@@ -454,18 +496,18 @@ export default function RelatoriosPage() {
                       { l: 'Leads', v: String(gerencial.mkt.leads) },
                     ].map(k => (
                       <div key={k.l}>
-                        <div style={{ fontSize: 10, color: 'var(--gray-400)', marginBottom: 2 }}>{k.l}</div>
-                        <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--navy)', fontFamily: 'monospace' }}>{k.v}</div>
+                        <div style={{ fontSize: 10, color: '#7A8F8E', marginBottom: 2 }}>{k.l}</div>
+                        <div style={{ fontSize: 14, fontWeight: 700, color: '#1C2B2A', fontFamily: 'monospace' }}>{k.v}</div>
                       </div>
                     ))}
                   </div>
                 </div>
 
                 {/* Logística */}
-                <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: '16px 20px' }}>
+                <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 12, padding: '16px 20px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
-                    <i className="fa-solid fa-truck-fast" style={{ color: 'var(--teal)', fontSize: 14 }} />
-                    <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.06em' }}>Logística</span>
+                    <i className="fa-solid fa-truck-fast" style={{ color: '#5E8C87', fontSize: 14 }} />
+                    <span style={{ fontSize: 11, fontWeight: 700, color: '#7A8F8E', textTransform: 'uppercase', letterSpacing: '.06em' }}>Logística</span>
                   </div>
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: 10 }}>
                     {[
@@ -475,18 +517,18 @@ export default function RelatoriosPage() {
                       { l: 'Entrega rate', v: gerencial.log.em_transito + gerencial.log.entregues > 0 ? `${Math.round(gerencial.log.entregues / (gerencial.log.em_transito + gerencial.log.entregues) * 100)}%` : '—' },
                     ].map(k => (
                       <div key={k.l}>
-                        <div style={{ fontSize: 10, color: 'var(--gray-400)', marginBottom: 2 }}>{k.l}</div>
-                        <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--navy)', fontFamily: 'monospace' }}>{k.v}</div>
+                        <div style={{ fontSize: 10, color: '#7A8F8E', marginBottom: 2 }}>{k.l}</div>
+                        <div style={{ fontSize: 14, fontWeight: 700, color: '#1C2B2A', fontFamily: 'monospace' }}>{k.v}</div>
                       </div>
                     ))}
                   </div>
                 </div>
 
                 {/* Clientes + Equipe */}
-                <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: '16px 20px' }}>
+                <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 12, padding: '16px 20px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
-                    <i className="fa-solid fa-users" style={{ color: 'var(--green)', fontSize: 14 }} />
-                    <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.06em' }}>Clientes & Equipe</span>
+                    <i className="fa-solid fa-users" style={{ color: '#5E8C87', fontSize: 14 }} />
+                    <span style={{ fontSize: 11, fontWeight: 700, color: '#7A8F8E', textTransform: 'uppercase', letterSpacing: '.06em' }}>Clientes & Equipe</span>
                   </div>
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: 10 }}>
                     {[
@@ -496,8 +538,8 @@ export default function RelatoriosPage() {
                       { l: 'Equipe ativa', v: `${gerencial.equipe.ativos}/${gerencial.equipe.total}` },
                     ].map(k => (
                       <div key={k.l}>
-                        <div style={{ fontSize: 10, color: 'var(--gray-400)', marginBottom: 2 }}>{k.l}</div>
-                        <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--navy)', fontFamily: 'monospace' }}>{k.v}</div>
+                        <div style={{ fontSize: 10, color: '#7A8F8E', marginBottom: 2 }}>{k.l}</div>
+                        <div style={{ fontSize: 14, fontWeight: 700, color: '#1C2B2A', fontFamily: 'monospace' }}>{k.v}</div>
                       </div>
                     ))}
                   </div>
@@ -521,19 +563,19 @@ export default function RelatoriosPage() {
       {tab === 'Exportações' && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
           {/* Filtro de período */}
-          <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: '16px 20px' }}>
-            <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--navy)', marginBottom: 12 }}>Filtros do período</div>
+          <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 12, padding: '16px 20px' }}>
+            <div style={{ fontSize: 12, fontWeight: 700, color: '#1C2B2A', marginBottom: 12 }}>Filtros do período</div>
             <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-                <label style={{ fontSize: 11, color: 'var(--gray-400)', fontWeight: 600 }}>Data início</label>
+                <label style={{ fontSize: 11, color: '#7A8F8E', fontWeight: 600 }}>Data início</label>
                 <input type="date" className="form-input" style={{ width: 150 }} value={expInicio} onChange={e => setExpInicio(e.target.value)} />
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-                <label style={{ fontSize: 11, color: 'var(--gray-400)', fontWeight: 600 }}>Data fim</label>
+                <label style={{ fontSize: 11, color: '#7A8F8E', fontWeight: 600 }}>Data fim</label>
                 <input type="date" className="form-input" style={{ width: 150 }} value={expFim} onChange={e => setExpFim(e.target.value)} />
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-                <label style={{ fontSize: 11, color: 'var(--gray-400)', fontWeight: 600 }}>Status despesas</label>
+                <label style={{ fontSize: 11, color: '#7A8F8E', fontWeight: 600 }}>Status despesas</label>
                 <select className="form-input" style={{ width: 160 }} value={expStatus} onChange={e => setExpStatus(e.target.value)}>
                   <option value="">Todos</option>
                   <option value="pendente">Pendente</option>
@@ -549,30 +591,30 @@ export default function RelatoriosPage() {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 14 }}>
 
             {/* DRE PDF */}
-            <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: 20 }}>
+            <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 12, padding: 20 }}>
               <div style={{ marginBottom: 10 }}><i className="fa-solid fa-file-pdf" style={{ fontSize: 24, color: "#DC2626" }} /></div>
-              <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy)', marginBottom: 4 }}>DRE — PDF</div>
-              <div style={{ fontSize: 12, color: 'var(--gray-400)', marginBottom: 16, lineHeight: 1.6 }}>Demonstrativo de Resultados em PDF com análise IA</div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: '#1C2B2A', marginBottom: 4 }}>DRE — PDF</div>
+              <div style={{ fontSize: 12, color: '#7A8F8E', marginBottom: 16, lineHeight: 1.6 }}>Demonstrativo de Resultados em PDF com análise IA</div>
               <button className="btn-action" style={{ width: '100%' }} onClick={() => void exportarPdf()}>
                 Baixar PDF
               </button>
             </div>
 
             {/* DRE Excel */}
-            <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: 20 }}>
+            <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 12, padding: 20 }}>
               <div style={{ marginBottom: 10 }}><i className="fa-solid fa-file-excel" style={{ fontSize: 24, color: "#16A34A" }} /></div>
-              <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy)', marginBottom: 4 }}>DRE — Excel</div>
-              <div style={{ fontSize: 12, color: 'var(--gray-400)', marginBottom: 16, lineHeight: 1.6 }}>DRE completo + comparativo 12 meses + métricas avançadas</div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: '#1C2B2A', marginBottom: 4 }}>DRE — Excel</div>
+              <div style={{ fontSize: 12, color: '#7A8F8E', marginBottom: 16, lineHeight: 1.6 }}>DRE completo + comparativo 12 meses + métricas avançadas</div>
               <button className="btn-action" style={{ width: '100%' }} onClick={() => void exportarExcel()}>
                 Baixar Excel (.xlsx)
               </button>
             </div>
 
             {/* Transações CSV */}
-            <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: 20 }}>
+            <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 12, padding: 20 }}>
               <div style={{ marginBottom: 10 }}><i className="fa-solid fa-file-csv" style={{ fontSize: 24, color: "#0891B2" }} /></div>
-              <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy)', marginBottom: 4 }}>Transações — CSV</div>
-              <div style={{ fontSize: 12, color: 'var(--gray-400)', marginBottom: 16, lineHeight: 1.6 }}>Todas as transações do período filtrado (entradas e saídas)</div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: '#1C2B2A', marginBottom: 4 }}>Transações — CSV</div>
+              <div style={{ fontSize: 12, color: '#7A8F8E', marginBottom: 16, lineHeight: 1.6 }}>Todas as transações do período filtrado (entradas e saídas)</div>
               <button
                 className="btn-action"
                 style={{ width: '100%', opacity: expLoading === 'transacoes' ? 0.6 : 1 }}
@@ -584,10 +626,10 @@ export default function RelatoriosPage() {
             </div>
 
             {/* Despesas CSV */}
-            <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: 20 }}>
+            <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 12, padding: 20 }}>
               <div style={{ marginBottom: 10 }}><i className="fa-solid fa-money-bill-transfer" style={{ fontSize: 24, color: "var(--teal)" }} /></div>
-              <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy)', marginBottom: 4 }}>Despesas — CSV</div>
-              <div style={{ fontSize: 12, color: 'var(--gray-400)', marginBottom: 16, lineHeight: 1.6 }}>Contas a pagar com fornecedor, categoria, status e centro de custo</div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: '#1C2B2A', marginBottom: 4 }}>Despesas — CSV</div>
+              <div style={{ fontSize: 12, color: '#7A8F8E', marginBottom: 16, lineHeight: 1.6 }}>Contas a pagar com fornecedor, categoria, status e centro de custo</div>
               <button
                 className="btn-action"
                 style={{ width: '100%', opacity: expLoading === 'despesas' ? 0.6 : 1 }}
@@ -601,7 +643,7 @@ export default function RelatoriosPage() {
           </div>
 
           {/* Info */}
-          <div style={{ fontSize: 11, color: 'var(--gray-400)', padding: '0 4px', lineHeight: 1.7 }}>
+          <div style={{ fontSize: 11, color: '#7A8F8E', padding: '0 4px', lineHeight: 1.7 }}>
             Os arquivos CSV usam separador <code>;</code> e codificação UTF-8 com BOM — compatíveis com Excel, Google Sheets e LibreOffice.
           </div>
         </div>
@@ -611,8 +653,8 @@ export default function RelatoriosPage() {
       {analise && (
         <div style={{ marginTop: 14, background: 'rgba(94,140,135,.06)', border: '1px solid rgba(94,140,135,.2)', borderRadius: 12, padding: 16 }}>
           <div className="chart-title" style={{ marginBottom: 8 }}>Análise FactorOne</div>
-          <p style={{ fontSize: 12, fontWeight: 700, color: 'var(--navy)', marginBottom: 6 }}>Score de saúde: {String(analise.score_saude ?? '—')}</p>
-          <p style={{ fontSize: 12, color: 'var(--navy)', lineHeight: 1.65 }}>{String(analise.resumo_executivo ?? '')}</p>
+          <p style={{ fontSize: 12, fontWeight: 700, color: '#1C2B2A', marginBottom: 6 }}>Score de saúde: {String(analise.score_saude ?? '—')}</p>
+          <p style={{ fontSize: 12, color: '#1C2B2A', lineHeight: 1.65 }}>{String(analise.resumo_executivo ?? '')}</p>
         </div>
       )}
 
@@ -632,7 +674,7 @@ export default function RelatoriosPage() {
                   <thead><tr><th>Data</th><th>Descrição</th><th>Origem</th><th>Valor</th></tr></thead>
                   <tbody>
                     {drillRows.length === 0 ? (
-                      <tr><td colSpan={4} style={{ textAlign: 'center', color: 'var(--gray-400)', padding: 24 }}>Sem lançamentos.</td></tr>
+                      <tr><td colSpan={4} style={{ textAlign: 'center', color: '#7A8F8E', padding: 24 }}>Sem lançamentos.</td></tr>
                     ) : drillRows.map(r => (
                       <tr key={r.id}>
                         <td>{new Date(r.created_at).toLocaleDateString('pt-BR')}</td>

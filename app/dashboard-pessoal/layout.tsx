@@ -10,26 +10,20 @@ type NavGroup = { label: string; items: NavItem[] }
 
 const NAV: NavGroup[] = [
   {
-    label: 'Core',
+    label: 'Visão geral',
     items: [
       { href: '/dashboard-pessoal', icon: 'fa-house', label: 'Início' },
-      { href: '/dashboard-pessoal/aicfo', icon: 'fa-robot', label: 'AI CFO Pessoal' },
+      { href: '/dashboard-pessoal/aicfo', icon: 'fa-robot', label: 'FactorOne AI' },
     ],
   },
   {
     label: 'Finanças',
     items: [
-      { href: '/dashboard-pessoal/gastos', icon: 'fa-receipt', label: 'Gastos & Recibos' },
+      { href: '/dashboard-pessoal/gastos', icon: 'fa-receipt', label: 'Gastos' },
       { href: '/dashboard-pessoal/receitas', icon: 'fa-arrow-trend-up', label: 'Receitas' },
       { href: '/dashboard-pessoal/orcamento', icon: 'fa-chart-pie', label: 'Orçamento' },
-    ],
-  },
-  {
-    label: 'Cartão & Assinaturas',
-    items: [
       { href: '/dashboard-pessoal/cartoes', icon: 'fa-credit-card', label: 'Cartões' },
-      { href: '/dashboard-pessoal/assinaturas', icon: 'fa-rotate', label: 'Assinaturas & Fixos' },
-      { href: '/dashboard-pessoal/planos', icon: 'fa-star', label: 'Meu Plano' },
+      { href: '/dashboard-pessoal/assinaturas', icon: 'fa-rotate', label: 'Assinaturas' },
     ],
   },
   {
@@ -37,13 +31,14 @@ const NAV: NavGroup[] = [
     items: [
       { href: '/dashboard-pessoal/metas', icon: 'fa-bullseye', label: 'Metas' },
       { href: '/dashboard-pessoal/investimentos', icon: 'fa-seedling', label: 'Investimentos' },
+      { href: '/dashboard-pessoal/ir', icon: 'fa-file-invoice', label: 'Imposto de Renda' },
+      { href: '/dashboard-pessoal/open-finance', icon: 'fa-building-columns', label: 'Open Finance' },
     ],
   },
   {
-    label: 'Ferramentas',
+    label: 'Conta',
     items: [
-      { href: '/dashboard-pessoal/ir', icon: 'fa-file-invoice', label: 'Imposto de Renda' },
-      { href: '/dashboard-pessoal/open-finance', icon: 'fa-building-columns', label: 'Open Finance' },
+      { href: '/dashboard-pessoal/planos', icon: 'fa-star', label: 'Meu Plano' },
     ],
   },
 ]
@@ -115,19 +110,27 @@ export default function DashboardPessoalLayout({ children }: { children: React.R
           ))}
         </nav>
         <div className="sb-footer">
+          <div style={{ padding: '8px 8px 8px', marginBottom: 6 }}>
+            <Link href="/dashboard" style={{
+              display: 'flex', alignItems: 'center', gap: 8, padding: '8px 10px',
+              borderRadius: 8, background: 'rgba(94,140,135,0.12)', textDecoration: 'none',
+              transition: 'background 0.15s',
+            }}>
+              <div style={{ width: 24, height: 24, borderRadius: 6, background: 'rgba(94,140,135,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <i className="fa-solid fa-building" style={{ fontSize: 10, color: '#7EBDB8' }} />
+              </div>
+              <span style={{ fontSize: 11, color: '#7EBDB8', fontWeight: 600 }}>Modo Empresarial</span>
+              <i className="fa-solid fa-arrow-right" style={{ fontSize: 9, color: '#7EBDB8', marginLeft: 'auto' }} />
+            </Link>
+          </div>
           <div className="sb-co" style={{ cursor: 'default' }}>
             <div className="sb-co-av">{initials}</div>
             <div>
               <div className="sb-co-name" style={{ maxWidth: 130, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                 {nome || user?.email?.split('@')[0] || 'Você'}
               </div>
-              <div className="sb-co-plan" onClick={sair} style={{ cursor: 'pointer', color: 'var(--teal)' }}>Sair</div>
+              <div className="sb-co-plan" onClick={sair} style={{ cursor: 'pointer', color: '#7EBDB8' }}>Sair</div>
             </div>
-          </div>
-          <div style={{ marginTop: 8, padding: '0 8px' }}>
-            <Link href="/dashboard" style={{ fontSize: 10, color: 'var(--gray-400)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}>
-              <i className="fa-solid fa-building" style={{ fontSize: 9 }} /> Voltar para modo Empresarial
-            </Link>
           </div>
         </div>
       </aside>
