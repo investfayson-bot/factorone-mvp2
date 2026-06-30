@@ -2,6 +2,7 @@
 import InsightFloating from '@/components/aicfo/InsightFloating'
 import NotificacoesDrawer, { useNotificacoes } from '@/components/dashboard/NotificacoesDrawer'
 import GlobalSearch from '@/components/dashboard/GlobalSearch'
+import NotificationBell from '@/components/ui/NotificationBell'
 import { useEffect, useState } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import type { User } from '@supabase/supabase-js'
@@ -281,14 +282,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               <span>Buscar</span>
               <kbd style={{ fontSize: 9, background: '#fff', border: '1px solid var(--gray-200)', borderRadius: 3, padding: '1px 4px', fontFamily: 'monospace', color: 'var(--gray-400)' }}>⌘K</kbd>
             </button>
-            <button onClick={() => setNotifOpen(true)} style={{ position: 'relative', background: 'none', border: 'none', cursor: 'pointer', padding: '4px 8px', borderRadius: 8, color: 'var(--gray-400)' }} title="Notificações">
-              <i className="fa-regular fa-bell" style={{ fontSize: 16 }} />
-              {notifCount > 0 && (
-                <span style={{ position: 'absolute', top: 0, right: 0, width: 16, height: 16, borderRadius: '50%', background: 'var(--red)', color: '#fff', fontSize: 9, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  {notifCount > 9 ? '9+' : notifCount}
-                </span>
-              )}
-            </button>
+            <NotificationBell />
             <div className="topbar-av" onClick={sair} title="Sair">{initials}</div>
           </div>
           <div className="fo-content">

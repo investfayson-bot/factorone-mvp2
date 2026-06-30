@@ -119,41 +119,56 @@ export default function OrcamentoPage() {
       </div>
 
       <div className="kpis" style={{ gridTemplateColumns: 'repeat(4, 1fr)' }}>
-        <div className="kpi">
-          <div className="kpi-lbl">Total previsto</div>
-          <div className="kpi-val">{formatBRL(resumo.totalPrevisto)}</div>
-          <div className="kpi-delta">ano {ano}</div>
-        </div>
-        <div className="kpi">
-          <div className="kpi-lbl">Total realizado</div>
-          <div className="kpi-val" style={{ color: 'var(--teal)' }}>{formatBRL(resumo.totalRealizado)}</div>
-          <div className="kpi-delta up">executado</div>
-        </div>
-        <div className="kpi">
-          <div className="kpi-lbl">% Consumido</div>
-          <div className="kpi-val" style={{ color: resumo.percentualConsumido > 90 ? 'var(--red)' : resumo.percentualConsumido > 70 ? 'var(--gold)' : 'var(--navy)' }}>
-            {resumo.percentualConsumido.toFixed(1)}%
+        <div className="kpi" style={{ borderTop: '3px solid #5E8C87' }}>
+          <div className="kpi-lbl">Total previsto
+            <div style={{ width: 28, height: 28, borderRadius: 8, background: '#EAF5F3', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <i className="fa-solid fa-chart-pie" style={{ fontSize: 12, color: '#5E8C87' }} />
+            </div>
           </div>
-          <div className={`kpi-delta ${resumo.percentualConsumido > 90 ? 'dn' : 'up'}`}>{resumo.percentualConsumido > 90 ? 'atenção' : 'saudável'}</div>
+          <div className="kpi-val">{formatBRL(resumo.totalPrevisto)}</div>
+          <div className="kpi-delta">orçado para {ano}</div>
         </div>
-        <div className="kpi">
-          <div className="kpi-lbl">Alertas ativos</div>
-          <div className="kpi-val" style={{ color: alertasAtivos > 0 ? 'var(--gold)' : 'var(--navy)' }}>{alertasAtivos}</div>
-          <div className={`kpi-delta ${alertasAtivos > 0 ? 'warn' : 'up'}`}>{alertasAtivos > 0 ? 'pendentes' : 'nenhum'}</div>
+        <div className="kpi" style={{ borderTop: '3px solid #2563eb' }}>
+          <div className="kpi-lbl">Total realizado
+            <div style={{ width: 28, height: 28, borderRadius: 8, background: '#E6F1FB', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <i className="fa-solid fa-check-circle" style={{ fontSize: 12, color: '#2563eb' }} />
+            </div>
+          </div>
+          <div className="kpi-val">{formatBRL(resumo.totalRealizado)}</div>
+          <div className="kpi-delta up">executado até agora</div>
+        </div>
+        <div className="kpi" style={{ borderTop: `3px solid ${resumo.percentualConsumido > 90 ? '#E74C3C' : resumo.percentualConsumido > 70 ? '#D97706' : '#5E8C87'}` }}>
+          <div className="kpi-lbl">% Consumido
+            <div style={{ width: 28, height: 28, borderRadius: 8, background: resumo.percentualConsumido > 90 ? '#FEE2E2' : resumo.percentualConsumido > 70 ? '#FEF3C7' : '#EAF5F3', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <i className="fa-solid fa-gauge-high" style={{ fontSize: 12, color: resumo.percentualConsumido > 90 ? '#E74C3C' : resumo.percentualConsumido > 70 ? '#D97706' : '#5E8C87' }} />
+            </div>
+          </div>
+          <div className="kpi-val">{resumo.percentualConsumido.toFixed(1)}%</div>
+          <div className={`kpi-delta ${resumo.percentualConsumido > 90 ? 'dn' : 'up'}`}>{resumo.percentualConsumido > 90 ? '⚠ quase no limite' : '✓ saudável'}</div>
+        </div>
+        <div className="kpi" style={{ borderTop: `3px solid ${alertasAtivos > 0 ? '#D97706' : '#5E8C87'}` }}>
+          <div className="kpi-lbl">Alertas ativos
+            <div style={{ width: 28, height: 28, borderRadius: 8, background: alertasAtivos > 0 ? '#FEF3C7' : '#EAF5F3', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <i className="fa-solid fa-bell" style={{ fontSize: 12, color: alertasAtivos > 0 ? '#D97706' : '#5E8C87' }} />
+            </div>
+          </div>
+          <div className="kpi-val">{alertasAtivos}</div>
+          <div className={`kpi-delta ${alertasAtivos > 0 ? 'warn' : 'up'}`}>{alertasAtivos > 0 ? 'categorias acima de 80%' : '✓ nenhum alerta'}</div>
         </div>
       </div>
 
       {/* Tabs */}
-      <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 4 }}>
+      <div style={{ display: 'flex', gap: 2, background: '#E8EDEC', padding: 3, borderRadius: 10, width: 'fit-content', marginBottom: 14 }}>
         {TAB_LABELS.map(([k, l]) => (
           <button
             key={k}
             onClick={() => setTab(k as typeof tab)}
             style={{
-              padding: '7px 14px', borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: 'pointer', border: '1px solid',
-              background: tab === k ? 'var(--navy)' : '#fff',
-              color: tab === k ? '#fff' : 'var(--gray-500)',
-              borderColor: tab === k ? 'var(--navy)' : 'var(--gray-100)',
+              padding: '6px 13px', borderRadius: 8, fontSize: 11, fontWeight: tab === k ? 700 : 500,
+              cursor: 'pointer', border: 'none',
+              background: tab === k ? '#fff' : 'transparent',
+              color: tab === k ? '#1C2B2A' : '#7A8F8E',
+              transition: 'all .15s',
             }}
           >
             {l}
@@ -164,12 +179,12 @@ export default function OrcamentoPage() {
       {tab === 'geral' && (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 12 }}>
           {porCategoria.slice(0, 6).map((c) => (
-            <div key={c.categoria} style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: 16 }}>
-              <div style={{ fontWeight: 700, fontSize: 13, color: 'var(--navy)', marginBottom: 4 }}>{c.categoria}</div>
-              <div style={{ fontSize: 12, color: 'var(--gray-400)', marginBottom: 8 }}>
+            <div key={c.categoria} style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 12, padding: 16 }}>
+              <div style={{ fontWeight: 700, fontSize: 13, color: '#1C2B2A', marginBottom: 4 }}>{c.categoria}</div>
+              <div style={{ fontSize: 12, color: '#7A8F8E', marginBottom: 8 }}>
                 {formatBRL(c.realizado)} / {formatBRL(c.previsto)} · {c.pct.toFixed(1)}%
               </div>
-              <div style={{ height: 6, borderRadius: 4, background: 'var(--gray-100)' }}>
+              <div style={{ height: 6, borderRadius: 4, background: '#EEF2F1' }}>
                 <div style={{ height: 6, borderRadius: 4, width: `${Math.min(c.pct, 100)}%`, background: progressColor(c.pct) }} />
               </div>
             </div>
@@ -178,7 +193,7 @@ export default function OrcamentoPage() {
       )}
 
       {tab === 'categoria' && (
-        <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, overflow: 'hidden' }}>
+        <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 12, overflow: 'hidden' }}>
           <div className="expenses-table">
             <table>
               <thead>
@@ -195,9 +210,9 @@ export default function OrcamentoPage() {
                 {porCategoria.map((c) => (
                   <tr key={c.categoria}>
                     <td style={{ fontWeight: 600 }}>{c.categoria}</td>
-                    <td style={{ textAlign: 'right', fontFamily: "'Inter', sans-serif" }}>{formatBRL(c.previsto)}</td>
-                    <td style={{ textAlign: 'right', fontFamily: "'Inter', sans-serif" }}>{formatBRL(c.realizado)}</td>
-                    <td style={{ textAlign: 'right', fontFamily: "'Inter', sans-serif", color: c.previsto - c.realizado < 0 ? 'var(--red)' : 'var(--teal)', fontWeight: 700 }}>{formatBRL(c.previsto - c.realizado)}</td>
+                    <td style={{ textAlign: 'right', fontFamily: "'Space Grotesk', sans-serif" }}>{formatBRL(c.previsto)}</td>
+                    <td style={{ textAlign: 'right', fontFamily: "'Space Grotesk', sans-serif" }}>{formatBRL(c.realizado)}</td>
+                    <td style={{ textAlign: 'right', fontFamily: "'Space Grotesk', sans-serif", color: c.previsto - c.realizado < 0 ? 'var(--red)' : 'var(--teal)', fontWeight: 700 }}>{formatBRL(c.previsto - c.realizado)}</td>
                     <td style={{ textAlign: 'right', color: progressColor(c.pct), fontWeight: 700 }}>{c.pct.toFixed(1)}%</td>
                     <td style={{ textAlign: 'center' }}>
                       <button className="btn-ghost" style={{ padding: '4px 10px', fontSize: 11 }} onClick={() => { const l = linhas.find((x) => x.categoria === c.categoria); if (l) setEditLinha(l) }}>Editar</button>
@@ -211,13 +226,13 @@ export default function OrcamentoPage() {
       )}
 
       {tab === 'centro' && (
-        <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: '20px 16px', fontSize: 13, color: 'var(--gray-400)' }}>
+        <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 12, padding: '20px 16px', fontSize: 13, color: '#7A8F8E' }}>
           Visão por centro de custo usa os mesmos dados de linhas com <code>centro_custo_id</code>.
         </div>
       )}
 
       {tab === 'mensal' && (
-        <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, overflow: 'hidden' }}>
+        <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 12, overflow: 'hidden' }}>
           <div className="expenses-table">
             <table>
               <thead>
@@ -235,9 +250,9 @@ export default function OrcamentoPage() {
                   const r = mesLinhas.reduce((s, l) => s + Number(l.valor_realizado || 0), 0)
                   return (
                     <tr key={m}>
-                      <td style={{ fontFamily: "'Inter', sans-serif" }}>{m.toString().padStart(2, '0')}/{ano}</td>
-                      <td style={{ textAlign: 'right', fontFamily: "'Inter', sans-serif", color: 'var(--teal)', fontWeight: 700 }}>{formatBRL(r)}</td>
-                      <td style={{ textAlign: 'right', fontFamily: "'Inter', sans-serif" }}>{formatBRL(p)}</td>
+                      <td style={{ fontFamily: "'Space Grotesk', sans-serif" }}>{m.toString().padStart(2, '0')}/{ano}</td>
+                      <td style={{ textAlign: 'right', fontFamily: "'Space Grotesk', sans-serif", color: '#5E8C87', fontWeight: 700 }}>{formatBRL(r)}</td>
+                      <td style={{ textAlign: 'right', fontFamily: "'Space Grotesk', sans-serif" }}>{formatBRL(p)}</td>
                     </tr>
                   )
                 })}
@@ -250,17 +265,17 @@ export default function OrcamentoPage() {
       {tab === 'alertas' && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           {alertas.length === 0 && (
-            <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: '32px 16px', textAlign: 'center', color: 'var(--gray-400)', fontSize: 13 }}>
+            <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 12, padding: '32px 16px', textAlign: 'center', color: '#7A8F8E', fontSize: 13 }}>
               Nenhum alerta ativo.
             </div>
           )}
           {alertas.map((a) => (
-            <div key={a.id} style={{ background: '#fff', border: `1px solid ${a.lido ? 'var(--gray-100)' : 'var(--gold)'}`, borderRadius: 12, padding: '14px 16px' }}>
+            <div key={a.id} style={{ background: '#fff', border: `0.5px solid ${a.lido ? '#E2E8E7' : '#F59E0B'}`, borderRadius: 12, padding: '14px 16px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
                 <span className={`tag ${a.lido ? 'gray' : 'green'}`}>{a.tipo}</span>
-                <span style={{ fontSize: 12, color: 'var(--gray-400)' }}>{a.percentual_consumido?.toFixed(1)}% consumido</span>
+                <span style={{ fontSize: 12, color: '#7A8F8E' }}>{a.percentual_consumido?.toFixed(1)}% consumido</span>
               </div>
-              <div style={{ fontSize: 12, color: 'var(--gray-500)', marginBottom: 8 }}>
+              <div style={{ fontSize: 12, color: '#7A8F8E', marginBottom: 8 }}>
                 Previsto: {formatBRL(Number(a.valor_previsto || 0))} · Realizado: {formatBRL(Number(a.valor_realizado || 0))}
               </div>
               <div style={{ display: 'flex', gap: 8 }}>
@@ -277,17 +292,17 @@ export default function OrcamentoPage() {
       {tab === 'suplementacoes' && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           {suplementacoes.length === 0 && (
-            <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: '32px 16px', textAlign: 'center', color: 'var(--gray-400)', fontSize: 13 }}>
+            <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 12, padding: '32px 16px', textAlign: 'center', color: '#7A8F8E', fontSize: 13 }}>
               Nenhuma suplementação registrada.
             </div>
           )}
           {suplementacoes.map((s) => (
-            <div key={s.id} style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: '14px 16px' }}>
+            <div key={s.id} style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 12, padding: '14px 16px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
-                <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--navy)', fontFamily: "'Inter', sans-serif" }}>{formatBRL(Number(s.valor_solicitado || 0))}</span>
+                <span style={{ fontSize: 14, fontWeight: 700, color: '#1C2B2A', fontFamily: "'Space Grotesk', sans-serif" }}>{formatBRL(Number(s.valor_solicitado || 0))}</span>
                 <span className={`tag ${s.status === 'aprovado' ? 'green' : s.status === 'rejeitado' ? 'red' : 'gray'}`}>{s.status}</span>
               </div>
-              <div style={{ fontSize: 12, color: 'var(--gray-400)', marginBottom: s.status === 'pendente' ? 10 : 0 }}>{s.justificativa}</div>
+              <div style={{ fontSize: 12, color: '#7A8F8E', marginBottom: s.status === 'pendente' ? 10 : 0 }}>{s.justificativa}</div>
               {s.status === 'pendente' && (
                 <div style={{ display: 'flex', gap: 8 }}>
                   <button className="btn-action" style={{ padding: '4px 12px', fontSize: 11 }} onClick={() => void decidirSuplementacao(s.id, 'aprovado')}>Aprovar</button>

@@ -123,7 +123,7 @@ body {
 .tag.red { background: #FEE2E2; color: #991B1B; }
 
 /* ── CASHFLOW ── */
-.cf-chart-card { background: #fff; border: 1px solid var(--gray-100); border-radius: 12px; padding: 18px; margin-bottom: 14px; }
+.cf-chart-card { background: #fff; border: 0.5px solid #E2E8E7; border-radius: 14px; padding: 18px; margin-bottom: 12px; }
 .cf-legend { display: flex; gap: 14px; margin-bottom: 4px; }
 .cf-leg-item { display: flex; align-items: center; gap: 5px; font-size: 10px; color: var(--gray-400); }
 .cf-leg-dot { width: 8px; height: 8px; border-radius: 2px; }

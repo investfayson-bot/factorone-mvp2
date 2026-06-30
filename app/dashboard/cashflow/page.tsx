@@ -212,43 +212,54 @@ export default function CashflowPage() {
 
       {/* KPIs */}
       <div className="kpis">
-        <div className="kpi">
-          <div className="kpi-lbl">Saldo do período</div>
-          <div className="kpi-val" style={{ color: saldoAtual >= 0 ? 'var(--green)' : 'var(--red)' }}>{fmtCompact(saldoAtual)}</div>
-          <div className={`kpi-delta ${saldoAtual >= 0 ? 'up' : 'dn'}`}>{saldoAtual >= 0 ? '↑ positivo' : '↓ negativo'}</div>
+        <div className="kpi" style={{ borderTop: `3px solid ${saldoAtual >= 0 ? '#5E8C87' : '#E74C3C'}` }}>
+          <div className="kpi-lbl">Saldo do período
+            <div style={{ width: 28, height: 28, borderRadius: 8, background: saldoAtual >= 0 ? '#EAF5F3' : '#FEE2E2', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <i className="fa-solid fa-scale-balanced" style={{ fontSize: 12, color: saldoAtual >= 0 ? '#5E8C87' : '#E74C3C' }} />
+            </div>
+          </div>
+          <div className="kpi-val">{fmtCompact(saldoAtual)}</div>
+          <div className={`kpi-delta ${saldoAtual >= 0 ? 'up' : 'dn'}`}>{saldoAtual >= 0 ? '↑ caixa positivo' : '↓ caixa negativo'}</div>
         </div>
-        <div className="kpi">
-          <div className="kpi-lbl">Entradas</div>
-          <div className="kpi-val" style={{ color: 'var(--green)' }}>{fmtCompact(entradasPeriodo)}</div>
+        <div className="kpi" style={{ borderTop: '3px solid #5E8C87' }}>
+          <div className="kpi-lbl">Entradas
+            <div style={{ width: 28, height: 28, borderRadius: 8, background: '#EAF5F3', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <i className="fa-solid fa-arrow-down-circle" style={{ fontSize: 12, color: '#5E8C87' }} />
+            </div>
+          </div>
+          <div className="kpi-val">{fmtCompact(entradasPeriodo)}</div>
           <div className="kpi-delta up">{transacoes.filter(t => t.tipo === 'entrada').length} lançamentos</div>
         </div>
-        <div className="kpi">
-          <div className="kpi-lbl">Saídas</div>
-          <div className="kpi-val" style={{ color: 'var(--red)' }}>{fmtCompact(saidasPeriodo)}</div>
+        <div className="kpi" style={{ borderTop: '3px solid #E74C3C' }}>
+          <div className="kpi-lbl">Saídas
+            <div style={{ width: 28, height: 28, borderRadius: 8, background: '#FEE2E2', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <i className="fa-solid fa-arrow-up-circle" style={{ fontSize: 12, color: '#E74C3C' }} />
+            </div>
+          </div>
+          <div className="kpi-val">{fmtCompact(saidasPeriodo)}</div>
           <div className="kpi-delta dn">{transacoes.filter(t => t.tipo === 'saida').length} lançamentos</div>
         </div>
-        <div className="kpi">
-          <div className="kpi-lbl">Projeção 30 dias</div>
-          <div className="kpi-val" style={{ color: projecao30 >= 0 ? 'var(--navy)' : 'var(--red)' }}>{fmtCompact(projecao30)}</div>
+        <div className="kpi" style={{ borderTop: `3px solid ${projecao30 >= 0 ? '#D97706' : '#E74C3C'}` }}>
+          <div className="kpi-lbl">Projeção 30 dias
+            <div style={{ width: 28, height: 28, borderRadius: 8, background: projecao30 >= 0 ? '#FEF3C7' : '#FEE2E2', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <i className="fa-solid fa-chart-line" style={{ fontSize: 12, color: projecao30 >= 0 ? '#D97706' : '#E74C3C' }} />
+            </div>
+          </div>
+          <div className="kpi-val">{fmtCompact(projecao30)}</div>
           <div className={`kpi-delta ${projecao30 >= 0 ? 'up' : 'dn'}`}>{projecao30 >= 0 ? '↑ tendência positiva' : '↓ atenção'}</div>
         </div>
       </div>
 
       {/* Tabs */}
-      <div style={{ display: 'flex', gap: 4, marginBottom: 16, background: 'var(--gray-100)', borderRadius: 10, padding: 4 }}>
+      <div style={{ display: 'flex', gap: 2, marginBottom: 16, background: '#E8EDEC', borderRadius: 10, padding: 3, width: 'fit-content' }}>
         {TABS.map((tab, i) => (
-          <button
-            key={tab}
-            onClick={() => setActiveTab(i)}
-            style={{
-              flex: 1, padding: '7px 12px', fontSize: 12, fontWeight: 700, borderRadius: 7,
-              border: 'none', cursor: 'pointer', fontFamily: "'Sora',sans-serif",
-              background: activeTab === i ? '#fff' : 'transparent',
-              color: activeTab === i ? 'var(--navy)' : 'var(--gray-400)',
-              boxShadow: activeTab === i ? '0 1px 4px rgba(0,0,0,.08)' : 'none',
-              transition: 'all .15s',
-            }}
-          >
+          <button key={tab} onClick={() => setActiveTab(i)} style={{
+            padding: '6px 16px', fontSize: 11, fontWeight: activeTab === i ? 700 : 500, borderRadius: 8,
+            border: 'none', cursor: 'pointer',
+            background: activeTab === i ? '#fff' : 'transparent',
+            color: activeTab === i ? '#1C2B2A' : '#7A8F8E',
+            transition: 'all .15s',
+          }}>
             {tab}
           </button>
         ))}
