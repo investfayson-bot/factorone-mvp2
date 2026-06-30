@@ -211,9 +211,11 @@ export default function AuthPage() {
             <i className="fa-solid fa-bolt" /> Usar conta demo
           </button>
 
-          <div style={{ marginTop: 20, paddingTop: 16, borderTop: '1px solid var(--gray-100)', textAlign: 'center', fontSize: 11, color: 'var(--gray-400)' }}>
+          <div style={{ marginTop: 20, paddingTop: 16, borderTop: '0.5px solid #E2E8E7', textAlign: 'center', fontSize: 11, color: '#7A8F8E' }}>
             Ao continuar você concorda com os{' '}
             <span style={{ color: 'var(--teal)', cursor: 'pointer' }}>Termos de Uso</span>
+            {' · '}
+            <a href="/precos" style={{ color: 'var(--teal)', textDecoration: 'none', fontWeight: 600 }}>Ver planos e preços</a>
           </div>
           </>
           )}

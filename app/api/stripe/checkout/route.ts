@@ -6,55 +6,80 @@ import { erroDesconhecido } from '@/lib/transacao-types'
 export async function POST(req: NextRequest) {
   try {
     if (!process.env.STRIPE_SECRET_KEY) {
-      return NextResponse.json({ error: 'STRIPE_SECRET_KEY não configurada no servidor' }, { status: 500 })
+      return NextResponse.json({ error: 'STRIPE_SECRET_KEY não configurada' }, { status: 500 })
     }
-    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, { apiVersion: '2026-03-25.dahlia' })
 
-    const { priceId, plano } = await req.json()
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, { apiVersion: '2026-03-25.dahlia' })
+    const { priceId, plano, email } = await req.json()
+
+    if (!priceId) return NextResponse.json({ error: 'priceId obrigatório' }, { status: 400 })
+
+    // Autenticar via Authorization header (funciona no server com anon key)
+    const token = req.headers.get('authorization')?.replace(/^Bearer\s+/i, '').trim()
     const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      token ? { global: { headers: { Authorization: `Bearer ${token}` } } } : {}
+    )
+
+    const { data: { user } } = await supabase.auth.getUser()
+
+    // Supabase admin para operações privilegiadas
+    const admin = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.SUPABASE_SERVICE_ROLE_KEY!
     )
-    const { data: { user } } = await supabase.auth.getUser()
 
-    if (!user) return NextResponse.json({ error: 'Não autenticado' }, { status: 401 })
+    let customerId: string | undefined
+    let empresaId: string | undefined
+    let customerEmail = email || user?.email || ''
 
-    // Busca ou cria customer no Stripe
-    const { data: usuario } = await supabase
-      .from('usuarios').select('empresa_id').eq('id', user.id).single()
+    if (user) {
+      const { data: usuario } = await admin.from('usuarios').select('empresa_id').eq('id', user.id).maybeSingle()
+      empresaId = usuario?.empresa_id || user.id
 
-    const { data: empresa } = await supabase
-      .from('empresas').select('*').eq('id', usuario?.empresa_id).single()
+      const { data: empresa } = await admin.from('empresas').select('stripe_customer_id,nome').eq('id', empresaId).maybeSingle()
+      customerId = empresa?.stripe_customer_id
 
-    let customerId = empresa?.stripe_customer_id
-    if (!customerId) {
-      const customer = await stripe.customers.create({
-        email: user.email,
-        name: empresa?.nome,
-        metadata: { empresa_id: empresa?.id, supabase_user_id: user.id },
-      })
-      customerId = customer.id
-      await supabase.from('empresas')
-        .update({ stripe_customer_id: customerId })
-        .eq('id', empresa?.id)
+      if (!customerId) {
+        const customer = await stripe.customers.create({
+          email: customerEmail,
+          name: empresa?.nome || customerEmail,
+          metadata: { empresa_id: empresaId, supabase_user_id: user.id },
+        })
+        customerId = customer.id
+        await admin.from('empresas').update({ stripe_customer_id: customerId }).eq('id', empresaId)
+      }
     }
 
-    const session = await stripe.checkout.sessions.create({
-      customer: customerId,
+    const origin = req.headers.get('origin') || process.env.NEXT_PUBLIC_APP_URL || 'https://factorone-mvp2.vercel.app'
+
+    const sessionParams: Stripe.Checkout.SessionCreateParams = {
       payment_method_types: ['card'],
       line_items: [{ price: priceId, quantity: 1 }],
       mode: 'subscription',
-      success_url: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard?sucesso=true`,
-      cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/onboarding`,
-      metadata: { empresa_id: empresa?.id, plano },
-      subscription_data: { metadata: { empresa_id: empresa?.id, plano } },
+      success_url: `${origin}/dashboard?sucesso=true&plano=${encodeURIComponent(plano || '')}`,
+      cancel_url: `${origin}/precos`,
       locale: 'pt-BR',
       allow_promotion_codes: true,
-    })
+    }
 
+    if (customerId) {
+      sessionParams.customer = customerId
+    } else {
+      sessionParams.customer_email = customerEmail || undefined
+    }
+
+    if (empresaId || plano) {
+      sessionParams.metadata = { empresa_id: empresaId || '', plano: plano || '' }
+      sessionParams.subscription_data = { metadata: { empresa_id: empresaId || '', plano: plano || '' } }
+    }
+
+    const session = await stripe.checkout.sessions.create(sessionParams)
     return NextResponse.json({ url: session.url })
+
   } catch (err: unknown) {
-    console.error('Stripe error:', err)
+    console.error('Stripe checkout error:', err)
     return NextResponse.json({ error: erroDesconhecido(err) }, { status: 500 })
   }
 }
