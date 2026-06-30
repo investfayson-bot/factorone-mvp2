@@ -50,7 +50,7 @@ function StatusTag({ status }: { status: string }) {
 function FinanceiroInner() {
   const searchParams = useSearchParams()
   const tabParam = searchParams.get('tab')
-  const [tab, setTab] = useState<'pagar' | 'receber' | 'conciliacao' | 'aging'>('pagar')
+  const [tab, setTab] = useState<'resumo' | 'pagar' | 'receber' | 'conciliacao' | 'aging'>('resumo')
   const [pagar, setPagar] = useState<ContaPagar[]>([])
   const [receber, setReceber] = useState<ContaReceber[]>([])
   const [fStatusPagar, setFStatusPagar] = useState('todas')
@@ -63,7 +63,7 @@ function FinanceiroInner() {
   useEffect(() => {
     const t = tabParam
     if (t === 'pagar' || t === 'receber' || t === 'conciliacao' || t === 'aging') setTab(t)
-    else setTab('pagar')
+    else setTab('resumo')
   }, [tabParam])
 
   const carregar = useCallback(async () => {
@@ -129,13 +129,6 @@ function FinanceiroInner() {
       })
     } finally { setActionLoading(null) }
   }
-
-  const TABS = [
-    { id: 'pagar' as const, label: 'A Pagar', badge: kpis.vencidasPagar > 0 ? kpis.vencidasPagar : null, badgeColor: '#E74C3C' },
-    { id: 'receber' as const, label: 'A Receber', badge: kpis.vencidasReceber > 0 ? kpis.vencidasReceber : null, badgeColor: '#D97706' },
-    { id: 'conciliacao' as const, label: 'Conciliação', badge: null, badgeColor: '' },
-    { id: 'aging' as const, label: 'Aging Report', badge: null, badgeColor: '' },
-  ]
 
   return (
     <>
@@ -205,28 +198,49 @@ function FinanceiroInner() {
         </div>
       </div>
 
-      {/* Tabs */}
-      <div style={{ display: 'flex', gap: 2, background: '#E8EDEC', padding: 3, borderRadius: 10, width: 'fit-content', marginBottom: 16 }}>
-        {TABS.map(t => (
-          <button key={t.id} onClick={() => setTab(t.id)} style={{
-            display: 'flex', alignItems: 'center', gap: 6,
-            fontSize: 11, fontWeight: tab === t.id ? 700 : 500,
-            padding: '6px 14px', borderRadius: 8, border: 'none', cursor: 'pointer',
-            background: tab === t.id ? '#fff' : 'transparent',
-            color: tab === t.id ? '#1C2B2A' : '#7A8F8E',
-            transition: 'all 0.15s',
-          }}>
-            {t.label}
-            {t.badge !== null && (
-              <span style={{ fontSize: 9, fontWeight: 700, padding: '1px 5px', borderRadius: 20, background: t.badgeColor, color: '#fff' }}>
-                {t.badge}
-              </span>
-            )}
-          </button>
-        ))}
-      </div>
-
       {/* A PAGAR */}
+      {tab === 'resumo' && (
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+          <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 12, overflow: 'hidden' }}>
+            <div style={{ padding: '12px 16px', borderBottom: '0.5px solid #E2E8E7', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#F8FAFA' }}>
+              <div style={{ fontSize: 12, fontWeight: 700, color: '#1C2B2A', fontFamily: "'Space Grotesk', sans-serif" }}>Próximas a pagar</div>
+              <button onClick={() => setTab('pagar')} style={{ fontSize: 10, color: '#5E8C87', fontWeight: 600, background: 'none', border: 'none', cursor: 'pointer' }}>Ver todas →</button>
+            </div>
+            {pagar.filter(c => c.status !== 'paga').slice(0, 5).length === 0 ? (
+              <div style={{ padding: '24px 16px', textAlign: 'center', fontSize: 12, color: '#7A8F8E' }}>Nada pendente</div>
+            ) : pagar.filter(c => c.status !== 'paga').slice(0, 5).map((c, i, arr) => (
+              <div key={c.id} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 16px', borderBottom: i < arr.length - 1 ? '0.5px solid #F0F4F3' : 'none' }}>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: '#1C2B2A', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{c.fornecedor_nome || c.descricao}</div>
+                  <div style={{ fontSize: 10, color: '#7A8F8E' }}>{fmtDate(c.data_vencimento)}</div>
+                </div>
+                <div style={{ fontSize: 12, fontWeight: 700, color: '#E74C3C', fontFamily: "'Space Grotesk', sans-serif" }}>{formatBRL(Number(c.valor || 0))}</div>
+                <StatusTag status={c.status} />
+              </div>
+            ))}
+          </div>
+
+          <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 12, overflow: 'hidden' }}>
+            <div style={{ padding: '12px 16px', borderBottom: '0.5px solid #E2E8E7', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#F8FAFA' }}>
+              <div style={{ fontSize: 12, fontWeight: 700, color: '#1C2B2A', fontFamily: "'Space Grotesk', sans-serif" }}>Próximas a receber</div>
+              <button onClick={() => setTab('receber')} style={{ fontSize: 10, color: '#5E8C87', fontWeight: 600, background: 'none', border: 'none', cursor: 'pointer' }}>Ver todas →</button>
+            </div>
+            {receber.filter(c => c.status !== 'recebida').slice(0, 5).length === 0 ? (
+              <div style={{ padding: '24px 16px', textAlign: 'center', fontSize: 12, color: '#7A8F8E' }}>Nada pendente</div>
+            ) : receber.filter(c => c.status !== 'recebida').slice(0, 5).map((c, i, arr) => (
+              <div key={c.id} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 16px', borderBottom: i < arr.length - 1 ? '0.5px solid #F0F4F3' : 'none' }}>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: '#1C2B2A', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{c.cliente_nome || c.descricao}</div>
+                  <div style={{ fontSize: 10, color: '#7A8F8E' }}>{fmtDate(c.data_vencimento)}</div>
+                </div>
+                <div style={{ fontSize: 12, fontWeight: 700, color: '#5E8C87', fontFamily: "'Space Grotesk', sans-serif" }}>{formatBRL(Number(c.valor || 0))}</div>
+                <StatusTag status={c.status} />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {tab === 'pagar' && (
         <>
           <div style={{ display: 'flex', gap: 8, marginBottom: 12, alignItems: 'center' }}>
