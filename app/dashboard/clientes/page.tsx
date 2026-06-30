@@ -15,8 +15,8 @@ type Cliente = {
 }
 type Contato = { id: string; cliente_id: string; nome: string; cargo: string | null; email: string | null; telefone: string | null; whatsapp: string | null; principal: boolean }
 
-const STATUS_COLOR: Record<string, string> = { prospect: '#7C3AED', ativo: 'var(--green)', inativo: 'var(--gray-400)', churned: 'var(--red)' }
-const STATUS_BG: Record<string, string> = { prospect: 'rgba(124,58,237,.1)', ativo: 'rgba(45,155,111,.1)', inativo: 'var(--gray-100)', churned: 'rgba(192,80,74,.1)' }
+const STATUS_COLOR: Record<string, string> = { prospect: '#7C3AED', ativo: '#5E8C87', inativo: '#7A8F8E', churned: '#E74C3C' }
+const STATUS_BG: Record<string, string> = { prospect: 'rgba(124,58,237,.1)', ativo: 'rgba(45,155,111,.1)', inativo: '#E2E8E7', churned: 'rgba(192,80,74,.1)' }
 const STATUS_LABEL: Record<string, string> = { prospect: 'Prospect', ativo: 'Ativo', inativo: 'Inativo', churned: 'Churn' }
 const SEGMENTOS = ['Tecnologia', 'Varejo', 'Saúde', 'Educação', 'Agronegócio', 'Construção', 'Logística', 'Serviços', 'Indústria', 'Financeiro', 'Outros']
 const ORIGENS = ['Indicação', 'Google', 'Instagram', 'LinkedIn', 'Site', 'Outbound', 'Evento', 'Parceiro', 'Outro']
@@ -131,10 +131,10 @@ export default function ClientesPage() {
     return statuses.map(s => ({ status: s, items: filtrados.filter(c => c.status === s) })).filter(g => g.items.length > 0 || g.status === 'prospect')
   }, [filtrados])
 
-  const inp: React.CSSProperties = { width: '100%', border: '1px solid var(--gray-100)', borderRadius: 8, padding: '8px 12px', fontSize: 13, color: 'var(--navy)', background: '#fff', boxSizing: 'border-box', outline: 'none' }
-  const lbl: React.CSSProperties = { fontSize: 11, fontWeight: 600, color: 'var(--gray-500)', marginBottom: 4, display: 'block' }
+  const inp: React.CSSProperties = { width: '100%', border: '0.5px solid #E2E8E7', borderRadius: 8, padding: '8px 12px', fontSize: 13, color: '#1C2B2A', background: '#fff', boxSizing: 'border-box', outline: 'none' }
+  const lbl: React.CSSProperties = { fontSize: 11, fontWeight: 600, color: '#7A8F8E', marginBottom: 4, display: 'block' }
 
-  if (loading) return <div style={{ padding: 32, color: 'var(--gray-400)' }}>Carregando…</div>
+  if (loading) return <div style={{ padding: 32, color: '#7A8F8E' }}>Carregando…</div>
 
   return (
     <>
@@ -154,10 +154,10 @@ export default function ClientesPage() {
       {/* KPIs */}
       <div className="kpis" style={{ gridTemplateColumns: 'repeat(4,1fr)', marginBottom: 16 }}>
         {[
-          { l: 'Total', v: kpis.total, s: 'clientes', c: 'var(--navy)' },
-          { l: 'Ativos', v: kpis.ativos, s: 'com contrato', c: 'var(--green)' },
+          { l: 'Total', v: kpis.total, s: 'clientes', c: '#1C2B2A' },
+          { l: 'Ativos', v: kpis.ativos, s: 'com contrato', c: '#5E8C87' },
           { l: 'Prospects', v: kpis.prospects, s: 'em pipeline', c: '#7C3AED' },
-          { l: 'MRR estimado', v: formatBRL(kpis.mrr), s: 'contratos ativos', c: 'var(--teal)' },
+          { l: 'MRR estimado', v: formatBRL(kpis.mrr), s: 'contratos ativos', c: '#5E8C87' },
         ].map(k => (
           <div key={k.l} className="kpi">
             <div className="kpi-lbl">{k.l}</div>
@@ -184,16 +184,16 @@ export default function ClientesPage() {
       {view === 'kanban' && (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 10, marginBottom: 16 }}>
           {['prospect','ativo','inativo','churned'].map(st => (
-            <div key={st} style={{ background: '#fafafa', border: '1px solid var(--gray-100)', borderRadius: 12, padding: 12 }}>
+            <div key={st} style={{ background: '#fafafa', border: '0.5px solid #E2E8E7', borderRadius: 12, padding: 12 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
                 <span style={{ fontSize: 11, fontWeight: 700, color: STATUS_COLOR[st], textTransform: 'uppercase', letterSpacing: '.06em' }}>{STATUS_LABEL[st]}</span>
                 <span style={{ fontSize: 11, background: STATUS_BG[st], color: STATUS_COLOR[st], padding: '2px 7px', borderRadius: 20, fontWeight: 700 }}>{filtrados.filter(c => c.status === st).length}</span>
               </div>
               {filtrados.filter(c => c.status === st).map(c => (
-                <div key={c.id} onClick={() => { setDetalhe(c); void carregarContatos(c.id) }} style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 8, padding: '10px 12px', marginBottom: 8, cursor: 'pointer' }}>
-                  <p style={{ fontWeight: 700, fontSize: 12, color: 'var(--navy)', margin: '0 0 2px' }}>{c.nome}</p>
-                  {c.segmento && <p style={{ fontSize: 10, color: 'var(--gray-400)', margin: 0 }}>{c.segmento}</p>}
-                  {c.valor_contrato && <p style={{ fontSize: 11, color: 'var(--green)', fontWeight: 700, margin: '4px 0 0' }}>{formatBRL(Number(c.valor_contrato))}</p>}
+                <div key={c.id} onClick={() => { setDetalhe(c); void carregarContatos(c.id) }} style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 8, padding: '10px 12px', marginBottom: 8, cursor: 'pointer' }}>
+                  <p style={{ fontWeight: 700, fontSize: 12, color: '#1C2B2A', margin: '0 0 2px' }}>{c.nome}</p>
+                  {c.segmento && <p style={{ fontSize: 10, color: '#7A8F8E', margin: 0 }}>{c.segmento}</p>}
+                  {c.valor_contrato && <p style={{ fontSize: 11, color: '#5E8C87', fontWeight: 700, margin: '4px 0 0' }}>{formatBRL(Number(c.valor_contrato))}</p>}
                 </div>
               ))}
             </div>
@@ -203,7 +203,7 @@ export default function ClientesPage() {
 
       {/* Lista view */}
       {view === 'lista' && (
-        <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, overflow: 'hidden' }}>
+        <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 12, overflow: 'hidden' }}>
           <div className="expenses-table">
             <table>
               <thead>
@@ -219,20 +219,20 @@ export default function ClientesPage() {
               </thead>
               <tbody>
                 {filtrados.length === 0 && (
-                  <tr><td colSpan={7} style={{ textAlign: 'center', padding: '40px 0', color: 'var(--gray-400)', fontSize: 13 }}>
-                    Nenhum cliente. <button onClick={() => abrirForm()} style={{ color: 'var(--teal)', background: 'none', border: 'none', cursor: 'pointer', fontSize: 13 }}>Adicionar →</button>
+                  <tr><td colSpan={7} style={{ textAlign: 'center', padding: '40px 0', color: '#7A8F8E', fontSize: 13 }}>
+                    Nenhum cliente. <button onClick={() => abrirForm()} style={{ color: '#5E8C87', background: 'none', border: 'none', cursor: 'pointer', fontSize: 13 }}>Adicionar →</button>
                   </td></tr>
                 )}
                 {filtrados.map(c => (
                   <tr key={c.id}>
                     <td>
                       <div style={{ fontWeight: 700, fontSize: 12 }}>{c.nome}</div>
-                      {c.email && <div style={{ fontSize: 10, color: 'var(--gray-400)' }}>{c.email}</div>}
+                      {c.email && <div style={{ fontSize: 10, color: '#7A8F8E' }}>{c.email}</div>}
                     </td>
-                    <td style={{ fontFamily: "'Inter', sans-serif", fontSize: 11, color: 'var(--gray-400)' }}>{c.cnpj_cpf || '—'}</td>
+                    <td style={{ fontFamily: "'Manrope', sans-serif", fontSize: 11, color: '#7A8F8E' }}>{c.cnpj_cpf || '—'}</td>
                     <td><span className="tag gray" style={{ fontSize: 9 }}>{c.segmento || '—'}</span></td>
                     <td style={{ fontSize: 12 }}>{c.telefone || c.whatsapp || '—'}</td>
-                    <td style={{ textAlign: 'right', fontFamily: "'Inter', sans-serif", color: 'var(--green)', fontWeight: 700, fontSize: 12 }}>
+                    <td style={{ textAlign: 'right', fontFamily: "'Manrope', sans-serif", color: '#5E8C87', fontWeight: 700, fontSize: 12 }}>
                       {c.valor_contrato ? formatBRL(Number(c.valor_contrato)) : '—'}
                     </td>
                     <td style={{ textAlign: 'center' }}>
@@ -244,8 +244,8 @@ export default function ClientesPage() {
                       <div style={{ display: 'flex', gap: 4, justifyContent: 'center' }}>
                         <button className="btn-ghost" style={{ fontSize: 10, padding: '3px 8px' }} onClick={() => { setDetalhe(c); void carregarContatos(c.id) }}>Ver</button>
                         <button className="btn-ghost" style={{ fontSize: 10, padding: '3px 8px' }} onClick={() => abrirForm(c)}>Editar</button>
-                        <button className="btn-ghost" style={{ fontSize: 10, padding: '3px 8px', color: 'var(--teal)' }} onClick={() => void gerarPortal(c.id)} title="Portal do cliente"><i className="fa-solid fa-link" /></button>
-                        <button className="btn-ghost" style={{ fontSize: 10, padding: '3px 8px', color: 'var(--red)' }} onClick={() => void excluir(c.id)}><i className="fa-solid fa-trash" style={{ fontSize: 9 }} /></button>
+                        <button className="btn-ghost" style={{ fontSize: 10, padding: '3px 8px', color: '#5E8C87' }} onClick={() => void gerarPortal(c.id)} title="Portal do cliente"><i className="fa-solid fa-link" /></button>
+                        <button className="btn-ghost" style={{ fontSize: 10, padding: '3px 8px', color: '#E74C3C' }} onClick={() => void excluir(c.id)}><i className="fa-solid fa-trash" style={{ fontSize: 9 }} /></button>
                       </div>
                     </td>
                   </tr>
@@ -358,23 +358,23 @@ export default function ClientesPage() {
               <button className="modal-close" onClick={() => setModalPortal(false)}><i className="fa-solid fa-xmark" /></button>
             </div>
             {portalLoading ? (
-              <div style={{ textAlign: 'center', padding: '32px 0', color: 'var(--gray-400)' }}>
+              <div style={{ textAlign: 'center', padding: '32px 0', color: '#7A8F8E' }}>
                 <i className="fa-solid fa-spinner fa-spin" style={{ fontSize: 24, marginBottom: 10, display: 'block' }} />
                 Gerando link seguro…
               </div>
             ) : portalUrl ? (
               <>
-                <p style={{ fontSize: 13, color: 'var(--gray-500)', marginBottom: 16 }}>
+                <p style={{ fontSize: 13, color: '#7A8F8E', marginBottom: 16 }}>
                   Compartilhe este link com o cliente. Ele terá acesso somente leitura às faturas, entregas e contratos. O link expira em 90 dias.
                 </p>
-                <div style={{ display: 'flex', gap: 8, alignItems: 'center', background: '#f8fafc', border: '1px solid var(--gray-100)', borderRadius: 8, padding: '10px 14px', marginBottom: 16 }}>
-                  <span style={{ flex: 1, fontSize: 12, fontFamily: 'monospace', color: 'var(--navy)', wordBreak: 'break-all' }}>{portalUrl}</span>
+                <div style={{ display: 'flex', gap: 8, alignItems: 'center', background: '#f8fafc', border: '0.5px solid #E2E8E7', borderRadius: 8, padding: '10px 14px', marginBottom: 16 }}>
+                  <span style={{ flex: 1, fontSize: 12, fontFamily: 'monospace', color: '#1C2B2A', wordBreak: 'break-all' }}>{portalUrl}</span>
                   <button
                     className="btn-ghost"
                     style={{ fontSize: 11, flexShrink: 0 }}
                     onClick={() => { void navigator.clipboard.writeText(portalUrl); setPortalCopiado(true) }}
                   >
-                    {portalCopiado ? <><i className="fa-solid fa-check" style={{ marginRight: 4, color: 'var(--green)' }} />Copiado</> : <><i className="fa-regular fa-copy" style={{ marginRight: 4 }} />Copiar</>}
+                    {portalCopiado ? <><i className="fa-solid fa-check" style={{ marginRight: 4, color: '#5E8C87' }} />Copiado</> : <><i className="fa-regular fa-copy" style={{ marginRight: 4 }} />Copiar</>}
                   </button>
                 </div>
                 <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
@@ -387,7 +387,7 @@ export default function ClientesPage() {
                 </div>
               </>
             ) : (
-              <p style={{ textAlign: 'center', color: 'var(--red)', fontSize: 13 }}>Erro ao gerar link. Tente novamente.</p>
+              <p style={{ textAlign: 'center', color: '#E74C3C', fontSize: 13 }}>Erro ao gerar link. Tente novamente.</p>
             )}
           </div>
         </div>
@@ -399,7 +399,7 @@ export default function ClientesPage() {
           <div className="modal-box" style={{ maxWidth: 620, maxHeight: '92vh', overflowY: 'auto' }} onClick={e => e.stopPropagation()}>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
               <div>
-                <h3 style={{ fontSize: 18, fontWeight: 800, color: 'var(--navy)', fontFamily: 'Sora', margin: 0 }}>{detalhe.nome}</h3>
+                <h3 style={{ fontSize: 18, fontWeight: 800, color: '#1C2B2A', fontFamily: 'Sora', margin: 0 }}>{detalhe.nome}</h3>
                 <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 8px', borderRadius: 20, background: STATUS_BG[detalhe.status], color: STATUS_COLOR[detalhe.status] }}>{STATUS_LABEL[detalhe.status]}</span>
               </div>
               <div style={{ display: 'flex', gap: 8 }}>
@@ -415,35 +415,35 @@ export default function ClientesPage() {
                 ['Cidade', detalhe.cidade ? `${detalhe.cidade}/${detalhe.estado}` : null],
               ].filter(([, v]) => v).map(([k, v]) => (
                 <div key={String(k)}>
-                  <span style={{ fontSize: 10, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.06em' }}>{k}</span>
-                  <p style={{ fontSize: 13, color: 'var(--navy)', margin: '2px 0 0', fontWeight: 500 }}>{String(v)}</p>
+                  <span style={{ fontSize: 10, fontWeight: 700, color: '#7A8F8E', textTransform: 'uppercase', letterSpacing: '.06em' }}>{k}</span>
+                  <p style={{ fontSize: 13, color: '#1C2B2A', margin: '2px 0 0', fontWeight: 500 }}>{String(v)}</p>
                 </div>
               ))}
             </div>
             {detalhe.notas && (
-              <div style={{ padding: '10px 14px', background: '#fafafa', borderRadius: 8, border: '1px solid var(--gray-100)', fontSize: 12, color: 'var(--gray-500)', marginBottom: 16 }}>
+              <div style={{ padding: '10px 14px', background: '#fafafa', borderRadius: 8, border: '0.5px solid #E2E8E7', fontSize: 12, color: '#7A8F8E', marginBottom: 16 }}>
                 {detalhe.notas}
               </div>
             )}
 
             {/* Contatos */}
-            <div style={{ borderTop: '1px solid var(--gray-100)', paddingTop: 16 }}>
-              <p style={{ fontSize: 12, fontWeight: 700, color: 'var(--navy)', marginBottom: 10 }}>Contatos</p>
+            <div style={{ borderTop: '0.5px solid #E2E8E7', paddingTop: 16 }}>
+              <p style={{ fontSize: 12, fontWeight: 700, color: '#1C2B2A', marginBottom: 10 }}>Contatos</p>
               {contatos.map(c => (
-                <div key={c.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 0', borderBottom: '1px solid var(--gray-100)' }}>
-                  <div style={{ width: 32, height: 32, borderRadius: '50%', background: 'var(--gray-100)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, fontSize: 13, fontWeight: 700, color: 'var(--navy)' }}>
+                <div key={c.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 0', borderBottom: '0.5px solid #E2E8E7' }}>
+                  <div style={{ width: 32, height: 32, borderRadius: '50%', background: '#EEF2F1', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, fontSize: 13, fontWeight: 700, color: '#1C2B2A' }}>
                     {c.nome[0].toUpperCase()}
                   </div>
                   <div style={{ flex: 1 }}>
-                    <p style={{ fontSize: 12, fontWeight: 600, color: 'var(--navy)', margin: 0 }}>{c.nome} {c.principal && <span style={{ fontSize: 9, color: 'var(--teal)', fontWeight: 700 }}>● Principal</span>}</p>
-                    <p style={{ fontSize: 11, color: 'var(--gray-400)', margin: 0 }}>{[c.cargo, c.email, c.telefone].filter(Boolean).join(' · ')}</p>
+                    <p style={{ fontSize: 12, fontWeight: 600, color: '#1C2B2A', margin: 0 }}>{c.nome} {c.principal && <span style={{ fontSize: 9, color: '#5E8C87', fontWeight: 700 }}>● Principal</span>}</p>
+                    <p style={{ fontSize: 11, color: '#7A8F8E', margin: 0 }}>{[c.cargo, c.email, c.telefone].filter(Boolean).join(' · ')}</p>
                   </div>
                 </div>
               ))}
               <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: 8, marginTop: 12 }}>
-                <input style={{ border: '1px solid var(--gray-100)', borderRadius: 7, padding: '6px 10px', fontSize: 12 }} placeholder="Nome do contato" value={novoContato.nome} onChange={e => setNovoContato(f => ({ ...f, nome: e.target.value }))} />
-                <input style={{ border: '1px solid var(--gray-100)', borderRadius: 7, padding: '6px 10px', fontSize: 12 }} placeholder="Cargo" value={novoContato.cargo} onChange={e => setNovoContato(f => ({ ...f, cargo: e.target.value }))} />
-                <input style={{ border: '1px solid var(--gray-100)', borderRadius: 7, padding: '6px 10px', fontSize: 12 }} placeholder="E-mail" value={novoContato.email} onChange={e => setNovoContato(f => ({ ...f, email: e.target.value }))} />
+                <input style={{ border: '0.5px solid #E2E8E7', borderRadius: 7, padding: '6px 10px', fontSize: 12 }} placeholder="Nome do contato" value={novoContato.nome} onChange={e => setNovoContato(f => ({ ...f, nome: e.target.value }))} />
+                <input style={{ border: '0.5px solid #E2E8E7', borderRadius: 7, padding: '6px 10px', fontSize: 12 }} placeholder="Cargo" value={novoContato.cargo} onChange={e => setNovoContato(f => ({ ...f, cargo: e.target.value }))} />
+                <input style={{ border: '0.5px solid #E2E8E7', borderRadius: 7, padding: '6px 10px', fontSize: 12 }} placeholder="E-mail" value={novoContato.email} onChange={e => setNovoContato(f => ({ ...f, email: e.target.value }))} />
               </div>
               <button className="btn-ghost" style={{ marginTop: 8, fontSize: 12 }} disabled={savingContato} onClick={() => void salvarContato()}>
                 {savingContato ? 'Salvando…' : '+ Adicionar contato'}
