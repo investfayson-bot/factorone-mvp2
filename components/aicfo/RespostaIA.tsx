@@ -5,169 +5,203 @@ import toast from 'react-hot-toast'
 
 export type { RespostaData }
 
+const STATUS = {
+  positivo: { bg: '#EAF5F3', border: '#5E8C87', color: '#0F6E56', icon: '↑' },
+  atencao:  { bg: '#FEF3C7', border: '#F59E0B', color: '#92400E', icon: '⚠' },
+  critico:  { bg: '#FEE2E2', border: '#F87171', color: '#991B1B', icon: '!' },
+}
+const DESTAQUE = {
+  positivo: '#16A085',
+  negativo: '#E74C3C',
+  neutro:   '#1C2B2A',
+}
+
 export function RespostaIA({ data, pergunta = '' }: { data: RespostaData; pergunta?: string }) {
- const [expandido, setExpandido] = useState(false)
- const [exportandoPdf, setExportandoPdf] = useState(false)
- const [exportandoExcel, setExportandoExcel] = useState(false)
+  const [expandido, setExpandido] = useState(false)
+  const [exportandoPdf, setExportandoPdf] = useState(false)
+  const [exportandoExcel, setExportandoExcel] = useState(false)
 
- async function handleExportPDF() {
-   setExportandoPdf(true)
-   try {
-     await exportPDF(data, pergunta)
-     toast.success('Relatório exportado em PDF')
-   } catch (e: unknown) {
-     toast.error(e instanceof Error ? e.message : 'Erro ao gerar PDF')
-   } finally {
-     setExportandoPdf(false)
-   }
- }
+  async function handleExportPDF() {
+    setExportandoPdf(true)
+    try {
+      await exportPDF(data, pergunta)
+      toast.success('Relatório exportado em PDF')
+    } catch (e: unknown) {
+      toast.error(e instanceof Error ? e.message : 'Erro ao gerar PDF')
+    } finally { setExportandoPdf(false) }
+  }
 
- function handleExportExcel() {
-   try {
-     exportExcel(data, pergunta)
-     toast.success('Relatório exportado em Excel')
-   } catch (e: unknown) {
-     toast.error(e instanceof Error ? e.message : 'Erro ao gerar Excel')
-   }
- }
+  function handleExportExcel() {
+    try {
+      exportExcel(data, pergunta)
+      toast.success('Relatório exportado em Excel')
+    } catch (e: unknown) {
+      toast.error(e instanceof Error ? e.message : 'Erro ao gerar Excel')
+    }
+  }
 
- const sc = ({
- positivo: 'bg-emerald-50 border-emerald-200 text-emerald-700',
- atencao: 'bg-amber-50 border-amber-200 text-amber-700',
- critico: 'bg-red-50 border-red-200 text-red-700',
- } as Record<string, string>)[data.status] || 'bg-slate-50 border-slate-200 text-slate-700'
+  const st = STATUS[data.status as keyof typeof STATUS] ?? STATUS.atencao
 
- const dc = (d: string) => (({
- positivo: 'text-emerald-600 font-semibold',
- negativo: 'text-red-500 font-semibold',
- neutro: 'text-slate-600 font-medium',
- } as Record<string, string>)[d] || 'text-slate-600')
+  const textoPlano = data.cards?.map(c =>
+    c.titulo + ': ' + c.linhas?.map(l => l.label + ' ' + l.valor).join(', ')
+  ).join(' | ')
+  const wppUrl = 'https://wa.me/?text=' + encodeURIComponent('Relatório FactorOne CFO\n' + data.resumo + '\n\n' + textoPlano)
+  const mailUrl = 'mailto:?subject=Relatório FactorOne CFO&body=' + encodeURIComponent('Resumo: ' + data.resumo + '\n\n' + textoPlano)
 
- const textoPlano = data.cards?.map(c =>
- c.titulo + ': ' + c.linhas?.map(l => l.label + ' ' + l.valor).join(', ')
- ).join(' | ')
+  function BotaoAcao({ label, onClick, bg, disabled, icon }: { label: string; onClick: () => void; bg: string; disabled?: boolean; icon?: string }) {
+    return (
+      <button
+        onClick={onClick}
+        disabled={disabled}
+        style={{
+          display: 'inline-flex', alignItems: 'center', gap: 5,
+          padding: '5px 12px', borderRadius: 7, border: 'none',
+          background: disabled ? '#AAB8B7' : bg, color: '#fff',
+          fontSize: 11, fontWeight: 700, cursor: disabled ? 'not-allowed' : 'pointer',
+          fontFamily: "'Manrope', sans-serif", opacity: disabled ? 0.7 : 1,
+          transition: 'opacity 0.15s',
+        }}
+      >
+        {icon && <i className={`fa-solid ${icon}`} style={{ fontSize: 10 }} />}
+        {label}
+      </button>
+    )
+  }
 
- const wppUrl = 'https://wa.me/?text=' + encodeURIComponent(
- 'Relatorio CFO IA - FactorOne\n' + data.resumo + '\n\n' + textoPlano
- )
- const mailUrl = 'mailto:?subject=Relatorio CFO IA - FactorOne&body=' + encodeURIComponent(
- 'Resumo: ' + data.resumo + '\n\n' + textoPlano
- )
+  function BarraAcoes({ fechar }: { fechar?: boolean }) {
+    return (
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, alignItems: 'center' }}>
+        {!fechar && (
+          <button
+            onClick={() => setExpandido(true)}
+            style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '5px 12px', borderRadius: 7, border: '0.5px solid #E2E8E7', background: '#fff', color: '#1C2B2A', fontSize: 11, fontWeight: 700, cursor: 'pointer', fontFamily: "'Manrope', sans-serif" }}
+          >
+            <i className="fa-solid fa-expand" style={{ fontSize: 10 }} />Tela cheia
+          </button>
+        )}
+        <BotaoAcao label={exportandoExcel ? 'Gerando...' : 'Excel'} onClick={handleExportExcel} bg="#0F6E56" disabled={exportandoExcel} icon="fa-file-excel" />
+        <BotaoAcao label={exportandoPdf ? 'Gerando...' : 'PDF'} onClick={() => void handleExportPDF()} bg="#E74C3C" disabled={exportandoPdf} icon="fa-file-pdf" />
+        <a href={wppUrl} target="_blank" rel="noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '5px 12px', borderRadius: 7, border: 'none', background: '#25D366', color: '#fff', fontSize: 11, fontWeight: 700, textDecoration: 'none', fontFamily: "'Manrope', sans-serif" }}>
+          <i className="fa-brands fa-whatsapp" style={{ fontSize: 12 }} />WhatsApp
+        </a>
+        <a href={mailUrl} style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '5px 12px', borderRadius: 7, border: 'none', background: '#2563eb', color: '#fff', fontSize: 11, fontWeight: 700, textDecoration: 'none', fontFamily: "'Manrope', sans-serif" }}>
+          <i className="fa-solid fa-envelope" style={{ fontSize: 10 }} />Email
+        </a>
+        {fechar && (
+          <button
+            onClick={() => setExpandido(false)}
+            style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '5px 12px', borderRadius: 7, border: '0.5px solid #E2E8E7', background: '#fff', color: '#7A8F8E', fontSize: 11, fontWeight: 700, cursor: 'pointer', fontFamily: "'Manrope', sans-serif" }}
+          >
+            <i className="fa-solid fa-compress" style={{ fontSize: 10 }} />Fechar
+          </button>
+        )}
+      </div>
+    )
+  }
 
- const Acoes = ({ tamanho = 'sm' }: { tamanho?: 'sm' | 'lg' }) => {
- const cls = tamanho === 'lg'
- ? 'rounded-xl px-4 py-2 text-sm font-semibold text-white'
- : 'rounded-lg px-3 py-1.5 text-xs font-semibold text-white'
- return (
- <div className="flex items-center gap-2 flex-wrap">
- {tamanho === 'sm' && (
- <button onClick={() => setExpandido(true)}
- className={`${cls} bg-slate-800 hover:bg-slate-700`}>
- Tela cheia
- </button>
- )}
- <button onClick={handleExportExcel} disabled={exportandoExcel}
- className={`${cls} bg-emerald-700 hover:bg-emerald-800`}>
- Excel
- </button>
- <button onClick={() => void handleExportPDF()} disabled={exportandoPdf}
- className={`${cls} bg-red-600 hover:bg-red-700`}>
- PDF
- </button>
- <a href={wppUrl} target="_blank"
- className={`${cls} bg-green-500 hover:bg-green-600`}>
- WhatsApp
- </a>
- <a href={mailUrl}
- className={`${cls} bg-blue-600 hover:bg-blue-700`}>
- ️ Email
- </a>
- {tamanho === 'lg' && (
- <button onClick={() => setExpandido(false)}
- className="rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-50">
- Fechar
- </button>
- )}
- </div>
- )
- }
+  function Cards({ grande }: { grande?: boolean }) {
+    return (
+      <div style={{ display: 'grid', gridTemplateColumns: grande ? 'repeat(3,1fr)' : 'repeat(2,1fr)', gap: 8, marginBottom: 10 }}>
+        {data.cards?.map((card, i) => (
+          <div key={i} style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 12, padding: grande ? '14px 16px' : '10px 12px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: grande ? 10 : 7 }}>
+              {card.emoji && <i className={`fa-solid ${card.emoji}`} style={{ fontSize: grande ? 14 : 12, color: '#5E8C87', width: 16 }} />}
+              <span style={{ fontSize: grande ? 12 : 11, fontWeight: 700, color: '#1C2B2A', fontFamily: "'Space Grotesk', sans-serif" }}>{card.titulo}</span>
+            </div>
+            {card.linhas?.map((l, j) => (
+              <div key={j} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '5px 0', borderBottom: j < (card.linhas?.length ?? 0) - 1 ? '0.5px solid #F0F4F3' : 'none' }}>
+                <span style={{ fontSize: grande ? 11 : 10, color: '#7A8F8E' }}>{l.label}</span>
+                <span style={{ fontSize: grande ? 12 : 11, fontWeight: 700, color: DESTAQUE[l.destaque as keyof typeof DESTAQUE] ?? '#1C2B2A', fontFamily: "'Space Grotesk', sans-serif" }}>{l.valor}</span>
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
+    )
+  }
 
- const Cards = ({ grande }: { grande?: boolean }) => (
- <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
- {data.cards?.map((card, i) => (
- <div key={i} className={`rounded-xl border border-gray-200 bg-white shadow-sm ${grande ? 'p-5' : 'p-3'}`}>
- <div className={`flex items-center gap-2 ${grande ? 'mb-4' : 'mb-2'}`}>
- {card.emoji && <span className={grande ? 'text-2xl' : 'text-base'}><i className={`fa-solid ${card.emoji}`} /></span>}
- <span className={`font-bold text-slate-800 ${grande ? 'text-sm' : 'text-xs'}`}>{card.titulo}</span>
- </div>
- <div className="space-y-2">
- {card.linhas?.map((l, j) => (
- <div key={j} className="flex items-center justify-between border-b border-slate-100 pb-1.5 last:border-0">
- <span className={`text-slate-500 ${grande ? 'text-sm' : 'text-[11px]'}`}>{l.label}</span>
- <span className={`${dc(l.destaque)} ${grande ? 'text-sm' : 'text-[11px]'}`}>{l.valor}</span>
- </div>
- ))}
- </div>
- </div>
- ))}
- </div>
- )
+  function Alertas({ grande }: { grande?: boolean }) {
+    if (!data.alertas?.length) return null
+    return (
+      <div style={{ background: '#FEF3C7', border: '0.5px solid #F59E0B', borderRadius: 10, padding: grande ? '12px 16px' : '8px 12px', marginBottom: 10 }}>
+        {grande && <div style={{ fontSize: 10, fontWeight: 700, color: '#92400E', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 8 }}>Alertas</div>}
+        {data.alertas.map((a, i) => (
+          <div key={i} style={{ display: 'flex', gap: 7, alignItems: 'flex-start', marginBottom: i < data.alertas.length - 1 ? 5 : 0 }}>
+            <span style={{ color: '#D97706', fontSize: 11, flexShrink: 0, marginTop: 1 }}>•</span>
+            <span style={{ fontSize: grande ? 12 : 11, color: '#92400E', lineHeight: 1.5 }}>{a}</span>
+          </div>
+        ))}
+      </div>
+    )
+  }
 
- const Alertas = ({ grande }: { grande?: boolean }) => (
- data.alertas?.length > 0 ? (
- <div className={`rounded-xl border border-amber-200 bg-amber-50 ${grande ? 'p-4' : 'p-3'} space-y-1`}>
- {grande && <p className="text-xs font-bold text-amber-700 uppercase mb-2">Alertas</p>}
- {data.alertas.map((a, i) => (
- <p key={i} className={`text-amber-700 ${grande ? 'text-sm' : 'text-[11px]'}`}>
- {grande ? '• ' : '️ '}{a}
- </p>
- ))}
- </div>
- ) : null
- )
+  return (
+    <>
+      {/* MODAL TELA CHEIA */}
+      {expandido && (
+        <div style={{ position: 'fixed', inset: 0, zIndex: 9999, background: '#F4F6F5', overflowY: 'auto' }}>
+          {/* Header */}
+          <div style={{ background: '#1C2B2A', padding: '16px 28px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              <div style={{ width: 36, height: 36, borderRadius: 10, background: 'rgba(94,140,135,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <i className="fa-solid fa-robot" style={{ fontSize: 16, color: '#7EBDB8' }} />
+              </div>
+              <div>
+                <div style={{ fontSize: 15, fontWeight: 700, color: '#fff', fontFamily: "'Space Grotesk', sans-serif" }}>FactorOne CFO — Análise Completa</div>
+                <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.5)', marginTop: 2 }}>{data.resumo?.slice(0, 80)}{(data.resumo?.length ?? 0) > 80 ? '…' : ''}</div>
+              </div>
+            </div>
+            <BarraAcoes fechar />
+          </div>
 
- return (
- <>
- {/* MODAL TELA CHEIA */}
- {expandido && (
- <div className="fixed inset-0 z-50 bg-white overflow-y-auto">
- <div className="mx-auto w-full max-w-5xl p-6">
- <div className="flex items-start justify-between mb-6 gap-4 flex-wrap">
- <div>
- <h2 className="text-xl font-bold text-slate-800">CFO IA — Análise Completa</h2>
- <p className="text-sm text-slate-500 mt-1">{data.resumo}</p>
- </div>
- <Acoes tamanho="lg" />
- </div>
- <div className={`rounded-xl border px-4 py-3 text-sm font-medium mb-6 ${sc}`}>
- {data.status === 'positivo' ? '' : data.status === 'critico' ? '' : '️'} {data.resumo}
- </div>
- <Cards grande />
- <div className="mt-4 space-y-4">
- <Alertas grande />
- {data.proxima_pergunta && (
- <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
- <p className="text-xs font-bold text-slate-500 uppercase mb-1"> Próxima análise sugerida</p>
- <p className="text-sm text-slate-700">{data.proxima_pergunta}</p>
- </div>
- )}
- </div>
- </div>
- </div>
- )}
+          {/* Corpo */}
+          <div style={{ maxWidth: 1000, margin: '0 auto', padding: '24px 28px' }}>
+            {/* Status banner */}
+            <div style={{ background: st.bg, border: `0.5px solid ${st.border}`, borderRadius: 12, padding: '12px 16px', marginBottom: 20, display: 'flex', alignItems: 'flex-start', gap: 10 }}>
+              <div style={{ width: 28, height: 28, borderRadius: 8, background: st.border, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <span style={{ fontSize: 13, fontWeight: 800, color: '#fff' }}>{st.icon}</span>
+              </div>
+              <div>
+                <div style={{ fontSize: 11, fontWeight: 700, color: st.color, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 3 }}>
+                  Status: {data.status?.toUpperCase()}
+                </div>
+                <div style={{ fontSize: 13, color: '#1C2B2A', lineHeight: 1.5 }}>{data.resumo}</div>
+              </div>
+            </div>
 
- {/* VERSÃO COMPACTA NO CHAT */}
- <div className="space-y-3 w-full">
- <div className={`rounded-xl border px-3 py-2 text-xs font-medium ${sc}`}>
- {data.status === 'positivo' ? '' : data.status === 'critico' ? '' : '️'} {data.resumo}
- </div>
- <Cards />
- <Alertas />
- <Acoes />
- {data.proxima_pergunta && (
- <p className="text-[11px] text-slate-400 italic"> {data.proxima_pergunta}</p>
- )}
- </div>
- </>
- )
+            <Cards grande />
+            <Alertas grande />
+
+            {data.proxima_pergunta && (
+              <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 12, padding: '14px 16px' }}>
+                <div style={{ fontSize: 10, fontWeight: 700, color: '#7A8F8E', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 6 }}>Próxima análise sugerida</div>
+                <div style={{ fontSize: 13, color: '#1C2B2A', lineHeight: 1.6 }}>{data.proxima_pergunta}</div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* VERSÃO COMPACTA NO CHAT */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 8, width: '100%' }}>
+        {/* Status pill */}
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 7, background: st.bg, border: `0.5px solid ${st.border}`, borderRadius: 8, padding: '6px 12px', alignSelf: 'flex-start' }}>
+          <span style={{ fontSize: 11, fontWeight: 700, color: st.color }}>{st.icon} {data.status?.toUpperCase()}</span>
+          <span style={{ fontSize: 11, color: st.color, opacity: 0.8 }}>·</span>
+          <span style={{ fontSize: 11, color: st.color }}>{data.resumo?.slice(0, 60)}{(data.resumo?.length ?? 0) > 60 ? '…' : ''}</span>
+        </div>
+
+        <Cards />
+        <Alertas />
+        <BarraAcoes />
+
+        {data.proxima_pergunta && (
+          <div style={{ fontSize: 11, color: '#7A8F8E', fontStyle: 'italic', paddingLeft: 4 }}>
+            <i className="fa-solid fa-circle-arrow-right" style={{ marginRight: 5, color: '#5E8C87', fontSize: 10 }} />
+            {data.proxima_pergunta}
+          </div>
+        )}
+      </div>
+    </>
+  )
 }
