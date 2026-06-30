@@ -79,75 +79,110 @@ export default function DashboardPessoalPage() {
 
       {/* KPIs */}
       <div className="kpis" style={{ gridTemplateColumns: 'repeat(4,1fr)' }}>
-        <div className="kpi">
-          <div className="kpi-lbl">Renda do mês</div>
-          <div className="kpi-val" style={{ color: 'var(--teal)' }}>{formatBRL(rendaBase)}</div>
-          <div className="kpi-delta up">{receitas > 0 ? 'registrada' : 'configure em Receitas'}</div>
+        <div className="kpi" style={{ borderTop: '3px solid #5E8C87' }}>
+          <div className="kpi-lbl">
+            Renda do mês
+            <div style={{ width: 28, height: 28, borderRadius: 8, background: '#EAF5F3', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <i className="fa-solid fa-arrow-down-circle" style={{ fontSize: 12, color: '#5E8C87' }} />
+            </div>
+          </div>
+          <div className="kpi-val">{formatBRL(rendaBase)}</div>
+          <div className="kpi-delta up">{receitas > 0 ? '↑ registrada este mês' : 'configure em Receitas'}</div>
         </div>
-        <div className="kpi">
-          <div className="kpi-lbl">Gastos totais</div>
-          <div className="kpi-val" style={{ color: pctGasto > 80 ? 'var(--red)' : 'var(--navy)' }}>{formatBRL(totalGastos)}</div>
-          <div className={`kpi-delta ${pctGasto > 80 ? 'dn' : 'up'}`}>{pctGasto.toFixed(0)}% da renda</div>
+        <div className="kpi" style={{ borderTop: `3px solid ${pctGasto > 80 ? '#E74C3C' : '#D97706'}` }}>
+          <div className="kpi-lbl">
+            Gastos totais
+            <div style={{ width: 28, height: 28, borderRadius: 8, background: pctGasto > 80 ? '#FEE2E2' : '#FEF3C7', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <i className="fa-solid fa-arrow-up-circle" style={{ fontSize: 12, color: pctGasto > 80 ? '#E74C3C' : '#D97706' }} />
+            </div>
+          </div>
+          <div className="kpi-val">{formatBRL(totalGastos)}</div>
+          <div className={`kpi-delta ${pctGasto > 80 ? 'dn' : 'warn'}`}>{pctGasto.toFixed(0)}% da renda mensal</div>
         </div>
-        <div className="kpi">
-          <div className="kpi-lbl">Saldo disponível</div>
-          <div className="kpi-val" style={{ color: saldo >= 0 ? 'var(--teal)' : 'var(--red)' }}>{formatBRL(saldo)}</div>
-          <div className={`kpi-delta ${saldo >= 0 ? 'up' : 'dn'}`}>{saldo >= 0 ? 'positivo' : 'negativo'}</div>
+        <div className="kpi" style={{ borderTop: `3px solid ${saldo >= 0 ? '#5E8C87' : '#E74C3C'}` }}>
+          <div className="kpi-lbl">
+            Saldo disponível
+            <div style={{ width: 28, height: 28, borderRadius: 8, background: saldo >= 0 ? '#EAF5F3' : '#FEE2E2', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <i className="fa-solid fa-wallet" style={{ fontSize: 12, color: saldo >= 0 ? '#5E8C87' : '#E74C3C' }} />
+            </div>
+          </div>
+          <div className="kpi-val">{formatBRL(saldo)}</div>
+          <div className={`kpi-delta ${saldo >= 0 ? 'up' : 'dn'}`}>{saldo >= 0 ? '✓ no azul' : '↓ revise os gastos'}</div>
         </div>
-        <div className="kpi">
-          <div className="kpi-lbl">Assinaturas ativas</div>
+        <div className="kpi" style={{ borderTop: '3px solid #7C3AED' }}>
+          <div className="kpi-lbl">
+            Assinaturas
+            <div style={{ width: 28, height: 28, borderRadius: 8, background: '#F3F0FF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <i className="fa-solid fa-rotate" style={{ fontSize: 12, color: '#7C3AED' }} />
+            </div>
+          </div>
           <div className="kpi-val">{formatBRL(totalAssinaturas)}</div>
-          <div className="kpi-delta">{assinaturas.filter(a => a.ativa).length} serviços</div>
+          <div className="kpi-delta">{assinaturas.filter(a => a.ativa).length} serviços ativos</div>
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginTop: 8 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginTop: 12 }}>
         {/* Onde vai meu dinheiro */}
-        <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: 20 }}>
-          <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy)', marginBottom: 4 }}>Para onde vai meu dinheiro</div>
-          <div style={{ fontSize: 11, color: 'var(--gray-400)', marginBottom: 14 }}>Top categorias do mês</div>
+        <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 14, padding: '16px 18px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+            <div>
+              <div style={{ fontSize: 12, fontWeight: 700, color: '#1C2B2A', fontFamily: "'Space Grotesk', sans-serif" }}>Para onde vai o dinheiro</div>
+              <div style={{ fontSize: 10, color: '#7A8F8E', marginTop: 2 }}>Top categorias do mês</div>
+            </div>
+            <Link href="/dashboard-pessoal/gastos" style={{ fontSize: 10, color: '#5E8C87', fontWeight: 600, textDecoration: 'none' }}>Ver todos →</Link>
+          </div>
           {gastos.length === 0 ? (
-            <div style={{ fontSize: 12, color: 'var(--gray-400)', padding: '20px 0' }}>Nenhum gasto registrado ainda. <Link href="/dashboard-pessoal/gastos" style={{ color: 'var(--teal)' }}>Adicionar</Link></div>
+            <div style={{ fontSize: 12, color: '#7A8F8E', padding: '20px 0', textAlign: 'center' }}>
+              <i className="fa-solid fa-receipt" style={{ fontSize: 24, marginBottom: 8, display: 'block', color: '#D1D9D8' }} />
+              Nenhum gasto registrado. <Link href="/dashboard-pessoal/gastos" style={{ color: '#5E8C87' }}>Adicionar</Link>
+            </div>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               {gastos.slice(0, 5).map(g => {
                 const pct = totalGastos > 0 ? (g.valor / totalGastos) * 100 : 0
+                const icon = CATS_ICON[g.categoria] ?? 'fa-box'
                 return (
                   <div key={g.categoria}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, marginBottom: 4 }}>
-                      <span style={{ fontWeight: 600 }}>{CATS_ICON[g.categoria] ?? 'fa-box'} {g.categoria}</span>
-                      <span style={{ color: 'var(--gray-400)' }}>{formatBRL(g.valor)} · {pct.toFixed(0)}%</span>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, marginBottom: 5, alignItems: 'center' }}>
+                      <span style={{ display: 'flex', alignItems: 'center', gap: 6, fontWeight: 600, color: '#1C2B2A' }}>
+                        <span style={{ width: 22, height: 22, borderRadius: 6, background: '#F4F6F5', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                          <i className={`fa-solid ${icon}`} style={{ fontSize: 10, color: '#5E8C87' }} />
+                        </span>
+                        {g.categoria}
+                      </span>
+                      <span style={{ color: '#7A8F8E' }}>{formatBRL(g.valor)} · <span style={{ fontWeight: 700, color: pct > 40 ? '#E74C3C' : '#1C2B2A' }}>{pct.toFixed(0)}%</span></span>
                     </div>
-                    <div style={{ height: 6, borderRadius: 4, background: 'var(--gray-100)' }}>
-                      <div style={{ height: '100%', borderRadius: 4, background: pct > 50 ? 'var(--red)' : 'var(--teal)', width: `${pct}%` }} />
+                    <div style={{ height: 6, borderRadius: 99, background: '#EEF2F1' }}>
+                      <div style={{ height: '100%', borderRadius: 99, background: pct > 50 ? '#E74C3C' : '#5E8C87', width: `${pct}%`, transition: 'width 0.4s' }} />
                     </div>
                   </div>
                 )
               })}
             </div>
           )}
-          <Link href="/dashboard-pessoal/gastos" style={{ display: 'block', marginTop: 14, fontSize: 11, color: 'var(--teal)', fontWeight: 600, textDecoration: 'none' }}>Ver todos →</Link>
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           {/* Metas */}
-          <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: 20, flex: 1 }}>
+          <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 14, padding: '16px 18px', flex: 1 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-              <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy)' }}>Metas</div>
-              <Link href="/dashboard-pessoal/metas" style={{ fontSize: 11, color: 'var(--teal)', fontWeight: 600, textDecoration: 'none' }}>Ver todas →</Link>
+              <div style={{ fontSize: 12, fontWeight: 700, color: '#1C2B2A', fontFamily: "'Space Grotesk', sans-serif" }}>Metas financeiras</div>
+              <Link href="/dashboard-pessoal/metas" style={{ fontSize: 10, color: '#5E8C87', fontWeight: 600, textDecoration: 'none' }}>Ver todas →</Link>
             </div>
             {metas.length === 0 ? (
-              <div style={{ fontSize: 12, color: 'var(--gray-400)' }}>Nenhuma meta. <Link href="/dashboard-pessoal/metas" style={{ color: 'var(--teal)' }}>Criar</Link></div>
+              <div style={{ fontSize: 11, color: '#7A8F8E', textAlign: 'center', padding: '12px 0' }}>
+                Nenhuma meta. <Link href="/dashboard-pessoal/metas" style={{ color: '#5E8C87' }}>Criar</Link>
+              </div>
             ) : metas.map(m => {
               const pct = m.valor_meta > 0 ? Math.min(100, (m.valor_atual / m.valor_meta) * 100) : 0
               return (
                 <div key={m.nome} style={{ marginBottom: 10 }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, marginBottom: 4 }}>
-                    <span style={{ fontWeight: 600 }}>{m.icone} {m.nome}</span>
-                    <span style={{ color: 'var(--gray-400)' }}>{pct.toFixed(0)}%</span>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, marginBottom: 5 }}>
+                    <span style={{ fontWeight: 600, color: '#1C2B2A' }}>{m.icone} {m.nome}</span>
+                    <span style={{ color: '#7A8F8E' }}>{formatBRL(m.valor_atual)} / {formatBRL(m.valor_meta)}</span>
                   </div>
-                  <div style={{ height: 6, borderRadius: 4, background: 'var(--gray-100)' }}>
-                    <div style={{ height: '100%', borderRadius: 4, background: 'var(--green)', width: `${pct}%` }} />
+                  <div style={{ height: 6, borderRadius: 99, background: '#EEF2F1' }}>
+                    <div style={{ height: '100%', borderRadius: 99, background: '#5E8C87', width: `${pct}%`, transition: 'width 0.4s' }} />
                   </div>
                 </div>
               )
@@ -155,22 +190,35 @@ export default function DashboardPessoalPage() {
           </div>
 
           {/* Assinaturas resumo */}
-          <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: 20 }}>
+          <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 14, padding: '16px 18px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-              <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy)' }}>Assinaturas ativas</div>
-              <Link href="/dashboard-pessoal/assinaturas" style={{ fontSize: 11, color: 'var(--teal)', fontWeight: 600, textDecoration: 'none' }}>Gerenciar →</Link>
+              <div style={{ fontSize: 12, fontWeight: 700, color: '#1C2B2A', fontFamily: "'Space Grotesk', sans-serif" }}>Assinaturas ativas</div>
+              <Link href="/dashboard-pessoal/assinaturas" style={{ fontSize: 10, color: '#5E8C87', fontWeight: 600, textDecoration: 'none' }}>Gerenciar →</Link>
             </div>
-            {assinaturas.filter(a => a.ativa).slice(0, 4).map(a => (
-              <div key={a.nome} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, padding: '6px 0', borderBottom: '1px solid var(--gray-100)' }}>
-                <span style={{ fontWeight: 600 }}>{a.nome}</span>
-                <span style={{ fontFamily: "'Inter', sans-serif", color: 'var(--red)' }}>{formatBRL(Number(a.valor))}</span>
+            {assinaturas.filter(a => a.ativa).length === 0 ? (
+              <div style={{ fontSize: 11, color: '#7A8F8E' }}>Nenhuma assinatura. <Link href="/dashboard-pessoal/assinaturas" style={{ color: '#5E8C87' }}>Adicionar</Link></div>
+            ) : assinaturas.filter(a => a.ativa).slice(0, 4).map(a => (
+              <div key={a.nome} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 11, padding: '7px 0', borderBottom: '0.5px solid #F0F4F3' }}>
+                <span style={{ fontWeight: 600, color: '#1C2B2A' }}>{a.nome}</span>
+                <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, color: '#E74C3C' }}>{formatBRL(Number(a.valor))}</span>
               </div>
             ))}
-            {assinaturas.filter(a => a.ativa).length === 0 && (
-              <div style={{ fontSize: 12, color: 'var(--gray-400)' }}>Nenhuma assinatura. <Link href="/dashboard-pessoal/assinaturas" style={{ color: 'var(--teal)' }}>Adicionar</Link></div>
-            )}
           </div>
         </div>
+      </div>
+
+      {/* Banner upgrade PJ */}
+      <div style={{ background: '#1C2B2A', borderRadius: 14, padding: '16px 20px', marginTop: 12, display: 'flex', alignItems: 'center', gap: 16 }}>
+        <div style={{ width: 44, height: 44, borderRadius: 11, background: 'rgba(94,140,135,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+          <i className="fa-solid fa-building" style={{ fontSize: 20, color: '#7EBDB8' }} />
+        </div>
+        <div style={{ flex: 1 }}>
+          <div style={{ fontSize: 13, fontWeight: 700, color: '#fff', marginBottom: 3 }}>Tem uma empresa? Abra sua Conta PJ</div>
+          <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.55)', lineHeight: 1.5 }}>Acesse DRE, NF-e, portal do contador e cartão corporativo. Tudo integrado ao FactorOne.</div>
+        </div>
+        <Link href="/dashboard/planos" style={{ background: '#5E8C87', color: '#fff', borderRadius: 9, padding: '9px 18px', fontSize: 11, fontWeight: 700, textDecoration: 'none', whiteSpace: 'nowrap', flexShrink: 0 }}>
+          Ver planos PJ
+        </Link>
       </div>
     </>
   )

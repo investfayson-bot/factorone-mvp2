@@ -1,22 +1,30 @@
 'use client'
 import { useEffect, useState } from 'react'
-import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import toast from 'react-hot-toast'
 import { MARKET_APPS, fetchInstalledIds, setInstalled, type MarketApp } from '@/lib/marketplace'
-import { EmptyState } from '@/components/ui/Illustration'
 
 type Filter = 'all' | 'financeiro' | 'operacional' | 'vendas' | 'rh' | 'fiscal'
 
-const FILTERS: { key: Filter; label: string }[] = [
-  { key: 'all',         label: 'Todos' },
-  { key: 'financeiro',  label: 'Financeiro' },
-  { key: 'operacional', label: 'Operacional' },
-  { key: 'vendas',      label: 'Vendas' },
-  { key: 'rh',          label: 'RH' },
-  { key: 'fiscal',      label: 'Fiscal' },
+const FILTERS: { key: Filter; label: string; icon: string }[] = [
+  { key: 'all',         label: 'Todos',       icon: 'fa-grid-2' },
+  { key: 'financeiro',  label: 'Financeiro',  icon: 'fa-chart-line' },
+  { key: 'operacional', label: 'Operacional', icon: 'fa-gears' },
+  { key: 'vendas',      label: 'Vendas',      icon: 'fa-handshake' },
+  { key: 'rh',          label: 'RH',          icon: 'fa-users' },
+  { key: 'fiscal',      label: 'Fiscal',      icon: 'fa-landmark' },
 ]
 
+function Stars({ n }: { n: number }) {
+  return (
+    <span style={{ fontSize: 10, color: '#F59E0B', letterSpacing: 1 }}>
+      {'★'.repeat(Math.round(n))}{'☆'.repeat(5 - Math.round(n))}
+    </span>
+  )
+}
+
 export default function MarketplacePage() {
+  const router = useRouter()
   const [installed, setInstalledState] = useState<string[]>([])
   const [busy, setBusy] = useState<string | null>(null)
   const [filter, setFilter] = useState<Filter>('all')
@@ -27,17 +35,14 @@ export default function MarketplacePage() {
   async function onToggle(a: MarketApp) {
     const willInstall = !installed.includes(a.id)
     setBusy(a.id)
-    // otimista
     setInstalledState(prev => willInstall ? [...prev, a.id] : prev.filter(x => x !== a.id))
     try {
       await setInstalled(a.id, willInstall)
       toast.success(willInstall ? `${a.name} adicionado ao menu!` : `${a.name} removido.`)
     } catch {
-      setInstalledState(await fetchInstalledIds()) // reverte em caso de erro
+      setInstalledState(await fetchInstalledIds())
       toast.error('Falha ao atualizar. Tente de novo.')
-    } finally {
-      setBusy(null)
-    }
+    } finally { setBusy(null) }
   }
 
   const visible = MARKET_APPS
@@ -45,150 +50,181 @@ export default function MarketplacePage() {
     .filter(a => !search || a.name.toLowerCase().includes(search.toLowerCase()) || a.desc.toLowerCase().includes(search.toLowerCase()))
 
   const instalados = MARKET_APPS.filter(a => installed.includes(a.id))
+  const contaPjInstalled = installed.includes('conta-pj') || installed.includes('banco-pj')
 
   return (
-    <>
+    <div style={{ maxWidth: 1000, margin: '0 auto' }}>
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 20, gap: 12 }}>
+      <div className="page-hdr">
         <div>
-          <div style={{ fontFamily: "'Sora',sans-serif", fontSize: 17, fontWeight: 700, color: 'var(--navy)' }}>FactorOne Marketplace</div>
-          <div style={{ fontSize: 12, color: 'var(--gray-500)', marginTop: 3 }}>Adicione módulos à sua plataforma — ao instalar, eles aparecem no menu lateral.</div>
+          <div className="page-title">Marketplace</div>
+          <div className="page-sub">Adicione módulos à sua plataforma — ao instalar, aparecem no menu lateral</div>
         </div>
-        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-          <div style={{ position: 'relative' }}>
-            <i className="fa-solid fa-magnifying-glass" style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: 'var(--gray-400)', fontSize: 12 }} />
-            <input
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-              placeholder="Buscar apps..."
-              style={{ paddingLeft: 30, paddingRight: 12, height: 34, borderRadius: 8, border: '1px solid var(--gray-200)', fontSize: 12, width: 180, outline: 'none', color: 'var(--navy)' }}
-            />
-          </div>
-          <button
-            onClick={() => toast.success('Solicitação enviada à equipe FactorOne!')}
-            className="btn-action btn-ghost"
-            style={{ fontSize: 12, padding: '6px 14px', display: 'flex', alignItems: 'center', gap: 6 }}
-          >
-            <i className="fa-solid fa-plus" /> Solicitar App
-          </button>
+        <div style={{ position: 'relative' }}>
+          <i className="fa-solid fa-magnifying-glass" style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: '#AAB8B7', fontSize: 12 }} />
+          <input
+            className="form-input"
+            placeholder="Buscar módulo..."
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            style={{ paddingLeft: 32, width: 220, fontSize: 12 }}
+          />
         </div>
       </div>
 
-      {/* Stats */}
-      {instalados.length > 0 && (
-        <div style={{ background: 'var(--green)', borderRadius: 10, padding: '10px 16px', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 10 }}>
-          <i className="fa-solid fa-circle-check" style={{ color: '#fff', fontSize: 14 }} />
-          <span style={{ fontSize: 12, color: '#fff', fontWeight: 600 }}>
-            {instalados.length} app{instalados.length > 1 ? 's' : ''} no menu:{' '}
-            <span style={{ fontWeight: 400 }}>{instalados.map(a => a.name).join(', ')}</span>
-          </span>
+      {/* Banner Conta PJ */}
+      {!contaPjInstalled && (
+        <div style={{
+          background: 'linear-gradient(135deg, #1C2B2A 0%, #2A3F3E 100%)',
+          borderRadius: 16, padding: '20px 24px', marginBottom: 24,
+          display: 'flex', alignItems: 'center', gap: 20,
+        }}>
+          <div style={{ width: 56, height: 56, borderRadius: 14, background: 'rgba(94,140,135,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            <i className="fa-solid fa-building-columns" style={{ fontSize: 24, color: '#7EBDB8' }} />
+          </div>
+          <div style={{ flex: 1 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+              <div style={{ fontSize: 15, fontWeight: 700, color: '#fff', fontFamily: "'Space Grotesk', sans-serif" }}>Conta PJ — powered by Celcoin</div>
+              <span style={{ fontSize: 9, fontWeight: 700, padding: '2px 8px', borderRadius: 20, background: '#5E8C87', color: '#fff', letterSpacing: '0.06em' }}>DESTAQUE</span>
+            </div>
+            <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)', lineHeight: 1.6, marginBottom: 10 }}>
+              Conta bancária PJ com cartão corporativo, PIX, boleto e gestão de despesas — tudo integrado ao FactorOne. Aprovação em até 24h.
+            </div>
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+              {['Cartão Visa Corporativo', 'PIX instantâneo', 'Boletos', 'Open Finance', 'Gestão de despesas'].map(tag => (
+                <span key={tag} style={{ fontSize: 10, padding: '3px 9px', borderRadius: 20, background: 'rgba(94,140,135,0.2)', color: '#7EBDB8', fontWeight: 600 }}>{tag}</span>
+              ))}
+            </div>
+          </div>
+          <button
+            onClick={() => router.push('/dashboard/conta-pj/abrir')}
+            style={{ background: '#5E8C87', color: '#fff', border: 'none', borderRadius: 10, padding: '12px 24px', fontSize: 13, fontWeight: 700, cursor: 'pointer', whiteSpace: 'nowrap', flexShrink: 0 }}
+          >
+            Abrir Conta PJ
+          </button>
         </div>
       )}
 
-      {/* Filters */}
-      <div style={{ display: 'flex', gap: 7, marginBottom: 18, flexWrap: 'wrap' }}>
+      {contaPjInstalled && (
+        <div style={{ background: '#EAF5F3', border: '0.5px solid #5E8C87', borderRadius: 12, padding: '12px 16px', marginBottom: 20, display: 'flex', alignItems: 'center', gap: 12 }}>
+          <i className="fa-solid fa-circle-check" style={{ fontSize: 18, color: '#5E8C87' }} />
+          <div style={{ fontSize: 12, color: '#0F6E56', fontWeight: 600 }}>Conta PJ ativa · aparece na sidebar como &quot;Conta PJ&quot;</div>
+        </div>
+      )}
+
+      {/* Apps instalados */}
+      {instalados.length > 0 && (
+        <div style={{ marginBottom: 24 }}>
+          <div style={{ fontSize: 11, fontWeight: 600, color: '#7A8F8E', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }}>
+            Instalados ({instalados.length})
+          </div>
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+            {instalados.map(a => (
+              <div key={a.id} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '7px 12px', background: '#EAF5F3', border: '0.5px solid #5E8C87', borderRadius: 20 }}>
+                <i className={`fa-solid ${a.icon}`} style={{ fontSize: 12, color: '#5E8C87' }} />
+                <span style={{ fontSize: 12, fontWeight: 600, color: '#0F6E56' }}>{a.name}</span>
+                <button onClick={() => onToggle(a)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#7A8F8E', fontSize: 12, lineHeight: 1, padding: 0 }}>×</button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Filtros */}
+      <div style={{ display: 'flex', gap: 6, marginBottom: 20, flexWrap: 'wrap' }}>
         {FILTERS.map(f => (
-          <button
-            key={f.key}
-            onClick={() => setFilter(f.key)}
-            style={{
-              padding: '5px 14px', borderRadius: 8, fontSize: 12, cursor: 'pointer',
-              background: filter === f.key ? 'var(--navy)' : 'transparent',
-              color: filter === f.key ? '#fff' : 'var(--gray-700)',
-              border: `1px solid ${filter === f.key ? 'var(--navy)' : 'var(--gray-200)'}`,
-              fontWeight: filter === f.key ? 600 : 400,
-              transition: 'all .15s',
-            }}
-          >
+          <button key={f.key} onClick={() => setFilter(f.key)} style={{
+            display: 'flex', alignItems: 'center', gap: 6,
+            fontSize: 11, fontWeight: filter === f.key ? 700 : 500,
+            padding: '6px 14px', borderRadius: 20, border: '0.5px solid',
+            borderColor: filter === f.key ? '#1C2B2A' : '#E2E8E7',
+            background: filter === f.key ? '#1C2B2A' : '#fff',
+            color: filter === f.key ? '#fff' : '#7A8F8E',
+            cursor: 'pointer', transition: 'all 0.15s',
+          }}>
+            <i className={`fa-solid ${f.icon}`} style={{ fontSize: 10 }} />
             {f.label}
           </button>
         ))}
       </div>
 
-      {/* App grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 14, marginBottom: 20 }}>
-        {visible.map(a => {
-          const isOn = installed.includes(a.id)
-          return (
-          <div
-            key={a.id}
-            style={{
-              background: isOn ? 'rgba(45,155,111,.03)' : '#fff',
-              border: `1px solid ${isOn ? 'rgba(45,155,111,.35)' : 'var(--gray-100)'}`,
-              borderRadius: 12, padding: 18, transition: 'all .2s',
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 12 }}>
-              <div style={{ width: 44, height: 44, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', background: a.iconBg }}>
-                <i className={`fa-solid ${a.icon}`} style={{ color: a.iconColor, fontSize: 18 }} />
-              </div>
-              {a.badge ? (
-                <span style={{
-                  fontSize: 9, fontWeight: 700, padding: '2px 7px', borderRadius: 20,
-                  background: a.badge === 'popular' ? 'rgba(94,140,135,.15)' : 'rgba(124,58,237,.12)',
-                  color: a.badge === 'popular' ? 'var(--teal)' : '#7C3AED',
-                }}>
-                  {a.badge === 'popular' ? 'POPULAR' : 'NOVO'}
-                </span>
-              ) : null}
-            </div>
-            <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--navy)', marginBottom: 4 }}>{a.name}</div>
-            <div style={{ fontSize: 11.5, color: 'var(--gray-500)', marginBottom: 12, lineHeight: 1.55 }}>{a.desc}</div>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <div style={{ fontSize: 11, color: 'var(--gold)', display: 'flex', alignItems: 'center', gap: 4 }}>
-                <i className="fa-solid fa-star" style={{ fontSize: 10 }} />
-                <span style={{ fontWeight: 700 }}>{a.rating}</span>
-                <span style={{ color: 'var(--gray-400)' }}>· {a.rev} av.</span>
-              </div>
-              <div style={{ display: 'flex', gap: 6 }}>
-                {isOn && (
-                  <Link href={a.href} className="btn-action btn-ghost" style={{ padding: '5px 12px', borderRadius: 8, fontSize: 11.5, fontWeight: 600 }}>
-                    Abrir
-                  </Link>
-                )}
-                <button
-                  onClick={() => onToggle(a)}
-                  disabled={busy === a.id}
-                  style={{
-                    padding: '5px 14px', borderRadius: 8, fontSize: 11.5, fontWeight: 600, cursor: busy === a.id ? 'default' : 'pointer',
-                    border: isOn ? '1px solid rgba(45,155,111,.3)' : 'none',
-                    background: isOn ? 'rgba(45,155,111,.1)' : 'var(--navy)',
-                    color: isOn ? 'var(--green)' : '#fff',
-                    display: 'flex', alignItems: 'center', gap: 5, opacity: busy === a.id ? .6 : 1,
-                  }}
-                >
-                  <i className={`fa-solid ${isOn ? 'fa-check' : 'fa-plus'}`} style={{ fontSize: 10 }} />
-                  {isOn ? 'Adicionado' : 'Adicionar'}
-                </button>
-              </div>
-            </div>
-          </div>
-          )
-        })}
-        {visible.length === 0 && (
-          <div style={{ gridColumn: '1/-1', textAlign: 'center', padding: '40px 0' }}>
-            <EmptyState label="Nenhum app encontrado" />
-          </div>
-        )}
-      </div>
-
-      {/* CTA banner */}
-      <div style={{ background: 'linear-gradient(135deg,var(--navy) 0%,#243736 100%)', borderRadius: 14, padding: '18px 22px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
-        <div>
-          <div style={{ fontSize: 14, fontWeight: 700, color: '#fff', marginBottom: 4 }}>Integre seus sistemas</div>
-          <div style={{ fontSize: 12, color: 'rgba(255,255,255,.55)' }}>
-            Conecte bancos, ERPs e sistemas externos via{' '}
-            <strong style={{ color: 'rgba(255,255,255,.8)' }}>FactorOne API</strong>
-          </div>
+      {/* Grid de apps */}
+      {visible.length === 0 ? (
+        <div style={{ textAlign: 'center', padding: '48px 16px', color: '#7A8F8E' }}>
+          <i className="fa-solid fa-magnifying-glass" style={{ fontSize: 32, marginBottom: 12, display: 'block', color: '#D1D9D8' }} />
+          <div style={{ fontWeight: 600, color: '#1C2B2A', marginBottom: 4 }}>Nenhum módulo encontrado</div>
+          <div style={{ fontSize: 12 }}>Tente outro termo ou filtro</div>
         </div>
-        <Link
-          href="/dashboard/integracoes"
-          style={{ padding: '8px 18px', borderRadius: 8, background: 'var(--teal)', color: '#fff', border: 'none', fontSize: 12, fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap', textDecoration: 'none' }}
-        >
-          Explorar Integrações
-          <i className="fa-solid fa-arrow-right" style={{ marginLeft: 6, fontSize: 10 }} />
-        </Link>
-      </div>
-    </>
+      ) : (
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12 }}>
+          {visible.map(a => {
+            const isOn = installed.includes(a.id)
+            const isBusy = busy === a.id
+            return (
+              <div key={a.id} style={{
+                background: '#fff', border: `0.5px solid ${isOn ? '#5E8C87' : '#E2E8E7'}`,
+                borderRadius: 14, padding: '16px', display: 'flex', flexDirection: 'column', gap: 10,
+                transition: 'all 0.15s',
+              }}>
+                {/* Top */}
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
+                  <div style={{ width: 40, height: 40, borderRadius: 10, background: a.iconBg, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <i className={`fa-solid ${a.icon}`} style={{ fontSize: 16, color: a.iconColor }} />
+                  </div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 2 }}>
+                      <span style={{ fontSize: 13, fontWeight: 700, color: '#1C2B2A' }}>{a.name}</span>
+                      {a.badge === 'popular' && (
+                        <span style={{ fontSize: 9, fontWeight: 700, padding: '1px 6px', borderRadius: 20, background: '#EAF3DE', color: '#3B6D11' }}>POPULAR</span>
+                      )}
+                      {a.badge === 'new' && (
+                        <span style={{ fontSize: 9, fontWeight: 700, padding: '1px 6px', borderRadius: 20, background: '#EAF5F3', color: '#0F6E56' }}>NOVO</span>
+                      )}
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+                      <Stars n={a.rating} />
+                      <span style={{ fontSize: 10, color: '#7A8F8E' }}>{a.rating} ({a.rev})</span>
+                    </div>
+                  </div>
+                  {isOn && (
+                    <div style={{ width: 20, height: 20, borderRadius: '50%', background: '#5E8C87', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                      <i className="fa-solid fa-check" style={{ fontSize: 9, color: '#fff' }} />
+                    </div>
+                  )}
+                </div>
+
+                {/* Desc */}
+                <div style={{ fontSize: 11, color: '#7A8F8E', lineHeight: 1.5 }}>{a.desc}</div>
+
+                {/* Footer */}
+                <div style={{ display: 'flex', gap: 8, marginTop: 'auto' }}>
+                  <button
+                    onClick={() => onToggle(a)}
+                    disabled={isBusy}
+                    style={{
+                      flex: 1, padding: '8px', borderRadius: 8, border: 'none', fontSize: 12, fontWeight: 700,
+                      cursor: isBusy ? 'wait' : 'pointer',
+                      background: isOn ? '#EAF5F3' : '#1C2B2A',
+                      color: isOn ? '#0F6E56' : '#fff',
+                      transition: 'all 0.15s', opacity: isBusy ? 0.7 : 1,
+                    }}
+                  >
+                    {isBusy ? '...' : isOn ? '✓ Instalado' : 'Adicionar'}
+                  </button>
+                  {isOn && a.hasPage && (
+                    <button
+                      onClick={() => router.push(a.href)}
+                      style={{ padding: '8px 12px', borderRadius: 8, border: '0.5px solid #E2E8E7', background: '#fff', color: '#3A5150', fontSize: 11, cursor: 'pointer', fontWeight: 600 }}
+                    >
+                      Abrir
+                    </button>
+                  )}
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      )}
+    </div>
   )
 }
