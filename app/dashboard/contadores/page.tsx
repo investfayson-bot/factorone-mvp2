@@ -187,11 +187,16 @@ export default function ContadoresPage() {
           <button className="btn-action" onClick={() => { setTab('acessos'); setModal(true) }} style={{ fontSize: 12, padding: '6px 14px' }}>
             <i className="fa-solid fa-key" style={{ marginRight: 6 }} />Gerenciar acessos
           </button>
-          <Link href="/dashboard/relatorios" style={{ textDecoration: 'none' }}>
-            <button className="btn-action" style={{ fontSize: 12, padding: '6px 14px', background: 'var(--navy)', color: '#fff', border: 'none' }}>
-              <i className="fa-solid fa-file-export" style={{ marginRight: 6 }} />Exportar SPED
-            </button>
-          </Link>
+          <button
+            style={{ fontSize: 12, padding: '6px 14px', background: '#5E8C87', color: '#fff', border: 'none', borderRadius: 8, cursor: 'pointer', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 6 }}
+            onClick={async () => {
+              const { baixarArquivo } = await import('@/lib/download-arquivo')
+              const r = await baixarArquivo('/api/contador/exportar-pdf', 'bookkeeping.pdf')
+              if ('erro' in r) { const { default: toast } = await import('react-hot-toast'); toast.error(r.erro) }
+            }}
+          >
+            <i className="fa-solid fa-file-pdf" />Exportar Bookkeeping
+          </button>
         </div>
       </div>
 

@@ -139,6 +139,17 @@ function FinanceiroInner() {
           <div className="page-sub">Contas a pagar e receber · Conciliação · Aging report</div>
         </div>
         <div style={{ display: 'flex', gap: 8 }}>
+          <button
+            className="btn-ghost"
+            style={{ fontSize: 12 }}
+            onClick={async () => {
+              const { baixarArquivo } = await import('@/lib/download-arquivo')
+              const r = await baixarArquivo('/api/financeiro/exportar-pdf', 'financeiro.pdf')
+              if ('erro' in r) { const { default: toast } = await import('react-hot-toast'); toast.error(r.erro) }
+            }}
+          >
+            <i className="fa-solid fa-file-pdf" style={{ marginRight: 6, color: '#E74C3C' }} />PDF
+          </button>
           <button className="btn-ghost" style={{ fontSize: 12 }} onClick={() => setOpenReceber(true)}>
             <i className="fa-solid fa-arrow-down-circle" style={{ marginRight: 6, color: '#5E8C87' }} />A receber
           </button>
