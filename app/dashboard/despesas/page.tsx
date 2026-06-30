@@ -276,10 +276,64 @@ export default function DespesasPage() {
   }
 
   function exportarPdf() {
-    const w = window.open('', '_blank')
-    if (!w) return
-    w.document.write(`<html><head><title>Despesas ${periodoLabel}</title><style>body{font-family:system-ui,sans-serif;padding:24px;color:#1e293b}h1{font-size:18px}table{width:100%;border-collapse:collapse;font-size:12px;margin-top:16px}th,td{border:1px solid #e2e8f0;padding:8px;text-align:left}th{background:#f8fafc}</style></head><body><h1>Despesas — ${periodoLabel}</h1><p>FactorOne · Total: ${formatBRL(kpis.totalMes)}</p><table><thead><tr><th>Descrição</th><th>Categoria</th><th>Valor</th><th>Status</th><th>Vencimento</th></tr></thead><tbody>${filtradas.map((r) => `<tr><td>${r.descricao}</td><td>${r.categoria}</td><td>${formatBRL(Number(r.valor))}</td><td>${STATUS_LABEL[r.status] || r.status}</td><td>${r.data_vencimento || '—'}</td></tr>`).join('')}</tbody></table><script>window.onload=()=>{window.print()}</script></body></html>`)
-    w.document.close()
+    try {
+      const html = `<html>
+<head>
+  <meta charset="utf-8">
+  <title>Despesas — ${periodoLabel}</title>
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; padding: 32px; color: #1C2B2A; }
+    h1 { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+    .sub { font-size: 12px; color: #7A8F8E; margin-bottom: 24px; }
+    .header-bar { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; }
+    .logo { font-size: 18px; font-weight: 800; color: #1C2B2A; }
+    .logo span { color: #5E8C87; }
+    table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 8px; }
+    th { text-align: left; padding: 8px 10px; font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; background: #F4F6F5; color: #7A8F8E; border-bottom: 1px solid #E2E8E7; }
+    td { padding: 9px 10px; border-bottom: 1px solid #F0F4F3; color: #1C2B2A; }
+    tr:last-child td { border: none; }
+    .val { font-weight: 700; color: #E74C3C; }
+    .total-row { background: #F4F6F5; font-weight: 700; }
+    .footer { margin-top: 32px; font-size: 10px; color: #AAB8B7; }
+    @media print { body { padding: 16px; } }
+  </style>
+</head>
+<body>
+  <div class="header-bar">
+    <div>
+      <div class="logo">Factor<span>One</span> <span style="font-size:11px;font-weight:400;color:#7A8F8E">Finance OS</span></div>
+      <h1>Relatório de Despesas</h1>
+      <div class="sub">${periodoLabel} · Gerado em ${new Date().toLocaleDateString('pt-BR')}</div>
+    </div>
+    <div style="text-align:right;font-size:13px">
+      <div style="font-size:10px;color:#7A8F8E;margin-bottom:2px">Total do período</div>
+      <div style="font-size:20px;font-weight:800;color:#E74C3C">${formatBRL(kpis.totalMes)}</div>
+    </div>
+  </div>
+  <table>
+    <thead><tr><th>Descrição</th><th>Categoria</th><th>Vencimento</th><th>Status</th><th style="text-align:right">Valor</th></tr></thead>
+    <tbody>
+      ${filtradas.map(r => `<tr><td>${r.descricao || '—'}</td><td>${r.categoria || '—'}</td><td>${r.data_vencimento ? new Date(r.data_vencimento + 'T12:00:00').toLocaleDateString('pt-BR') : '—'}</td><td>${STATUS_LABEL[r.status] || r.status}</td><td style="text-align:right" class="val">${formatBRL(Number(r.valor))}</td></tr>`).join('')}
+      <tr class="total-row"><td colspan="4">Total</td><td style="text-align:right;color:#E74C3C">${formatBRL(kpis.totalMes)}</td></tr>
+    </tbody>
+  </table>
+  <div class="footer">FactorOne Finance OS · ${new Date().toLocaleString('pt-BR')}</div>
+  <script>window.onload = () => { window.print() }</script>
+</body>
+</html>`
+      const blob = new Blob([html], { type: 'text/html' })
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `despesas_${periodoLabel.replace(/\s+/g, '_')}.html`
+      document.body.appendChild(a)
+      a.click()
+      a.remove()
+      URL.revokeObjectURL(url)
+      toast.success('Relatório baixado — abra o arquivo e use Ctrl+P para imprimir/salvar como PDF')
+    } catch (e: unknown) {
+      toast.error(e instanceof Error ? e.message : 'Erro ao gerar relatório')
+    }
   }
 
   async function importarLote(file: File) {

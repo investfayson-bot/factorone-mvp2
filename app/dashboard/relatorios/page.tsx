@@ -5,6 +5,7 @@ import { supabase } from '@/lib/supabase'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import Modal from '@/components/ui/Modal'
+import toast from 'react-hot-toast'
 
 type Met = Record<string, number | string>
 type Lancamento = { id: string; descricao: string; valor: number; origem: string; competencia: string; created_at: string; conta_id: string | null }
@@ -16,6 +17,8 @@ export default function RelatoriosPage() {
   const [periodo, setPeriodo] = useState<'mensal' | 'trimestral' | 'anual'>('mensal')
   const [competencia, setCompetencia] = useState(new Date().toISOString().slice(0, 7))
   const [empresaId, setEmpresaId] = useState('')
+  const [exportandoPdf, setExportandoPdf] = useState(false)
+  const [exportandoExcel, setExportandoExcel] = useState(false)
   const [metricas, setMetricas] = useState<Met | null>(null)
   const [historico, setHistorico] = useState<Met[]>([])
   const [analise, setAnalise] = useState<Record<string, unknown> | null>(null)
@@ -151,16 +154,46 @@ export default function RelatoriosPage() {
   }
 
   async function exportarPdf() {
-    const { data: sess } = await supabase.auth.getSession()
-    const res = await fetch('/api/dre/exportar-pdf', { method: 'POST', headers: { 'Content-Type': 'application/json', ...(sess.session?.access_token ? { Authorization: `Bearer ${sess.session.access_token}` } : {}) }, body: JSON.stringify({ empresaNome: 'Empresa', periodo: competencia, dre: linhas.map((l) => ({ linha: l.linha, valor: l.atual })), metricas: metricas ?? {}, analise }) })
-    const blob = await res.blob()
-    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `dre_${competencia}.pdf`; a.click(); URL.revokeObjectURL(a.href)
+    setExportandoPdf(true)
+    try {
+      const { data: sess } = await supabase.auth.getSession()
+      const res = await fetch('/api/dre/exportar-pdf', { method: 'POST', headers: { 'Content-Type': 'application/json', ...(sess.session?.access_token ? { Authorization: `Bearer ${sess.session.access_token}` } : {}) }, body: JSON.stringify({ empresaNome: 'Empresa', periodo: competencia, dre: linhas.map((l) => ({ linha: l.linha, valor: l.atual })), metricas: metricas ?? {}, analise }) })
+      if (!res.ok) {
+        let erro = `Falha ao gerar PDF (HTTP ${res.status})`
+        try { const body = await res.json(); if (body?.error) erro = body.error } catch {}
+        toast.error(erro)
+        return
+      }
+      const blob = await res.blob()
+      if (blob.size === 0) { toast.error('PDF gerado está vazio'); return }
+      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `dre_${competencia}.pdf`; a.click(); URL.revokeObjectURL(a.href)
+      toast.success('DRE exportado em PDF')
+    } catch (e: unknown) {
+      toast.error(e instanceof Error ? e.message : 'Erro ao exportar PDF')
+    } finally {
+      setExportandoPdf(false)
+    }
   }
 
   async function exportarExcel() {
-    const res = await fetch('/api/dre/exportar-excel', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ dre: linhas, comparativo: historico, metricas: metricas ? Object.entries(metricas).map(([k, v]) => ({ metrica: k, valor: v })) : [] }) })
-    const blob = await res.blob()
-    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `dre_${competencia}.xlsx`; a.click(); URL.revokeObjectURL(a.href)
+    setExportandoExcel(true)
+    try {
+      const res = await fetch('/api/dre/exportar-excel', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ dre: linhas, comparativo: historico, metricas: metricas ? Object.entries(metricas).map(([k, v]) => ({ metrica: k, valor: v })) : [] }) })
+      if (!res.ok) {
+        let erro = `Falha ao gerar Excel (HTTP ${res.status})`
+        try { const body = await res.json(); if (body?.error) erro = body.error } catch {}
+        toast.error(erro)
+        return
+      }
+      const blob = await res.blob()
+      if (blob.size === 0) { toast.error('Excel gerado está vazio'); return }
+      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `dre_${competencia}.xlsx`; a.click(); URL.revokeObjectURL(a.href)
+      toast.success('DRE exportado em Excel')
+    } catch (e: unknown) {
+      toast.error(e instanceof Error ? e.message : 'Erro ao exportar Excel')
+    } finally {
+      setExportandoExcel(false)
+    }
   }
 
   async function exportarCSV(tipo: 'transacoes' | 'despesas') {
@@ -216,7 +249,7 @@ export default function RelatoriosPage() {
           </select>
           <input type="month" className="form-input" style={{ width: 'auto', padding: '6px 10px', fontSize: 12 }} value={competencia} onChange={(e) => setCompetencia(e.target.value)} />
           <button className="btn-action btn-ghost" onClick={() => void analisarIA()}>Analisar com IA</button>
-          <button className="btn-action btn-ghost" onClick={() => void exportarPdf()}>PDF</button>
+          <button className="btn-action btn-ghost" disabled={exportandoPdf} onClick={() => void exportarPdf()}>{exportandoPdf ? "Gerando..." : "PDF"}</button>
           <button className="btn-action btn-ghost" onClick={() => void exportarExcel()}>Excel</button>
         </div>
       </div>
@@ -563,11 +596,11 @@ export default function RelatoriosPage() {
               </div>
 
               <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
-                <button className="btn-ghost" style={{ fontSize: 12 }} onClick={() => void exportarPdf()}>
-                  <i className="fa-solid fa-file-pdf" style={{ marginRight: 5 }} />Exportar PDF
+                <button className="btn-ghost" style={{ fontSize: 12 }} disabled={exportandoPdf} onClick={() => void exportarPdf()}>
+                  <i className="fa-solid fa-file-pdf" style={{ marginRight: 5 }} />{exportandoPdf ? 'Gerando...' : 'Exportar PDF'}
                 </button>
-                <button className="btn-ghost" style={{ fontSize: 12 }} onClick={() => void exportarExcel()}>
-                  <i className="fa-solid fa-file-excel" style={{ marginRight: 5 }} />Exportar Excel
+                <button className="btn-ghost" style={{ fontSize: 12 }} disabled={exportandoExcel} onClick={() => void exportarExcel()}>
+                  <i className="fa-solid fa-file-excel" style={{ marginRight: 5 }} />{exportandoExcel ? 'Gerando...' : 'Exportar Excel'}
                 </button>
               </div>
             </>
@@ -611,8 +644,8 @@ export default function RelatoriosPage() {
               <div style={{ marginBottom: 10 }}><i className="fa-solid fa-file-pdf" style={{ fontSize: 24, color: "#DC2626" }} /></div>
               <div style={{ fontSize: 13, fontWeight: 700, color: '#1C2B2A', marginBottom: 4 }}>DRE — PDF</div>
               <div style={{ fontSize: 12, color: '#7A8F8E', marginBottom: 16, lineHeight: 1.6 }}>Demonstrativo de Resultados em PDF com análise IA</div>
-              <button className="btn-action" style={{ width: '100%' }} onClick={() => void exportarPdf()}>
-                Baixar PDF
+              <button className="btn-action" style={{ width: '100%' }} disabled={exportandoPdf} onClick={() => void exportarPdf()}>
+                {exportandoPdf ? 'Gerando PDF...' : 'Baixar PDF'}
               </button>
             </div>
 

@@ -3,6 +3,8 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import { formatBRL } from '@/lib/currency-brl'
+import { baixarArquivo } from '@/lib/download-arquivo'
+import toast from 'react-hot-toast'
 import OrcamentoWizard from '@/components/orcamento/OrcamentoWizard'
 import EditarLinhaModal from '@/components/orcamento/EditarLinhaModal'
 import SuplementacaoModal from '@/components/orcamento/SuplementacaoModal'
@@ -32,6 +34,7 @@ function progressColor(pct: number) {
 
 export default function OrcamentoPage() {
   const [ano, setAno] = useState(new Date().getFullYear())
+  const [exportando, setExportando] = useState(false)
   const [orcamento, setOrcamento] = useState<Orcamento | null>(null)
   const [linhas, setLinhas] = useState<Linha[]>([])
   const [alertas, setAlertas] = useState<Alerta[]>([])
@@ -114,7 +117,19 @@ export default function OrcamentoPage() {
           {orcamento?.status === 'em_aprovacao' && (
             <button className="btn-action" onClick={() => void aprovarOrcamento()}>Aprovar</button>
           )}
-          <a href={`/api/orcamento/exportar?ano=${ano}`} target="_blank" className="btn-ghost">Exportar</a>
+          <button
+            className="btn-ghost"
+            disabled={exportando}
+            onClick={async () => {
+              setExportando(true)
+              const r = await baixarArquivo(`/api/orcamento/exportar?ano=${ano}`, `orcamento_${ano}.pdf`)
+              if (!r.ok && 'erro' in r) toast.error(r.erro)
+              else toast.success('Relatório de orçamento baixado')
+              setExportando(false)
+            }}
+          >
+            {exportando ? 'Gerando...' : 'Exportar'}
+          </button>
         </div>
       </div>
 

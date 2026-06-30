@@ -1,11 +1,35 @@
 'use client'
 import { useState } from 'react'
 import { exportExcel, exportPDF, type RespostaData } from '@/lib/export-relatorio'
+import toast from 'react-hot-toast'
 
 export type { RespostaData }
 
 export function RespostaIA({ data, pergunta = '' }: { data: RespostaData; pergunta?: string }) {
  const [expandido, setExpandido] = useState(false)
+ const [exportandoPdf, setExportandoPdf] = useState(false)
+ const [exportandoExcel, setExportandoExcel] = useState(false)
+
+ async function handleExportPDF() {
+   setExportandoPdf(true)
+   try {
+     await exportPDF(data, pergunta)
+     toast.success('Relatório exportado em PDF')
+   } catch (e: unknown) {
+     toast.error(e instanceof Error ? e.message : 'Erro ao gerar PDF')
+   } finally {
+     setExportandoPdf(false)
+   }
+ }
+
+ function handleExportExcel() {
+   try {
+     exportExcel(data, pergunta)
+     toast.success('Relatório exportado em Excel')
+   } catch (e: unknown) {
+     toast.error(e instanceof Error ? e.message : 'Erro ao gerar Excel')
+   }
+ }
 
  const sc = ({
  positivo: 'bg-emerald-50 border-emerald-200 text-emerald-700',
@@ -42,11 +66,11 @@ export function RespostaIA({ data, pergunta = '' }: { data: RespostaData; pergun
  Tela cheia
  </button>
  )}
- <button onClick={() => exportExcel(data, pergunta)}
+ <button onClick={handleExportExcel} disabled={exportandoExcel}
  className={`${cls} bg-emerald-700 hover:bg-emerald-800`}>
  Excel
  </button>
- <button onClick={() => exportPDF(data, pergunta)}
+ <button onClick={() => void handleExportPDF()} disabled={exportandoPdf}
  className={`${cls} bg-red-600 hover:bg-red-700`}>
  PDF
  </button>

@@ -4,6 +4,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import { formatBRL } from '@/lib/currency-brl'
+import { baixarArquivo } from '@/lib/download-arquivo'
+import toast from 'react-hot-toast'
 import NovoAtivoModal from '@/components/patrimonio/NovoAtivoModal'
 import DetalhesAtivoModal from '@/components/patrimonio/DetalhesAtivoModal'
 import BaixaAtivoModal from '@/components/patrimonio/BaixaAtivoModal'
@@ -91,6 +93,7 @@ export default function PatrimonioPage() {
   const [ativos, setAtivos] = useState<Ativo[]>([])
   const [categorias, setCategorias] = useState<Categoria[]>([])
   const [depreciacoes, setDepreciacoes] = useState<Array<{ competencia: string; valor_depreciacao: number }>>([])
+  const [exportando, setExportando] = useState(false)
   const [tab, setTab] = useState<'visaogeral' | 'frota' | 'maquinas' | 'imoveis' | 'todos' | 'baixados'>('visaogeral')
 
   // Frota
@@ -505,7 +508,19 @@ export default function PatrimonioPage() {
           <button className="btn-action" disabled={loadingDep} onClick={() => void processarDepreciacao()} style={{ opacity: loadingDep ? 0.6 : 1 }}>
             {loadingDep ? 'Processando…' : 'Processar Depreciação'}
           </button>
-          <a className="btn-ghost" href="/api/patrimonio/relatorio" target="_blank">Exportar</a>
+          <button
+            className="btn-ghost"
+            disabled={exportando}
+            onClick={async () => {
+              setExportando(true)
+              const r = await baixarArquivo('/api/patrimonio/relatorio', 'patrimonio.pdf')
+              if (!r.ok && 'erro' in r) toast.error(r.erro)
+              else toast.success('Relatório de patrimônio baixado')
+              setExportando(false)
+            }}
+          >
+            {exportando ? 'Gerando PDF...' : 'Exportar'}
+          </button>
         </div>
       </div>
 
