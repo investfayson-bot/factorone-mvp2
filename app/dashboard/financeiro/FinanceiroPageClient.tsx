@@ -10,25 +10,14 @@ import Conciliacao from '@/components/financeiro/Conciliacao'
 import AgingReport from '@/components/financeiro/AgingReport'
 
 type ContaPagar = {
-  id: string
-  fornecedor_nome: string
-  descricao: string
-  categoria: string
-  data_vencimento: string
-  valor: number
-  valor_pago: number
-  status: string
+  id: string; fornecedor_nome: string; descricao: string
+  categoria: string; data_vencimento: string
+  valor: number; valor_pago: number; status: string
 }
 type ContaReceber = {
-  id: string
-  cliente_nome: string
-  descricao: string
-  data_vencimento: string
-  valor: number
-  valor_recebido: number
-  status: string
-  dias_atraso: number
-  cliente_email?: string | null
+  id: string; cliente_nome: string; descricao: string
+  data_vencimento: string; valor: number; valor_recebido: number
+  status: string; dias_atraso: number; cliente_email?: string | null
 }
 
 async function authHeaders(): Promise<Record<string, string>> {
@@ -37,9 +26,25 @@ async function authHeaders(): Promise<Record<string, string>> {
   return t ? { Authorization: `Bearer ${t}` } : {}
 }
 
-function statusTagFin(status: string) {
-  const map: Record<string, string> = { pendente: 'amber', vencida: 'red', paga: 'green', recebida: 'green', cancelada: 'gray' }
-  return <span className={`tag ${map[status] || 'gray'}`}>{status}</span>
+function fmtDate(d: string) {
+  if (!d) return '—'
+  return new Date(d + 'T12:00:00').toLocaleDateString('pt-BR')
+}
+
+function StatusTag({ status }: { status: string }) {
+  const map: Record<string, { bg: string; color: string; label: string }> = {
+    pendente: { bg: '#FEF3C7', color: '#92400E', label: 'Pendente' },
+    vencida:  { bg: '#FEE2E2', color: '#991B1B', label: 'Vencida' },
+    paga:     { bg: '#EAF5F3', color: '#0F6E56', label: 'Paga' },
+    recebida: { bg: '#EAF5F3', color: '#0F6E56', label: 'Recebida' },
+    cancelada:{ bg: '#EEF2F1', color: '#7A8F8E', label: 'Cancelada' },
+  }
+  const s = map[status] ?? { bg: '#EEF2F1', color: '#7A8F8E', label: status }
+  return (
+    <span style={{ fontSize: 10, fontWeight: 600, padding: '2px 8px', borderRadius: 20, background: s.bg, color: s.color, whiteSpace: 'nowrap' }}>
+      {s.label}
+    </span>
+  )
 }
 
 function FinanceiroInner() {
@@ -52,6 +57,8 @@ function FinanceiroInner() {
   const [fStatusReceber, setFStatusReceber] = useState('todas')
   const [openPagar, setOpenPagar] = useState(false)
   const [openReceber, setOpenReceber] = useState(false)
+  const [loading, setLoading] = useState(true)
+  const [actionLoading, setActionLoading] = useState<string | null>(null)
 
   useEffect(() => {
     const t = tabParam
@@ -60,141 +67,283 @@ function FinanceiroInner() {
   }, [tabParam])
 
   const carregar = useCallback(async () => {
-    const h = await authHeaders()
-    const [p, r] = await Promise.all([
-      fetch(`/api/financeiro/pagar?status=${fStatusPagar}`, { headers: { ...h } }).then((x) => x.json()).catch(() => ({ data: [] })),
-      fetch(`/api/financeiro/receber?status=${fStatusReceber}`, { headers: { ...h } }).then((x) => x.json()).catch(() => ({ data: [] })),
-    ])
-    setPagar((p.data || []) as ContaPagar[])
-    setReceber((r.data || []) as ContaReceber[])
+    setLoading(true)
+    try {
+      const h = await authHeaders()
+      const [p, r] = await Promise.all([
+        fetch(`/api/financeiro/pagar?status=${fStatusPagar}`, { headers: h }).then(x => x.json()).catch(() => ({ data: [] })),
+        fetch(`/api/financeiro/receber?status=${fStatusReceber}`, { headers: h }).then(x => x.json()).catch(() => ({ data: [] })),
+      ])
+      setPagar((p.data || []) as ContaPagar[])
+      setReceber((r.data || []) as ContaReceber[])
+    } finally {
+      setLoading(false)
+    }
   }, [fStatusPagar, fStatusReceber])
 
   useEffect(() => { void carregar() }, [carregar])
 
   const kpis = useMemo(() => {
-    const pagarPend = pagar.filter((x) => x.status === 'pendente' || x.status === 'vencida').reduce((s, x) => s + Number(x.valor || 0) - Number(x.valor_pago || 0), 0)
-    const receberPend = receber.filter((x) => x.status === 'pendente' || x.status === 'vencida').reduce((s, x) => s + Number(x.valor || 0) - Number(x.valor_recebido || 0), 0)
-    const vencidasPagar = pagar.filter((x) => x.status === 'vencida').length
-    return { pagarPend, receberPend, vencidasPagar }
+    const pagarPend = pagar.filter(x => x.status === 'pendente' || x.status === 'vencida').reduce((s, x) => s + Number(x.valor || 0) - Number(x.valor_pago || 0), 0)
+    const receberPend = receber.filter(x => x.status === 'pendente' || x.status === 'vencida').reduce((s, x) => s + Number(x.valor || 0) - Number(x.valor_recebido || 0), 0)
+    const vencidasPagar = pagar.filter(x => x.status === 'vencida').length
+    const vencidasReceber = receber.filter(x => x.status === 'vencida').length
+    const saldo = receberPend - pagarPend
+    return { pagarPend, receberPend, vencidasPagar, vencidasReceber, saldo }
   }, [pagar, receber])
 
   async function registrarPagamento(id: string, valor: number) {
-    const data = new Date().toISOString().slice(0, 10)
-    const h = await authHeaders()
-    await fetch(`/api/financeiro/pagar/${id}/pagar`, { method: 'POST', headers: { 'Content-Type': 'application/json', ...h }, body: JSON.stringify({ data_pagamento: data, valor_pago: valor, tipo_pagamento: 'pix' }) })
-    await carregar()
+    setActionLoading(id)
+    try {
+      const h = await authHeaders()
+      await fetch(`/api/financeiro/pagar/${id}/pagar`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...h },
+        body: JSON.stringify({ data_pagamento: new Date().toISOString().slice(0, 10), valor_pago: valor, tipo_pagamento: 'pix' }),
+      })
+      await carregar()
+    } finally { setActionLoading(null) }
   }
+
   async function registrarRecebimento(id: string, valor: number, vencida: boolean) {
-    const data = new Date().toISOString().slice(0, 10)
-    const h = await authHeaders()
-    await fetch(`/api/financeiro/receber/${id}/receber`, { method: 'POST', headers: { 'Content-Type': 'application/json', ...h }, body: JSON.stringify({ data_recebimento: data, valor_recebido: valor, cobrar_juros: vencida }) })
-    await carregar()
+    setActionLoading(id)
+    try {
+      const h = await authHeaders()
+      await fetch(`/api/financeiro/receber/${id}/receber`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...h },
+        body: JSON.stringify({ data_recebimento: new Date().toISOString().slice(0, 10), valor_recebido: valor, cobrar_juros: vencida }),
+      })
+      await carregar()
+    } finally { setActionLoading(null) }
   }
+
   async function enviarCobranca(id: string) {
-    const h = await authHeaders()
-    await fetch('/api/financeiro/cobranca', { method: 'POST', headers: { 'Content-Type': 'application/json', ...h }, body: JSON.stringify({ action: 'enviar', conta_receber_id: id }) })
-    alert('Cobrança processada')
+    setActionLoading(id)
+    try {
+      const h = await authHeaders()
+      await fetch('/api/financeiro/cobranca', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...h },
+        body: JSON.stringify({ action: 'enviar', conta_receber_id: id }),
+      })
+    } finally { setActionLoading(null) }
   }
+
+  const TABS = [
+    { id: 'pagar' as const, label: 'A Pagar', badge: kpis.vencidasPagar > 0 ? kpis.vencidasPagar : null, badgeColor: '#E74C3C' },
+    { id: 'receber' as const, label: 'A Receber', badge: kpis.vencidasReceber > 0 ? kpis.vencidasReceber : null, badgeColor: '#D97706' },
+    { id: 'conciliacao' as const, label: 'Conciliação', badge: null, badgeColor: '' },
+    { id: 'aging' as const, label: 'Aging Report', badge: null, badgeColor: '' },
+  ]
 
   return (
     <>
       {/* Header */}
       <div className="page-hdr">
         <div>
-          <div className="page-title">Contas Pagar / Receber</div>
-          <div className="page-sub">Conciliação bancária · Aging report · Tempo real</div>
+          <div className="page-title">Financeiro</div>
+          <div className="page-sub">Contas a pagar e receber · Conciliação · Aging report</div>
+        </div>
+        <div style={{ display: 'flex', gap: 8 }}>
+          <button className="btn-ghost" style={{ fontSize: 12 }} onClick={() => setOpenReceber(true)}>
+            <i className="fa-solid fa-arrow-down-circle" style={{ marginRight: 6, color: '#5E8C87' }} />A receber
+          </button>
+          <button className="btn-action" style={{ fontSize: 12 }} onClick={() => setOpenPagar(true)}>
+            <i className="fa-solid fa-plus" style={{ marginRight: 6 }} />A pagar
+          </button>
         </div>
       </div>
 
-      {/* Section nav — discrete links, no pill bar */}
-      <div style={{ display: 'flex', gap: 4, marginBottom: 16, borderBottom: '2px solid var(--gray-100)', paddingBottom: 0 }}>
-        {([['pagar', `A Pagar${kpis.pagarPend > 0 ? ` · ${formatBRL(kpis.pagarPend)}` : ''}`], ['receber', `A Receber${kpis.receberPend > 0 ? ` · ${formatBRL(kpis.receberPend)}` : ''}`], ['conciliacao', 'Conciliação'], ['aging', 'Aging']] as [typeof tab, string][]).map(([t, l]) => (
-          <button key={t} onClick={() => setTab(t)}
-            style={{ fontSize: 12, fontWeight: tab === t ? 700 : 500, color: tab === t ? 'var(--teal)' : 'var(--gray-400)', background: 'none', border: 'none', cursor: 'pointer', padding: '8px 14px', borderBottom: `2px solid ${tab === t ? 'var(--teal)' : 'transparent'}`, marginBottom: -2, transition: 'all .15s', whiteSpace: 'nowrap' }}>
-            {t === 'pagar' && kpis.vencidasPagar > 0 ? <><i className="fa-solid fa-circle-exclamation" style={{ color: 'var(--red)', marginRight: 4, fontSize: 9 }} />{l}</> : l}
+      {/* KPI Cards */}
+      <div className="kpis" style={{ marginBottom: 16 }}>
+        <div className="kpi" style={{ borderTop: '3px solid #E74C3C' }}>
+          <div className="kpi-lbl">
+            A Pagar
+            <div style={{ width: 28, height: 28, borderRadius: 8, background: '#FEE2E2', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <i className="fa-solid fa-arrow-up-circle" style={{ fontSize: 12, color: '#E74C3C' }} />
+            </div>
+          </div>
+          <div className="kpi-val">{formatBRL(kpis.pagarPend)}</div>
+          <div className={`kpi-delta ${kpis.vencidasPagar > 0 ? 'dn' : ''}`}>
+            {kpis.vencidasPagar > 0 ? `⚠ ${kpis.vencidasPagar} vencida${kpis.vencidasPagar > 1 ? 's' : ''}` : `${pagar.filter(x => x.status === 'pendente').length} pendentes`}
+          </div>
+        </div>
+        <div className="kpi" style={{ borderTop: '3px solid #5E8C87' }}>
+          <div className="kpi-lbl">
+            A Receber
+            <div style={{ width: 28, height: 28, borderRadius: 8, background: '#EAF5F3', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <i className="fa-solid fa-arrow-down-circle" style={{ fontSize: 12, color: '#5E8C87' }} />
+            </div>
+          </div>
+          <div className="kpi-val">{formatBRL(kpis.receberPend)}</div>
+          <div className={`kpi-delta ${kpis.vencidasReceber > 0 ? 'warn' : 'up'}`}>
+            {kpis.vencidasReceber > 0 ? `⚠ ${kpis.vencidasReceber} vencida${kpis.vencidasReceber > 1 ? 's' : ''}` : `${receber.filter(x => x.status === 'pendente').length} pendentes`}
+          </div>
+        </div>
+        <div className="kpi" style={{ borderTop: `3px solid ${kpis.saldo >= 0 ? '#5E8C87' : '#E74C3C'}` }}>
+          <div className="kpi-lbl">
+            Saldo projetado
+            <div style={{ width: 28, height: 28, borderRadius: 8, background: kpis.saldo >= 0 ? '#EAF5F3' : '#FEE2E2', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <i className="fa-solid fa-scale-balanced" style={{ fontSize: 12, color: kpis.saldo >= 0 ? '#5E8C87' : '#E74C3C' }} />
+            </div>
+          </div>
+          <div className="kpi-val">{formatBRL(kpis.saldo)}</div>
+          <div className={`kpi-delta ${kpis.saldo >= 0 ? 'up' : 'dn'}`}>
+            {kpis.saldo >= 0 ? '↑ A receber supera a pagar' : '↓ A pagar supera a receber'}
+          </div>
+        </div>
+        <div className="kpi" style={{ borderTop: '3px solid #7C3AED' }}>
+          <div className="kpi-lbl">
+            Total de lançamentos
+            <div style={{ width: 28, height: 28, borderRadius: 8, background: '#F3F0FF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <i className="fa-solid fa-receipt" style={{ fontSize: 12, color: '#7C3AED' }} />
+            </div>
+          </div>
+          <div className="kpi-val">{pagar.length + receber.length}</div>
+          <div className="kpi-delta">{pagar.length} pagar · {receber.length} receber</div>
+        </div>
+      </div>
+
+      {/* Tabs */}
+      <div style={{ display: 'flex', gap: 2, background: '#E8EDEC', padding: 3, borderRadius: 10, width: 'fit-content', marginBottom: 16 }}>
+        {TABS.map(t => (
+          <button key={t.id} onClick={() => setTab(t.id)} style={{
+            display: 'flex', alignItems: 'center', gap: 6,
+            fontSize: 11, fontWeight: tab === t.id ? 700 : 500,
+            padding: '6px 14px', borderRadius: 8, border: 'none', cursor: 'pointer',
+            background: tab === t.id ? '#fff' : 'transparent',
+            color: tab === t.id ? '#1C2B2A' : '#7A8F8E',
+            transition: 'all 0.15s',
+          }}>
+            {t.label}
+            {t.badge !== null && (
+              <span style={{ fontSize: 9, fontWeight: 700, padding: '1px 5px', borderRadius: 20, background: t.badgeColor, color: '#fff' }}>
+                {t.badge}
+              </span>
+            )}
           </button>
         ))}
       </div>
 
+      {/* A PAGAR */}
       {tab === 'pagar' && (
         <>
-          <div style={{ marginBottom: 10, display: 'flex', alignItems: 'center', gap: 8 }}>
-            <select className="form-input" style={{ width: 'auto', padding: '6px 10px', fontSize: 12 }} value={fStatusPagar} onChange={(e) => setFStatusPagar(e.target.value)}>
-              <option value="todas">Todas</option>
+          <div style={{ display: 'flex', gap: 8, marginBottom: 12, alignItems: 'center' }}>
+            <select className="form-input" style={{ width: 'auto', padding: '6px 10px', fontSize: 11 }} value={fStatusPagar} onChange={e => setFStatusPagar(e.target.value)}>
+              <option value="todas">Todos os status</option>
               <option value="pendente">Pendente</option>
               <option value="vencida">Vencida</option>
               <option value="paga">Paga</option>
             </select>
-            <button className="btn-action" style={{ fontSize: 11, padding: '5px 12px', flexShrink: 0 }} onClick={() => setOpenPagar(true)}>+ A pagar</button>
+            <div style={{ flex: 1 }} />
+            <span style={{ fontSize: 11, color: '#7A8F8E' }}>{pagar.length} lançamento{pagar.length !== 1 ? 's' : ''}</span>
           </div>
-          <div className="expenses-table">
-            <table>
-              <thead>
-                <tr><th>Fornecedor</th><th>Descrição</th><th>Categoria</th><th>Vencimento</th><th>Valor</th><th>Status</th><th>Ações</th></tr>
-              </thead>
-              <tbody>
-                {pagar.length === 0 ? (
-                  <tr><td colSpan={7} style={{ textAlign: 'center', color: 'var(--gray-400)', padding: 32 }}>Nenhuma conta a pagar.</td></tr>
-                ) : pagar.map((c) => (
-                  <tr key={c.id}>
-                    <td style={{ fontWeight: 600 }}>{c.fornecedor_nome}</td>
-                    <td>{c.descricao}</td>
-                    <td>{c.categoria}</td>
-                    <td style={{ fontFamily: "'Inter', sans-serif" }}>{c.data_vencimento}</td>
-                    <td style={{ fontWeight: 700, color: 'var(--red)', fontFamily: "'Sora', sans-serif" }}>{formatBRL(Number(c.valor || 0))}</td>
-                    <td>{statusTagFin(c.status)}</td>
-                    <td>
-                      {c.status !== 'paga' && (
-                        <button className="btn-action btn-ghost" style={{ fontSize: 11, padding: '4px 10px' }} onClick={() => void registrarPagamento(c.id, Number(c.valor || 0) - Number(c.valor_pago || 0))}>Pagar</button>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 12, overflow: 'hidden' }}>
+            {/* Header tabela */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.5fr 1fr 100px 110px 90px 100px', padding: '10px 16px', borderBottom: '0.5px solid #E2E8E7', background: '#F8FAFA' }}>
+              {['Fornecedor', 'Descrição', 'Categoria', 'Vencimento', 'Valor', 'Status', 'Ação'].map(h => (
+                <div key={h} style={{ fontSize: 10, fontWeight: 600, color: '#7A8F8E', textTransform: 'uppercase', letterSpacing: '0.07em' }}>{h}</div>
+              ))}
+            </div>
+            {loading ? (
+              <div style={{ padding: '32px 16px', textAlign: 'center', color: '#7A8F8E', fontSize: 12 }}>Carregando...</div>
+            ) : pagar.length === 0 ? (
+              <div style={{ padding: '40px 16px', textAlign: 'center' }}>
+                <i className="fa-solid fa-check-circle" style={{ fontSize: 32, color: '#5E8C87', marginBottom: 10, display: 'block' }} />
+                <div style={{ fontSize: 13, fontWeight: 600, color: '#1C2B2A', marginBottom: 4 }}>Nenhuma conta a pagar</div>
+                <div style={{ fontSize: 11, color: '#7A8F8E' }}>Tudo em dia ou sem lançamentos no período</div>
+              </div>
+            ) : pagar.map((c, i) => (
+              <div key={c.id} style={{
+                display: 'grid', gridTemplateColumns: '1.5fr 1.5fr 1fr 100px 110px 90px 100px',
+                padding: '11px 16px', borderBottom: i < pagar.length - 1 ? '0.5px solid #F0F4F3' : 'none',
+                alignItems: 'center',
+              }}>
+                <div style={{ fontSize: 12, fontWeight: 600, color: '#1C2B2A', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{c.fornecedor_nome || '—'}</div>
+                <div style={{ fontSize: 11, color: '#3A5150', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{c.descricao}</div>
+                <div style={{ fontSize: 11, color: '#7A8F8E' }}>{c.categoria || '—'}</div>
+                <div style={{ fontSize: 11, color: c.status === 'vencida' ? '#E74C3C' : '#3A5150', fontWeight: c.status === 'vencida' ? 700 : 400 }}>{fmtDate(c.data_vencimento)}</div>
+                <div style={{ fontSize: 12, fontWeight: 700, color: '#E74C3C', fontFamily: "'Space Grotesk', sans-serif" }}>{formatBRL(Number(c.valor || 0))}</div>
+                <div><StatusTag status={c.status} /></div>
+                <div>
+                  {c.status !== 'paga' && (
+                    <button
+                      onClick={() => void registrarPagamento(c.id, Number(c.valor || 0) - Number(c.valor_pago || 0))}
+                      disabled={actionLoading === c.id}
+                      style={{ fontSize: 10, fontWeight: 700, padding: '4px 10px', borderRadius: 6, border: 'none', background: '#1C2B2A', color: '#fff', cursor: 'pointer', opacity: actionLoading === c.id ? 0.6 : 1 }}
+                    >
+                      {actionLoading === c.id ? '...' : 'Pagar'}
+                    </button>
+                  )}
+                </div>
+              </div>
+            ))}
           </div>
         </>
       )}
 
+      {/* A RECEBER */}
       {tab === 'receber' && (
         <>
-          <div style={{ marginBottom: 10, display: 'flex', alignItems: 'center', gap: 8 }}>
-            <select className="form-input" style={{ width: 'auto', padding: '6px 10px', fontSize: 12 }} value={fStatusReceber} onChange={(e) => setFStatusReceber(e.target.value)}>
-              <option value="todas">Todas</option>
+          <div style={{ display: 'flex', gap: 8, marginBottom: 12, alignItems: 'center' }}>
+            <select className="form-input" style={{ width: 'auto', padding: '6px 10px', fontSize: 11 }} value={fStatusReceber} onChange={e => setFStatusReceber(e.target.value)}>
+              <option value="todas">Todos os status</option>
               <option value="pendente">Pendente</option>
               <option value="vencida">Vencida</option>
               <option value="recebida">Recebida</option>
             </select>
-            <button className="btn-action" style={{ fontSize: 11, padding: '5px 12px', flexShrink: 0 }} onClick={() => setOpenReceber(true)}>+ A receber</button>
+            <div style={{ flex: 1 }} />
+            <span style={{ fontSize: 11, color: '#7A8F8E' }}>{receber.length} lançamento{receber.length !== 1 ? 's' : ''}</span>
           </div>
-          <div className="expenses-table">
-            <table>
-              <thead>
-                <tr><th>Cliente</th><th>Descrição</th><th>Vencimento</th><th>Dias atraso</th><th>Valor</th><th>Status</th><th>Ações</th></tr>
-              </thead>
-              <tbody>
-                {receber.length === 0 ? (
-                  <tr><td colSpan={7} style={{ textAlign: 'center', color: 'var(--gray-400)', padding: 32 }}>Nenhuma conta a receber.</td></tr>
-                ) : receber.map((c) => (
-                  <tr key={c.id}>
-                    <td style={{ fontWeight: 600 }}>{c.cliente_nome}</td>
-                    <td>{c.descricao}</td>
-                    <td style={{ fontFamily: "'Inter', sans-serif" }}>{c.data_vencimento}</td>
-                    <td style={{ color: c.dias_atraso > 0 ? 'var(--red)' : 'var(--navy)', fontFamily: "'Inter', sans-serif" }}>{c.dias_atraso || 0}</td>
-                    <td style={{ fontWeight: 700, color: 'var(--green)', fontFamily: "'Sora', sans-serif" }}>{formatBRL(Number(c.valor || 0))}</td>
-                    <td>{statusTagFin(c.status)}</td>
-                    <td>
-                      <div style={{ display: 'flex', gap: 6 }}>
-                        {c.status !== 'recebida' && (
-                          <button className="btn-action btn-ghost" style={{ fontSize: 11, padding: '4px 10px' }} onClick={() => void registrarRecebimento(c.id, Number(c.valor || 0) - Number(c.valor_recebido || 0), c.status === 'vencida')}>Receber</button>
-                        )}
-                        <button className="btn-action btn-ghost" style={{ fontSize: 11, padding: '4px 10px' }} onClick={() => void enviarCobranca(c.id)}>Cobrar</button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 12, overflow: 'hidden' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.5fr 100px 80px 110px 90px 130px', padding: '10px 16px', borderBottom: '0.5px solid #E2E8E7', background: '#F8FAFA' }}>
+              {['Cliente', 'Descrição', 'Vencimento', 'Atraso', 'Valor', 'Status', 'Ações'].map(h => (
+                <div key={h} style={{ fontSize: 10, fontWeight: 600, color: '#7A8F8E', textTransform: 'uppercase', letterSpacing: '0.07em' }}>{h}</div>
+              ))}
+            </div>
+            {loading ? (
+              <div style={{ padding: '32px 16px', textAlign: 'center', color: '#7A8F8E', fontSize: 12 }}>Carregando...</div>
+            ) : receber.length === 0 ? (
+              <div style={{ padding: '40px 16px', textAlign: 'center' }}>
+                <i className="fa-solid fa-inbox" style={{ fontSize: 32, color: '#5E8C87', marginBottom: 10, display: 'block' }} />
+                <div style={{ fontSize: 13, fontWeight: 600, color: '#1C2B2A', marginBottom: 4 }}>Nenhuma conta a receber</div>
+                <div style={{ fontSize: 11, color: '#7A8F8E' }}>Sem lançamentos no período selecionado</div>
+              </div>
+            ) : receber.map((c, i) => (
+              <div key={c.id} style={{
+                display: 'grid', gridTemplateColumns: '1.5fr 1.5fr 100px 80px 110px 90px 130px',
+                padding: '11px 16px', borderBottom: i < receber.length - 1 ? '0.5px solid #F0F4F3' : 'none',
+                alignItems: 'center',
+              }}>
+                <div style={{ fontSize: 12, fontWeight: 600, color: '#1C2B2A', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{c.cliente_nome || '—'}</div>
+                <div style={{ fontSize: 11, color: '#3A5150', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{c.descricao}</div>
+                <div style={{ fontSize: 11, color: '#3A5150' }}>{fmtDate(c.data_vencimento)}</div>
+                <div style={{ fontSize: 11, fontWeight: c.dias_atraso > 0 ? 700 : 400, color: c.dias_atraso > 0 ? '#E74C3C' : '#7A8F8E' }}>
+                  {c.dias_atraso > 0 ? `${c.dias_atraso}d` : '—'}
+                </div>
+                <div style={{ fontSize: 12, fontWeight: 700, color: '#5E8C87', fontFamily: "'Space Grotesk', sans-serif" }}>{formatBRL(Number(c.valor || 0))}</div>
+                <div><StatusTag status={c.status} /></div>
+                <div style={{ display: 'flex', gap: 5 }}>
+                  {c.status !== 'recebida' && (
+                    <button
+                      onClick={() => void registrarRecebimento(c.id, Number(c.valor || 0) - Number(c.valor_recebido || 0), c.status === 'vencida')}
+                      disabled={actionLoading === c.id}
+                      style={{ fontSize: 10, fontWeight: 700, padding: '4px 9px', borderRadius: 6, border: 'none', background: '#5E8C87', color: '#fff', cursor: 'pointer', opacity: actionLoading === c.id ? 0.6 : 1 }}
+                    >
+                      {actionLoading === c.id ? '...' : 'Receber'}
+                    </button>
+                  )}
+                  <button
+                    onClick={() => void enviarCobranca(c.id)}
+                    disabled={actionLoading === c.id}
+                    style={{ fontSize: 10, fontWeight: 600, padding: '4px 9px', borderRadius: 6, border: '0.5px solid #E2E8E7', background: '#fff', color: '#3A5150', cursor: 'pointer' }}
+                  >
+                    Cobrar
+                  </button>
+                </div>
+              </div>
+            ))}
           </div>
         </>
       )}
@@ -210,7 +359,7 @@ function FinanceiroInner() {
 
 export default function FinanceiroPageClient() {
   return (
-    <Suspense fallback={<div style={{ padding: 32, color: 'var(--gray-400)', fontSize: 13 }}>Carregando…</div>}>
+    <Suspense fallback={<div style={{ padding: 32, color: '#7A8F8E', fontSize: 13 }}>Carregando…</div>}>
       <FinanceiroInner />
     </Suspense>
   )

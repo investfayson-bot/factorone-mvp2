@@ -185,26 +185,26 @@ body {
 
 /* ── EXPENSES TABLE ── */
 .expenses-table { background: #fff; border: 0.5px solid #E2E8E7; border-radius: 12px; overflow: hidden; }
-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
-th { text-align: left; padding: 9px 14px; font-size: 9px; font-weight: 700; color: var(--gray-400); letter-spacing: .08em; text-transform: uppercase; border-bottom: 1px solid var(--gray-100); font-family: 'Inter', sans-serif; background: var(--cream); }
-td { padding: 11px 14px; border-bottom: 1px solid var(--gray-100); color: var(--navy); }
+table { width: 100%; border-collapse: collapse; font-size: 12px; }
+th { text-align: left; padding: 10px 14px; font-size: 10px; font-weight: 600; color: #7A8F8E; letter-spacing: .07em; text-transform: uppercase; border-bottom: 0.5px solid #E2E8E7; font-family: 'Manrope', 'Inter', sans-serif; background: #F8FAFA; }
+td { padding: 11px 14px; border-bottom: 0.5px solid #F0F4F3; color: #1C2B2A; font-family: 'Manrope', 'Inter', sans-serif; }
 tr:last-child td { border: none; }
-tr:hover td { background: rgba(94,140,135,.03); }
+tr:hover td { background: rgba(94,140,135,.02); }
 
 /* ── FISCAL ── */
-.fiscal-item { display: flex; align-items: center; justify-content: space-between; padding: 11px 14px; border-bottom: 1px solid var(--gray-100); }
+.fiscal-item { display: flex; align-items: center; justify-content: space-between; padding: 11px 14px; border-bottom: 0.5px solid #F0F4F3; }
 .fiscal-item:last-child { border: none; }
-.fiscal-name { font-size: 12.5px; font-weight: 600; color: var(--navy); }
-.fiscal-sub { font-size: 10.5px; color: var(--gray-400); }
-.fbadge { font-size: 9.5px; font-weight: 700; padding: 3px 9px; border-radius: 20px; font-family: 'Inter', sans-serif; }
-.fb-ok { background: rgba(45,155,111,.12); color: #2D9B6F; }
-.fb-warn { background: rgba(184,146,42,.12); color: #B8922A; }
+.fiscal-name { font-size: 12px; font-weight: 600; color: #1C2B2A; }
+.fiscal-sub { font-size: 10px; color: #7A8F8E; }
+.fbadge { font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 20px; }
+.fb-ok { background: #EAF5F3; color: #0F6E56; }
+.fb-warn { background: #FEF3C7; color: #92400E; }
 
 /* ── ALERT BARS (AnomalyAlerts) ── */
 .alert-bar { display: flex; align-items: flex-start; gap: 10px; padding: 10px 14px; border-radius: 10px; font-size: 12px; margin-bottom: 8px; }
-.alert-bar.red { background: rgba(192,80,74,.07); border: 1px solid rgba(192,80,74,.2); color: var(--red); }
-.alert-bar.orange { background: rgba(184,146,42,.07); border: 1px solid rgba(184,146,42,.2); color: var(--gold); }
-.alert-bar.yellow { background: rgba(184,146,42,.05); border: 1px solid rgba(184,146,42,.15); color: var(--gold); }
+.alert-bar.red { background: #FEE2E2; border: 0.5px solid rgba(231,76,60,.2); color: #991B1B; }
+.alert-bar.orange { background: #FEF3C7; border: 0.5px solid rgba(217,119,6,.2); color: #92400E; }
+.alert-bar.yellow { background: #FEF3C7; border: 0.5px solid rgba(217,119,6,.15); color: #92400E; }
 
 /* ── SCROLLBAR ── */
 ::-webkit-scrollbar { width: 4px; height: 4px; }
