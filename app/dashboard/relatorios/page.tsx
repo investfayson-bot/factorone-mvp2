@@ -222,40 +222,56 @@ export default function RelatoriosPage() {
       </div>
 
       {/* Tabs */}
-      <div style={{ display: 'flex', gap: 6, marginBottom: 14 }}>
+      <div style={{ display: 'flex', gap: 2, background: '#E8EDEC', padding: 3, borderRadius: 10, width: 'fit-content', marginBottom: 14 }}>
         {TABS.map((t) => (
-          <button key={t} className={`btn-action${tab !== t ? ' btn-ghost' : ''}`} style={{ fontSize: 11, padding: '5px 12px' }} onClick={() => setTab(t)}>{t}</button>
+          <button key={t} onClick={() => setTab(t)} style={{
+            fontSize: 11, fontWeight: tab === t ? 700 : 500,
+            padding: '6px 13px', borderRadius: 8, border: 'none', cursor: 'pointer',
+            background: tab === t ? '#fff' : 'transparent',
+            color: tab === t ? '#1C2B2A' : '#7A8F8E',
+            transition: 'all 0.15s', whiteSpace: 'nowrap',
+          }}>{t}</button>
         ))}
       </div>
 
       {/* KPIs */}
       <div className="kpis">
-        <div className="kpi">
-          <div className="kpi-lbl">Receita Bruta</div>
-          <div className="kpi-val" style={{ color: '#5E8C87' }}>
-            {metricas ? fmtBRL(Number(metricas.receita_bruta || 0)) : '—'}
+        <div className="kpi" style={{ borderTop: '3px solid #5E8C87' }}>
+          <div className="kpi-lbl">Receita Bruta
+            <div style={{ width: 28, height: 28, borderRadius: 8, background: '#EAF5F3', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <i className="fa-solid fa-arrow-trend-up" style={{ fontSize: 12, color: '#5E8C87' }} />
+            </div>
           </div>
+          <div className="kpi-val">{metricas ? fmtBRL(Number(metricas.receita_bruta || 0)) : '—'}</div>
           <div className="kpi-delta up">{competencia}</div>
         </div>
-        <div className="kpi">
-          <div className="kpi-lbl">Margem Bruta</div>
+        <div className="kpi" style={{ borderTop: '3px solid #2563eb' }}>
+          <div className="kpi-lbl">Margem Bruta
+            <div style={{ width: 28, height: 28, borderRadius: 8, background: '#E6F1FB', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <i className="fa-solid fa-percent" style={{ fontSize: 12, color: '#2563eb' }} />
+            </div>
+          </div>
           <div className="kpi-val">{metricas ? `${Number(metricas.margem_bruta || 0).toFixed(1)}%` : '—'}</div>
           <div className="kpi-delta">sobre receita líquida</div>
         </div>
-        <div className="kpi">
-          <div className="kpi-lbl">EBITDA</div>
-          <div className="kpi-val" style={{ color: Number(metricas?.ebitda || 0) >= 0 ? 'var(--navy)' : 'var(--red)' }}>
-            {metricas ? fmtBRL(Number(metricas.ebitda || 0)) : '—'}
+        <div className="kpi" style={{ borderTop: `3px solid ${Number(metricas?.ebitda || 0) >= 0 ? '#D97706' : '#E74C3C'}` }}>
+          <div className="kpi-lbl">EBITDA
+            <div style={{ width: 28, height: 28, borderRadius: 8, background: Number(metricas?.ebitda || 0) >= 0 ? '#FEF3C7' : '#FEE2E2', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <i className="fa-solid fa-gauge-high" style={{ fontSize: 12, color: Number(metricas?.ebitda || 0) >= 0 ? '#D97706' : '#E74C3C' }} />
+            </div>
           </div>
+          <div className="kpi-val">{metricas ? fmtBRL(Number(metricas.ebitda || 0)) : '—'}</div>
           <div className={`kpi-delta ${Number(metricas?.ebitda || 0) >= 0 ? 'up' : 'dn'}`}>
             {metricas ? `${Number(metricas.margem_ebitda || 0).toFixed(1)}% margem` : 'carregando'}
           </div>
         </div>
-        <div className="kpi">
-          <div className="kpi-lbl">Lucro Líquido</div>
-          <div className="kpi-val" style={{ color: Number(metricas?.lucro_liquido || 0) >= 0 ? 'var(--green)' : 'var(--red)' }}>
-            {metricas ? fmtBRL(Number(metricas.lucro_liquido || 0)) : '—'}
+        <div className="kpi" style={{ borderTop: `3px solid ${Number(metricas?.lucro_liquido || 0) >= 0 ? '#5E8C87' : '#E74C3C'}` }}>
+          <div className="kpi-lbl">Lucro Líquido
+            <div style={{ width: 28, height: 28, borderRadius: 8, background: Number(metricas?.lucro_liquido || 0) >= 0 ? '#EAF5F3' : '#FEE2E2', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <i className="fa-solid fa-chart-line" style={{ fontSize: 12, color: Number(metricas?.lucro_liquido || 0) >= 0 ? '#5E8C87' : '#E74C3C' }} />
+            </div>
           </div>
+          <div className="kpi-val">{metricas ? fmtBRL(Number(metricas.lucro_liquido || 0)) : '—'}</div>
           <div className={`kpi-delta ${Number(metricas?.lucro_liquido || 0) >= 0 ? 'up' : 'dn'}`}>
             {metricas ? `${Number(metricas.margem_liquida || 0).toFixed(1)}% margem` : 'carregando'}
           </div>

@@ -157,6 +157,35 @@ export default function PortalContadorPage() {
           </div>
         </div>
 
+        {/* KPI cards resumo */}
+        {metricas.length > 0 && (() => {
+          const ultimo = metricas[0]
+          return (
+            <div className="kpis" style={{ marginBottom: 16 }}>
+              <div className="kpi" style={{ borderTop: '3px solid #5E8C87' }}>
+                <div className="kpi-lbl">Receita Bruta <div style={{ width: 26, height: 26, borderRadius: 7, background: '#EAF5F3', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><i className="fa-solid fa-arrow-trend-up" style={{ fontSize: 11, color: '#5E8C87' }} /></div></div>
+                <div className="kpi-val">{formatBRL(ultimo.receita_bruta)}</div>
+                <div className="kpi-delta">{ultimo.competencia?.slice(0, 7)}</div>
+              </div>
+              <div className="kpi" style={{ borderTop: `3px solid ${ultimo.lucro_liquido >= 0 ? '#5E8C87' : '#E74C3C'}` }}>
+                <div className="kpi-lbl">Lucro Líquido <div style={{ width: 26, height: 26, borderRadius: 7, background: ultimo.lucro_liquido >= 0 ? '#EAF5F3' : '#FEE2E2', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><i className="fa-solid fa-chart-line" style={{ fontSize: 11, color: ultimo.lucro_liquido >= 0 ? '#5E8C87' : '#E74C3C' }} /></div></div>
+                <div className="kpi-val">{formatBRL(ultimo.lucro_liquido)}</div>
+                <div className={`kpi-delta ${ultimo.lucro_liquido >= 0 ? 'up' : 'dn'}`}>Margem {(Number(ultimo.margem_liquida) * 100).toFixed(1)}%</div>
+              </div>
+              <div className="kpi" style={{ borderTop: '3px solid #D97706' }}>
+                <div className="kpi-lbl">EBITDA <div style={{ width: 26, height: 26, borderRadius: 7, background: '#FEF3C7', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><i className="fa-solid fa-gauge-high" style={{ fontSize: 11, color: '#D97706' }} /></div></div>
+                <div className="kpi-val">{formatBRL(ultimo.ebitda)}</div>
+                <div className="kpi-delta">mês atual</div>
+              </div>
+              <div className="kpi" style={{ borderTop: '3px solid #7C3AED' }}>
+                <div className="kpi-lbl">Meses analisados <div style={{ width: 26, height: 26, borderRadius: 7, background: '#F3F0FF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><i className="fa-solid fa-calendar" style={{ fontSize: 11, color: '#7C3AED' }} /></div></div>
+                <div className="kpi-val">{metricas.length}</div>
+                <div className="kpi-delta">histórico disponível</div>
+              </div>
+            </div>
+          )
+        })()}
+
         {/* Tabs */}
         <div style={{ display: 'flex', gap: 2, background: '#E8EDEC', padding: 3, borderRadius: 10, width: 'fit-content', marginBottom: 16 }}>
           {tabsVisiveis.map(t => (
