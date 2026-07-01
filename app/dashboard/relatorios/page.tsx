@@ -423,23 +423,88 @@ export default function RelatoriosPage() {
       {/* Métricas */}
       {tab === 'Métricas' && (
         <>
-          <div className="kpis">
-            {['roi', 'roic', 'roce', 'margem_liquida'].map((k) => (
-              <div key={k} className="kpi">
-                <div className="kpi-lbl">{k.toUpperCase()}</div>
-                <div className="kpi-val">{Number(metricas?.[k] || 0).toFixed(2)}%</div>
-              </div>
-            ))}
+          {/* Métricas de rentabilidade */}
+          <div style={{ fontSize: 10, fontWeight: 700, color: '#7A8F8E', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }}>Rentabilidade</div>
+          <div className="kpis" style={{ gridTemplateColumns: 'repeat(4,1fr)', marginBottom: 16 }}>
+            {[
+              { key: 'margem_liquida',  label: 'Margem Líquida',  icon: 'fa-percent',       bg: '#EAF5F3', color: '#5E8C87', fmt: (v: number) => `${Number(v).toFixed(1)}%`,  desc: 'Lucro / Receita' },
+              { key: 'margem_bruta',    label: 'Margem Bruta',    icon: 'fa-chart-line',     bg: '#EAF5F3', color: '#5E8C87', fmt: (v: number) => `${Number(v).toFixed(1)}%`,  desc: 'Lucro Bruto / Receita' },
+              { key: 'margem_ebitda',   label: 'Margem EBITDA',   icon: 'fa-gauge-high',     bg: '#FEF3C7', color: '#D97706', fmt: (v: number) => `${Number(v).toFixed(1)}%`,  desc: 'EBITDA / Receita' },
+              { key: 'roi',             label: 'ROI',             icon: 'fa-arrow-trend-up', bg: '#EAF5F3', color: '#5E8C87', fmt: (v: number) => `${Number(v).toFixed(2)}%`,  desc: 'Retorno sobre investimento' },
+            ].map(m => {
+              const val = Number(metricas?.[m.key] || 0)
+              const isNeg = val < 0
+              return (
+                <div key={m.key} className="kpi" style={{ borderTop: `3px solid ${isNeg ? '#E74C3C' : m.color}` }}>
+                  <div className="kpi-lbl">
+                    {m.label}
+                    <div style={{ width: 26, height: 26, borderRadius: 7, background: isNeg ? '#FEE2E2' : m.bg, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <i className={`fa-solid ${m.icon}`} style={{ fontSize: 11, color: isNeg ? '#E74C3C' : m.color }} />
+                    </div>
+                  </div>
+                  <div className="kpi-val" style={{ color: isNeg ? '#E74C3C' : '#1C2B2A' }}>{m.fmt(val)}</div>
+                  <div className="kpi-delta" style={{ color: '#AAB8B7' }}>{m.desc}</div>
+                </div>
+              )
+            })}
           </div>
-          <div className="expenses-table">
-            <table>
-              <thead><tr><th>Métrica</th><th>Valor</th></tr></thead>
-              <tbody>
-                {['ebitda', 'ebit', 'lair', 'capital_investido', 'capital_empregado'].map((k) => (
-                  <tr key={k}><td>{k}</td><td style={{ fontFamily: "'Manrope', 'Inter', sans-serif" }}>{Number(metricas?.[k] || 0).toLocaleString('pt-BR')}</td></tr>
-                ))}
-              </tbody>
-            </table>
+
+          {/* Métricas operacionais */}
+          <div style={{ fontSize: 10, fontWeight: 700, color: '#7A8F8E', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10, marginTop: 4 }}>Resultado operacional</div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 10, marginBottom: 16 }}>
+            {[
+              { key: 'ebitda',          label: 'EBITDA',             desc: 'Resultado antes de juros, impostos e depreciação', color: '#D97706' },
+              { key: 'ebit',            label: 'EBIT (Lucro Operacional)', desc: 'Resultado operacional líquido', color: '#5E8C87' },
+              { key: 'capital_investido', label: 'Capital Investido', desc: 'Base de cálculo do ROIC',          color: '#7C3AED' },
+            ].map(m => {
+              const val = Number(metricas?.[m.key] || 0)
+              return (
+                <div key={m.key} style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 12, padding: '14px 16px' }}>
+                  <div style={{ fontSize: 10, fontWeight: 600, color: '#7A8F8E', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 6 }}>{m.label}</div>
+                  <div style={{ fontSize: 20, fontWeight: 700, color: val < 0 ? '#E74C3C' : m.color, fontFamily: "'Space Grotesk', sans-serif", letterSpacing: '-0.03em', marginBottom: 4 }}>
+                    {val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 })}
+                  </div>
+                  <div style={{ fontSize: 11, color: '#AAB8B7' }}>{m.desc}</div>
+                  {/* Mini barra de contexto */}
+                  <div style={{ marginTop: 10, height: 4, background: '#EEF2F1', borderRadius: 99, overflow: 'hidden' }}>
+                    <div style={{ height: '100%', width: `${Math.min(100, Math.abs(val) > 0 ? 60 : 0)}%`, background: val < 0 ? '#E74C3C' : m.color, borderRadius: 99 }} />
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+
+          {/* Saúde financeira — score visual */}
+          <div style={{ fontSize: 10, fontWeight: 700, color: '#7A8F8E', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }}>Indicadores de saúde</div>
+          <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 12, padding: '16px 18px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: 14 }}>
+              {[
+                { label: 'Liquidez (Receita/Despesas)', val: metricas?.receita_bruta && metricas?.despesas_totais ? Number(metricas.receita_bruta) / Math.max(1, Number(metricas.despesas_totais)) : null, bom: 1.2, otimo: 1.5, fmt: (v: number) => `${v.toFixed(2)}x`, desc: 'Acima de 1.2 = saudável' },
+                { label: 'Margem de Contribuição', val: Number(metricas?.margem_contribuicao || metricas?.margem_bruta || 0), bom: 30, otimo: 50, fmt: (v: number) => `${v.toFixed(1)}%`, desc: 'Acima de 30% = saudável' },
+                { label: 'ROI', val: Number(metricas?.roi || 0), bom: 10, otimo: 20, fmt: (v: number) => `${v.toFixed(1)}%`, desc: 'Acima de 10% = saudável' },
+                { label: 'Eficiência Operacional', val: metricas?.receita_bruta && metricas?.despesas_totais ? (1 - Number(metricas.despesas_totais) / Math.max(1, Number(metricas.receita_bruta))) * 100 : null, bom: 20, otimo: 35, fmt: (v: number) => `${v.toFixed(1)}%`, desc: 'Acima de 20% = saudável' },
+              ].map(ind => {
+                const v = ind.val
+                const pct = v == null ? 0 : Math.min(100, Math.max(0, (v / ind.otimo) * 100))
+                const cor = v == null ? '#AAB8B7' : v >= ind.otimo ? '#5E8C87' : v >= ind.bom ? '#D97706' : '#E74C3C'
+                const status = v == null ? '—' : v >= ind.otimo ? 'Ótimo' : v >= ind.bom ? 'Bom' : 'Atenção'
+                return (
+                  <div key={ind.label}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 5 }}>
+                      <span style={{ fontSize: 11, fontWeight: 600, color: '#1C2B2A' }}>{ind.label}</span>
+                      <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                        <span style={{ fontSize: 12, fontWeight: 700, color: cor, fontFamily: "'Space Grotesk', sans-serif" }}>{v == null ? '—' : ind.fmt(v)}</span>
+                        <span style={{ fontSize: 9, padding: '1px 7px', borderRadius: 20, background: v == null ? '#EEF2F1' : v >= ind.otimo ? '#EAF5F3' : v >= ind.bom ? '#FEF3C7' : '#FEE2E2', color: cor, fontWeight: 700 }}>{status}</span>
+                      </div>
+                    </div>
+                    <div style={{ height: 6, background: '#EEF2F1', borderRadius: 99, overflow: 'hidden' }}>
+                      <div style={{ height: '100%', width: `${pct}%`, background: cor, borderRadius: 99, transition: 'width 0.5s' }} />
+                    </div>
+                    <div style={{ fontSize: 10, color: '#AAB8B7', marginTop: 3 }}>{ind.desc}</div>
+                  </div>
+                )
+              })}
+            </div>
           </div>
         </>
       )}

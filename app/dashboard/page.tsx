@@ -58,6 +58,8 @@ export default function DashboardPage() {
   const [clientesWidget, setClientesWidget] = useState<ClientesWidget | null>(null)
   const [trend12, setTrend12] = useState<{ mes: string; receita: number; despesas: number }[]>([])
   const [topCats, setTopCats] = useState<{ cat: string; val: number }[]>([])
+  const [periodo, setPeriodo] = useState<'mes' | 'trimestre' | 'ano'>('mes')
+  const [showExportMenu, setShowExportMenu] = useState(false)
   const router = useRouter()
 
   function irParaAlerta(alertId: string) {
@@ -276,6 +278,64 @@ export default function DashboardPage() {
         <div>
           <div className="page-title">Dashboard</div>
           <div className="page-sub">{empresaNome || nome} · {mesAno} · {saudacao}!</div>
+        </div>
+        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+          {/* Filtro de período */}
+          <div style={{ display: 'flex', background: '#E8EDEC', padding: 3, borderRadius: 8, gap: 2 }}>
+            {([
+              { key: 'mes', label: 'Mês' },
+              { key: 'trimestre', label: 'Trimestre' },
+              { key: 'ano', label: 'Ano' },
+            ] as { key: typeof periodo; label: string }[]).map(p => (
+              <button key={p.key} onClick={() => setPeriodo(p.key)} style={{
+                fontSize: 11, fontWeight: periodo === p.key ? 700 : 500,
+                padding: '5px 12px', borderRadius: 6, border: 'none', cursor: 'pointer',
+                background: periodo === p.key ? '#fff' : 'transparent',
+                color: periodo === p.key ? '#1C2B2A' : '#7A8F8E',
+                transition: 'all 0.15s',
+              }}>{p.label}</button>
+            ))}
+          </div>
+
+          {/* Exportar PDF */}
+          <div style={{ position: 'relative' }}>
+            <button
+              onClick={() => setShowExportMenu(m => !m)}
+              style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 14px', borderRadius: 8, border: '0.5px solid #E2E8E7', background: '#fff', color: '#3A5150', fontSize: 11, fontWeight: 600, cursor: 'pointer' }}
+            >
+              <i className="fa-solid fa-file-export" style={{ fontSize: 11 }} />Exportar
+              <i className="fa-solid fa-chevron-down" style={{ fontSize: 8, color: '#AAB8B7' }} />
+            </button>
+            {showExportMenu && (
+              <div style={{ position: 'absolute', top: 38, right: 0, background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 10, boxShadow: '0 8px 24px rgba(0,0,0,0.1)', zIndex: 100, minWidth: 180, overflow: 'hidden' }}>
+                {[
+                  { label: 'DRE em PDF', icon: 'fa-file-pdf', color: '#E74C3C', url: '/api/dre/exportar-pdf', method: 'POST' },
+                  { label: 'Financeiro PDF', icon: 'fa-file-pdf', color: '#E74C3C', url: '/api/financeiro/exportar-pdf', method: 'GET' },
+                  { label: 'Patrimônio PDF', icon: 'fa-file-pdf', color: '#E74C3C', url: '/api/patrimonio/relatorio', method: 'GET' },
+                ].map(item => (
+                  <button key={item.label} onClick={async () => {
+                    setShowExportMenu(false)
+                    const { baixarArquivo } = await import('@/lib/download-arquivo')
+                    const r = await baixarArquivo(item.url, `${item.label.toLowerCase().replace(/ /g, '_')}.pdf`)
+                    if ('erro' in r) { const { default: toast } = await import('react-hot-toast'); toast.error(r.erro) }
+                  }} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '9px 14px', width: '100%', border: 'none', background: 'transparent', cursor: 'pointer', fontSize: 12, color: '#1C2B2A', textAlign: 'left', borderBottom: '0.5px solid #F0F4F3' }}
+                    onMouseOver={e => (e.currentTarget.style.background = '#F8FAFA')}
+                    onMouseOut={e => (e.currentTarget.style.background = 'transparent')}
+                  >
+                    <i className={`fa-solid ${item.icon}`} style={{ color: item.color, fontSize: 12, width: 14 }} />
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Link AI */}
+          <Link href="/dashboard/aicfo" style={{ textDecoration: 'none' }}>
+            <button style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 14px', borderRadius: 8, border: 'none', background: '#1C2B2A', color: '#7EBDB8', fontSize: 11, fontWeight: 700, cursor: 'pointer' }}>
+              <i className="fa-solid fa-robot" style={{ fontSize: 11 }} />FactorOne AI
+            </button>
+          </Link>
         </div>
       </div>
 
