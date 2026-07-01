@@ -207,7 +207,7 @@ export default function NovaDespesaModal({
     width: '100%', border: '0.5px solid #E2E8E7', borderRadius: 8,
     padding: '9px 12px', fontSize: 12, color: '#1C2B2A',
     background: '#fff', boxSizing: 'border-box', outline: 'none',
-    fontFamily: "'Manrope', 'Inter', sans-serif",
+    fontFamily: "'Manrope', system-ui, sans-serif",
   }
   const lbl: React.CSSProperties = {
     fontSize: 10, fontWeight: 600, color: '#7A8F8E', marginBottom: 5,

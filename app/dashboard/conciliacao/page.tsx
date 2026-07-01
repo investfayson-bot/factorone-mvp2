@@ -318,7 +318,7 @@ export default function ConciliacaoPage() {
                 </td></tr>
               ) : filtrados.map(item => (
                 <tr key={item.id}>
-                  <td style={{ fontFamily: "'Manrope', 'Inter', sans-serif", fontSize: 11, color: 'var(--gray-400)' }}>
+                  <td style={{ fontFamily: "'Manrope', system-ui, sans-serif", fontSize: 11, color: 'var(--gray-400)' }}>
                     {new Date(item.data + 'T12:00:00').toLocaleDateString('pt-BR')}
                   </td>
                   <td style={{ fontWeight: 600, fontSize: 12 }}>{item.descBanco}</td>
@@ -328,7 +328,7 @@ export default function ConciliacaoPage() {
                       <span style={{ marginLeft: 6, fontSize: 9, color: 'var(--gold)', fontWeight: 700 }}>Δ{item.diffPct}%</span>
                     )}
                   </td>
-                  <td style={{ textAlign: 'right', fontFamily: "'Manrope', 'Inter', sans-serif", fontWeight: 700, color: item.tipo === 'entrada' ? 'var(--green)' : 'var(--red)' }}>
+                  <td style={{ textAlign: 'right', fontFamily: "'Manrope', system-ui, sans-serif", fontWeight: 700, color: item.tipo === 'entrada' ? 'var(--green)' : 'var(--red)' }}>
                     {item.tipo === 'entrada' ? '+' : '-'}{fmt(item.valor)}
                   </td>
                   <td style={{ textAlign: 'center' }}>

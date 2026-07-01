@@ -408,7 +408,7 @@ export default function RelatoriosPage() {
                 <div key={h.mes} style={{ marginBottom: 8 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, marginBottom: 3 }}>
                     <span>{h.mes}</span>
-                    <span style={{ fontFamily: "'Manrope', 'Inter', sans-serif", fontWeight: 700, color: h.lucro >= 0 ? 'var(--green)' : 'var(--red)' }}>{fmtBRL(h.lucro)}</span>
+                    <span style={{ fontFamily: "'Manrope', system-ui, sans-serif", fontWeight: 700, color: h.lucro >= 0 ? 'var(--green)' : 'var(--red)' }}>{fmtBRL(h.lucro)}</span>
                   </div>
                   <div style={{ height: 4, background: 'var(--gray-100)', borderRadius: 2 }}>
                     <div style={{ height: '100%', width: `${pct}%`, background: h.lucro >= 0 ? 'var(--green)' : 'var(--red)', borderRadius: 2 }} />
@@ -537,10 +537,10 @@ export default function RelatoriosPage() {
               <tbody>
                 {histChart.map((h) => (
                   <tr key={h.mes}>
-                    <td style={{ fontFamily: "'Manrope', 'Inter', sans-serif" }}>{h.mes}</td>
+                    <td style={{ fontFamily: "'Manrope', system-ui, sans-serif" }}>{h.mes}</td>
                     <td style={{ color: '#5E8C87', fontWeight: 600 }}>{fmtBRL(h.receita)}</td>
                     <td style={{ color: h.lucro >= 0 ? 'var(--green)' : 'var(--red)', fontWeight: 600 }}>{fmtBRL(h.lucro)}</td>
-                    <td style={{ fontFamily: "'Manrope', 'Inter', sans-serif" }}>{h.margem.toFixed(2)}%</td>
+                    <td style={{ fontFamily: "'Manrope', system-ui, sans-serif" }}>{h.margem.toFixed(2)}%</td>
                   </tr>
                 ))}
               </tbody>
@@ -794,7 +794,7 @@ export default function RelatoriosPage() {
                         <td>{new Date(r.created_at).toLocaleDateString('pt-BR')}</td>
                         <td>{r.descricao}</td>
                         <td><span className="tag gray">{r.origem}</span></td>
-                        <td style={{ fontFamily: "'Manrope', 'Inter', sans-serif", fontWeight: 600 }}>{fmtBRL(Number(r.valor || 0))}</td>
+                        <td style={{ fontFamily: "'Manrope', system-ui, sans-serif", fontWeight: 600 }}>{fmtBRL(Number(r.valor || 0))}</td>
                       </tr>
                     ))}
                   </tbody>

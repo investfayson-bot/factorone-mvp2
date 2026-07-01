@@ -242,7 +242,7 @@ export default function ContabilidadePage() {
               <div key={r.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, border: '1px solid var(--gray-100)', borderRadius: 8, padding: '8px 12px', fontSize: 12 }}>
                 <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontWeight: 600 }}>{r.fornecedor_extraido || 'Recibo'}</span>
                 <span style={{ color: 'var(--gray-400)' }}>{r.categoria_sugerida || '—'}</span>
-                <span style={{ fontFamily: "'Manrope', 'Inter', sans-serif", fontWeight: 700 }}>{r.valor_extraido ? fmtBRLCompact(Number(r.valor_extraido)) : '—'}</span>
+                <span style={{ fontFamily: "'Manrope', system-ui, sans-serif", fontWeight: 700 }}>{r.valor_extraido ? fmtBRLCompact(Number(r.valor_extraido)) : '—'}</span>
                 <span className="tag gray">{r.status}</span>
               </div>
             ))}

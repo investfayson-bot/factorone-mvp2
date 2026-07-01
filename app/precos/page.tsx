@@ -110,7 +110,7 @@ export default function PrecosPage() {
   const planos = PLANOS[tab]
 
   return (
-    <div style={{ minHeight: '100vh', background: '#F4F6F5', fontFamily: "'Manrope', 'Inter', sans-serif" }}>
+    <div style={{ minHeight: '100vh', background: '#F4F6F5', fontFamily: "'Manrope', system-ui, sans-serif" }}>
       {/* Nav */}
       <nav style={{ background: '#1C2B2A', padding: '0 28px', height: 56, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <Link href="/" style={{ textDecoration: 'none' }}>

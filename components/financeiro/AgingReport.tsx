@@ -34,7 +34,7 @@ export default function AgingReport() {
             const isRisk = c === '>90' || c === '61-90'
             return (
               <div key={c} style={{ background: isRisk ? 'rgba(192,80,74,.06)' : 'var(--gray-50, #fafafa)', border: `1px solid ${isRisk ? 'rgba(192,80,74,.2)' : 'var(--gray-100)'}`, borderRadius: 8, padding: '8px 10px' }}>
-                <div style={{ fontSize: 9, color: 'var(--gray-400)', textTransform: 'uppercase', fontFamily: "'Manrope', 'Inter', sans-serif", marginBottom: 4 }}>{c}</div>
+                <div style={{ fontSize: 9, color: 'var(--gray-400)', textTransform: 'uppercase', fontFamily: "'Manrope', system-ui, sans-serif", marginBottom: 4 }}>{c}</div>
                 <div style={{ fontSize: 12, fontWeight: 700, color: isRisk ? 'var(--red)' : 'var(--navy)' }}>{formatBRL(Number(totais?.[c] || 0))}</div>
               </div>
             )

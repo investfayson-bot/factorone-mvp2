@@ -98,7 +98,7 @@ export default function UpcomingPayments({ empresaId }: Props) {
   return (
     <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: 20, height: '100%', display: 'flex', flexDirection: 'column' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
-        <div style={{ fontSize: 9, fontWeight: 700, color: 'var(--gray-400)', letterSpacing: '.08em', textTransform: 'uppercase', fontFamily: "'Manrope', 'Inter', sans-serif" }}>
+        <div style={{ fontSize: 9, fontWeight: 700, color: 'var(--gray-400)', letterSpacing: '.08em', textTransform: 'uppercase', fontFamily: "'Manrope', system-ui, sans-serif" }}>
           Próximos Vencimentos · 7 dias
         </div>
         <Link href="/dashboard/despesas" style={{ fontSize: 11, color: 'var(--teal)', textDecoration: 'none' }}>Ver todos →</Link>
@@ -127,10 +127,10 @@ export default function UpcomingPayments({ empresaId }: Props) {
                   </p>
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 3, flexShrink: 0 }}>
-                  <span style={{ fontSize: 12.5, fontWeight: 700, color: 'var(--navy)', fontFamily: "'Manrope', 'Inter', sans-serif" }}>
+                  <span style={{ fontSize: 12.5, fontWeight: 700, color: 'var(--navy)', fontFamily: "'Manrope', system-ui, sans-serif" }}>
                     {fmtBRL(r.valor)}
                   </span>
-                  <span style={{ fontSize: 9.5, fontWeight: 700, padding: '1px 7px', borderRadius: 20, fontFamily: "'Manrope', 'Inter', sans-serif", ...badgeStyle(dias) }}>
+                  <span style={{ fontSize: 9.5, fontWeight: 700, padding: '1px 7px', borderRadius: 20, fontFamily: "'Manrope', system-ui, sans-serif", ...badgeStyle(dias) }}>
                     {dias === 0 ? 'Hoje' : dias === 1 ? 'Amanhã' : `${dias}d`}
                   </span>
                 </div>

@@ -124,7 +124,7 @@ export default function GastosPage() {
                 <td><span className="tag gray">{g.categoria}</span></td>
                 <td style={{ color: 'var(--gray-400)' }}>{g.data_despesa?.split('-').reverse().join('/')}</td>
                 <td style={{ color: 'var(--gray-400)', fontSize: 11 }}>{g.parcela_atual ? `${g.parcela_atual}/${g.total_parcelas}x` : '—'}</td>
-                <td style={{ fontFamily: "'Manrope', 'Inter', sans-serif", fontWeight: 700 }}>{formatBRL(Number(g.valor))}</td>
+                <td style={{ fontFamily: "'Manrope', system-ui, sans-serif", fontWeight: 700 }}>{formatBRL(Number(g.valor))}</td>
                 <td><span className={`tag ${g.status === 'pago' ? 'green' : g.status === 'vencido' ? 'red' : 'gray'}`}>{g.status}</span></td>
                 <td style={{ display: 'flex', gap: 6 }}>
                   {g.status !== 'pago' && <button onClick={() => marcarPago(g.id)} className="btn-ghost" style={{ padding: '3px 8px', fontSize: 10 }}>Pago</button>}
