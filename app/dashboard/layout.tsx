@@ -33,6 +33,7 @@ function buildNavGroups(badges: { reembolsos: number; aprovacoes: number }, inst
       items: [
         { href: '/dashboard/cashflow', icon: 'fa-chart-line', label: 'Fluxo de Caixa' },
         { href: '/dashboard/relatorios', icon: 'fa-chart-bar', label: 'DRE' },
+        { href: '/dashboard/credito', icon: 'fa-hand-holding-dollar', label: 'Crédito & Financiamento' },
         { href: '/dashboard/financeiro', icon: 'fa-receipt', label: 'Financeiro', badge: badges.reembolsos > 0 ? String(badges.reembolsos) : undefined, badgeColor: 'var(--teal)' },
         { href: '/dashboard/despesas', icon: 'fa-file-invoice', label: 'Despesas' },
         { href: '/dashboard/orcamento', icon: 'fa-chart-pie', label: 'Orçamento' },
@@ -91,6 +92,7 @@ const pageTitles: Record<string, string> = {
   '/dashboard/aicfo': 'FactorOne AI',
   '/dashboard/cashflow': 'Fluxo de Caixa',
   '/dashboard/relatorios': 'DRE',
+  '/dashboard/credito': 'Crédito & Financiamento',
   '/dashboard/financeiro': 'Financeiro',
   '/dashboard/despesas': 'Despesas',
   '/dashboard/orcamento': 'Orçamento',
