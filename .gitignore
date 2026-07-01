@@ -6,3 +6,6 @@ node_modules/
 .vercel
 .env*.local
 tsconfig.tsbuildinfo
+
+# Doc de contexto local (pode conter IDs/segredos) — nao versionar
+FACTORONE_CONTEXT.md
