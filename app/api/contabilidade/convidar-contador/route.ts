@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getSupabaseUser } from '@/lib/supabase-route'
+import { emailConviteContador } from '@/lib/email/notificacoes'
 
 export async function POST(req: NextRequest) {
   const { user, supabase } = await getSupabaseUser(req)
@@ -33,6 +34,10 @@ export async function POST(req: NextRequest) {
   if (error) return NextResponse.json({ error: error.message }, { status: 400 })
 
   const accessUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/contador/${data.token_acesso}`
-  return NextResponse.json({ success: true, contador_id: data.id, access_url: accessUrl })
+
+  const { data: emp } = await supabase.from('empresas').select('nome').eq('id', empresaId).maybeSingle()
+  const emailEnviado = await emailConviteContador(email, nome, (emp?.nome as string) || 'A empresa', accessUrl)
+
+  return NextResponse.json({ success: true, contador_id: data.id, access_url: accessUrl, email_enviado: emailEnviado })
 }
 

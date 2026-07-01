@@ -109,7 +109,7 @@ export default function ContabilidadePage() {
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data?.error || 'Falha ao convidar')
-      toast.success('Contador convidado')
+      toast.success(data?.email_enviado ? 'Contador convidado — link enviado por e-mail' : 'Contador convidado (copie o link de acesso para enviar)')
       setFormCont({ nome: '', email: '', crc: '', telefone: '' })
       setContadores((prev) => [{
         id: data.contador_id,

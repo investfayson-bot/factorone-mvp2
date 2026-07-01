@@ -159,6 +159,41 @@ export async function emailBoasVindas(para: string, nomeEmpresa: string): Promis
   } catch { return false }
 }
 
+export async function emailConviteContador(
+  para: string,
+  nomeContador: string,
+  nomeEmpresa: string,
+  accessUrl: string,
+): Promise<boolean> {
+  if (!process.env.RESEND_API_KEY) return false
+  const corpo = `
+    <p style="margin:0 0 16px;font-size:15px;font-weight:700;color:#1a2b4a">Olá, ${nomeContador}!</p>
+    <p style="margin:0 0 18px;font-size:13px;line-height:1.7;color:#334155">
+      <strong>${nomeEmpresa}</strong> convidou você para acompanhar a contabilidade da empresa no <strong>FactorOne</strong>.
+      Pelo portal, com acesso <strong>somente leitura</strong> e em tempo real, você acompanha a
+      <strong>DRE</strong>, os <strong>lançamentos</strong>, as <strong>notas fiscais</strong> e as <strong>despesas</strong>
+      — e pode exportar tudo em CSV e baixar os XMLs das notas.
+    </p>
+    <div style="margin:22px 0">
+      <a href="${accessUrl}" style="display:inline-block;background:#0f766e;color:#fff;text-decoration:none;padding:12px 26px;border-radius:8px;font-size:13px;font-weight:700">
+        Acessar o portal do contador →
+      </a>
+    </div>
+    <p style="margin:0;font-size:11px;line-height:1.6;color:#94a3b8">
+      Este link é pessoal e dá acesso aos dados financeiros de ${nomeEmpresa} — não compartilhe.
+      Se você não esperava este convite, ignore este e-mail.
+    </p>`
+  try {
+    const { error } = await getResend().emails.send({
+      from: FROM,
+      to: para,
+      subject: `${nomeEmpresa} convidou você para a contabilidade no FactorOne`,
+      html: baseHtml('#0f766e', 'Convite — Portal do Contador', corpo, para),
+    })
+    return !error
+  } catch { return false }
+}
+
 export async function emailDasAlert(para: string, nomeEmpresa: string, valor: number, vencimento: string): Promise<boolean> {
   if (!process.env.RESEND_API_KEY) return false
   const corpo = `

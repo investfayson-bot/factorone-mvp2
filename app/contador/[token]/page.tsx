@@ -8,7 +8,7 @@ type Permissoes = Record<string, boolean>
 type ContadorInfo = { nome: string; status: string; permissoes: Permissoes; empresa_nome?: string }
 type Metrica = { competencia: string; receita_bruta: number; lucro_liquido: number; ebitda: number; margem_liquida: number }
 type Lancamento = { id: string; descricao: string; valor: number; tipo: string; competencia: string; origem: string }
-type NotaEmitida = { id: string; numero: string | null; destinatario_nome: string | null; valor_total: number; status: string; created_at: string }
+type NotaEmitida = { id: string; numero: string | null; destinatario_nome: string | null; valor_total: number; status: string; created_at: string; xml_url: string | null; pdf_url: string | null }
 type Despesa = { id: string; descricao: string; valor: number; categoria: string; status: string; data_despesa: string | null }
 
 const TABS = ['dre', 'lancamentos', 'notas', 'despesas'] as const
@@ -46,6 +46,7 @@ export default function PortalContadorPage() {
   const [notas, setNotas] = useState<NotaEmitida[]>([])
   const [despesas, setDespesas] = useState<Despesa[]>([])
   const [dataLoading, setDataLoading] = useState(false)
+  const [competencia, setCompetencia] = useState('') // YYYY-MM (filtro de exportacao)
 
   useEffect(() => {
     if (!token) return
@@ -110,6 +111,9 @@ export default function PortalContadorPage() {
 
   const perm = cont.permissoes ?? {}
   const tabsVisiveis = TABS.filter(t => perm[PERM_KEYS[t]] !== false)
+  const podeExportar = perm.exportar !== false
+  const exportavel = tab === 'dre' || tab === 'lancamentos' || tab === 'despesas'
+  const exportUrl = `/api/contador/${token}/export?tipo=${tab}${competencia ? `&competencia=${competencia}` : ''}`
 
   return (
     <div style={{ minHeight: '100vh', background: '#F4F6F5' }}>
@@ -205,6 +209,33 @@ export default function PortalContadorPage() {
 
         {/* Conteúdo */}
         <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 14, overflow: 'hidden' }}>
+          {podeExportar && exportavel && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', padding: '10px 16px', borderBottom: '0.5px solid #E2E8E7', background: '#F8FAFA' }}>
+              <span style={{ fontSize: 11, color: '#7A8F8E', marginRight: 'auto', display: 'flex', alignItems: 'center', gap: 6 }}>
+                <i className="fa-solid fa-filter" style={{ fontSize: 10 }} />
+                Filtrar competência (opcional)
+              </span>
+              <input
+                type="month"
+                value={competencia}
+                onChange={e => setCompetencia(e.target.value)}
+                style={{ fontSize: 12, padding: '6px 10px', borderRadius: 8, border: '0.5px solid #E2E8E7', color: '#1C2B2A', background: '#fff' }}
+              />
+              {competencia && (
+                <button onClick={() => setCompetencia('')} title="Limpar filtro" style={{ fontSize: 12, padding: '6px 10px', borderRadius: 8, border: '0.5px solid #E2E8E7', background: '#fff', color: '#7A8F8E', cursor: 'pointer' }}>
+                  <i className="fa-solid fa-xmark" />
+                </button>
+              )}
+              <a
+                href={exportUrl}
+                style={{ display: 'inline-flex', alignItems: 'center', gap: 7, fontSize: 12, fontWeight: 600, padding: '7px 16px', borderRadius: 8, background: '#1C2B2A', color: '#fff', textDecoration: 'none' }}
+              >
+                <i className="fa-solid fa-file-csv" />
+                Baixar CSV
+              </a>
+            </div>
+          )}
+
           {dataLoading && (
             <div style={{ padding: '48px 16px', textAlign: 'center' }}>
               <i className="fa-solid fa-circle-notch fa-spin" style={{ fontSize: 20, color: '#5E8C87' }} />
@@ -297,6 +328,16 @@ export default function PortalContadorPage() {
                       <div style={{ fontSize: 10, color: '#7A8F8E', marginTop: 2 }}>NF {n.numero ?? 'pendente'} · {n.created_at?.slice(0, 10)}</div>
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                      {podeExportar && n.xml_url && (
+                        <a href={n.xml_url} target="_blank" rel="noopener noreferrer" title="Baixar XML" style={{ fontSize: 10.5, fontWeight: 700, padding: '3px 9px', borderRadius: 6, border: '0.5px solid #E2E8E7', color: '#5E8C87', textDecoration: 'none' }}>
+                          <i className="fa-solid fa-code" style={{ marginRight: 4 }} />XML
+                        </a>
+                      )}
+                      {podeExportar && n.pdf_url && (
+                        <a href={n.pdf_url} target="_blank" rel="noopener noreferrer" title="Baixar DANFE (PDF)" style={{ fontSize: 10.5, fontWeight: 700, padding: '3px 9px', borderRadius: 6, border: '0.5px solid #E2E8E7', color: '#E74C3C', textDecoration: 'none' }}>
+                          <i className="fa-solid fa-file-pdf" style={{ marginRight: 4 }} />PDF
+                        </a>
+                      )}
                       <span style={{ fontSize: 10, padding: '2px 8px', borderRadius: 20, fontWeight: 600, background: n.status === 'autorizada' ? '#EAF5F3' : '#FEF3C7', color: n.status === 'autorizada' ? '#0F6E56' : '#92400E' }}>
                         {n.status}
                       </span>

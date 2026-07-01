@@ -64,7 +64,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ toke
   if (tab === 'notas') {
     const { data } = await supabase
       .from('notas_emitidas')
-      .select('id, numero, destinatario_nome, valor_total, status, created_at')
+      .select('id, numero, destinatario_nome, valor_total, status, created_at, xml_url, pdf_url')
       .eq('empresa_id', eid)
       .order('created_at', { ascending: false })
       .limit(30)
