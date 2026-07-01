@@ -93,7 +93,7 @@ export default function FolhaPage() {
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 18, gap: 12, flexWrap: 'wrap' }}>
         <div>
-          <h1 style={{ fontFamily: "'Space Grotesk', system-ui, sans-serif", fontSize: 18, fontWeight: 700, color: 'var(--navy)', margin: 0 }}>Folha de Pagamento</h1>
+          <h1 style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", fontSize: 18, fontWeight: 700, color: 'var(--navy)', margin: 0 }}>Folha de Pagamento</h1>
           <div style={{ fontSize: 12, color: 'var(--gray-500)', marginTop: 3 }}>Funcionários, salários e custo da folha.</div>
         </div>
         <button className="btn-action" style={{ borderRadius: 8, padding: '9px 16px' }} onClick={() => setShowForm(v => !v)}>

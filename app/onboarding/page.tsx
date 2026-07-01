@@ -117,7 +117,7 @@ export default function OnboardingPage() {
       {showSidebar && (
         <aside style={{ width: 260, background: 'var(--navy)', display: 'flex', flexDirection: 'column', padding: '32px 24px', flexShrink: 0 }}>
           {/* Logo */}
-          <div style={{ fontFamily: "'Space Grotesk', system-ui, sans-serif", fontSize: 20, fontWeight: 800, color: '#fff', letterSpacing: '-.04em', marginBottom: 6 }}>
+          <div style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", fontSize: 20, fontWeight: 800, color: '#fff', letterSpacing: '-.04em', marginBottom: 6 }}>
             Factor<span style={{ color: 'var(--teal)' }}>One</span>
           </div>
           {empresa.nome && (
@@ -178,10 +178,10 @@ export default function OnboardingPage() {
             </div>
 
             {/* Logo */}
-            <div style={{ fontFamily: "'Space Grotesk', system-ui, sans-serif", fontSize: 13, fontWeight: 600, color: 'var(--gray-400)', letterSpacing: '.06em', textTransform: 'uppercase', marginBottom: 8 }}>
+            <div style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", fontSize: 13, fontWeight: 600, color: 'var(--gray-400)', letterSpacing: '.06em', textTransform: 'uppercase', marginBottom: 8 }}>
               Finance OS
             </div>
-            <div style={{ fontFamily: "'Space Grotesk', system-ui, sans-serif", fontSize: 28, fontWeight: 800, color: 'var(--navy)', letterSpacing: '-.03em', marginBottom: 6 }}>
+            <div style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", fontSize: 28, fontWeight: 800, color: 'var(--navy)', letterSpacing: '-.03em', marginBottom: 6 }}>
               {userName ? `Bem-vindo, ${userName.split(' ')[0]}!` : 'Bem-vindo ao FactorOne'}
             </div>
             <div style={{ fontSize: 13, color: 'var(--gray-400)', lineHeight: 1.7, marginBottom: 32, maxWidth: 420 }}>
@@ -217,7 +217,7 @@ export default function OnboardingPage() {
         {screen === 'perfil' && (
           <div style={{ width: '100%', maxWidth: 600 }}>
             <div style={{ marginBottom: 28 }}>
-              <div style={{ fontSize: 22, fontFamily: "'Space Grotesk', system-ui, sans-serif", fontWeight: 800, color: 'var(--navy)', marginBottom: 6 }}>Como você vai usar o FactorOne?</div>
+              <div style={{ fontSize: 22, fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", fontWeight: 800, color: 'var(--navy)', marginBottom: 6 }}>Como você vai usar o FactorOne?</div>
               <div style={{ fontSize: 13, color: 'var(--gray-400)' }}>Escolha o modo principal. Você pode usar os dois.</div>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
@@ -230,7 +230,7 @@ export default function OnboardingPage() {
                 <div style={{ width: 46, height: 46, background: 'var(--teal)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16 }}>
                   <i className="fa-solid fa-building" style={{ color: '#fff', fontSize: 18 }} />
                 </div>
-                <div style={{ fontFamily: "'Space Grotesk', system-ui, sans-serif", fontSize: 16, fontWeight: 700, color: 'var(--navy)', marginBottom: 4 }}>Empresarial (PJ)</div>
+                <div style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", fontSize: 16, fontWeight: 700, color: 'var(--navy)', marginBottom: 4 }}>Empresarial (PJ)</div>
                 <div style={{ fontSize: 12, color: 'var(--gray-400)', lineHeight: 1.6, marginBottom: 16 }}>PMEs, startups e agências que precisam de gestão financeira completa.</div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                   {['DRE & Fluxo de Caixa', 'AI CFO + Relatórios', 'NF-e, DAS, Contador'].map(f => (
@@ -249,7 +249,7 @@ export default function OnboardingPage() {
                 <div style={{ width: 46, height: 46, background: 'var(--gray-100)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16 }}>
                   <i className="fa-solid fa-user" style={{ color: 'var(--gray-500)', fontSize: 18 }} />
                 </div>
-                <div style={{ fontFamily: "'Space Grotesk', system-ui, sans-serif", fontSize: 16, fontWeight: 700, color: 'var(--navy)', marginBottom: 4 }}>Pessoa Física</div>
+                <div style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", fontSize: 16, fontWeight: 700, color: 'var(--navy)', marginBottom: 4 }}>Pessoa Física</div>
                 <div style={{ fontSize: 12, color: 'var(--gray-400)', lineHeight: 1.6, marginBottom: 16 }}>Organização financeira pessoal, metas e controle de gastos.</div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                   {['Controle de gastos & metas', 'IRPF & investimentos', 'Orçamento mensal'].map(f => (
@@ -270,7 +270,7 @@ export default function OnboardingPage() {
         {screen === 'empresa' && (
           <div style={{ width: '100%', maxWidth: 520 }}>
             <div style={{ marginBottom: 28 }}>
-              <div style={{ fontSize: 22, fontFamily: "'Space Grotesk', system-ui, sans-serif", fontWeight: 800, color: 'var(--navy)', marginBottom: 6 }}>Quais são os dados da sua empresa?</div>
+              <div style={{ fontSize: 22, fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", fontWeight: 800, color: 'var(--navy)', marginBottom: 6 }}>Quais são os dados da sua empresa?</div>
               <div style={{ fontSize: 13, color: 'var(--gray-400)' }}>Insira o CNPJ e o nome conforme registrado na Receita Federal.</div>
             </div>
 
@@ -311,7 +311,7 @@ export default function OnboardingPage() {
         {screen === 'financeiro' && (
           <div style={{ width: '100%', maxWidth: 520 }}>
             <div style={{ marginBottom: 24 }}>
-              <div style={{ fontSize: 22, fontFamily: "'Space Grotesk', system-ui, sans-serif", fontWeight: 800, color: 'var(--navy)', marginBottom: 6 }}>Traga seus dados financeiros</div>
+              <div style={{ fontSize: 22, fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", fontWeight: 800, color: 'var(--navy)', marginBottom: 6 }}>Traga seus dados financeiros</div>
               <div style={{ fontSize: 13, color: 'var(--gray-400)', lineHeight: 1.6 }}>Escolha como conectar sua conta bancária — você pode mudar isso depois.</div>
             </div>
 
@@ -361,7 +361,7 @@ export default function OnboardingPage() {
             <div style={{ width: 64, height: 64, background: 'linear-gradient(135deg, var(--teal), #3A7A74)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px', boxShadow: '0 6px 20px rgba(94,140,135,.3)' }}>
               <i className="fa-solid fa-check" style={{ color: '#fff', fontSize: 26 }} />
             </div>
-            <div style={{ fontFamily: "'Space Grotesk', system-ui, sans-serif", fontSize: 24, fontWeight: 800, color: 'var(--navy)', marginBottom: 6 }}>
+            <div style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", fontSize: 24, fontWeight: 800, color: 'var(--navy)', marginBottom: 6 }}>
               {empresa.nome || 'Tudo pronto'}!
             </div>
             {userName && (

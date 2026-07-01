@@ -220,7 +220,7 @@ export default function MarketingPage() {
                       <i className={`fa-brands ${t.icon}`} style={{ color: t.color, fontSize: 14 }} />
                       <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--navy)' }}>{c.nome}</span>
                     </div>
-                    <span style={{ fontSize: 11, fontFamily: "'Manrope', system-ui, sans-serif", color: 'var(--gray-500)' }}>{formatBRL(Number(c.gasto))} / {c.orcamento ? formatBRL(Number(c.orcamento)) : '∞'}</span>
+                    <span style={{ fontSize: 11, fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", color: 'var(--gray-500)' }}>{formatBRL(Number(c.gasto))} / {c.orcamento ? formatBRL(Number(c.orcamento)) : '∞'}</span>
                   </div>
                   <div style={{ height: 5, background: 'var(--gray-100)', borderRadius: 3 }}>
                     <div style={{ height: 5, borderRadius: 3, width: `${pct}%`, background: pct > 90 ? 'var(--red)' : pct > 70 ? 'var(--gold)' : 'var(--teal)', transition: 'width .3s' }} />
@@ -268,9 +268,9 @@ export default function MarketingPage() {
                       <td style={{ fontWeight: 700, fontSize: 12 }}>{c.nome}</td>
                       <td><span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 11 }}><i className={`fa-brands ${t.icon}`} style={{ color: t.color }} />{t.label}</span></td>
                       <td><span className="tag gray" style={{ fontSize: 9, textTransform: 'uppercase' }}>{c.status}</span></td>
-                      <td style={{ textAlign: 'right', fontFamily: "'Manrope', system-ui, sans-serif", fontSize: 12 }}>{c.orcamento ? formatBRL(Number(c.orcamento)) : '—'}</td>
-                      <td style={{ textAlign: 'right', fontFamily: "'Manrope', system-ui, sans-serif", fontSize: 12, color: 'var(--red)' }}>{formatBRL(Number(c.gasto))}</td>
-                      <td style={{ textAlign: 'right', fontFamily: "'Manrope', system-ui, sans-serif", fontSize: 12, color: 'var(--green)' }}>{formatBRL(Number(c.receita_gerada))}</td>
+                      <td style={{ textAlign: 'right', fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", fontSize: 12 }}>{c.orcamento ? formatBRL(Number(c.orcamento)) : '—'}</td>
+                      <td style={{ textAlign: 'right', fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", fontSize: 12, color: 'var(--red)' }}>{formatBRL(Number(c.gasto))}</td>
+                      <td style={{ textAlign: 'right', fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", fontSize: 12, color: 'var(--green)' }}>{formatBRL(Number(c.receita_gerada))}</td>
                       <td style={{ textAlign: 'center', fontWeight: 700, fontSize: 12, color: Number(roas) >= 3 ? 'var(--green)' : Number(roas) >= 1 ? 'var(--gold)' : 'var(--red)' }}>{roas}x</td>
                       <td style={{ textAlign: 'center', fontSize: 12 }}>{c.conversoes}</td>
                     </tr>
@@ -308,7 +308,7 @@ export default function MarketingPage() {
                       <td style={{ fontSize: 11, color: 'var(--gray-400)' }}>{l.email || '—'}</td>
                       <td><span className="tag gray" style={{ fontSize: 9 }}>{l.origem || '—'}</span></td>
                       <td><span className="tag gray" style={{ fontSize: 9, textTransform: 'capitalize' }}>{l.status}</span></td>
-                      <td style={{ fontFamily: "'Manrope', system-ui, sans-serif", fontSize: 11 }}>{new Date(l.created_at).toLocaleDateString('pt-BR')}</td>
+                      <td style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", fontSize: 11 }}>{new Date(l.created_at).toLocaleDateString('pt-BR')}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -334,7 +334,7 @@ export default function MarketingPage() {
                 <div key={c.id} style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 10, padding: '12px 14px', borderLeft: `4px solid ${st.color}` }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
                     <span style={{ fontSize: 9, fontWeight: 700, padding: '2px 7px', borderRadius: 20, background: st.bg, color: st.color }}>{st.label}</span>
-                    <span style={{ fontSize: 10, color: 'var(--gray-400)', fontFamily: "'Manrope', system-ui, sans-serif" }}>{c.data_pub ? new Date(c.data_pub + 'T12:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' }) : '—'}</span>
+                    <span style={{ fontSize: 10, color: 'var(--gray-400)', fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" }}>{c.data_pub ? new Date(c.data_pub + 'T12:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' }) : '—'}</span>
                   </div>
                   <p style={{ fontSize: 12, fontWeight: 700, color: 'var(--navy)', margin: '0 0 3px' }}>{c.titulo}</p>
                   <p style={{ fontSize: 10, color: 'var(--gray-400)', margin: 0 }}>{c.tipo.replace(/_/g, ' ')} {c.canal ? `· ${c.canal}` : ''}</p>
@@ -361,7 +361,7 @@ export default function MarketingPage() {
                     <td style={{ fontSize: 11 }}>{l.telefone || '—'}</td>
                     <td><span className="tag gray" style={{ fontSize: 9 }}>{l.origem || '—'}</span></td>
                     <td><span className="tag gray" style={{ fontSize: 9, textTransform: 'capitalize' }}>{l.status}</span></td>
-                    <td style={{ fontFamily: "'Manrope', system-ui, sans-serif", fontSize: 11 }}>{new Date(l.created_at).toLocaleDateString('pt-BR')}</td>
+                    <td style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", fontSize: 11 }}>{new Date(l.created_at).toLocaleDateString('pt-BR')}</td>
                   </tr>
                 ))}
               </tbody>

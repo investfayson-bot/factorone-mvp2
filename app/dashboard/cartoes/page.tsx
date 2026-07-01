@@ -195,7 +195,7 @@ export default function CartoesPage() {
           <div style={{ width: 60, height: 60, borderRadius: 16, background: '#1C2B2A', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
             <i className="fa-solid fa-credit-card" style={{ fontSize: 26, color: '#7EBDB8' }} />
           </div>
-          <div style={{ fontSize: 16, fontWeight: 700, color: '#1C2B2A', marginBottom: 8, fontFamily: "'Space Grotesk', sans-serif" }}>Nenhum cartão cadastrado</div>
+          <div style={{ fontSize: 16, fontWeight: 700, color: '#1C2B2A', marginBottom: 8, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>Nenhum cartão cadastrado</div>
           <div style={{ fontSize: 12, color: '#7A8F8E', marginBottom: 20, lineHeight: 1.6 }}>Adicione seus cartões corporativos para gerenciar limites, faturas e gastos por categoria.</div>
           <button className="btn-action" onClick={() => setModalCartao(true)}>
             <i className="fa-solid fa-plus" style={{ marginRight: 6 }} />Adicionar cartão
@@ -222,11 +222,11 @@ export default function CartoesPage() {
                   <div style={{ position: 'absolute', top: -20, right: -20, width: 80, height: 80, borderRadius: '50%', background: 'rgba(255,255,255,0.06)' }} />
                   <div style={{ position: 'absolute', bottom: -10, left: -10, width: 60, height: 60, borderRadius: '50%', background: 'rgba(255,255,255,0.04)' }} />
                   <div style={{ fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,0.7)', marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.08em' }}>{c.bandeira}</div>
-                  <div style={{ fontSize: 13, fontWeight: 700, color: '#fff', marginBottom: 12, fontFamily: "'Space Grotesk', sans-serif" }}>{c.nome}</div>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: '#fff', marginBottom: 12, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>{c.nome}</div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
                     <div>
                       <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.6)', marginBottom: 2 }}>DISPONÍVEL</div>
-                      <div style={{ fontSize: 13, fontWeight: 700, color: '#fff', fontFamily: "'Space Grotesk', sans-serif" }}>{formatBRL(Number(c.limite_disponivel))}</div>
+                      <div style={{ fontSize: 13, fontWeight: 700, color: '#fff', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>{formatBRL(Number(c.limite_disponivel))}</div>
                     </div>
                     <div style={{ textAlign: 'right' }}>
                       <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.6)', marginBottom: 2 }}>USO</div>
@@ -275,7 +275,7 @@ export default function CartoesPage() {
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
               {/* Uso por categoria (donut) */}
               <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 14, padding: '16px 18px' }}>
-                <div style={{ fontSize: 12, fontWeight: 700, color: '#1C2B2A', marginBottom: 14, fontFamily: "'Space Grotesk', sans-serif" }}>Gastos por categoria</div>
+                <div style={{ fontSize: 12, fontWeight: 700, color: '#1C2B2A', marginBottom: 14, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>Gastos por categoria</div>
                 {porCat.length === 0 ? (
                   <div style={{ textAlign: 'center', padding: '30px 0', color: '#AAB8B7', fontSize: 12 }}>Nenhum gasto neste cartão</div>
                 ) : (
@@ -306,7 +306,7 @@ export default function CartoesPage() {
 
               {/* Histórico */}
               <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 14, padding: '16px 18px' }}>
-                <div style={{ fontSize: 12, fontWeight: 700, color: '#1C2B2A', marginBottom: 14, fontFamily: "'Space Grotesk', sans-serif" }}>Histórico de gastos</div>
+                <div style={{ fontSize: 12, fontWeight: 700, color: '#1C2B2A', marginBottom: 14, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>Histórico de gastos</div>
                 <ResponsiveContainer width="100%" height={140}>
                   <BarChart data={historicoMeses} margin={{ top: 4, right: 4, bottom: 0, left: 0 }} barSize={28}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#F0F4F3" vertical={false} />
@@ -321,7 +321,7 @@ export default function CartoesPage() {
               {/* Info do cartão selecionado */}
               {cartaoAtual && (
                 <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 14, padding: '16px 18px', gridColumn: '1 / -1' }}>
-                  <div style={{ fontSize: 12, fontWeight: 700, color: '#1C2B2A', marginBottom: 14, fontFamily: "'Space Grotesk', sans-serif" }}>Detalhes — {cartaoAtual.nome}</div>
+                  <div style={{ fontSize: 12, fontWeight: 700, color: '#1C2B2A', marginBottom: 14, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>Detalhes — {cartaoAtual.nome}</div>
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 12 }}>
                     {[
                       { label: 'Limite total', val: formatBRL(Number(cartaoAtual.limite)) },
@@ -331,7 +331,7 @@ export default function CartoesPage() {
                     ].map(item => (
                       <div key={item.label} style={{ background: '#F8FAFA', borderRadius: 10, padding: '10px 12px' }}>
                         <div style={{ fontSize: 10, color: '#7A8F8E', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '0.06em' }}>{item.label}</div>
-                        <div style={{ fontSize: 14, fontWeight: 700, color: item.cor || '#1C2B2A', fontFamily: "'Space Grotesk', sans-serif" }}>{item.val}</div>
+                        <div style={{ fontSize: 14, fontWeight: 700, color: item.cor || '#1C2B2A', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>{item.val}</div>
                       </div>
                     ))}
                   </div>
@@ -358,7 +358,7 @@ export default function CartoesPage() {
           {tab === 'gastos' && (
             <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 14, overflow: 'hidden' }}>
               <div style={{ padding: '12px 16px', borderBottom: '0.5px solid #E2E8E7', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#F8FAFA' }}>
-                <div style={{ fontSize: 12, fontWeight: 700, color: '#1C2B2A', fontFamily: "'Space Grotesk', sans-serif" }}>
+                <div style={{ fontSize: 12, fontWeight: 700, color: '#1C2B2A', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
                   Lançamentos · {cartaoAtual?.nome} · {formatBRL(totalGastos)} total
                 </div>
                 <button className="btn-action" style={{ fontSize: 11, padding: '5px 12px' }} onClick={() => setModalGasto(true)}>
@@ -386,7 +386,7 @@ export default function CartoesPage() {
                   <div style={{ fontSize: 11, color: '#7A8F8E' }}>
                     {g.parcelas && g.parcelas > 1 ? `${g.parcela_atual || 1}/${g.parcelas}x` : 'À vista'}
                   </div>
-                  <div style={{ fontSize: 12, fontWeight: 700, color: '#E74C3C', fontFamily: "'Space Grotesk', sans-serif" }}>{formatBRL(Number(g.valor))}</div>
+                  <div style={{ fontSize: 12, fontWeight: 700, color: '#E74C3C', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>{formatBRL(Number(g.valor))}</div>
                 </div>
               ))}
             </div>
@@ -396,7 +396,7 @@ export default function CartoesPage() {
           {tab === 'fatura' && (
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 320px', gap: 12 }}>
               <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 14, padding: '16px 18px' }}>
-                <div style={{ fontSize: 12, fontWeight: 700, color: '#1C2B2A', marginBottom: 14, fontFamily: "'Space Grotesk', sans-serif" }}>Fatura atual — {cartaoAtual?.nome}</div>
+                <div style={{ fontSize: 12, fontWeight: 700, color: '#1C2B2A', marginBottom: 14, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>Fatura atual — {cartaoAtual?.nome}</div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                   {gastosDoCarto.length === 0 ? (
                     <div style={{ textAlign: 'center', padding: '30px 0', color: '#AAB8B7', fontSize: 12 }}>Nenhum lançamento na fatura</div>
@@ -411,14 +411,14 @@ export default function CartoesPage() {
                           <div style={{ fontSize: 10, color: '#7A8F8E' }}>{new Date(g.data + 'T12:00:00').toLocaleDateString('pt-BR')} · {g.categoria || 'Outros'}</div>
                         </div>
                       </div>
-                      <div style={{ fontSize: 12, fontWeight: 700, color: '#E74C3C', fontFamily: "'Space Grotesk', sans-serif" }}>{formatBRL(Number(g.valor))}</div>
+                      <div style={{ fontSize: 12, fontWeight: 700, color: '#E74C3C', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>{formatBRL(Number(g.valor))}</div>
                     </div>
                   ))}
                 </div>
                 {gastosDoCarto.length > 0 && (
                   <div style={{ marginTop: 14, padding: '12px 0 0', borderTop: '0.5px solid #E2E8E7', display: 'flex', justifyContent: 'space-between' }}>
                     <span style={{ fontSize: 13, fontWeight: 700, color: '#1C2B2A' }}>Total da fatura</span>
-                    <span style={{ fontSize: 14, fontWeight: 700, color: '#E74C3C', fontFamily: "'Space Grotesk', sans-serif" }}>{formatBRL(totalGastos)}</span>
+                    <span style={{ fontSize: 14, fontWeight: 700, color: '#E74C3C', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>{formatBRL(totalGastos)}</span>
                   </div>
                 )}
               </div>
@@ -431,7 +431,7 @@ export default function CartoesPage() {
                 ].map(item => (
                   <div key={item.label} style={{ borderBottom: '0.5px solid rgba(255,255,255,0.08)', paddingBottom: 12 }}>
                     <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.45)', marginBottom: 4 }}>{item.label}</div>
-                    <div style={{ fontSize: item.size, fontWeight: 700, color: item.cor, fontFamily: "'Space Grotesk', sans-serif" }}>{item.val}</div>
+                    <div style={{ fontSize: item.size, fontWeight: 700, color: item.cor, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>{item.val}</div>
                   </div>
                 ))}
                 <button style={{ background: '#5E8C87', color: '#fff', border: 'none', borderRadius: 9, padding: '10px', fontSize: 12, fontWeight: 700, cursor: 'pointer', marginTop: 'auto' }}>
@@ -461,7 +461,7 @@ export default function CartoesPage() {
                         </div>
                       </div>
                       <div style={{ textAlign: 'right' }}>
-                        <div style={{ fontSize: 14, fontWeight: 700, color: cor, fontFamily: "'Space Grotesk', sans-serif" }}>{pct.toFixed(0)}% usado</div>
+                        <div style={{ fontSize: 14, fontWeight: 700, color: cor, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>{pct.toFixed(0)}% usado</div>
                         <div style={{ fontSize: 11, color: '#7A8F8E' }}>{formatBRL(usado)} de {formatBRL(Number(c.limite))}</div>
                       </div>
                     </div>

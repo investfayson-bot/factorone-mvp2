@@ -111,7 +111,7 @@ export default function AssinaturasPage() {
                   <td><span className="tag gray">{a.categoria}</span></td>
                   <td style={{ color: 'var(--gray-400)', fontSize: 11 }}>{a.ciclo}</td>
                   <td style={{ color: 'var(--gray-400)' }}>dia {a.dia_vencimento}</td>
-                  <td style={{ fontFamily: "'Manrope', system-ui, sans-serif", fontWeight: 700, color: 'var(--red)' }}>{formatBRL(Number(a.valor))}</td>
+                  <td style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", fontWeight: 700, color: 'var(--red)' }}>{formatBRL(Number(a.valor))}</td>
                   <td style={{ display: 'flex', gap: 6 }}>
                     <button onClick={() => toggleAtiva(a.id, a.ativa)} className="btn-ghost" style={{ fontSize: 10, padding: '3px 8px' }}>Pausar</button>
                     <button onClick={() => excluir(a.id)} className="btn-ghost" style={{ fontSize: 10, padding: '3px 8px', color: 'var(--red)' }}>✕</button>
@@ -133,7 +133,7 @@ export default function AssinaturasPage() {
                 <tr key={a.id} style={{ opacity: 0.6 }}>
                   <td style={{ fontWeight: 600 }}>{a.nome}</td>
                   <td><span className="tag gray">{a.categoria}</span></td>
-                  <td style={{ fontFamily: "'Manrope', system-ui, sans-serif" }}>{formatBRL(Number(a.valor))}</td>
+                  <td style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" }}>{formatBRL(Number(a.valor))}</td>
                   <td style={{ display: 'flex', gap: 6 }}>
                     <button onClick={() => toggleAtiva(a.id, a.ativa)} className="btn-ghost" style={{ fontSize: 10, padding: '3px 8px' }}>Reativar</button>
                     <button onClick={() => excluir(a.id)} className="btn-ghost" style={{ fontSize: 10, padding: '3px 8px', color: 'var(--red)' }}>✕</button>

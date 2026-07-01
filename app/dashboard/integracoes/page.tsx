@@ -118,7 +118,7 @@ export default function IntegracoesPage() {
         const itens = INTEGRACOES.filter(i => i.categoria === cat)
         return (
           <div key={cat} style={{ marginBottom: 20 }}>
-            <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--gray-400)', letterSpacing: '.08em', textTransform: 'uppercase', fontFamily: "'Manrope', system-ui, sans-serif", marginBottom: 10 }}>
+            <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--gray-400)', letterSpacing: '.08em', textTransform: 'uppercase', fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", marginBottom: 10 }}>
               {CAT_LABELS[cat] ?? cat}
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 10 }}>

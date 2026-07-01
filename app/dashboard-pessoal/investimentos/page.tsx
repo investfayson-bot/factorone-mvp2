@@ -232,7 +232,7 @@ export default function InvestimentosPage() {
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 14 }}>
           {/* Donut */}
           <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 14, padding: '16px 18px' }}>
-            <div style={{ fontSize: 12, fontWeight: 700, color: '#1C2B2A', marginBottom: 14, fontFamily: "'Space Grotesk', sans-serif" }}>Alocação por classe</div>
+            <div style={{ fontSize: 12, fontWeight: 700, color: '#1C2B2A', marginBottom: 14, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>Alocação por classe</div>
             {pieData.length === 0 ? (
               <div style={{ textAlign: 'center', padding: '30px 0', color: '#AAB8B7', fontSize: 12 }}>Nenhum ativo cadastrado</div>
             ) : (
@@ -267,7 +267,7 @@ export default function InvestimentosPage() {
 
           {/* Evolução */}
           <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 14, padding: '16px 18px' }}>
-            <div style={{ fontSize: 12, fontWeight: 700, color: '#1C2B2A', marginBottom: 14, fontFamily: "'Space Grotesk', sans-serif" }}>Evolução patrimonial</div>
+            <div style={{ fontSize: 12, fontWeight: 700, color: '#1C2B2A', marginBottom: 14, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>Evolução patrimonial</div>
             {totalAtual === 0 ? (
               <div style={{ textAlign: 'center', padding: '30px 0', color: '#AAB8B7', fontSize: 12 }}>Adicione investimentos para ver a evolução</div>
             ) : (
@@ -297,21 +297,21 @@ export default function InvestimentosPage() {
                   <i className={`fa-solid ${c.info.icon}`} style={{ fontSize: 15, color: c.info.cor }} />
                 </div>
                 <div>
-                  <div style={{ fontSize: 13, fontWeight: 700, color: '#1C2B2A', fontFamily: "'Space Grotesk', sans-serif" }}>{c.info.label}</div>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: '#1C2B2A', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>{c.info.label}</div>
                   <div style={{ fontSize: 10, color: '#7A8F8E' }}>{c.items.length} ativo{c.items.length !== 1 ? 's' : ''} · {c.pct.toFixed(1)}% da carteira</div>
                 </div>
                 <div style={{ marginLeft: 'auto', textAlign: 'right' }}>
-                  <div style={{ fontSize: 14, fontWeight: 700, color: '#1C2B2A', fontFamily: "'Space Grotesk', sans-serif" }}>{formatBRL(c.total)}</div>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: '#1C2B2A', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>{formatBRL(c.total)}</div>
                   <div style={{ fontSize: 11, fontWeight: 600, color: c.rend >= 0 ? '#5E8C87' : '#E74C3C' }}>{fmtPct(c.rendPct)}</div>
                 </div>
               </div>
               {c.items.slice(0, 3).map(inv => (
                 <div key={inv.id} style={{ display: 'flex', justifyContent: 'space-between', padding: '5px 0', borderTop: '0.5px solid #F0F4F3', fontSize: 11 }}>
                   <span style={{ color: '#3A5150', fontWeight: 500 }}>
-                    {inv.ticker ? <span style={{ background: '#EEF2F1', borderRadius: 4, padding: '1px 5px', fontSize: 9, fontWeight: 700, marginRight: 5, color: '#1C2B2A', fontFamily: "'Space Grotesk', sans-serif" }}>{inv.ticker}</span> : null}
+                    {inv.ticker ? <span style={{ background: '#EEF2F1', borderRadius: 4, padding: '1px 5px', fontSize: 9, fontWeight: 700, marginRight: 5, color: '#1C2B2A', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>{inv.ticker}</span> : null}
                     {inv.nome}
                   </span>
-                  <span style={{ fontWeight: 700, color: Number(inv.valor_atual) >= Number(inv.valor_aplicado) ? '#5E8C87' : '#E74C3C', fontFamily: "'Space Grotesk', sans-serif" }}>
+                  <span style={{ fontWeight: 700, color: Number(inv.valor_atual) >= Number(inv.valor_aplicado) ? '#5E8C87' : '#E74C3C', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
                     {formatBRL(Number(inv.valor_atual))}
                   </span>
                 </div>
@@ -360,7 +360,7 @@ export default function InvestimentosPage() {
                   <div key={inv.id} style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr 1fr 100px', padding: '11px 16px', borderBottom: i < itensFiltrados.length - 1 ? '0.5px solid #F0F4F3' : 'none', alignItems: 'center' }}>
                     <div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
-                        {inv.ticker && <span style={{ background: '#EEF2F1', borderRadius: 4, padding: '1px 5px', fontSize: 9, fontWeight: 700, color: '#1C2B2A', fontFamily: "'Space Grotesk', sans-serif" }}>{inv.ticker}</span>}
+                        {inv.ticker && <span style={{ background: '#EEF2F1', borderRadius: 4, padding: '1px 5px', fontSize: 9, fontWeight: 700, color: '#1C2B2A', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>{inv.ticker}</span>}
                         <span style={{ fontSize: 12, fontWeight: 600, color: '#1C2B2A' }}>{inv.nome}</span>
                       </div>
                       {inv.instituicao && <div style={{ fontSize: 10, color: '#7A8F8E', marginTop: 1 }}>{inv.instituicao}</div>}
@@ -368,10 +368,10 @@ export default function InvestimentosPage() {
                     <div>
                       <span style={{ fontSize: 10, padding: '2px 7px', borderRadius: 20, background: `${corDe(inv.tipo)}18`, color: corDe(inv.tipo), fontWeight: 600 }}>{inv.tipo}</span>
                     </div>
-                    <div style={{ fontSize: 11, color: '#7A8F8E', fontFamily: "'Space Grotesk', sans-serif" }}>{formatBRL(Number(inv.valor_aplicado))}</div>
-                    <div style={{ fontSize: 12, fontWeight: 700, color: '#1C2B2A', fontFamily: "'Space Grotesk', sans-serif" }}>{formatBRL(Number(inv.valor_atual))}</div>
+                    <div style={{ fontSize: 11, color: '#7A8F8E', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>{formatBRL(Number(inv.valor_aplicado))}</div>
+                    <div style={{ fontSize: 12, fontWeight: 700, color: '#1C2B2A', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>{formatBRL(Number(inv.valor_atual))}</div>
                     <div>
-                      <div style={{ fontSize: 11, fontWeight: 700, color: rend >= 0 ? '#5E8C87' : '#E74C3C', fontFamily: "'Space Grotesk', sans-serif" }}>{rend >= 0 ? '+' : ''}{formatBRL(rend)}</div>
+                      <div style={{ fontSize: 11, fontWeight: 700, color: rend >= 0 ? '#5E8C87' : '#E74C3C', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>{rend >= 0 ? '+' : ''}{formatBRL(rend)}</div>
                       <div style={{ fontSize: 10, color: rend >= 0 ? '#5E8C87' : '#E74C3C' }}>{fmtPct(rendP)}</div>
                     </div>
                     <div style={{ display: 'flex', gap: 4 }}>

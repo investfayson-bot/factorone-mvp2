@@ -58,7 +58,7 @@ export function RespostaIA({ data, pergunta = '' }: { data: RespostaData; pergun
           padding: '5px 12px', borderRadius: 7, border: 'none',
           background: disabled ? '#AAB8B7' : bg, color: '#fff',
           fontSize: 11, fontWeight: 700, cursor: disabled ? 'not-allowed' : 'pointer',
-          fontFamily: "'Manrope', sans-serif", opacity: disabled ? 0.7 : 1,
+          fontFamily: "'Plus Jakarta Sans', sans-serif", opacity: disabled ? 0.7 : 1,
           transition: 'opacity 0.15s',
         }}
       >
@@ -74,23 +74,23 @@ export function RespostaIA({ data, pergunta = '' }: { data: RespostaData; pergun
         {!fechar && (
           <button
             onClick={() => setExpandido(true)}
-            style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '5px 12px', borderRadius: 7, border: '0.5px solid #E2E8E7', background: '#fff', color: '#1C2B2A', fontSize: 11, fontWeight: 700, cursor: 'pointer', fontFamily: "'Manrope', sans-serif" }}
+            style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '5px 12px', borderRadius: 7, border: '0.5px solid #E2E8E7', background: '#fff', color: '#1C2B2A', fontSize: 11, fontWeight: 700, cursor: 'pointer', fontFamily: "'Plus Jakarta Sans', sans-serif" }}
           >
             <i className="fa-solid fa-expand" style={{ fontSize: 10 }} />Tela cheia
           </button>
         )}
         <BotaoAcao label={exportandoExcel ? 'Gerando...' : 'Excel'} onClick={handleExportExcel} bg="#0F6E56" disabled={exportandoExcel} icon="fa-file-excel" />
         <BotaoAcao label={exportandoPdf ? 'Gerando...' : 'PDF'} onClick={() => void handleExportPDF()} bg="#E74C3C" disabled={exportandoPdf} icon="fa-file-pdf" />
-        <a href={wppUrl} target="_blank" rel="noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '5px 12px', borderRadius: 7, border: 'none', background: '#25D366', color: '#fff', fontSize: 11, fontWeight: 700, textDecoration: 'none', fontFamily: "'Manrope', sans-serif" }}>
+        <a href={wppUrl} target="_blank" rel="noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '5px 12px', borderRadius: 7, border: 'none', background: '#25D366', color: '#fff', fontSize: 11, fontWeight: 700, textDecoration: 'none', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
           <i className="fa-brands fa-whatsapp" style={{ fontSize: 12 }} />WhatsApp
         </a>
-        <a href={mailUrl} style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '5px 12px', borderRadius: 7, border: 'none', background: '#2563eb', color: '#fff', fontSize: 11, fontWeight: 700, textDecoration: 'none', fontFamily: "'Manrope', sans-serif" }}>
+        <a href={mailUrl} style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '5px 12px', borderRadius: 7, border: 'none', background: '#2563eb', color: '#fff', fontSize: 11, fontWeight: 700, textDecoration: 'none', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
           <i className="fa-solid fa-envelope" style={{ fontSize: 10 }} />Email
         </a>
         {fechar && (
           <button
             onClick={() => setExpandido(false)}
-            style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '5px 12px', borderRadius: 7, border: '0.5px solid #E2E8E7', background: '#fff', color: '#7A8F8E', fontSize: 11, fontWeight: 700, cursor: 'pointer', fontFamily: "'Manrope', sans-serif" }}
+            style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '5px 12px', borderRadius: 7, border: '0.5px solid #E2E8E7', background: '#fff', color: '#7A8F8E', fontSize: 11, fontWeight: 700, cursor: 'pointer', fontFamily: "'Plus Jakarta Sans', sans-serif" }}
           >
             <i className="fa-solid fa-compress" style={{ fontSize: 10 }} />Fechar
           </button>
@@ -106,12 +106,12 @@ export function RespostaIA({ data, pergunta = '' }: { data: RespostaData; pergun
           <div key={i} style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 12, padding: grande ? '14px 16px' : '10px 12px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: grande ? 10 : 7 }}>
               {card.emoji && <i className={`fa-solid ${card.emoji}`} style={{ fontSize: grande ? 14 : 12, color: '#5E8C87', width: 16 }} />}
-              <span style={{ fontSize: grande ? 12 : 11, fontWeight: 700, color: '#1C2B2A', fontFamily: "'Space Grotesk', sans-serif" }}>{card.titulo}</span>
+              <span style={{ fontSize: grande ? 12 : 11, fontWeight: 700, color: '#1C2B2A', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>{card.titulo}</span>
             </div>
             {card.linhas?.map((l, j) => (
               <div key={j} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '5px 0', borderBottom: j < (card.linhas?.length ?? 0) - 1 ? '0.5px solid #F0F4F3' : 'none' }}>
                 <span style={{ fontSize: grande ? 11 : 10, color: '#7A8F8E' }}>{l.label}</span>
-                <span style={{ fontSize: grande ? 12 : 11, fontWeight: 700, color: DESTAQUE[l.destaque as keyof typeof DESTAQUE] ?? '#1C2B2A', fontFamily: "'Space Grotesk', sans-serif" }}>{l.valor}</span>
+                <span style={{ fontSize: grande ? 12 : 11, fontWeight: 700, color: DESTAQUE[l.destaque as keyof typeof DESTAQUE] ?? '#1C2B2A', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>{l.valor}</span>
               </div>
             ))}
           </div>
@@ -147,7 +147,7 @@ export function RespostaIA({ data, pergunta = '' }: { data: RespostaData; pergun
                 <i className="fa-solid fa-robot" style={{ fontSize: 16, color: '#7EBDB8' }} />
               </div>
               <div>
-                <div style={{ fontSize: 15, fontWeight: 700, color: '#fff', fontFamily: "'Space Grotesk', sans-serif" }}>FactorOne CFO — Análise Completa</div>
+                <div style={{ fontSize: 15, fontWeight: 700, color: '#fff', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>FactorOne CFO — Análise Completa</div>
                 <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.5)', marginTop: 2 }}>{data.resumo?.slice(0, 80)}{(data.resumo?.length ?? 0) > 80 ? '…' : ''}</div>
               </div>
             </div>

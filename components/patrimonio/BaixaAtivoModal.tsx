@@ -17,7 +17,7 @@ const inp: React.CSSProperties = {
   width: '100%', border: '0.5px solid #E2E8E7', borderRadius: 8,
   padding: '9px 12px', fontSize: 12, color: '#1C2B2A',
   background: '#fff', outline: 'none', marginTop: 8,
-  fontFamily: "'Manrope', system-ui, sans-serif",
+  fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
 }
 
 export default function BaixaAtivoModal({ open, onClose, onDone, ativo }: Props) {

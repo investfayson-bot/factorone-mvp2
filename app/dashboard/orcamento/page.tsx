@@ -225,9 +225,9 @@ export default function OrcamentoPage() {
                 {porCategoria.map((c) => (
                   <tr key={c.categoria}>
                     <td style={{ fontWeight: 600 }}>{c.categoria}</td>
-                    <td style={{ textAlign: 'right', fontFamily: "'Space Grotesk', sans-serif" }}>{formatBRL(c.previsto)}</td>
-                    <td style={{ textAlign: 'right', fontFamily: "'Space Grotesk', sans-serif" }}>{formatBRL(c.realizado)}</td>
-                    <td style={{ textAlign: 'right', fontFamily: "'Space Grotesk', sans-serif", color: c.previsto - c.realizado < 0 ? 'var(--red)' : 'var(--teal)', fontWeight: 700 }}>{formatBRL(c.previsto - c.realizado)}</td>
+                    <td style={{ textAlign: 'right', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>{formatBRL(c.previsto)}</td>
+                    <td style={{ textAlign: 'right', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>{formatBRL(c.realizado)}</td>
+                    <td style={{ textAlign: 'right', fontFamily: "'Plus Jakarta Sans', sans-serif", color: c.previsto - c.realizado < 0 ? 'var(--red)' : 'var(--teal)', fontWeight: 700 }}>{formatBRL(c.previsto - c.realizado)}</td>
                     <td style={{ textAlign: 'right', color: progressColor(c.pct), fontWeight: 700 }}>{c.pct.toFixed(1)}%</td>
                     <td style={{ textAlign: 'center' }}>
                       <button className="btn-ghost" style={{ padding: '4px 10px', fontSize: 11 }} onClick={() => { const l = linhas.find((x) => x.categoria === c.categoria); if (l) setEditLinha(l) }}>Editar</button>
@@ -265,9 +265,9 @@ export default function OrcamentoPage() {
                   const r = mesLinhas.reduce((s, l) => s + Number(l.valor_realizado || 0), 0)
                   return (
                     <tr key={m}>
-                      <td style={{ fontFamily: "'Space Grotesk', sans-serif" }}>{m.toString().padStart(2, '0')}/{ano}</td>
-                      <td style={{ textAlign: 'right', fontFamily: "'Space Grotesk', sans-serif", color: '#5E8C87', fontWeight: 700 }}>{formatBRL(r)}</td>
-                      <td style={{ textAlign: 'right', fontFamily: "'Space Grotesk', sans-serif" }}>{formatBRL(p)}</td>
+                      <td style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>{m.toString().padStart(2, '0')}/{ano}</td>
+                      <td style={{ textAlign: 'right', fontFamily: "'Plus Jakarta Sans', sans-serif", color: '#5E8C87', fontWeight: 700 }}>{formatBRL(r)}</td>
+                      <td style={{ textAlign: 'right', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>{formatBRL(p)}</td>
                     </tr>
                   )
                 })}
@@ -314,7 +314,7 @@ export default function OrcamentoPage() {
           {suplementacoes.map((s) => (
             <div key={s.id} style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 12, padding: '14px 16px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
-                <span style={{ fontSize: 14, fontWeight: 700, color: '#1C2B2A', fontFamily: "'Space Grotesk', sans-serif" }}>{formatBRL(Number(s.valor_solicitado || 0))}</span>
+                <span style={{ fontSize: 14, fontWeight: 700, color: '#1C2B2A', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>{formatBRL(Number(s.valor_solicitado || 0))}</span>
                 <span className={`tag ${s.status === 'aprovado' ? 'green' : s.status === 'rejeitado' ? 'red' : 'gray'}`}>{s.status}</span>
               </div>
               <div style={{ fontSize: 12, color: '#7A8F8E', marginBottom: s.status === 'pendente' ? 10 : 0 }}>{s.justificativa}</div>

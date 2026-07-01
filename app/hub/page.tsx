@@ -66,7 +66,7 @@ export default function HubHomePage() {
               <div style={{ width: 32, height: 32, borderRadius: 8, background: `${k.cor}15`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <i className={`fa-solid ${k.icon}`} style={{ fontSize: 14, color: k.cor }} />
               </div>
-              <div style={{ fontSize: 22, fontWeight: 800, color: 'var(--navy)', fontFamily: "'Manrope', system-ui, sans-serif" }}>{k.value}</div>
+              <div style={{ fontSize: 22, fontWeight: 800, color: 'var(--navy)', fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" }}>{k.value}</div>
               <div style={{ fontSize: 11, color: 'var(--gray-400)', fontWeight: 600 }}>{k.label}</div>
             </div>
           </Link>
@@ -110,7 +110,7 @@ export default function HubHomePage() {
                 <div style={{ width: 28, height: 28, borderRadius: 6, background: agente.cor, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 9, fontWeight: 800, flexShrink: 0 }}>{agente.inicial}</div>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--navy)' }}>{agente.nome}</div>
-                  <div style={{ fontSize: 10.5, color: 'var(--gray-400)', fontFamily: "'Manrope', system-ui, sans-serif" }}>
+                  <div style={{ fontSize: 10.5, color: 'var(--gray-400)', fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" }}>
                     {row.total_tokens.toLocaleString('pt-BR')} tokens · ${Number(row.custo_usd).toFixed(4)}
                   </div>
                 </div>

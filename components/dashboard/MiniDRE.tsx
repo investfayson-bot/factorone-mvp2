@@ -93,7 +93,7 @@ export default function MiniDRE({ empresaId }: Props) {
   return (
     <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: 20, height: '100%', display: 'flex', flexDirection: 'column' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
-        <div style={{ fontSize: 9, fontWeight: 700, color: 'var(--gray-400)', letterSpacing: '.08em', textTransform: 'uppercase', fontFamily: "'Manrope', system-ui, sans-serif" }}>
+        <div style={{ fontSize: 9, fontWeight: 700, color: 'var(--gray-400)', letterSpacing: '.08em', textTransform: 'uppercase', fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" }}>
           DRE Resumo
         </div>
         <Link href="/dashboard/relatorios" style={{ fontSize: 11, color: 'var(--teal)', textDecoration: 'none' }}>
@@ -123,16 +123,16 @@ export default function MiniDRE({ empresaId }: Props) {
               <span style={{ color: isLast ? 'var(--navy)' : 'var(--gray-500)' }}>{label}</span>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <span style={{
-                  fontWeight: 700, fontFamily: "'Manrope', system-ui, sans-serif",
+                  fontWeight: 700, fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
                   color: negateDisplay && v > 0 ? 'var(--fo-red)' : displayVal >= 0 ? 'var(--fo-green)' : 'var(--fo-red)',
                 }}>
                   {fmt(displayVal)}
                 </span>
                 {varPct === null ? (
-                  <span style={{ fontSize: 9, background: 'rgba(94,140,135,.1)', color: 'var(--teal2)', padding: '1px 5px', borderRadius: 20, fontFamily: "'Manrope', system-ui, sans-serif" }}>1º mês</span>
+                  <span style={{ fontSize: 9, background: 'rgba(94,140,135,.1)', color: 'var(--teal2)', padding: '1px 5px', borderRadius: 20, fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" }}>1º mês</span>
                 ) : (
                   <span style={{
-                    fontSize: 9, fontFamily: "'Manrope', system-ui, sans-serif",
+                    fontSize: 9, fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
                     color: (negateDisplay ? varPct <= 0 : varPct >= 0) ? 'var(--fo-green)' : 'var(--fo-red)',
                   }}>
                     {varPct >= 0 ? '+' : ''}{varPct.toFixed(1)}%

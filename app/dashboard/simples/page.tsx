@@ -153,7 +153,7 @@ export default function SimplesPage() {
     <div style={{ maxWidth: 920 }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 18, gap: 12, flexWrap: 'wrap' }}>
         <div>
-          <h1 style={{ fontFamily: "'Space Grotesk', system-ui, sans-serif", fontSize: 18, fontWeight: 700, color: 'var(--navy)', margin: 0 }}>Simples Nacional — Estimador de DAS</h1>
+          <h1 style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", fontSize: 18, fontWeight: 700, color: 'var(--navy)', margin: 0 }}>Simples Nacional — Estimador de DAS</h1>
           <div style={{ fontSize: 12, color: 'var(--gray-500)', marginTop: 3 }}>Calcule a alíquota efetiva e o imposto do mês (tabelas 2024).</div>
         </div>
         <button onClick={estimarFaturamento} className="btn-action btn-ghost" disabled={estimando} style={{ borderRadius: 8 }}>
@@ -210,7 +210,7 @@ export default function SimplesPage() {
             ].map(x => (
               <div key={x.label} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, padding: '6px 0', borderBottom: '1px solid var(--gray-100)' }}>
                 <span style={{ color: 'var(--gray-400)' }}>{x.label}</span>
-                <span style={{ color: 'var(--navy)', fontFamily: "'Manrope', system-ui, sans-serif" }}>{x.valor}</span>
+                <span style={{ color: 'var(--navy)', fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" }}>{x.valor}</span>
               </div>
             ))}
           </div>

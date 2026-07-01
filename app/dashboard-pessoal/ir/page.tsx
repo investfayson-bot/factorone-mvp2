@@ -176,7 +176,7 @@ export default function IRPage() {
             ].map(({ label, valor, cor, bold }) => (
               <div key={label} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, padding: '6px 0', borderBottom: '1px solid var(--gray-100)', fontWeight: bold ? 700 : 400 }}>
                 <span style={{ color: 'var(--gray-400)' }}>{label}</span>
-                <span style={{ color: cor, fontFamily: "'Manrope', system-ui, sans-serif" }}>{valor < 0 ? `- ${formatBRL(Math.abs(valor))}` : formatBRL(valor)}</span>
+                <span style={{ color: cor, fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" }}>{valor < 0 ? `- ${formatBRL(Math.abs(valor))}` : formatBRL(valor)}</span>
               </div>
             ))}
           </div>

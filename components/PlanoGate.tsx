@@ -26,7 +26,7 @@ export default function PlanoGate({ children, feature = 'esta funcionalidade' }:
           <div style={{ width: 52, height: 52, background: 'linear-gradient(135deg, #7C3AED, #9F5AF7)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
             <i className="fa-solid fa-star" style={{ color: '#fff', fontSize: 20 }} />
           </div>
-          <div style={{ fontFamily: "'Space Grotesk', system-ui, sans-serif", fontSize: 18, fontWeight: 800, color: 'var(--navy)', marginBottom: 8 }}>
+          <div style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", fontSize: 18, fontWeight: 800, color: 'var(--navy)', marginBottom: 8 }}>
             Funcionalidade Pro
           </div>
           <div style={{ fontSize: 13, color: 'var(--gray-400)', lineHeight: 1.7, marginBottom: 24 }}>
