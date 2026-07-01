@@ -68,8 +68,8 @@ type Manutencao = {
 }
 
 const STATUS_COLOR: Record<string, string> = {
-  agendada: 'var(--gray-400)', em_transito: 'var(--teal)', entregue: 'var(--green)',
-  cancelada: 'var(--red)', problema: 'var(--gold)',
+  agendada: '#7A8F8E', em_transito: '#5E8C87', entregue: '#16A085',
+  cancelada: '#E74C3C', problema: '#D97706',
 }
 const STATUS_BG: Record<string, string> = {
   agendada: '#f1f5f9', em_transito: '#e0f2fe', entregue: '#dcfce7',
@@ -81,7 +81,7 @@ const STATUS_LABEL: Record<string, string> = {
 }
 
 const PNEU_STATUS_COLOR: Record<string, string> = {
-  ativo: 'var(--green)', desgastado: 'var(--gold)', recapado: 'var(--teal)', descartado: 'var(--red)',
+  ativo: '#16A085', desgastado: '#D97706', recapado: '#5E8C87', descartado: '#E74C3C',
 }
 
 const CHECKLIST_ITENS = [
@@ -356,50 +356,71 @@ export default function LogisticaPage() {
       </div>
 
       {/* KPIs */}
-      <div className="kpis" style={{ padding: '16px 24px 0' }}>
-        <div className="kpi">
-          <div className="kpi-label">Receita Fretes</div>
+      <div className="kpis" style={{ gridTemplateColumns: 'repeat(5,1fr)' }}>
+        <div className="kpi" style={{ borderTop: '3px solid #5E8C87' }}>
+          <div className="kpi-lbl">Receita Fretes
+            <div style={{ width: 26, height: 26, borderRadius: 7, background: '#EAF5F3', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <i className="fa-solid fa-truck" style={{ fontSize: 11, color: '#5E8C87' }} />
+            </div>
+          </div>
           <div className="kpi-val">{fmt(receitaFrete)}</div>
-          <div className="kpi-sub">{totalFretes} rotas total</div>
+          <div className="kpi-delta up">{totalFretes} rotas total</div>
         </div>
-        <div className="kpi">
-          <div className="kpi-label">Em Trânsito</div>
-          <div className="kpi-val" style={{ color: 'var(--teal)' }}>{rotasAtivas}</div>
-          <div className="kpi-sub">{entregues} entregues</div>
+        <div className="kpi" style={{ borderTop: '3px solid #2563eb' }}>
+          <div className="kpi-lbl">Em Trânsito
+            <div style={{ width: 26, height: 26, borderRadius: 7, background: '#E6F1FB', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <i className="fa-solid fa-location-dot" style={{ fontSize: 11, color: '#2563eb' }} />
+            </div>
+          </div>
+          <div className="kpi-val" style={{ color: '#2563eb' }}>{rotasAtivas}</div>
+          <div className="kpi-delta up">{entregues} entregues</div>
         </div>
-        <div className="kpi">
-          <div className="kpi-label">Km Rodados</div>
+        <div className="kpi" style={{ borderTop: '3px solid #1C2B2A' }}>
+          <div className="kpi-lbl">Km Rodados
+            <div style={{ width: 26, height: 26, borderRadius: 7, background: '#EEF2F1', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <i className="fa-solid fa-road" style={{ fontSize: 11, color: '#1C2B2A' }} />
+            </div>
+          </div>
           <div className="kpi-val">{fmtNum(kmTotal, 0)} km</div>
-          <div className="kpi-sub">todas as rotas</div>
+          <div className="kpi-delta">todas as rotas</div>
         </div>
-        <div className="kpi">
-          <div className="kpi-label">Pneus Alerta</div>
-          <div className="kpi-val" style={{ color: pneusAlerta > 0 ? 'var(--red)' : 'var(--green)' }}>{pneusAlerta}</div>
-          <div className="kpi-sub">≥90% do limite</div>
+        <div className="kpi" style={{ borderTop: `3px solid ${pneusAlerta > 0 ? '#E74C3C' : '#5E8C87'}` }}>
+          <div className="kpi-lbl">Pneus Alerta
+            <div style={{ width: 26, height: 26, borderRadius: 7, background: pneusAlerta > 0 ? '#FEE2E2' : '#EAF5F3', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <i className="fa-solid fa-circle-exclamation" style={{ fontSize: 11, color: pneusAlerta > 0 ? '#E74C3C' : '#5E8C87' }} />
+            </div>
+          </div>
+          <div className="kpi-val" style={{ color: pneusAlerta > 0 ? '#E74C3C' : '#5E8C87' }}>{pneusAlerta}</div>
+          <div className={`kpi-delta ${pneusAlerta > 0 ? 'dn' : 'up'}`}>{pneusAlerta > 0 ? '⚠ ≥90% do limite' : '✓ dentro do limite'}</div>
         </div>
-        <div className="kpi">
-          <div className="kpi-label">Manutenção/mês</div>
-          <div className="kpi-val" style={{ color: 'var(--gold)' }}>{fmt(custoManutMes)}</div>
-          <div className="kpi-sub">{proximasManut.length} agendadas 30d</div>
+        <div className="kpi" style={{ borderTop: '3px solid #D97706' }}>
+          <div className="kpi-lbl">Manutenção/mês
+            <div style={{ width: 26, height: 26, borderRadius: 7, background: '#FEF3C7', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <i className="fa-solid fa-wrench" style={{ fontSize: 11, color: '#D97706' }} />
+            </div>
+          </div>
+          <div className="kpi-val">{fmt(custoManutMes)}</div>
+          <div className="kpi-delta warn">{proximasManut.length} agendadas 30d</div>
         </div>
       </div>
 
-      {/* Tabs */}
-      <div style={{ display: 'flex', gap: 0, borderBottom: '1px solid #e2e8f0', margin: '16px 24px 0', paddingBottom: 0 }}>
+      {/* Tabs pill */}
+      <div style={{ display: 'flex', gap: 2, background: '#E8EDEC', padding: 3, borderRadius: 10, width: 'fit-content', margin: '14px 0' }}>
         {TABS.map(t => (
           <button key={t.key} onClick={() => setTab(t.key as typeof tab)} style={{
-            padding: '8px 20px', border: 'none', background: 'none', cursor: 'pointer',
-            borderBottom: tab === t.key ? '2px solid var(--teal)' : '2px solid transparent',
-            color: tab === t.key ? 'var(--teal)' : 'var(--gray-400)', fontWeight: tab === t.key ? 600 : 400,
-            fontSize: 13, display: 'flex', alignItems: 'center', gap: 6,
+            display: 'flex', alignItems: 'center', gap: 6,
+            padding: '6px 13px', borderRadius: 8, fontSize: 11,
+            fontWeight: tab === t.key ? 700 : 500, border: 'none', cursor: 'pointer',
+            background: tab === t.key ? '#fff' : 'transparent',
+            color: tab === t.key ? '#1C2B2A' : '#7A8F8E', transition: 'all .15s',
           }}>
-            <i className={`fa-solid ${t.icon}`} style={{ fontSize: 11 }} /> {t.label}
+            <i className={`fa-solid ${t.icon || 'fa-circle'}`} style={{ fontSize: 10 }} />{t.label}
           </button>
         ))}
       </div>
 
-      <div style={{ padding: '20px 24px' }}>
-        {loading && <div style={{ textAlign: 'center', color: 'var(--gray-400)', padding: 40 }}>Carregando...</div>}
+      <div style={{ padding: '12px 0' }}>
+        {loading && <div style={{ textAlign: 'center', color: '#7A8F8E', padding: 40 }}>Carregando...</div>}
 
         {/* ── DASHBOARD ── */}
         {!loading && tab === 'dashboard' && (
@@ -434,12 +455,12 @@ export default function LogisticaPage() {
                 <div key={r.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 0', borderBottom: '1px solid #f1f5f9', fontSize: 13 }}>
                   <div>
                     <div style={{ fontWeight: 600 }}>{r.origem} → {r.destino}</div>
-                    <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>{r.motorista ?? 'Motorista não definido'}</div>
+                    <div style={{ fontSize: 11, color: '#7A8F8E' }}>{r.motorista ?? 'Motorista não definido'}</div>
                   </div>
-                  <div style={{ fontWeight: 700, color: 'var(--teal)' }}>{fmt(r.valor_frete)}</div>
+                  <div style={{ fontWeight: 700, color: '#5E8C87' }}>{fmt(r.valor_frete)}</div>
                 </div>
               ))}
-              {rotas.length === 0 && <div style={{ color: 'var(--gray-400)', fontSize: 13 }}>Nenhuma rota cadastrada</div>}
+              {rotas.length === 0 && <div style={{ color: '#7A8F8E', fontSize: 13 }}>Nenhuma rota cadastrada</div>}
             </div>
 
             {/* Pneus críticos */}
@@ -452,15 +473,15 @@ export default function LogisticaPage() {
                   <div key={p.id} style={{ marginBottom: 10 }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, marginBottom: 3 }}>
                       <span>{p.veiculo_nome} — Pos. {p.posicao}</span>
-                      <span style={{ fontWeight: 600, color: alerta ? 'var(--red)' : 'inherit' }}>{pct}%</span>
+                      <span style={{ fontWeight: 600, color: alerta ? '#E74C3C' : 'inherit' }}>{pct}%</span>
                     </div>
                     <div style={{ height: 5, background: '#f1f5f9', borderRadius: 3, overflow: 'hidden' }}>
-                      <div style={{ height: '100%', width: `${pct}%`, background: alerta ? 'var(--red)' : 'var(--green)', borderRadius: 3 }} />
+                      <div style={{ height: '100%', width: `${pct}%`, background: alerta ? '#E74C3C' : '#16A085', borderRadius: 3 }} />
                     </div>
                   </div>
                 )
               })}
-              {pneus.length === 0 && <div style={{ color: 'var(--gray-400)', fontSize: 13 }}>Nenhum pneu cadastrado</div>}
+              {pneus.length === 0 && <div style={{ color: '#7A8F8E', fontSize: 13 }}>Nenhum pneu cadastrado</div>}
             </div>
 
             {/* Checklists recentes */}
@@ -473,15 +494,15 @@ export default function LogisticaPage() {
                   <div key={c.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 0', borderBottom: '1px solid #f1f5f9', fontSize: 13 }}>
                     <div>
                       <div style={{ fontWeight: 600 }}>{c.veiculo_nome}</div>
-                      <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>{c.data} — {c.motorista}</div>
+                      <div style={{ fontSize: 11, color: '#7A8F8E' }}>{c.data} — {c.motorista}</div>
                     </div>
-                    <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 12, background: c.status === 'aprovado' ? '#dcfce7' : '#fee2e2', color: c.status === 'aprovado' ? 'var(--green)' : 'var(--red)', fontWeight: 600 }}>
+                    <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 12, background: c.status === 'aprovado' ? '#dcfce7' : '#fee2e2', color: c.status === 'aprovado' ? '#16A085' : '#E74C3C', fontWeight: 600 }}>
                       {ok}/{total}
                     </span>
                   </div>
                 )
               })}
-              {checklists.length === 0 && <div style={{ color: 'var(--gray-400)', fontSize: 13 }}>Nenhum checklist realizado</div>}
+              {checklists.length === 0 && <div style={{ color: '#7A8F8E', fontSize: 13 }}>Nenhum checklist realizado</div>}
             </div>
           </div>
         )}
@@ -490,7 +511,7 @@ export default function LogisticaPage() {
         {!loading && tab === 'rotas' && (
           <div>
             {rotas.length === 0 ? (
-              <div style={{ textAlign: 'center', padding: 60, color: 'var(--gray-400)' }}>
+              <div style={{ textAlign: 'center', padding: 60, color: '#7A8F8E' }}>
                 <i className="fa-solid fa-route" style={{ fontSize: 40, marginBottom: 12, display: 'block' }} />
                 Nenhuma rota cadastrada
               </div>
@@ -508,14 +529,14 @@ export default function LogisticaPage() {
                       <td style={{ fontFamily: 'DM Mono, monospace', fontSize: 12 }}>{r.codigo ?? '—'}</td>
                       <td>
                         <div style={{ fontWeight: 600 }}>{r.origem} → {r.destino}</div>
-                        {r.distancia_km && <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>{fmtNum(r.distancia_km, 0)} km</div>}
+                        {r.distancia_km && <div style={{ fontSize: 11, color: '#7A8F8E' }}>{fmtNum(r.distancia_km, 0)} km</div>}
                       </td>
                       <td>{r.motorista ?? '—'}</td>
                       <td>
                         <div>{r.carga ?? '—'}</div>
-                        {r.peso_kg && <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>{fmtNum(r.peso_kg, 0)} kg</div>}
+                        {r.peso_kg && <div style={{ fontSize: 11, color: '#7A8F8E' }}>{fmtNum(r.peso_kg, 0)} kg</div>}
                       </td>
-                      <td style={{ fontWeight: 700, color: 'var(--teal)', fontFamily: 'DM Mono, monospace' }}>{fmt(r.valor_frete)}</td>
+                      <td style={{ fontWeight: 700, color: '#5E8C87', fontFamily: 'DM Mono, monospace' }}>{fmt(r.valor_frete)}</td>
                       <td>
                         <span style={{ fontSize: 11, padding: '3px 8px', borderRadius: 12, background: STATUS_BG[r.status], color: STATUS_COLOR[r.status], fontWeight: 600 }}>
                           {STATUS_LABEL[r.status]}
@@ -525,10 +546,10 @@ export default function LogisticaPage() {
                       <td>
                         {r.lat_atual && r.lng_atual ? (
                           <a href={`https://www.google.com/maps?q=${r.lat_atual},${r.lng_atual}`} target="_blank" rel="noopener noreferrer"
-                            style={{ fontSize: 11, color: 'var(--teal)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}>
+                            style={{ fontSize: 11, color: '#5E8C87', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}>
                             <i className="fa-solid fa-location-dot" /> Ver
                           </a>
-                        ) : <span style={{ fontSize: 11, color: 'var(--gray-400)' }}>—</span>}
+                        ) : <span style={{ fontSize: 11, color: '#7A8F8E' }}>—</span>}
                       </td>
                       <td>
                         <div style={{ display: 'flex', gap: 5 }}>
@@ -538,7 +559,7 @@ export default function LogisticaPage() {
                             </button>
                           )}
                           {r.status === 'em_transito' && (
-                            <button className="btn-action" style={{ fontSize: 10, padding: '3px 10px', background: 'var(--green)', border: 'none' }} onClick={() => atualizarStatus(r.id, 'entregue')}>
+                            <button className="btn-action" style={{ fontSize: 10, padding: '3px 10px', background: '#16A085', border: 'none' }} onClick={() => atualizarStatus(r.id, 'entregue')}>
                               <i className="fa-solid fa-check" style={{ marginRight: 4 }} />Entregar
                             </button>
                           )}
@@ -558,12 +579,12 @@ export default function LogisticaPage() {
         {/* ── PNEUS ── */}
         {!loading && tab === 'pneus' && (
           <div>
-            <div style={{ marginBottom: 12, fontSize: 13, color: 'var(--gray-400)' }}>
+            <div style={{ marginBottom: 12, fontSize: 13, color: '#7A8F8E' }}>
               <i className="fa-solid fa-circle-info" style={{ marginRight: 6 }} />
               Monitore o km rodado de cada pneu por posição. Troque quando atingir o limite.
             </div>
             {pneus.length === 0 ? (
-              <div style={{ textAlign: 'center', padding: 60, color: 'var(--gray-400)' }}>
+              <div style={{ textAlign: 'center', padding: 60, color: '#7A8F8E' }}>
                 <i className="fa-solid fa-circle-dot" style={{ fontSize: 40, marginBottom: 12, display: 'block' }} />
                 Nenhum pneu cadastrado
               </div>
@@ -588,13 +609,13 @@ export default function LogisticaPage() {
                         <td>
                           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                             <div style={{ width: 60, height: 6, background: '#e2e8f0', borderRadius: 3, overflow: 'hidden' }}>
-                              <div style={{ height: '100%', width: `${pct}%`, background: alerta ? 'var(--red)' : 'var(--green)', borderRadius: 3 }} />
+                              <div style={{ height: '100%', width: `${pct}%`, background: alerta ? '#E74C3C' : '#16A085', borderRadius: 3 }} />
                             </div>
-                            <span style={{ fontSize: 11, fontWeight: 600, color: alerta ? 'var(--red)' : 'inherit' }}>{pct}%</span>
+                            <span style={{ fontSize: 11, fontWeight: 600, color: alerta ? '#E74C3C' : 'inherit' }}>{pct}%</span>
                           </div>
                         </td>
                         <td>
-                          <span style={{ fontSize: 11, padding: '3px 8px', borderRadius: 12, background: alerta ? '#fee2e2' : '#dcfce7', color: alerta ? 'var(--red)' : PNEU_STATUS_COLOR[p.status], fontWeight: 600 }}>
+                          <span style={{ fontSize: 11, padding: '3px 8px', borderRadius: 12, background: alerta ? '#fee2e2' : '#dcfce7', color: alerta ? '#E74C3C' : PNEU_STATUS_COLOR[p.status], fontWeight: 600 }}>
                             {alerta ? 'Trocar' : p.status}
                           </span>
                         </td>
@@ -613,15 +634,15 @@ export default function LogisticaPage() {
           <div>
             {proximasManut.length > 0 && (
               <div style={{ background: '#fffbeb', border: '1px solid rgba(184,146,42,.3)', borderRadius: 10, padding: '10px 16px', marginBottom: 14, display: 'flex', alignItems: 'center', gap: 10 }}>
-                <i className="fa-solid fa-triangle-exclamation" style={{ color: 'var(--gold)' }} />
+                <i className="fa-solid fa-triangle-exclamation" style={{ color: '#D97706' }} />
                 <span style={{ fontSize: 13, fontWeight: 600 }}>{proximasManut.length} manutenção{proximasManut.length > 1 ? 'ões' : ''} agendada{proximasManut.length > 1 ? 's' : ''} nos próximos 30 dias</span>
-                <span style={{ fontSize: 12, color: 'var(--gray-400)', marginLeft: 4 }}>
+                <span style={{ fontSize: 12, color: '#7A8F8E', marginLeft: 4 }}>
                   {proximasManut.map(m => m.veiculo_nome).join(', ')}
                 </span>
               </div>
             )}
             {manutencoes.length === 0 ? (
-              <div style={{ textAlign: 'center', padding: 60, color: 'var(--gray-400)' }}>
+              <div style={{ textAlign: 'center', padding: 60, color: '#7A8F8E' }}>
                 <i className="fa-solid fa-wrench" style={{ fontSize: 40, marginBottom: 12, display: 'block' }} />
                 Nenhuma manutenção registrada
               </div>
@@ -636,15 +657,15 @@ export default function LogisticaPage() {
                       <td style={{ fontSize: 12 }}>{new Date(m.data + 'T12:00:00').toLocaleDateString('pt-BR')}</td>
                       <td style={{ fontWeight: 600 }}>{m.veiculo_nome}</td>
                       <td>
-                        <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 12, background: m.tipo === 'preventiva' ? '#dcfce7' : m.tipo === 'corretiva' ? '#fee2e2' : '#e0f2fe', color: m.tipo === 'preventiva' ? 'var(--green)' : m.tipo === 'corretiva' ? 'var(--red)' : 'var(--teal)', fontWeight: 600 }}>
+                        <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 12, background: m.tipo === 'preventiva' ? '#dcfce7' : m.tipo === 'corretiva' ? '#fee2e2' : '#e0f2fe', color: m.tipo === 'preventiva' ? '#16A085' : m.tipo === 'corretiva' ? '#E74C3C' : '#5E8C87', fontWeight: 600 }}>
                           {m.tipo}
                         </span>
                       </td>
                       <td style={{ fontSize: 12 }}>{m.descricao ?? '—'}</td>
                       <td style={{ fontFamily: 'DM Mono, monospace', fontSize: 12 }}>{m.km_ou_horas ? fmtNum(m.km_ou_horas, 0) : '—'}</td>
                       <td style={{ fontSize: 12 }}>{m.oficina ?? '—'}</td>
-                      <td style={{ fontWeight: 700, color: 'var(--red)', fontFamily: 'DM Mono, monospace' }}>{fmt(m.valor)}</td>
-                      <td style={{ fontSize: 12, color: m.proxima_data && m.proxima_data <= new Date(Date.now() + 7 * 86400000).toISOString().slice(0, 10) ? 'var(--red)' : 'inherit' }}>
+                      <td style={{ fontWeight: 700, color: '#E74C3C', fontFamily: 'DM Mono, monospace' }}>{fmt(m.valor)}</td>
+                      <td style={{ fontSize: 12, color: m.proxima_data && m.proxima_data <= new Date(Date.now() + 7 * 86400000).toISOString().slice(0, 10) ? '#E74C3C' : 'inherit' }}>
                         {m.proxima_data ? new Date(m.proxima_data + 'T12:00:00').toLocaleDateString('pt-BR') : '—'}
                       </td>
                     </tr>
@@ -658,7 +679,7 @@ export default function LogisticaPage() {
         {!loading && tab === 'checklist' && (
           <div>
             {checklists.length === 0 ? (
-              <div style={{ textAlign: 'center', padding: 60, color: 'var(--gray-400)' }}>
+              <div style={{ textAlign: 'center', padding: 60, color: '#7A8F8E' }}>
                 <i className="fa-solid fa-clipboard-check" style={{ fontSize: 40, marginBottom: 12, display: 'block' }} />
                 Nenhum checklist realizado
               </div>
@@ -679,18 +700,18 @@ export default function LogisticaPage() {
                         <td>
                           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                             <div style={{ width: 60, height: 6, background: '#e2e8f0', borderRadius: 3, overflow: 'hidden' }}>
-                              <div style={{ height: '100%', width: `${total ? Math.round(okCount / total * 100) : 0}%`, background: 'var(--green)', borderRadius: 3 }} />
+                              <div style={{ height: '100%', width: `${total ? Math.round(okCount / total * 100) : 0}%`, background: '#16A085', borderRadius: 3 }} />
                             </div>
                             <span style={{ fontSize: 12 }}>{okCount}/{total}</span>
                           </div>
                         </td>
                         <td>
-                          <span style={{ fontSize: 11, padding: '3px 8px', borderRadius: 12, background: c.status === 'aprovado' ? '#dcfce7' : '#fee2e2', color: c.status === 'aprovado' ? 'var(--green)' : 'var(--red)', fontWeight: 600 }}>
+                          <span style={{ fontSize: 11, padding: '3px 8px', borderRadius: 12, background: c.status === 'aprovado' ? '#dcfce7' : '#fee2e2', color: c.status === 'aprovado' ? '#16A085' : '#E74C3C', fontWeight: 600 }}>
                             {c.status === 'aprovado' ? 'Aprovado' : 'Reprovado'}
                           </span>
                         </td>
                         <td>
-                          <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>
+                          <div style={{ fontSize: 11, color: '#7A8F8E' }}>
                             {Object.entries(c.itens).filter(([, v]) => !v).map(([k]) => k).join(', ') || '—'}
                           </div>
                         </td>
@@ -717,17 +738,17 @@ export default function LogisticaPage() {
             {!rotaDetalhe && (
               <div
                 onClick={() => romaneioRef.current?.click()}
-                style={{ border: '2px dashed var(--teal)', borderRadius: 10, padding: '14px 20px', marginBottom: 20, cursor: 'pointer', background: ocrResult ? '#e0fdf4' : '#f0fdfa', display: 'flex', alignItems: 'center', gap: 12 }}
+                style={{ border: '2px dashed #5E8C87', borderRadius: 10, padding: '14px 20px', marginBottom: 20, cursor: 'pointer', background: ocrResult ? '#e0fdf4' : '#f0fdfa', display: 'flex', alignItems: 'center', gap: 12 }}
               >
-                <i className="fa-solid fa-file-image" style={{ fontSize: 24, color: 'var(--teal)' }} />
+                <i className="fa-solid fa-file-image" style={{ fontSize: 24, color: '#5E8C87' }} />
                 <div>
-                  <div style={{ fontWeight: 600, color: 'var(--teal)', fontSize: 13 }}>
+                  <div style={{ fontWeight: 600, color: '#5E8C87', fontSize: 13 }}>
                     {ocrLoading ? 'Lendo romaneio com IA...' : ocrResult ? 'Romaneio lido! Campos preenchidos.' : 'OCR Romaneio — clique para enviar imagem'}
                   </div>
-                  <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>JPG, PNG ou PDF — FactorOne IA extrai origem, destino, carga e valor</div>
+                  <div style={{ fontSize: 11, color: '#7A8F8E' }}>JPG, PNG ou PDF — FactorOne IA extrai origem, destino, carga e valor</div>
                 </div>
-                {ocrLoading && <i className="fa-solid fa-spinner fa-spin" style={{ color: 'var(--teal)', marginLeft: 'auto' }} />}
-                {ocrResult && <i className="fa-solid fa-circle-check" style={{ color: 'var(--green)', marginLeft: 'auto', fontSize: 20 }} />}
+                {ocrLoading && <i className="fa-solid fa-spinner fa-spin" style={{ color: '#5E8C87', marginLeft: 'auto' }} />}
+                {ocrResult && <i className="fa-solid fa-circle-check" style={{ color: '#16A085', marginLeft: 'auto', fontSize: 20 }} />}
               </div>
             )}
             <input ref={romaneioRef} type="file" accept="image/*,.pdf" style={{ display: 'none' }} onChange={e => { if (e.target.files?.[0]) ocrRomaneio(e.target.files[0]) }} />

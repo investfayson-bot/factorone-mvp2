@@ -20,12 +20,12 @@ type Atividade = {
 type Cliente = { id: string; nome: string }
 
 const ETAPAS = [
-  { id: 'prospeccao', label: 'Prospecção', color: '#94a3b8', bg: '#f1f5f9', prob: 10 },
-  { id: 'qualificado', label: 'Qualificado', color: '#7C3AED', bg: 'rgba(124,58,237,.08)', prob: 30 },
-  { id: 'proposta', label: 'Proposta', color: 'var(--gold)', bg: '#fffbeb', prob: 60 },
-  { id: 'negociacao', label: 'Negociação', color: 'var(--teal)', bg: 'rgba(94,140,135,.08)', prob: 80 },
-  { id: 'fechado_ganho', label: 'Ganho', color: 'var(--green)', bg: 'rgba(45,155,111,.08)', prob: 100 },
-  { id: 'fechado_perdido', label: 'Perdido', color: 'var(--red)', bg: 'rgba(192,80,74,.08)', prob: 0 },
+  { id: 'prospeccao', label: 'Prospecção', color: '#7A8F8E', bg: '#EEF2F1', prob: 10 },
+  { id: 'qualificado', label: 'Qualificado', color: '#7C3AED', bg: '#F3F0FF', prob: 30 },
+  { id: 'proposta', label: 'Proposta', color: '#D97706', bg: '#FEF3C7', prob: 60 },
+  { id: 'negociacao', label: 'Negociação', color: '#5E8C87', bg: '#EAF5F3', prob: 80 },
+  { id: 'fechado_ganho', label: 'Ganho', color: '#16A085', bg: '#DCFCE7', prob: 100 },
+  { id: 'fechado_perdido', label: 'Perdido', color: '#E74C3C', bg: '#FEE2E2', prob: 0 },
 ]
 
 const TIPO_ATI = [
@@ -144,10 +144,10 @@ export default function CRMPage() {
     return atividades.filter(a => a.data >= ini && a.data <= fim).sort((a, b) => a.data.localeCompare(b.data))
   }, [atividades, agendaMes])
 
-  const inp: React.CSSProperties = { width: '100%', border: '1px solid var(--gray-100)', borderRadius: 8, padding: '8px 12px', fontSize: 13, color: 'var(--navy)', background: '#fff', boxSizing: 'border-box', outline: 'none' }
-  const lbl: React.CSSProperties = { fontSize: 11, fontWeight: 600, color: 'var(--gray-500)', marginBottom: 4, display: 'block' }
+  const inp: React.CSSProperties = { width: '100%', border: '0.5px solid #E2E8E7', borderRadius: 8, padding: '8px 12px', fontSize: 13, color: '#1C2B2A', background: '#fff', boxSizing: 'border-box', outline: 'none' }
+  const lbl: React.CSSProperties = { fontSize: 11, fontWeight: 600, color: '#7A8F8E', marginBottom: 4, display: 'block' }
 
-  if (loading) return <div style={{ padding: 32, color: 'var(--gray-400)' }}>Carregando CRM…</div>
+  if (loading) return <div style={{ padding: 32, color: '#7A8F8E' }}>Carregando CRM…</div>
 
   return (
     <>
@@ -183,23 +183,35 @@ export default function CRMPage() {
 
       <div className="kpis" style={{ gridTemplateColumns: 'repeat(4,1fr)', marginBottom: 16 }}>
         {[
-          { l: 'Em aberto', v: kpis.abertas, s: 'oportunidades', c: 'var(--navy)' },
-          { l: 'Pipeline total', v: formatBRL(kpis.valorTotal), s: 'valor estimado', c: 'var(--teal)' },
-          { l: 'Ganhas', v: kpis.ganhas, s: 'fechamentos', c: 'var(--green)' },
-          { l: 'Ticket médio', v: formatBRL(kpis.ticket), s: 'por negócio', c: 'var(--gold)' },
+          { l: 'Em aberto', v: String(kpis.abertas),         icon: 'fa-briefcase',    bg: '#EEF2F1', c: '#1C2B2A', sub: 'oportunidades' },
+          { l: 'Pipeline total', v: formatBRL(kpis.valorTotal), icon: 'fa-funnel-dollar', bg: '#EAF5F3', c: '#5E8C87', sub: 'valor estimado' },
+          { l: 'Ganhas',       v: String(kpis.ganhas),         icon: 'fa-trophy',       bg: '#DCFCE7', c: '#16A085', sub: 'fechamentos' },
+          { l: 'Ticket médio', v: formatBRL(kpis.ticket),      icon: 'fa-tag',          bg: '#FEF3C7', c: '#D97706', sub: 'por negócio' },
         ].map(k => (
-          <div key={k.l} className="kpi">
-            <div className="kpi-lbl">{k.l}</div>
+          <div key={k.l} className="kpi" style={{ borderTop: `3px solid ${k.c}` }}>
+            <div className="kpi-lbl">{k.l}
+              <div style={{ width: 26, height: 26, borderRadius: 7, background: k.bg, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <i className={`fa-solid ${k.icon}`} style={{ fontSize: 11, color: k.c }} />
+              </div>
+            </div>
             <div className="kpi-val" style={{ color: k.c }}>{k.v}</div>
-            <div className="kpi-delta">{k.s}</div>
+            <div className="kpi-delta">{k.sub}</div>
           </div>
         ))}
       </div>
 
-      {/* Tabs */}
-      <div style={{ display: 'flex', gap: 6, marginBottom: 16 }}>
-        {([['pipeline','Pipeline'], ['agenda','Agenda'], ['atividades','Atividades']] as [string,string][]).map(([k,l]) => (
-          <button key={k} onClick={() => setTab(k as typeof tab)} style={{ padding: '7px 16px', borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: 'pointer', border: '1px solid', background: tab === k ? 'var(--navy)' : '#fff', color: tab === k ? '#fff' : 'var(--gray-500)', borderColor: tab === k ? 'var(--navy)' : 'var(--gray-100)' }}>{l}</button>
+      {/* Tabs pill */}
+      <div style={{ display: 'flex', gap: 2, background: '#E8EDEC', padding: 3, borderRadius: 10, width: 'fit-content', marginBottom: 16 }}>
+        {([['pipeline','Pipeline','fa-columns'], ['agenda','Agenda','fa-calendar'], ['atividades','Atividades','fa-list-check'], ['automacoes','Automações','fa-robot']] as [string,string,string][]).map(([k,l,ico]) => (
+          <button key={k} onClick={() => setTab(k as typeof tab)} style={{
+            display: 'flex', alignItems: 'center', gap: 6,
+            padding: '6px 13px', borderRadius: 8, fontSize: 11,
+            fontWeight: tab === k ? 700 : 500, border: 'none', cursor: 'pointer',
+            background: tab === k ? '#fff' : 'transparent',
+            color: tab === k ? '#1C2B2A' : '#7A8F8E', transition: 'all .15s',
+          }}>
+            <i className={`fa-solid ${ico}`} style={{ fontSize: 10 }} />{l}
+          </button>
         ))}
       </div>
 
@@ -210,15 +222,15 @@ export default function CRMPage() {
             <div key={col.id} style={{ minWidth: 180 }}>
               <div style={{ padding: '8px 10px', background: col.bg, borderRadius: '10px 10px 0 0', border: `1px solid ${col.color}20`, borderBottom: `2px solid ${col.color}` }}>
                 <p style={{ fontSize: 10, fontWeight: 800, color: col.color, textTransform: 'uppercase', letterSpacing: '.07em', margin: '0 0 2px' }}>{col.label}</p>
-                <p style={{ fontSize: 11, fontWeight: 700, color: 'var(--navy)', margin: 0, fontFamily: "'Manrope', 'Inter', sans-serif" }}>{formatBRL(col.total)}</p>
+                <p style={{ fontSize: 11, fontWeight: 700, color: '#1C2B2A', margin: 0, fontFamily: "'Manrope', 'Inter', sans-serif" }}>{formatBRL(col.total)}</p>
               </div>
               <div style={{ background: '#fafafa', border: `1px solid ${col.color}20`, borderTop: 'none', borderRadius: '0 0 10px 10px', minHeight: 200, padding: 8, display: 'flex', flexDirection: 'column', gap: 6 }}>
                 {col.ops.map(op => (
-                  <div key={op.id} style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 8, padding: '10px 10px 8px' }}>
-                    <p style={{ fontWeight: 700, fontSize: 11, color: 'var(--navy)', margin: '0 0 3px', lineHeight: 1.3 }}>{op.titulo}</p>
-                    {op.clientes && <p style={{ fontSize: 10, color: 'var(--teal)', margin: '0 0 3px' }}>{op.clientes.nome}</p>}
-                    {op.valor && <p style={{ fontSize: 11, fontWeight: 700, color: 'var(--green)', fontFamily: "'Manrope', 'Inter', sans-serif", margin: '0 0 6px' }}>{formatBRL(Number(op.valor))}</p>}
-                    <select value={op.etapa} onChange={e => void moverEtapa(op.id, e.target.value)} style={{ fontSize: 9, padding: '2px 4px', borderRadius: 5, border: '1px solid var(--gray-100)', color: 'var(--gray-500)', width: '100%' }}>
+                  <div key={op.id} style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 8, padding: '10px 10px 8px' }}>
+                    <p style={{ fontWeight: 700, fontSize: 11, color: '#1C2B2A', margin: '0 0 3px', lineHeight: 1.3 }}>{op.titulo}</p>
+                    {op.clientes && <p style={{ fontSize: 10, color: '#5E8C87', margin: '0 0 3px' }}>{op.clientes.nome}</p>}
+                    {op.valor && <p style={{ fontSize: 11, fontWeight: 700, color: '#16A085', fontFamily: "'Manrope', 'Inter', sans-serif", margin: '0 0 6px' }}>{formatBRL(Number(op.valor))}</p>}
+                    <select value={op.etapa} onChange={e => void moverEtapa(op.id, e.target.value)} style={{ fontSize: 9, padding: '2px 4px', borderRadius: 5, border: '0.5px solid #E2E8E7', color: '#7A8F8E', width: '100%' }}>
                       {ETAPAS.map(e => <option key={e.id} value={e.id}>{e.label}</option>)}
                     </select>
                   </div>
@@ -234,36 +246,36 @@ export default function CRMPage() {
         <>
           <div style={{ display: 'flex', gap: 8, marginBottom: 12, alignItems: 'center' }}>
             <button onClick={() => { const d = new Date(agendaMes + '-01'); d.setMonth(d.getMonth() - 1); setAgendaMes(d.toISOString().slice(0, 7)) }} className="btn-action btn-ghost" style={{ fontSize: 12, padding: '5px 10px' }}>‹</button>
-            <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy)', minWidth: 140, textAlign: 'center' }}>
+            <span style={{ fontSize: 13, fontWeight: 700, color: '#1C2B2A', minWidth: 140, textAlign: 'center' }}>
               {new Date(agendaMes + '-01').toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}
             </span>
             <button onClick={() => { const d = new Date(agendaMes + '-01'); d.setMonth(d.getMonth() + 1); setAgendaMes(d.toISOString().slice(0, 7)) }} className="btn-action btn-ghost" style={{ fontSize: 12, padding: '5px 10px' }}>›</button>
           </div>
           {agendaDias.length === 0 && (
-            <div style={{ textAlign: 'center', padding: '40px 0', color: 'var(--gray-400)', fontSize: 13 }}>
-              Nenhum compromisso. <button onClick={() => setShowAtv(true)} style={{ color: 'var(--teal)', background: 'none', border: 'none', cursor: 'pointer', fontSize: 13 }}>Agendar →</button>
+            <div style={{ textAlign: 'center', padding: '40px 0', color: '#7A8F8E', fontSize: 13 }}>
+              Nenhum compromisso. <button onClick={() => setShowAtv(true)} style={{ color: '#5E8C87', background: 'none', border: 'none', cursor: 'pointer', fontSize: 13 }}>Agendar →</button>
             </div>
           )}
           {agendaDias.map(a => (
-            <div key={a.id} style={{ display: 'flex', gap: 14, padding: '12px 0', borderBottom: '1px solid var(--gray-100)', alignItems: 'flex-start' }}>
+            <div key={a.id} style={{ display: 'flex', gap: 14, padding: '12px 0', borderBottom: '0.5px solid #E2E8E7', alignItems: 'flex-start' }}>
               <div style={{ width: 48, textAlign: 'center', flexShrink: 0 }}>
-                <p style={{ fontSize: 11, fontWeight: 700, color: 'var(--gray-400)', margin: 0 }}>
+                <p style={{ fontSize: 11, fontWeight: 700, color: '#7A8F8E', margin: 0 }}>
                   {new Date(a.data + 'T12:00:00').toLocaleDateString('pt-BR', { weekday: 'short' }).toUpperCase()}
                 </p>
-                <p style={{ fontSize: 22, fontWeight: 800, color: 'var(--navy)', margin: 0, fontFamily: "'Space Grotesk', sans-serif" }}>
+                <p style={{ fontSize: 22, fontWeight: 800, color: '#1C2B2A', margin: 0, fontFamily: "'Space Grotesk', sans-serif" }}>
                   {new Date(a.data + 'T12:00:00').getDate()}
                 </p>
               </div>
-              <div style={{ width: 4, borderRadius: 2, alignSelf: 'stretch', background: a.status === 'realizada' ? 'var(--green)' : a.status === 'cancelada' ? 'var(--red)' : 'var(--teal)', flexShrink: 0 }} />
+              <div style={{ width: 4, borderRadius: 2, alignSelf: 'stretch', background: a.status === 'realizada' ? '#16A085' : a.status === 'cancelada' ? '#E74C3C' : '#5E8C87', flexShrink: 0 }} />
               <div style={{ flex: 1 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 2 }}>
-                  <i className={`fa-solid ${TIPO_ICON[a.tipo] || 'fa-circle'}`} style={{ fontSize: 12, color: 'var(--teal)' }} />
-                  <p style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy)', margin: 0 }}>{a.titulo}</p>
+                  <i className={`fa-solid ${TIPO_ICON[a.tipo] || 'fa-circle'}`} style={{ fontSize: 12, color: '#5E8C87' }} />
+                  <p style={{ fontSize: 13, fontWeight: 700, color: '#1C2B2A', margin: 0 }}>{a.titulo}</p>
                 </div>
-                {a.hora_inicio && <p style={{ fontSize: 11, color: 'var(--gray-400)', margin: '1px 0' }}>{a.hora_inicio}{a.hora_fim ? ` – ${a.hora_fim}` : ''}{a.local ? ` · ${a.local}` : ''}</p>}
-                {a.clientes && <p style={{ fontSize: 11, color: 'var(--teal)', margin: '2px 0 0' }}>{a.clientes.nome}</p>}
+                {a.hora_inicio && <p style={{ fontSize: 11, color: '#7A8F8E', margin: '1px 0' }}>{a.hora_inicio}{a.hora_fim ? ` – ${a.hora_fim}` : ''}{a.local ? ` · ${a.local}` : ''}</p>}
+                {a.clientes && <p style={{ fontSize: 11, color: '#5E8C87', margin: '2px 0 0' }}>{a.clientes.nome}</p>}
               </div>
-              <select value={a.status} onChange={e => void marcarAtividade(a.id, e.target.value)} style={{ fontSize: 10, padding: '3px 6px', borderRadius: 6, border: '1px solid var(--gray-100)', color: a.status === 'realizada' ? 'var(--green)' : 'var(--gray-500)', flexShrink: 0 }}>
+              <select value={a.status} onChange={e => void marcarAtividade(a.id, e.target.value)} style={{ fontSize: 10, padding: '3px 6px', borderRadius: 6, border: '0.5px solid #E2E8E7', color: a.status === 'realizada' ? '#16A085' : '#7A8F8E', flexShrink: 0 }}>
                 <option value="pendente">Pendente</option>
                 <option value="realizada">Realizada</option>
                 <option value="cancelada">Cancelada</option>
@@ -275,7 +287,7 @@ export default function CRMPage() {
 
       {/* Atividades */}
       {tab === 'atividades' && (
-        <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, overflow: 'hidden' }}>
+        <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 12, overflow: 'hidden' }}>
           <div className="expenses-table">
             <table>
               <thead>
@@ -289,21 +301,21 @@ export default function CRMPage() {
                 </tr>
               </thead>
               <tbody>
-                {atividades.length === 0 && <tr><td colSpan={6} style={{ textAlign: 'center', padding: '32px 0', color: 'var(--gray-400)' }}>Nenhuma atividade.</td></tr>}
+                {atividades.length === 0 && <tr><td colSpan={6} style={{ textAlign: 'center', padding: '32px 0', color: '#7A8F8E' }}>Nenhuma atividade.</td></tr>}
                 {atividades.slice(0, 50).map(a => (
                   <tr key={a.id} style={{ opacity: a.status === 'cancelada' ? 0.5 : 1 }}>
                     <td style={{ fontFamily: "'Manrope', 'Inter', sans-serif", fontSize: 11 }}>{new Date(a.data + 'T12:00:00').toLocaleDateString('pt-BR')}</td>
                     <td>
                       <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 11 }}>
-                        <i className={`fa-solid ${TIPO_ICON[a.tipo] || 'fa-circle'}`} style={{ color: 'var(--teal)', fontSize: 10 }} />
+                        <i className={`fa-solid ${TIPO_ICON[a.tipo] || 'fa-circle'}`} style={{ color: '#5E8C87', fontSize: 10 }} />
                         {TIPO_ATI.find(t => t.v === a.tipo)?.l || a.tipo}
                       </span>
                     </td>
                     <td style={{ fontWeight: 600, fontSize: 12 }}>{a.titulo}</td>
-                    <td style={{ fontSize: 11, color: 'var(--teal)' }}>{a.clientes?.nome || '—'}</td>
-                    <td style={{ fontSize: 11, color: 'var(--gray-500)' }}>{a.responsavel_nome || '—'}</td>
+                    <td style={{ fontSize: 11, color: '#5E8C87' }}>{a.clientes?.nome || '—'}</td>
+                    <td style={{ fontSize: 11, color: '#7A8F8E' }}>{a.responsavel_nome || '—'}</td>
                     <td style={{ textAlign: 'center' }}>
-                      <select value={a.status} onChange={e => void marcarAtividade(a.id, e.target.value)} style={{ fontSize: 9, padding: '2px 6px', borderRadius: 20, border: '1px solid', background: a.status === 'realizada' ? 'rgba(45,155,111,.1)' : a.status === 'cancelada' ? 'rgba(192,80,74,.1)' : 'var(--gray-100)', color: a.status === 'realizada' ? 'var(--green)' : a.status === 'cancelada' ? 'var(--red)' : 'var(--gray-500)', borderColor: 'transparent', cursor: 'pointer' }}>
+                      <select value={a.status} onChange={e => void marcarAtividade(a.id, e.target.value)} style={{ fontSize: 9, padding: '2px 6px', borderRadius: 20, border: '1px solid', background: a.status === 'realizada' ? 'rgba(45,155,111,.1)' : a.status === 'cancelada' ? 'rgba(192,80,74,.1)' : '#E2E8E7', color: a.status === 'realizada' ? '#16A085' : a.status === 'cancelada' ? '#E74C3C' : '#7A8F8E', borderColor: 'transparent', cursor: 'pointer' }}>
                         <option value="pendente">Pendente</option>
                         <option value="realizada">Realizada</option>
                         <option value="cancelada">Cancelada</option>
@@ -354,7 +366,7 @@ export default function CRMPage() {
             {/* Tipo seletor */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 6, marginBottom: 16 }}>
               {TIPO_ATI.map(t => (
-                <button key={t.v} type="button" onClick={() => setFormAtv(f => ({ ...f, tipo: t.v }))} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, padding: '8px 4px', borderRadius: 8, border: formAtv.tipo === t.v ? '2px solid var(--teal)' : '1px solid var(--gray-100)', background: formAtv.tipo === t.v ? 'rgba(94,140,135,.06)' : '#fafafa', cursor: 'pointer', fontSize: 10, fontWeight: 600, color: formAtv.tipo === t.v ? 'var(--teal)' : 'var(--gray-500)' }}>
+                <button key={t.v} type="button" onClick={() => setFormAtv(f => ({ ...f, tipo: t.v }))} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, padding: '8px 4px', borderRadius: 8, border: formAtv.tipo === t.v ? '2px solid #5E8C87' : '0.5px solid #E2E8E7', background: formAtv.tipo === t.v ? 'rgba(94,140,135,.06)' : '#fafafa', cursor: 'pointer', fontSize: 10, fontWeight: 600, color: formAtv.tipo === t.v ? '#5E8C87' : '#7A8F8E' }}>
                   <i className={`fa-solid ${t.i}`} style={{ fontSize: 15 }} />{t.l}
                 </button>
               ))}
@@ -375,22 +387,77 @@ export default function CRMPage() {
           </div>
         </div>
       )}
+      {/* Automações */}
+      {tab === ('automacoes' as typeof tab) && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          <div style={{ background: '#EAF5F3', border: '0.5px solid #5E8C87', borderRadius: 12, padding: '12px 16px', display: 'flex', gap: 10, alignItems: 'flex-start' }}>
+            <i className="fa-solid fa-robot" style={{ fontSize: 16, color: '#5E8C87', marginTop: 1 }} />
+            <div>
+              <div style={{ fontSize: 12, fontWeight: 700, color: '#1C2B2A', marginBottom: 3 }}>Automações de follow-up com FactorOne AI</div>
+              <div style={{ fontSize: 11, color: '#7A8F8E', lineHeight: 1.6 }}>Configure gatilhos automáticos para follow-up de oportunidades, lembretes de atividades e alertas de pipeline estagnado.</div>
+            </div>
+          </div>
+
+          {[
+            { titulo: 'Follow-up automático após proposta', desc: 'Cria atividade de ligação 3 dias depois de mover oportunidade para "Proposta" sem resposta do cliente', ativo: true, icon: 'fa-phone', cor: '#5E8C87', gatilho: 'Etapa: Proposta → sem atividade por 3 dias', acao: 'Criar atividade: Ligar para cliente' },
+            { titulo: 'Alerta de pipeline estagnado', desc: 'Notifica o responsável quando uma oportunidade não tem atividades há mais de 7 dias', ativo: true, icon: 'fa-bell', cor: '#D97706', gatilho: 'Oportunidade sem atividade → 7 dias', acao: 'Notificação + e-mail ao responsável' },
+            { titulo: 'E-mail de boas-vindas ao cliente', desc: 'Envia e-mail automático quando cliente é cadastrado no sistema', ativo: false, icon: 'fa-envelope', cor: '#2563eb', gatilho: 'Novo cliente cadastrado', acao: 'Enviar e-mail de boas-vindas' },
+            { titulo: 'Lembrete de reunião', desc: 'Envia WhatsApp 1 hora antes de reuniões agendadas no pipeline', ativo: false, icon: 'fa-comment', cor: '#25D366', gatilho: 'Atividade: Reunião → 1 hora antes', acao: 'WhatsApp automático ao cliente' },
+            { titulo: 'Recálculo de probabilidade', desc: 'FactorOne AI recalcula a probabilidade de fechamento semanalmente com base no histórico', ativo: true, icon: 'fa-robot', cor: '#7C3AED', gatilho: 'Toda segunda-feira, 09:00', acao: 'IA atualiza campo de probabilidade' },
+            { titulo: 'Relatório semanal de pipeline', desc: 'Relatório em PDF do funil enviado por e-mail toda sexta para o gestor', ativo: false, icon: 'fa-file-pdf', cor: '#E74C3C', gatilho: 'Toda sexta-feira, 17:00', acao: 'PDF + e-mail para gerência' },
+          ].map(auto => (
+            <div key={auto.titulo} style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 12, padding: '14px 16px', display: 'flex', gap: 14, alignItems: 'flex-start' }}>
+              <div style={{ width: 38, height: 38, borderRadius: 9, background: `${auto.cor}18`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <i className={`fa-solid ${auto.icon}`} style={{ fontSize: 16, color: auto.cor }} />
+              </div>
+              <div style={{ flex: 1 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 4 }}>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: '#1C2B2A' }}>{auto.titulo}</div>
+                  <span style={{ fontSize: 9, fontWeight: 700, padding: '2px 8px', borderRadius: 20, background: auto.ativo ? '#EAF5F3' : '#EEF2F1', color: auto.ativo ? '#0F6E56' : '#7A8F8E' }}>
+                    {auto.ativo ? '● ATIVO' : '○ INATIVO'}
+                  </span>
+                </div>
+                <div style={{ fontSize: 11, color: '#7A8F8E', marginBottom: 8, lineHeight: 1.5 }}>{auto.desc}</div>
+                <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                  <span style={{ fontSize: 10, padding: '3px 9px', borderRadius: 20, background: '#FEF3C7', color: '#92400E', fontWeight: 600 }}>
+                    <i className="fa-solid fa-bolt" style={{ marginRight: 4, fontSize: 9 }} />{auto.gatilho}
+                  </span>
+                  <span style={{ fontSize: 10, padding: '3px 9px', borderRadius: 20, background: '#EAF5F3', color: '#0F6E56', fontWeight: 600 }}>
+                    <i className="fa-solid fa-arrow-right" style={{ marginRight: 4, fontSize: 9 }} />{auto.acao}
+                  </span>
+                </div>
+              </div>
+              <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
+                <button style={{ fontSize: 11, padding: '5px 12px', borderRadius: 7, border: '0.5px solid #E2E8E7', background: '#fff', color: '#7A8F8E', cursor: 'pointer', fontWeight: 600 }}>Editar</button>
+                <button style={{ fontSize: 11, padding: '5px 12px', borderRadius: 7, border: 'none', background: auto.ativo ? '#FEE2E2' : '#EAF5F3', color: auto.ativo ? '#E74C3C' : '#0F6E56', cursor: 'pointer', fontWeight: 700 }}>
+                  {auto.ativo ? 'Pausar' : 'Ativar'}
+                </button>
+              </div>
+            </div>
+          ))}
+
+          <button style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '12px 16px', borderRadius: 12, border: '1.5px dashed #D1D9D8', background: '#F8FAFA', color: '#7A8F8E', cursor: 'pointer', fontSize: 12, fontWeight: 600, width: '100%', justifyContent: 'center' }}>
+            <i className="fa-solid fa-plus" />Nova automação
+          </button>
+        </div>
+      )}
+
       {/* Modal AI Pipeline Insight */}
       {showInsight && (
         <div className="modal-bg" onClick={() => setShowInsight(false)}>
           <div className="modal-box" style={{ maxWidth: 560, width: '95%' }} onClick={e => e.stopPropagation()}>
             <div className="modal-title">
-              <i className="fa-solid fa-robot" style={{ color: 'var(--teal)', marginRight: 8 }} />
+              <i className="fa-solid fa-robot" style={{ color: '#5E8C87', marginRight: 8 }} />
               Análise IA do Pipeline
               <button className="modal-close" onClick={() => setShowInsight(false)}><i className="fa-solid fa-xmark" /></button>
             </div>
             {insightLoading ? (
-              <div style={{ padding: '40px 0', textAlign: 'center', color: 'var(--gray-400)' }}>
-                <i className="fa-solid fa-spinner fa-spin" style={{ fontSize: 24, marginBottom: 12, display: 'block', color: 'var(--teal)' }} />
+              <div style={{ padding: '40px 0', textAlign: 'center', color: '#7A8F8E' }}>
+                <i className="fa-solid fa-spinner fa-spin" style={{ fontSize: 24, marginBottom: 12, display: 'block', color: '#5E8C87' }} />
                 Analisando pipeline com FactorOne IA...
               </div>
             ) : (
-              <div style={{ fontSize: 13, lineHeight: 1.7, color: 'var(--navy)', whiteSpace: 'pre-wrap' }}>
+              <div style={{ fontSize: 13, lineHeight: 1.7, color: '#1C2B2A', whiteSpace: 'pre-wrap' }}>
                 {insightText}
               </div>
             )}
