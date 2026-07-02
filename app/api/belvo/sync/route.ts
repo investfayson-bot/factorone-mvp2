@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getSupabaseUser } from '@/lib/supabase-route'
+import { categorizarLoteIA } from '@/lib/categorizar-ia'
+
+export const runtime = 'nodejs'
 
 type BTx = {
   belvo_id: string
@@ -43,6 +46,12 @@ export async function POST(req: NextRequest) {
     const isOut = (t: BTx) => (t.tipo || '').toUpperCase() === 'OUTFLOW' || (t.valor ?? 0) < 0
     const abs = (t: BTx) => Math.abs(Number(t.valor ?? 0))
 
+    // IA: classifica na nossa taxonomia (PT) as transações com categoria fraca/ausente.
+    const catFraca = (c: string | null) => { const s = (c ?? '').trim().toLowerCase(); return s === '' || s === 'outros' }
+    const fracas = lista.filter(t => catFraca(t.categoria)).slice(0, 200)
+    const catIA = fracas.length ? await categorizarLoteIA(fracas.map(t => ({ id: t.belvo_id, texto: desc(t) }))) : {}
+    const catDe = (t: BTx) => catIA[t.belvo_id] || t.categoria || 'Outros'
+
     if (isPJ && empresaId) {
       // Cria/acha uma conta bancária nativa por banco conectado (open_finance_id = id da conta na Belvo).
       const { data: bcontas } = await supabase
@@ -85,7 +94,7 @@ export async function POST(req: NextRequest) {
         descricao: desc(t),
         data_transacao: t.data,
         valor: abs(t),
-        categoria: t.categoria ?? 'Outros',
+        categoria: catDe(t),
         origem: 'belvo',
         belvo_tx_id: t.belvo_id,
       }))
@@ -99,7 +108,7 @@ export async function POST(req: NextRequest) {
       user_id: user.id,
       descricao: desc(t),
       valor: abs(t),
-      categoria: t.categoria ?? 'Outros',
+      categoria: catDe(t),
       data_despesa: t.data,
       status: 'pago',
       origem: 'belvo',
@@ -109,7 +118,7 @@ export async function POST(req: NextRequest) {
       user_id: user.id,
       descricao: desc(t),
       valor: abs(t),
-      categoria: t.categoria ?? 'Outros',
+      categoria: catDe(t),
       data_recebimento: t.data,
       belvo_tx_id: t.belvo_id,
     }))
