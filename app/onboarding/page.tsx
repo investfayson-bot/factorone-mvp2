@@ -3,19 +3,14 @@ export const dynamic = 'force-dynamic'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
-import { OnboardingHero } from '@/components/ui/Illustration'
 import toast from 'react-hot-toast'
 
-type Screen = 'splash' | 'perfil' | 'empresa' | 'financeiro' | 'pronto'
-type FinOpcao = 'open_finance' | 'pular' | null
-
-const SETORES = ['Tecnologia', 'Comércio', 'Serviços', 'Indústria', 'Saúde', 'Educação', 'Construção', 'Agronegócio', 'Transporte / Logística', 'Alimentação', 'Outro']
+type Screen = 'splash' | 'perfil' | 'empresa' | 'pronto'
 
 const PJ_STEPS = [
-  { key: 'perfil',     label: 'Tipo de conta'   },
-  { key: 'empresa',    label: 'Dados da empresa' },
-  { key: 'financeiro', label: 'Dados bancários'  },
-  { key: 'pronto',     label: 'Finalizar'        },
+  { key: 'perfil',  label: 'Tipo de conta' },
+  { key: 'empresa', label: 'Sua empresa'   },
+  { key: 'pronto',  label: 'Pronto'        },
 ] as const
 
 export default function OnboardingPage() {
@@ -27,7 +22,6 @@ export default function OnboardingPage() {
   const [isPJ, setIsPJ]         = useState(false)
 
   const [empresa, setEmpresa] = useState({ nome: '', cnpj: '', setor: '', telefone: '' })
-  const [finOpcao, setFinOpcao] = useState<FinOpcao>(null)
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
@@ -87,21 +81,13 @@ export default function OnboardingPage() {
         ...(empresa.cnpj    ? { cnpj:  empresa.cnpj.replace(/\D/g, '') } : {}),
         ...(empresa.setor   ? { setor: empresa.setor }   : {}),
       }).eq('id', empresaId)
-      setScreen('financeiro')
-    } catch { toast.error('Falha ao salvar empresa') }
-    finally { setLoading(false) }
-  }
-
-  async function salvarFinanceiro() {
-    setLoading(true)
-    try {
-      setScreen('pronto')
       supabase.auth.getSession().then(({ data: { session } }) => {
         if (session?.access_token) {
           fetch('/api/email/boas-vindas', { method: 'POST', headers: { Authorization: `Bearer ${session.access_token}` } }).catch(() => {})
         }
       })
-    } catch { toast.error('Falha ao salvar dados bancários') }
+      setScreen('pronto')
+    } catch { toast.error('Falha ao salvar empresa') }
     finally { setLoading(false) }
   }
 
@@ -172,9 +158,10 @@ export default function OnboardingPage() {
         {/* SPLASH */}
         {screen === 'splash' && (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', maxWidth: 560, width: '100%', textAlign: 'center' }}>
-            {/* Ilustração */}
-            <div style={{ marginBottom: 20 }}>
-              <OnboardingHero width={280} />
+            {/* Banner */}
+            <div style={{ marginBottom: 24, width: '100%', maxWidth: 480, borderRadius: 16, overflow: 'hidden', boxShadow: '0 12px 34px rgba(28,43,42,.22)' }}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/onboarding-hero.png" alt="FactorOne Finance OS" style={{ width: '100%', display: 'block' }} />
             </div>
 
             {/* Logo */}
@@ -269,32 +256,15 @@ export default function OnboardingPage() {
         {/* STEP: Dados da Empresa */}
         {screen === 'empresa' && (
           <div style={{ width: '100%', maxWidth: 520 }}>
-            <div style={{ marginBottom: 28 }}>
-              <div style={{ fontSize: 22, fontFamily: "'Inter', system-ui, sans-serif", fontWeight: 800, color: 'var(--navy)', marginBottom: 6 }}>Quais são os dados da sua empresa?</div>
-              <div style={{ fontSize: 13, color: 'var(--gray-400)' }}>Insira o CNPJ e o nome conforme registrado na Receita Federal.</div>
+            <div style={{ marginBottom: 24 }}>
+              <div style={{ fontSize: 22, fontFamily: "'Inter', system-ui, sans-serif", fontWeight: 800, color: 'var(--navy)', marginBottom: 6 }}>Como chama sua empresa?</div>
+              <div style={{ fontSize: 13, color: 'var(--gray-400)' }}>Um campo e pronto — CNPJ, setor e o resto você completa depois, dentro do sistema.</div>
             </div>
 
-            <div style={{ background: '#fff', borderRadius: 12, padding: '24px', border: '1px solid var(--gray-100)', display: 'flex', flexDirection: 'column', gap: 16 }}>
+            <div style={{ background: '#fff', borderRadius: 12, padding: '24px', border: '1px solid var(--gray-100)' }}>
               <div className="form-group" style={{ margin: 0 }}>
-                <label className="form-label">CNPJ</label>
-                <input className="form-input" placeholder="00.000.000/0001-00" value={empresa.cnpj} onChange={e => setEmpresa(p => ({ ...p, cnpj: e.target.value }))} style={{ fontSize: 14 }} />
-              </div>
-              <div className="form-group" style={{ margin: 0 }}>
-                <label className="form-label">Razão social <span style={{ color: 'var(--red)' }}>*</span></label>
-                <input className="form-input" placeholder="Ex: Acme Tecnologia Ltda" value={empresa.nome} onChange={e => setEmpresa(p => ({ ...p, nome: e.target.value }))} style={{ fontSize: 14 }} />
-              </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
-                <div className="form-group" style={{ margin: 0 }}>
-                  <label className="form-label">Setor</label>
-                  <select className="form-input" value={empresa.setor} onChange={e => setEmpresa(p => ({ ...p, setor: e.target.value }))}>
-                    <option value="">Tipo de empresa</option>
-                    {SETORES.map(s => <option key={s} value={s}>{s}</option>)}
-                  </select>
-                </div>
-                <div className="form-group" style={{ margin: 0 }}>
-                  <label className="form-label">Telefone</label>
-                  <input className="form-input" placeholder="(11) 9 9999-9999" value={empresa.telefone} onChange={e => setEmpresa(p => ({ ...p, telefone: e.target.value }))} />
-                </div>
+                <label className="form-label">Nome da empresa <span style={{ color: 'var(--red)' }}>*</span></label>
+                <input className="form-input" placeholder="Ex: Acme Tecnologia Ltda" value={empresa.nome} onChange={e => setEmpresa(p => ({ ...p, nome: e.target.value }))} onKeyDown={e => { if (e.key === 'Enter' && empresa.nome.trim()) void salvarEmpresa() }} style={{ fontSize: 15 }} autoFocus />
               </div>
             </div>
 
@@ -302,54 +272,6 @@ export default function OnboardingPage() {
               <button className="btn-action btn-ghost" style={{ flex: 1 }} onClick={() => setScreen('perfil')}>Voltar</button>
               <button className="btn-action" style={{ flex: 2, opacity: loading ? .6 : 1 }} onClick={() => void salvarEmpresa()} disabled={loading}>
                 {loading ? 'Salvando…' : 'Continuar'}
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* STEP: Dados financeiros */}
-        {screen === 'financeiro' && (
-          <div style={{ width: '100%', maxWidth: 520 }}>
-            <div style={{ marginBottom: 24 }}>
-              <div style={{ fontSize: 22, fontFamily: "'Inter', system-ui, sans-serif", fontWeight: 800, color: 'var(--navy)', marginBottom: 6 }}>Traga seus dados financeiros</div>
-              <div style={{ fontSize: 13, color: 'var(--gray-400)', lineHeight: 1.6 }}>Escolha como conectar sua conta bancária — você pode mudar isso depois.</div>
-            </div>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-
-              {/* HERO: Conectar meu banco */}
-              <button
-                onClick={() => setFinOpcao(finOpcao === 'open_finance' ? null : 'open_finance')}
-                style={{ display: 'flex', gap: 16, padding: '18px 20px', borderRadius: 12, cursor: 'pointer', border: finOpcao === 'open_finance' ? '2px solid var(--teal)' : '1.5px solid var(--gray-100)', background: finOpcao === 'open_finance' ? 'rgba(94,140,135,.05)' : 'linear-gradient(135deg,#f8fffe 0%,#f0faf9 100%)', textAlign: 'left', width: '100%', position: 'relative', overflow: 'hidden' }}
-              >
-                <div style={{ position: 'absolute', top: 10, right: 12, fontSize: 9, fontWeight: 700, background: 'var(--teal)', color: '#fff', padding: '2px 8px', borderRadius: 20 }}>RECOMENDADO</div>
-                <div style={{ width: 48, height: 48, borderRadius: 12, background: 'rgba(94,140,135,.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  <i className="fa-solid fa-building-columns" style={{ color: 'var(--teal)', fontSize: 18 }} />
-                </div>
-                <div style={{ flex: 1, paddingRight: 60 }}>
-                  <div style={{ fontSize: 14, fontWeight: 800, color: 'var(--navy)', marginBottom: 4 }}>Conectar meu banco</div>
-                  <div style={{ fontSize: 11, color: 'var(--gray-400)', lineHeight: 1.6 }}>Sincronize automaticamente via Open Finance — saldo, extrato e transações em tempo real.</div>
-                  {finOpcao === 'open_finance' && (
-                    <div style={{ marginTop: 10, padding: '8px 12px', background: 'rgba(94,140,135,.08)', borderRadius: 7, fontSize: 11, color: 'var(--teal)' }}>
-                      <i className="fa-solid fa-circle-info" style={{ marginRight: 6 }} />
-                      Finalize o setup — configure a conexão em <strong>Conta PJ</strong>.
-                    </div>
-                  )}
-                </div>
-                {finOpcao === 'open_finance' && <i className="fa-solid fa-circle-check" style={{ color: 'var(--teal)', fontSize: 20, alignSelf: 'center', flexShrink: 0 }} />}
-              </button>
-
-            </div>
-
-            <div style={{ display: 'flex', gap: 10, marginTop: 20 }}>
-              <button className="btn-action btn-ghost" style={{ flex: 1 }} onClick={() => setScreen('empresa')}>Voltar</button>
-              <button className="btn-action" style={{ flex: 2, opacity: (loading || !finOpcao) ? .6 : 1 }} onClick={() => void salvarFinanceiro()} disabled={loading || !finOpcao}>
-                {loading ? 'Salvando…' : 'Continuar'}
-              </button>
-            </div>
-            <div style={{ textAlign: 'center', marginTop: 14 }}>
-              <button onClick={() => { setFinOpcao('pular'); void salvarFinanceiro() }} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 12, color: 'var(--gray-400)', textDecoration: 'underline' }}>
-                Configurar isso depois
               </button>
             </div>
           </div>
@@ -369,28 +291,29 @@ export default function OnboardingPage() {
                 Boa sorte, <span style={{ fontWeight: 700, color: 'var(--teal)' }}>{userName.split(' ')[0]}</span>!
               </div>
             )}
-            <div style={{ fontSize: 13, color: 'var(--gray-400)', lineHeight: 1.7, marginBottom: 28 }}>
-              Conta configurada. Explore o dashboard, cadastre transações e use o AI CFO para insights em tempo real.
+            <div style={{ fontSize: 13, color: 'var(--gray-400)', lineHeight: 1.7, marginBottom: 24 }}>
+              Bora colocar pra funcionar — comece por uma ação (leva 1 minuto):
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 24, textAlign: 'left' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 20, textAlign: 'left' }}>
               {[
-                { icon: 'fa-gauge-high',   label: 'Dashboard',         desc: 'Visão geral do caixa e KPIs' },
-                { icon: 'fa-robot',        label: 'AI CFO',            desc: 'Análises inteligentes em tempo real' },
-                { icon: 'fa-file-invoice', label: 'DRE & Relatórios',  desc: 'Demonstrativo de resultados' },
+                { icon: 'fa-building-columns', label: 'Conectar meu banco',    desc: 'Open Finance — saldo e extrato',        href: '/dashboard/conta-pj/conectar-banco', color: 'var(--teal)' },
+                { icon: 'fa-credit-card',      label: 'Criar um cartão',        desc: 'Virtual ou físico, por colaborador',    href: '/dashboard/cartoes',                 color: 'var(--navy)' },
+                { icon: 'fa-calculator',       label: 'Convidar meu contador',  desc: 'Acesso somente leitura à contabilidade',href: '/dashboard/contadores',              color: 'var(--gold)' },
               ].map(item => (
-                <div key={item.label} style={{ display: 'flex', gap: 12, alignItems: 'center', padding: '11px 14px', background: '#fff', borderRadius: 10, border: '1px solid var(--gray-100)' }}>
-                  <div style={{ width: 34, height: 34, background: 'var(--teal)', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                    <i className={`fa-solid ${item.icon}`} style={{ color: '#fff', fontSize: 13 }} />
+                <button key={item.label} onClick={() => router.push(item.href)} style={{ display: 'flex', gap: 12, alignItems: 'center', padding: '12px 14px', background: '#fff', borderRadius: 10, border: '1px solid var(--gray-100)', cursor: 'pointer', textAlign: 'left', width: '100%', transition: 'box-shadow .15s' }}>
+                  <div style={{ width: 36, height: 36, background: `${item.color}18`, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <i className={`fa-solid ${item.icon}`} style={{ color: item.color, fontSize: 14 }} />
                   </div>
-                  <div>
-                    <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--navy)' }}>{item.label}</div>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: 12.5, fontWeight: 700, color: 'var(--navy)' }}>{item.label}</div>
                     <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>{item.desc}</div>
                   </div>
-                </div>
+                  <i className="fa-solid fa-arrow-right" style={{ color: 'var(--gray-300)', fontSize: 12 }} />
+                </button>
               ))}
             </div>
-            <button className="btn-action" style={{ width: '100%', padding: '13px 0', fontSize: 14 }} onClick={() => router.push('/dashboard')}>
-              Acessar o dashboard <i className="fa-solid fa-arrow-right" style={{ marginLeft: 8 }} />
+            <button className="btn-action btn-ghost" style={{ width: '100%', padding: '12px 0', fontSize: 13 }} onClick={() => router.push('/dashboard')}>
+              Pular — ir direto pro dashboard
             </button>
           </div>
         )}
