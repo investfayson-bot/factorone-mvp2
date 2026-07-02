@@ -25,6 +25,23 @@ const CATS_CORES: Record<string, string> = { Alimentação: '#5E8C87', Transport
 const EMPTY_CARTAO = { nome: '', bandeira: 'Visa', limite: '', vencimento_dia: '10', fechamento_dia: '1', cor: CORES_CARTAO[0], tipo: 'credito', formato: 'fisico', titular_nome: '', titular_email: '' }
 const EMPTY_GASTO = { descricao: '', valor: '', categoria: 'Outros', data: new Date().toISOString().slice(0, 10), parcelas: '1', estabelecimento: '' }
 
+// Ciclo de fatura (validado): competência em que um gasto cai, dado o dia de fechamento
+function competenciaFatura(dataStr: string, fechamentoDia: number): string {
+  const d = new Date((dataStr || '').slice(0, 10) + 'T12:00:00')
+  if (isNaN(d.getTime())) return ''
+  let y = d.getFullYear(), m = d.getMonth()
+  if (d.getDate() > fechamentoDia) { m += 1; if (m > 11) { m = 0; y += 1 } }
+  return `${y}-${String(m + 1).padStart(2, '0')}`
+}
+function fechamentoDate(comp: string, fechamentoDia: number): Date {
+  const [y, m] = comp.split('-').map(Number)
+  return new Date(y, m - 1, fechamentoDia, 12)
+}
+function labelComp(comp: string): string {
+  const [y, m] = comp.split('-').map(Number)
+  return new Date(y, m - 1, 1).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })
+}
+
 export default function CartoesPage() {
   const [empresaId, setEmpresaId] = useState('')
   const [cartoes, setCartoes] = useState<Cartao[]>([])
@@ -38,18 +55,38 @@ export default function CartoesPage() {
   const [saving, setSaving] = useState(false)
   const [loading, setLoading] = useState(true)
 
+  const [paidSet, setPaidSet] = useState<Set<string>>(new Set())
+
   const carregar = useCallback(async (eid: string) => {
     setLoading(true)
-    const [cRes, gRes] = await Promise.all([
+    const [cRes, gRes, fRes] = await Promise.all([
       supabase.from('cartoes_corporativos').select('*').eq('empresa_id', eid).order('created_at'),
       supabase.from('solicitacoes_cartao').select('*').eq('empresa_id', eid).order('data', { ascending: false }).limit(100),
+      supabase.from('faturas_cartao').select('cartao_id, competencia, status').eq('empresa_id', eid).eq('status', 'paga'),
     ])
     const cs = (cRes.data ?? []) as Cartao[]
     setCartoes(cs)
     setGastos((gRes.data ?? []) as Gasto[])
+    setPaidSet(new Set(((fRes.data ?? []) as { cartao_id: string; competencia: string }[]).map(f => `${f.cartao_id}|${f.competencia}`)))
     if (cs.length > 0 && !cartaoSel) setCartaoSel(cs[0].id)
     setLoading(false)
   }, [cartaoSel])
+
+  async function pagarFatura(comp: string, total: number) {
+    if (!cartaoAtual) return
+    const fech = fechamentoDate(comp, cartaoAtual.fechamento_dia || 1)
+    const venc = new Date(fech)
+    venc.setDate(cartaoAtual.vencimento_dia || fech.getDate())
+    if ((cartaoAtual.vencimento_dia || 0) < (cartaoAtual.fechamento_dia || 0)) venc.setMonth(venc.getMonth() + 1)
+    const { error } = await supabase.from('faturas_cartao').upsert({
+      empresa_id: empresaId, cartao_id: cartaoAtual.id, competencia: comp,
+      valor_total: total, status: 'paga', paga_em: new Date().toISOString(),
+      fechamento_data: fech.toISOString().slice(0, 10), vencimento_data: venc.toISOString().slice(0, 10),
+    }, { onConflict: 'cartao_id,competencia' })
+    if (error) { toast.error(error.message); return }
+    toast.success('Fatura marcada como paga')
+    void carregar(empresaId)
+  }
 
   useEffect(() => {
     supabase.auth.getUser().then(async ({ data: { user } }) => {
@@ -424,54 +461,97 @@ export default function CartoesPage() {
             </div>
           )}
 
-          {/* FATURA */}
-          {tab === 'fatura' && (
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 320px', gap: 12 }}>
-              <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 14, padding: '16px 18px' }}>
-                <div style={{ fontSize: 12, fontWeight: 700, color: '#1C2B2A', marginBottom: 14, fontFamily: "'Inter', sans-serif" }}>Fatura atual — {cartaoAtual?.nome}</div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                  {gastosDoCarto.length === 0 ? (
-                    <div style={{ textAlign: 'center', padding: '30px 0', color: '#AAB8B7', fontSize: 12 }}>Nenhum lançamento na fatura</div>
-                  ) : gastosDoCarto.map((g, i) => (
-                    <div key={g.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '9px 0', borderBottom: i < gastosDoCarto.length - 1 ? '0.5px solid #F0F4F3' : 'none' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                        <div style={{ width: 30, height: 30, borderRadius: 8, background: `${CATS_CORES[g.categoria || 'Outros'] || '#7A8F8E'}18`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                          <i className="fa-solid fa-receipt" style={{ fontSize: 12, color: CATS_CORES[g.categoria || 'Outros'] || '#7A8F8E' }} />
+          {/* FATURA — ciclo aberta / fechada / paga */}
+          {tab === 'fatura' && cartaoAtual && (() => {
+            const fechDia = cartaoAtual.fechamento_dia || 1
+            const hoje = new Date(); hoje.setHours(12, 0, 0, 0)
+            const grupos: Record<string, Gasto[]> = {}
+            gastosDoCarto.forEach(g => { const c = competenciaFatura(g.data, fechDia); if (c) { if (!grupos[c]) grupos[c] = []; grupos[c].push(g) } })
+            const faturas = Object.keys(grupos).sort().reverse().map(comp => {
+              const itens = grupos[comp]
+              const total = itens.reduce((s, g) => s + Number(g.valor || 0), 0)
+              const fech = fechamentoDate(comp, fechDia)
+              const paga = paidSet.has(`${cartaoAtual.id}|${comp}`)
+              const status: 'aberta' | 'fechada' | 'paga' = paga ? 'paga' : (fech < hoje ? 'fechada' : 'aberta')
+              return { comp, itens, total, fech, status }
+            })
+            const aberta = faturas.find(f => f.status === 'aberta')
+            const fechadas = faturas.filter(f => f.status !== 'aberta')
+            const limite = Number(cartaoAtual.limite || 0)
+            return (
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 320px', gap: 12, alignItems: 'start' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                  {/* ABERTA */}
+                  <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 14, overflow: 'hidden' }}>
+                    <div style={{ padding: '12px 16px', borderBottom: '0.5px solid #E2E8E7', background: '#F8FAFA', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <div style={{ fontSize: 12, fontWeight: 700, color: '#1C2B2A', textTransform: 'capitalize' }}>Fatura aberta{aberta ? ` · ${labelComp(aberta.comp)}` : ''}</div>
+                      <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 9px', borderRadius: 20, background: '#FEF3C7', color: '#92400E' }}>ABERTA</span>
+                    </div>
+                    {!aberta || aberta.itens.length === 0 ? (
+                      <div style={{ padding: '28px 16px', textAlign: 'center', color: '#AAB8B7', fontSize: 12 }}>Nenhum lançamento na fatura aberta.</div>
+                    ) : aberta.itens.map((g, i) => (
+                      <div key={g.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 16px', borderBottom: i < aberta.itens.length - 1 ? '0.5px solid #F0F4F3' : 'none' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                          <div style={{ width: 30, height: 30, borderRadius: 8, background: `${CATS_CORES[g.categoria || 'Outros'] || '#7A8F8E'}18`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <i className="fa-solid fa-receipt" style={{ fontSize: 12, color: CATS_CORES[g.categoria || 'Outros'] || '#7A8F8E' }} />
+                          </div>
+                          <div>
+                            <div style={{ fontSize: 12, fontWeight: 600, color: '#1C2B2A' }}>{g.descricao}</div>
+                            <div style={{ fontSize: 10, color: '#7A8F8E' }}>{new Date(g.data + 'T12:00:00').toLocaleDateString('pt-BR')} · {g.categoria || 'Outros'}</div>
+                          </div>
                         </div>
-                        <div>
-                          <div style={{ fontSize: 12, fontWeight: 600, color: '#1C2B2A' }}>{g.descricao}</div>
-                          <div style={{ fontSize: 10, color: '#7A8F8E' }}>{new Date(g.data + 'T12:00:00').toLocaleDateString('pt-BR')} · {g.categoria || 'Outros'}</div>
-                        </div>
+                        <div style={{ fontSize: 12, fontWeight: 700, color: '#1C2B2A', fontFamily: "'Inter', sans-serif" }}>{formatBRL(Number(g.valor))}</div>
                       </div>
-                      <div style={{ fontSize: 12, fontWeight: 700, color: '#E74C3C', fontFamily: "'Inter', sans-serif" }}>{formatBRL(Number(g.valor))}</div>
+                    ))}
+                  </div>
+
+                  {/* FECHADAS / PAGAS */}
+                  {fechadas.length > 0 && (
+                    <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 14, overflow: 'hidden' }}>
+                      <div style={{ padding: '12px 16px', borderBottom: '0.5px solid #E2E8E7', background: '#F8FAFA', fontSize: 12, fontWeight: 700, color: '#1C2B2A' }}>Faturas anteriores</div>
+                      {fechadas.map((f, i) => (
+                        <div key={f.comp} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px', borderBottom: i < fechadas.length - 1 ? '0.5px solid #F0F4F3' : 'none' }}>
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <div style={{ fontSize: 12.5, fontWeight: 600, color: '#1C2B2A', textTransform: 'capitalize' }}>{labelComp(f.comp)}</div>
+                            <div style={{ fontSize: 10, color: '#7A8F8E' }}>{f.itens.length} lançamento{f.itens.length !== 1 ? 's' : ''} · fechou {f.fech.toLocaleDateString('pt-BR')}</div>
+                          </div>
+                          <div style={{ fontSize: 13, fontWeight: 700, color: '#1C2B2A', fontFamily: "'Inter', sans-serif" }}>{formatBRL(f.total)}</div>
+                          {f.status === 'paga' ? (
+                            <span style={{ fontSize: 10, fontWeight: 700, padding: '3px 10px', borderRadius: 20, background: '#EAF5F3', color: '#0F6E56' }}><i className="fa-solid fa-check" style={{ marginRight: 4 }} />Paga</span>
+                          ) : (
+                            <button onClick={() => void pagarFatura(f.comp, f.total)} style={{ fontSize: 11, fontWeight: 700, padding: '5px 12px', borderRadius: 8, border: 'none', background: '#1C2B2A', color: '#fff', cursor: 'pointer' }}>Pagar</button>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Resumo lateral */}
+                <div style={{ background: '#1C2B2A', borderRadius: 14, padding: '18px', display: 'flex', flexDirection: 'column', gap: 14 }}>
+                  <div style={{ fontSize: 11, fontWeight: 700, color: '#7EBDB8', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Fatura aberta</div>
+                  {[
+                    { label: 'Total parcial', val: formatBRL(aberta?.total ?? 0), cor: '#fff', size: 22 },
+                    { label: 'Fecha em', val: aberta ? aberta.fech.toLocaleDateString('pt-BR') : `Dia ${fechDia}`, cor: 'rgba(255,255,255,0.7)', size: 13 },
+                    { label: 'Vencimento', val: `Dia ${cartaoAtual.vencimento_dia}`, cor: 'rgba(255,255,255,0.7)', size: 13 },
+                  ].map(item => (
+                    <div key={item.label} style={{ borderBottom: '0.5px solid rgba(255,255,255,0.08)', paddingBottom: 12 }}>
+                      <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.45)', marginBottom: 4 }}>{item.label}</div>
+                      <div style={{ fontSize: item.size, fontWeight: 700, color: item.cor, fontFamily: "'Inter', sans-serif" }}>{item.val}</div>
                     </div>
                   ))}
+                  {limite > 0 && (
+                    <div>
+                      <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.45)', marginBottom: 6 }}>Uso do limite · {((aberta?.total ?? 0) / limite * 100).toFixed(0)}%</div>
+                      <div style={{ height: 7, background: 'rgba(255,255,255,0.12)', borderRadius: 99, overflow: 'hidden' }}>
+                        <div style={{ height: '100%', width: `${Math.min(100, (aberta?.total ?? 0) / limite * 100)}%`, background: '#5E8C87', borderRadius: 99 }} />
+                      </div>
+                    </div>
+                  )}
                 </div>
-                {gastosDoCarto.length > 0 && (
-                  <div style={{ marginTop: 14, padding: '12px 0 0', borderTop: '0.5px solid #E2E8E7', display: 'flex', justifyContent: 'space-between' }}>
-                    <span style={{ fontSize: 13, fontWeight: 700, color: '#1C2B2A' }}>Total da fatura</span>
-                    <span style={{ fontSize: 14, fontWeight: 700, color: '#E74C3C', fontFamily: "'Inter', sans-serif" }}>{formatBRL(totalGastos)}</span>
-                  </div>
-                )}
               </div>
-              <div style={{ background: '#1C2B2A', borderRadius: 14, padding: '18px', display: 'flex', flexDirection: 'column', gap: 14 }}>
-                <div style={{ fontSize: 11, fontWeight: 700, color: '#7EBDB8', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Resumo da fatura</div>
-                {[
-                  { label: 'Total a pagar', val: formatBRL(totalGastos), cor: '#fff', size: 20 },
-                  { label: 'Vencimento', val: cartaoAtual ? `Dia ${cartaoAtual.vencimento_dia}` : '—', cor: 'rgba(255,255,255,0.7)', size: 13 },
-                  { label: 'Fechamento', val: cartaoAtual ? `Dia ${cartaoAtual.fechamento_dia}` : '—', cor: 'rgba(255,255,255,0.7)', size: 13 },
-                ].map(item => (
-                  <div key={item.label} style={{ borderBottom: '0.5px solid rgba(255,255,255,0.08)', paddingBottom: 12 }}>
-                    <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.45)', marginBottom: 4 }}>{item.label}</div>
-                    <div style={{ fontSize: item.size, fontWeight: 700, color: item.cor, fontFamily: "'Inter', sans-serif" }}>{item.val}</div>
-                  </div>
-                ))}
-                <button style={{ background: '#5E8C87', color: '#fff', border: 'none', borderRadius: 9, padding: '10px', fontSize: 12, fontWeight: 700, cursor: 'pointer', marginTop: 'auto' }}>
-                  Marcar fatura como paga
-                </button>
-              </div>
-            </div>
-          )}
+            )
+          })()}
 
           {/* LIMITES */}
           {tab === 'limites' && (
