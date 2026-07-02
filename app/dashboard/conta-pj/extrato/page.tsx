@@ -2,11 +2,13 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import { formatBRL } from '@/lib/currency-brl'
+import toast from 'react-hot-toast'
 
 type ExtratoRow = {
   id: string
   descricao: string
   contraparte_nome?: string | null
+  categoria?: string | null
   tipo: 'credito' | 'debito'
   valor: number | string
   saldo_apos?: number | string | null
@@ -19,6 +21,25 @@ export default function ExtratoCompletoPage() {
   const [tipo, setTipo] = useState('todos')
   const [busca, setBusca] = useState('')
   const [periodo, setPeriodo] = useState('30')
+  const [categorizando, setCategorizando] = useState(false)
+
+  async function categorizarComIA() {
+    setCategorizando(true)
+    try {
+      const { data: sess } = await supabase.auth.getSession()
+      const token = sess.session?.access_token
+      const res = await fetch('/api/conta-pj/categorizar-extrato', {
+        method: 'POST',
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      })
+      const d = await res.json()
+      if (!res.ok) throw new Error(d.error || 'Falha ao categorizar')
+      toast.success(d.categorizadas > 0 ? `${d.categorizadas} transação(ões) categorizada(s) com IA` : (d.mensagem || 'Nada a categorizar'))
+      await carregar()
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : 'Erro ao categorizar')
+    } finally { setCategorizando(false) }
+  }
 
   const carregar = useCallback(async () => {
     const { data: { user } } = await supabase.auth.getUser()
@@ -47,6 +68,9 @@ export default function ExtratoCompletoPage() {
           <div className="page-title">Extrato Bancário</div>
           <div className="page-sub">Banco PJ · histórico de movimentações</div>
         </div>
+        <button className="btn-action btn-ghost" style={{ fontSize: 12 }} onClick={() => void categorizarComIA()} disabled={categorizando} title="Classifica automaticamente as transações sem categoria">
+          <i className="fa-solid fa-wand-magic-sparkles" style={{ marginRight: 6, color: '#7C3AED' }} />{categorizando ? 'Categorizando…' : 'Categorizar com IA'}
+        </button>
       </div>
 
       {/* Totais */}
@@ -95,6 +119,7 @@ export default function ExtratoCompletoPage() {
                 <th>Data / Hora</th>
                 <th>Descrição</th>
                 <th>Contraparte</th>
+                <th>Categoria</th>
                 <th style={{ textAlign: 'right' }}>Valor</th>
                 <th style={{ textAlign: 'right' }}>Saldo após</th>
                 <th style={{ textAlign: 'center' }}>Conciliado</th>
@@ -102,12 +127,13 @@ export default function ExtratoCompletoPage() {
             </thead>
             <tbody>
               {filtered.length === 0 ? (
-                <tr><td colSpan={6} style={{ textAlign: 'center', color: 'var(--gray-400)', padding: '32px 0' }}>Nenhuma movimentação no período.</td></tr>
+                <tr><td colSpan={7} style={{ textAlign: 'center', color: 'var(--gray-400)', padding: '32px 0' }}>Nenhuma movimentação no período.</td></tr>
               ) : filtered.map(r => (
                 <tr key={r.id}>
                   <td style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: 11 }}>{new Date(r.data_transacao).toLocaleString('pt-BR')}</td>
                   <td style={{ fontWeight: 600 }}>{r.descricao}</td>
                   <td style={{ color: 'var(--gray-500)' }}>{r.contraparte_nome || '—'}</td>
+                  <td>{r.categoria ? <span style={{ fontSize: 10.5, fontWeight: 600, padding: '2px 8px', borderRadius: 20, background: '#EEF2F1', color: '#3A5150' }}>{r.categoria}</span> : <span style={{ color: '#C4CFCE' }}>—</span>}</td>
                   <td style={{ textAlign: 'right', fontWeight: 700, fontFamily: "'Inter', system-ui, sans-serif", color: r.tipo === 'credito' ? 'var(--green)' : 'var(--red)' }}>
                     {r.tipo === 'credito' ? '+' : '-'}{formatBRL(Number(r.valor || 0))}
                   </td>
