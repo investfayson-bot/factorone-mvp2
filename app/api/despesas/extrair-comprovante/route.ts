@@ -3,7 +3,7 @@ import OpenAI from 'openai'
 import { PDFParse } from 'pdf-parse'
 import { getSupabaseUser } from '@/lib/supabase-route'
 import { erroDesconhecido } from '@/lib/transacao-types'
-import { sugerirCategoriaDespesa } from '@/lib/despesas-categorizacao'
+import { sugerirCategoriaDespesa, CATEGORIAS_PADRAO } from '@/lib/despesas-categorizacao'
 
 export const runtime = 'nodejs'
 
@@ -13,8 +13,11 @@ type Extracao = {
   issue_date: string | null
   due_date: string | null
   description: string
+  category: string
   confidence: number
 }
+
+const CATS_TXT = CATEGORIAS_PADRAO.join(', ')
 
 const openrouter = new OpenAI({
   baseURL: 'https://openrouter.ai/api/v1',
@@ -60,7 +63,8 @@ async function extrairImagem(file: File): Promise<Extracao> {
   const base64 = buf.toString('base64')
   const mime = file.type || 'image/jpeg'
   const prompt = `Extraia os dados do comprovante/extrato e retorne SOMENTE JSON válido com as chaves:
-merchant (string), amount (number), issue_date (YYYY-MM-DD|null), due_date (YYYY-MM-DD|null), description (string), confidence (0 a 1).`
+merchant (string), amount (number), issue_date (YYYY-MM-DD|null), due_date (YYYY-MM-DD|null), description (string), category (string), confidence (0 a 1).
+Para category, escolha EXATAMENTE uma da lista: ${CATS_TXT}.`
 
   const completion = await openrouter.chat.completions.create({
     model: 'google/gemini-2.5-flash',
@@ -85,8 +89,15 @@ merchant (string), amount (number), issue_date (YYYY-MM-DD|null), due_date (YYYY
     issue_date: normalizarData(parsed.issue_date),
     due_date: normalizarData(parsed.due_date),
     description: String(parsed.description ?? '').trim(),
+    category: normalizarCategoria(parsed.category),
     confidence: Math.max(0, Math.min(1, Number(parsed.confidence ?? 0.5))),
   }
+}
+
+function normalizarCategoria(v: unknown): string {
+  const s = String(v ?? '').trim()
+  if (!s) return ''
+  return CATEGORIAS_PADRAO.find(c => c.toLowerCase() === s.toLowerCase()) ?? ''
 }
 
 async function extrairPdf(file: File): Promise<Extracao> {
@@ -97,7 +108,8 @@ async function extrairPdf(file: File): Promise<Extracao> {
   })
   const text = parsedPdf.text?.slice(0, 15000) || ''
   const prompt = `Com base no texto de extrato/comprovante abaixo, retorne SOMENTE JSON válido com:
-merchant (string), amount (number), issue_date (YYYY-MM-DD|null), due_date (YYYY-MM-DD|null), description (string), confidence (0 a 1).
+merchant (string), amount (number), issue_date (YYYY-MM-DD|null), due_date (YYYY-MM-DD|null), description (string), category (string), confidence (0 a 1).
+Para category, escolha EXATAMENTE uma da lista: ${CATS_TXT}.
 
 Texto:
 ${text}`
@@ -116,6 +128,7 @@ ${text}`
     issue_date: normalizarData(parsed.issue_date),
     due_date: normalizarData(parsed.due_date),
     description: String(parsed.description ?? '').trim(),
+    category: normalizarCategoria(parsed.category),
     confidence: Math.max(0, Math.min(1, Number(parsed.confidence ?? 0.5))),
   }
 }
@@ -145,7 +158,8 @@ export async function POST(req: NextRequest) {
 
     const extracted = isPdf ? await extrairPdf(file) : await extrairImagem(file)
     const textoBase = `${extracted.merchant} ${extracted.description}`.trim()
-    const categoria = sugerirCategoriaDespesa(textoBase)
+    // Categoria decidida pela IA no mesmo passo; regex só como fallback.
+    const categoria = extracted.category || sugerirCategoriaDespesa(textoBase)
 
     return NextResponse.json({
       success: true,

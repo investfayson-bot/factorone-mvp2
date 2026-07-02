@@ -92,6 +92,25 @@ export default function DespesasPage() {
   const [motivoRejeicao, setMotivoRejeicao] = useState('')
   const [exportMenuOpen, setExportMenuOpen] = useState(false)
   const [importing, setImporting] = useState(false)
+  const [categorizando, setCategorizando] = useState(false)
+
+  async function categorizarComIA() {
+    setCategorizando(true)
+    try {
+      const { data: sess } = await supabase.auth.getSession()
+      const token = sess.session?.access_token
+      const res = await fetch('/api/despesas/categorizar-lote', {
+        method: 'POST',
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      })
+      const d = await res.json()
+      if (!res.ok) throw new Error(d.error || 'Falha ao categorizar')
+      toast.success(d.categorizadas > 0 ? `${d.categorizadas} despesa(s) categorizada(s) com IA` : (d.mensagem || 'Nada a categorizar'))
+      await load()
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : 'Erro ao categorizar')
+    } finally { setCategorizando(false) }
+  }
 
   const periodoLabel = useMemo(
     () => new Date(ano, mes - 1, 1).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' }),
@@ -386,6 +405,9 @@ export default function DespesasPage() {
               </>
             )}
           </div>
+          <button className="btn-action btn-ghost" onClick={() => void categorizarComIA()} disabled={categorizando} title="Classifica automaticamente as despesas sem categoria">
+            <i className="fa-solid fa-wand-magic-sparkles" style={{ marginRight: 6, color: '#7C3AED' }} />{categorizando ? 'Categorizando…' : 'Categorizar com IA'}
+          </button>
           <button className="btn-action" onClick={() => { setEditRow(null); setModalOpen(true) }}>+ Nova despesa</button>
           <label className="btn-action btn-ghost" style={{ cursor: 'pointer' }}>
             {importing ? 'Importando…' : 'Importar CSV/Excel'}
