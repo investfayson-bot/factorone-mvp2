@@ -8,7 +8,7 @@ import { maskCpfCnpj } from '@/lib/masks'
 import toast from 'react-hot-toast'
 
 type Empresa = { nome: string; cnpj: string | null; email: string | null; setor: string | null }
-type Conta = { id: string; saldo_disponivel: number; saldo: number; agencia: string | null; numero_conta: string | null; digito: string | null; status: string }
+type Conta = { id: string; saldo_disponivel: number; saldo: number; agencia: string | null; numero_conta: string | null; digito: string | null; status: string; banco_nome?: string | null; banco_codigo?: string | null; is_principal?: boolean; tipo?: string | null }
 type Tx = { id: string; tipo: 'credito' | 'debito'; descricao: string; data_transacao: string; valor: number; contraparte_nome?: string | null }
 
 const ACOES = [
@@ -153,6 +153,7 @@ export default function ContaPJPage() {
   const [empresaId, setEmpresaId] = useState('')
   const [empresa, setEmpresa] = useState<Empresa>({ nome: '', cnpj: null, email: null, setor: null })
   const [conta, setConta] = useState<Conta | null>(null)
+  const [contas, setContas] = useState<Conta[]>([])
   const [txs, setTxs] = useState<Tx[]>([])
   const [entradasMes, setEntradasMes] = useState(0)
   const [saidasMes, setSaidasMes] = useState(0)
@@ -187,7 +188,7 @@ export default function ContaPJPage() {
     const mes0 = new Date(); mes0.setDate(1)
     const [empR, contaR, txR, cartoesR] = await Promise.all([
       supabase.from('empresas').select('nome,cnpj,email,setor').eq('id', eid).maybeSingle(),
-      supabase.from('contas_bancarias').select('id,saldo_disponivel,saldo,agencia,numero_conta,digito,status').eq('empresa_id', eid).order('created_at', { ascending: false }).limit(1).maybeSingle(),
+      supabase.from('contas_bancarias').select('id,saldo_disponivel,saldo,agencia,numero_conta,digito,status,banco_nome,banco_codigo,is_principal,tipo').eq('empresa_id', eid).order('is_principal', { ascending: false }).order('created_at', { ascending: false }),
       supabase.from('extrato_bancario').select('id,tipo,descricao,valor,data_transacao,contraparte_nome').eq('empresa_id', eid).gte('data_transacao', since30.toISOString().slice(0, 10)).order('data_transacao', { ascending: false }).limit(100),
       supabase.from('solicitacoes_cartao').select('id', { count: 'exact', head: true }).eq('empresa_id', eid).eq('status', 'aprovado'),
     ])
@@ -195,7 +196,9 @@ export default function ContaPJPage() {
     setEmpresa({ nome: emp?.nome ?? '', cnpj: emp?.cnpj ?? null, email: emp?.email ?? null, setor: emp?.setor ?? null })
     setW1(prev => ({ ...prev, cnpj: emp?.cnpj ?? '', razaoSocial: emp?.nome ?? '', segmento: emp?.setor ?? '' }))
     setW2(prev => ({ ...prev, email: emp?.email ?? '' }))
-    setConta((contaR.data as Conta) ?? null)
+    const contasArr = (contaR.data ?? []) as Conta[]
+    setContas(contasArr)
+    setConta(contasArr.find(c => c.is_principal) ?? contasArr[0] ?? null)
     const allTxs = (txR.data ?? []) as Tx[]
     setTxs(allTxs)
     const mes0Str = mes0.toISOString().slice(0, 10)
@@ -580,6 +583,8 @@ export default function ContaPJPage() {
 
   // ─── VISÃO GERAL DASHBOARD ───────────────────────────────────────────────
   const saldo = conta.saldo_disponivel ?? conta.saldo ?? 0
+  const saldoConsolidado = contas.reduce((sum, c) => sum + Number(c.saldo_disponivel ?? c.saldo ?? 0), 0)
+  const multiConta = contas.length > 1
   const txsMes = txs.filter(t => { const m = new Date(); m.setDate(1); return t.data_transacao >= m.toISOString().slice(0, 10) })
   const chartData = buildChartData(txs)
   const txsRecentes = txs.slice(0, 5)
@@ -622,9 +627,9 @@ export default function ContaPJPage() {
       {/* KPIs */}
       <div className="kpis" style={{ gridTemplateColumns: 'repeat(4,1fr)', marginBottom: 20 }}>
         <div className="kpi">
-          <div className="kpi-lbl">Saldo disponível</div>
+          <div className="kpi-lbl">{multiConta ? `Saldo consolidado · ${contas.length} contas` : 'Saldo disponível'}</div>
           <div className="kpi-val" style={{ color: 'var(--navy)' }}>
-            {hide ? '••••••' : formatBRL(saldo)}
+            {hide ? '••••••' : formatBRL(multiConta ? saldoConsolidado : saldo)}
           </div>
           <button onClick={() => setHide(h => !h)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 10, color: 'var(--gray-400)', padding: 0 }}>
             <i className={`fa-solid ${hide ? 'fa-eye' : 'fa-eye-slash'}`} style={{ marginRight: 4 }} />{hide ? 'Mostrar' : 'Ocultar'}
@@ -646,6 +651,40 @@ export default function ContaPJPage() {
           <Link href="/dashboard/cartoes" style={{ fontSize: 10, color: 'var(--teal)', textDecoration: 'none' }}>Gerenciar cartões →</Link>
         </div>
       </div>
+
+      {/* SUAS CONTAS (multi-conta) */}
+      {contas.length > 0 && (
+        <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: '16px 20px', marginBottom: 20 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
+            <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.04em' }}>Suas contas · {contas.length}</span>
+            <Link href="/dashboard/conta-pj/abrir" style={{ fontSize: 11, color: 'var(--teal)', textDecoration: 'none', fontWeight: 600 }}>+ Abrir / conectar conta</Link>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: 12 }}>
+            {contas.map(c => {
+              const sel = conta?.id === c.id
+              return (
+                <button key={c.id} onClick={() => setConta(c)} style={{ textAlign: 'left', cursor: 'pointer', border: `1px solid ${sel ? 'var(--teal)' : 'var(--gray-100)'}`, borderRadius: 10, padding: '14px 16px', background: sel ? 'rgba(94,140,135,.05)' : '#fff', transition: 'all .15s' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <div style={{ width: 30, height: 30, borderRadius: 8, background: 'var(--navy)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                        <i className="fa-solid fa-building-columns" style={{ fontSize: 13, color: '#7EBDB8' }} />
+                      </div>
+                      <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy)' }}>{c.banco_nome ?? 'FactorOne Bank'}</div>
+                    </div>
+                    {c.is_principal && <span style={{ fontSize: 9, fontWeight: 700, color: 'var(--teal)', background: 'rgba(94,140,135,.12)', padding: '2px 7px', borderRadius: 20 }}>PRINCIPAL</span>}
+                  </div>
+                  <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--navy)', fontFamily: "'Inter', system-ui, sans-serif", letterSpacing: '-.02em' }}>
+                    {hide ? '••••••' : formatBRL(Number(c.saldo_disponivel ?? c.saldo ?? 0))}
+                  </div>
+                  <div style={{ fontSize: 10.5, color: 'var(--gray-400)', marginTop: 4, fontFamily: 'monospace' }}>
+                    {c.agencia ? `Ag ${c.agencia} · CC ${c.numero_conta ?? '—'}${c.digito ? `-${c.digito}` : ''}` : (c.tipo === 'conta_pj_factorone' ? 'Conta PJ FactorOne' : 'Conta conectada')}
+                  </div>
+                </button>
+              )
+            })}
+          </div>
+        </div>
+      )}
 
       {/* AÇÕES RÁPIDAS */}
       <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: '16px 20px', marginBottom: 20 }}>

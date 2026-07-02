@@ -18,8 +18,6 @@ type NavGroup = {
 }
 
 function buildNavGroups(badges: { reembolsos: number; aprovacoes: number }, installedIds: string[] = []): NavGroup[] {
-  const contaPjInstalled = installedIds.includes('conta-pj') || installedIds.includes('banco-pj')
-
   const groups: NavGroup[] = [
     {
       label: 'Visão geral',
@@ -33,7 +31,6 @@ function buildNavGroups(badges: { reembolsos: number; aprovacoes: number }, inst
       items: [
         { href: '/dashboard/cashflow', icon: 'fa-chart-line', label: 'Fluxo de Caixa' },
         { href: '/dashboard/relatorios', icon: 'fa-chart-bar', label: 'DRE' },
-        { href: '/dashboard/credito', icon: 'fa-hand-holding-dollar', label: 'Crédito & Financiamento' },
         { href: '/dashboard/financeiro', icon: 'fa-receipt', label: 'Financeiro', badge: badges.reembolsos > 0 ? String(badges.reembolsos) : undefined, badgeColor: 'var(--teal)' },
         { href: '/dashboard/despesas', icon: 'fa-file-invoice', label: 'Despesas' },
         { href: '/dashboard/orcamento', icon: 'fa-chart-pie', label: 'Orçamento' },
@@ -48,20 +45,22 @@ function buildNavGroups(badges: { reembolsos: number; aprovacoes: number }, inst
         { href: '/dashboard/fiscal', icon: 'fa-landmark', label: 'Portais Fiscais' },
       ],
     },
-    ...(contaPjInstalled ? [{
-      label: 'Conta PJ',
+    {
+      label: 'Banco',
       collapsible: true,
       items: [
-        { href: '/dashboard/conta-pj', icon: 'fa-gauge-high', label: 'Saldo & Extrato', match: (p: string) => p === '/dashboard/conta-pj' },
+        { href: '/dashboard/conta-pj', icon: 'fa-building-columns', label: 'Visão geral', match: (p: string) => p === '/dashboard/conta-pj' },
+        { href: '/dashboard/conta-pj/extrato', icon: 'fa-list-ul', label: 'Extrato' },
         { href: '/dashboard/conta-pj/transferencias', icon: 'fa-bolt', label: 'PIX & Transferências' },
-        { href: '/dashboard/cartoes', icon: 'fa-credit-card', label: 'Cartão Corporativo' },
+        { href: '/dashboard/cartoes', icon: 'fa-credit-card', label: 'Cartões' },
+        { href: '/dashboard/credito', icon: 'fa-hand-holding-dollar', label: 'Crédito & Financiamento' },
         { href: '/dashboard/conta-pj/conectar-banco', icon: 'fa-link', label: 'Open Finance' },
+        { href: '/dashboard/conta-pj/abrir', icon: 'fa-circle-plus', label: 'Abrir / conectar conta' },
       ],
-    }] : []),
+    },
     {
       label: 'Marketplace',
       items: [
-        ...(!contaPjInstalled ? [{ href: '/dashboard/marketplace?module=conta-pj', icon: 'fa-credit-card', label: 'Conta PJ', badge: 'ADD', badgeColor: 'rgba(94,140,135,0.35)' }] : []),
         { href: '/dashboard/integracoes', icon: 'fa-plug', label: 'Integrações' },
         { href: '/dashboard/marketplace', icon: 'fa-store', label: 'Marketplace', badge: 'NEW', badgeColor: '#7C3AED' },
       ],
@@ -101,12 +100,12 @@ const pageTitles: Record<string, string> = {
   '/dashboard/contadores': 'Portal do Contador',
   '/dashboard/notas': 'Fiscal & NF-e',
   '/dashboard/fiscal': 'Portais Fiscais & Gov.br',
-  '/dashboard/conta-pj': 'Conta PJ — Saldo & Extrato',
-  '/dashboard/conta-pj/transferencias': 'Conta PJ — PIX & Transferências',
-  '/dashboard/conta-pj/conectar-banco': 'Conta PJ — Open Finance',
-  '/dashboard/conta-pj/abrir': 'Conta PJ — Abrir Conta',
-  '/dashboard/conta-pj/extrato': 'Conta PJ — Extrato',
-  '/dashboard/conta-pj/investimentos': 'Conta PJ — Investimentos',
+  '/dashboard/conta-pj': 'Banco — Visão geral',
+  '/dashboard/conta-pj/transferencias': 'Banco — PIX & Transferências',
+  '/dashboard/conta-pj/conectar-banco': 'Banco — Open Finance',
+  '/dashboard/conta-pj/abrir': 'Banco — Abrir / conectar conta',
+  '/dashboard/conta-pj/extrato': 'Banco — Extrato',
+  '/dashboard/conta-pj/investimentos': 'Banco — Investimentos',
   '/dashboard/cartoes': 'Cartão Corporativo',
   '/dashboard/integracoes': 'Integrações',
   '/dashboard/marketplace': 'Marketplace',
