@@ -34,6 +34,10 @@ export default function MarketplacePage() {
 
   async function onToggle(a: MarketApp) {
     const willInstall = !installed.includes(a.id)
+    if (!willInstall) {
+      const ok = window.confirm(`Desinstalar ${a.name}?\n\nEle sai do menu lateral, mas seus dados NÃO são apagados — ficam salvos e voltam se você reinstalar.`)
+      if (!ok) return
+    }
     setBusy(a.id)
     setInstalledState(prev => willInstall ? [...prev, a.id] : prev.filter(x => x !== a.id))
     try {
@@ -198,26 +202,33 @@ export default function MarketplacePage() {
 
                 {/* Footer */}
                 <div style={{ display: 'flex', gap: 8, marginTop: 'auto' }}>
-                  <button
-                    onClick={() => onToggle(a)}
-                    disabled={isBusy}
-                    style={{
-                      flex: 1, padding: '8px', borderRadius: 8, border: 'none', fontSize: 12, fontWeight: 700,
-                      cursor: isBusy ? 'wait' : 'pointer',
-                      background: isOn ? '#EAF5F3' : '#1C2B2A',
-                      color: isOn ? '#0F6E56' : '#fff',
-                      transition: 'all 0.15s', opacity: isBusy ? 0.7 : 1,
-                    }}
-                  >
-                    {isBusy ? '...' : isOn ? '✓ Instalado' : 'Adicionar'}
-                  </button>
-                  {isOn && a.hasPage && (
+                  {!isOn ? (
                     <button
-                      onClick={() => router.push(a.href)}
-                      style={{ padding: '8px 12px', borderRadius: 8, border: '0.5px solid #E2E8E7', background: '#fff', color: '#3A5150', fontSize: 11, cursor: 'pointer', fontWeight: 600 }}
+                      onClick={() => onToggle(a)}
+                      disabled={isBusy}
+                      style={{ flex: 1, padding: '8px', borderRadius: 8, border: 'none', fontSize: 12, fontWeight: 700, cursor: isBusy ? 'wait' : 'pointer', background: '#1C2B2A', color: '#fff', opacity: isBusy ? 0.7 : 1 }}
                     >
-                      Abrir
+                      {isBusy ? '...' : 'Adicionar'}
                     </button>
+                  ) : (
+                    <>
+                      {a.hasPage && (
+                        <button
+                          onClick={() => router.push(a.href)}
+                          style={{ flex: 1, padding: '8px', borderRadius: 8, border: 'none', background: '#1C2B2A', color: '#fff', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}
+                        >
+                          Abrir
+                        </button>
+                      )}
+                      <button
+                        onClick={() => onToggle(a)}
+                        disabled={isBusy}
+                        title="Remove do menu — seus dados ficam salvos"
+                        style={{ flex: a.hasPage ? '0 0 auto' : 1, padding: '8px 12px', borderRadius: 8, border: '0.5px solid #F1D4D0', background: '#fff', color: '#C0504A', fontSize: 12, fontWeight: 700, cursor: isBusy ? 'wait' : 'pointer', opacity: isBusy ? 0.7 : 1 }}
+                      >
+                        {isBusy ? '...' : 'Desinstalar'}
+                      </button>
+                    </>
                   )}
                 </div>
               </div>

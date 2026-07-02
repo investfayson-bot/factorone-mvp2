@@ -183,9 +183,9 @@ export default function ConexoesPage() {
   return (
     <div style={{ maxWidth: 880, margin: '0 auto' }}>
       <div style={{ marginBottom: 20 }}>
-        <h1 style={{ fontSize: 20, fontWeight: 700, color: 'var(--navy)', margin: 0 }}>Conexões bancárias</h1>
+        <h1 style={{ fontSize: 20, fontWeight: 700, color: 'var(--navy)', margin: 0 }}>Integrações bancárias</h1>
         <p style={{ fontSize: 13, color: 'var(--gray-400)', marginTop: 4 }}>
-          Conecte uma conta via Open Finance (Belvo) para importar saldos, transações e faturas de cartão.
+          Em breve: novas integrações para conectar seus bancos e importar saldos, transações e faturas automaticamente.
         </p>
       </div>
 
@@ -215,8 +215,8 @@ export default function ConexoesPage() {
       {links.length === 0 && contas.length === 0 && transacoes.length === 0 && !status && (
         <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: '32px 20px', marginTop: 16, textAlign: 'center' }}>
           <ConnectBank width={240} />
-          <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--navy)', marginTop: 8 }}>Nenhum banco conectado</div>
-          <div style={{ fontSize: 12, color: 'var(--gray-400)', marginTop: 4 }}>Clique em &quot;Conectar banco&quot; para importar saldos e transações via Open Finance.</div>
+          <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--navy)', marginTop: 8 }}>Novas integrações em breve</div>
+          <div style={{ fontSize: 12, color: 'var(--gray-400)', marginTop: 4 }}>Estamos preparando conexões automáticas com o seu banco. Muito em breve por aqui.</div>
         </div>
       )}
 
