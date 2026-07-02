@@ -101,20 +101,19 @@ export default function AbrirContaPage() {
 
   return (
     <div style={{ display: 'grid', gridTemplateColumns: '380px 1fr', gap: 0, background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 18, overflow: 'hidden', minHeight: 520 }}>
-      {/* Painel esquerdo — premium */}
-      <div style={{ background: 'linear-gradient(160deg,#1C2B2A,#243736)', padding: '34px 30px', display: 'flex', flexDirection: 'column' }}>
-        <div style={{ fontSize: 19, fontWeight: 800, color: '#fff', letterSpacing: '-.03em', marginBottom: 4 }}>Factor<span style={{ color: '#7EBDB8' }}>One</span> Bank</div>
-        <div style={{ fontSize: 12, color: 'rgba(255,255,255,.5)', marginBottom: 28 }}>Conta PJ digital · sem tarifas · em minutos</div>
-        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 28 }}><CartaoVisual nome={form.razao} numero="•••• •••• •••• ••••" /></div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+      {/* Painel esquerdo — foto premium (banco digital) */}
+      <div style={{ position: 'relative', padding: '32px 30px', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', minHeight: 540, backgroundImage: 'linear-gradient(180deg, rgba(28,43,42,.20) 0%, rgba(28,43,42,.55) 52%, rgba(15,25,24,.96) 100%), url(/banco-hero.jpg)', backgroundSize: 'cover', backgroundPosition: 'center top' }}>
+        <div style={{ position: 'absolute', top: 28, left: 30, fontSize: 18, fontWeight: 800, color: '#fff', letterSpacing: '-.03em' }}>Factor<span style={{ color: '#7EBDB8' }}>One</span> <span style={{ fontSize: 11, fontWeight: 600, color: 'rgba(255,255,255,.6)' }}>BANK</span></div>
+        <div style={{ fontSize: 23, fontWeight: 800, color: '#fff', letterSpacing: '-.03em', lineHeight: 1.15 }}>Sua conta PJ que<br />trabalha por você</div>
+        <div style={{ fontSize: 12.5, color: 'rgba(255,255,255,.72)', margin: '6px 0 18px' }}>Abra em minutos · sem tarifas · cartão na hora</div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 9 }}>
           {[['fa-bolt', 'PIX ilimitado e grátis'], ['fa-credit-card', 'Cartão virtual na hora'], ['fa-percent', 'Rendimento no CDI'], ['fa-shield-halved', 'Regulado e seguro']].map(([i, t]) => (
             <div key={t} style={{ display: 'flex', alignItems: 'center', gap: 11 }}>
-              <div style={{ width: 30, height: 30, borderRadius: 8, background: 'rgba(126,189,184,.14)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><i className={`fa-solid ${i}`} style={{ fontSize: 12, color: '#7EBDB8' }} /></div>
-              <span style={{ fontSize: 12.5, color: 'rgba(255,255,255,.85)' }}>{t}</span>
+              <div style={{ width: 28, height: 28, borderRadius: 8, background: 'rgba(126,189,184,.20)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><i className={`fa-solid ${i}`} style={{ fontSize: 11, color: '#7EBDB8' }} /></div>
+              <span style={{ fontSize: 12.5, color: 'rgba(255,255,255,.9)' }}>{t}</span>
             </div>
           ))}
         </div>
-        <div style={{ marginTop: 'auto', fontSize: 10, color: 'rgba(255,255,255,.3)', paddingTop: 20 }}>Seus dados são criptografados (AES-256).</div>
       </div>
 
       {/* Formulário */}
