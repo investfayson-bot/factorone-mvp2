@@ -46,6 +46,7 @@ function buildNavGroups(badges: { reembolsos: number; aprovacoes: number }, inst
         { href: '/dashboard/notas', icon: 'fa-file-invoice-dollar', label: 'Fiscal & NF-e' },
         { href: '/dashboard/prefeituras', icon: 'fa-landmark', label: 'Prefeituras & NFS-e' },
         { href: '/dashboard/fiscal', icon: 'fa-building-flag', label: 'Portais Fiscais' },
+        { href: '/dashboard/juridico', icon: 'fa-scale-balanced', label: 'Jurídico' },
       ],
     },
     {
@@ -98,6 +99,7 @@ const pageTitles: Record<string, string> = {
   '/dashboard/indicadores': 'Indicadores',
   '/dashboard/ma': 'Preparação para M&A',
   '/dashboard/prefeituras': 'Prefeituras & NFS-e',
+  '/dashboard/juridico': 'Jurídico',
   '/dashboard/credito': 'Crédito & Financiamento',
   '/dashboard/financeiro': 'Financeiro',
   '/dashboard/despesas': 'Despesas',
