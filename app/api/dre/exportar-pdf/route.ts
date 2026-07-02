@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import React from 'react'
-import ReactPDF from '@react-pdf/renderer'
+import ReactPDF, { renderToBuffer } from '@react-pdf/renderer'
 import { erroDesconhecido } from '@/lib/transacao-types'
 import { getSupabaseUser } from '@/lib/supabase-route'
 
-const { Document, Page, Text, View, StyleSheet, renderToBuffer } = ReactPDF
+const { Document, Page, Text, View, StyleSheet } = ReactPDF
 
 const NAVY = '#1A2B4A'
 const TEAL = '#5E8C87'

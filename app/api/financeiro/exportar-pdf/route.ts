@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import React from 'react'
-import ReactPDF from '@react-pdf/renderer'
+import ReactPDF, { renderToBuffer } from '@react-pdf/renderer'
 import { getSupabaseUser } from '@/lib/supabase-route'
 import {
   PdfHeader, PdfFooter, PdfKpi, PdfSectionTitle,
@@ -9,7 +9,7 @@ import {
   BASE, COLORS,
 } from '@/lib/pdf/template'
 
-const { Document, Page, View, Text, renderToBuffer } = ReactPDF
+const { Document, Page, View, Text } = ReactPDF
 
 type CP = { id: string; fornecedor_nome: string; descricao: string; valor: number; data_vencimento: string; status: string; categoria: string }
 type CR = { id: string; cliente_nome: string; descricao: string; valor: number; data_vencimento: string; status: string; dias_atraso: number }
