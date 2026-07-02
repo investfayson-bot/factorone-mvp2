@@ -69,7 +69,7 @@ export default function ClientePortalPage({ params }: { params: Promise<{ token:
   if (!data) return null
 
   return (
-    <div style={{ minHeight: '100vh', background: '#f8fafc', fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" }}>
+    <div style={{ minHeight: '100vh', background: '#f8fafc', fontFamily: "'Inter', system-ui, sans-serif" }}>
       {/* Header */}
       <div style={{ background: '#0d1b2a', padding: '18px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div style={{ fontSize: 20, fontWeight: 800, color: '#fff' }}>

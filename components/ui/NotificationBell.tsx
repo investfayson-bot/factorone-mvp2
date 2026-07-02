@@ -136,7 +136,7 @@ export default function NotificationBell() {
       {open && (
         <div style={{ position: 'absolute', top: 42, right: 0, width: 320, background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 14, boxShadow: '0 8px 32px rgba(0,0,0,0.12)', zIndex: 9999, overflow: 'hidden' }}>
           <div style={{ padding: '12px 16px', borderBottom: '0.5px solid #E2E8E7', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <div style={{ fontSize: 13, fontWeight: 700, color: '#1C2B2A', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>Notificações</div>
+            <div style={{ fontSize: 13, fontWeight: 700, color: '#1C2B2A', fontFamily: "'Inter', sans-serif" }}>Notificações</div>
             {naoLidas > 0 && (
               <button onClick={marcarTodas} style={{ fontSize: 10, color: '#5E8C87', fontWeight: 600, background: 'none', border: 'none', cursor: 'pointer' }}>
                 Marcar todas como lidas

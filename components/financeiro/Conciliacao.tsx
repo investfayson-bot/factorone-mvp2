@@ -152,20 +152,20 @@ export default function Conciliacao() {
         <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--navy)', marginBottom: 10 }}>Estatísticas de conciliação</div>
         <div style={{ display: 'flex', gap: 24 }}>
           <div>
-            <div style={{ fontSize: 10, color: 'var(--gray-400)', textTransform: 'uppercase', fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" }}>% Conciliado</div>
+            <div style={{ fontSize: 10, color: 'var(--gray-400)', textTransform: 'uppercase', fontFamily: "'Inter', system-ui, sans-serif" }}>% Conciliado</div>
             <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--green)' }}>{stats?.percentual?.toFixed(1) || '0'}%</div>
           </div>
           <div>
-            <div style={{ fontSize: 10, color: 'var(--gray-400)', textTransform: 'uppercase', fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" }}>Conciliados</div>
+            <div style={{ fontSize: 10, color: 'var(--gray-400)', textTransform: 'uppercase', fontFamily: "'Inter', system-ui, sans-serif" }}>Conciliados</div>
             <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--navy)' }}>{stats?.conciliados || 0}</div>
           </div>
           <div>
-            <div style={{ fontSize: 10, color: 'var(--gray-400)', textTransform: 'uppercase', fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" }}>Não conciliados</div>
+            <div style={{ fontSize: 10, color: 'var(--gray-400)', textTransform: 'uppercase', fontFamily: "'Inter', system-ui, sans-serif" }}>Não conciliados</div>
             <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--gold)' }}>{stats?.nao_conciliados || 0}</div>
           </div>
           {sugestoes.length > 0 && (
             <div>
-              <div style={{ fontSize: 10, color: 'var(--gray-400)', textTransform: 'uppercase', fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" }}>Sugestões fuzzy</div>
+              <div style={{ fontSize: 10, color: 'var(--gray-400)', textTransform: 'uppercase', fontFamily: "'Inter', system-ui, sans-serif" }}>Sugestões fuzzy</div>
               <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--teal)' }}>{sugestoes.length}</div>
             </div>
           )}

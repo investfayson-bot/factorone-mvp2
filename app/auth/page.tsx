@@ -76,10 +76,10 @@ export default function AuthPage() {
       {/* Left panel — brand */}
       <div style={{ width: 400, minWidth: 400, background: 'var(--navy)', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 24, padding: '36px 32px', maxHeight: '100vh', overflowY: 'auto' }}>
         <div>
-          <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 22, fontWeight: 800, color: '#fff', letterSpacing: '-.04em', marginBottom: 24 }}>
+          <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 22, fontWeight: 800, color: '#fff', letterSpacing: '-.04em', marginBottom: 24 }}>
             Factor<span style={{ color: 'var(--teal)' }}>One</span>
           </div>
-          <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 25, fontWeight: 800, color: '#fff', lineHeight: 1.25, marginBottom: 12 }}>
+          <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 25, fontWeight: 800, color: '#fff', lineHeight: 1.25, marginBottom: 12 }}>
             Finance OS<br />com Inteligência<br />Artificial
           </div>
           <div style={{ fontSize: 13, color: 'rgba(255,255,255,.5)', lineHeight: 1.6, marginBottom: 22 }}>
@@ -107,7 +107,7 @@ export default function AuthPage() {
         <div style={{ background: '#fff', borderRadius: 16, padding: 32, width: 400, maxWidth: '100%', border: '1px solid var(--gray-100)', boxShadow: '0 4px 32px rgba(0,0,0,.07)' }}>
           {!tipoConta ? (
             <div>
-              <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 18, fontWeight: 800, color: 'var(--navy)', marginBottom: 6 }}>Você é Pessoa Física ou Empresa?</div>
+              <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 18, fontWeight: 800, color: 'var(--navy)', marginBottom: 6 }}>Você é Pessoa Física ou Empresa?</div>
               <div style={{ fontSize: 12, color: 'var(--gray-400)', marginBottom: 20 }}>Escolha como vai usar o FactorOne antes de continuar.</div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                 <button onClick={() => escolherTipo('empresarial')} style={{ display: 'flex', gap: 12, alignItems: 'center', padding: '16px 18px', borderRadius: 12, border: '2px solid var(--teal)', background: 'rgba(94,140,135,.05)', cursor: 'pointer', textAlign: 'left' }}>
@@ -133,7 +133,7 @@ export default function AuthPage() {
                 onClick={() => { setModo(m); setMsg({ text: '', type: '' }) }}
                 style={{
                   flex: 1, padding: '8px 0', borderRadius: 7, border: 'none', cursor: 'pointer',
-                  fontSize: 13, fontWeight: 600, fontFamily: "'Plus Jakarta Sans', sans-serif",
+                  fontSize: 13, fontWeight: 600, fontFamily: "'Inter', sans-serif",
                   background: modo === m ? '#fff' : 'transparent',
                   color: modo === m ? 'var(--navy)' : 'var(--gray-400)',
                   boxShadow: modo === m ? '0 1px 4px rgba(0,0,0,.08)' : 'none',

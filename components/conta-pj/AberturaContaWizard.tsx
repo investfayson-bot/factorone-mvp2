@@ -109,7 +109,7 @@ export default function AberturaContaWizard() {
         <div style={{ width: 72, height: 72, borderRadius: '50%', background: 'rgba(94,140,135,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 20 }}>
           <i className="fa-solid fa-circle-check" style={{ fontSize: 36, color: 'var(--teal)' }} />
         </div>
-        <h2 style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", fontSize: 22, fontWeight: 700, color: 'var(--navy)', marginBottom: 10 }}>Solicitação enviada!</h2>
+        <h2 style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: 22, fontWeight: 700, color: 'var(--navy)', marginBottom: 10 }}>Solicitação enviada!</h2>
         <p style={{ fontSize: 14, color: 'var(--gray-500)', maxWidth: 380, lineHeight: 1.6 }}>
           Sua conta PJ está em análise. Em até 1 dia útil você receberá a confirmação por e-mail e poderá acessar o dashboard bancário completo.
         </p>
@@ -123,7 +123,7 @@ export default function AberturaContaWizard() {
       {/* Left panel */}
       <div style={{ background: 'var(--navy)', padding: '36px 28px', display: 'flex', flexDirection: 'column' }}>
         <div style={{ marginBottom: 32 }}>
-          <div style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", fontSize: 22, fontWeight: 800, color: '#fff', letterSpacing: '-0.02em' }}>
+          <div style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: 22, fontWeight: 800, color: '#fff', letterSpacing: '-0.02em' }}>
             Factor<span style={{ color: 'var(--teal)' }}>One</span> Bank
           </div>
           <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', marginTop: 4 }}>Conta PJ para PMEs e Startups</div>
@@ -181,7 +181,7 @@ export default function AberturaContaWizard() {
         {/* Step 1: Empresa */}
         {etapa === 1 && (
           <div style={{ flex: 1 }}>
-            <h3 style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", fontSize: 18, fontWeight: 700, color: 'var(--navy)', marginBottom: 6 }}>Dados da empresa</h3>
+            <h3 style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: 18, fontWeight: 700, color: 'var(--navy)', marginBottom: 6 }}>Dados da empresa</h3>
             <p style={{ fontSize: 12, color: 'var(--gray-400)', marginBottom: 24 }}>Usados para abrir sua conta e emitir documentos.</p>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
               <div style={{ gridColumn: '1/-1' }}>
@@ -207,7 +207,7 @@ export default function AberturaContaWizard() {
         {/* Step 2: Sócios */}
         {etapa === 2 && (
           <div style={{ flex: 1 }}>
-            <h3 style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", fontSize: 18, fontWeight: 700, color: 'var(--navy)', marginBottom: 6 }}>Quadro societário</h3>
+            <h3 style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: 18, fontWeight: 700, color: 'var(--navy)', marginBottom: 6 }}>Quadro societário</h3>
             <p style={{ fontSize: 12, color: 'var(--gray-400)', marginBottom: 24 }}>Informe todos os sócios com participação ≥ 25% (PEPs e compliance).</p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               {socios.map((s, i) => (
@@ -240,7 +240,7 @@ export default function AberturaContaWizard() {
         {/* Step 3: Documentos */}
         {etapa === 3 && (
           <div style={{ flex: 1 }}>
-            <h3 style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", fontSize: 18, fontWeight: 700, color: 'var(--navy)', marginBottom: 6 }}>Documentos</h3>
+            <h3 style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: 18, fontWeight: 700, color: 'var(--navy)', marginBottom: 6 }}>Documentos</h3>
             <p style={{ fontSize: 12, color: 'var(--gray-400)', marginBottom: 24 }}>Faça upload dos documentos para análise KYB.</p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               {DOCS.map(doc => (
@@ -262,7 +262,7 @@ export default function AberturaContaWizard() {
         {/* Step 4: Plano */}
         {etapa === 4 && (
           <div style={{ flex: 1 }}>
-            <h3 style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", fontSize: 18, fontWeight: 700, color: 'var(--navy)', marginBottom: 6 }}>Escolha seu plano</h3>
+            <h3 style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: 18, fontWeight: 700, color: 'var(--navy)', marginBottom: 6 }}>Escolha seu plano</h3>
             <p style={{ fontSize: 12, color: 'var(--gray-400)', marginBottom: 20 }}>Você pode mudar de plano a qualquer momento.</p>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10, marginBottom: 20 }}>
               {PLANOS.map(p => (

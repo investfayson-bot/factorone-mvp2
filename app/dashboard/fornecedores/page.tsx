@@ -330,7 +330,7 @@ export default function FornecedoresPage() {
                       <div style={{ fontWeight: 700 }}>{f.razao_social}</div>
                       {f.nome_fantasia && <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>{f.nome_fantasia}</div>}
                     </td>
-                    <td style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", fontSize: 11 }}>{f.cnpj || '—'}</td>
+                    <td style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: 11 }}>{f.cnpj || '—'}</td>
                     <td><span className="tag gray" style={{ fontSize: 10 }}>{f.categoria}</span></td>
                     <td>
                       <div style={{ fontSize: 12 }}>{f.contato_nome || '—'}</div>
@@ -384,10 +384,10 @@ export default function FornecedoresPage() {
                 {fornecedoresAgrupados.map(f => (
                   <tr key={f.nome}>
                     <td style={{ fontWeight: 700 }}>{f.nome}</td>
-                    <td style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", fontSize: 11, color: 'var(--gray-400)' }}>{f.doc || '—'}</td>
+                    <td style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: 11, color: 'var(--gray-400)' }}>{f.doc || '—'}</td>
                     <td style={{ textAlign: 'center' }}>{f.qtd}</td>
-                    <td style={{ textAlign: 'right', fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" }}>{formatBRL(f.total)}</td>
-                    <td style={{ textAlign: 'right', fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", fontWeight: 700, color: f.pendente > 0 ? 'var(--red)' : 'var(--navy)' }}>{formatBRL(f.pendente)}</td>
+                    <td style={{ textAlign: 'right', fontFamily: "'Inter', system-ui, sans-serif" }}>{formatBRL(f.total)}</td>
+                    <td style={{ textAlign: 'right', fontFamily: "'Inter', system-ui, sans-serif", fontWeight: 700, color: f.pendente > 0 ? 'var(--red)' : 'var(--navy)' }}>{formatBRL(f.pendente)}</td>
                     <td style={{ textAlign: 'center' }}>
                       {f.vencidas > 0 ? <span className="tag red">{f.vencidas}</span> : <span style={{ color: 'var(--gray-400)', fontSize: 11 }}>—</span>}
                     </td>
@@ -408,7 +408,7 @@ export default function FornecedoresPage() {
       {tab === 'contas' && (
         <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, overflow: 'hidden' }}>
           <div style={{ padding: '10px 14px', borderBottom: '1px solid var(--gray-100)', display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
-            <div style={{ fontSize: 9.5, fontWeight: 700, color: 'var(--gray-400)', letterSpacing: '.08em', textTransform: 'uppercase', fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", flex: 1 }}>
+            <div style={{ fontSize: 9.5, fontWeight: 700, color: 'var(--gray-400)', letterSpacing: '.08em', textTransform: 'uppercase', fontFamily: "'Inter', system-ui, sans-serif", flex: 1 }}>
               Contas ({contasFiltradas.length})
             </div>
             <select className="form-input" style={{ width: 'auto', padding: '5px 10px', fontSize: 11 }} value={filtroStatus} onChange={e => setFiltroStatus(e.target.value)}>
@@ -443,11 +443,11 @@ export default function FornecedoresPage() {
                     <td style={{ fontWeight: 600, fontSize: 12 }}>{c.fornecedor_nome}</td>
                     <td style={{ fontSize: 12, color: 'var(--gray-500)' }}>{c.descricao}</td>
                     <td><span className="tag gray" style={{ fontSize: 10 }}>{c.categoria}</span></td>
-                    <td style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", fontSize: 11, color: isVencida(c) ? 'var(--red)' : 'inherit' }}>
+                    <td style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: 11, color: isVencida(c) ? 'var(--red)' : 'inherit' }}>
                       {new Date(c.data_vencimento + 'T12:00:00').toLocaleDateString('pt-BR')}
                     </td>
-                    <td style={{ textAlign: 'right', fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", fontWeight: 700 }}>{formatBRL(Number(c.valor || 0))}</td>
-                    <td style={{ textAlign: 'right', fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", color: 'var(--teal)' }}>
+                    <td style={{ textAlign: 'right', fontFamily: "'Inter', system-ui, sans-serif", fontWeight: 700 }}>{formatBRL(Number(c.valor || 0))}</td>
+                    <td style={{ textAlign: 'right', fontFamily: "'Inter', system-ui, sans-serif", color: 'var(--teal)' }}>
                       {Number(c.valor_pago || 0) > 0 ? formatBRL(Number(c.valor_pago)) : '—'}
                     </td>
                     <td style={{ textAlign: 'center' }}>
@@ -497,11 +497,11 @@ export default function FornecedoresPage() {
                   <tr key={c.id}>
                     <td style={{ fontWeight: 600 }}>{c.fornecedor_nome}</td>
                     <td style={{ color: 'var(--gray-500)', fontSize: 12 }}>{c.descricao}</td>
-                    <td style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", fontSize: 11 }}>
+                    <td style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: 11 }}>
                       {c.data_pagamento ? new Date(c.data_pagamento + 'T12:00:00').toLocaleDateString('pt-BR') : '—'}
                     </td>
                     <td>{c.tipo_pagamento ? <span className="tag gray">{c.tipo_pagamento.toUpperCase()}</span> : '—'}</td>
-                    <td style={{ textAlign: 'right', fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", fontWeight: 700, color: 'var(--teal)' }}>
+                    <td style={{ textAlign: 'right', fontFamily: "'Inter', system-ui, sans-serif", fontWeight: 700, color: 'var(--teal)' }}>
                       {formatBRL(Number(c.valor_pago || 0))}
                     </td>
                   </tr>
@@ -737,7 +737,7 @@ export default function FornecedoresPage() {
                   <p style={{ fontSize: 11, fontWeight: 700, color: 'var(--teal)', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: 8 }}>
                     <i className="fa-solid fa-circle-check" style={{ marginRight: 5 }} />Link gerado com sucesso
                   </p>
-                  <p style={{ fontSize: 12, color: 'var(--navy)', wordBreak: 'break-all', fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", margin: 0 }}>{linkGerado}</p>
+                  <p style={{ fontSize: 12, color: 'var(--navy)', wordBreak: 'break-all', fontFamily: "'Inter', system-ui, sans-serif", margin: 0 }}>{linkGerado}</p>
                 </div>
                 <div style={{ display: 'flex', gap: 8 }}>
                   <button className="btn-action" style={{ flex: 1 }} onClick={() => { void navigator.clipboard.writeText(linkGerado).then(() => alert('Link copiado!')) }}>
@@ -782,7 +782,7 @@ export default function FornecedoresPage() {
             {modalPagar.chave_pix && (
               <div style={{ marginBottom: 14, padding: '8px 12px', background: '#fafafa', borderRadius: 8, border: '1px solid var(--gray-100)', fontSize: 12 }}>
                 <div style={{ color: 'var(--gray-400)', marginBottom: 2, fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '.05em' }}>Chave PIX</div>
-                <div style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", userSelect: 'all' }}>{modalPagar.chave_pix}</div>
+                <div style={{ fontFamily: "'Inter', system-ui, sans-serif", userSelect: 'all' }}>{modalPagar.chave_pix}</div>
               </div>
             )}
             <div className="modal-actions">

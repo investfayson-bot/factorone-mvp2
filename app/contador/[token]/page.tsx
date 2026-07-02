@@ -96,7 +96,7 @@ export default function PortalContadorPage() {
           <div style={{ width: 56, height: 56, borderRadius: 14, background: isRevoked ? '#FEE2E2' : '#EEF2F1', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
             <i className={`fa-solid ${isRevoked ? 'fa-ban' : 'fa-lock'}`} style={{ fontSize: 24, color: isRevoked ? '#E74C3C' : '#7A8F8E' }} />
           </div>
-          <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 700, fontSize: 17, color: '#1C2B2A', marginBottom: 8 }}>
+          <div style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 17, color: '#1C2B2A', marginBottom: 8 }}>
             {isRevoked ? 'Acesso revogado' : 'Acesso inválido'}
           </div>
           <div style={{ fontSize: 12, color: '#7A8F8E', lineHeight: 1.6 }}>
@@ -120,7 +120,7 @@ export default function PortalContadorPage() {
       {/* Topbar */}
       <div style={{ background: '#1C2B2A', padding: '12px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 16, fontWeight: 700, color: '#fff' }}>
+          <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 16, fontWeight: 700, color: '#fff' }}>
             Factor<span style={{ color: '#7EBDB8' }}>One</span>
           </div>
           <div style={{ width: 1, height: 18, background: 'rgba(255,255,255,0.15)' }} />
@@ -143,7 +143,7 @@ export default function PortalContadorPage() {
                 <i className="fa-solid fa-calculator" style={{ fontSize: 18, color: '#7EBDB8' }} />
               </div>
               <div>
-                <div style={{ fontSize: 15, fontWeight: 700, color: '#1C2B2A', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                <div style={{ fontSize: 15, fontWeight: 700, color: '#1C2B2A', fontFamily: "'Inter', sans-serif" }}>
                   Olá, {cont.nome}
                 </div>
                 <div style={{ fontSize: 11, color: '#7A8F8E', marginTop: 3 }}>
@@ -263,9 +263,9 @@ export default function PortalContadorPage() {
                       {metricas.map((m, i) => (
                         <tr key={m.competencia} style={{ borderBottom: i < metricas.length - 1 ? '0.5px solid #F0F4F3' : 'none' }}>
                           <td style={{ padding: '11px 14px', fontWeight: 700, color: '#1C2B2A', fontFamily: 'monospace' }}>{m.competencia?.slice(0, 7)}</td>
-                          <td style={{ padding: '11px 14px', textAlign: 'right', fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 500 }}>{formatBRL(m.receita_bruta)}</td>
-                          <td style={{ padding: '11px 14px', textAlign: 'right', fontFamily: "'Plus Jakarta Sans', sans-serif", color: '#7A8F8E' }}>{formatBRL(m.ebitda)}</td>
-                          <td style={{ padding: '11px 14px', textAlign: 'right', fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 700, color: m.lucro_liquido >= 0 ? '#5E8C87' : '#E74C3C' }}>
+                          <td style={{ padding: '11px 14px', textAlign: 'right', fontFamily: "'Inter', sans-serif", fontWeight: 500 }}>{formatBRL(m.receita_bruta)}</td>
+                          <td style={{ padding: '11px 14px', textAlign: 'right', fontFamily: "'Inter', sans-serif", color: '#7A8F8E' }}>{formatBRL(m.ebitda)}</td>
+                          <td style={{ padding: '11px 14px', textAlign: 'right', fontFamily: "'Inter', sans-serif", fontWeight: 700, color: m.lucro_liquido >= 0 ? '#5E8C87' : '#E74C3C' }}>
                             {formatBRL(m.lucro_liquido)}
                           </td>
                           <td style={{ padding: '11px 14px', textAlign: 'right' }}>
@@ -300,7 +300,7 @@ export default function PortalContadorPage() {
                       <div style={{ fontSize: 12, fontWeight: 600, color: '#1C2B2A', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{l.descricao}</div>
                       <div style={{ fontSize: 10, color: '#7A8F8E', marginTop: 2 }}>{l.competencia?.slice(0, 7)} · {l.origem}</div>
                     </div>
-                    <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 700, fontSize: 13, color: l.tipo === 'credito' ? '#5E8C87' : '#E74C3C', flexShrink: 0 }}>
+                    <div style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 13, color: l.tipo === 'credito' ? '#5E8C87' : '#E74C3C', flexShrink: 0 }}>
                       {l.tipo === 'credito' ? '+' : '-'}{formatBRL(l.valor)}
                     </div>
                   </div>
@@ -341,7 +341,7 @@ export default function PortalContadorPage() {
                       <span style={{ fontSize: 10, padding: '2px 8px', borderRadius: 20, fontWeight: 600, background: n.status === 'autorizada' ? '#EAF5F3' : '#FEF3C7', color: n.status === 'autorizada' ? '#0F6E56' : '#92400E' }}>
                         {n.status}
                       </span>
-                      <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 700, fontSize: 13, color: '#1C2B2A' }}>{formatBRL(n.valor_total)}</div>
+                      <div style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 13, color: '#1C2B2A' }}>{formatBRL(n.valor_total)}</div>
                     </div>
                   </div>
                 ))
@@ -371,7 +371,7 @@ export default function PortalContadorPage() {
                       <span style={{ fontSize: 10, padding: '2px 8px', borderRadius: 20, fontWeight: 600, background: d.status === 'pago' ? '#EAF5F3' : '#FEF3C7', color: d.status === 'pago' ? '#0F6E56' : '#92400E' }}>
                         {d.status}
                       </span>
-                      <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 700, fontSize: 13, color: '#E74C3C' }}>{formatBRL(Number(d.valor))}</div>
+                      <div style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 13, color: '#E74C3C' }}>{formatBRL(Number(d.valor))}</div>
                     </div>
                   </div>
                 ))

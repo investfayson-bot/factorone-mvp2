@@ -229,10 +229,10 @@ export default function ClientesPage() {
                       <div style={{ fontWeight: 700, fontSize: 12 }}>{c.nome}</div>
                       {c.email && <div style={{ fontSize: 10, color: '#7A8F8E' }}>{c.email}</div>}
                     </td>
-                    <td style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 11, color: '#7A8F8E' }}>{c.cnpj_cpf || '—'}</td>
+                    <td style={{ fontFamily: "'Inter', sans-serif", fontSize: 11, color: '#7A8F8E' }}>{c.cnpj_cpf || '—'}</td>
                     <td><span className="tag gray" style={{ fontSize: 9 }}>{c.segmento || '—'}</span></td>
                     <td style={{ fontSize: 12 }}>{c.telefone || c.whatsapp || '—'}</td>
-                    <td style={{ textAlign: 'right', fontFamily: "'Plus Jakarta Sans', sans-serif", color: '#5E8C87', fontWeight: 700, fontSize: 12 }}>
+                    <td style={{ textAlign: 'right', fontFamily: "'Inter', sans-serif", color: '#5E8C87', fontWeight: 700, fontSize: 12 }}>
                       {c.valor_contrato ? formatBRL(Number(c.valor_contrato)) : '—'}
                     </td>
                     <td style={{ textAlign: 'center' }}>
@@ -399,7 +399,7 @@ export default function ClientesPage() {
           <div className="modal-box" style={{ maxWidth: 620, maxHeight: '92vh', overflowY: 'auto' }} onClick={e => e.stopPropagation()}>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
               <div>
-                <h3 style={{ fontSize: 18, fontWeight: 800, color: '#1C2B2A', fontFamily: "'Plus Jakarta Sans', sans-serif", margin: 0 }}>{detalhe.nome}</h3>
+                <h3 style={{ fontSize: 18, fontWeight: 800, color: '#1C2B2A', fontFamily: "'Inter', sans-serif", margin: 0 }}>{detalhe.nome}</h3>
                 <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 8px', borderRadius: 20, background: STATUS_BG[detalhe.status], color: STATUS_COLOR[detalhe.status] }}>{STATUS_LABEL[detalhe.status]}</span>
               </div>
               <div style={{ display: 'flex', gap: 8 }}>
