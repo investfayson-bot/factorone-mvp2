@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
 import { formatBRL } from '@/lib/currency-brl'
+import toast from 'react-hot-toast'
 
 type Conta = { codigo: string; nome: string; tipo: string } | null
 type Lanc = { id: string; descricao: string; valor: number | string; tipo: 'debito' | 'credito'; competencia: string; origem: string | null; plano_contas: Conta }
@@ -15,6 +16,22 @@ export default function LivrosContabeisPage() {
   const [meses, setMeses] = useState(12)
   const [contaSel, setContaSel] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
+  const [gerando, setGerando] = useState(false)
+
+  async function gerar() {
+    setGerando(true)
+    try {
+      const { data: sess } = await supabase.auth.getSession()
+      const token = sess.session?.access_token
+      const res = await fetch('/api/contabilidade/gerar-lancamentos', { method: 'POST', headers: token ? { Authorization: `Bearer ${token}` } : {} })
+      const d = await res.json()
+      if (!res.ok) throw new Error(d.error || 'Falha ao gerar')
+      toast.success(d.gerados > 0 ? `${d.gerados} lançamentos gerados (${d.despesas} despesas · ${d.notas} notas)` : 'Nada novo para lançar — livros em dia')
+      await carregar()
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : 'Erro ao gerar')
+    } finally { setGerando(false) }
+  }
 
   const carregar = useCallback(async () => {
     setLoading(true)
@@ -75,6 +92,9 @@ export default function LivrosContabeisPage() {
           <div className="page-sub">Balancete · Livro razão · fechamento — visão do contador</div>
         </div>
         <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+          <button className="btn-action" style={{ fontSize: 12 }} onClick={() => void gerar()} disabled={gerando} title="Gera os lançamentos (partida dobrada) das despesas e notas">
+            <i className="fa-solid fa-wand-magic-sparkles" style={{ marginRight: 6 }} />{gerando ? 'Gerando…' : 'Gerar lançamentos'}
+          </button>
           <select className="form-input" style={{ width: 'auto', padding: '6px 10px', fontSize: 12 }} value={meses} onChange={e => setMeses(Number(e.target.value))}>
             <option value={3}>Últimos 3 meses</option>
             <option value={6}>Últimos 6 meses</option>
