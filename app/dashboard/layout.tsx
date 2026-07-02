@@ -43,6 +43,7 @@ function buildNavGroups(badges: { reembolsos: number; aprovacoes: number }, inst
       items: [
         { href: '/dashboard/conciliacao', icon: 'fa-building-columns', label: 'Conciliação', badge: badges.aprovacoes > 0 ? String(badges.aprovacoes) : undefined, badgeColor: 'var(--teal)' },
         { href: '/dashboard/contadores', icon: 'fa-calculator', label: 'Contador' },
+        { href: '/dashboard/contabilidade/livros', icon: 'fa-book', label: 'Livros contábeis' },
         { href: '/dashboard/notas', icon: 'fa-file-invoice-dollar', label: 'Fiscal & NF-e' },
         { href: '/dashboard/prefeituras', icon: 'fa-landmark', label: 'Prefeituras & NFS-e' },
         { href: '/dashboard/fiscal', icon: 'fa-building-flag', label: 'Portais Fiscais' },
@@ -100,6 +101,7 @@ const pageTitles: Record<string, string> = {
   '/dashboard/ma': 'Preparação para M&A',
   '/dashboard/prefeituras': 'Prefeituras & NFS-e',
   '/dashboard/juridico': 'Jurídico',
+  '/dashboard/contabilidade/livros': 'Livros contábeis',
   '/dashboard/credito': 'Crédito & Financiamento',
   '/dashboard/financeiro': 'Financeiro',
   '/dashboard/despesas': 'Despesas',
