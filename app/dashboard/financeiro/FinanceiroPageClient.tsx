@@ -209,6 +209,26 @@ function FinanceiroInner() {
         </div>
       </div>
 
+      {/* Abas de navegação (interativo) */}
+      <div style={{ display: 'flex', gap: 2, background: '#E8EDEC', padding: 3, borderRadius: 10, width: 'fit-content', marginBottom: 16, flexWrap: 'wrap' }}>
+        {([
+          { key: 'resumo', label: 'Resumo', icon: 'fa-gauge-high' },
+          { key: 'pagar', label: 'A pagar', icon: 'fa-arrow-up', count: pagar.filter(x => x.status !== 'paga').length },
+          { key: 'receber', label: 'A receber', icon: 'fa-arrow-down', count: receber.filter(x => x.status !== 'recebida').length },
+          { key: 'conciliacao', label: 'Conciliação', icon: 'fa-scale-balanced' },
+          { key: 'aging', label: 'Aging', icon: 'fa-hourglass-half' },
+        ] as { key: typeof tab; label: string; icon: string; count?: number }[]).map(t => (
+          <button key={t.key} onClick={() => setTab(t.key)} style={{
+            display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, fontWeight: tab === t.key ? 700 : 500,
+            padding: '6px 12px', borderRadius: 8, border: 'none', cursor: 'pointer',
+            background: tab === t.key ? '#fff' : 'transparent', color: tab === t.key ? '#1C2B2A' : '#7A8F8E', transition: 'all .15s',
+          }}>
+            <i className={`fa-solid ${t.icon}`} style={{ fontSize: 10 }} />{t.label}
+            {t.count ? <span style={{ fontSize: 9, fontWeight: 700, background: tab === t.key ? '#EAF5F3' : '#fff', color: '#5E8C87', padding: '1px 6px', borderRadius: 20 }}>{t.count}</span> : null}
+          </button>
+        ))}
+      </div>
+
       {/* A PAGAR */}
       {tab === 'resumo' && (
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>

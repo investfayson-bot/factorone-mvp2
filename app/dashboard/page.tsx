@@ -10,7 +10,7 @@ import EntradasSaidasChart from '@/components/dashboard/EntradasSaidasChart'
 import { DashboardErrorBoundary } from '@/components/dashboard/DashboardErrorBoundary'
 import Modal from '@/components/ui/Modal'
 import type { TransacaoLista } from '@/lib/transacao-types'
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, AreaChart, Area, CartesianGrid } from 'recharts'
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, AreaChart, Area, CartesianGrid, ComposedChart, Line, Legend } from 'recharts'
 
 function mesKey(d: Date) { return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}` }
 function labelMes(key: string) {
@@ -788,6 +788,42 @@ export default function DashboardPage() {
             </ResponsiveContainer>
           )}
         </div>
+      </div>
+
+      {/* Painel consolidado — estilo Power BI */}
+      <div className="chart-card" style={{ marginBottom: 16 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12, flexWrap: 'wrap', gap: 8 }}>
+          <div>
+            <div className="chart-title">Resultado consolidado — 12 meses</div>
+            <div style={{ fontSize: 10, color: '#7A8F8E', marginTop: 2 }}>Receita e despesas (barras) + lucro líquido (linha)</div>
+          </div>
+          <Link href="/dashboard/relatorios" style={{ fontSize: 10, color: '#5E8C87', textDecoration: 'none', fontWeight: 600 }}>Ver DRE completo →</Link>
+        </div>
+        {(() => {
+          const dataComp = trend12.map(d => ({ ...d, lucro: Number(d.receita) - Number(d.despesas) }))
+          if (dataComp.every(d => d.receita === 0 && d.despesas === 0)) {
+            return <div style={{ height: 240, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#AAB8B7', fontSize: 12 }}>Sem dados no período.</div>
+          }
+          return (
+            <ResponsiveContainer width="100%" height={260}>
+              <ComposedChart data={dataComp} margin={{ top: 8, right: 8, bottom: 0, left: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#F0F4F3" vertical={false} />
+                <XAxis dataKey="mes" tick={{ fontSize: 10, fill: '#7A8F8E' }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fontSize: 9, fill: '#AAB8B7' }} axisLine={false} tickLine={false} tickFormatter={v => fmtBRLCompact(v)} width={54} />
+                <Tooltip
+                  formatter={(v: number, name: string) => [fmtBRLCompact(v), name === 'receita' ? 'Receita' : name === 'despesas' ? 'Despesas' : 'Lucro']}
+                  contentStyle={{ fontSize: 11, borderRadius: 10, border: '0.5px solid #E2E8E7', background: '#fff', boxShadow: '0 4px 16px rgba(0,0,0,0.08)' }}
+                  labelStyle={{ fontWeight: 700, color: '#1C2B2A', fontSize: 11 }}
+                  cursor={{ fill: 'rgba(94,140,135,0.05)' }}
+                />
+                <Legend wrapperStyle={{ fontSize: 10 }} iconType="circle" iconSize={8} formatter={(value) => <span style={{ color: '#3A5150' }}>{value === 'receita' ? 'Receita' : value === 'despesas' ? 'Despesas' : 'Lucro'}</span>} />
+                <Bar dataKey="receita" fill="#5E8C87" radius={[3, 3, 0, 0]} maxBarSize={18} />
+                <Bar dataKey="despesas" fill="#E74C3C" radius={[3, 3, 0, 0]} maxBarSize={18} fillOpacity={0.85} />
+                <Line type="monotone" dataKey="lucro" stroke="#1C2B2A" strokeWidth={2.5} dot={{ r: 3, fill: '#1C2B2A' }} activeDot={{ r: 5, fill: '#D97706', stroke: '#fff', strokeWidth: 2 }} />
+              </ComposedChart>
+            </ResponsiveContainer>
+          )
+        })()}
       </div>
 
       {/* Últimas transações */}
