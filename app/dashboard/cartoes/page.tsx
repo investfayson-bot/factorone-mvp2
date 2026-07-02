@@ -9,19 +9,20 @@ type Cartao = {
   id: string; nome: string; bandeira: string; limite: number
   limite_disponivel: number; vencimento_dia: number; fechamento_dia: number
   cor: string; status: string; tipo: string
+  formato?: string; titular_nome?: string | null; titular_email?: string | null; pausado?: boolean
 }
 type Gasto = {
   id: string; cartao_id: string; descricao: string; valor: number
   categoria: string | null; data: string; status: string; parcelas?: number | null
   parcela_atual?: number | null; estabelecimento?: string | null
 }
-type Tab = 'visao' | 'gastos' | 'fatura' | 'limites'
+type Tab = 'visao' | 'gastos' | 'fatura' | 'limites' | 'equipe'
 
 const BANDEIRAS: Record<string, string> = { Visa: '💳', Mastercard: '💳', Elo: '💳', Amex: '💳' }
 const CORES_CARTAO = ['#1C2B2A', '#1e3a5f', '#5e3a1e', '#3a1e5e', '#1e4a3a', '#4a1e2d']
 const CATS_CORES: Record<string, string> = { Alimentação: '#5E8C87', Transporte: '#2563eb', Entretenimento: '#D97706', Saúde: '#16A085', Compras: '#7C3AED', Outros: '#7A8F8E' }
 
-const EMPTY_CARTAO = { nome: '', bandeira: 'Visa', limite: '', vencimento_dia: '10', fechamento_dia: '1', cor: CORES_CARTAO[0], tipo: 'credito' }
+const EMPTY_CARTAO = { nome: '', bandeira: 'Visa', limite: '', vencimento_dia: '10', fechamento_dia: '1', cor: CORES_CARTAO[0], tipo: 'credito', formato: 'fisico', titular_nome: '', titular_email: '' }
 const EMPTY_GASTO = { descricao: '', valor: '', categoria: 'Outros', data: new Date().toISOString().slice(0, 10), parcelas: '1', estabelecimento: '' }
 
 export default function CartoesPage() {
@@ -68,11 +69,31 @@ export default function CartoesPage() {
       empresa_id: empresaId, nome: formCartao.nome, bandeira: formCartao.bandeira,
       limite, limite_disponivel: limite, vencimento_dia: Number(formCartao.vencimento_dia),
       fechamento_dia: Number(formCartao.fechamento_dia), cor: formCartao.cor, status: 'ativo', tipo: formCartao.tipo,
+      formato: formCartao.formato, titular_nome: formCartao.titular_nome || null, titular_email: formCartao.titular_email || null,
     })
     setSaving(false)
     if (error) { toast.error(error.message); return }
-    toast.success('Cartão adicionado')
+    toast.success(formCartao.formato === 'virtual' ? 'Cartão virtual criado' : 'Cartão adicionado')
     setModalCartao(false); setFormCartao(EMPTY_CARTAO)
+    void carregar(empresaId)
+  }
+
+  async function togglePausar(c: Cartao) {
+    const novo = !c.pausado
+    const { error } = await supabase.from('cartoes_corporativos').update({ pausado: novo }).eq('id', c.id)
+    if (error) { toast.error(error.message); return }
+    toast.success(novo ? 'Cartão pausado' : 'Cartão reativado')
+    void carregar(empresaId)
+  }
+
+  async function ajustarLimite(c: Cartao, novoLimite: number) {
+    if (!novoLimite || novoLimite < 0) return
+    const usado = Number(c.limite) - Number(c.limite_disponivel)
+    const { error } = await supabase.from('cartoes_corporativos').update({
+      limite: novoLimite, limite_disponivel: Math.max(0, novoLimite - usado),
+    }).eq('id', c.id)
+    if (error) { toast.error(error.message); return }
+    toast.success('Limite atualizado')
     void carregar(empresaId)
   }
 
@@ -134,8 +155,8 @@ export default function CartoesPage() {
       {/* Header */}
       <div className="page-hdr">
         <div>
-          <div className="page-title">Cartão Corporativo</div>
-          <div className="page-sub">Gestão de gastos, limites e faturas</div>
+          <div className="page-title">Cartões</div>
+          <div className="page-sub">Cartões corporativos e virtuais · limites por colaborador · faturas e gastos</div>
         </div>
         <div style={{ display: 'flex', gap: 8 }}>
           {cartaoSel && (
@@ -215,14 +236,24 @@ export default function CartoesPage() {
                   minWidth: 220, height: 130, borderRadius: 16, padding: '16px 18px',
                   background: `linear-gradient(135deg, ${c.cor} 0%, ${c.cor}cc 100%)`,
                   cursor: 'pointer', flexShrink: 0, position: 'relative', overflow: 'hidden',
+                  opacity: c.pausado ? 0.5 : 1,
                   border: isSelected ? `2px solid #7EBDB8` : '2px solid transparent',
                   boxShadow: isSelected ? `0 8px 24px ${c.cor}55` : '0 4px 12px rgba(0,0,0,0.15)',
                   transition: 'all 0.2s',
                 }}>
                   <div style={{ position: 'absolute', top: -20, right: -20, width: 80, height: 80, borderRadius: '50%', background: 'rgba(255,255,255,0.06)' }} />
                   <div style={{ position: 'absolute', bottom: -10, left: -10, width: 60, height: 60, borderRadius: '50%', background: 'rgba(255,255,255,0.04)' }} />
-                  <div style={{ fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,0.7)', marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.08em' }}>{c.bandeira}</div>
-                  <div style={{ fontSize: 13, fontWeight: 700, color: '#fff', marginBottom: 12, fontFamily: "'Inter', sans-serif" }}>{c.nome}</div>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+                    <span style={{ fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,0.7)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>{c.bandeira}</span>
+                    <span style={{ display: 'flex', gap: 5 }}>
+                      {c.pausado && <span style={{ fontSize: 8, fontWeight: 800, color: '#FFB3B3', background: 'rgba(0,0,0,0.25)', padding: '2px 6px', borderRadius: 20, letterSpacing: '.05em' }}>PAUSADO</span>}
+                      <span style={{ fontSize: 8, fontWeight: 800, color: '#fff', background: 'rgba(255,255,255,0.18)', padding: '2px 6px', borderRadius: 20, letterSpacing: '.05em' }}>
+                        {c.formato === 'virtual' ? 'VIRTUAL' : 'FÍSICO'}
+                      </span>
+                    </span>
+                  </div>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: '#fff', fontFamily: "'Inter', sans-serif" }}>{c.nome}</div>
+                  <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.6)', marginBottom: 10, minHeight: 12 }}>{c.titular_nome ? `👤 ${c.titular_nome}` : 'Sem titular'}</div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
                     <div>
                       <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.6)', marginBottom: 2 }}>DISPONÍVEL</div>
@@ -256,6 +287,7 @@ export default function CartoesPage() {
               { key: 'gastos', label: 'Gastos', icon: 'fa-receipt' },
               { key: 'fatura', label: 'Fatura', icon: 'fa-file-invoice' },
               { key: 'limites', label: 'Limites', icon: 'fa-gauge-high' },
+              { key: 'equipe', label: 'Equipe', icon: 'fa-users' },
             ] as { key: Tab; label: string; icon: string }[]).map(t => (
               <button key={t.key} onClick={() => setTab(t.key)} style={{
                 display: 'flex', alignItems: 'center', gap: 6,
@@ -477,6 +509,49 @@ export default function CartoesPage() {
               })}
             </div>
           )}
+
+          {/* EQUIPE — gestão por colaborador (modelo Clara / Conta Simples) */}
+          {tab === 'equipe' && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              <div style={{ fontSize: 11, color: '#7A8F8E', display: 'flex', alignItems: 'center', gap: 6 }}>
+                <i className="fa-solid fa-circle-info" style={{ color: '#5E8C87' }} />
+                Cada cartão pode ser vinculado a um colaborador com limite próprio. Pause ou ajuste o limite a qualquer momento.
+              </div>
+              {cartoes.map(c => {
+                const usado = Number(c.limite) - Number(c.limite_disponivel)
+                const pct = Number(c.limite) > 0 ? (usado / Number(c.limite)) * 100 : 0
+                const cor = pct > 80 ? '#E74C3C' : pct > 60 ? '#D97706' : '#5E8C87'
+                return (
+                  <div key={c.id} style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 12, padding: '14px 18px', display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap', opacity: c.pausado ? 0.65 : 1 }}>
+                    <div style={{ width: 40, height: 40, borderRadius: 10, background: c.cor, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                      <i className={`fa-solid ${c.formato === 'virtual' ? 'fa-wifi' : 'fa-credit-card'}`} style={{ fontSize: 16, color: '#fff' }} />
+                    </div>
+                    <div style={{ flex: 1, minWidth: 160 }}>
+                      <div style={{ fontSize: 13, fontWeight: 700, color: '#1C2B2A' }}>{c.titular_nome || 'Sem titular'}</div>
+                      <div style={{ fontSize: 11, color: '#7A8F8E' }}>{c.nome} · {c.formato === 'virtual' ? 'Virtual' : 'Físico'}{c.titular_email ? ` · ${c.titular_email}` : ''}</div>
+                    </div>
+                    <div style={{ minWidth: 150 }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 10.5, marginBottom: 4 }}>
+                        <span style={{ color: '#7A8F8E' }}>{formatBRL(usado)} de {formatBRL(Number(c.limite))}</span>
+                        <span style={{ fontWeight: 700, color: cor }}>{pct.toFixed(0)}%</span>
+                      </div>
+                      <div style={{ height: 7, background: '#EEF2F1', borderRadius: 99, overflow: 'hidden' }}>
+                        <div style={{ height: '100%', width: `${Math.min(100, pct)}%`, background: cor, borderRadius: 99 }} />
+                      </div>
+                    </div>
+                    <div style={{ display: 'flex', gap: 8 }}>
+                      <button onClick={() => { const v = prompt(`Novo limite para ${c.nome} (R$):`, String(c.limite)); if (v) void ajustarLimite(c, Number(v)) }} style={{ fontSize: 11, padding: '6px 12px', borderRadius: 8, border: '0.5px solid #E2E8E7', background: '#fff', color: '#3A5150', cursor: 'pointer', fontWeight: 600 }}>
+                        <i className="fa-solid fa-sliders" style={{ marginRight: 5 }} />Limite
+                      </button>
+                      <button onClick={() => void togglePausar(c)} style={{ fontSize: 11, padding: '6px 12px', borderRadius: 8, border: 'none', background: c.pausado ? '#EAF5F3' : '#FEE2E2', color: c.pausado ? '#0F6E56' : '#E74C3C', cursor: 'pointer', fontWeight: 700 }}>
+                        <i className={`fa-solid ${c.pausado ? 'fa-play' : 'fa-pause'}`} style={{ marginRight: 5 }} />{c.pausado ? 'Reativar' : 'Pausar'}
+                      </button>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          )}
         </>
       )}
 
@@ -497,6 +572,26 @@ export default function CartoesPage() {
                   <input className="form-input" placeholder={f.placeholder} value={(formCartao as Record<string, string>)[f.field]} onChange={e => setFormCartao(p => ({ ...p, [f.field]: e.target.value }))} />
                 </div>
               ))}
+              <div>
+                <label style={{ fontSize: 10, fontWeight: 600, color: '#7A8F8E', display: 'block', marginBottom: 5, textTransform: 'uppercase', letterSpacing: '0.07em' }}>Tipo do cartão</label>
+                <div style={{ display: 'flex', gap: 8 }}>
+                  {[{ v: 'fisico', l: 'Físico', i: 'fa-credit-card' }, { v: 'virtual', l: 'Virtual', i: 'fa-wifi' }].map(o => (
+                    <button key={o.v} onClick={() => setFormCartao(p => ({ ...p, formato: o.v }))} style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, padding: '9px', borderRadius: 9, border: formCartao.formato === o.v ? '1px solid #5E8C87' : '0.5px solid #E2E8E7', background: formCartao.formato === o.v ? '#EAF5F3' : '#fff', color: formCartao.formato === o.v ? '#0F6E56' : '#7A8F8E', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>
+                      <i className={`fa-solid ${o.i}`} />{o.l}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                <div>
+                  <label style={{ fontSize: 10, fontWeight: 600, color: '#7A8F8E', display: 'block', marginBottom: 5, textTransform: 'uppercase', letterSpacing: '0.07em' }}>Titular (colaborador)</label>
+                  <input className="form-input" placeholder="Nome do colaborador" value={formCartao.titular_nome} onChange={e => setFormCartao(p => ({ ...p, titular_nome: e.target.value }))} />
+                </div>
+                <div>
+                  <label style={{ fontSize: 10, fontWeight: 600, color: '#7A8F8E', display: 'block', marginBottom: 5, textTransform: 'uppercase', letterSpacing: '0.07em' }}>E-mail do titular</label>
+                  <input className="form-input" type="email" placeholder="colaborador@empresa.com" value={formCartao.titular_email} onChange={e => setFormCartao(p => ({ ...p, titular_email: e.target.value }))} />
+                </div>
+              </div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
                 <div>
                   <label style={{ fontSize: 10, fontWeight: 600, color: '#7A8F8E', display: 'block', marginBottom: 5, textTransform: 'uppercase', letterSpacing: '0.07em' }}>Bandeira</label>
