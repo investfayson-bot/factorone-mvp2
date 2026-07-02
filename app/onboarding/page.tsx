@@ -296,7 +296,7 @@ export default function OnboardingPage() {
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 20, textAlign: 'left' }}>
               {[
-                { icon: 'fa-building-columns', label: 'Conectar meu banco',    desc: 'Open Finance — saldo e extrato',        href: '/dashboard/conta-pj/conectar-banco', color: 'var(--teal)' },
+                { icon: 'fa-building-columns', label: 'Conectar meu banco',    desc: 'Open Finance via Belvo — saldo e extrato', href: '/dashboard/conexoes', color: 'var(--teal)' },
                 { icon: 'fa-credit-card',      label: 'Criar um cartão',        desc: 'Virtual ou físico, por colaborador',    href: '/dashboard/cartoes',                 color: 'var(--navy)' },
                 { icon: 'fa-calculator',       label: 'Convidar meu contador',  desc: 'Acesso somente leitura à contabilidade',href: '/dashboard/contadores',              color: 'var(--gold)' },
               ].map(item => (

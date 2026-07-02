@@ -54,8 +54,8 @@ function buildNavGroups(badges: { reembolsos: number; aprovacoes: number }, inst
         { href: '/dashboard/conta-pj/transferencias', icon: 'fa-bolt', label: 'PIX & Transferências' },
         { href: '/dashboard/cartoes', icon: 'fa-credit-card', label: 'Cartões' },
         { href: '/dashboard/credito', icon: 'fa-hand-holding-dollar', label: 'Crédito & Financiamento' },
-        { href: '/dashboard/conta-pj/conectar-banco', icon: 'fa-link', label: 'Open Finance' },
-        { href: '/dashboard/conta-pj/abrir', icon: 'fa-circle-plus', label: 'Abrir / conectar conta' },
+        { href: '/dashboard/conexoes', icon: 'fa-link', label: 'Open Finance (Belvo)' },
+        { href: '/dashboard/conta-pj/abrir', icon: 'fa-circle-plus', label: 'Abrir conta' },
       ],
     },
     {
@@ -103,6 +103,7 @@ const pageTitles: Record<string, string> = {
   '/dashboard/conta-pj': 'Banco — Visão geral',
   '/dashboard/conta-pj/transferencias': 'Banco — PIX & Transferências',
   '/dashboard/conta-pj/conectar-banco': 'Banco — Open Finance',
+  '/dashboard/conexoes': 'Banco — Open Finance (Belvo)',
   '/dashboard/conta-pj/abrir': 'Banco — Abrir / conectar conta',
   '/dashboard/conta-pj/extrato': 'Banco — Extrato',
   '/dashboard/conta-pj/investimentos': 'Banco — Investimentos',
