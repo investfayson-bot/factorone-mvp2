@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { calcDREFromTransacoes, fmtBRL, fmtBRLCompact, variacaoPct, type TransacaoDRE } from '@/lib/dre-calculations'
 import AnomalyAlerts from '@/components/dashboard/AnomalyAlerts'
+import CentralComando from '@/components/dashboard/CentralComando'
 import EntradasSaidasChart from '@/components/dashboard/EntradasSaidasChart'
 import { DashboardErrorBoundary } from '@/components/dashboard/DashboardErrorBoundary'
 import Modal from '@/components/ui/Modal'
@@ -343,6 +344,9 @@ export default function DashboardPage() {
       <DashboardErrorBoundary title="Alertas">
         <AnomalyAlerts empresaId={empresaId} onAlertClick={irParaAlerta} />
       </DashboardErrorBoundary>
+
+      {/* Central de comando — números cruciais do negócio */}
+      <CentralComando empresaId={empresaId} />
 
       {/* KPIs */}
       <div className="kpis">
