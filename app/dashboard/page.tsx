@@ -255,6 +255,7 @@ export default function DashboardPage() {
   const mesAno = new Date().toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })
 
   const receitaVar = variacaoPct(kpiAtual.receita, kpiAnt.receita)
+  const SHOW_EXTRA = false // organização QuickBooks: oculta patrimônio/clientes/setores/score
 
   if (loading || !user || !empresaId) {
     return (
@@ -336,6 +337,30 @@ export default function DashboardPage() {
 
       {/* Central de comando — números cruciais do negócio */}
       <CentralComando empresaId={empresaId} />
+
+      {/* Atalhos (estilo QuickBooks Shortcuts) */}
+      <div style={{ background: 'var(--surface)', border: '1px solid var(--line)', borderRadius: 12, padding: '16px 20px', marginBottom: 16, boxShadow: 'var(--shadow-card)' }}>
+        <div style={{ fontSize: 10, fontWeight: 600, color: 'var(--ink-mut)', textTransform: 'uppercase', letterSpacing: '.1em', marginBottom: 14 }}>Atalhos</div>
+        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+          {[
+            { icon: 'fa-layer-group', label: 'Classificar', href: '/dashboard/classificar' },
+            { icon: 'fa-file-invoice-dollar', label: 'Nova cobrança', href: '/dashboard/financeiro' },
+            { icon: 'fa-receipt', label: 'Registrar despesa', href: '/dashboard/despesas' },
+            { icon: 'fa-file-lines', label: 'Emitir NF-e', href: '/dashboard/notas' },
+            { icon: 'fa-building-columns', label: 'Conectar banco', href: '/dashboard/conexoes' },
+          ].map(a => (
+            <Link key={a.label} href={a.href} style={{ textDecoration: 'none', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, width: 96, padding: '12px 6px', borderRadius: 10, transition: 'background .15s' }}
+              onMouseEnter={e => (e.currentTarget.style.background = 'var(--surface-2)')}
+              onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
+            >
+              <div style={{ width: 48, height: 48, borderRadius: '50%', border: '1.5px solid var(--sage)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <i className={`fa-solid ${a.icon}`} style={{ fontSize: 17, color: 'var(--sage-deep)' }} />
+              </div>
+              <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--ink-soft)', textAlign: 'center', lineHeight: 1.3 }}>{a.label}</span>
+            </Link>
+          ))}
+        </div>
+      </div>
 
       {/* KPIs */}
       <div className="kpis">
@@ -435,7 +460,7 @@ export default function DashboardPage() {
       )}
 
       {/* Patrimônio Widget */}
-      {patWidget && patWidget.total > 0 && (
+      {SHOW_EXTRA && patWidget && patWidget.total > 0 && (
         <Link href="/dashboard/patrimonio" style={{ textDecoration: 'none', display: 'block', marginBottom: 16 }}>
           <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: '12px 18px', display: 'flex', alignItems: 'center', gap: 20, cursor: 'pointer' }}>
             <div style={{ width: 38, height: 38, borderRadius: 10, background: 'var(--navy)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
@@ -463,7 +488,7 @@ export default function DashboardPage() {
       )}
 
       {/* Clientes widget */}
-      {clientesWidget && clientesWidget.total > 0 && (
+      {SHOW_EXTRA && clientesWidget && clientesWidget.total > 0 && (
         <Link href="/dashboard/clientes" style={{ textDecoration: 'none', display: 'block', marginBottom: 12 }}>
           <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: '12px 18px', display: 'flex', alignItems: 'center', gap: 20, cursor: 'pointer' }}>
             <div style={{ width: 38, height: 38, borderRadius: 10, background: '#E4EDEF', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
@@ -484,7 +509,7 @@ export default function DashboardPage() {
       )}
 
       {/* Setores — CRM, Marketing, Logística */}
-      {(crmWidget || mktWidget || logWidget) && (
+      {SHOW_EXTRA && (crmWidget || mktWidget || logWidget) && (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12, marginBottom: 16 }}>
           {/* CRM */}
           {crmWidget && (
@@ -602,7 +627,7 @@ export default function DashboardPage() {
       )}
 
       {/* Score Financeiro */}
-      {score && (
+      {SHOW_EXTRA && score && (
         <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: '14px 18px', marginBottom: 16 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 16, cursor: 'pointer' }} onClick={() => setScoreExpanded(v => !v)}>
             <div style={{ flex: 1 }}>
