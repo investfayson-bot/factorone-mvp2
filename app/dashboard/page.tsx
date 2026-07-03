@@ -5,7 +5,6 @@ import { supabase } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { calcDREFromTransacoes, fmtBRL, fmtBRLCompact, variacaoPct, type TransacaoDRE } from '@/lib/dre-calculations'
-import AnomalyAlerts from '@/components/dashboard/AnomalyAlerts'
 import CentralComando from '@/components/dashboard/CentralComando'
 import EntradasSaidasChart from '@/components/dashboard/EntradasSaidasChart'
 import { DashboardErrorBoundary } from '@/components/dashboard/DashboardErrorBoundary'
@@ -64,13 +63,6 @@ export default function DashboardPage() {
   const [periodo, setPeriodo] = useState<'mes' | 'trimestre' | 'ano'>('mes')
   const [showExportMenu, setShowExportMenu] = useState(false)
   const router = useRouter()
-
-  function irParaAlerta(alertId: string) {
-    if (alertId === 'despesa-acima-media') router.push('/dashboard/despesas')
-    else if (alertId === 'saldo-caindo') router.push('/dashboard/cashflow')
-    else if (alertId === 'sem-receita-15') router.push('/dashboard/financeiro/receber')
-    else router.push('/dashboard/aicfo')
-  }
 
   useEffect(() => {
     async function load() {
@@ -341,11 +333,6 @@ export default function DashboardPage() {
           </Link>
         </div>
       </div>
-
-      {/* Alertas IA */}
-      <DashboardErrorBoundary title="Alertas">
-        <AnomalyAlerts empresaId={empresaId} onAlertClick={irParaAlerta} />
-      </DashboardErrorBoundary>
 
       {/* Central de comando — números cruciais do negócio */}
       <CentralComando empresaId={empresaId} />
