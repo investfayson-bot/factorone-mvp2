@@ -50,7 +50,7 @@ export default function CentralComando({ empresaId }: { empresaId: string }) {
     { label: 'Arrecadação', valor: fmt(d.arrecada), sub: 'receita do mês', cor: '#16A085', icon: 'fa-arrow-trend-up', href: '/dashboard/relatorios' },
     { label: 'Custos', valor: fmt(d.custos), sub: 'CMV + operacional', cor: '#E74C3C', icon: 'fa-arrow-trend-down', href: '/dashboard/despesas' },
     { label: 'Resultado', valor: fmt(d.resultado), sub: `margem ${d.margem.toFixed(0)}%`, cor: d.resultado >= 0 ? '#1C2B2A' : '#E74C3C', icon: 'fa-scale-balanced', href: '/dashboard/indicadores' },
-    { label: 'A receber', valor: fmt(d.aReceber), sub: 'em aberto', cor: '#5E8C87', icon: 'fa-inbox', href: '/dashboard/financeiro?tab=receber' },
+    { label: 'A receber', valor: fmt(d.aReceber), sub: 'em aberto', cor: '#10B981', icon: 'fa-inbox', href: '/dashboard/financeiro?tab=receber' },
     { label: 'A pagar', valor: fmt(d.aPagar), sub: 'em aberto', cor: '#D97706', icon: 'fa-paper-plane', href: '/dashboard/financeiro?tab=pagar' },
     { label: 'ROI marketing', valor: d.roi != null ? `${d.roi >= 0 ? '+' : ''}${d.roi.toFixed(0)}%` : '—', sub: 'retorno de anúncio', cor: '#7C3AED', icon: 'fa-bullseye', href: '/dashboard/indicadores' },
   ] : []
@@ -58,7 +58,7 @@ export default function CentralComando({ empresaId }: { empresaId: string }) {
   return (
     <div style={{ marginBottom: 16 }}>
       <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: 8, display: 'flex', alignItems: 'center', gap: 6 }}>
-        <i className="fa-solid fa-gauge-high" style={{ color: '#5E8C87' }} />Central de comando
+        <i className="fa-solid fa-gauge-high" style={{ color: '#10B981' }} />Central de comando
       </div>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 8 }}>
         {cards.length === 0

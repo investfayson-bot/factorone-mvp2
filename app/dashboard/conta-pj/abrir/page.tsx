@@ -23,7 +23,7 @@ function CartaoVisual({ nome, numero, pausar }: { nome: string; numero: string; 
     <div style={{ width: '100%', maxWidth: 320, aspectRatio: '1.586', borderRadius: 18, padding: 22, position: 'relative', overflow: 'hidden', background: 'linear-gradient(135deg, #243736 0%, #1C2B2A 55%, #0F1918 100%)', boxShadow: '0 20px 44px rgba(0,0,0,.45)', opacity: pausar ? 0.5 : 1 }}>
       <div style={{ position: 'absolute', top: -40, right: -30, width: 160, height: 160, borderRadius: '50%', background: 'rgba(126,189,184,.12)' }} />
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-        <div style={{ fontSize: 15, fontWeight: 800, color: '#fff', letterSpacing: '-.02em' }}>Factor<span style={{ color: '#7EBDB8' }}>One</span> <span style={{ fontSize: 9, fontWeight: 600, color: 'rgba(255,255,255,.5)' }}>BANK</span></div>
+        <div style={{ fontSize: 15, fontWeight: 800, color: '#fff', letterSpacing: '-.02em' }}>Factor<span style={{ color: '#6EE7B7' }}>One</span> <span style={{ fontSize: 9, fontWeight: 600, color: 'rgba(255,255,255,.5)' }}>BANK</span></div>
         <i className="fa-solid fa-wifi" style={{ color: 'rgba(255,255,255,.5)', transform: 'rotate(90deg)', fontSize: 13 }} />
       </div>
       <div style={{ width: 40, height: 30, borderRadius: 6, background: 'linear-gradient(135deg,#D9B54A,#B8922A)', marginTop: 18 }} />
@@ -79,7 +79,7 @@ export default function AbrirContaPage() {
   if (pronto) {
     return (
       <div style={{ maxWidth: 560, margin: '10px auto', textAlign: 'center' }}>
-        <div style={{ width: 64, height: 64, borderRadius: '50%', background: 'linear-gradient(135deg,#5E8C87,#2D9B6F)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 18px', boxShadow: '0 8px 24px rgba(94,140,135,.35)' }}>
+        <div style={{ width: 64, height: 64, borderRadius: '50%', background: 'linear-gradient(135deg,#10B981,#2D9B6F)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 18px', boxShadow: '0 8px 24px rgba(16,185,129,.35)' }}>
           <i className="fa-solid fa-check" style={{ fontSize: 28, color: '#fff' }} />
         </div>
         <div style={{ fontSize: 25, fontWeight: 800, color: '#1C2B2A', letterSpacing: '-.03em' }}>Sua Conta PJ está pronta! 🎉</div>
@@ -103,13 +103,13 @@ export default function AbrirContaPage() {
     <div style={{ display: 'grid', gridTemplateColumns: '380px 1fr', gap: 0, background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 18, overflow: 'hidden', minHeight: 520 }}>
       {/* Painel esquerdo — foto premium (banco digital) */}
       <div style={{ position: 'relative', padding: '32px 30px', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', minHeight: 540, backgroundImage: 'linear-gradient(180deg, rgba(28,43,42,.20) 0%, rgba(28,43,42,.55) 52%, rgba(15,25,24,.96) 100%), url(/banco-hero.jpg)', backgroundSize: 'cover', backgroundPosition: 'center top' }}>
-        <div style={{ position: 'absolute', top: 28, left: 30, fontSize: 18, fontWeight: 800, color: '#fff', letterSpacing: '-.03em' }}>Factor<span style={{ color: '#7EBDB8' }}>One</span> <span style={{ fontSize: 11, fontWeight: 600, color: 'rgba(255,255,255,.6)' }}>BANK</span></div>
+        <div style={{ position: 'absolute', top: 28, left: 30, fontSize: 18, fontWeight: 800, color: '#fff', letterSpacing: '-.03em' }}>Factor<span style={{ color: '#6EE7B7' }}>One</span> <span style={{ fontSize: 11, fontWeight: 600, color: 'rgba(255,255,255,.6)' }}>BANK</span></div>
         <div style={{ fontSize: 23, fontWeight: 800, color: '#fff', letterSpacing: '-.03em', lineHeight: 1.15 }}>Sua conta PJ que<br />trabalha por você</div>
         <div style={{ fontSize: 12.5, color: 'rgba(255,255,255,.72)', margin: '6px 0 18px' }}>Abra em minutos · sem tarifas · cartão na hora</div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 9 }}>
           {[['fa-bolt', 'PIX ilimitado e grátis'], ['fa-credit-card', 'Cartão virtual na hora'], ['fa-percent', 'Rendimento no CDI'], ['fa-shield-halved', 'Regulado e seguro']].map(([i, t]) => (
             <div key={t} style={{ display: 'flex', alignItems: 'center', gap: 11 }}>
-              <div style={{ width: 28, height: 28, borderRadius: 8, background: 'rgba(126,189,184,.20)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><i className={`fa-solid ${i}`} style={{ fontSize: 11, color: '#7EBDB8' }} /></div>
+              <div style={{ width: 28, height: 28, borderRadius: 8, background: 'rgba(126,189,184,.20)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><i className={`fa-solid ${i}`} style={{ fontSize: 11, color: '#6EE7B7' }} /></div>
               <span style={{ fontSize: 12.5, color: 'rgba(255,255,255,.9)' }}>{t}</span>
             </div>
           ))}
@@ -122,7 +122,7 @@ export default function AbrirContaPage() {
         <div style={{ display: 'flex', gap: 8, marginBottom: 26 }}>
           {STEPS.map((s, i) => (
             <div key={s} style={{ flex: 1 }}>
-              <div style={{ height: 4, borderRadius: 99, background: i <= step ? '#5E8C87' : '#E2E8E7', transition: 'background .2s' }} />
+              <div style={{ height: 4, borderRadius: 99, background: i <= step ? '#10B981' : '#E2E8E7', transition: 'background .2s' }} />
               <div style={{ fontSize: 10.5, fontWeight: i === step ? 700 : 500, color: i === step ? '#1C2B2A' : '#AAB8B7', marginTop: 6 }}>{s}</div>
             </div>
           ))}
@@ -172,7 +172,7 @@ export default function AbrirContaPage() {
           {step < 2 ? (
             <button className="btn-action" style={{ flex: 2, opacity: podeAvancar() ? 1 : .5 }} disabled={!podeAvancar()} onClick={() => setStep(s => s + 1)}>Continuar →</button>
           ) : (
-            <button className="btn-action" style={{ flex: 2, opacity: (podeAvancar() && !saving) ? 1 : .5, background: '#5E8C87' }} disabled={!podeAvancar() || saving} onClick={() => void finalizar()}>
+            <button className="btn-action" style={{ flex: 2, opacity: (podeAvancar() && !saving) ? 1 : .5, background: '#10B981' }} disabled={!podeAvancar() || saving} onClick={() => void finalizar()}>
               {saving ? 'Abrindo conta…' : '✓ Abrir minha conta'}
             </button>
           )}

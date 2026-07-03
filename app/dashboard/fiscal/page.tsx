@@ -73,7 +73,7 @@ function tagColor(tag: string) {
     Certidão: { bg: '#EAF5F3', color: '#0F6E56' },
     Estadual: { bg: '#F1EFE8', color: '#5F5E5A' },
     Crédito: { bg: '#FEE2E2', color: '#991B1B' },
-    Portal: { bg: '#1C2B2A', color: '#7EBDB8' },
+    Portal: { bg: '#1C2B2A', color: '#6EE7B7' },
     Abertura: { bg: '#EAF3DE', color: '#3B6D11' },
     MEI: { bg: '#EAF3DE', color: '#3B6D11' },
     Registro: { bg: '#F1EFE8', color: '#5F5E5A' },
@@ -96,8 +96,8 @@ export default function FiscalPortaisPage() {
 
       {/* Banner */}
       <div style={{ background: '#1C2B2A', borderRadius: 14, padding: '16px 20px', marginBottom: 20, display: 'flex', alignItems: 'center', gap: 14 }}>
-        <div style={{ width: 44, height: 44, borderRadius: 11, background: 'rgba(94,140,135,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-          <i className="fa-solid fa-shield-halved" style={{ fontSize: 20, color: '#7EBDB8' }} />
+        <div style={{ width: 44, height: 44, borderRadius: 11, background: 'rgba(16,185,129,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+          <i className="fa-solid fa-shield-halved" style={{ fontSize: 20, color: '#6EE7B7' }} />
         </div>
         <div>
           <div style={{ fontSize: 13, fontWeight: 700, color: '#fff', marginBottom: 3 }}>Fase 2 — Integração com Certificado Digital A1</div>
@@ -106,7 +106,7 @@ export default function FiscalPortaisPage() {
           </div>
         </div>
         <div style={{ marginLeft: 'auto', flexShrink: 0 }}>
-          <div style={{ fontSize: 10, background: 'rgba(94,140,135,0.2)', color: '#7EBDB8', padding: '4px 12px', borderRadius: 20, fontWeight: 600, whiteSpace: 'nowrap' }}>Em breve</div>
+          <div style={{ fontSize: 10, background: 'rgba(16,185,129,0.2)', color: '#6EE7B7', padding: '4px 12px', borderRadius: 20, fontWeight: 600, whiteSpace: 'nowrap' }}>Em breve</div>
         </div>
       </div>
 
@@ -116,7 +116,7 @@ export default function FiscalPortaisPage() {
           <div key={grupo.grupo} style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 14, overflow: 'hidden' }}>
             <div style={{ padding: '12px 16px', borderBottom: '0.5px solid #E2E8E7', display: 'flex', alignItems: 'center', gap: 10, background: '#F8FAFA' }}>
               <div style={{ width: 30, height: 30, borderRadius: 8, background: '#1C2B2A', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <i className={`fa-solid ${grupo.icone}`} style={{ fontSize: 13, color: '#7EBDB8' }} />
+                <i className={`fa-solid ${grupo.icone}`} style={{ fontSize: 13, color: '#6EE7B7' }} />
               </div>
               <div style={{ fontSize: 12, fontWeight: 700, color: '#1C2B2A' }}>{grupo.grupo}</div>
             </div>

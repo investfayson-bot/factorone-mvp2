@@ -733,7 +733,7 @@ export default function FornecedoresPage() {
               </>
             ) : (
               <div>
-                <div style={{ padding: '16px 18px', borderRadius: 12, border: '1px solid var(--teal)', background: 'rgba(94,140,135,0.04)', marginBottom: 16 }}>
+                <div style={{ padding: '16px 18px', borderRadius: 12, border: '1px solid var(--teal)', background: 'rgba(16,185,129,0.04)', marginBottom: 16 }}>
                   <p style={{ fontSize: 11, fontWeight: 700, color: 'var(--teal)', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: 8 }}>
                     <i className="fa-solid fa-circle-check" style={{ marginRight: 5 }} />Link gerado com sucesso
                   </p>
@@ -762,7 +762,7 @@ export default function FornecedoresPage() {
               Registrar Pagamento
               <button className="modal-close" onClick={() => setModalPagar(null)}>×</button>
             </div>
-            <div style={{ marginBottom: 14, padding: '10px 12px', background: 'rgba(94,140,135,.06)', borderRadius: 8, border: '1px solid rgba(94,140,135,.15)' }}>
+            <div style={{ marginBottom: 14, padding: '10px 12px', background: 'rgba(16,185,129,.06)', borderRadius: 8, border: '1px solid rgba(16,185,129,.15)' }}>
               <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--navy)' }}>{modalPagar.fornecedor_nome}</div>
               <div style={{ fontSize: 11, color: 'var(--gray-400)', marginTop: 2 }}>{modalPagar.descricao}</div>
               <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--red)', marginTop: 6 }}>

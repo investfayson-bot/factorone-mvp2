@@ -126,7 +126,7 @@ export default function MaPage() {
         </div>
 
         <div style={{ background: '#1C2B2A', borderRadius: 14, padding: '20px', display: 'flex', flexDirection: 'column', gap: 6 }}>
-          <div style={{ fontSize: 11, fontWeight: 700, color: '#7EBDB8', textTransform: 'uppercase', letterSpacing: '.08em' }}>Valor de referência</div>
+          <div style={{ fontSize: 11, fontWeight: 700, color: '#6EE7B7', textTransform: 'uppercase', letterSpacing: '.08em' }}>Valor de referência</div>
           <div style={{ fontSize: 30, fontWeight: 800, color: '#fff', fontFamily: "'Inter', system-ui, sans-serif", letterSpacing: '-.02em' }}>{fmtC(referencia)}</div>
           <div style={{ fontSize: 12, color: 'rgba(255,255,255,.6)' }}>Faixa provável: {fmtC(faixaMin)} – {fmtC(faixaMax)}</div>
           <div style={{ marginTop: 10, fontSize: 10.5, color: 'rgba(255,255,255,.4)', lineHeight: 1.6 }}>
@@ -153,7 +153,7 @@ export default function MaPage() {
           return (
             <div key={g.grupo} style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 14, overflow: 'hidden' }}>
               <div style={{ padding: '12px 16px', borderBottom: '0.5px solid #E2E8E7', background: '#F8FAFA', display: 'flex', alignItems: 'center', gap: 8 }}>
-                <i className={`fa-solid ${g.icon}`} style={{ fontSize: 13, color: '#5E8C87' }} />
+                <i className={`fa-solid ${g.icon}`} style={{ fontSize: 13, color: '#10B981' }} />
                 <span style={{ fontSize: 12.5, fontWeight: 700, color: '#1C2B2A' }}>{g.grupo}</span>
                 <span style={{ marginLeft: 'auto', fontSize: 10.5, color: feitos === g.itens.length ? '#0F6E56' : '#7A8F8E', fontWeight: 600 }}>{feitos}/{g.itens.length}</span>
               </div>
@@ -174,7 +174,7 @@ export default function MaPage() {
       </div>
 
       <div style={{ fontSize: 11, color: '#AAB8B7', marginTop: 14, lineHeight: 1.6 }}>
-        <i className="fa-solid fa-circle-info" style={{ color: '#5E8C87', marginRight: 6 }} />
+        <i className="fa-solid fa-circle-info" style={{ color: '#10B981', marginRight: 6 }} />
         Valuation por múltiplos é uma referência de mercado — não substitui um laudo profissional. O checklist fica salvo neste navegador.
       </div>
     </>

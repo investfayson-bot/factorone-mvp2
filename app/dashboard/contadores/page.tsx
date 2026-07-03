@@ -181,14 +181,14 @@ export default function ContadoresPage() {
           <div className="page-sub">Competência: {mesLabel} · Fechamento e bookkeeping</div>
         </div>
         <div style={{ display: 'flex', gap: 8 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'var(--navy)', color: '#7EBDB8', fontSize: 10, padding: '5px 12px', borderRadius: 20, fontWeight: 700, letterSpacing: '0.05em' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'var(--navy)', color: '#6EE7B7', fontSize: 10, padding: '5px 12px', borderRadius: 20, fontWeight: 700, letterSpacing: '0.05em' }}>
             <i className="fa-solid fa-calculator" style={{ fontSize: 11 }} />MODO CONTADOR
           </div>
           <button className="btn-action" onClick={() => { setTab('acessos'); setModal(true) }} style={{ fontSize: 12, padding: '6px 14px' }}>
             <i className="fa-solid fa-key" style={{ marginRight: 6 }} />Gerenciar acessos
           </button>
           <button
-            style={{ fontSize: 12, padding: '6px 14px', background: '#5E8C87', color: '#fff', border: 'none', borderRadius: 8, cursor: 'pointer', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 6 }}
+            style={{ fontSize: 12, padding: '6px 14px', background: '#10B981', color: '#fff', border: 'none', borderRadius: 8, cursor: 'pointer', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 6 }}
             onClick={async () => {
               const { baixarArquivo } = await import('@/lib/download-arquivo')
               const r = await baixarArquivo('/api/contador/exportar-pdf', 'bookkeeping.pdf')
@@ -234,7 +234,7 @@ export default function ContadoresPage() {
                     <span style={{ fontSize: 11, fontWeight: 700, color: item.pct >= 80 ? '#16A085' : item.pct >= 50 ? '#D97706' : '#E74C3C' }}>{item.pct}%</span>
                   </div>
                   <div style={{ height: 6, background: '#EEF2F1', borderRadius: 99, overflow: 'hidden' }}>
-                    <div style={{ height: '100%', width: `${item.pct}%`, borderRadius: 99, background: item.pct >= 80 ? '#5E8C87' : item.pct >= 50 ? '#D97706' : '#E74C3C' }} />
+                    <div style={{ height: '100%', width: `${item.pct}%`, borderRadius: 99, background: item.pct >= 80 ? '#10B981' : item.pct >= 50 ? '#D97706' : '#E74C3C' }} />
                   </div>
                 </div>
               ))}
@@ -280,7 +280,7 @@ export default function ContadoresPage() {
                 return (
                   <div key={o.id} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 0', borderBottom: '0.5px solid #F0F4F3' }}>
                     <div style={{ width: 30, height: 30, borderRadius: 8, background: o.status === 'pago' ? '#EAF5F3' : '#FEF3C7', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                      <i className={`fa-solid ${o.status === 'pago' ? 'fa-check' : 'fa-clock'}`} style={{ fontSize: 12, color: o.status === 'pago' ? '#5E8C87' : '#D97706' }} />
+                      <i className={`fa-solid ${o.status === 'pago' ? 'fa-check' : 'fa-clock'}`} style={{ fontSize: 12, color: o.status === 'pago' ? '#10B981' : '#D97706' }} />
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--navy)' }}>{o.nome}</div>
@@ -334,7 +334,7 @@ export default function ContadoresPage() {
               ) : notas.slice(0, 3).map(n => (
                 <div key={n.id} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 0', borderBottom: '0.5px solid #F0F4F3' }}>
                   <div style={{ width: 30, height: 30, borderRadius: 8, background: n.status === 'autorizada' ? '#EAF5F3' : '#FEF3C7', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                    <i className={`fa-solid ${n.status === 'autorizada' ? 'fa-file-check' : 'fa-file-circle-exclamation'}`} style={{ fontSize: 12, color: n.status === 'autorizada' ? '#5E8C87' : '#D97706' }} />
+                    <i className={`fa-solid ${n.status === 'autorizada' ? 'fa-file-check' : 'fa-file-circle-exclamation'}`} style={{ fontSize: 12, color: n.status === 'autorizada' ? '#10B981' : '#D97706' }} />
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--navy)' }}>NF {n.tipo?.toUpperCase()} {n.numero}</div>
@@ -397,7 +397,7 @@ export default function ContadoresPage() {
           ) : notas.map(n => (
             <div key={n.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 16px', borderBottom: '0.5px solid #F0F4F3' }}>
               <div style={{ width: 32, height: 32, borderRadius: 8, background: n.status === 'autorizada' ? '#EAF5F3' : '#FEF3C7', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                <i className={`fa-solid ${n.status === 'autorizada' ? 'fa-file-check' : 'fa-file-circle-exclamation'}`} style={{ fontSize: 13, color: n.status === 'autorizada' ? '#5E8C87' : '#D97706' }} />
+                <i className={`fa-solid ${n.status === 'autorizada' ? 'fa-file-check' : 'fa-file-circle-exclamation'}`} style={{ fontSize: 13, color: n.status === 'autorizada' ? '#10B981' : '#D97706' }} />
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--navy)' }}>NF-{n.tipo?.toLowerCase() === 'servico' ? 'Se' : 'e'} {n.numero || '—'}</div>
@@ -451,7 +451,7 @@ export default function ContadoresPage() {
             return (
               <div key={o.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px', borderBottom: '0.5px solid #F0F4F3' }}>
                 <div style={{ width: 32, height: 32, borderRadius: 8, background: o.status === 'pago' ? '#EAF5F3' : '#FEF3C7', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  <i className={`fa-solid ${o.status === 'pago' ? 'fa-check' : 'fa-clock'}`} style={{ fontSize: 13, color: o.status === 'pago' ? '#5E8C87' : '#D97706' }} />
+                  <i className={`fa-solid ${o.status === 'pago' ? 'fa-check' : 'fa-clock'}`} style={{ fontSize: 13, color: o.status === 'pago' ? '#10B981' : '#D97706' }} />
                 </div>
                 <div style={{ flex: 1 }}>
                   <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--navy)' }}>{o.nome}</div>
@@ -500,7 +500,7 @@ export default function ContadoresPage() {
                       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 10 }}>
                         {Object.entries(PERM_LABELS).map(([key, label]) => (
                           (c.permissoes?.[key] !== false) && (
-                            <span key={key} style={{ fontSize: 10, padding: '2px 8px', borderRadius: 10, background: 'rgba(94,140,135,0.1)', color: 'var(--teal)', fontWeight: 600 }}>{label}</span>
+                            <span key={key} style={{ fontSize: 10, padding: '2px 8px', borderRadius: 10, background: 'rgba(16,185,129,0.1)', color: 'var(--teal)', fontWeight: 600 }}>{label}</span>
                           )
                         ))}
                       </div>
@@ -548,7 +548,7 @@ export default function ContadoresPage() {
                 <label style={{ fontSize: 11, color: '#7A8F8E', display: 'block', marginBottom: 10, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.07em' }}>Permissões</label>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
                   {Object.entries(PERM_LABELS).map(([key, label]) => (
-                    <button key={key} type="button" onClick={() => setPerms(p => ({ ...p, [key]: !p[key] }))} style={{ padding: '6px 14px', borderRadius: 20, border: '0.5px solid', borderColor: perms[key] ? 'var(--teal)' : '#E2E8E7', background: perms[key] ? 'rgba(94,140,135,0.1)' : 'transparent', color: perms[key] ? 'var(--teal)' : '#7A8F8E', fontSize: 12, cursor: 'pointer', fontWeight: 600 }}>
+                    <button key={key} type="button" onClick={() => setPerms(p => ({ ...p, [key]: !p[key] }))} style={{ padding: '6px 14px', borderRadius: 20, border: '0.5px solid', borderColor: perms[key] ? 'var(--teal)' : '#E2E8E7', background: perms[key] ? 'rgba(16,185,129,0.1)' : 'transparent', color: perms[key] ? 'var(--teal)' : '#7A8F8E', fontSize: 12, cursor: 'pointer', fontWeight: 600 }}>
                       {perms[key] ? '✓ ' : ''}{label}
                     </button>
                   ))}

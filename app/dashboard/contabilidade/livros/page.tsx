@@ -244,7 +244,7 @@ export default function LivrosContabeisPage() {
           <div className="kpis" style={{ gridTemplateColumns: 'repeat(3,1fr)', marginBottom: 14 }}>
             <div className="kpi" style={{ borderTop: '3px solid #1C2B2A' }}><div className="kpi-lbl">Ativo</div><div className="kpi-val">{formatBRL(balanco.ativo)}</div><div className="kpi-delta">bens e direitos</div></div>
             <div className="kpi" style={{ borderTop: '3px solid #D97706' }}><div className="kpi-lbl">Passivo</div><div className="kpi-val">{formatBRL(balanco.passivo)}</div><div className="kpi-delta">obrigações</div></div>
-            <div className="kpi" style={{ borderTop: '3px solid #5E8C87' }}><div className="kpi-lbl">Patrimônio líquido</div><div className="kpi-val" style={{ color: balanco.pl >= 0 ? '#1C2B2A' : '#E74C3C' }}>{formatBRL(balanco.pl)}</div><div className="kpi-delta">capital + resultado</div></div>
+            <div className="kpi" style={{ borderTop: '3px solid #10B981' }}><div className="kpi-lbl">Patrimônio líquido</div><div className="kpi-val" style={{ color: balanco.pl >= 0 ? '#1C2B2A' : '#E74C3C' }}>{formatBRL(balanco.pl)}</div><div className="kpi-delta">capital + resultado</div></div>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
             <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 14, overflow: 'hidden' }}>
@@ -292,7 +292,7 @@ export default function LivrosContabeisPage() {
                 return (
                   <div key={c} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px', borderBottom: i < competencias.length - 1 ? '0.5px solid #F0F4F3' : 'none' }}>
                     <div style={{ width: 34, height: 34, borderRadius: 9, background: fech ? '#EEF2F1' : '#EAF5F3', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <i className={`fa-solid ${fech ? 'fa-lock' : 'fa-lock-open'}`} style={{ fontSize: 14, color: fech ? '#7A8F8E' : '#5E8C87' }} />
+                      <i className={`fa-solid ${fech ? 'fa-lock' : 'fa-lock-open'}`} style={{ fontSize: 14, color: fech ? '#7A8F8E' : '#10B981' }} />
                     </div>
                     <div style={{ flex: 1 }}>
                       <div style={{ fontSize: 13, fontWeight: 700, color: '#1C2B2A', textTransform: 'capitalize' }}>{label}</div>
@@ -310,7 +310,7 @@ export default function LivrosContabeisPage() {
       )}
 
       <div style={{ fontSize: 11, color: '#AAB8B7', marginTop: 14, lineHeight: 1.6 }}>
-        <i className="fa-solid fa-circle-info" style={{ color: '#5E8C87', marginRight: 6 }} />
+        <i className="fa-solid fa-circle-info" style={{ color: '#10B981', marginRight: 6 }} />
         Balancete, razão e balanço gerados dos lançamentos (notas, despesas, conciliação). O fechamento registra a competência como fechada.
       </div>
     </>

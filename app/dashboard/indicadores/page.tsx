@@ -97,7 +97,7 @@ export default function IndicadoresPage() {
 
       {/* Taxas de mercado */}
       <div style={{ background: '#1C2B2A', borderRadius: 14, padding: '14px 20px', marginBottom: 18, display: 'flex', gap: 28, flexWrap: 'wrap', alignItems: 'center' }}>
-        <div style={{ fontSize: 11, fontWeight: 700, color: '#7EBDB8', textTransform: 'uppercase', letterSpacing: '.08em' }}>Taxas de mercado (BACEN)</div>
+        <div style={{ fontSize: 11, fontWeight: 700, color: '#6EE7B7', textTransform: 'uppercase', letterSpacing: '.08em' }}>Taxas de mercado (BACEN)</div>
         {[
           { l: 'SELIC', v: taxas.selic, s: '% a.a.' },
           { l: 'CDI', v: taxas.cdi, s: '% a.a.' },
@@ -113,7 +113,7 @@ export default function IndicadoresPage() {
       {/* Unit economics */}
       <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.04em', margin: '0 0 10px' }}>Unit economics (SaaS)</div>
       <div className="kpis" style={{ gridTemplateColumns: 'repeat(4,1fr)', marginBottom: 8 }}>
-        <Card label="MRR" value={fmtC(mrr)} sub={`ARR ${fmtC(arr)}`} cor="#5E8C87" tip="Receita recorrente mensal (contratos ativos)" />
+        <Card label="MRR" value={fmtC(mrr)} sub={`ARR ${fmtC(arr)}`} cor="#10B981" tip="Receita recorrente mensal (contratos ativos)" />
         <Card label="Ticket médio (ARPA)" value={fmtC(arpa)} sub={`${clientesAtivos} clientes ativos`} cor="#1C2B2A" tip="MRR ÷ clientes ativos" />
         <Card label="CAC" value={cac != null ? fmtC(cac) : '—'} sub={cac != null ? `${novosMes} novos no mês` : 'sem novos clientes no mês'} cor="#D97706" tip="Gasto de marketing ÷ novos clientes no mês" />
         <Card label="LTV" value={fmtC(ltv)} sub={`vida ${vidaMeses}m · margem ${(margemBruta * 100).toFixed(0)}%`} cor="#7C3AED" tip="ARPA × margem bruta × vida média" />
@@ -133,7 +133,7 @@ export default function IndicadoresPage() {
       <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.04em', margin: '0 0 10px' }}>Rentabilidade</div>
       <div className="kpis" style={{ gridTemplateColumns: 'repeat(4,1fr)', marginBottom: 18 }}>
         <Card label="Margem líquida" value={margemLiq != null ? pct(margemLiq) : '—'} sub={m ? 'último mês' : 'sem DRE'} cor={margemLiq != null && margemLiq >= 0 ? '#16A085' : '#E74C3C'} />
-        <Card label="EBITDA" value={ebitda != null ? fmtC(ebitda) : '—'} sub="geração operacional" cor="#5E8C87" />
+        <Card label="EBITDA" value={ebitda != null ? fmtC(ebitda) : '—'} sub="geração operacional" cor="#10B981" />
         <Card label="Margem bruta" value={pct(margemBruta * 100)} sub="lucro bruto ÷ receita líq." cor="#1C2B2A" />
         <Card label="ROIC (aprox.)" value={roic != null ? pct(roic) : '—'} sub="retorno s/ capital · estimado" cor="#7C3AED" tip="Lucro líquido anualizado ÷ capital (aprox.). Refine com capital investido real." />
       </div>
@@ -147,7 +147,7 @@ export default function IndicadoresPage() {
       </div>
 
       <div style={{ fontSize: 11, color: '#AAB8B7', marginTop: 14, lineHeight: 1.6 }}>
-        <i className="fa-solid fa-circle-info" style={{ color: '#5E8C87', marginRight: 6 }} />
+        <i className="fa-solid fa-circle-info" style={{ color: '#10B981', marginRight: 6 }} />
         LTV/CAC assume vida média editável e margem bruta do DRE. CAC usa gasto de marketing ÷ novos clientes do mês. ROIC é aproximado — para due diligence/M&A, refine com capital investido real. Passe o mouse nos cards para ver as fórmulas.
       </div>
     </>

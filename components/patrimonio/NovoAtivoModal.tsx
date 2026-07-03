@@ -167,7 +167,7 @@ export default function NovoAtivoModal({ open, onClose, onDone, empresaId, categ
                   display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6,
                   padding: '10px 8px', borderRadius: 10, cursor: 'pointer', fontSize: 11, fontWeight: 600,
                   border: tipoAtivo === t.value ? '2px solid var(--teal)' : '1px solid var(--gray-100)',
-                  background: tipoAtivo === t.value ? 'rgba(94,140,135,0.08)' : '#fafafa',
+                  background: tipoAtivo === t.value ? 'rgba(16,185,129,0.08)' : '#fafafa',
                   color: tipoAtivo === t.value ? 'var(--teal)' : 'var(--gray-500)',
                   transition: 'all 0.15s',
                 }}
@@ -322,7 +322,7 @@ export default function NovoAtivoModal({ open, onClose, onDone, empresaId, categ
 
         {/* Preview depreciação */}
         {valor > 0 && (
-          <div style={{ margin: '16px 0', padding: 14, borderRadius: 10, background: 'rgba(94,140,135,0.06)', border: '1px solid rgba(94,140,135,0.2)' }}>
+          <div style={{ margin: '16px 0', padding: 14, borderRadius: 10, background: 'rgba(16,185,129,0.06)', border: '1px solid rgba(16,185,129,0.2)' }}>
             <p style={{ fontSize: 11, fontWeight: 700, color: 'var(--teal)', marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Prévia de depreciação</p>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '4px 16px' }}>
               {[

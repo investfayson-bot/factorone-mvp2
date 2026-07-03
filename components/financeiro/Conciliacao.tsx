@@ -114,7 +114,7 @@ export default function Conciliacao() {
             <button
               key={e.id}
               onClick={() => setSelectedExtrato(e)}
-              style={{ width: '100%', borderRadius: 8, border: selectedExtrato?.id === e.id ? '1.5px solid var(--teal)' : '1px solid var(--gray-100)', background: selectedExtrato?.id === e.id ? 'rgba(94,140,135,.07)' : '#fff', padding: '8px 10px', textAlign: 'left', cursor: 'pointer' }}
+              style={{ width: '100%', borderRadius: 8, border: selectedExtrato?.id === e.id ? '1.5px solid var(--teal)' : '1px solid var(--gray-100)', background: selectedExtrato?.id === e.id ? 'rgba(16,185,129,.07)' : '#fff', padding: '8px 10px', textAlign: 'left', cursor: 'pointer' }}
             >
               <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>{new Date(e.data_transacao).toLocaleDateString('pt-BR')} · {e.descricao}</div>
               <div style={{ fontSize: 12, fontWeight: 600, color: e.tipo === 'credito' ? 'var(--green)' : 'var(--red)' }}>{formatBRL(Number(e.valor || 0))}</div>

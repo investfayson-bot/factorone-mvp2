@@ -74,7 +74,7 @@ export default function ReceitasPage() {
       </div>
 
       {/* Renda fixa */}
-      <div style={{ background: 'rgba(94,140,135,.06)', border: '1px solid rgba(94,140,135,.2)', borderRadius: 12, padding: 16, marginBottom: 16, display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
+      <div style={{ background: 'rgba(16,185,129,.06)', border: '1px solid rgba(16,185,129,.2)', borderRadius: 12, padding: 16, marginBottom: 16, display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
         <div style={{ flex: 1 }}>
           <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--teal)' }}>Renda mensal fixa</div>
           <div style={{ fontSize: 11, color: 'var(--gray-400)', marginTop: 2 }}>Usada como base do orçamento e pelo AI CFO</div>

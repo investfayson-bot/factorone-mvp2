@@ -14,7 +14,7 @@ type Inv = {
 type Tab = 'visao' | 'renda_fixa' | 'renda_variavel' | 'cripto' | 'outros'
 
 const CLASSES: Record<string, { tipos: string[]; cor: string; icon: string; label: string }> = {
-  renda_fixa:    { tipos: ['CDB','LCI','LCA','Poupança','Tesouro Direto','Debênture','CRI','CRA'], cor: '#5E8C87', icon: 'fa-building-columns', label: 'Renda Fixa' },
+  renda_fixa:    { tipos: ['CDB','LCI','LCA','Poupança','Tesouro Direto','Debênture','CRI','CRA'], cor: '#10B981', icon: 'fa-building-columns', label: 'Renda Fixa' },
   renda_variavel:{ tipos: ['Ações','FIIs','ETF','BDR','Fundo de Ações'],                          cor: '#2563eb', icon: 'fa-arrow-trend-up',    label: 'Renda Variável' },
   cripto:        { tipos: ['Cripto','Bitcoin','Ethereum','Stablecoin'],                            cor: '#D97706', icon: 'fa-bitcoin-sign',       label: 'Cripto' },
   outros:        { tipos: ['Previdência','COE','Câmbio','Outros'],                                 cor: '#7C3AED', icon: 'fa-briefcase',           label: 'Outros' },
@@ -171,10 +171,10 @@ export default function InvestimentosPage() {
 
       {/* KPIs */}
       <div className="kpis" style={{ gridTemplateColumns: 'repeat(4,1fr)', marginBottom: 16 }}>
-        <div className="kpi" style={{ borderTop: '3px solid #5E8C87' }}>
+        <div className="kpi" style={{ borderTop: '3px solid #10B981' }}>
           <div className="kpi-lbl">Patrimônio total
             <div style={{ width: 28, height: 28, borderRadius: 8, background: '#EAF5F3', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <i className="fa-solid fa-wallet" style={{ fontSize: 12, color: '#5E8C87' }} />
+              <i className="fa-solid fa-wallet" style={{ fontSize: 12, color: '#10B981' }} />
             </div>
           </div>
           <div className="kpi-val">{formatBRL(totalAtual)}</div>
@@ -189,13 +189,13 @@ export default function InvestimentosPage() {
           <div className="kpi-val">{formatBRL(totalAplicado)}</div>
           <div className="kpi-delta">custo total</div>
         </div>
-        <div className="kpi" style={{ borderTop: `3px solid ${rendimento >= 0 ? '#5E8C87' : '#E74C3C'}` }}>
+        <div className="kpi" style={{ borderTop: `3px solid ${rendimento >= 0 ? '#10B981' : '#E74C3C'}` }}>
           <div className="kpi-lbl">Rendimento
             <div style={{ width: 28, height: 28, borderRadius: 8, background: rendimento >= 0 ? '#EAF5F3' : '#FEE2E2', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <i className={`fa-solid ${rendimento >= 0 ? 'fa-arrow-trend-up' : 'fa-arrow-trend-down'}`} style={{ fontSize: 12, color: rendimento >= 0 ? '#5E8C87' : '#E74C3C' }} />
+              <i className={`fa-solid ${rendimento >= 0 ? 'fa-arrow-trend-up' : 'fa-arrow-trend-down'}`} style={{ fontSize: 12, color: rendimento >= 0 ? '#10B981' : '#E74C3C' }} />
             </div>
           </div>
-          <div className="kpi-val" style={{ color: rendimento >= 0 ? '#5E8C87' : '#E74C3C' }}>
+          <div className="kpi-val" style={{ color: rendimento >= 0 ? '#10B981' : '#E74C3C' }}>
             {rendimento >= 0 ? '+' : ''}{formatBRL(rendimento)}
           </div>
           <div className={`kpi-delta ${rendimento >= 0 ? 'up' : 'dn'}`}>{fmtPct(rendPct)} total</div>
@@ -275,15 +275,15 @@ export default function InvestimentosPage() {
                 <AreaChart data={evolucao} margin={{ top: 4, right: 4, bottom: 0, left: 0 }}>
                   <defs>
                     <linearGradient id="gradInv" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#5E8C87" stopOpacity={0.2} />
-                      <stop offset="95%" stopColor="#5E8C87" stopOpacity={0} />
+                      <stop offset="5%" stopColor="#10B981" stopOpacity={0.2} />
+                      <stop offset="95%" stopColor="#10B981" stopOpacity={0} />
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="#F0F4F3" vertical={false} />
                   <XAxis dataKey="mes" tick={{ fontSize: 9, fill: '#7A8F8E' }} axisLine={false} tickLine={false} />
                   <YAxis tick={{ fontSize: 9, fill: '#AAB8B7' }} axisLine={false} tickLine={false} tickFormatter={v => `R$${(v/1000).toFixed(0)}K`} width={44} />
                   <Tooltip formatter={(v: number) => [formatBRL(v), 'Patrimônio']} contentStyle={{ fontSize: 11, borderRadius: 8, border: '0.5px solid #E2E8E7' }} />
-                  <Area type="monotone" dataKey="valor" stroke="#5E8C87" strokeWidth={2} fill="url(#gradInv)" dot={false} activeDot={{ r: 4, fill: '#5E8C87', stroke: '#fff', strokeWidth: 2 }} />
+                  <Area type="monotone" dataKey="valor" stroke="#10B981" strokeWidth={2} fill="url(#gradInv)" dot={false} activeDot={{ r: 4, fill: '#10B981', stroke: '#fff', strokeWidth: 2 }} />
                 </AreaChart>
               </ResponsiveContainer>
             )}
@@ -302,7 +302,7 @@ export default function InvestimentosPage() {
                 </div>
                 <div style={{ marginLeft: 'auto', textAlign: 'right' }}>
                   <div style={{ fontSize: 14, fontWeight: 700, color: '#1C2B2A', fontFamily: "'Inter', sans-serif" }}>{formatBRL(c.total)}</div>
-                  <div style={{ fontSize: 11, fontWeight: 600, color: c.rend >= 0 ? '#5E8C87' : '#E74C3C' }}>{fmtPct(c.rendPct)}</div>
+                  <div style={{ fontSize: 11, fontWeight: 600, color: c.rend >= 0 ? '#10B981' : '#E74C3C' }}>{fmtPct(c.rendPct)}</div>
                 </div>
               </div>
               {c.items.slice(0, 3).map(inv => (
@@ -311,13 +311,13 @@ export default function InvestimentosPage() {
                     {inv.ticker ? <span style={{ background: '#EEF2F1', borderRadius: 4, padding: '1px 5px', fontSize: 9, fontWeight: 700, marginRight: 5, color: '#1C2B2A', fontFamily: "'Inter', sans-serif" }}>{inv.ticker}</span> : null}
                     {inv.nome}
                   </span>
-                  <span style={{ fontWeight: 700, color: Number(inv.valor_atual) >= Number(inv.valor_aplicado) ? '#5E8C87' : '#E74C3C', fontFamily: "'Inter', sans-serif" }}>
+                  <span style={{ fontWeight: 700, color: Number(inv.valor_atual) >= Number(inv.valor_aplicado) ? '#10B981' : '#E74C3C', fontFamily: "'Inter', sans-serif" }}>
                     {formatBRL(Number(inv.valor_atual))}
                   </span>
                 </div>
               ))}
               {c.items.length > 3 && (
-                <button onClick={() => setTab(c.cls as Tab)} style={{ marginTop: 8, fontSize: 10, color: '#5E8C87', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 600 }}>
+                <button onClick={() => setTab(c.cls as Tab)} style={{ marginTop: 8, fontSize: 10, color: '#10B981', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 600 }}>
                   Ver todos ({c.items.length}) →
                 </button>
               )}
@@ -371,12 +371,12 @@ export default function InvestimentosPage() {
                     <div style={{ fontSize: 11, color: '#7A8F8E', fontFamily: "'Inter', sans-serif" }}>{formatBRL(Number(inv.valor_aplicado))}</div>
                     <div style={{ fontSize: 12, fontWeight: 700, color: '#1C2B2A', fontFamily: "'Inter', sans-serif" }}>{formatBRL(Number(inv.valor_atual))}</div>
                     <div>
-                      <div style={{ fontSize: 11, fontWeight: 700, color: rend >= 0 ? '#5E8C87' : '#E74C3C', fontFamily: "'Inter', sans-serif" }}>{rend >= 0 ? '+' : ''}{formatBRL(rend)}</div>
-                      <div style={{ fontSize: 10, color: rend >= 0 ? '#5E8C87' : '#E74C3C' }}>{fmtPct(rendP)}</div>
+                      <div style={{ fontSize: 11, fontWeight: 700, color: rend >= 0 ? '#10B981' : '#E74C3C', fontFamily: "'Inter', sans-serif" }}>{rend >= 0 ? '+' : ''}{formatBRL(rend)}</div>
+                      <div style={{ fontSize: 10, color: rend >= 0 ? '#10B981' : '#E74C3C' }}>{fmtPct(rendP)}</div>
                     </div>
                     <div style={{ display: 'flex', gap: 4 }}>
                       <button onClick={() => { setForm({ nome: inv.nome, tipo: inv.tipo, ticker: inv.ticker || '', instituicao: inv.instituicao || '', valor_aplicado: String(inv.valor_aplicado), valor_atual: String(inv.valor_atual), data_aplicacao: inv.data_aplicacao, vencimento: inv.vencimento || '', rentabilidade: inv.rentabilidade || '', liquidez: inv.liquidez, notas: inv.notas || '' }); setEditId(inv.id); setModal(true) }} style={{ fontSize: 10, padding: '4px 8px', borderRadius: 6, border: '0.5px solid #E2E8E7', background: '#fff', cursor: 'pointer', color: '#7A8F8E' }}>Editar</button>
-                      <button onClick={() => void registrarVenda(inv)} style={{ fontSize: 10, padding: '4px 8px', borderRadius: 6, border: '0.5px solid #E2E8E7', background: '#fff', cursor: 'pointer', color: '#5E8C87', fontWeight: 600 }}>Vender</button>
+                      <button onClick={() => void registrarVenda(inv)} style={{ fontSize: 10, padding: '4px 8px', borderRadius: 6, border: '0.5px solid #E2E8E7', background: '#fff', cursor: 'pointer', color: '#10B981', fontWeight: 600 }}>Vender</button>
                     </div>
                   </div>
                 )

@@ -333,7 +333,7 @@ export default function DashboardPage() {
 
           {/* Link AI */}
           <Link href="/dashboard/aicfo" style={{ textDecoration: 'none' }}>
-            <button style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 14px', borderRadius: 8, border: 'none', background: '#1C2B2A', color: '#7EBDB8', fontSize: 11, fontWeight: 700, cursor: 'pointer' }}>
+            <button style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 14px', borderRadius: 8, border: 'none', background: '#1C2B2A', color: '#6EE7B7', fontSize: 11, fontWeight: 700, cursor: 'pointer' }}>
               <i className="fa-solid fa-robot" style={{ fontSize: 11 }} />FactorOne AI
             </button>
           </Link>
@@ -351,11 +351,11 @@ export default function DashboardPage() {
       {/* KPIs */}
       <div className="kpis">
         {/* Receita */}
-        <div className="kpi" style={{ borderTop: '3px solid #5E8C87' }}>
+        <div className="kpi" style={{ borderTop: '3px solid #10B981' }}>
           <div className="kpi-lbl">
             Receita Mensal
             <div style={{ width: 28, height: 28, borderRadius: 8, background: '#EAF5F3', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <i className="fa-solid fa-arrow-trend-up" style={{ fontSize: 12, color: '#5E8C87' }} />
+              <i className="fa-solid fa-arrow-trend-up" style={{ fontSize: 12, color: '#10B981' }} />
             </div>
           </div>
           <div className="kpi-val">{fmtBRLCompact(kpiAtual.receita)}</div>
@@ -364,11 +364,11 @@ export default function DashboardPage() {
           </div>
         </div>
         {/* Lucro */}
-        <div className="kpi" style={{ borderTop: `3px solid ${dreMes.liquido >= 0 ? '#5E8C87' : '#E74C3C'}` }}>
+        <div className="kpi" style={{ borderTop: `3px solid ${dreMes.liquido >= 0 ? '#10B981' : '#E74C3C'}` }}>
           <div className="kpi-lbl">
             Lucro Líquido
             <div style={{ width: 28, height: 28, borderRadius: 8, background: dreMes.liquido >= 0 ? '#EAF5F3' : '#FEE2E2', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <i className="fa-solid fa-chart-line" style={{ fontSize: 12, color: dreMes.liquido >= 0 ? '#5E8C87' : '#E74C3C' }} />
+              <i className="fa-solid fa-chart-line" style={{ fontSize: 12, color: dreMes.liquido >= 0 ? '#10B981' : '#E74C3C' }} />
             </div>
           </div>
           <div className="kpi-val">{fmtBRLCompact(dreMes.liquido)}</div>
@@ -378,22 +378,22 @@ export default function DashboardPage() {
           </div>
         </div>
         {/* Fluxo */}
-        <div className="kpi" style={{ borderTop: `3px solid ${fluxo30 >= 0 ? '#5E8C87' : '#D97706'}` }}>
+        <div className="kpi" style={{ borderTop: `3px solid ${fluxo30 >= 0 ? '#10B981' : '#D97706'}` }}>
           <div className="kpi-lbl">
             Fluxo 30 dias
             <div style={{ width: 28, height: 28, borderRadius: 8, background: fluxo30 >= 0 ? '#EAF5F3' : '#FEF3C7', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <i className="fa-solid fa-water" style={{ fontSize: 12, color: fluxo30 >= 0 ? '#5E8C87' : '#D97706' }} />
+              <i className="fa-solid fa-water" style={{ fontSize: 12, color: fluxo30 >= 0 ? '#10B981' : '#D97706' }} />
             </div>
           </div>
           <div className="kpi-val">{fmtBRLCompact(fluxo30)}</div>
           <div className={`kpi-delta ${fluxo30 >= 0 ? 'up' : 'warn'}`}>{fluxo30 >= 0 ? '↑ caixa positivo' : '↓ atenção ao caixa'}</div>
         </div>
         {/* Runway */}
-        <div className="kpi" style={{ borderTop: `3px solid ${runway == null ? '#E2E8E7' : runway < 90 ? '#D97706' : '#5E8C87'}` }}>
+        <div className="kpi" style={{ borderTop: `3px solid ${runway == null ? '#E2E8E7' : runway < 90 ? '#D97706' : '#10B981'}` }}>
           <div className="kpi-lbl">
             Runway
             <div style={{ width: 28, height: 28, borderRadius: 8, background: runway != null && runway < 90 ? '#FEF3C7' : '#EAF5F3', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <i className="fa-solid fa-gauge-high" style={{ fontSize: 12, color: runway != null && runway < 90 ? '#D97706' : '#5E8C87' }} />
+              <i className="fa-solid fa-gauge-high" style={{ fontSize: 12, color: runway != null && runway < 90 ? '#D97706' : '#10B981' }} />
             </div>
           </div>
           <div className="kpi-val">{runway != null ? `${runway > 30 ? Math.round(runway / 30) + ' meses' : runway + ' dias'}` : '—'}</div>
@@ -417,7 +417,7 @@ export default function DashboardPage() {
           )}
           {pendencias.reembolsos > 0 && (
             <Link href="/dashboard/reembolsos" style={{ textDecoration: 'none', flex: 1, minWidth: 180 }}>
-              <div style={{ background: 'rgba(94,140,135,.06)', border: '1px solid rgba(94,140,135,.25)', borderRadius: 12, padding: '12px 16px', cursor: 'pointer' }}>
+              <div style={{ background: 'rgba(16,185,129,.06)', border: '1px solid rgba(16,185,129,.25)', borderRadius: 12, padding: '12px 16px', cursor: 'pointer' }}>
                 <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--teal2)', letterSpacing: '.08em', textTransform: 'uppercase', marginBottom: 4 }}>Reembolsos pendentes</div>
                 <div style={{ fontSize: 22, fontWeight: 800, color: 'var(--navy)' }}>{pendencias.reembolsos}</div>
                 <div style={{ fontSize: 11, color: 'var(--gray-400)', marginTop: 2 }}>{fmtBRLCompact(pendencias.valorReembolsos)} a aprovar</div>
@@ -673,7 +673,7 @@ export default function DashboardPage() {
               <div style={{ fontSize: 10, color: '#7A8F8E', marginTop: 2 }}>Últimos 6 meses</div>
             </div>
             <div style={{ display: 'flex', gap: 12 }}>
-              <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 10, color: '#3A5150' }}><span style={{ width: 8, height: 8, borderRadius: 2, background: '#5E8C87', display: 'inline-block' }} />Entradas</span>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 10, color: '#3A5150' }}><span style={{ width: 8, height: 8, borderRadius: 2, background: '#10B981', display: 'inline-block' }} />Entradas</span>
               <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 10, color: '#3A5150' }}><span style={{ width: 8, height: 8, borderRadius: 2, background: '#E74C3C', display: 'inline-block' }} />Saídas</span>
             </div>
           </div>
@@ -687,7 +687,7 @@ export default function DashboardPage() {
               <div className="chart-title">Receita vs Despesas</div>
               <div style={{ fontSize: 10, color: '#7A8F8E', marginTop: 2 }}>Atual vs mês anterior</div>
             </div>
-            <Link href="/dashboard/relatorios" style={{ fontSize: 10, color: '#5E8C87', textDecoration: 'none', fontWeight: 600 }}>DRE →</Link>
+            <Link href="/dashboard/relatorios" style={{ fontSize: 10, color: '#10B981', textDecoration: 'none', fontWeight: 600 }}>DRE →</Link>
           </div>
           {(() => {
             const dreChartData = [
@@ -695,7 +695,7 @@ export default function DashboardPage() {
               { name: 'Despesas', atual: kpiAtual.despesas, anterior: kpiAnt.despesas },
               { name: 'Lucro', atual: dreMes.liquido, anterior: dreMes.liquidoAnt },
             ]
-            const colors = ['#5E8C87', '#E74C3C', dreMes.liquido >= 0 ? '#5E8C87' : '#E74C3C']
+            const colors = ['#10B981', '#E74C3C', dreMes.liquido >= 0 ? '#10B981' : '#E74C3C']
             return (
               <ResponsiveContainer width="100%" height={160}>
                 <BarChart data={dreChartData} barGap={4} barCategoryGap="30%" margin={{ top: 4, right: 4, bottom: 0, left: 0 }}>
@@ -716,7 +716,7 @@ export default function DashboardPage() {
           })()}
           <div style={{ display: 'flex', gap: 16, marginTop: 10 }}>
             <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 10, color: '#7A8F8E' }}><span style={{ width: 8, height: 8, borderRadius: 2, background: '#EEF2F1', border: '0.5px solid #E2E8E7', display: 'inline-block' }} />Mês anterior</span>
-            <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 10, color: '#7A8F8E' }}><span style={{ width: 8, height: 8, borderRadius: 2, background: '#5E8C87', display: 'inline-block' }} />Mês atual</span>
+            <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 10, color: '#7A8F8E' }}><span style={{ width: 8, height: 8, borderRadius: 2, background: '#10B981', display: 'inline-block' }} />Mês atual</span>
           </div>
         </div>
       </div>
@@ -730,7 +730,7 @@ export default function DashboardPage() {
               <div style={{ fontSize: 10, color: '#7A8F8E', marginTop: 2 }}>Receita vs Despesas</div>
             </div>
             <div style={{ display: 'flex', gap: 12 }}>
-              <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 10, color: '#3A5150' }}><span style={{ width: 8, height: 8, borderRadius: 2, background: '#5E8C87', display: 'inline-block' }} />Receita</span>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 10, color: '#3A5150' }}><span style={{ width: 8, height: 8, borderRadius: 2, background: '#10B981', display: 'inline-block' }} />Receita</span>
               <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 10, color: '#3A5150' }}><span style={{ width: 8, height: 8, borderRadius: 2, background: '#E74C3C', display: 'inline-block' }} />Despesas</span>
             </div>
           </div>
@@ -741,8 +741,8 @@ export default function DashboardPage() {
               <AreaChart data={trend12} margin={{ top: 4, right: 4, bottom: 0, left: 0 }}>
                 <defs>
                   <linearGradient id="gradR12" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#5E8C87" stopOpacity={0.2} />
-                    <stop offset="95%" stopColor="#5E8C87" stopOpacity={0} />
+                    <stop offset="5%" stopColor="#10B981" stopOpacity={0.2} />
+                    <stop offset="95%" stopColor="#10B981" stopOpacity={0} />
                   </linearGradient>
                   <linearGradient id="gradD12" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#E74C3C" stopOpacity={0.15} />
@@ -757,7 +757,7 @@ export default function DashboardPage() {
                   contentStyle={{ fontSize: 11, borderRadius: 10, border: '0.5px solid #E2E8E7', background: '#fff', boxShadow: '0 4px 16px rgba(0,0,0,0.08)' }}
                   labelStyle={{ fontWeight: 700, color: '#1C2B2A', fontSize: 11 }}
                 />
-                <Area type="monotone" dataKey="receita" stroke="#5E8C87" strokeWidth={2} fill="url(#gradR12)" dot={false} activeDot={{ r: 4, fill: '#5E8C87', stroke: '#fff', strokeWidth: 2 }} />
+                <Area type="monotone" dataKey="receita" stroke="#10B981" strokeWidth={2} fill="url(#gradR12)" dot={false} activeDot={{ r: 4, fill: '#10B981', stroke: '#fff', strokeWidth: 2 }} />
                 <Area type="monotone" dataKey="despesas" stroke="#E74C3C" strokeWidth={2} fill="url(#gradD12)" dot={false} activeDot={{ r: 4, fill: '#E74C3C', stroke: '#fff', strokeWidth: 2 }} />
               </AreaChart>
             </ResponsiveContainer>
@@ -770,7 +770,7 @@ export default function DashboardPage() {
               <div className="chart-title">Top categorias</div>
               <div style={{ fontSize: 10, color: '#7A8F8E', marginTop: 2 }}>Despesas do mês</div>
             </div>
-            <Link href="/dashboard/despesas" style={{ fontSize: 10, color: '#5E8C87', textDecoration: 'none', fontWeight: 600 }}>Ver →</Link>
+            <Link href="/dashboard/despesas" style={{ fontSize: 10, color: '#10B981', textDecoration: 'none', fontWeight: 600 }}>Ver →</Link>
           </div>
           {topCats.length === 0 ? (
             <div style={{ height: 140, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#AAB8B7', fontSize: 12 }}>Sem despesas categorizadas.</div>
@@ -785,7 +785,7 @@ export default function DashboardPage() {
                 />
                 <Bar dataKey="val" radius={[0, 4, 4, 0]} maxBarSize={16}>
                   {topCats.map((_, i) => (
-                    <Cell key={i} fill={['#5E8C87', '#D97706', '#7C3AED', '#2563eb', '#E74C3C'][i % 5]} fillOpacity={0.85} />
+                    <Cell key={i} fill={['#10B981', '#D97706', '#7C3AED', '#2563eb', '#E74C3C'][i % 5]} fillOpacity={0.85} />
                   ))}
                 </Bar>
               </BarChart>
@@ -801,7 +801,7 @@ export default function DashboardPage() {
             <div className="chart-title">Resultado consolidado — 12 meses</div>
             <div style={{ fontSize: 10, color: '#7A8F8E', marginTop: 2 }}>Receita e despesas (barras) + lucro líquido (linha)</div>
           </div>
-          <Link href="/dashboard/relatorios" style={{ fontSize: 10, color: '#5E8C87', textDecoration: 'none', fontWeight: 600 }}>Ver DRE completo →</Link>
+          <Link href="/dashboard/relatorios" style={{ fontSize: 10, color: '#10B981', textDecoration: 'none', fontWeight: 600 }}>Ver DRE completo →</Link>
         </div>
         {(() => {
           const dataComp = trend12.map(d => ({ ...d, lucro: Number(d.receita) - Number(d.despesas) }))
@@ -818,10 +818,10 @@ export default function DashboardPage() {
                   formatter={(v: number, name: string) => [fmtBRLCompact(v), name === 'receita' ? 'Receita' : name === 'despesas' ? 'Despesas' : 'Lucro']}
                   contentStyle={{ fontSize: 11, borderRadius: 10, border: '0.5px solid #E2E8E7', background: '#fff', boxShadow: '0 4px 16px rgba(0,0,0,0.08)' }}
                   labelStyle={{ fontWeight: 700, color: '#1C2B2A', fontSize: 11 }}
-                  cursor={{ fill: 'rgba(94,140,135,0.05)' }}
+                  cursor={{ fill: 'rgba(16,185,129,0.05)' }}
                 />
                 <Legend wrapperStyle={{ fontSize: 10 }} iconType="circle" iconSize={8} formatter={(value) => <span style={{ color: '#3A5150' }}>{value === 'receita' ? 'Receita' : value === 'despesas' ? 'Despesas' : 'Lucro'}</span>} />
-                <Bar dataKey="receita" fill="#5E8C87" radius={[3, 3, 0, 0]} maxBarSize={18} />
+                <Bar dataKey="receita" fill="#10B981" radius={[3, 3, 0, 0]} maxBarSize={18} />
                 <Bar dataKey="despesas" fill="#E74C3C" radius={[3, 3, 0, 0]} maxBarSize={18} fillOpacity={0.85} />
                 <Line type="monotone" dataKey="lucro" stroke="#1C2B2A" strokeWidth={2.5} dot={{ r: 3, fill: '#1C2B2A' }} activeDot={{ r: 5, fill: '#D97706', stroke: '#fff', strokeWidth: 2 }} />
               </ComposedChart>
@@ -869,7 +869,7 @@ export default function DashboardPage() {
               { href: '/dashboard/relatorios', icon: 'fa-chart-bar', label: 'Ver DRE', bg: '#E6F1FB', color: '#2563eb' },
               { href: '/dashboard/conciliacao', icon: 'fa-building-columns', label: 'Conciliar', bg: '#EAF5F3', color: 'var(--teal)' },
               { href: '/dashboard/contadores', icon: 'fa-calculator', label: 'Portal Contador', bg: '#F3F0FF', color: '#7C3AED' },
-              { href: '/dashboard/aicfo', icon: 'fa-robot', label: 'Perguntar ao AI', bg: '#1C2B2A', color: '#7EBDB8' },
+              { href: '/dashboard/aicfo', icon: 'fa-robot', label: 'Perguntar ao AI', bg: '#1C2B2A', color: '#6EE7B7' },
             ].map(item => (
               <Link key={item.href} href={item.href} style={{ textDecoration: 'none' }}>
                 <div style={{ padding: '8px 10px', background: '#F8FAFA', borderRadius: 8, border: '0.5px solid #E2E8E7', display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', transition: 'background 0.15s' }}>
@@ -886,8 +886,8 @@ export default function DashboardPage() {
         <Link href="/dashboard/aicfo" style={{ textDecoration: 'none' }}>
           <div style={{ background: 'var(--navy)', borderRadius: 12, padding: '14px 16px', height: '100%', display: 'flex', flexDirection: 'column', gap: 10, cursor: 'pointer' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <div style={{ width: 30, height: 30, borderRadius: 8, background: 'rgba(94,140,135,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <i className="fa-solid fa-robot" style={{ fontSize: 13, color: '#7EBDB8' }} />
+              <div style={{ width: 30, height: 30, borderRadius: 8, background: 'rgba(16,185,129,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <i className="fa-solid fa-robot" style={{ fontSize: 13, color: '#6EE7B7' }} />
               </div>
               <div>
                 <div style={{ fontSize: 12, fontWeight: 600, color: '#fff', fontFamily: "'Inter', sans-serif" }}>FactorOne AI</div>
@@ -900,7 +900,7 @@ export default function DashboardPage() {
                 : `Receita ${fmtBRLCompact(kpiAtual.receita)} com margem líquida de ${dreMes.receitaBruta > 0 ? ((dreMes.liquido / dreMes.receitaBruta) * 100).toFixed(1) : '0'}%. ${runway != null && runway < 6 ? `Atenção: runway de ${runway} meses.` : 'Saúde financeira dentro do esperado.'}`
               }
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 11, color: '#7EBDB8', fontWeight: 600 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 11, color: '#6EE7B7', fontWeight: 600 }}>
               <i className="fa-solid fa-arrow-right" style={{ fontSize: 10 }} /> Analisar com IA
             </div>
           </div>

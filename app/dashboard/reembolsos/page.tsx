@@ -222,7 +222,7 @@ export default function ReembolsosPage() {
   function statusTag(s: string) {
     const map: Record<string, [string, string]> = {
       pendente:  ['rgba(184,146,42,.12)',  'var(--gold)'],
-      aprovado:  ['rgba(94,140,135,.12)', 'var(--teal2)'],
+      aprovado:  ['rgba(16,185,129,.12)', 'var(--teal2)'],
       pago:      ['rgba(45,155,111,.12)', 'var(--green)'],
       rejeitado: ['rgba(192,80,74,.08)', 'var(--red)'],
     }
@@ -310,7 +310,7 @@ export default function ReembolsosPage() {
               </div>
               <div style={{ display: 'flex', gap: 5, alignItems: 'center', flexShrink: 0 }}>
                 {item.comprovante_url && (
-                  <button onClick={() => void abrirComprovante(item.comprovante_url!)} title="Ver comprovante" style={{ background: 'rgba(94,140,135,.1)', color: 'var(--teal)', border: '1px solid rgba(94,140,135,.2)', borderRadius: 7, padding: '4px 8px', fontSize: 10.5, cursor: 'pointer' }}>
+                  <button onClick={() => void abrirComprovante(item.comprovante_url!)} title="Ver comprovante" style={{ background: 'rgba(16,185,129,.1)', color: 'var(--teal)', border: '1px solid rgba(16,185,129,.2)', borderRadius: 7, padding: '4px 8px', fontSize: 10.5, cursor: 'pointer' }}>
                     <i className="fa-solid fa-paperclip" />
                   </button>
                 )}
@@ -393,7 +393,7 @@ export default function ReembolsosPage() {
                       display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5,
                       padding: '9px 6px', borderRadius: 9, cursor: 'pointer', fontSize: 10, fontWeight: 600,
                       border: form.categoria === c.label ? '2px solid var(--teal)' : '1px solid var(--gray-100)',
-                      background: form.categoria === c.label ? 'rgba(94,140,135,0.08)' : '#fafafa',
+                      background: form.categoria === c.label ? 'rgba(16,185,129,0.08)' : '#fafafa',
                       color: form.categoria === c.label ? 'var(--teal)' : 'var(--gray-500)',
                       transition: 'all 0.15s',
                     }}

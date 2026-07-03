@@ -23,7 +23,7 @@ const ETAPAS = [
   { id: 'prospeccao', label: 'Prospecção', color: '#7A8F8E', bg: '#EEF2F1', prob: 10 },
   { id: 'qualificado', label: 'Qualificado', color: '#7C3AED', bg: '#F3F0FF', prob: 30 },
   { id: 'proposta', label: 'Proposta', color: '#D97706', bg: '#FEF3C7', prob: 60 },
-  { id: 'negociacao', label: 'Negociação', color: '#5E8C87', bg: '#EAF5F3', prob: 80 },
+  { id: 'negociacao', label: 'Negociação', color: '#10B981', bg: '#EAF5F3', prob: 80 },
   { id: 'fechado_ganho', label: 'Ganho', color: '#16A085', bg: '#DCFCE7', prob: 100 },
   { id: 'fechado_perdido', label: 'Perdido', color: '#E74C3C', bg: '#FEE2E2', prob: 0 },
 ]
@@ -184,7 +184,7 @@ export default function CRMPage() {
       <div className="kpis" style={{ gridTemplateColumns: 'repeat(4,1fr)', marginBottom: 16 }}>
         {[
           { l: 'Em aberto', v: String(kpis.abertas),         icon: 'fa-briefcase',    bg: '#EEF2F1', c: '#1C2B2A', sub: 'oportunidades' },
-          { l: 'Pipeline total', v: formatBRL(kpis.valorTotal), icon: 'fa-funnel-dollar', bg: '#EAF5F3', c: '#5E8C87', sub: 'valor estimado' },
+          { l: 'Pipeline total', v: formatBRL(kpis.valorTotal), icon: 'fa-funnel-dollar', bg: '#EAF5F3', c: '#10B981', sub: 'valor estimado' },
           { l: 'Ganhas',       v: String(kpis.ganhas),         icon: 'fa-trophy',       bg: '#DCFCE7', c: '#16A085', sub: 'fechamentos' },
           { l: 'Ticket médio', v: formatBRL(kpis.ticket),      icon: 'fa-tag',          bg: '#FEF3C7', c: '#D97706', sub: 'por negócio' },
         ].map(k => (
@@ -228,7 +228,7 @@ export default function CRMPage() {
                 {col.ops.map(op => (
                   <div key={op.id} style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 8, padding: '10px 10px 8px' }}>
                     <p style={{ fontWeight: 700, fontSize: 11, color: '#1C2B2A', margin: '0 0 3px', lineHeight: 1.3 }}>{op.titulo}</p>
-                    {op.clientes && <p style={{ fontSize: 10, color: '#5E8C87', margin: '0 0 3px' }}>{op.clientes.nome}</p>}
+                    {op.clientes && <p style={{ fontSize: 10, color: '#10B981', margin: '0 0 3px' }}>{op.clientes.nome}</p>}
                     {op.valor && <p style={{ fontSize: 11, fontWeight: 700, color: '#16A085', fontFamily: "'Inter', system-ui, sans-serif", margin: '0 0 6px' }}>{formatBRL(Number(op.valor))}</p>}
                     <select value={op.etapa} onChange={e => void moverEtapa(op.id, e.target.value)} style={{ fontSize: 9, padding: '2px 4px', borderRadius: 5, border: '0.5px solid #E2E8E7', color: '#7A8F8E', width: '100%' }}>
                       {ETAPAS.map(e => <option key={e.id} value={e.id}>{e.label}</option>)}
@@ -253,7 +253,7 @@ export default function CRMPage() {
           </div>
           {agendaDias.length === 0 && (
             <div style={{ textAlign: 'center', padding: '40px 0', color: '#7A8F8E', fontSize: 13 }}>
-              Nenhum compromisso. <button onClick={() => setShowAtv(true)} style={{ color: '#5E8C87', background: 'none', border: 'none', cursor: 'pointer', fontSize: 13 }}>Agendar →</button>
+              Nenhum compromisso. <button onClick={() => setShowAtv(true)} style={{ color: '#10B981', background: 'none', border: 'none', cursor: 'pointer', fontSize: 13 }}>Agendar →</button>
             </div>
           )}
           {agendaDias.map(a => (
@@ -266,14 +266,14 @@ export default function CRMPage() {
                   {new Date(a.data + 'T12:00:00').getDate()}
                 </p>
               </div>
-              <div style={{ width: 4, borderRadius: 2, alignSelf: 'stretch', background: a.status === 'realizada' ? '#16A085' : a.status === 'cancelada' ? '#E74C3C' : '#5E8C87', flexShrink: 0 }} />
+              <div style={{ width: 4, borderRadius: 2, alignSelf: 'stretch', background: a.status === 'realizada' ? '#16A085' : a.status === 'cancelada' ? '#E74C3C' : '#10B981', flexShrink: 0 }} />
               <div style={{ flex: 1 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 2 }}>
-                  <i className={`fa-solid ${TIPO_ICON[a.tipo] || 'fa-circle'}`} style={{ fontSize: 12, color: '#5E8C87' }} />
+                  <i className={`fa-solid ${TIPO_ICON[a.tipo] || 'fa-circle'}`} style={{ fontSize: 12, color: '#10B981' }} />
                   <p style={{ fontSize: 13, fontWeight: 700, color: '#1C2B2A', margin: 0 }}>{a.titulo}</p>
                 </div>
                 {a.hora_inicio && <p style={{ fontSize: 11, color: '#7A8F8E', margin: '1px 0' }}>{a.hora_inicio}{a.hora_fim ? ` – ${a.hora_fim}` : ''}{a.local ? ` · ${a.local}` : ''}</p>}
-                {a.clientes && <p style={{ fontSize: 11, color: '#5E8C87', margin: '2px 0 0' }}>{a.clientes.nome}</p>}
+                {a.clientes && <p style={{ fontSize: 11, color: '#10B981', margin: '2px 0 0' }}>{a.clientes.nome}</p>}
               </div>
               <select value={a.status} onChange={e => void marcarAtividade(a.id, e.target.value)} style={{ fontSize: 10, padding: '3px 6px', borderRadius: 6, border: '0.5px solid #E2E8E7', color: a.status === 'realizada' ? '#16A085' : '#7A8F8E', flexShrink: 0 }}>
                 <option value="pendente">Pendente</option>
@@ -307,12 +307,12 @@ export default function CRMPage() {
                     <td style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: 11 }}>{new Date(a.data + 'T12:00:00').toLocaleDateString('pt-BR')}</td>
                     <td>
                       <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 11 }}>
-                        <i className={`fa-solid ${TIPO_ICON[a.tipo] || 'fa-circle'}`} style={{ color: '#5E8C87', fontSize: 10 }} />
+                        <i className={`fa-solid ${TIPO_ICON[a.tipo] || 'fa-circle'}`} style={{ color: '#10B981', fontSize: 10 }} />
                         {TIPO_ATI.find(t => t.v === a.tipo)?.l || a.tipo}
                       </span>
                     </td>
                     <td style={{ fontWeight: 600, fontSize: 12 }}>{a.titulo}</td>
-                    <td style={{ fontSize: 11, color: '#5E8C87' }}>{a.clientes?.nome || '—'}</td>
+                    <td style={{ fontSize: 11, color: '#10B981' }}>{a.clientes?.nome || '—'}</td>
                     <td style={{ fontSize: 11, color: '#7A8F8E' }}>{a.responsavel_nome || '—'}</td>
                     <td style={{ textAlign: 'center' }}>
                       <select value={a.status} onChange={e => void marcarAtividade(a.id, e.target.value)} style={{ fontSize: 9, padding: '2px 6px', borderRadius: 20, border: '1px solid', background: a.status === 'realizada' ? 'rgba(45,155,111,.1)' : a.status === 'cancelada' ? 'rgba(192,80,74,.1)' : '#E2E8E7', color: a.status === 'realizada' ? '#16A085' : a.status === 'cancelada' ? '#E74C3C' : '#7A8F8E', borderColor: 'transparent', cursor: 'pointer' }}>
@@ -366,7 +366,7 @@ export default function CRMPage() {
             {/* Tipo seletor */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 6, marginBottom: 16 }}>
               {TIPO_ATI.map(t => (
-                <button key={t.v} type="button" onClick={() => setFormAtv(f => ({ ...f, tipo: t.v }))} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, padding: '8px 4px', borderRadius: 8, border: formAtv.tipo === t.v ? '2px solid #5E8C87' : '0.5px solid #E2E8E7', background: formAtv.tipo === t.v ? 'rgba(94,140,135,.06)' : '#fafafa', cursor: 'pointer', fontSize: 10, fontWeight: 600, color: formAtv.tipo === t.v ? '#5E8C87' : '#7A8F8E' }}>
+                <button key={t.v} type="button" onClick={() => setFormAtv(f => ({ ...f, tipo: t.v }))} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, padding: '8px 4px', borderRadius: 8, border: formAtv.tipo === t.v ? '2px solid #10B981' : '0.5px solid #E2E8E7', background: formAtv.tipo === t.v ? 'rgba(16,185,129,.06)' : '#fafafa', cursor: 'pointer', fontSize: 10, fontWeight: 600, color: formAtv.tipo === t.v ? '#10B981' : '#7A8F8E' }}>
                   <i className={`fa-solid ${t.i}`} style={{ fontSize: 15 }} />{t.l}
                 </button>
               ))}
@@ -390,8 +390,8 @@ export default function CRMPage() {
       {/* Automações */}
       {tab === ('automacoes' as typeof tab) && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-          <div style={{ background: '#EAF5F3', border: '0.5px solid #5E8C87', borderRadius: 12, padding: '12px 16px', display: 'flex', gap: 10, alignItems: 'flex-start' }}>
-            <i className="fa-solid fa-robot" style={{ fontSize: 16, color: '#5E8C87', marginTop: 1 }} />
+          <div style={{ background: '#EAF5F3', border: '0.5px solid #10B981', borderRadius: 12, padding: '12px 16px', display: 'flex', gap: 10, alignItems: 'flex-start' }}>
+            <i className="fa-solid fa-robot" style={{ fontSize: 16, color: '#10B981', marginTop: 1 }} />
             <div>
               <div style={{ fontSize: 12, fontWeight: 700, color: '#1C2B2A', marginBottom: 3 }}>Automações de follow-up com FactorOne AI</div>
               <div style={{ fontSize: 11, color: '#7A8F8E', lineHeight: 1.6 }}>Configure gatilhos automáticos para follow-up de oportunidades, lembretes de atividades e alertas de pipeline estagnado.</div>
@@ -399,7 +399,7 @@ export default function CRMPage() {
           </div>
 
           {[
-            { titulo: 'Follow-up automático após proposta', desc: 'Cria atividade de ligação 3 dias depois de mover oportunidade para "Proposta" sem resposta do cliente', ativo: true, icon: 'fa-phone', cor: '#5E8C87', gatilho: 'Etapa: Proposta → sem atividade por 3 dias', acao: 'Criar atividade: Ligar para cliente' },
+            { titulo: 'Follow-up automático após proposta', desc: 'Cria atividade de ligação 3 dias depois de mover oportunidade para "Proposta" sem resposta do cliente', ativo: true, icon: 'fa-phone', cor: '#10B981', gatilho: 'Etapa: Proposta → sem atividade por 3 dias', acao: 'Criar atividade: Ligar para cliente' },
             { titulo: 'Alerta de pipeline estagnado', desc: 'Notifica o responsável quando uma oportunidade não tem atividades há mais de 7 dias', ativo: true, icon: 'fa-bell', cor: '#D97706', gatilho: 'Oportunidade sem atividade → 7 dias', acao: 'Notificação + e-mail ao responsável' },
             { titulo: 'E-mail de boas-vindas ao cliente', desc: 'Envia e-mail automático quando cliente é cadastrado no sistema', ativo: false, icon: 'fa-envelope', cor: '#2563eb', gatilho: 'Novo cliente cadastrado', acao: 'Enviar e-mail de boas-vindas' },
             { titulo: 'Lembrete de reunião', desc: 'Envia WhatsApp 1 hora antes de reuniões agendadas no pipeline', ativo: false, icon: 'fa-comment', cor: '#25D366', gatilho: 'Atividade: Reunião → 1 hora antes', acao: 'WhatsApp automático ao cliente' },
@@ -447,13 +447,13 @@ export default function CRMPage() {
         <div className="modal-bg" onClick={() => setShowInsight(false)}>
           <div className="modal-box" style={{ maxWidth: 560, width: '95%' }} onClick={e => e.stopPropagation()}>
             <div className="modal-title">
-              <i className="fa-solid fa-robot" style={{ color: '#5E8C87', marginRight: 8 }} />
+              <i className="fa-solid fa-robot" style={{ color: '#10B981', marginRight: 8 }} />
               Análise IA do Pipeline
               <button className="modal-close" onClick={() => setShowInsight(false)}><i className="fa-solid fa-xmark" /></button>
             </div>
             {insightLoading ? (
               <div style={{ padding: '40px 0', textAlign: 'center', color: '#7A8F8E' }}>
-                <i className="fa-solid fa-spinner fa-spin" style={{ fontSize: 24, marginBottom: 12, display: 'block', color: '#5E8C87' }} />
+                <i className="fa-solid fa-spinner fa-spin" style={{ fontSize: 24, marginBottom: 12, display: 'block', color: '#10B981' }} />
                 Analisando pipeline com FactorOne IA...
               </div>
             ) : (

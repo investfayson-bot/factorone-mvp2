@@ -100,7 +100,7 @@ export default function ConectarBancoPage() {
             <div style={{ fontSize: 11, color: 'rgba(255,255,255,.55)', textTransform: 'uppercase', letterSpacing: '.06em' }}>Saldo consolidado · {contas.length} banco{contas.length > 1 ? 's' : ''} conectado{contas.length > 1 ? 's' : ''}</div>
             <div style={{ fontSize: 26, fontWeight: 800, color: '#fff', fontFamily: "'Inter', system-ui, sans-serif", letterSpacing: '-.02em', marginTop: 2 }}>{formatBRL(totalConectado)}</div>
           </div>
-          <Link href="/dashboard/conta-pj" style={{ fontSize: 12, color: '#7EBDB8', textDecoration: 'none', fontWeight: 600 }}>Ver no dashboard →</Link>
+          <Link href="/dashboard/conta-pj" style={{ fontSize: 12, color: '#6EE7B7', textDecoration: 'none', fontWeight: 600 }}>Ver no dashboard →</Link>
         </div>
       )}
 
@@ -173,7 +173,7 @@ export default function ConectarBancoPage() {
 
       {!loading && (
         <div style={{ marginTop: 20, fontSize: 11, color: '#AAB8B7', display: 'flex', alignItems: 'center', gap: 6 }}>
-          <i className="fa-solid fa-shield-halved" style={{ color: '#5E8C87' }} />
+          <i className="fa-solid fa-shield-halved" style={{ color: '#10B981' }} />
           Conexão via Open Finance regulado pelo Banco Central · seus dados são somente leitura.
         </div>
       )}

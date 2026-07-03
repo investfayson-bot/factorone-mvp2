@@ -83,26 +83,26 @@ export default function MarketplacePage() {
           borderRadius: 16, padding: '20px 24px', marginBottom: 24,
           display: 'flex', alignItems: 'center', gap: 20,
         }}>
-          <div style={{ width: 56, height: 56, borderRadius: 14, background: 'rgba(94,140,135,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-            <i className="fa-solid fa-building-columns" style={{ fontSize: 24, color: '#7EBDB8' }} />
+          <div style={{ width: 56, height: 56, borderRadius: 14, background: 'rgba(16,185,129,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            <i className="fa-solid fa-building-columns" style={{ fontSize: 24, color: '#6EE7B7' }} />
           </div>
           <div style={{ flex: 1 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
               <div style={{ fontSize: 15, fontWeight: 700, color: '#fff', fontFamily: "'Inter', sans-serif" }}>Conta PJ — powered by Celcoin</div>
-              <span style={{ fontSize: 9, fontWeight: 700, padding: '2px 8px', borderRadius: 20, background: '#5E8C87', color: '#fff', letterSpacing: '0.06em' }}>DESTAQUE</span>
+              <span style={{ fontSize: 9, fontWeight: 700, padding: '2px 8px', borderRadius: 20, background: '#10B981', color: '#fff', letterSpacing: '0.06em' }}>DESTAQUE</span>
             </div>
             <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)', lineHeight: 1.6, marginBottom: 10 }}>
               Conta bancária PJ com cartão corporativo, PIX, boleto e gestão de despesas — tudo integrado ao FactorOne. Aprovação em até 24h.
             </div>
             <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
               {['Cartão Visa Corporativo', 'PIX instantâneo', 'Boletos', 'Open Finance', 'Gestão de despesas'].map(tag => (
-                <span key={tag} style={{ fontSize: 10, padding: '3px 9px', borderRadius: 20, background: 'rgba(94,140,135,0.2)', color: '#7EBDB8', fontWeight: 600 }}>{tag}</span>
+                <span key={tag} style={{ fontSize: 10, padding: '3px 9px', borderRadius: 20, background: 'rgba(16,185,129,0.2)', color: '#6EE7B7', fontWeight: 600 }}>{tag}</span>
               ))}
             </div>
           </div>
           <button
             onClick={() => router.push('/dashboard/conta-pj/abrir')}
-            style={{ background: '#5E8C87', color: '#fff', border: 'none', borderRadius: 10, padding: '12px 24px', fontSize: 13, fontWeight: 700, cursor: 'pointer', whiteSpace: 'nowrap', flexShrink: 0 }}
+            style={{ background: '#10B981', color: '#fff', border: 'none', borderRadius: 10, padding: '12px 24px', fontSize: 13, fontWeight: 700, cursor: 'pointer', whiteSpace: 'nowrap', flexShrink: 0 }}
           >
             Abrir Conta PJ
           </button>
@@ -110,8 +110,8 @@ export default function MarketplacePage() {
       )}
 
       {contaPjInstalled && (
-        <div style={{ background: '#EAF5F3', border: '0.5px solid #5E8C87', borderRadius: 12, padding: '12px 16px', marginBottom: 20, display: 'flex', alignItems: 'center', gap: 12 }}>
-          <i className="fa-solid fa-circle-check" style={{ fontSize: 18, color: '#5E8C87' }} />
+        <div style={{ background: '#EAF5F3', border: '0.5px solid #10B981', borderRadius: 12, padding: '12px 16px', marginBottom: 20, display: 'flex', alignItems: 'center', gap: 12 }}>
+          <i className="fa-solid fa-circle-check" style={{ fontSize: 18, color: '#10B981' }} />
           <div style={{ fontSize: 12, color: '#0F6E56', fontWeight: 600 }}>Conta PJ ativa · aparece na sidebar como &quot;Conta PJ&quot;</div>
         </div>
       )}
@@ -124,8 +124,8 @@ export default function MarketplacePage() {
           </div>
           <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
             {instalados.map(a => (
-              <div key={a.id} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '7px 12px', background: '#EAF5F3', border: '0.5px solid #5E8C87', borderRadius: 20 }}>
-                <i className={`fa-solid ${a.icon}`} style={{ fontSize: 12, color: '#5E8C87' }} />
+              <div key={a.id} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '7px 12px', background: '#EAF5F3', border: '0.5px solid #10B981', borderRadius: 20 }}>
+                <i className={`fa-solid ${a.icon}`} style={{ fontSize: 12, color: '#10B981' }} />
                 <span style={{ fontSize: 12, fontWeight: 600, color: '#0F6E56' }}>{a.name}</span>
                 <button onClick={() => onToggle(a)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#7A8F8E', fontSize: 12, lineHeight: 1, padding: 0 }}>×</button>
               </div>
@@ -166,7 +166,7 @@ export default function MarketplacePage() {
             const isBusy = busy === a.id
             return (
               <div key={a.id} style={{
-                background: '#fff', border: `0.5px solid ${isOn ? '#5E8C87' : '#E2E8E7'}`,
+                background: '#fff', border: `0.5px solid ${isOn ? '#10B981' : '#E2E8E7'}`,
                 borderRadius: 14, padding: '16px', display: 'flex', flexDirection: 'column', gap: 10,
                 transition: 'all 0.15s',
               }}>
@@ -191,7 +191,7 @@ export default function MarketplacePage() {
                     </div>
                   </div>
                   {isOn && (
-                    <div style={{ width: 20, height: 20, borderRadius: '50%', background: '#5E8C87', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <div style={{ width: 20, height: 20, borderRadius: '50%', background: '#10B981', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                       <i className="fa-solid fa-check" style={{ fontSize: 9, color: '#fff' }} />
                     </div>
                   )}

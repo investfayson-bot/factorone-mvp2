@@ -40,7 +40,7 @@ function PagarBtn({ row, ctx }: { row: Row; ctx: RowActionCtx }) {
 
   return (
     <button onClick={pagar} disabled={loading} title="Registrar pagamento no caixa"
-      style={{ fontSize: 11, fontWeight: 600, cursor: loading ? 'default' : 'pointer', border: '1px solid var(--teal)', background: 'rgba(94,140,135,.08)', color: 'var(--teal)', borderRadius: 6, padding: '3px 9px', opacity: loading ? .6 : 1 }}>
+      style={{ fontSize: 11, fontWeight: 600, cursor: loading ? 'default' : 'pointer', border: '1px solid var(--teal)', background: 'rgba(16,185,129,.08)', color: 'var(--teal)', borderRadius: 6, padding: '3px 9px', opacity: loading ? .6 : 1 }}>
       {loading ? '...' : 'Registrar pagamento'}
     </button>
   )

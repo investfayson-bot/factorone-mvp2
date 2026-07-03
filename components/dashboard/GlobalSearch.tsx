@@ -177,11 +177,11 @@ export default function GlobalSearch({ empresaId }: { empresaId: string }) {
                     onMouseEnter={() => setCursor(globalIdx)}
                     style={{
                       display: 'flex', alignItems: 'center', gap: 10, padding: '8px 16px', cursor: 'pointer',
-                      background: ativo ? 'rgba(94,140,135,.08)' : 'transparent',
+                      background: ativo ? 'rgba(16,185,129,.08)' : 'transparent',
                       borderLeft: ativo ? '2px solid var(--teal)' : '2px solid transparent',
                     }}
                   >
-                    <div style={{ width: 30, height: 30, borderRadius: 7, background: ativo ? 'rgba(94,140,135,.12)' : 'var(--gray-100)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <div style={{ width: 30, height: 30, borderRadius: 7, background: ativo ? 'rgba(16,185,129,.12)' : 'var(--gray-100)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                       <i className={`fa-solid ${r.icon}`} style={{ color: r.iconColor, fontSize: 12 }} />
                     </div>
                     <div style={{ flex: 1, overflow: 'hidden' }}>

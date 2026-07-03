@@ -115,13 +115,13 @@ export default function PrecosPage() {
       <nav style={{ background: '#1C2B2A', padding: '0 28px', height: 56, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <Link href="/" style={{ textDecoration: 'none' }}>
           <div style={{ fontSize: 20, fontWeight: 800, color: '#fff', fontFamily: "'Inter', sans-serif", letterSpacing: '-0.03em' }}>
-            Factor<span style={{ color: '#7EBDB8' }}>One</span>
+            Factor<span style={{ color: '#6EE7B7' }}>One</span>
             <span style={{ fontSize: 11, fontWeight: 400, color: 'rgba(255,255,255,0.4)', letterSpacing: '0.06em', marginLeft: 8 }}>FINANCE OS</span>
           </div>
         </Link>
         <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
           <Link href="/auth" style={{ textDecoration: 'none', fontSize: 12, color: 'rgba(255,255,255,0.6)', fontWeight: 500 }}>Entrar</Link>
-          <Link href="/auth" style={{ textDecoration: 'none', fontSize: 12, fontWeight: 700, background: '#5E8C87', color: '#fff', padding: '7px 16px', borderRadius: 8 }}>
+          <Link href="/auth" style={{ textDecoration: 'none', fontSize: 12, fontWeight: 700, background: '#10B981', color: '#fff', padding: '7px 16px', borderRadius: 8 }}>
             Começar grátis
           </Link>
         </div>
@@ -130,15 +130,15 @@ export default function PrecosPage() {
       <div style={{ maxWidth: 960, margin: '0 auto', padding: '48px 20px' }}>
         {/* Hero */}
         <div style={{ textAlign: 'center', marginBottom: 40 }}>
-          <div style={{ fontSize: 11, fontWeight: 700, color: '#5E8C87', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 12 }}>Planos & Preços</div>
+          <div style={{ fontSize: 11, fontWeight: 700, color: '#10B981', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 12 }}>Planos & Preços</div>
           <h1 style={{ fontSize: 36, fontWeight: 800, color: '#1C2B2A', letterSpacing: '-0.03em', margin: '0 0 12px', fontFamily: "'Inter', sans-serif", lineHeight: 1.15 }}>
             O CFO digital que sua empresa merecia
           </h1>
           <p style={{ fontSize: 15, color: '#7A8F8E', maxWidth: 520, margin: '0 auto 24px', lineHeight: 1.6 }}>
             30 dias grátis, sem cartão. Cancele quando quiser. Comece hoje e veja seus números com clareza.
           </p>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: '#EAF5F3', border: '0.5px solid #5E8C87', borderRadius: 20, padding: '6px 14px' }}>
-            <i className="fa-solid fa-shield-halved" style={{ fontSize: 11, color: '#5E8C87' }} />
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: '#EAF5F3', border: '0.5px solid #10B981', borderRadius: 20, padding: '6px 14px' }}>
+            <i className="fa-solid fa-shield-halved" style={{ fontSize: 11, color: '#10B981' }} />
             <span style={{ fontSize: 11, color: '#0F6E56', fontWeight: 600 }}>Dados protegidos com criptografia bancária · RLS ativo</span>
           </div>
         </div>
@@ -170,8 +170,8 @@ export default function PrecosPage() {
         {/* Banner Família */}
         {tab === 'familia' && (
           <div style={{ background: '#1C2B2A', borderRadius: 14, padding: '14px 20px', marginBottom: 20, display: 'flex', alignItems: 'center', gap: 14 }}>
-            <div style={{ width: 40, height: 40, borderRadius: 10, background: 'rgba(94,140,135,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-              <i className="fa-solid fa-people-roof" style={{ fontSize: 18, color: '#7EBDB8' }} />
+            <div style={{ width: 40, height: 40, borderRadius: 10, background: 'rgba(16,185,129,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <i className="fa-solid fa-people-roof" style={{ fontSize: 18, color: '#6EE7B7' }} />
             </div>
             <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.65)', lineHeight: 1.6 }}>
               <strong style={{ color: '#fff' }}>Um plano para empresa e família.</strong> O titular alterna entre painel PJ e PF no mesmo login. Membros da família têm acesso separado — cada um vê só as próprias finanças.
@@ -189,12 +189,12 @@ export default function PrecosPage() {
             const isLoading = loading === p.key
             return (
               <div key={p.key} style={{
-                background: '#fff', border: p.destaque ? '2px solid #5E8C87' : '0.5px solid #E2E8E7',
+                background: '#fff', border: p.destaque ? '2px solid #10B981' : '0.5px solid #E2E8E7',
                 borderRadius: 16, padding: '20px 18px', display: 'flex', flexDirection: 'column',
                 position: 'relative',
               }}>
                 {p.destaque && (
-                  <div style={{ position: 'absolute', top: -1, left: '50%', transform: 'translateX(-50%)', background: '#5E8C87', color: '#fff', fontSize: 9, fontWeight: 700, padding: '3px 14px', borderRadius: '0 0 8px 8px', letterSpacing: '0.06em', whiteSpace: 'nowrap' }}>
+                  <div style={{ position: 'absolute', top: -1, left: '50%', transform: 'translateX(-50%)', background: '#10B981', color: '#fff', fontSize: 9, fontWeight: 700, padding: '3px 14px', borderRadius: '0 0 8px 8px', letterSpacing: '0.06em', whiteSpace: 'nowrap' }}>
                     MAIS POPULAR
                   </div>
                 )}
@@ -216,7 +216,7 @@ export default function PrecosPage() {
                 <div style={{ flex: 1 }}>
                   {p.features.map(f => (
                     <div key={f} style={{ display: 'flex', alignItems: 'flex-start', gap: 7, padding: '3px 0', fontSize: 12, color: '#3A5150', lineHeight: 1.4 }}>
-                      <i className="fa-solid fa-check" style={{ fontSize: 11, color: '#5E8C87', flexShrink: 0, marginTop: 2 }} />{f}
+                      <i className="fa-solid fa-check" style={{ fontSize: 11, color: '#10B981', flexShrink: 0, marginTop: 2 }} />{f}
                     </div>
                   ))}
                   {p.nao.length > 0 && (
@@ -265,7 +265,7 @@ export default function PrecosPage() {
             ].map(item => (
               <div key={item.title} style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
                 <div style={{ width: 34, height: 34, borderRadius: 9, background: '#EAF5F3', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  <i className={`fa-solid ${item.icon}`} style={{ fontSize: 14, color: '#5E8C87' }} />
+                  <i className={`fa-solid ${item.icon}`} style={{ fontSize: 14, color: '#10B981' }} />
                 </div>
                 <div>
                   <div style={{ fontSize: 12, fontWeight: 700, color: '#1C2B2A', marginBottom: 3 }}>{item.title}</div>
@@ -297,7 +297,7 @@ export default function PrecosPage() {
           <div style={{ fontSize: 14, color: 'rgba(255,255,255,0.6)', marginBottom: 24, lineHeight: 1.6 }}>
             30 dias grátis, sem cartão, sem compromisso. Se não gostar, cancele com 1 clique.
           </div>
-          <Link href="/auth" style={{ textDecoration: 'none', display: 'inline-block', background: '#5E8C87', color: '#fff', padding: '13px 32px', borderRadius: 10, fontSize: 14, fontWeight: 700, fontFamily: "'Inter', sans-serif" }}>
+          <Link href="/auth" style={{ textDecoration: 'none', display: 'inline-block', background: '#10B981', color: '#fff', padding: '13px 32px', borderRadius: 10, fontSize: 14, fontWeight: 700, fontFamily: "'Inter', sans-serif" }}>
             Começar grátis agora
           </Link>
         </div>
@@ -307,7 +307,7 @@ export default function PrecosPage() {
       <footer style={{ background: '#1C2B2A', padding: '20px 28px', marginTop: 40 }}>
         <div style={{ maxWidth: 960, margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
           <div style={{ fontSize: 14, fontWeight: 800, color: '#fff', fontFamily: "'Inter', sans-serif" }}>
-            Factor<span style={{ color: '#7EBDB8' }}>One</span>
+            Factor<span style={{ color: '#6EE7B7' }}>One</span>
           </div>
           <div style={{ display: 'flex', gap: 20 }}>
             {[['Entrar', '/auth'], ['Dashboard', '/dashboard'], ['Contato', 'mailto:contato@factorone.app']].map(([label, href]) => (

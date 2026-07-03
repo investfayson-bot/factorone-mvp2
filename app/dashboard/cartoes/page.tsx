@@ -20,7 +20,7 @@ type Tab = 'visao' | 'gastos' | 'fatura' | 'limites' | 'equipe'
 
 const BANDEIRAS: Record<string, string> = { Visa: '💳', Mastercard: '💳', Elo: '💳', Amex: '💳' }
 const CORES_CARTAO = ['#1C2B2A', '#1e3a5f', '#5e3a1e', '#3a1e5e', '#1e4a3a', '#4a1e2d']
-const CATS_CORES: Record<string, string> = { Alimentação: '#5E8C87', Transporte: '#2563eb', Entretenimento: '#D97706', Saúde: '#16A085', Compras: '#7C3AED', Outros: '#7A8F8E' }
+const CATS_CORES: Record<string, string> = { Alimentação: '#10B981', Transporte: '#2563eb', Entretenimento: '#D97706', Saúde: '#16A085', Compras: '#7C3AED', Outros: '#7A8F8E' }
 
 const EMPTY_CARTAO = { nome: '', bandeira: 'Visa', limite: '', vencimento_dia: '10', fechamento_dia: '1', cor: CORES_CARTAO[0], tipo: 'credito', formato: 'fisico', titular_nome: '', titular_email: '' }
 const EMPTY_GASTO = { descricao: '', valor: '', categoria: 'Outros', data: new Date().toISOString().slice(0, 10), parcelas: '1', estabelecimento: '' }
@@ -218,7 +218,7 @@ export default function CartoesPage() {
           <div className="kpi-val">{formatBRL(totalLimite)}</div>
           <div className="kpi-delta">{cartoes.length} cartão{cartoes.length !== 1 ? 'ões' : ''}</div>
         </div>
-        <div className="kpi" style={{ borderTop: `3px solid ${usoPct > 80 ? '#E74C3C' : usoPct > 60 ? '#D97706' : '#5E8C87'}` }}>
+        <div className="kpi" style={{ borderTop: `3px solid ${usoPct > 80 ? '#E74C3C' : usoPct > 60 ? '#D97706' : '#10B981'}` }}>
           <div className="kpi-lbl">Usado este mês
             <div style={{ width: 28, height: 28, borderRadius: 8, background: usoPct > 80 ? '#FEE2E2' : '#FEF3C7', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <i className="fa-solid fa-gauge-high" style={{ fontSize: 12, color: usoPct > 80 ? '#E74C3C' : '#D97706' }} />
@@ -227,10 +227,10 @@ export default function CartoesPage() {
           <div className="kpi-val">{formatBRL(totalUsado)}</div>
           <div className={`kpi-delta ${usoPct > 80 ? 'dn' : usoPct > 60 ? 'warn' : 'up'}`}>{usoPct.toFixed(0)}% do limite</div>
         </div>
-        <div className="kpi" style={{ borderTop: '3px solid #5E8C87' }}>
+        <div className="kpi" style={{ borderTop: '3px solid #10B981' }}>
           <div className="kpi-lbl">Disponível
             <div style={{ width: 28, height: 28, borderRadius: 8, background: '#EAF5F3', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <i className="fa-solid fa-circle-check" style={{ fontSize: 12, color: '#5E8C87' }} />
+              <i className="fa-solid fa-circle-check" style={{ fontSize: 12, color: '#10B981' }} />
             </div>
           </div>
           <div className="kpi-val">{formatBRL(totalDisp)}</div>
@@ -251,7 +251,7 @@ export default function CartoesPage() {
       {cartoes.length === 0 && !loading && (
         <div style={{ background: '#fff', border: '1.5px dashed #D1D9D8', borderRadius: 16, padding: '60px 40px', textAlign: 'center' }}>
           <div style={{ width: 60, height: 60, borderRadius: 16, background: '#1C2B2A', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
-            <i className="fa-solid fa-credit-card" style={{ fontSize: 26, color: '#7EBDB8' }} />
+            <i className="fa-solid fa-credit-card" style={{ fontSize: 26, color: '#6EE7B7' }} />
           </div>
           <div style={{ fontSize: 16, fontWeight: 700, color: '#1C2B2A', marginBottom: 8, fontFamily: "'Inter', sans-serif" }}>Nenhum cartão cadastrado</div>
           <div style={{ fontSize: 12, color: '#7A8F8E', marginBottom: 20, lineHeight: 1.6 }}>Adicione seus cartões corporativos para gerenciar limites, faturas e gastos por categoria.</div>
@@ -274,7 +274,7 @@ export default function CartoesPage() {
                   background: `linear-gradient(135deg, ${c.cor} 0%, ${c.cor}cc 100%)`,
                   cursor: 'pointer', flexShrink: 0, position: 'relative', overflow: 'hidden',
                   opacity: c.pausado ? 0.5 : 1,
-                  border: isSelected ? `2px solid #7EBDB8` : '2px solid transparent',
+                  border: isSelected ? `2px solid #6EE7B7` : '2px solid transparent',
                   boxShadow: isSelected ? `0 8px 24px ${c.cor}55` : '0 4px 12px rgba(0,0,0,0.15)',
                   transition: 'all 0.2s',
                 }}>
@@ -309,7 +309,7 @@ export default function CartoesPage() {
               display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
               cursor: 'pointer', flexShrink: 0, gap: 8, background: '#F8FAFA', transition: 'all 0.15s',
             }}
-              onMouseOver={e => (e.currentTarget.style.borderColor = '#5E8C87')}
+              onMouseOver={e => (e.currentTarget.style.borderColor = '#10B981')}
               onMouseOut={e => (e.currentTarget.style.borderColor = '#D1D9D8')}
             >
               <i className="fa-solid fa-plus" style={{ fontSize: 18, color: '#C4CFCE' }} />
@@ -394,7 +394,7 @@ export default function CartoesPage() {
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 12 }}>
                     {[
                       { label: 'Limite total', val: formatBRL(Number(cartaoAtual.limite)) },
-                      { label: 'Disponível', val: formatBRL(Number(cartaoAtual.limite_disponivel)), cor: '#5E8C87' },
+                      { label: 'Disponível', val: formatBRL(Number(cartaoAtual.limite_disponivel)), cor: '#10B981' },
                       { label: 'Fechamento', val: `Dia ${cartaoAtual.fechamento_dia}` },
                       { label: 'Vencimento', val: `Dia ${cartaoAtual.vencimento_dia}` },
                     ].map(item => (
@@ -414,7 +414,7 @@ export default function CartoesPage() {
                       <div style={{
                         height: '100%', borderRadius: 99, transition: 'width 0.4s',
                         width: `${((Number(cartaoAtual.limite) - Number(cartaoAtual.limite_disponivel)) / Math.max(1, Number(cartaoAtual.limite))) * 100}%`,
-                        background: usoPct > 80 ? '#E74C3C' : usoPct > 60 ? '#D97706' : '#5E8C87',
+                        background: usoPct > 80 ? '#E74C3C' : usoPct > 60 ? '#D97706' : '#10B981',
                       }} />
                     </div>
                   </div>
@@ -529,7 +529,7 @@ export default function CartoesPage() {
 
                 {/* Resumo lateral */}
                 <div style={{ background: '#1C2B2A', borderRadius: 14, padding: '18px', display: 'flex', flexDirection: 'column', gap: 14 }}>
-                  <div style={{ fontSize: 11, fontWeight: 700, color: '#7EBDB8', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Fatura aberta</div>
+                  <div style={{ fontSize: 11, fontWeight: 700, color: '#6EE7B7', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Fatura aberta</div>
                   {[
                     { label: 'Total parcial', val: formatBRL(aberta?.total ?? 0), cor: '#fff', size: 22 },
                     { label: 'Fecha em', val: aberta ? aberta.fech.toLocaleDateString('pt-BR') : `Dia ${fechDia}`, cor: 'rgba(255,255,255,0.7)', size: 13 },
@@ -544,7 +544,7 @@ export default function CartoesPage() {
                     <div>
                       <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.45)', marginBottom: 6 }}>Uso do limite · {((aberta?.total ?? 0) / limite * 100).toFixed(0)}%</div>
                       <div style={{ height: 7, background: 'rgba(255,255,255,0.12)', borderRadius: 99, overflow: 'hidden' }}>
-                        <div style={{ height: '100%', width: `${Math.min(100, (aberta?.total ?? 0) / limite * 100)}%`, background: '#5E8C87', borderRadius: 99 }} />
+                        <div style={{ height: '100%', width: `${Math.min(100, (aberta?.total ?? 0) / limite * 100)}%`, background: '#10B981', borderRadius: 99 }} />
                       </div>
                     </div>
                   )}
@@ -559,9 +559,9 @@ export default function CartoesPage() {
               {cartoes.map(c => {
                 const usado = Number(c.limite) - Number(c.limite_disponivel)
                 const pct = Number(c.limite) > 0 ? (usado / Number(c.limite)) * 100 : 0
-                const cor = pct > 80 ? '#E74C3C' : pct > 60 ? '#D97706' : '#5E8C87'
+                const cor = pct > 80 ? '#E74C3C' : pct > 60 ? '#D97706' : '#10B981'
                 return (
-                  <div key={c.id} style={{ background: '#fff', border: `0.5px solid ${c.id === cartaoSel ? '#5E8C87' : '#E2E8E7'}`, borderRadius: 12, padding: '16px 18px' }}>
+                  <div key={c.id} style={{ background: '#fff', border: `0.5px solid ${c.id === cartaoSel ? '#10B981' : '#E2E8E7'}`, borderRadius: 12, padding: '16px 18px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                         <div style={{ width: 36, height: 36, borderRadius: 9, background: c.cor, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -594,13 +594,13 @@ export default function CartoesPage() {
           {tab === 'equipe' && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               <div style={{ fontSize: 11, color: '#7A8F8E', display: 'flex', alignItems: 'center', gap: 6 }}>
-                <i className="fa-solid fa-circle-info" style={{ color: '#5E8C87' }} />
+                <i className="fa-solid fa-circle-info" style={{ color: '#10B981' }} />
                 Cada cartão pode ser vinculado a um colaborador com limite próprio. Pause ou ajuste o limite a qualquer momento.
               </div>
               {cartoes.map(c => {
                 const usado = Number(c.limite) - Number(c.limite_disponivel)
                 const pct = Number(c.limite) > 0 ? (usado / Number(c.limite)) * 100 : 0
-                const cor = pct > 80 ? '#E74C3C' : pct > 60 ? '#D97706' : '#5E8C87'
+                const cor = pct > 80 ? '#E74C3C' : pct > 60 ? '#D97706' : '#10B981'
                 return (
                   <div key={c.id} style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 12, padding: '14px 18px', display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap', opacity: c.pausado ? 0.65 : 1 }}>
                     <div style={{ width: 40, height: 40, borderRadius: 10, background: c.cor, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
@@ -656,7 +656,7 @@ export default function CartoesPage() {
                 <label style={{ fontSize: 10, fontWeight: 600, color: '#7A8F8E', display: 'block', marginBottom: 5, textTransform: 'uppercase', letterSpacing: '0.07em' }}>Tipo do cartão</label>
                 <div style={{ display: 'flex', gap: 8 }}>
                   {[{ v: 'fisico', l: 'Físico', i: 'fa-credit-card' }, { v: 'virtual', l: 'Virtual', i: 'fa-wifi' }].map(o => (
-                    <button key={o.v} onClick={() => setFormCartao(p => ({ ...p, formato: o.v }))} style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, padding: '9px', borderRadius: 9, border: formCartao.formato === o.v ? '1px solid #5E8C87' : '0.5px solid #E2E8E7', background: formCartao.formato === o.v ? '#EAF5F3' : '#fff', color: formCartao.formato === o.v ? '#0F6E56' : '#7A8F8E', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>
+                    <button key={o.v} onClick={() => setFormCartao(p => ({ ...p, formato: o.v }))} style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, padding: '9px', borderRadius: 9, border: formCartao.formato === o.v ? '1px solid #10B981' : '0.5px solid #E2E8E7', background: formCartao.formato === o.v ? '#EAF5F3' : '#fff', color: formCartao.formato === o.v ? '#0F6E56' : '#7A8F8E', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>
                       <i className={`fa-solid ${o.i}`} />{o.l}
                     </button>
                   ))}
@@ -696,7 +696,7 @@ export default function CartoesPage() {
                 <label style={{ fontSize: 10, fontWeight: 600, color: '#7A8F8E', display: 'block', marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.07em' }}>Cor do cartão</label>
                 <div style={{ display: 'flex', gap: 8 }}>
                   {CORES_CARTAO.map(cor => (
-                    <div key={cor} onClick={() => setFormCartao(p => ({ ...p, cor }))} style={{ width: 28, height: 28, borderRadius: 7, background: cor, cursor: 'pointer', border: formCartao.cor === cor ? '2px solid #5E8C87' : '2px solid transparent', transition: 'all 0.15s' }} />
+                    <div key={cor} onClick={() => setFormCartao(p => ({ ...p, cor }))} style={{ width: 28, height: 28, borderRadius: 7, background: cor, cursor: 'pointer', border: formCartao.cor === cor ? '2px solid #10B981' : '2px solid transparent', transition: 'all 0.15s' }} />
                   ))}
                 </div>
               </div>

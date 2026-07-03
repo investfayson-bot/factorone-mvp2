@@ -96,7 +96,7 @@ export default function PrefeiturasPage() {
               <button key={e.uf} onClick={() => void abrirEstado(e.uf)} style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 12, padding: '14px 16px', textAlign: 'left', cursor: 'pointer', transition: 'box-shadow .15s' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                   <div style={{ width: 38, height: 38, borderRadius: 9, background: '#1C2B2A', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                    <span style={{ fontSize: 13, fontWeight: 800, color: '#7EBDB8', fontFamily: "'Inter', system-ui, sans-serif" }}>{e.uf}</span>
+                    <span style={{ fontSize: 13, fontWeight: 800, color: '#6EE7B7', fontFamily: "'Inter', system-ui, sans-serif" }}>{e.uf}</span>
                   </div>
                   <div>
                     <div style={{ fontSize: 13, fontWeight: 700, color: '#1C2B2A' }}>{e.nome}</div>
@@ -121,14 +121,14 @@ export default function PrefeiturasPage() {
           <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 14, overflow: 'hidden' }}>
             {carregando ? (
               <div style={{ padding: '40px', textAlign: 'center', color: '#7A8F8E', fontSize: 12 }}>
-                <i className="fa-solid fa-circle-notch fa-spin" style={{ fontSize: 20, color: '#5E8C87' }} />
+                <i className="fa-solid fa-circle-notch fa-spin" style={{ fontSize: 20, color: '#10B981' }} />
               </div>
             ) : filtrados.length === 0 ? (
               <div style={{ padding: '40px', textAlign: 'center', color: '#7A8F8E', fontSize: 12 }}>Nenhum município encontrado.</div>
             ) : filtrados.map((m, i) => (
               <div key={m.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 16px', borderBottom: i < filtrados.length - 1 ? '0.5px solid #F0F4F3' : 'none' }}>
                 <div style={{ width: 30, height: 30, borderRadius: 8, background: '#EEF2F1', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  <i className="fa-solid fa-landmark" style={{ fontSize: 12, color: '#5E8C87' }} />
+                  <i className="fa-solid fa-landmark" style={{ fontSize: 12, color: '#10B981' }} />
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ fontSize: 13, fontWeight: 600, color: '#1C2B2A' }}>{m.nome}</div>
@@ -144,7 +144,7 @@ export default function PrefeiturasPage() {
       )}
 
       <div style={{ fontSize: 11, color: '#AAB8B7', marginTop: 14, lineHeight: 1.6 }}>
-        <i className="fa-solid fa-circle-info" style={{ color: '#5E8C87', marginRight: 6 }} />
+        <i className="fa-solid fa-circle-info" style={{ color: '#10B981', marginRight: 6 }} />
         Lista de municípios via IBGE (oficial). A emissão de NFS-e usa um agregador (NFE.IO / PlugNotas) que já conecta todas as prefeituras — configure a chave para ativar.
       </div>
     </>

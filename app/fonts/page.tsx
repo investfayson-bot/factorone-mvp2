@@ -36,7 +36,7 @@ function FontCard({ name, stack, rec, nota }: { name: string; stack: string; rec
       <div style={{ background: '#1C2B2A', padding: '14px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div style={{ display: 'flex', alignItems: 'baseline', gap: 10 }}>
           <span style={{ fontSize: 18, fontWeight: 700, color: '#fff', letterSpacing: '-0.02em' }}>
-            Factor<span style={{ color: '#7EBDB8' }}>One</span>
+            Factor<span style={{ color: '#6EE7B7' }}>One</span>
           </span>
           <span style={{ fontSize: 11, color: 'rgba(255,255,255,.5)' }}>{name}</span>
         </div>
@@ -85,7 +85,7 @@ function FontCard({ name, stack, rec, nota }: { name: string; stack: string; rec
 
         <div style={{ marginTop: 16, paddingTop: 14, borderTop: '0.5px solid #F0F4F3', fontSize: 12, color: '#7A8F8E', fontFamily: "'Inter', system-ui, sans-serif" }}>
           {nota}
-          <div style={{ marginTop: 6, color: '#1C2B2A', fontWeight: 600 }}>→ Para escolher esta, me diga: <span style={{ color: '#5E8C87' }}>&quot;quero {name}&quot;</span></div>
+          <div style={{ marginTop: 6, color: '#1C2B2A', fontWeight: 600 }}>→ Para escolher esta, me diga: <span style={{ color: '#10B981' }}>&quot;quero {name}&quot;</span></div>
         </div>
       </div>
     </div>

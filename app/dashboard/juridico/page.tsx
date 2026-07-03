@@ -8,7 +8,7 @@ type Servico = { icon: string; label: string; desc: string; href?: string; cor: 
 
 const EMPRESARIAL: Servico[] = [
   { icon: 'fa-file-signature', label: 'Contratos digitais', desc: 'Crie, envie e assine contratos com validade jurídica', href: '/dashboard/contratos', cor: '#1C2B2A' },
-  { icon: 'fa-building-flag', label: 'Constituição & societário', desc: 'Abertura, alteração e encerramento de empresa', cor: '#5E8C87', soon: true },
+  { icon: 'fa-building-flag', label: 'Constituição & societário', desc: 'Abertura, alteração e encerramento de empresa', cor: '#10B981', soon: true },
   { icon: 'fa-trademark', label: 'Registro de marca (INPI)', desc: 'Proteja a marca e a propriedade intelectual', cor: '#7C3AED', soon: true },
   { icon: 'fa-shield-halved', label: 'LGPD & Compliance', desc: 'Adequação à LGPD, políticas e termos', cor: '#2563eb', soon: true },
   { icon: 'fa-user-group', label: 'Trabalhista', desc: 'Contratos, rescisões e acordos trabalhistas', cor: '#D97706', soon: true },
@@ -19,7 +19,7 @@ const PESSOAFISICA: Servico[] = [
   { icon: 'fa-file-contract', label: 'Contratos & procurações', desc: 'Modelos pessoais com assinatura digital', cor: '#1C2B2A', soon: true },
   { icon: 'fa-scroll', label: 'Testamento & sucessão', desc: 'Planejamento sucessório e patrimonial', cor: '#7C3AED', soon: true },
   { icon: 'fa-people-roof', label: 'Família & divórcio', desc: 'Acordos, pensão e partilha', cor: '#BE185D', soon: true },
-  { icon: 'fa-comments', label: 'Consultoria jurídica', desc: 'Fale com um advogado parceiro', cor: '#5E8C87', soon: true },
+  { icon: 'fa-comments', label: 'Consultoria jurídica', desc: 'Fale com um advogado parceiro', cor: '#10B981', soon: true },
 ]
 
 function Card({ s, onEmBreve }: { s: Servico; onEmBreve: () => void }) {
@@ -64,9 +64,9 @@ export default function JuridicoPage() {
       <div style={{ background: 'linear-gradient(135deg, #1C2B2A 0%, #243736 100%)', borderRadius: 16, padding: '22px 26px', marginBottom: 20, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
         <div>
           <div style={{ fontSize: 18, fontWeight: 800, color: '#fff', fontFamily: "'Inter', system-ui, sans-serif", letterSpacing: '-.02em' }}>Rede jurídica do FactorOne</div>
-          <div style={{ fontSize: 13, color: '#7EBDB8', marginTop: 4 }}>Contratos digitais, societário, marca e consultoria — em um só lugar, integrado às suas finanças.</div>
+          <div style={{ fontSize: 13, color: '#6EE7B7', marginTop: 4 }}>Contratos digitais, societário, marca e consultoria — em um só lugar, integrado às suas finanças.</div>
         </div>
-        <Link href="/dashboard/contratos" style={{ background: '#5E8C87', color: '#fff', textDecoration: 'none', fontSize: 13, fontWeight: 700, padding: '10px 18px', borderRadius: 9 }}>
+        <Link href="/dashboard/contratos" style={{ background: '#10B981', color: '#fff', textDecoration: 'none', fontSize: 13, fontWeight: 700, padding: '10px 18px', borderRadius: 9 }}>
           <i className="fa-solid fa-file-signature" style={{ marginRight: 7 }} />Novo contrato
         </Link>
       </div>
@@ -92,7 +92,7 @@ export default function JuridicoPage() {
       </div>
 
       <div style={{ fontSize: 11, color: '#AAB8B7', marginTop: 16, lineHeight: 1.6 }}>
-        <i className="fa-solid fa-circle-info" style={{ color: '#5E8C87', marginRight: 6 }} />
+        <i className="fa-solid fa-circle-info" style={{ color: '#10B981', marginRight: 6 }} />
         Serviços marcados como &quot;em breve&quot; serão prestados por advogados/parceiros credenciados. O FactorOne não presta serviço de advocacia — conecta você a quem presta.
       </div>
     </>

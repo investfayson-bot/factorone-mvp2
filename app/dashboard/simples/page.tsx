@@ -238,7 +238,7 @@ export default function SimplesPage() {
             {faixas.map((f, i) => {
               const ativa = f === r.faixa && (Number(rbt12) || 0) > 0
               return (
-                <tr key={i} style={{ background: ativa ? 'rgba(94,140,135,.08)' : 'transparent' }}>
+                <tr key={i} style={{ background: ativa ? 'rgba(16,185,129,.08)' : 'transparent' }}>
                   <td style={{ padding: '6px 4px', fontWeight: ativa ? 700 : 400, color: ativa ? 'var(--navy)' : 'var(--gray-500)' }}>{formatBRL(f.ate)} {ativa && '←'}</td>
                   <td style={{ textAlign: 'right', padding: '6px 4px', fontWeight: ativa ? 700 : 400 }}>{(f.aliquota * 100).toFixed(2)}%</td>
                   <td style={{ textAlign: 'right', padding: '6px 4px', color: 'var(--gray-500)' }}>{formatBRL(f.pd)}</td>

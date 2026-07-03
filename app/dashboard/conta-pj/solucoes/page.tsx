@@ -6,13 +6,13 @@ type Solucao = { icon: string; label: string; desc: string; href?: string; cor: 
 
 const DISPONIVEIS: Solucao[] = [
   { icon: 'fa-building-columns', label: 'Conta PJ', desc: 'Saldo, extrato e multi-conta', href: '/dashboard/conta-pj', cor: '#1C2B2A' },
-  { icon: 'fa-bolt', label: 'PIX & Transferências', desc: 'Envie PIX, TED e DOC', href: '/dashboard/conta-pj/transferencias', cor: '#5E8C87' },
+  { icon: 'fa-bolt', label: 'PIX & Transferências', desc: 'Envie PIX, TED e DOC', href: '/dashboard/conta-pj/transferencias', cor: '#10B981' },
   { icon: 'fa-credit-card', label: 'Cartões', desc: 'Físicos, virtuais e por colaborador', href: '/dashboard/cartoes', cor: '#7C3AED' },
   { icon: 'fa-hand-holding-dollar', label: 'Crédito & Financiamento', desc: 'Capital de giro e antecipação', href: '/dashboard/credito', cor: '#D97706' },
   { icon: 'fa-link', label: 'Open Finance (Belvo)', desc: 'Conecte seus bancos', href: '/dashboard/conexoes', cor: '#16A085' },
   { icon: 'fa-seedling', label: 'Investimentos', desc: 'Carteira da empresa', href: '/dashboard/conta-pj/investimentos', cor: '#2D9B6F' },
   { icon: 'fa-users-gear', label: 'Folha de pagamento', desc: 'Holerites e encargos', href: '/dashboard/folha', cor: '#6B21A8' },
-  { icon: 'fa-circle-plus', label: 'Abrir Conta PJ', desc: 'Cadastro digital em minutos', href: '/dashboard/conta-pj/abrir', cor: '#3E6E69' },
+  { icon: 'fa-circle-plus', label: 'Abrir Conta PJ', desc: 'Cadastro digital em minutos', href: '/dashboard/conta-pj/abrir', cor: '#059669' },
 ]
 
 const EM_BREVE: Solucao[] = [
@@ -63,9 +63,9 @@ export default function SolucoesPage() {
       <div style={{ background: 'linear-gradient(135deg, #1C2B2A 0%, #243736 100%)', borderRadius: 16, padding: '22px 26px', marginBottom: 22, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
         <div>
           <div style={{ fontSize: 18, fontWeight: 800, color: '#fff', fontFamily: "'Inter', system-ui, sans-serif", letterSpacing: '-.02em' }}>O super-app financeiro da sua empresa</div>
-          <div style={{ fontSize: 13, color: '#7EBDB8', marginTop: 4 }}>Conta, cartões, crédito, Open Finance e mais — integrados e com IA.</div>
+          <div style={{ fontSize: 13, color: '#6EE7B7', marginTop: 4 }}>Conta, cartões, crédito, Open Finance e mais — integrados e com IA.</div>
         </div>
-        <Link href="/dashboard/conexoes" style={{ background: '#5E8C87', color: '#fff', textDecoration: 'none', fontSize: 13, fontWeight: 700, padding: '10px 18px', borderRadius: 9 }}>
+        <Link href="/dashboard/conexoes" style={{ background: '#10B981', color: '#fff', textDecoration: 'none', fontSize: 13, fontWeight: 700, padding: '10px 18px', borderRadius: 9 }}>
           <i className="fa-solid fa-link" style={{ marginRight: 7 }} />Conectar meu banco
         </Link>
       </div>

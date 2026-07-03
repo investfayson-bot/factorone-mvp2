@@ -23,7 +23,7 @@ const ECOM = [
 const TEMPLATES = [
   { nome: 'Restaurante & Delivery', ramo: 'Alimentação', g: 'linear-gradient(135deg,#E74C3C,#D97706)', icon: 'fa-utensils' },
   { nome: 'Loja Online', ramo: 'Ecommerce', g: 'linear-gradient(135deg,#7C3AED,#2563eb)', icon: 'fa-bag-shopping' },
-  { nome: 'Consultoria & Serviços', ramo: 'Serviços', g: 'linear-gradient(135deg,#1C2B2A,#5E8C87)', icon: 'fa-briefcase' },
+  { nome: 'Consultoria & Serviços', ramo: 'Serviços', g: 'linear-gradient(135deg,#1C2B2A,#10B981)', icon: 'fa-briefcase' },
   { nome: 'Clínica & Saúde', ramo: 'Saúde', g: 'linear-gradient(135deg,#16A085,#2D9B6F)', icon: 'fa-heart-pulse' },
   { nome: 'Imobiliária', ramo: 'Imóveis', g: 'linear-gradient(135deg,#0E7490,#2563eb)', icon: 'fa-building' },
   { nome: 'Tech & SaaS', ramo: 'Tecnologia', g: 'linear-gradient(135deg,#1C2B2A,#7C3AED)', icon: 'fa-microchip' },
@@ -76,7 +76,7 @@ export default function MarketingCentralPage() {
       <div style={{ background: 'linear-gradient(135deg,#1C2B2A,#243736)', borderRadius: 16, padding: '22px 26px', marginBottom: 22, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
         <div>
           <div style={{ fontSize: 18, fontWeight: 800, color: '#fff', fontFamily: "'Inter', system-ui, sans-serif", letterSpacing: '-.02em' }}>Central de Marketing</div>
-          <div style={{ fontSize: 13, color: '#7EBDB8', marginTop: 4 }}>Conecte seus anúncios e loja, meça o ROI real e publique sites em minutos.</div>
+          <div style={{ fontSize: 13, color: '#6EE7B7', marginTop: 4 }}>Conecte seus anúncios e loja, meça o ROI real e publique sites em minutos.</div>
         </div>
       </div>
 
@@ -106,14 +106,14 @@ export default function MarketingCentralPage() {
             </div>
             <div style={{ padding: '11px 14px' }}>
               <div style={{ fontSize: 13, fontWeight: 700, color: '#1C2B2A' }}>{t.nome}</div>
-              <div style={{ fontSize: 11, color: '#5E8C87', fontWeight: 600, marginTop: 3 }}><i className="fa-solid fa-wand-magic-sparkles" style={{ marginRight: 5 }} />Usar template</div>
+              <div style={{ fontSize: 11, color: '#10B981', fontWeight: 600, marginTop: 3 }}><i className="fa-solid fa-wand-magic-sparkles" style={{ marginRight: 5 }} />Usar template</div>
             </div>
           </button>
         ))}
       </div>
 
       <div style={{ fontSize: 11, color: '#AAB8B7', marginTop: 16, lineHeight: 1.6 }}>
-        <i className="fa-solid fa-circle-info" style={{ color: '#5E8C87', marginRight: 6 }} />
+        <i className="fa-solid fa-circle-info" style={{ color: '#10B981', marginRight: 6 }} />
         Ads e ecommerce conectam via OAuth do provedor quando as chaves de API estiverem configuradas. Os templates de site abrem no editor (em construção) pra personalizar e publicar.
       </div>
     </>

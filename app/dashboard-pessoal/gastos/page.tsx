@@ -99,7 +99,7 @@ export default function GastosPage() {
         </div>
         <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
           <input type="month" value={mes} onChange={e => { setMes(e.target.value); carregar(userId, e.target.value) }} className="form-input" style={{ width: 'auto', padding: '6px 10px', fontSize: 12 }} />
-          <label style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'rgba(94,140,135,.1)', border: '1px solid rgba(94,140,135,.3)', borderRadius: 8, padding: '7px 12px', fontSize: 11, fontWeight: 700, color: 'var(--teal)', cursor: 'pointer' }}>
+          <label style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'rgba(16,185,129,.1)', border: '1px solid rgba(16,185,129,.3)', borderRadius: 8, padding: '7px 12px', fontSize: 11, fontWeight: 700, color: 'var(--teal)', cursor: 'pointer' }}>
             {uploadando ? 'Lendo...' : 'OCR'}
             <input type="file" accept="image/*,application/pdf" style={{ display: 'none' }} onChange={e => { const f = e.target.files?.[0]; if (f) void uploadOCR(f); e.currentTarget.value = '' }} />
           </label>

@@ -115,7 +115,7 @@ export default function NotificationBell() {
     vencimento: { icon: 'fa-clock', bg: '#FEF3C7', color: '#D97706' },
     orcamento: { icon: 'fa-chart-pie', bg: '#EEF2F1', color: '#7A8F8E' },
     conciliacao: { icon: 'fa-building-columns', bg: '#E6F1FB', color: '#2563eb' },
-    ai: { icon: 'fa-robot', bg: '#EAF5F3', color: '#5E8C87' },
+    ai: { icon: 'fa-robot', bg: '#EAF5F3', color: '#10B981' },
     info: { icon: 'fa-circle-info', bg: '#EEF2F1', color: '#7A8F8E' },
   }
 
@@ -138,7 +138,7 @@ export default function NotificationBell() {
           <div style={{ padding: '12px 16px', borderBottom: '0.5px solid #E2E8E7', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div style={{ fontSize: 13, fontWeight: 700, color: '#1C2B2A', fontFamily: "'Inter', sans-serif" }}>Notificações</div>
             {naoLidas > 0 && (
-              <button onClick={marcarTodas} style={{ fontSize: 10, color: '#5E8C87', fontWeight: 600, background: 'none', border: 'none', cursor: 'pointer' }}>
+              <button onClick={marcarTodas} style={{ fontSize: 10, color: '#10B981', fontWeight: 600, background: 'none', border: 'none', cursor: 'pointer' }}>
                 Marcar todas como lidas
               </button>
             )}
@@ -146,7 +146,7 @@ export default function NotificationBell() {
 
           {notifs.length === 0 ? (
             <div style={{ padding: '32px 16px', textAlign: 'center', color: '#7A8F8E', fontSize: 12 }}>
-              <i className="fa-solid fa-check-circle" style={{ fontSize: 24, color: '#5E8C87', marginBottom: 8, display: 'block' }} />
+              <i className="fa-solid fa-check-circle" style={{ fontSize: 24, color: '#10B981', marginBottom: 8, display: 'block' }} />
               Tudo em dia! Sem alertas.
             </div>
           ) : (
@@ -167,7 +167,7 @@ export default function NotificationBell() {
                         <div style={{ fontSize: 12, fontWeight: isLida ? 500 : 700, color: '#1C2B2A', marginBottom: 2 }}>{n.titulo}</div>
                         <div style={{ fontSize: 11, color: '#7A8F8E', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{n.mensagem}</div>
                       </div>
-                      {!isLida && <div style={{ width: 7, height: 7, borderRadius: '50%', background: '#5E8C87', flexShrink: 0, marginTop: 6 }} />}
+                      {!isLida && <div style={{ width: 7, height: 7, borderRadius: '50%', background: '#10B981', flexShrink: 0, marginTop: 6 }} />}
                     </div>
                   </Link>
                 )

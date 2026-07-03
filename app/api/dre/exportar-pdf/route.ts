@@ -7,7 +7,7 @@ import { getSupabaseUser } from '@/lib/supabase-route'
 const { Document, Page, Text, View, StyleSheet } = ReactPDF
 
 const NAVY = '#1A2B4A'
-const TEAL = '#5E8C87'
+const TEAL = '#10B981'
 const GREEN = '#2D9B6F'
 const RED = '#C0504A'
 const GOLD = '#B8922A'
@@ -41,7 +41,7 @@ const s = StyleSheet.create({
   metricCard: { width: '48%', backgroundColor: '#FFFFFF', borderRadius: 6, padding: '8 10', border: '1 solid #E8EEF2' },
   metricKey: { fontSize: 7, color: GRAY, textTransform: 'uppercase', letterSpacing: 0.4, marginBottom: 3 },
   metricVal: { fontSize: 11, fontFamily: 'Helvetica-Bold', color: NAVY },
-  analysisBg: { backgroundColor: '#EFF6F5', borderRadius: 6, padding: '12 14', border: `1 solid rgba(94,140,135,.2)`, marginTop: 10 },
+  analysisBg: { backgroundColor: '#EFF6F5', borderRadius: 6, padding: '12 14', border: `1 solid rgba(16,185,129,.2)`, marginTop: 10 },
   analysisTitle: { fontSize: 8, fontFamily: 'Helvetica-Bold', color: TEAL, marginBottom: 6, textTransform: 'uppercase', letterSpacing: 0.5 },
   analysisText: { fontSize: 8, color: '#374151', lineHeight: 1.6 },
   footer: { position: 'absolute', bottom: 14, left: 28, right: 28, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },

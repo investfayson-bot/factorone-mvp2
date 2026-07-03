@@ -141,7 +141,7 @@ export default function MetasPage() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                 {ICONES.map(ic => (
-                  <button key={ic} type="button" onClick={() => setForm(f => ({ ...f, icone: ic }))} style={{ fontSize: 20, padding: 6, borderRadius: 8, border: `2px solid ${form.icone === ic ? 'var(--teal)' : 'transparent'}`, background: form.icone === ic ? 'rgba(94,140,135,.1)' : 'transparent', cursor: 'pointer' }}>{ic}</button>
+                  <button key={ic} type="button" onClick={() => setForm(f => ({ ...f, icone: ic }))} style={{ fontSize: 20, padding: 6, borderRadius: 8, border: `2px solid ${form.icone === ic ? 'var(--teal)' : 'transparent'}`, background: form.icone === ic ? 'rgba(16,185,129,.1)' : 'transparent', cursor: 'pointer' }}>{ic}</button>
                 ))}
               </div>
               <input className="form-input" placeholder="Nome da meta" value={form.nome} onChange={e => setForm(f => ({ ...f, nome: e.target.value }))} />

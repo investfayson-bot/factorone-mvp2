@@ -262,12 +262,12 @@ export default function ConciliacaoPage() {
           </div>
           <div style={{ height: 8, background: '#EEF2F1', borderRadius: 99, overflow: 'hidden' }}>
             <div style={{ display: 'flex', height: '100%' }}>
-              <div style={{ width: `${pctAuto}%`, background: '#5E8C87', transition: 'width .4s', borderRadius: 99 }} />
+              <div style={{ width: `${pctAuto}%`, background: '#10B981', transition: 'width .4s', borderRadius: 99 }} />
               <div style={{ width: `${Math.round((divergencias / items.length) * 100)}%`, background: '#E74C3C', transition: 'width .4s' }} />
             </div>
           </div>
           <div style={{ display: 'flex', gap: 16, marginTop: 8 }}>
-            <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 10, color: '#7A8F8E' }}><span style={{ width: 8, height: 8, borderRadius: 2, background: '#5E8C87', display: 'inline-block' }} />Conciliados</span>
+            <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 10, color: '#7A8F8E' }}><span style={{ width: 8, height: 8, borderRadius: 2, background: '#10B981', display: 'inline-block' }} />Conciliados</span>
             <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 10, color: '#7A8F8E' }}><span style={{ width: 8, height: 8, borderRadius: 2, background: '#E74C3C', display: 'inline-block' }} />Divergências</span>
             <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 10, color: '#7A8F8E' }}><span style={{ width: 8, height: 8, borderRadius: 2, background: '#EEF2F1', border: '0.5px solid #D1D9D8', display: 'inline-block' }} />Pendentes</span>
           </div>

@@ -6,7 +6,7 @@ import toast from 'react-hot-toast'
 export type { RespostaData }
 
 const STATUS = {
-  positivo: { bg: '#EAF5F3', border: '#5E8C87', color: '#0F6E56', icon: '↑' },
+  positivo: { bg: '#EAF5F3', border: '#10B981', color: '#0F6E56', icon: '↑' },
   atencao:  { bg: '#FEF3C7', border: '#F59E0B', color: '#92400E', icon: '⚠' },
   critico:  { bg: '#FEE2E2', border: '#F87171', color: '#991B1B', icon: '!' },
 }
@@ -105,7 +105,7 @@ export function RespostaIA({ data, pergunta = '' }: { data: RespostaData; pergun
         {data.cards?.map((card, i) => (
           <div key={i} style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 12, padding: grande ? '14px 16px' : '10px 12px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: grande ? 10 : 7 }}>
-              {card.emoji && <i className={`fa-solid ${card.emoji}`} style={{ fontSize: grande ? 14 : 12, color: '#5E8C87', width: 16 }} />}
+              {card.emoji && <i className={`fa-solid ${card.emoji}`} style={{ fontSize: grande ? 14 : 12, color: '#10B981', width: 16 }} />}
               <span style={{ fontSize: grande ? 12 : 11, fontWeight: 700, color: '#1C2B2A', fontFamily: "'Inter', sans-serif" }}>{card.titulo}</span>
             </div>
             {card.linhas?.map((l, j) => (
@@ -143,8 +143,8 @@ export function RespostaIA({ data, pergunta = '' }: { data: RespostaData; pergun
           {/* Header */}
           <div style={{ background: '#1C2B2A', padding: '16px 28px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-              <div style={{ width: 36, height: 36, borderRadius: 10, background: 'rgba(94,140,135,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <i className="fa-solid fa-robot" style={{ fontSize: 16, color: '#7EBDB8' }} />
+              <div style={{ width: 36, height: 36, borderRadius: 10, background: 'rgba(16,185,129,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <i className="fa-solid fa-robot" style={{ fontSize: 16, color: '#6EE7B7' }} />
               </div>
               <div>
                 <div style={{ fontSize: 15, fontWeight: 700, color: '#fff', fontFamily: "'Inter', sans-serif" }}>FactorOne CFO — Análise Completa</div>
@@ -197,7 +197,7 @@ export function RespostaIA({ data, pergunta = '' }: { data: RespostaData; pergun
 
         {data.proxima_pergunta && (
           <div style={{ fontSize: 11, color: '#7A8F8E', fontStyle: 'italic', paddingLeft: 4 }}>
-            <i className="fa-solid fa-circle-arrow-right" style={{ marginRight: 5, color: '#5E8C87', fontSize: 10 }} />
+            <i className="fa-solid fa-circle-arrow-right" style={{ marginRight: 5, color: '#10B981', fontSize: 10 }} />
             {data.proxima_pergunta}
           </div>
         )}

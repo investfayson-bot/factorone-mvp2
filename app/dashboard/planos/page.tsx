@@ -198,8 +198,8 @@ export default function PlanosPage() {
       {/* Banner informativo */}
       {tab === 'familia' && (
         <div style={{ background: '#1C2B2A', borderRadius: 14, padding: '16px 20px', marginBottom: 20, display: 'flex', alignItems: 'center', gap: 14 }}>
-          <div style={{ width: 40, height: 40, borderRadius: 10, background: 'rgba(94,140,135,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-            <i className="fa-solid fa-people-roof" style={{ fontSize: 18, color: '#7EBDB8' }} />
+          <div style={{ width: 40, height: 40, borderRadius: 10, background: 'rgba(16,185,129,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            <i className="fa-solid fa-people-roof" style={{ fontSize: 18, color: '#6EE7B7' }} />
           </div>
           <div>
             <div style={{ fontSize: 13, fontWeight: 700, color: '#fff', marginBottom: 3 }}>Um plano para empresa e família</div>
@@ -223,7 +223,7 @@ export default function PlanosPage() {
           return (
             <div key={p.key} style={{
               background: '#fff',
-              border: p.destaque ? '2px solid #5E8C87' : '0.5px solid #E2E8E7',
+              border: p.destaque ? '2px solid #10B981' : '0.5px solid #E2E8E7',
               borderRadius: 14,
               padding: '18px 16px',
               display: 'flex',
@@ -231,7 +231,7 @@ export default function PlanosPage() {
               position: 'relative',
             }}>
               {p.destaque && (
-                <div style={{ position: 'absolute', top: -1, left: '50%', transform: 'translateX(-50%)', background: '#5E8C87', color: '#fff', fontSize: 9, fontWeight: 700, padding: '3px 12px', borderRadius: '0 0 8px 8px', letterSpacing: '0.06em', whiteSpace: 'nowrap' }}>
+                <div style={{ position: 'absolute', top: -1, left: '50%', transform: 'translateX(-50%)', background: '#10B981', color: '#fff', fontSize: 9, fontWeight: 700, padding: '3px 12px', borderRadius: '0 0 8px 8px', letterSpacing: '0.06em', whiteSpace: 'nowrap' }}>
                   MAIS POPULAR
                 </div>
               )}
@@ -255,7 +255,7 @@ export default function PlanosPage() {
               <div style={{ flex: 1 }}>
                 {p.features.map(f => (
                   <div key={f} style={{ display: 'flex', alignItems: 'flex-start', gap: 7, padding: '3px 0', fontSize: 11, color: '#3A5150', lineHeight: 1.4 }}>
-                    <i className="fa-solid fa-check" style={{ fontSize: 11, color: '#5E8C87', flexShrink: 0, marginTop: 2 }} />{f}
+                    <i className="fa-solid fa-check" style={{ fontSize: 11, color: '#10B981', flexShrink: 0, marginTop: 2 }} />{f}
                   </div>
                 ))}
                 {p.nao.length > 0 && (
@@ -292,8 +292,8 @@ export default function PlanosPage() {
       {/* Banner Conta PJ */}
       <div style={{ background: 'linear-gradient(135deg, #1C2B2A 0%, #2A3F3E 100%)', borderRadius: 14, padding: '20px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 20, marginBottom: 20 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-          <div style={{ width: 48, height: 48, borderRadius: 12, background: 'rgba(94,140,135,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-            <i className="fa-solid fa-credit-card" style={{ fontSize: 22, color: '#7EBDB8' }} />
+          <div style={{ width: 48, height: 48, borderRadius: 12, background: 'rgba(16,185,129,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            <i className="fa-solid fa-credit-card" style={{ fontSize: 22, color: '#6EE7B7' }} />
           </div>
           <div>
             <div style={{ fontSize: 14, fontWeight: 700, color: '#fff', marginBottom: 4 }}>Abra sua Conta PJ</div>
@@ -304,7 +304,7 @@ export default function PlanosPage() {
         </div>
         <button
           onClick={() => router.push('/dashboard/marketplace')}
-          style={{ background: '#5E8C87', color: '#fff', border: 'none', borderRadius: 9, padding: '10px 20px', fontSize: 12, fontWeight: 700, cursor: 'pointer', whiteSpace: 'nowrap', flexShrink: 0 }}
+          style={{ background: '#10B981', color: '#fff', border: 'none', borderRadius: 9, padding: '10px 20px', fontSize: 12, fontWeight: 700, cursor: 'pointer', whiteSpace: 'nowrap', flexShrink: 0 }}
         >
           Ver no Marketplace
         </button>

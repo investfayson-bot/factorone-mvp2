@@ -79,11 +79,11 @@ export default function DashboardPessoalPage() {
 
       {/* KPIs */}
       <div className="kpis" style={{ gridTemplateColumns: 'repeat(4,1fr)' }}>
-        <div className="kpi" style={{ borderTop: '3px solid #5E8C87' }}>
+        <div className="kpi" style={{ borderTop: '3px solid #10B981' }}>
           <div className="kpi-lbl">
             Renda do mês
             <div style={{ width: 28, height: 28, borderRadius: 8, background: '#EAF5F3', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <i className="fa-solid fa-arrow-down-circle" style={{ fontSize: 12, color: '#5E8C87' }} />
+              <i className="fa-solid fa-arrow-down-circle" style={{ fontSize: 12, color: '#10B981' }} />
             </div>
           </div>
           <div className="kpi-val">{formatBRL(rendaBase)}</div>
@@ -99,11 +99,11 @@ export default function DashboardPessoalPage() {
           <div className="kpi-val">{formatBRL(totalGastos)}</div>
           <div className={`kpi-delta ${pctGasto > 80 ? 'dn' : 'warn'}`}>{pctGasto.toFixed(0)}% da renda mensal</div>
         </div>
-        <div className="kpi" style={{ borderTop: `3px solid ${saldo >= 0 ? '#5E8C87' : '#E74C3C'}` }}>
+        <div className="kpi" style={{ borderTop: `3px solid ${saldo >= 0 ? '#10B981' : '#E74C3C'}` }}>
           <div className="kpi-lbl">
             Saldo disponível
             <div style={{ width: 28, height: 28, borderRadius: 8, background: saldo >= 0 ? '#EAF5F3' : '#FEE2E2', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <i className="fa-solid fa-wallet" style={{ fontSize: 12, color: saldo >= 0 ? '#5E8C87' : '#E74C3C' }} />
+              <i className="fa-solid fa-wallet" style={{ fontSize: 12, color: saldo >= 0 ? '#10B981' : '#E74C3C' }} />
             </div>
           </div>
           <div className="kpi-val">{formatBRL(saldo)}</div>
@@ -129,12 +129,12 @@ export default function DashboardPessoalPage() {
               <div style={{ fontSize: 12, fontWeight: 700, color: '#1C2B2A', fontFamily: "'Inter', sans-serif" }}>Para onde vai o dinheiro</div>
               <div style={{ fontSize: 10, color: '#7A8F8E', marginTop: 2 }}>Top categorias do mês</div>
             </div>
-            <Link href="/dashboard-pessoal/gastos" style={{ fontSize: 10, color: '#5E8C87', fontWeight: 600, textDecoration: 'none' }}>Ver todos →</Link>
+            <Link href="/dashboard-pessoal/gastos" style={{ fontSize: 10, color: '#10B981', fontWeight: 600, textDecoration: 'none' }}>Ver todos →</Link>
           </div>
           {gastos.length === 0 ? (
             <div style={{ fontSize: 12, color: '#7A8F8E', padding: '20px 0', textAlign: 'center' }}>
               <i className="fa-solid fa-receipt" style={{ fontSize: 24, marginBottom: 8, display: 'block', color: '#D1D9D8' }} />
-              Nenhum gasto registrado. <Link href="/dashboard-pessoal/gastos" style={{ color: '#5E8C87' }}>Adicionar</Link>
+              Nenhum gasto registrado. <Link href="/dashboard-pessoal/gastos" style={{ color: '#10B981' }}>Adicionar</Link>
             </div>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
@@ -146,14 +146,14 @@ export default function DashboardPessoalPage() {
                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, marginBottom: 5, alignItems: 'center' }}>
                       <span style={{ display: 'flex', alignItems: 'center', gap: 6, fontWeight: 600, color: '#1C2B2A' }}>
                         <span style={{ width: 22, height: 22, borderRadius: 6, background: '#F4F6F5', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                          <i className={`fa-solid ${icon}`} style={{ fontSize: 10, color: '#5E8C87' }} />
+                          <i className={`fa-solid ${icon}`} style={{ fontSize: 10, color: '#10B981' }} />
                         </span>
                         {g.categoria}
                       </span>
                       <span style={{ color: '#7A8F8E' }}>{formatBRL(g.valor)} · <span style={{ fontWeight: 700, color: pct > 40 ? '#E74C3C' : '#1C2B2A' }}>{pct.toFixed(0)}%</span></span>
                     </div>
                     <div style={{ height: 6, borderRadius: 99, background: '#EEF2F1' }}>
-                      <div style={{ height: '100%', borderRadius: 99, background: pct > 50 ? '#E74C3C' : '#5E8C87', width: `${pct}%`, transition: 'width 0.4s' }} />
+                      <div style={{ height: '100%', borderRadius: 99, background: pct > 50 ? '#E74C3C' : '#10B981', width: `${pct}%`, transition: 'width 0.4s' }} />
                     </div>
                   </div>
                 )
@@ -167,11 +167,11 @@ export default function DashboardPessoalPage() {
           <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 14, padding: '16px 18px', flex: 1 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
               <div style={{ fontSize: 12, fontWeight: 700, color: '#1C2B2A', fontFamily: "'Inter', sans-serif" }}>Metas financeiras</div>
-              <Link href="/dashboard-pessoal/metas" style={{ fontSize: 10, color: '#5E8C87', fontWeight: 600, textDecoration: 'none' }}>Ver todas →</Link>
+              <Link href="/dashboard-pessoal/metas" style={{ fontSize: 10, color: '#10B981', fontWeight: 600, textDecoration: 'none' }}>Ver todas →</Link>
             </div>
             {metas.length === 0 ? (
               <div style={{ fontSize: 11, color: '#7A8F8E', textAlign: 'center', padding: '12px 0' }}>
-                Nenhuma meta. <Link href="/dashboard-pessoal/metas" style={{ color: '#5E8C87' }}>Criar</Link>
+                Nenhuma meta. <Link href="/dashboard-pessoal/metas" style={{ color: '#10B981' }}>Criar</Link>
               </div>
             ) : metas.map(m => {
               const pct = m.valor_meta > 0 ? Math.min(100, (m.valor_atual / m.valor_meta) * 100) : 0
@@ -182,7 +182,7 @@ export default function DashboardPessoalPage() {
                     <span style={{ color: '#7A8F8E' }}>{formatBRL(m.valor_atual)} / {formatBRL(m.valor_meta)}</span>
                   </div>
                   <div style={{ height: 6, borderRadius: 99, background: '#EEF2F1' }}>
-                    <div style={{ height: '100%', borderRadius: 99, background: '#5E8C87', width: `${pct}%`, transition: 'width 0.4s' }} />
+                    <div style={{ height: '100%', borderRadius: 99, background: '#10B981', width: `${pct}%`, transition: 'width 0.4s' }} />
                   </div>
                 </div>
               )
@@ -193,10 +193,10 @@ export default function DashboardPessoalPage() {
           <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 14, padding: '16px 18px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
               <div style={{ fontSize: 12, fontWeight: 700, color: '#1C2B2A', fontFamily: "'Inter', sans-serif" }}>Assinaturas ativas</div>
-              <Link href="/dashboard-pessoal/assinaturas" style={{ fontSize: 10, color: '#5E8C87', fontWeight: 600, textDecoration: 'none' }}>Gerenciar →</Link>
+              <Link href="/dashboard-pessoal/assinaturas" style={{ fontSize: 10, color: '#10B981', fontWeight: 600, textDecoration: 'none' }}>Gerenciar →</Link>
             </div>
             {assinaturas.filter(a => a.ativa).length === 0 ? (
-              <div style={{ fontSize: 11, color: '#7A8F8E' }}>Nenhuma assinatura. <Link href="/dashboard-pessoal/assinaturas" style={{ color: '#5E8C87' }}>Adicionar</Link></div>
+              <div style={{ fontSize: 11, color: '#7A8F8E' }}>Nenhuma assinatura. <Link href="/dashboard-pessoal/assinaturas" style={{ color: '#10B981' }}>Adicionar</Link></div>
             ) : assinaturas.filter(a => a.ativa).slice(0, 4).map(a => (
               <div key={a.nome} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 11, padding: '7px 0', borderBottom: '0.5px solid #F0F4F3' }}>
                 <span style={{ fontWeight: 600, color: '#1C2B2A' }}>{a.nome}</span>
@@ -209,14 +209,14 @@ export default function DashboardPessoalPage() {
 
       {/* Banner upgrade PJ */}
       <div style={{ background: '#1C2B2A', borderRadius: 14, padding: '16px 20px', marginTop: 12, display: 'flex', alignItems: 'center', gap: 16 }}>
-        <div style={{ width: 44, height: 44, borderRadius: 11, background: 'rgba(94,140,135,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-          <i className="fa-solid fa-building" style={{ fontSize: 20, color: '#7EBDB8' }} />
+        <div style={{ width: 44, height: 44, borderRadius: 11, background: 'rgba(16,185,129,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+          <i className="fa-solid fa-building" style={{ fontSize: 20, color: '#6EE7B7' }} />
         </div>
         <div style={{ flex: 1 }}>
           <div style={{ fontSize: 13, fontWeight: 700, color: '#fff', marginBottom: 3 }}>Tem uma empresa? Abra sua Conta PJ</div>
           <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.55)', lineHeight: 1.5 }}>Acesse DRE, NF-e, portal do contador e cartão corporativo. Tudo integrado ao FactorOne.</div>
         </div>
-        <Link href="/dashboard/planos" style={{ background: '#5E8C87', color: '#fff', borderRadius: 9, padding: '9px 18px', fontSize: 11, fontWeight: 700, textDecoration: 'none', whiteSpace: 'nowrap', flexShrink: 0 }}>
+        <Link href="/dashboard/planos" style={{ background: '#10B981', color: '#fff', borderRadius: 9, padding: '9px 18px', fontSize: 11, fontWeight: 700, textDecoration: 'none', whiteSpace: 'nowrap', flexShrink: 0 }}>
           Ver planos PJ
         </Link>
       </div>

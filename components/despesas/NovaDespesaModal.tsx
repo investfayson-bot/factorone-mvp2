@@ -234,7 +234,7 @@ export default function NovaDespesaModal({
         {/* OCR Zone */}
         <div
           style={{
-            border: file ? '0.5px solid #5E8C87' : '1.5px dashed #D1D9D8',
+            border: file ? '0.5px solid #10B981' : '1.5px dashed #D1D9D8',
             borderRadius: 12, padding: 14, marginBottom: 18, textAlign: 'center',
             background: file ? '#EAF5F3' : '#F8FAFA', cursor: 'pointer',
             transition: 'all 0.2s',
@@ -246,7 +246,7 @@ export default function NovaDespesaModal({
           {file ? (
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                <i className="fa-solid fa-file-image" style={{ fontSize: 20, color: '#5E8C87' }} />
+                <i className="fa-solid fa-file-image" style={{ fontSize: 20, color: '#10B981' }} />
                 <div style={{ textAlign: 'left' }}>
                   <p style={{ fontWeight: 600, fontSize: 12, color: '#1C2B2A', margin: 0 }}>{file.name}</p>
                   <p style={{ fontSize: 10, color: '#7A8F8E', margin: 0 }}>{(file.size / 1024).toFixed(0)} KB</p>

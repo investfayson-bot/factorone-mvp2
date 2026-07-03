@@ -92,7 +92,7 @@ export default function NotasRecebidas() {
   function statusColor(s: string) {
     if (s === 'aprovada') return { bg: 'rgba(45,155,111,.12)', color: 'var(--green)' }
     if (s === 'rejeitada') return { bg: 'rgba(192,80,74,.1)', color: 'var(--red)' }
-    if (s === 'aguardando_captacao') return { bg: 'rgba(94,140,135,.12)', color: 'var(--teal)' }
+    if (s === 'aguardando_captacao') return { bg: 'rgba(16,185,129,.12)', color: 'var(--teal)' }
     return { bg: 'var(--gray-100)', color: 'var(--gray-400)' }
   }
 

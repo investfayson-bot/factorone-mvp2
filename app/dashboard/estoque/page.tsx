@@ -78,7 +78,7 @@ export default function EstoquePage() {
 
   const kpis = [
     { label: 'Produtos', valor: String(produtos.length), cor: '#1C2B2A' },
-    { label: 'Itens em estoque', valor: String(totalItens), cor: '#5E8C87' },
+    { label: 'Itens em estoque', valor: String(totalItens), cor: '#10B981' },
     { label: 'Valor em estoque', valor: formatBRL(valorEstoque), cor: '#1C2B2A' },
     { label: 'Abaixo do mínimo', valor: String(abaixoMinimo.length), cor: abaixoMinimo.length ? '#C0504A' : '#16A085' },
   ]

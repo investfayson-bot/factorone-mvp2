@@ -110,7 +110,7 @@ export default function AuthPage() {
               <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 18, fontWeight: 800, color: 'var(--navy)', marginBottom: 6 }}>Você é Pessoa Física ou Empresa?</div>
               <div style={{ fontSize: 12, color: 'var(--gray-400)', marginBottom: 20 }}>Escolha como vai usar o FactorOne antes de continuar.</div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                <button onClick={() => escolherTipo('empresarial')} style={{ display: 'flex', gap: 12, alignItems: 'center', padding: '16px 18px', borderRadius: 12, border: '2px solid var(--teal)', background: 'rgba(94,140,135,.05)', cursor: 'pointer', textAlign: 'left' }}>
+                <button onClick={() => escolherTipo('empresarial')} style={{ display: 'flex', gap: 12, alignItems: 'center', padding: '16px 18px', borderRadius: 12, border: '2px solid var(--teal)', background: 'rgba(16,185,129,.05)', cursor: 'pointer', textAlign: 'left' }}>
                   <div style={{ width: 42, height: 42, borderRadius: 10, background: 'var(--teal)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><i className="fa-solid fa-building" style={{ color: '#fff', fontSize: 16 }} /></div>
                   <div><div style={{ fontSize: 14, fontWeight: 700, color: 'var(--navy)' }}>Empresa (PJ)</div><div style={{ fontSize: 11, color: 'var(--gray-400)' }}>Gestão financeira completa: DRE, fluxo de caixa, NF-e.</div></div>
                 </button>

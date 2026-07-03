@@ -82,7 +82,7 @@ export default function InvestimentosPage() {
           <div className="kpi-val">{formatBRL(totalAplicado)}</div>
           <div className="kpi-delta">{ativos.length} ativo{ativos.length !== 1 ? 's' : ''}</div>
         </div>
-        <div className="kpi" style={{ borderTop: '3px solid #5E8C87' }}>
+        <div className="kpi" style={{ borderTop: '3px solid #10B981' }}>
           <div className="kpi-lbl">Valor atual</div>
           <div className="kpi-val">{formatBRL(totalAtual)}</div>
           <div className="kpi-delta up">posição hoje</div>

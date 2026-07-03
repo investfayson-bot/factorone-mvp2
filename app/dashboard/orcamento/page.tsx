@@ -134,10 +134,10 @@ export default function OrcamentoPage() {
       </div>
 
       <div className="kpis" style={{ gridTemplateColumns: 'repeat(4, 1fr)' }}>
-        <div className="kpi" style={{ borderTop: '3px solid #5E8C87' }}>
+        <div className="kpi" style={{ borderTop: '3px solid #10B981' }}>
           <div className="kpi-lbl">Total previsto
             <div style={{ width: 28, height: 28, borderRadius: 8, background: '#EAF5F3', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <i className="fa-solid fa-chart-pie" style={{ fontSize: 12, color: '#5E8C87' }} />
+              <i className="fa-solid fa-chart-pie" style={{ fontSize: 12, color: '#10B981' }} />
             </div>
           </div>
           <div className="kpi-val">{formatBRL(resumo.totalPrevisto)}</div>
@@ -152,19 +152,19 @@ export default function OrcamentoPage() {
           <div className="kpi-val">{formatBRL(resumo.totalRealizado)}</div>
           <div className="kpi-delta up">executado até agora</div>
         </div>
-        <div className="kpi" style={{ borderTop: `3px solid ${resumo.percentualConsumido > 90 ? '#E74C3C' : resumo.percentualConsumido > 70 ? '#D97706' : '#5E8C87'}` }}>
+        <div className="kpi" style={{ borderTop: `3px solid ${resumo.percentualConsumido > 90 ? '#E74C3C' : resumo.percentualConsumido > 70 ? '#D97706' : '#10B981'}` }}>
           <div className="kpi-lbl">% Consumido
             <div style={{ width: 28, height: 28, borderRadius: 8, background: resumo.percentualConsumido > 90 ? '#FEE2E2' : resumo.percentualConsumido > 70 ? '#FEF3C7' : '#EAF5F3', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <i className="fa-solid fa-gauge-high" style={{ fontSize: 12, color: resumo.percentualConsumido > 90 ? '#E74C3C' : resumo.percentualConsumido > 70 ? '#D97706' : '#5E8C87' }} />
+              <i className="fa-solid fa-gauge-high" style={{ fontSize: 12, color: resumo.percentualConsumido > 90 ? '#E74C3C' : resumo.percentualConsumido > 70 ? '#D97706' : '#10B981' }} />
             </div>
           </div>
           <div className="kpi-val">{resumo.percentualConsumido.toFixed(1)}%</div>
           <div className={`kpi-delta ${resumo.percentualConsumido > 90 ? 'dn' : 'up'}`}>{resumo.percentualConsumido > 90 ? '⚠ quase no limite' : '✓ saudável'}</div>
         </div>
-        <div className="kpi" style={{ borderTop: `3px solid ${alertasAtivos > 0 ? '#D97706' : '#5E8C87'}` }}>
+        <div className="kpi" style={{ borderTop: `3px solid ${alertasAtivos > 0 ? '#D97706' : '#10B981'}` }}>
           <div className="kpi-lbl">Alertas ativos
             <div style={{ width: 28, height: 28, borderRadius: 8, background: alertasAtivos > 0 ? '#FEF3C7' : '#EAF5F3', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <i className="fa-solid fa-bell" style={{ fontSize: 12, color: alertasAtivos > 0 ? '#D97706' : '#5E8C87' }} />
+              <i className="fa-solid fa-bell" style={{ fontSize: 12, color: alertasAtivos > 0 ? '#D97706' : '#10B981' }} />
             </div>
           </div>
           <div className="kpi-val">{alertasAtivos}</div>
@@ -266,7 +266,7 @@ export default function OrcamentoPage() {
                   return (
                     <tr key={m}>
                       <td style={{ fontFamily: "'Inter', sans-serif" }}>{m.toString().padStart(2, '0')}/{ano}</td>
-                      <td style={{ textAlign: 'right', fontFamily: "'Inter', sans-serif", color: '#5E8C87', fontWeight: 700 }}>{formatBRL(r)}</td>
+                      <td style={{ textAlign: 'right', fontFamily: "'Inter', sans-serif", color: '#10B981', fontWeight: 700 }}>{formatBRL(r)}</td>
                       <td style={{ textAlign: 'right', fontFamily: "'Inter', sans-serif" }}>{formatBRL(p)}</td>
                     </tr>
                   )

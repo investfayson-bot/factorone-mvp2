@@ -106,19 +106,19 @@ export default function AICFOPage() {
 
       {/* KPIs */}
       <div className="kpis" style={{ gridTemplateColumns: 'repeat(5,1fr)', marginBottom: 16 }}>
-        <div className="kpi" style={{ borderTop: `3px solid ${ctx.saldo > 0 ? '#5E8C87' : '#E74C3C'}` }}>
+        <div className="kpi" style={{ borderTop: `3px solid ${ctx.saldo > 0 ? '#10B981' : '#E74C3C'}` }}>
           <div className="kpi-lbl">Saldo banco
             <div style={{ width: 26, height: 26, borderRadius: 7, background: ctx.saldo > 0 ? '#EAF5F3' : '#FEE2E2', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <i className="fa-solid fa-building-columns" style={{ fontSize: 11, color: ctx.saldo > 0 ? '#5E8C87' : '#E74C3C' }} />
+              <i className="fa-solid fa-building-columns" style={{ fontSize: 11, color: ctx.saldo > 0 ? '#10B981' : '#E74C3C' }} />
             </div>
           </div>
           <div className="kpi-val">{fmtBRLCompact(ctx.saldo)}</div>
           <div className={`kpi-delta ${ctx.saldo > 0 ? 'up' : 'dn'}`}>{ctx.saldo > 0 ? '↑ disponível' : '↓ atenção'}</div>
         </div>
-        <div className="kpi" style={{ borderTop: '3px solid #5E8C87' }}>
+        <div className="kpi" style={{ borderTop: '3px solid #10B981' }}>
           <div className="kpi-lbl">Receita mês
             <div style={{ width: 26, height: 26, borderRadius: 7, background: '#EAF5F3', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <i className="fa-solid fa-arrow-trend-up" style={{ fontSize: 11, color: '#5E8C87' }} />
+              <i className="fa-solid fa-arrow-trend-up" style={{ fontSize: 11, color: '#10B981' }} />
             </div>
           </div>
           <div className="kpi-val">{fmtBRLCompact(ctx.receita)}</div>
@@ -133,19 +133,19 @@ export default function AICFOPage() {
           <div className="kpi-val">{fmtBRLCompact(ctx.despesas)}</div>
           <div className="kpi-delta dn">mês atual</div>
         </div>
-        <div className="kpi" style={{ borderTop: '3px solid #5E8C87' }}>
+        <div className="kpi" style={{ borderTop: '3px solid #10B981' }}>
           <div className="kpi-lbl">A receber
             <div style={{ width: 26, height: 26, borderRadius: 7, background: '#EAF5F3', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <i className="fa-solid fa-coins" style={{ fontSize: 11, color: '#5E8C87' }} />
+              <i className="fa-solid fa-coins" style={{ fontSize: 11, color: '#10B981' }} />
             </div>
           </div>
           <div className="kpi-val">{fmtBRLCompact(ctx.aReceber)}</div>
           <div className="kpi-delta up">pendente</div>
         </div>
-        <div className="kpi" style={{ borderTop: `3px solid ${ctx.runway != null && ctx.runway < 90 ? '#D97706' : '#5E8C87'}` }}>
+        <div className="kpi" style={{ borderTop: `3px solid ${ctx.runway != null && ctx.runway < 90 ? '#D97706' : '#10B981'}` }}>
           <div className="kpi-lbl">Runway
             <div style={{ width: 26, height: 26, borderRadius: 7, background: ctx.runway != null && ctx.runway < 90 ? '#FEF3C7' : '#EAF5F3', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <i className="fa-solid fa-gauge-high" style={{ fontSize: 11, color: ctx.runway != null && ctx.runway < 90 ? '#D97706' : '#5E8C87' }} />
+              <i className="fa-solid fa-gauge-high" style={{ fontSize: 11, color: ctx.runway != null && ctx.runway < 90 ? '#D97706' : '#10B981' }} />
             </div>
           </div>
           <div className="kpi-val">{runwayLabel}</div>
@@ -160,8 +160,8 @@ export default function AICFOPage() {
         <div className="ai-chat">
           {/* Cabeçalho do chat */}
           <div className="ai-chat-hdr">
-            <div style={{ width: 34, height: 34, borderRadius: 9, background: 'rgba(94,140,135,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <i className="fa-solid fa-robot" style={{ fontSize: 15, color: '#5E8C87' }} />
+            <div style={{ width: 34, height: 34, borderRadius: 9, background: 'rgba(16,185,129,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <i className="fa-solid fa-robot" style={{ fontSize: 15, color: '#10B981' }} />
             </div>
             <div>
               <div className="ai-name">FactorOne CFO</div>
@@ -183,11 +183,11 @@ export default function AICFOPage() {
                       padding: '10px 12px', border: '0.5px solid #E2E8E7', borderRadius: 10,
                       background: '#fff', cursor: 'pointer', textAlign: 'left', transition: 'all .15s',
                     }}
-                    onMouseOver={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = '#5E8C87'; (e.currentTarget as HTMLButtonElement).style.background = 'rgba(94,140,135,0.04)' }}
+                    onMouseOver={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = '#10B981'; (e.currentTarget as HTMLButtonElement).style.background = 'rgba(16,185,129,0.04)' }}
                     onMouseOut={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = '#E2E8E7'; (e.currentTarget as HTMLButtonElement).style.background = '#fff' }}
                   >
                     <div style={{ width: 28, height: 28, borderRadius: 7, background: '#EAF5F3', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <i className={`fa-solid ${a.icon}`} style={{ color: '#5E8C87', fontSize: 12 }} />
+                      <i className={`fa-solid ${a.icon}`} style={{ color: '#10B981', fontSize: 12 }} />
                     </div>
                     <span style={{ fontSize: 11, fontWeight: 600, color: '#1C2B2A', lineHeight: 1.3 }}>{a.label}</span>
                   </button>
@@ -222,7 +222,7 @@ export default function AICFOPage() {
                 <div className="msg-bubble ai" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                   <div style={{ display: 'flex', gap: 4 }}>
                     {[0, 1, 2].map(j => (
-                      <div key={j} style={{ width: 6, height: 6, borderRadius: '50%', background: '#5E8C87', animation: `fo-pulse 1s ${j * 0.2}s infinite` }} />
+                      <div key={j} style={{ width: 6, height: 6, borderRadius: '50%', background: '#10B981', animation: `fo-pulse 1s ${j * 0.2}s infinite` }} />
                     ))}
                   </div>
                   <span style={{ fontSize: 12, color: '#7A8F8E' }}>Analisando seus dados…</span>
@@ -252,8 +252,8 @@ export default function AICFOPage() {
           <div className="ai-ctx-card">
             <div className="ai-ctx-title">Dados em contexto</div>
             {[
-              { l: 'Saldo banco', v: fmtBRLCompact(ctx.saldo), c: ctx.saldo > 0 ? '#5E8C87' : '#E74C3C' },
-              { l: 'Receita mês', v: fmtBRLCompact(ctx.receita), c: '#5E8C87' },
+              { l: 'Saldo banco', v: fmtBRLCompact(ctx.saldo), c: ctx.saldo > 0 ? '#10B981' : '#E74C3C' },
+              { l: 'Receita mês', v: fmtBRLCompact(ctx.receita), c: '#10B981' },
               { l: 'Despesas mês', v: fmtBRLCompact(ctx.despesas), c: '#E74C3C' },
               { l: 'A receber', v: fmtBRLCompact(ctx.aReceber), c: '#1C2B2A' },
               { l: 'Runway', v: runwayLabel, c: ctx.runway != null && ctx.runway < 90 ? '#D97706' : '#1C2B2A' },

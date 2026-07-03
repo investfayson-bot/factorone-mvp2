@@ -47,7 +47,7 @@ const TAXAS_MERCADO = [
 ]
 
 const ESTRATEGIAS = [
-  { titulo: 'Alavancagem inteligente', icon: 'fa-chart-line', cor: '#5E8C87', desc: 'Use crédito para investimentos com retorno superior à taxa de juros. Se a taxa é 1.5%/mês e seu negócio retorna 3%/mês, a dívida gera riqueza.' },
+  { titulo: 'Alavancagem inteligente', icon: 'fa-chart-line', cor: '#10B981', desc: 'Use crédito para investimentos com retorno superior à taxa de juros. Se a taxa é 1.5%/mês e seu negócio retorna 3%/mês, a dívida gera riqueza.' },
   { titulo: 'Score e relacionamento bancário', icon: 'fa-star', cor: '#D97706', desc: 'Mantenha conta ativa, pague em dia e movimente regularmente. Bancos analisam tempo de relacionamento, faturamento médio e adimplência.' },
   { titulo: 'Antecipação de recebíveis', icon: 'fa-money-bill-transfer', cor: '#2563eb', desc: 'Antecipe notas fiscais e duplicatas com taxas menores que capital de giro. Ideal para capital de giro de curto prazo.' },
   { titulo: 'BNDES e linhas subsidiadas', icon: 'fa-landmark', cor: '#7C3AED', desc: 'BNDES PME, Pronampe e Crédito para PMEs têm taxas muito menores que o mercado. Exige CNPJ ativo há 2+ anos e certidões negativas.' },
@@ -169,14 +169,14 @@ export default function CreditoPage() {
             {/* KPIs resumo */}
             {tabela.length > 0 && (
               <div style={{ background: '#1C2B2A', borderRadius: 14, padding: '16px 18px' }}>
-                <div style={{ fontSize: 10, fontWeight: 700, color: '#7EBDB8', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 12 }}>Resumo</div>
+                <div style={{ fontSize: 10, fontWeight: 700, color: '#6EE7B7', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 12 }}>Resumo</div>
                 {[
                   { label: 'Valor financiado', val: formatBRL(pv), cor: '#fff' },
                   { label: 'Primeira parcela', val: formatBRL(parcelaPrimeira), cor: '#fff' },
                   { label: sistema === 'sac' ? 'Última parcela' : 'Parcela (fixa)', val: formatBRL(parcelaUltima), cor: '#fff' },
                   { label: 'Total de juros', val: formatBRL(totalJuros), cor: '#FFB3B3' },
                   { label: 'Total pago', val: formatBRL(totalPago), cor: '#FFB3B3' },
-                  { label: 'Custo efetivo total', val: `${custoEfetivo.toFixed(1)}%`, cor: custoEfetivo > 50 ? '#FFB3B3' : '#7EBDB8' },
+                  { label: 'Custo efetivo total', val: `${custoEfetivo.toFixed(1)}%`, cor: custoEfetivo > 50 ? '#FFB3B3' : '#6EE7B7' },
                 ].map(item => (
                   <div key={item.label} style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '0.5px solid rgba(255,255,255,.06)' }}>
                     <span style={{ fontSize: 11, color: 'rgba(255,255,255,.55)' }}>{item.label}</span>
@@ -201,7 +201,7 @@ export default function CreditoPage() {
                     <YAxis tick={{ fontSize: 9, fill: '#AAB8B7' }} axisLine={false} tickLine={false} tickFormatter={v => `R$${(v/1000).toFixed(0)}K`} width={44} />
                     <Tooltip formatter={(v: number) => formatBRL(v)} contentStyle={{ fontSize: 11, borderRadius: 8, border: '0.5px solid #E2E8E7' }} />
                     <Legend iconType="circle" iconSize={8} wrapperStyle={{ fontSize: 11 }} />
-                    <Line type="monotone" dataKey="price" stroke="#5E8C87" strokeWidth={2} dot={false} name="Price (fixo)" />
+                    <Line type="monotone" dataKey="price" stroke="#10B981" strokeWidth={2} dot={false} name="Price (fixo)" />
                     <Line type="monotone" dataKey="sac" stroke="#E74C3C" strokeWidth={2} dot={false} name="SAC (decrescente)" />
                   </LineChart>
                 </ResponsiveContainer>
@@ -226,7 +226,7 @@ export default function CreditoPage() {
                       <div style={{ fontSize: 11, color: '#7A8F8E', fontFamily: "'Inter', sans-serif" }}>{r.mes}</div>
                       <div style={{ fontSize: 11, fontWeight: 700, color: '#1C2B2A', fontFamily: "'Inter', sans-serif" }}>{formatBRL(r.parcela)}</div>
                       <div style={{ fontSize: 11, color: '#E74C3C', fontFamily: "'Inter', sans-serif" }}>{formatBRL(r.juros)}</div>
-                      <div style={{ fontSize: 11, color: '#5E8C87', fontFamily: "'Inter', sans-serif" }}>{formatBRL(r.amortizacao)}</div>
+                      <div style={{ fontSize: 11, color: '#10B981', fontFamily: "'Inter', sans-serif" }}>{formatBRL(r.amortizacao)}</div>
                       <div style={{ fontSize: 11, color: '#7A8F8E', fontFamily: "'Inter', sans-serif" }}>{formatBRL(r.saldo)}</div>
                     </div>
                   ))}
@@ -255,7 +255,7 @@ export default function CreditoPage() {
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
             <div className="kpis" style={{ gridTemplateColumns: 'repeat(3,1fr)' }}>
-              <div className="kpi" style={{ borderTop: '3px solid #5E8C87' }}>
+              <div className="kpi" style={{ borderTop: '3px solid #10B981' }}>
                 <div className="kpi-lbl">Parcela mensal</div>
                 <div className="kpi-val">{formatBRL(parcelaConsorcio)}</div>
                 <div className="kpi-delta">sem juros</div>
@@ -265,9 +265,9 @@ export default function CreditoPage() {
                 <div className="kpi-val">{formatBRL(totalConsorcio)}</div>
                 <div className="kpi-delta warn">inclui taxa adm.</div>
               </div>
-              <div className="kpi" style={{ borderTop: `3px solid ${economiaVsFinanc > 0 ? '#5E8C87' : '#E74C3C'}` }}>
+              <div className="kpi" style={{ borderTop: `3px solid ${economiaVsFinanc > 0 ? '#10B981' : '#E74C3C'}` }}>
                 <div className="kpi-lbl">Vs financiamento</div>
-                <div className="kpi-val" style={{ color: economiaVsFinanc > 0 ? '#5E8C87' : '#E74C3C' }}>
+                <div className="kpi-val" style={{ color: economiaVsFinanc > 0 ? '#10B981' : '#E74C3C' }}>
                   {economiaVsFinanc > 0 ? '-' : '+'}{formatBRL(Math.abs(economiaVsFinanc))}
                 </div>
                 <div className={`kpi-delta ${economiaVsFinanc > 0 ? 'up' : 'dn'}`}>
@@ -279,9 +279,9 @@ export default function CreditoPage() {
             <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 14, padding: '16px 18px' }}>
               <div style={{ fontSize: 12, fontWeight: 700, color: '#1C2B2A', marginBottom: 12, fontFamily: "'Inter', sans-serif" }}>Pontos importantes sobre consórcio</div>
               {[
-                { cor: '#5E8C87', icon: 'fa-check', texto: 'Sem juros — só taxa de administração (geralmente 10-20% do valor)' },
-                { cor: '#5E8C87', icon: 'fa-check', texto: 'Ideal para quem não tem urgência e quer parcelar com custo baixo' },
-                { cor: '#5E8C87', icon: 'fa-check', texto: 'Pode dar lance para ser contemplado mais rápido (usa FGTS para imóvel)' },
+                { cor: '#10B981', icon: 'fa-check', texto: 'Sem juros — só taxa de administração (geralmente 10-20% do valor)' },
+                { cor: '#10B981', icon: 'fa-check', texto: 'Ideal para quem não tem urgência e quer parcelar com custo baixo' },
+                { cor: '#10B981', icon: 'fa-check', texto: 'Pode dar lance para ser contemplado mais rápido (usa FGTS para imóvel)' },
                 { cor: '#D97706', icon: 'fa-triangle-exclamation', texto: 'Contemplação por sorteio — pode demorar meses ou anos' },
                 { cor: '#D97706', icon: 'fa-triangle-exclamation', texto: 'Cota varia com reajuste do bem — parcela pode subir' },
                 { cor: '#E74C3C', icon: 'fa-xmark', texto: 'Multa alta por desistência (até 30% das parcelas pagas)' },
@@ -315,7 +315,7 @@ export default function CreditoPage() {
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
             <div className="kpis" style={{ gridTemplateColumns: 'repeat(3,1fr)' }}>
-              <div className="kpi" style={{ borderTop: '3px solid #5E8C87' }}>
+              <div className="kpi" style={{ borderTop: '3px solid #10B981' }}>
                 <div className="kpi-lbl">Limite estimado de giro</div>
                 <div className="kpi-val">{formatBRL(limiteGiro)}</div>
                 <div className="kpi-delta">30% do faturamento/mês</div>
@@ -341,7 +341,7 @@ export default function CreditoPage() {
                     <div style={{ fontSize: 10, color: '#7A8F8E' }}>Custo sobre {formatBRL(limiteGiro)}: {formatBRL(limiteGiro * linha.taxa / 100)}/mês</div>
                   </div>
                   <div style={{ textAlign: 'right' }}>
-                    <div style={{ fontSize: 14, fontWeight: 700, color: linha.taxa > 2 ? '#D97706' : '#5E8C87', fontFamily: "'Inter', sans-serif" }}>{linha.taxa}%/mês</div>
+                    <div style={{ fontSize: 14, fontWeight: 700, color: linha.taxa > 2 ? '#D97706' : '#10B981', fontFamily: "'Inter', sans-serif" }}>{linha.taxa}%/mês</div>
                     <div style={{ fontSize: 10, color: '#7A8F8E' }}>{(linha.taxa * 12).toFixed(1)}% a.a.</div>
                   </div>
                 </div>
@@ -366,7 +366,7 @@ export default function CreditoPage() {
                 <Tooltip formatter={(v: number) => [`${v}%/mês`, 'Taxa']} contentStyle={{ fontSize: 11, borderRadius: 8, border: '0.5px solid #E2E8E7' }} />
                 <Bar dataKey="taxa" radius={[0, 4, 4, 0]}
                   label={{ position: 'right', fontSize: 10, fill: '#7A8F8E', formatter: (v: number) => `${v}%` }}
-                  fill="#5E8C87"
+                  fill="#10B981"
                 />
               </BarChart>
             </ResponsiveContainer>

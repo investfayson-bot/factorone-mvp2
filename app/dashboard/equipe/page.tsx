@@ -14,7 +14,7 @@ type Membro = {
 
 const ROLES: Record<string, { label: string; desc: string; color: string; bg: string }> = {
   admin:       { label: 'Admin',       desc: 'Acesso total à plataforma',            color: '#1C2B2A',  bg: '#e0e7ff' },
-  financeiro:  { label: 'Financeiro',  desc: 'Financeiro, DRE, contas, relatórios',  color: '#5E8C87',  bg: '#e0f2fe' },
+  financeiro:  { label: 'Financeiro',  desc: 'Financeiro, DRE, contas, relatórios',  color: '#10B981',  bg: '#e0f2fe' },
   comercial:   { label: 'Comercial',   desc: 'Clientes, CRM, marketing',             color: '#7C3AED',      bg: '#ede9fe' },
   operacional: { label: 'Operacional', desc: 'Despesas, aprovações, patrimônio',     color: '#D97706',  bg: '#fef3c7' },
   logistica:   { label: 'Logística',   desc: 'Rotas, pneus, checklist, manutenção', color: '#0891b2',      bg: '#e0f2fe' },
@@ -122,13 +122,13 @@ export default function EquipePage() {
             </thead>
             <tbody>
               {/* Current user (owner) */}
-              <tr style={{ background: 'rgba(94,140,135,.03)' }}>
+              <tr style={{ background: 'rgba(16,185,129,.03)' }}>
                 <td>
                   <div style={{ fontWeight: 700 }}>{currentUserEmail}</div>
                   <div style={{ fontSize: 11, color: '#7A8F8E' }}>Você (proprietário)</div>
                 </td>
                 <td><span style={{ fontSize: 10, fontWeight: 700, padding: '3px 8px', borderRadius: 20, background: ROLES.admin.bg, color: ROLES.admin.color }}>Admin</span></td>
-                <td><span style={{ fontSize: 11, padding: '3px 8px', borderRadius: 12, background: '#dcfce7', color: '#5E8C87', fontWeight: 600 }}>Ativo</span></td>
+                <td><span style={{ fontSize: 11, padding: '3px 8px', borderRadius: 12, background: '#dcfce7', color: '#10B981', fontWeight: 600 }}>Ativo</span></td>
                 <td style={{ fontSize: 12 }}>—</td>
                 <td style={{ fontSize: 12, color: '#7A8F8E' }}>—</td>
               </tr>
@@ -162,7 +162,7 @@ export default function EquipePage() {
                     <span style={{
                       fontSize: 11, padding: '3px 8px', borderRadius: 12, fontWeight: 600,
                       background: m.status === 'ativo' ? '#dcfce7' : m.status === 'pendente' ? '#fef3c7' : '#f1f5f9',
-                      color: m.status === 'ativo' ? '#5E8C87' : m.status === 'pendente' ? '#D97706' : '#7A8F8E',
+                      color: m.status === 'ativo' ? '#10B981' : m.status === 'pendente' ? '#D97706' : '#7A8F8E',
                     }}>
                       {m.status === 'ativo' ? 'Ativo' : m.status === 'pendente' ? 'Pendente' : 'Revogado'}
                     </span>
@@ -193,7 +193,7 @@ export default function EquipePage() {
 
             {conviteEnviado ? (
               <div style={{ textAlign: 'center', padding: '24px 0' }}>
-                <i className="fa-solid fa-circle-check" style={{ fontSize: 48, color: '#5E8C87', marginBottom: 16, display: 'block' }} />
+                <i className="fa-solid fa-circle-check" style={{ fontSize: 48, color: '#10B981', marginBottom: 16, display: 'block' }} />
                 <div style={{ fontWeight: 700, fontSize: 16, marginBottom: 8 }}>Convite enviado!</div>
                 <div style={{ fontSize: 13, color: '#7A8F8E' }}>Um e-mail foi enviado para <strong>{conviteEnviado}</strong> com o link de acesso.</div>
                 <div style={{ marginTop: 20, display: 'flex', justifyContent: 'center', gap: 10 }}>

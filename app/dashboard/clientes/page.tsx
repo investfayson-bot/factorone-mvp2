@@ -15,7 +15,7 @@ type Cliente = {
 }
 type Contato = { id: string; cliente_id: string; nome: string; cargo: string | null; email: string | null; telefone: string | null; whatsapp: string | null; principal: boolean }
 
-const STATUS_COLOR: Record<string, string> = { prospect: '#7C3AED', ativo: '#5E8C87', inativo: '#7A8F8E', churned: '#E74C3C' }
+const STATUS_COLOR: Record<string, string> = { prospect: '#7C3AED', ativo: '#10B981', inativo: '#7A8F8E', churned: '#E74C3C' }
 const STATUS_BG: Record<string, string> = { prospect: 'rgba(124,58,237,.1)', ativo: 'rgba(45,155,111,.1)', inativo: '#E2E8E7', churned: 'rgba(192,80,74,.1)' }
 const STATUS_LABEL: Record<string, string> = { prospect: 'Prospect', ativo: 'Ativo', inativo: 'Inativo', churned: 'Churn' }
 const SEGMENTOS = ['Tecnologia', 'Varejo', 'Saúde', 'Educação', 'Agronegócio', 'Construção', 'Logística', 'Serviços', 'Indústria', 'Financeiro', 'Outros']
@@ -155,9 +155,9 @@ export default function ClientesPage() {
       <div className="kpis" style={{ gridTemplateColumns: 'repeat(4,1fr)', marginBottom: 16 }}>
         {[
           { l: 'Total', v: kpis.total, s: 'clientes', c: '#1C2B2A' },
-          { l: 'Ativos', v: kpis.ativos, s: 'com contrato', c: '#5E8C87' },
+          { l: 'Ativos', v: kpis.ativos, s: 'com contrato', c: '#10B981' },
           { l: 'Prospects', v: kpis.prospects, s: 'em pipeline', c: '#7C3AED' },
-          { l: 'MRR estimado', v: formatBRL(kpis.mrr), s: 'contratos ativos', c: '#5E8C87' },
+          { l: 'MRR estimado', v: formatBRL(kpis.mrr), s: 'contratos ativos', c: '#10B981' },
         ].map(k => (
           <div key={k.l} className="kpi">
             <div className="kpi-lbl">{k.l}</div>
@@ -193,7 +193,7 @@ export default function ClientesPage() {
                 <div key={c.id} onClick={() => { setDetalhe(c); void carregarContatos(c.id) }} style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 8, padding: '10px 12px', marginBottom: 8, cursor: 'pointer' }}>
                   <p style={{ fontWeight: 700, fontSize: 12, color: '#1C2B2A', margin: '0 0 2px' }}>{c.nome}</p>
                   {c.segmento && <p style={{ fontSize: 10, color: '#7A8F8E', margin: 0 }}>{c.segmento}</p>}
-                  {c.valor_contrato && <p style={{ fontSize: 11, color: '#5E8C87', fontWeight: 700, margin: '4px 0 0' }}>{formatBRL(Number(c.valor_contrato))}</p>}
+                  {c.valor_contrato && <p style={{ fontSize: 11, color: '#10B981', fontWeight: 700, margin: '4px 0 0' }}>{formatBRL(Number(c.valor_contrato))}</p>}
                 </div>
               ))}
             </div>
@@ -220,7 +220,7 @@ export default function ClientesPage() {
               <tbody>
                 {filtrados.length === 0 && (
                   <tr><td colSpan={7} style={{ textAlign: 'center', padding: '40px 0', color: '#7A8F8E', fontSize: 13 }}>
-                    Nenhum cliente. <button onClick={() => abrirForm()} style={{ color: '#5E8C87', background: 'none', border: 'none', cursor: 'pointer', fontSize: 13 }}>Adicionar →</button>
+                    Nenhum cliente. <button onClick={() => abrirForm()} style={{ color: '#10B981', background: 'none', border: 'none', cursor: 'pointer', fontSize: 13 }}>Adicionar →</button>
                   </td></tr>
                 )}
                 {filtrados.map(c => (
@@ -232,7 +232,7 @@ export default function ClientesPage() {
                     <td style={{ fontFamily: "'Inter', sans-serif", fontSize: 11, color: '#7A8F8E' }}>{c.cnpj_cpf || '—'}</td>
                     <td><span className="tag gray" style={{ fontSize: 9 }}>{c.segmento || '—'}</span></td>
                     <td style={{ fontSize: 12 }}>{c.telefone || c.whatsapp || '—'}</td>
-                    <td style={{ textAlign: 'right', fontFamily: "'Inter', sans-serif", color: '#5E8C87', fontWeight: 700, fontSize: 12 }}>
+                    <td style={{ textAlign: 'right', fontFamily: "'Inter', sans-serif", color: '#10B981', fontWeight: 700, fontSize: 12 }}>
                       {c.valor_contrato ? formatBRL(Number(c.valor_contrato)) : '—'}
                     </td>
                     <td style={{ textAlign: 'center' }}>
@@ -244,7 +244,7 @@ export default function ClientesPage() {
                       <div style={{ display: 'flex', gap: 4, justifyContent: 'center' }}>
                         <button className="btn-ghost" style={{ fontSize: 10, padding: '3px 8px' }} onClick={() => { setDetalhe(c); void carregarContatos(c.id) }}>Ver</button>
                         <button className="btn-ghost" style={{ fontSize: 10, padding: '3px 8px' }} onClick={() => abrirForm(c)}>Editar</button>
-                        <button className="btn-ghost" style={{ fontSize: 10, padding: '3px 8px', color: '#5E8C87' }} onClick={() => void gerarPortal(c.id)} title="Portal do cliente"><i className="fa-solid fa-link" /></button>
+                        <button className="btn-ghost" style={{ fontSize: 10, padding: '3px 8px', color: '#10B981' }} onClick={() => void gerarPortal(c.id)} title="Portal do cliente"><i className="fa-solid fa-link" /></button>
                         <button className="btn-ghost" style={{ fontSize: 10, padding: '3px 8px', color: '#E74C3C' }} onClick={() => void excluir(c.id)}><i className="fa-solid fa-trash" style={{ fontSize: 9 }} /></button>
                       </div>
                     </td>
@@ -374,7 +374,7 @@ export default function ClientesPage() {
                     style={{ fontSize: 11, flexShrink: 0 }}
                     onClick={() => { void navigator.clipboard.writeText(portalUrl); setPortalCopiado(true) }}
                   >
-                    {portalCopiado ? <><i className="fa-solid fa-check" style={{ marginRight: 4, color: '#5E8C87' }} />Copiado</> : <><i className="fa-regular fa-copy" style={{ marginRight: 4 }} />Copiar</>}
+                    {portalCopiado ? <><i className="fa-solid fa-check" style={{ marginRight: 4, color: '#10B981' }} />Copiado</> : <><i className="fa-regular fa-copy" style={{ marginRight: 4 }} />Copiar</>}
                   </button>
                 </div>
                 <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
@@ -435,7 +435,7 @@ export default function ClientesPage() {
                     {c.nome[0].toUpperCase()}
                   </div>
                   <div style={{ flex: 1 }}>
-                    <p style={{ fontSize: 12, fontWeight: 600, color: '#1C2B2A', margin: 0 }}>{c.nome} {c.principal && <span style={{ fontSize: 9, color: '#5E8C87', fontWeight: 700 }}>● Principal</span>}</p>
+                    <p style={{ fontSize: 12, fontWeight: 600, color: '#1C2B2A', margin: 0 }}>{c.nome} {c.principal && <span style={{ fontSize: 9, color: '#10B981', fontWeight: 700 }}>● Principal</span>}</p>
                     <p style={{ fontSize: 11, color: '#7A8F8E', margin: 0 }}>{[c.cargo, c.email, c.telefone].filter(Boolean).join(' · ')}</p>
                   </div>
                 </div>

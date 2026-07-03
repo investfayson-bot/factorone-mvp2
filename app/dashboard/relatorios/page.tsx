@@ -269,10 +269,10 @@ export default function RelatoriosPage() {
 
       {/* KPIs */}
       <div className="kpis">
-        <div className="kpi" style={{ borderTop: '3px solid #5E8C87' }}>
+        <div className="kpi" style={{ borderTop: '3px solid #10B981' }}>
           <div className="kpi-lbl">Receita Bruta
             <div style={{ width: 28, height: 28, borderRadius: 8, background: '#EAF5F3', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <i className="fa-solid fa-arrow-trend-up" style={{ fontSize: 12, color: '#5E8C87' }} />
+              <i className="fa-solid fa-arrow-trend-up" style={{ fontSize: 12, color: '#10B981' }} />
             </div>
           </div>
           <div className="kpi-val">{metricas ? fmtBRL(Number(metricas.receita_bruta || 0)) : '—'}</div>
@@ -298,10 +298,10 @@ export default function RelatoriosPage() {
             {metricas ? `${Number(metricas.margem_ebitda || 0).toFixed(1)}% margem` : 'carregando'}
           </div>
         </div>
-        <div className="kpi" style={{ borderTop: `3px solid ${Number(metricas?.lucro_liquido || 0) >= 0 ? '#5E8C87' : '#E74C3C'}` }}>
+        <div className="kpi" style={{ borderTop: `3px solid ${Number(metricas?.lucro_liquido || 0) >= 0 ? '#10B981' : '#E74C3C'}` }}>
           <div className="kpi-lbl">Lucro Líquido
             <div style={{ width: 28, height: 28, borderRadius: 8, background: Number(metricas?.lucro_liquido || 0) >= 0 ? '#EAF5F3' : '#FEE2E2', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <i className="fa-solid fa-chart-line" style={{ fontSize: 12, color: Number(metricas?.lucro_liquido || 0) >= 0 ? '#5E8C87' : '#E74C3C' }} />
+              <i className="fa-solid fa-chart-line" style={{ fontSize: 12, color: Number(metricas?.lucro_liquido || 0) >= 0 ? '#10B981' : '#E74C3C' }} />
             </div>
           </div>
           <div className="kpi-val">{metricas ? fmtBRL(Number(metricas.lucro_liquido || 0)) : '—'}</div>
@@ -340,7 +340,7 @@ export default function RelatoriosPage() {
               >
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                   {!isTotal && (
-                    <div style={{ width: 3, height: 16, borderRadius: 99, background: isNeg ? '#E74C3C' : '#5E8C87', flexShrink: 0 }} />
+                    <div style={{ width: 3, height: 16, borderRadius: 99, background: isNeg ? '#E74C3C' : '#10B981', flexShrink: 0 }} />
                   )}
                   <span style={{
                     fontSize: isTotal ? 12 : 11,
@@ -354,7 +354,7 @@ export default function RelatoriosPage() {
                   <span style={{
                     fontFamily: "'Inter', sans-serif",
                     fontWeight: isTotal ? 700 : 600,
-                    color: l.atual >= 0 ? '#5E8C87' : '#E74C3C',
+                    color: l.atual >= 0 ? '#10B981' : '#E74C3C',
                     fontSize: isTotal ? 14 : 12,
                     minWidth: 110, textAlign: 'right',
                   }}>{fmtBRL(l.atual)}</span>
@@ -427,10 +427,10 @@ export default function RelatoriosPage() {
           <div style={{ fontSize: 10, fontWeight: 700, color: '#7A8F8E', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }}>Rentabilidade</div>
           <div className="kpis" style={{ gridTemplateColumns: 'repeat(4,1fr)', marginBottom: 16 }}>
             {[
-              { key: 'margem_liquida',  label: 'Margem Líquida',  icon: 'fa-percent',       bg: '#EAF5F3', color: '#5E8C87', fmt: (v: number) => `${Number(v).toFixed(1)}%`,  desc: 'Lucro / Receita' },
-              { key: 'margem_bruta',    label: 'Margem Bruta',    icon: 'fa-chart-line',     bg: '#EAF5F3', color: '#5E8C87', fmt: (v: number) => `${Number(v).toFixed(1)}%`,  desc: 'Lucro Bruto / Receita' },
+              { key: 'margem_liquida',  label: 'Margem Líquida',  icon: 'fa-percent',       bg: '#EAF5F3', color: '#10B981', fmt: (v: number) => `${Number(v).toFixed(1)}%`,  desc: 'Lucro / Receita' },
+              { key: 'margem_bruta',    label: 'Margem Bruta',    icon: 'fa-chart-line',     bg: '#EAF5F3', color: '#10B981', fmt: (v: number) => `${Number(v).toFixed(1)}%`,  desc: 'Lucro Bruto / Receita' },
               { key: 'margem_ebitda',   label: 'Margem EBITDA',   icon: 'fa-gauge-high',     bg: '#FEF3C7', color: '#D97706', fmt: (v: number) => `${Number(v).toFixed(1)}%`,  desc: 'EBITDA / Receita' },
-              { key: 'roi',             label: 'ROI',             icon: 'fa-arrow-trend-up', bg: '#EAF5F3', color: '#5E8C87', fmt: (v: number) => `${Number(v).toFixed(2)}%`,  desc: 'Retorno sobre investimento' },
+              { key: 'roi',             label: 'ROI',             icon: 'fa-arrow-trend-up', bg: '#EAF5F3', color: '#10B981', fmt: (v: number) => `${Number(v).toFixed(2)}%`,  desc: 'Retorno sobre investimento' },
             ].map(m => {
               const val = Number(metricas?.[m.key] || 0)
               const isNeg = val < 0
@@ -454,7 +454,7 @@ export default function RelatoriosPage() {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 10, marginBottom: 16 }}>
             {[
               { key: 'ebitda',          label: 'EBITDA',             desc: 'Resultado antes de juros, impostos e depreciação', color: '#D97706' },
-              { key: 'ebit',            label: 'EBIT (Lucro Operacional)', desc: 'Resultado operacional líquido', color: '#5E8C87' },
+              { key: 'ebit',            label: 'EBIT (Lucro Operacional)', desc: 'Resultado operacional líquido', color: '#10B981' },
               { key: 'capital_investido', label: 'Capital Investido', desc: 'Base de cálculo do ROIC',          color: '#7C3AED' },
             ].map(m => {
               const val = Number(metricas?.[m.key] || 0)
@@ -486,7 +486,7 @@ export default function RelatoriosPage() {
               ].map(ind => {
                 const v = ind.val
                 const pct = v == null ? 0 : Math.min(100, Math.max(0, (v / ind.otimo) * 100))
-                const cor = v == null ? '#AAB8B7' : v >= ind.otimo ? '#5E8C87' : v >= ind.bom ? '#D97706' : '#E74C3C'
+                const cor = v == null ? '#AAB8B7' : v >= ind.otimo ? '#10B981' : v >= ind.bom ? '#D97706' : '#E74C3C'
                 const status = v == null ? '—' : v >= ind.otimo ? 'Ótimo' : v >= ind.bom ? 'Bom' : 'Atenção'
                 return (
                   <div key={ind.label}>
@@ -538,7 +538,7 @@ export default function RelatoriosPage() {
                 {histChart.map((h) => (
                   <tr key={h.mes}>
                     <td style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>{h.mes}</td>
-                    <td style={{ color: '#5E8C87', fontWeight: 600 }}>{fmtBRL(h.receita)}</td>
+                    <td style={{ color: '#10B981', fontWeight: 600 }}>{fmtBRL(h.receita)}</td>
                     <td style={{ color: h.lucro >= 0 ? 'var(--green)' : 'var(--red)', fontWeight: 600 }}>{fmtBRL(h.lucro)}</td>
                     <td style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>{h.margem.toFixed(2)}%</td>
                   </tr>
@@ -620,7 +620,7 @@ export default function RelatoriosPage() {
                 {/* Logística */}
                 <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 12, padding: '16px 20px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
-                    <i className="fa-solid fa-truck-fast" style={{ color: '#5E8C87', fontSize: 14 }} />
+                    <i className="fa-solid fa-truck-fast" style={{ color: '#10B981', fontSize: 14 }} />
                     <span style={{ fontSize: 11, fontWeight: 700, color: '#7A8F8E', textTransform: 'uppercase', letterSpacing: '.06em' }}>Logística</span>
                   </div>
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: 10 }}>
@@ -641,7 +641,7 @@ export default function RelatoriosPage() {
                 {/* Clientes + Equipe */}
                 <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 12, padding: '16px 20px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
-                    <i className="fa-solid fa-users" style={{ color: '#5E8C87', fontSize: 14 }} />
+                    <i className="fa-solid fa-users" style={{ color: '#10B981', fontSize: 14 }} />
                     <span style={{ fontSize: 11, fontWeight: 700, color: '#7A8F8E', textTransform: 'uppercase', letterSpacing: '.06em' }}>Clientes & Equipe</span>
                   </div>
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: 10 }}>
@@ -765,7 +765,7 @@ export default function RelatoriosPage() {
 
       {/* Análise IA */}
       {analise && (
-        <div style={{ marginTop: 14, background: 'rgba(94,140,135,.06)', border: '1px solid rgba(94,140,135,.2)', borderRadius: 12, padding: 16 }}>
+        <div style={{ marginTop: 14, background: 'rgba(16,185,129,.06)', border: '1px solid rgba(16,185,129,.2)', borderRadius: 12, padding: 16 }}>
           <div className="chart-title" style={{ marginBottom: 8 }}>Análise FactorOne</div>
           <p style={{ fontSize: 12, fontWeight: 700, color: '#1C2B2A', marginBottom: 6 }}>Score de saúde: {String(analise.score_saude ?? '—')}</p>
           <p style={{ fontSize: 12, color: '#1C2B2A', lineHeight: 1.65 }}>{String(analise.resumo_executivo ?? '')}</p>

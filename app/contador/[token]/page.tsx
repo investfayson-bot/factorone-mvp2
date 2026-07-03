@@ -81,7 +81,7 @@ export default function PortalContadorPage() {
   if (loading) return (
     <div style={{ minHeight: '100vh', background: '#F4F6F5', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <div style={{ textAlign: 'center', color: '#7A8F8E', fontSize: 13 }}>
-        <i className="fa-solid fa-circle-notch fa-spin" style={{ fontSize: 24, marginBottom: 12, display: 'block', color: '#5E8C87' }} />
+        <i className="fa-solid fa-circle-notch fa-spin" style={{ fontSize: 24, marginBottom: 12, display: 'block', color: '#10B981' }} />
         Carregando portal...
       </div>
     </div>
@@ -121,7 +121,7 @@ export default function PortalContadorPage() {
       <div style={{ background: '#1C2B2A', padding: '12px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 16, fontWeight: 700, color: '#fff' }}>
-            Factor<span style={{ color: '#7EBDB8' }}>One</span>
+            Factor<span style={{ color: '#6EE7B7' }}>One</span>
           </div>
           <div style={{ width: 1, height: 18, background: 'rgba(255,255,255,0.15)' }} />
           <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.5)', fontWeight: 500 }}>Portal do Contador</div>
@@ -140,7 +140,7 @@ export default function PortalContadorPage() {
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, flexWrap: 'wrap' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
               <div style={{ width: 44, height: 44, borderRadius: 11, background: '#1C2B2A', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                <i className="fa-solid fa-calculator" style={{ fontSize: 18, color: '#7EBDB8' }} />
+                <i className="fa-solid fa-calculator" style={{ fontSize: 18, color: '#6EE7B7' }} />
               </div>
               <div>
                 <div style={{ fontSize: 15, fontWeight: 700, color: '#1C2B2A', fontFamily: "'Inter', sans-serif" }}>
@@ -166,13 +166,13 @@ export default function PortalContadorPage() {
           const ultimo = metricas[0]
           return (
             <div className="kpis" style={{ marginBottom: 16 }}>
-              <div className="kpi" style={{ borderTop: '3px solid #5E8C87' }}>
-                <div className="kpi-lbl">Receita Bruta <div style={{ width: 26, height: 26, borderRadius: 7, background: '#EAF5F3', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><i className="fa-solid fa-arrow-trend-up" style={{ fontSize: 11, color: '#5E8C87' }} /></div></div>
+              <div className="kpi" style={{ borderTop: '3px solid #10B981' }}>
+                <div className="kpi-lbl">Receita Bruta <div style={{ width: 26, height: 26, borderRadius: 7, background: '#EAF5F3', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><i className="fa-solid fa-arrow-trend-up" style={{ fontSize: 11, color: '#10B981' }} /></div></div>
                 <div className="kpi-val">{formatBRL(ultimo.receita_bruta)}</div>
                 <div className="kpi-delta">{ultimo.competencia?.slice(0, 7)}</div>
               </div>
-              <div className="kpi" style={{ borderTop: `3px solid ${ultimo.lucro_liquido >= 0 ? '#5E8C87' : '#E74C3C'}` }}>
-                <div className="kpi-lbl">Lucro Líquido <div style={{ width: 26, height: 26, borderRadius: 7, background: ultimo.lucro_liquido >= 0 ? '#EAF5F3' : '#FEE2E2', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><i className="fa-solid fa-chart-line" style={{ fontSize: 11, color: ultimo.lucro_liquido >= 0 ? '#5E8C87' : '#E74C3C' }} /></div></div>
+              <div className="kpi" style={{ borderTop: `3px solid ${ultimo.lucro_liquido >= 0 ? '#10B981' : '#E74C3C'}` }}>
+                <div className="kpi-lbl">Lucro Líquido <div style={{ width: 26, height: 26, borderRadius: 7, background: ultimo.lucro_liquido >= 0 ? '#EAF5F3' : '#FEE2E2', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><i className="fa-solid fa-chart-line" style={{ fontSize: 11, color: ultimo.lucro_liquido >= 0 ? '#10B981' : '#E74C3C' }} /></div></div>
                 <div className="kpi-val">{formatBRL(ultimo.lucro_liquido)}</div>
                 <div className={`kpi-delta ${ultimo.lucro_liquido >= 0 ? 'up' : 'dn'}`}>Margem {(Number(ultimo.margem_liquida) * 100).toFixed(1)}%</div>
               </div>
@@ -238,7 +238,7 @@ export default function PortalContadorPage() {
 
           {dataLoading && (
             <div style={{ padding: '48px 16px', textAlign: 'center' }}>
-              <i className="fa-solid fa-circle-notch fa-spin" style={{ fontSize: 20, color: '#5E8C87' }} />
+              <i className="fa-solid fa-circle-notch fa-spin" style={{ fontSize: 20, color: '#10B981' }} />
             </div>
           )}
 
@@ -246,7 +246,7 @@ export default function PortalContadorPage() {
           {!dataLoading && tab === 'dre' && (
             <>
               <div style={{ padding: '12px 16px', borderBottom: '0.5px solid #E2E8E7', background: '#F8FAFA', display: 'flex', alignItems: 'center', gap: 8 }}>
-                <i className="fa-solid fa-chart-bar" style={{ fontSize: 13, color: '#5E8C87' }} />
+                <i className="fa-solid fa-chart-bar" style={{ fontSize: 13, color: '#10B981' }} />
                 <span style={{ fontSize: 12, fontWeight: 600, color: '#1C2B2A' }}>DRE — Últimos 12 meses</span>
               </div>
               {metricas.length === 0 ? <EmptyState msg="Sem dados de DRE. Execute o recálculo no módulo Relatórios." /> : (
@@ -265,7 +265,7 @@ export default function PortalContadorPage() {
                           <td style={{ padding: '11px 14px', fontWeight: 700, color: '#1C2B2A', fontFamily: 'monospace' }}>{m.competencia?.slice(0, 7)}</td>
                           <td style={{ padding: '11px 14px', textAlign: 'right', fontFamily: "'Inter', sans-serif", fontWeight: 500 }}>{formatBRL(m.receita_bruta)}</td>
                           <td style={{ padding: '11px 14px', textAlign: 'right', fontFamily: "'Inter', sans-serif", color: '#7A8F8E' }}>{formatBRL(m.ebitda)}</td>
-                          <td style={{ padding: '11px 14px', textAlign: 'right', fontFamily: "'Inter', sans-serif", fontWeight: 700, color: m.lucro_liquido >= 0 ? '#5E8C87' : '#E74C3C' }}>
+                          <td style={{ padding: '11px 14px', textAlign: 'right', fontFamily: "'Inter', sans-serif", fontWeight: 700, color: m.lucro_liquido >= 0 ? '#10B981' : '#E74C3C' }}>
                             {formatBRL(m.lucro_liquido)}
                           </td>
                           <td style={{ padding: '11px 14px', textAlign: 'right' }}>
@@ -286,7 +286,7 @@ export default function PortalContadorPage() {
           {!dataLoading && tab === 'lancamentos' && (
             <>
               <div style={{ padding: '12px 16px', borderBottom: '0.5px solid #E2E8E7', background: '#F8FAFA', display: 'flex', alignItems: 'center', gap: 8 }}>
-                <i className="fa-solid fa-list" style={{ fontSize: 13, color: '#5E8C87' }} />
+                <i className="fa-solid fa-list" style={{ fontSize: 13, color: '#10B981' }} />
                 <span style={{ fontSize: 12, fontWeight: 600, color: '#1C2B2A' }}>Lançamentos contábeis</span>
                 <span style={{ fontSize: 10, color: '#7A8F8E', marginLeft: 'auto' }}>{lancamentos.length} registros</span>
               </div>
@@ -294,13 +294,13 @@ export default function PortalContadorPage() {
                 lancamentos.map((l, i) => (
                   <div key={l.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '11px 16px', borderBottom: i < lancamentos.length - 1 ? '0.5px solid #F0F4F3' : 'none' }}>
                     <div style={{ width: 30, height: 30, borderRadius: 8, background: l.tipo === 'credito' ? '#EAF5F3' : '#FEE2E2', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                      <i className={`fa-solid ${l.tipo === 'credito' ? 'fa-arrow-down' : 'fa-arrow-up'}`} style={{ fontSize: 12, color: l.tipo === 'credito' ? '#5E8C87' : '#E74C3C' }} />
+                      <i className={`fa-solid ${l.tipo === 'credito' ? 'fa-arrow-down' : 'fa-arrow-up'}`} style={{ fontSize: 12, color: l.tipo === 'credito' ? '#10B981' : '#E74C3C' }} />
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ fontSize: 12, fontWeight: 600, color: '#1C2B2A', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{l.descricao}</div>
                       <div style={{ fontSize: 10, color: '#7A8F8E', marginTop: 2 }}>{l.competencia?.slice(0, 7)} · {l.origem}</div>
                     </div>
-                    <div style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 13, color: l.tipo === 'credito' ? '#5E8C87' : '#E74C3C', flexShrink: 0 }}>
+                    <div style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 13, color: l.tipo === 'credito' ? '#10B981' : '#E74C3C', flexShrink: 0 }}>
                       {l.tipo === 'credito' ? '+' : '-'}{formatBRL(l.valor)}
                     </div>
                   </div>
@@ -313,7 +313,7 @@ export default function PortalContadorPage() {
           {!dataLoading && tab === 'notas' && (
             <>
               <div style={{ padding: '12px 16px', borderBottom: '0.5px solid #E2E8E7', background: '#F8FAFA', display: 'flex', alignItems: 'center', gap: 8 }}>
-                <i className="fa-solid fa-file-invoice" style={{ fontSize: 13, color: '#5E8C87' }} />
+                <i className="fa-solid fa-file-invoice" style={{ fontSize: 13, color: '#10B981' }} />
                 <span style={{ fontSize: 12, fontWeight: 600, color: '#1C2B2A' }}>Notas fiscais emitidas</span>
                 <span style={{ fontSize: 10, color: '#7A8F8E', marginLeft: 'auto' }}>{notas.length} emitidas</span>
               </div>
@@ -321,7 +321,7 @@ export default function PortalContadorPage() {
                 notas.map((n, i) => (
                   <div key={n.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '11px 16px', borderBottom: i < notas.length - 1 ? '0.5px solid #F0F4F3' : 'none' }}>
                     <div style={{ width: 30, height: 30, borderRadius: 8, background: n.status === 'autorizada' ? '#EAF5F3' : '#FEF3C7', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                      <i className={`fa-solid ${n.status === 'autorizada' ? 'fa-file-check' : 'fa-file-clock'}`} style={{ fontSize: 12, color: n.status === 'autorizada' ? '#5E8C87' : '#D97706' }} />
+                      <i className={`fa-solid ${n.status === 'autorizada' ? 'fa-file-check' : 'fa-file-clock'}`} style={{ fontSize: 12, color: n.status === 'autorizada' ? '#10B981' : '#D97706' }} />
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ fontSize: 12, fontWeight: 600, color: '#1C2B2A' }}>{n.destinatario_nome ?? '—'}</div>
@@ -329,7 +329,7 @@ export default function PortalContadorPage() {
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                       {podeExportar && n.xml_url && (
-                        <a href={n.xml_url} target="_blank" rel="noopener noreferrer" title="Baixar XML" style={{ fontSize: 10.5, fontWeight: 700, padding: '3px 9px', borderRadius: 6, border: '0.5px solid #E2E8E7', color: '#5E8C87', textDecoration: 'none' }}>
+                        <a href={n.xml_url} target="_blank" rel="noopener noreferrer" title="Baixar XML" style={{ fontSize: 10.5, fontWeight: 700, padding: '3px 9px', borderRadius: 6, border: '0.5px solid #E2E8E7', color: '#10B981', textDecoration: 'none' }}>
                           <i className="fa-solid fa-code" style={{ marginRight: 4 }} />XML
                         </a>
                       )}
@@ -353,7 +353,7 @@ export default function PortalContadorPage() {
           {!dataLoading && tab === 'despesas' && (
             <>
               <div style={{ padding: '12px 16px', borderBottom: '0.5px solid #E2E8E7', background: '#F8FAFA', display: 'flex', alignItems: 'center', gap: 8 }}>
-                <i className="fa-solid fa-receipt" style={{ fontSize: 13, color: '#5E8C87' }} />
+                <i className="fa-solid fa-receipt" style={{ fontSize: 13, color: '#10B981' }} />
                 <span style={{ fontSize: 12, fontWeight: 600, color: '#1C2B2A' }}>Despesas</span>
                 <span style={{ fontSize: 10, color: '#7A8F8E', marginLeft: 'auto' }}>{despesas.length} registros</span>
               </div>

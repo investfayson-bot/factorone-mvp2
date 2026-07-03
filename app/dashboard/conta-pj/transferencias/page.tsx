@@ -104,7 +104,7 @@ export default function TransferenciasPage() {
           <div className="kpi-val">{pendentes.length}</div>
           <div className="kpi-delta">{formatBRL(totalAgendado)} a enviar</div>
         </div>
-        <div className="kpi" style={{ borderTop: '3px solid #5E8C87' }}>
+        <div className="kpi" style={{ borderTop: '3px solid #10B981' }}>
           <div className="kpi-lbl">Concluídas</div>
           <div className="kpi-val">{rows.filter(r => r.status === 'concluido').length}</div>
           <div className="kpi-delta up">total no histórico</div>
@@ -129,7 +129,7 @@ export default function TransferenciasPage() {
           return (
             <div key={r.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px', borderBottom: i < rows.length - 1 ? '0.5px solid #F0F4F3' : 'none' }}>
               <div style={{ width: 36, height: 36, borderRadius: 10, background: '#EEF2F1', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                <i className={`fa-solid ${TIPOS.find(t => t.v === r.tipo)?.icon ?? 'fa-bolt'}`} style={{ fontSize: 14, color: '#5E8C87' }} />
+                <i className={`fa-solid ${TIPOS.find(t => t.v === r.tipo)?.icon ?? 'fa-bolt'}`} style={{ fontSize: 14, color: '#10B981' }} />
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ fontSize: 13, fontWeight: 600, color: '#1C2B2A' }}>{r.destinatario_nome}</div>
@@ -159,7 +159,7 @@ export default function TransferenciasPage() {
               {TIPOS.map(t => (
                 <button key={t.v} onClick={() => setForm(p => ({ ...p, tipo: t.v }))} style={{
                   flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, padding: '10px', borderRadius: 10, cursor: 'pointer',
-                  border: form.tipo === t.v ? '1px solid #5E8C87' : '0.5px solid #E2E8E7', background: form.tipo === t.v ? '#EAF5F3' : '#fff',
+                  border: form.tipo === t.v ? '1px solid #10B981' : '0.5px solid #E2E8E7', background: form.tipo === t.v ? '#EAF5F3' : '#fff',
                 }}>
                   <i className={`fa-solid ${t.icon}`} style={{ fontSize: 15, color: form.tipo === t.v ? '#0F6E56' : '#7A8F8E' }} />
                   <span style={{ fontSize: 12, fontWeight: 700, color: form.tipo === t.v ? '#0F6E56' : '#3A5150' }}>{t.label}</span>

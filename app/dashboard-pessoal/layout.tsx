@@ -113,14 +113,14 @@ export default function DashboardPessoalLayout({ children }: { children: React.R
           <div style={{ padding: '8px 8px 8px', marginBottom: 6 }}>
             <Link href="/dashboard" style={{
               display: 'flex', alignItems: 'center', gap: 8, padding: '8px 10px',
-              borderRadius: 8, background: 'rgba(94,140,135,0.12)', textDecoration: 'none',
+              borderRadius: 8, background: 'rgba(16,185,129,0.12)', textDecoration: 'none',
               transition: 'background 0.15s',
             }}>
-              <div style={{ width: 24, height: 24, borderRadius: 6, background: 'rgba(94,140,135,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <i className="fa-solid fa-building" style={{ fontSize: 10, color: '#7EBDB8' }} />
+              <div style={{ width: 24, height: 24, borderRadius: 6, background: 'rgba(16,185,129,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <i className="fa-solid fa-building" style={{ fontSize: 10, color: '#6EE7B7' }} />
               </div>
-              <span style={{ fontSize: 11, color: '#7EBDB8', fontWeight: 600 }}>Modo Empresarial</span>
-              <i className="fa-solid fa-arrow-right" style={{ fontSize: 9, color: '#7EBDB8', marginLeft: 'auto' }} />
+              <span style={{ fontSize: 11, color: '#6EE7B7', fontWeight: 600 }}>Modo Empresarial</span>
+              <i className="fa-solid fa-arrow-right" style={{ fontSize: 9, color: '#6EE7B7', marginLeft: 'auto' }} />
             </Link>
           </div>
           <div className="sb-co" style={{ cursor: 'default' }}>
@@ -129,7 +129,7 @@ export default function DashboardPessoalLayout({ children }: { children: React.R
               <div className="sb-co-name" style={{ maxWidth: 130, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                 {nome || user?.email?.split('@')[0] || 'Você'}
               </div>
-              <div className="sb-co-plan" onClick={sair} style={{ cursor: 'pointer', color: '#7EBDB8' }}>Sair</div>
+              <div className="sb-co-plan" onClick={sair} style={{ cursor: 'pointer', color: '#6EE7B7' }}>Sair</div>
             </div>
           </div>
         </div>

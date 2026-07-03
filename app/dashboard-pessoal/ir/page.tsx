@@ -201,7 +201,7 @@ export default function IRPage() {
                 ].map(({ faixa, aliquota }) => {
                   const ativa = aliquota === faixaLabel(resultado.aliquotaNominal) || (aliquota === 'Isento' && resultado.aliquotaNominal === 0)
                   return (
-                    <tr key={faixa} style={{ background: ativa ? 'rgba(94,140,135,.08)' : 'transparent' }}>
+                    <tr key={faixa} style={{ background: ativa ? 'rgba(16,185,129,.08)' : 'transparent' }}>
                       <td style={{ padding: '5px 4px', color: ativa ? 'var(--navy)' : 'var(--gray-400)', fontWeight: ativa ? 700 : 400 }}>{faixa} {ativa && '←'}</td>
                       <td style={{ textAlign: 'right', padding: '5px 4px', color: ativa ? 'var(--teal)' : 'var(--gray-400)', fontWeight: ativa ? 700 : 400 }}>{aliquota}</td>
                     </tr>

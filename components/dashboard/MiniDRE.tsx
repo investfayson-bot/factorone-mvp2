@@ -129,7 +129,7 @@ export default function MiniDRE({ empresaId }: Props) {
                   {fmt(displayVal)}
                 </span>
                 {varPct === null ? (
-                  <span style={{ fontSize: 9, background: 'rgba(94,140,135,.1)', color: 'var(--teal2)', padding: '1px 5px', borderRadius: 20, fontFamily: "'Inter', system-ui, sans-serif" }}>1º mês</span>
+                  <span style={{ fontSize: 9, background: 'rgba(16,185,129,.1)', color: 'var(--teal2)', padding: '1px 5px', borderRadius: 20, fontFamily: "'Inter', system-ui, sans-serif" }}>1º mês</span>
                 ) : (
                   <span style={{
                     fontSize: 9, fontFamily: "'Inter', system-ui, sans-serif",

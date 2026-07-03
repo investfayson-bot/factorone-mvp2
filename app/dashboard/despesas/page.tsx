@@ -306,7 +306,7 @@ export default function DespesasPage() {
     .sub { font-size: 12px; color: #7A8F8E; margin-bottom: 24px; }
     .header-bar { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; }
     .logo { font-size: 18px; font-weight: 800; color: #1C2B2A; }
-    .logo span { color: #5E8C87; }
+    .logo span { color: #10B981; }
     table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 8px; }
     th { text-align: left; padding: 8px 10px; font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; background: #F4F6F5; color: #7A8F8E; border-bottom: 1px solid #E2E8E7; }
     td { padding: 9px 10px; border-bottom: 1px solid #F0F4F3; color: #1C2B2A; }
@@ -436,19 +436,19 @@ export default function DespesasPage() {
           <div className="kpi-val">{formatBRL(kpis.aAprovar)}</div>
           <div className="kpi-delta warn">aguardando aprovação</div>
         </div>
-        <div className="kpi" style={{ borderTop: '3px solid #5E8C87' }}>
+        <div className="kpi" style={{ borderTop: '3px solid #10B981' }}>
           <div className="kpi-lbl">A pagar
             <div style={{ width: 28, height: 28, borderRadius: 8, background: '#EAF5F3', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <i className="fa-solid fa-check-circle" style={{ fontSize: 12, color: '#5E8C87' }} />
+              <i className="fa-solid fa-check-circle" style={{ fontSize: 12, color: '#10B981' }} />
             </div>
           </div>
           <div className="kpi-val">{formatBRL(kpis.aPagar)}</div>
           <div className="kpi-delta up">↑ já aprovadas</div>
         </div>
-        <div className="kpi" style={{ borderTop: `3px solid ${kpis.economia >= 0 ? '#5E8C87' : '#E74C3C'}` }}>
+        <div className="kpi" style={{ borderTop: `3px solid ${kpis.economia >= 0 ? '#10B981' : '#E74C3C'}` }}>
           <div className="kpi-lbl">Vs mês anterior
             <div style={{ width: 28, height: 28, borderRadius: 8, background: kpis.economia >= 0 ? '#EAF5F3' : '#FEE2E2', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <i className={`fa-solid ${kpis.economia >= 0 ? 'fa-arrow-trend-down' : 'fa-arrow-trend-up'}`} style={{ fontSize: 12, color: kpis.economia >= 0 ? '#5E8C87' : '#E74C3C' }} />
+              <i className={`fa-solid ${kpis.economia >= 0 ? 'fa-arrow-trend-down' : 'fa-arrow-trend-up'}`} style={{ fontSize: 12, color: kpis.economia >= 0 ? '#10B981' : '#E74C3C' }} />
             </div>
           </div>
           <div className="kpi-val">{kpis.economia >= 0 ? '+' : ''}{kpis.economia.toFixed(1)}%</div>
@@ -475,7 +475,7 @@ export default function DespesasPage() {
                   <span style={{ fontFamily: "'Inter', sans-serif", color: '#7A8F8E' }}>{formatBRL(it.valor)} · {it.pct.toFixed(1)}%</span>
                 </div>
                 <div style={{ height: 6, background: '#EEF2F1', borderRadius: 3, overflow: 'hidden' }}>
-                  <div style={{ height: '100%', width: `${Math.min(100, it.pct)}%`, background: '#5E8C87', borderRadius: 3 }} />
+                  <div style={{ height: '100%', width: `${Math.min(100, it.pct)}%`, background: '#10B981', borderRadius: 3 }} />
                 </div>
               </li>
             ))}
@@ -515,8 +515,8 @@ export default function DespesasPage() {
 
       {/* Lote */}
       {selected.size > 0 && (
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'rgba(94,140,135,.08)', border: '1px solid rgba(94,140,135,.2)', borderRadius: 10, padding: '8px 14px', fontSize: 12, marginBottom: 10 }}>
-          <span style={{ fontWeight: 600, color: '#5E8C87' }}>{selected.size} selecionada(s)</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'rgba(16,185,129,.08)', border: '1px solid rgba(16,185,129,.2)', borderRadius: 10, padding: '8px 14px', fontSize: 12, marginBottom: 10 }}>
+          <span style={{ fontWeight: 600, color: '#10B981' }}>{selected.size} selecionada(s)</span>
           <button className="btn-action btn-ghost" style={{ fontSize: 11, padding: '4px 10px' }} onClick={() => void aprovarLote()}>Aprovar</button>
           <button className="btn-action btn-ghost" style={{ fontSize: 11, padding: '4px 10px' }} onClick={() => void marcarPagoLote()}>Pagar</button>
           <button className="btn-action btn-ghost" style={{ fontSize: 11, padding: '4px 10px' }} onClick={() => exportarCsv(rows.filter(r => selected.has(r.id)))}>Exportar</button>

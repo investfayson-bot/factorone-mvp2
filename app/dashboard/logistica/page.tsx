@@ -68,7 +68,7 @@ type Manutencao = {
 }
 
 const STATUS_COLOR: Record<string, string> = {
-  agendada: '#7A8F8E', em_transito: '#5E8C87', entregue: '#16A085',
+  agendada: '#7A8F8E', em_transito: '#10B981', entregue: '#16A085',
   cancelada: '#E74C3C', problema: '#D97706',
 }
 const STATUS_BG: Record<string, string> = {
@@ -81,7 +81,7 @@ const STATUS_LABEL: Record<string, string> = {
 }
 
 const PNEU_STATUS_COLOR: Record<string, string> = {
-  ativo: '#16A085', desgastado: '#D97706', recapado: '#5E8C87', descartado: '#E74C3C',
+  ativo: '#16A085', desgastado: '#D97706', recapado: '#10B981', descartado: '#E74C3C',
 }
 
 const CHECKLIST_ITENS = [
@@ -357,10 +357,10 @@ export default function LogisticaPage() {
 
       {/* KPIs */}
       <div className="kpis" style={{ gridTemplateColumns: 'repeat(5,1fr)' }}>
-        <div className="kpi" style={{ borderTop: '3px solid #5E8C87' }}>
+        <div className="kpi" style={{ borderTop: '3px solid #10B981' }}>
           <div className="kpi-lbl">Receita Fretes
             <div style={{ width: 26, height: 26, borderRadius: 7, background: '#EAF5F3', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <i className="fa-solid fa-truck" style={{ fontSize: 11, color: '#5E8C87' }} />
+              <i className="fa-solid fa-truck" style={{ fontSize: 11, color: '#10B981' }} />
             </div>
           </div>
           <div className="kpi-val">{fmt(receitaFrete)}</div>
@@ -384,13 +384,13 @@ export default function LogisticaPage() {
           <div className="kpi-val">{fmtNum(kmTotal, 0)} km</div>
           <div className="kpi-delta">todas as rotas</div>
         </div>
-        <div className="kpi" style={{ borderTop: `3px solid ${pneusAlerta > 0 ? '#E74C3C' : '#5E8C87'}` }}>
+        <div className="kpi" style={{ borderTop: `3px solid ${pneusAlerta > 0 ? '#E74C3C' : '#10B981'}` }}>
           <div className="kpi-lbl">Pneus Alerta
             <div style={{ width: 26, height: 26, borderRadius: 7, background: pneusAlerta > 0 ? '#FEE2E2' : '#EAF5F3', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <i className="fa-solid fa-circle-exclamation" style={{ fontSize: 11, color: pneusAlerta > 0 ? '#E74C3C' : '#5E8C87' }} />
+              <i className="fa-solid fa-circle-exclamation" style={{ fontSize: 11, color: pneusAlerta > 0 ? '#E74C3C' : '#10B981' }} />
             </div>
           </div>
-          <div className="kpi-val" style={{ color: pneusAlerta > 0 ? '#E74C3C' : '#5E8C87' }}>{pneusAlerta}</div>
+          <div className="kpi-val" style={{ color: pneusAlerta > 0 ? '#E74C3C' : '#10B981' }}>{pneusAlerta}</div>
           <div className={`kpi-delta ${pneusAlerta > 0 ? 'dn' : 'up'}`}>{pneusAlerta > 0 ? '⚠ ≥90% do limite' : '✓ dentro do limite'}</div>
         </div>
         <div className="kpi" style={{ borderTop: '3px solid #D97706' }}>
@@ -457,7 +457,7 @@ export default function LogisticaPage() {
                     <div style={{ fontWeight: 600 }}>{r.origem} → {r.destino}</div>
                     <div style={{ fontSize: 11, color: '#7A8F8E' }}>{r.motorista ?? 'Motorista não definido'}</div>
                   </div>
-                  <div style={{ fontWeight: 700, color: '#5E8C87' }}>{fmt(r.valor_frete)}</div>
+                  <div style={{ fontWeight: 700, color: '#10B981' }}>{fmt(r.valor_frete)}</div>
                 </div>
               ))}
               {rotas.length === 0 && <div style={{ color: '#7A8F8E', fontSize: 13 }}>Nenhuma rota cadastrada</div>}
@@ -536,7 +536,7 @@ export default function LogisticaPage() {
                         <div>{r.carga ?? '—'}</div>
                         {r.peso_kg && <div style={{ fontSize: 11, color: '#7A8F8E' }}>{fmtNum(r.peso_kg, 0)} kg</div>}
                       </td>
-                      <td style={{ fontWeight: 700, color: '#5E8C87', fontFamily: 'DM Mono, monospace' }}>{fmt(r.valor_frete)}</td>
+                      <td style={{ fontWeight: 700, color: '#10B981', fontFamily: 'DM Mono, monospace' }}>{fmt(r.valor_frete)}</td>
                       <td>
                         <span style={{ fontSize: 11, padding: '3px 8px', borderRadius: 12, background: STATUS_BG[r.status], color: STATUS_COLOR[r.status], fontWeight: 600 }}>
                           {STATUS_LABEL[r.status]}
@@ -546,7 +546,7 @@ export default function LogisticaPage() {
                       <td>
                         {r.lat_atual && r.lng_atual ? (
                           <a href={`https://www.google.com/maps?q=${r.lat_atual},${r.lng_atual}`} target="_blank" rel="noopener noreferrer"
-                            style={{ fontSize: 11, color: '#5E8C87', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}>
+                            style={{ fontSize: 11, color: '#10B981', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}>
                             <i className="fa-solid fa-location-dot" /> Ver
                           </a>
                         ) : <span style={{ fontSize: 11, color: '#7A8F8E' }}>—</span>}
@@ -657,7 +657,7 @@ export default function LogisticaPage() {
                       <td style={{ fontSize: 12 }}>{new Date(m.data + 'T12:00:00').toLocaleDateString('pt-BR')}</td>
                       <td style={{ fontWeight: 600 }}>{m.veiculo_nome}</td>
                       <td>
-                        <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 12, background: m.tipo === 'preventiva' ? '#dcfce7' : m.tipo === 'corretiva' ? '#fee2e2' : '#e0f2fe', color: m.tipo === 'preventiva' ? '#16A085' : m.tipo === 'corretiva' ? '#E74C3C' : '#5E8C87', fontWeight: 600 }}>
+                        <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 12, background: m.tipo === 'preventiva' ? '#dcfce7' : m.tipo === 'corretiva' ? '#fee2e2' : '#e0f2fe', color: m.tipo === 'preventiva' ? '#16A085' : m.tipo === 'corretiva' ? '#E74C3C' : '#10B981', fontWeight: 600 }}>
                           {m.tipo}
                         </span>
                       </td>
@@ -738,16 +738,16 @@ export default function LogisticaPage() {
             {!rotaDetalhe && (
               <div
                 onClick={() => romaneioRef.current?.click()}
-                style={{ border: '2px dashed #5E8C87', borderRadius: 10, padding: '14px 20px', marginBottom: 20, cursor: 'pointer', background: ocrResult ? '#e0fdf4' : '#f0fdfa', display: 'flex', alignItems: 'center', gap: 12 }}
+                style={{ border: '2px dashed #10B981', borderRadius: 10, padding: '14px 20px', marginBottom: 20, cursor: 'pointer', background: ocrResult ? '#e0fdf4' : '#f0fdfa', display: 'flex', alignItems: 'center', gap: 12 }}
               >
-                <i className="fa-solid fa-file-image" style={{ fontSize: 24, color: '#5E8C87' }} />
+                <i className="fa-solid fa-file-image" style={{ fontSize: 24, color: '#10B981' }} />
                 <div>
-                  <div style={{ fontWeight: 600, color: '#5E8C87', fontSize: 13 }}>
+                  <div style={{ fontWeight: 600, color: '#10B981', fontSize: 13 }}>
                     {ocrLoading ? 'Lendo romaneio com IA...' : ocrResult ? 'Romaneio lido! Campos preenchidos.' : 'OCR Romaneio — clique para enviar imagem'}
                   </div>
                   <div style={{ fontSize: 11, color: '#7A8F8E' }}>JPG, PNG ou PDF — FactorOne IA extrai origem, destino, carga e valor</div>
                 </div>
-                {ocrLoading && <i className="fa-solid fa-spinner fa-spin" style={{ color: '#5E8C87', marginLeft: 'auto' }} />}
+                {ocrLoading && <i className="fa-solid fa-spinner fa-spin" style={{ color: '#10B981', marginLeft: 'auto' }} />}
                 {ocrResult && <i className="fa-solid fa-circle-check" style={{ color: '#16A085', marginLeft: 'auto', fontSize: 20 }} />}
               </div>
             )}

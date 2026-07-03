@@ -1,7 +1,7 @@
 // Ilustrações flat (estilo unDraw) na paleta FactorOne — SVG inline, sem assets externos.
 
 const NAVY = '#1C2B2A'
-const TEAL = '#5E8C87'
+const TEAL = '#10B981'
 const TEAL_SOFT = '#8FB3AF'
 const TEAL_BG = '#E3EEEC'
 const CREAM = '#F5F6F5'

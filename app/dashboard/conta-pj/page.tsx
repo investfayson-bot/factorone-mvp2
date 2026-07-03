@@ -12,12 +12,12 @@ type Conta = { id: string; saldo_disponivel: number; saldo: number; agencia: str
 type Tx = { id: string; tipo: 'credito' | 'debito'; descricao: string; data_transacao: string; valor: number; contraparte_nome?: string | null }
 
 const ACOES = [
-  { label: 'PIX', emoji: 'fa-bolt', href: '/dashboard/conta-pj/transferencias', bg: 'rgba(94,140,135,.1)', color: 'var(--teal)' },
+  { label: 'PIX', emoji: 'fa-bolt', href: '/dashboard/conta-pj/transferencias', bg: 'rgba(16,185,129,.1)', color: 'var(--teal)' },
   { label: 'Pagar', emoji: 'fa-sack-dollar', href: '/dashboard/financeiro', bg: 'rgba(26,43,74,.08)', color: 'var(--navy)' },
   { label: 'Cobrar', emoji: 'fa-clipboard-list', href: '/dashboard/financeiro', bg: 'rgba(184,146,42,.1)', color: 'var(--gold)' },
   { label: 'Transferir', emoji: 'fa-right-left', href: '/dashboard/conta-pj/transferencias', bg: 'rgba(124,58,237,.08)', color: '#7C3AED' },
   { label: 'Extrato', emoji: 'fa-chart-column', href: '/dashboard/conta-pj/extrato', bg: 'rgba(45,155,111,.08)', color: 'var(--green)' },
-  { label: 'Open Finance', emoji: 'fa-link', href: '/dashboard/conta-pj/conectar-banco', bg: 'rgba(94,140,135,.08)', color: 'var(--teal)' },
+  { label: 'Open Finance', emoji: 'fa-link', href: '/dashboard/conta-pj/conectar-banco', bg: 'rgba(16,185,129,.08)', color: 'var(--teal)' },
 ]
 
 const FUNCIONALIDADES = [
@@ -126,7 +126,7 @@ function FileUploadBox({ label, accept, value, onChange }: { label: string; acce
   return (
     <div
       onClick={() => ref.current?.click()}
-      style={{ border: `1.5px dashed ${value ? 'var(--teal)' : 'var(--gray-200)'}`, borderRadius: 10, padding: '18px 16px', textAlign: 'center', cursor: 'pointer', background: value ? 'rgba(94,140,135,.04)' : 'var(--gray-50)', transition: 'all .15s', marginBottom: 12 }}
+      style={{ border: `1.5px dashed ${value ? 'var(--teal)' : 'var(--gray-200)'}`, borderRadius: 10, padding: '18px 16px', textAlign: 'center', cursor: 'pointer', background: value ? 'rgba(16,185,129,.04)' : 'var(--gray-50)', transition: 'all .15s', marginBottom: 12 }}
     >
       <input ref={ref} type="file" accept={accept} style={{ display: 'none' }} onChange={e => { if (e.target.files?.[0]) onChange(e.target.files[0].name) }} />
       {value ? (
@@ -627,10 +627,10 @@ export default function ContaPJPage() {
       {/* Banner premium — digital bank */}
       <div style={{ position: 'relative', borderRadius: 16, overflow: 'hidden', marginBottom: 18, minHeight: 148, backgroundImage: 'linear-gradient(90deg, rgba(28,43,42,.96) 0%, rgba(28,43,42,.72) 48%, rgba(28,43,42,.12) 100%), url(/banco-banner.jpg)', backgroundSize: 'cover', backgroundPosition: 'center right' }}>
         <div style={{ padding: '24px 28px', maxWidth: '64%' }}>
-          <div style={{ fontSize: 10.5, fontWeight: 700, color: '#7EBDB8', textTransform: 'uppercase', letterSpacing: '.08em' }}>FactorOne Bank</div>
+          <div style={{ fontSize: 10.5, fontWeight: 700, color: '#6EE7B7', textTransform: 'uppercase', letterSpacing: '.08em' }}>FactorOne Bank</div>
           <div style={{ fontSize: 21, fontWeight: 800, color: '#fff', letterSpacing: '-.03em', margin: '4px 0 10px', lineHeight: 1.15 }}>Seu banco PJ — sem tarifas, com IA</div>
           <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-            <Link href="/dashboard/conta-pj/transferencias" style={{ background: '#5E8C87', color: '#fff', textDecoration: 'none', fontSize: 12, fontWeight: 700, padding: '8px 16px', borderRadius: 9 }}><i className="fa-solid fa-bolt" style={{ marginRight: 6 }} />Fazer PIX</Link>
+            <Link href="/dashboard/conta-pj/transferencias" style={{ background: '#10B981', color: '#fff', textDecoration: 'none', fontSize: 12, fontWeight: 700, padding: '8px 16px', borderRadius: 9 }}><i className="fa-solid fa-bolt" style={{ marginRight: 6 }} />Fazer PIX</Link>
             <Link href="/dashboard/cartoes" style={{ background: 'rgba(255,255,255,.14)', color: '#fff', textDecoration: 'none', fontSize: 12, fontWeight: 700, padding: '8px 16px', borderRadius: 9 }}><i className="fa-solid fa-credit-card" style={{ marginRight: 6 }} />Cartões</Link>
           </div>
         </div>
@@ -675,15 +675,15 @@ export default function ContaPJPage() {
             {contas.map(c => {
               const sel = conta?.id === c.id
               return (
-                <button key={c.id} onClick={() => setConta(c)} style={{ textAlign: 'left', cursor: 'pointer', border: `1px solid ${sel ? 'var(--teal)' : 'var(--gray-100)'}`, borderRadius: 10, padding: '14px 16px', background: sel ? 'rgba(94,140,135,.05)' : '#fff', transition: 'all .15s' }}>
+                <button key={c.id} onClick={() => setConta(c)} style={{ textAlign: 'left', cursor: 'pointer', border: `1px solid ${sel ? 'var(--teal)' : 'var(--gray-100)'}`, borderRadius: 10, padding: '14px 16px', background: sel ? 'rgba(16,185,129,.05)' : '#fff', transition: 'all .15s' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                       <div style={{ width: 30, height: 30, borderRadius: 8, background: 'var(--navy)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                        <i className="fa-solid fa-building-columns" style={{ fontSize: 13, color: '#7EBDB8' }} />
+                        <i className="fa-solid fa-building-columns" style={{ fontSize: 13, color: '#6EE7B7' }} />
                       </div>
                       <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy)' }}>{c.banco_nome ?? 'FactorOne Bank'}</div>
                     </div>
-                    {c.is_principal && <span style={{ fontSize: 9, fontWeight: 700, color: 'var(--teal)', background: 'rgba(94,140,135,.12)', padding: '2px 7px', borderRadius: 20 }}>PRINCIPAL</span>}
+                    {c.is_principal && <span style={{ fontSize: 9, fontWeight: 700, color: 'var(--teal)', background: 'rgba(16,185,129,.12)', padding: '2px 7px', borderRadius: 20 }}>PRINCIPAL</span>}
                   </div>
                   <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--navy)', fontFamily: "'Inter', system-ui, sans-serif", letterSpacing: '-.02em' }}>
                     {hide ? '••••••' : formatBRL(Number(c.saldo_disponivel ?? c.saldo ?? 0))}
