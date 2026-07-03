@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
 import { formatBRL } from '@/lib/currency-brl'
+import EditorialBanner from '@/components/ui/EditorialBanner'
 
 const fmtC = (v: number) => {
   const a = Math.abs(v)
@@ -88,6 +89,20 @@ export default function MaPage() {
           <i className="fa-solid fa-gauge-high" style={{ marginRight: 6 }} />Indicadores
         </Link>
       </div>
+
+      {/* Banner que ensina o módulo (não deixa a tela crua) */}
+      <EditorialBanner
+        image="/img/team-working.png"
+        alt="Prepare sua empresa para M&A"
+        variant="strip"
+        imageSide="right"
+        eyebrow="Preparação para venda ou captação"
+        title={<>Deixe a empresa pronta<br />para ser avaliada.</>}
+        subtitle="Valuation estimado a partir dos seus números reais, checklist de due diligence e um score de prontidão — o que investidores e compradores vão pedir."
+        focal="center"
+        height={176}
+        style={{ marginBottom: 22 }}
+      />
 
       {/* Valuation */}
       <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.04em', marginBottom: 10 }}>Valuation estimado</div>

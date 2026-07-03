@@ -312,6 +312,21 @@ export default function ContaPJPage() {
   // ─── WIZARD (no account) ─────────────────────────────────────────────────
   if (!conta) return (
     <div style={{ maxWidth: wStep === 5 ? 900 : 640, margin: '0 auto', padding: '24px 16px' }}>
+      {wStep === 1 && (
+        <EditorialBanner
+          image="/img/onboarding-welcome.png"
+          alt="Abra sua conta PJ FactorOne"
+          variant="strip"
+          imageSide="right"
+          badge="Conta PJ · grátis"
+          eyebrow="Abertura 100% digital"
+          title={<>Sua conta PJ<br />em ~2 minutos.</>}
+          subtitle="Sem mensalidade, sem fila de banco. Preencha os dados abaixo e comece a receber hoje."
+          focal="center top"
+          height={172}
+          style={{ marginBottom: 24 }}
+        />
+      )}
       <StepIndicator step={wStep} goTo={setWStep} />
 
       {/* STEP 1 — Informações da empresa */}

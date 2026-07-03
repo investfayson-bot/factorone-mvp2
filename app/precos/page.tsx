@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
+import EditorialBanner from '@/components/ui/EditorialBanner'
 import toast from 'react-hot-toast'
 
 type TabTipo = 'pf' | 'pj' | 'familia'
@@ -128,20 +129,25 @@ export default function PrecosPage() {
       </nav>
 
       <div style={{ maxWidth: 960, margin: '0 auto', padding: '48px 20px' }}>
-        {/* Hero */}
-        <div style={{ textAlign: 'center', marginBottom: 40 }}>
-          <div style={{ fontSize: 11, fontWeight: 700, color: '#3D7A6E', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 12 }}>Planos & Preços</div>
-          <h1 style={{ fontSize: 36, fontWeight: 800, color: '#13201D', letterSpacing: '-0.03em', margin: '0 0 12px', fontFamily: "'Inter', sans-serif", lineHeight: 1.15 }}>
-            O CFO digital que sua empresa merecia
-          </h1>
-          <p style={{ fontSize: 15, color: '#7B8C88', maxWidth: 520, margin: '0 auto 24px', lineHeight: 1.6 }}>
-            30 dias grátis, sem cartão. Cancele quando quiser. Comece hoje e veja seus números com clareza.
-          </p>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: '#E9F0ED', border: '0.5px solid #3D7A6E', borderRadius: 20, padding: '6px 14px' }}>
-            <i className="fa-solid fa-shield-halved" style={{ fontSize: 11, color: '#3D7A6E' }} />
-            <span style={{ fontSize: 11, color: '#2B564D', fontWeight: 600 }}>Dados protegidos com criptografia bancária · RLS ativo</span>
-          </div>
-        </div>
+        {/* Hero — banner editorial com cartão */}
+        <EditorialBanner
+          image="/img/card-product.png"
+          alt="Cartão corporativo FactorOne"
+          variant="split"
+          imageSide="right"
+          eyebrow="Planos & Preços"
+          title={<>O CFO digital que<br />sua empresa merecia.</>}
+          subtitle="30 dias grátis, sem cartão. Cancele quando quiser. Comece hoje e veja seus números com clareza."
+          stats={[
+            { valor: '30 dias', label: 'grátis' },
+            { valor: 'R$ 0', label: 'sem cartão' },
+            { valor: 'RLS', label: 'cripto bancária' },
+          ]}
+          ctas={[{ label: 'Começar grátis', href: '/auth', variant: 'solid' }]}
+          focal="center"
+          height={280}
+          style={{ marginBottom: 40 }}
+        />
 
         {/* Toggle */}
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 32 }}>
