@@ -55,6 +55,8 @@ export default function ClassificarPage() {
   const [sugerindo, setSugerindo] = useState(false)
   const [analise, setAnalise] = useState<string[]>([])
   const [analisando, setAnalisando] = useState(false)
+  const [proj, setProj] = useState<{ saldoAtual: number; d30: number; d90: number; avgBurnDaily: number; avgReceiveDaily: number } | null>(null)
+  const [projetando, setProjetando] = useState(false)
 
   const carregar = useCallback(async () => {
     setLoading(true)
@@ -143,6 +145,16 @@ export default function ClassificarPage() {
       setAnalise(Array.isArray(j.analise) ? j.analise : [])
     } catch { toast.error('Falha na análise') }
     finally { setAnalisando(false) }
+  }
+  async function projetar() {
+    setProjetando(true)
+    try {
+      const r = await fetch('/api/cashflow/previsao', { headers: token ? { Authorization: `Bearer ${token}` } : {} })
+      const j = await r.json()
+      if (r.ok) setProj(j)
+      else toast.error(j.error || 'Falha na projeção')
+    } catch { toast.error('Falha na projeção') }
+    finally { setProjetando(false) }
   }
   function confirmarUm(t: Tx) { void classificar({ [t.id]: escolhas[t.id] ?? sugerir(t.descricao) }) }
   function confirmarLote() {
@@ -329,6 +341,40 @@ export default function ClassificarPage() {
                   </div>
                 ))}
               </div>
+            )}
+          </div>
+
+          {/* Projeção de caixa (Tier 3) */}
+          <div className="txs-card" style={{ padding: '18px 20px', marginTop: 12 }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+              <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--ink)', display: 'flex', alignItems: 'center', gap: 8 }}>
+                <i className="fa-solid fa-chart-line" style={{ color: 'var(--sage)' }} />Projeção de caixa
+              </div>
+              <button className="btn-action" style={{ fontSize: 12, padding: '7px 14px' }} disabled={projetando} onClick={() => void projetar()}>
+                <i className={`fa-solid ${projetando ? 'fa-circle-notch fa-spin' : 'fa-wand-magic-sparkles'}`} style={{ marginRight: 6 }} />{projetando ? 'Calculando…' : 'Projetar'}
+              </button>
+            </div>
+            {!proj ? (
+              <div style={{ fontSize: 12.5, color: 'var(--ink-mut)' }}>Clique em <b>Projetar</b> — estima seu saldo em 30 e 90 dias com base no ritmo atual e avisa se falta caixa.</div>
+            ) : (
+              <>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 12, marginBottom: 12 }}>
+                  {([['Hoje', proj.saldoAtual], ['Em 30 dias', proj.d30], ['Em 90 dias', proj.d90]] as const).map(([l, v]) => (
+                    <div key={l}>
+                      <div style={{ fontSize: 10, color: 'var(--ink-mut)', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: 4 }}>{l}</div>
+                      <div style={{ fontSize: 18, fontWeight: 700, color: v >= 0 ? IN : OUT, fontVariantNumeric: 'tabular-nums' }}>{formatBRL(v)}</div>
+                    </div>
+                  ))}
+                </div>
+                <div style={{ fontSize: 12.5, color: 'var(--ink)', display: 'flex', gap: 8, alignItems: 'flex-start' }}>
+                  <i className="fa-solid fa-circle-info" style={{ color: 'var(--sage)', marginTop: 3, fontSize: 11 }} />
+                  <span>{(() => {
+                    const net = proj.avgReceiveDaily - proj.avgBurnDaily
+                    if (proj.d90 < 0) { const dias = net < 0 ? Math.max(0, Math.round(proj.saldoAtual / Math.abs(net))) : 90; return `Atenção: no ritmo atual, o caixa fica negativo em ~${dias} dias. Priorize receber ou cortar gasto.` }
+                    return `No ritmo atual, o caixa ${net >= 0 ? 'cresce' : 'cai'} cerca de ${formatBRL(Math.abs(net) * 30)}/mês. Situação saudável.`
+                  })()}</span>
+                </div>
+              </>
             )}
           </div>
         </div>
