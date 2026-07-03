@@ -43,6 +43,14 @@ export async function POST(req: NextRequest) {
   const body = await req.json().catch(() => ({})) as { action?: string }
   const action = body.action ?? 'seed'
 
+  // ZERAR TUDO: apaga transações + extrato e zera os saldos (começar do zero).
+  if (action === 'reset') {
+    await db.from('transacoes').delete().eq('empresa_id', empresaId)
+    await db.from('extrato_bancario').delete().eq('empresa_id', empresaId)
+    await db.from('contas_bancarias').update({ saldo: 0, saldo_disponivel: 0 }).eq('empresa_id', empresaId)
+    return NextResponse.json({ ok: true, reset: true })
+  }
+
   // Limpa sempre as linhas de demo antes (idempotente); 'clear' só limpa.
   await db.from('transacoes').delete().eq('empresa_id', empresaId).ilike('descricao', `%${DEMO_TAG}%`)
   if (action === 'clear') return NextResponse.json({ ok: true, cleared: true })

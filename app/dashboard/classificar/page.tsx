@@ -44,7 +44,7 @@ export default function ClassificarPage() {
   const [token, setToken] = useState('')
   const [txs, setTxs] = useState<Tx[]>([])
   const [escolhas, setEscolhas] = useState<Record<string, string>>({}) // id -> categoria escolhida (a revisar)
-  const [aba, setAba] = useState<'revisar' | 'classificadas'>('revisar')
+  const [aba, setAba] = useState<'revisar' | 'classificadas' | 'resumo'>('revisar')
   const [sel, setSel] = useState<Set<string>>(new Set())
   const [loading, setLoading] = useState(true)
   const [busy, setBusy] = useState(false)
@@ -77,15 +77,23 @@ export default function ClassificarPage() {
   const auth = useMemo(() => ({ 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) }), [token])
   const revisar = useMemo(() => txs.filter(t => !t.categoria || t.categoria.trim() === ''), [txs])
   const classificadas = useMemo(() => txs.filter(t => t.categoria && t.categoria.trim() !== ''), [txs])
-  const lista = aba === 'revisar' ? revisar : classificadas
+  const lista = aba === 'classificadas' ? classificadas : revisar
+  const entrou = useMemo(() => txs.filter(t => t.tipo === 'entrada').reduce((s, t) => s + Number(t.valor), 0), [txs])
+  const saiu = useMemo(() => txs.filter(t => t.tipo === 'saida').reduce((s, t) => s + Number(t.valor), 0), [txs])
+  const porCategoria = useMemo(() => {
+    const m = new Map<string, number>()
+    for (const t of txs) if (t.tipo === 'saida' && t.categoria && t.categoria.trim()) m.set(t.categoria, (m.get(t.categoria) || 0) + Number(t.valor))
+    return Array.from(m.entries()).sort((a, b) => b[1] - a[1])
+  }, [txs])
 
-  async function popular(action: 'seed' | 'clear') {
+  async function popular(action: 'seed' | 'clear' | 'reset') {
+    if (action === 'reset' && !window.confirm('Zerar TUDO? Isso apaga todas as transações e zera os saldos desta conta. Não dá pra desfazer.')) return
     setBusy(true)
     try {
       const r = await fetch('/api/demo/seed', { method: 'POST', headers: auth, body: JSON.stringify({ action }) })
       const j = await r.json()
       if (!r.ok) throw new Error(j.error || 'Falha')
-      toast.success(action === 'clear' ? 'Dados de teste removidos' : `${j.inseridas} transações de teste criadas`)
+      toast.success(action === 'reset' ? 'Tudo zerado — começando do zero' : action === 'clear' ? 'Dados de teste removidos' : `${j.inseridas} transações de teste criadas`)
       await carregar()
     } catch (e) { toast.error(e instanceof Error ? e.message : 'Erro') }
     finally { setBusy(false) }
@@ -156,7 +164,9 @@ export default function ClassificarPage() {
           <div className="page-sub">Banco e cartão numa caixa só. Confirmou → cai na DRE e no dashboard.</div>
         </div>
         <div style={{ display: 'flex', gap: 8 }}>
-          <button className="btn-ghost" style={{ fontSize: 12 }} disabled={busy} onClick={() => void popular('clear')}>Limpar teste</button>
+          <button className="btn-ghost" style={{ fontSize: 12, color: '#B0413E', borderColor: '#B0413E' }} disabled={busy} onClick={() => void popular('reset')}>
+            <i className="fa-solid fa-trash-can" style={{ marginRight: 6 }} />Zerar tudo
+          </button>
           <button className="btn-ghost" style={{ fontSize: 12 }} disabled={busy} onClick={() => void popular('seed')}>
             <i className="fa-solid fa-wand-magic-sparkles" style={{ marginRight: 6 }} />Dados de teste
           </button>
@@ -219,7 +229,7 @@ export default function ClassificarPage() {
 
       {/* Abas */}
       <div style={{ display: 'flex', gap: 4, marginBottom: 12 }}>
-        {([['revisar', `A revisar (${revisar.length})`], ['classificadas', `Classificadas (${classificadas.length})`]] as const).map(([k, label]) => (
+        {([['revisar', `A revisar (${revisar.length})`], ['classificadas', `Classificadas (${classificadas.length})`], ['resumo', 'Resumo']] as const).map(([k, label]) => (
           <button key={k} onClick={() => setAba(k)} style={{
             fontSize: 12.5, fontWeight: aba === k ? 700 : 500, padding: '8px 16px', borderRadius: 8, cursor: 'pointer',
             border: `1px solid ${aba === k ? 'var(--sage)' : 'var(--line)'}`,
@@ -227,6 +237,45 @@ export default function ClassificarPage() {
           }}>{label}</button>
         ))}
       </div>
+
+      {aba === 'resumo' && (
+        <div style={{ marginBottom: 16 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 12, marginBottom: 16 }}>
+            {[
+              { lbl: 'Entrou', v: entrou, cor: IN, ic: 'fa-arrow-down' },
+              { lbl: 'Saiu', v: saiu, cor: OUT, ic: 'fa-arrow-up' },
+              { lbl: 'Resultado', v: entrou - saiu, cor: (entrou - saiu) >= 0 ? IN : OUT, ic: 'fa-scale-balanced' },
+            ].map(k => (
+              <div key={k.lbl} className="kpi" style={{ padding: '14px 16px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <span style={{ fontSize: 10, fontWeight: 600, color: 'var(--ink-mut)', textTransform: 'uppercase', letterSpacing: '.08em' }}>{k.lbl}</span>
+                  <i className={`fa-solid ${k.ic}`} style={{ fontSize: 12, color: k.cor }} />
+                </div>
+                <div style={{ fontSize: 22, fontWeight: 700, color: k.cor, marginTop: 8, fontVariantNumeric: 'tabular-nums' }}>{formatBRL(k.v)}</div>
+              </div>
+            ))}
+          </div>
+          <div className="txs-card" style={{ padding: '18px 20px' }}>
+            <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--ink)', marginBottom: 14 }}>Onde você gastou</div>
+            {porCategoria.length === 0 ? (
+              <div style={{ color: 'var(--ink-mut)', fontSize: 13 }}>Classifique as saídas pra ver o ranking por categoria.</div>
+            ) : porCategoria.map(([cat, val]) => {
+              const pct = saiu > 0 ? (val / saiu) * 100 : 0
+              return (
+                <div key={cat} style={{ marginBottom: 12 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12.5, marginBottom: 5 }}>
+                    <span style={{ color: 'var(--ink)', fontWeight: 600 }}>{cat}</span>
+                    <span style={{ color: 'var(--ink)', fontWeight: 700, fontVariantNumeric: 'tabular-nums' }}>{formatBRL(val)} <span style={{ color: 'var(--ink-mut)', fontWeight: 500 }}>· {pct.toFixed(0)}%</span></span>
+                  </div>
+                  <div style={{ height: 8, background: 'var(--paper-2)', borderRadius: 4, overflow: 'hidden' }}>
+                    <div style={{ height: '100%', width: `${pct}%`, background: 'var(--sage)', borderRadius: 4 }} />
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      )}
 
       {aba === 'revisar' && sel.size > 0 && (
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 16px', background: 'var(--sage-tint)', border: '1px solid var(--sage)', borderRadius: 10, marginBottom: 12 }}>
@@ -238,7 +287,7 @@ export default function ClassificarPage() {
         </div>
       )}
 
-      <div className="txs-card">
+      <div className="txs-card" style={{ display: aba === 'resumo' ? 'none' : undefined }}>
         <div style={{ display: 'grid', gridTemplateColumns: cols, gap: 12, padding: '11px 18px', borderBottom: '1px solid var(--line)', background: 'var(--surface-2)', fontSize: 10, fontWeight: 600, color: 'var(--ink-mut)', textTransform: 'uppercase', letterSpacing: '.08em' }}>
           {aba === 'revisar' && <input type="checkbox" checked={sel.size === revisar.length && revisar.length > 0} onChange={toggleTodos} style={{ accentColor: 'var(--sage)' }} />}
           <span>Data</span><span>Descrição</span><span style={{ textAlign: 'right' }}>Valor</span><span>Categoria</span><span />
