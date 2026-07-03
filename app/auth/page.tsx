@@ -1,10 +1,8 @@
 'use client'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import { FinanceHero } from '@/components/ui/Illustration'
-
-type TipoConta = 'pessoal' | 'empresarial' | null
 
 const FEATURES = [
   'CFO Inteligente com IA em tempo real',
@@ -21,18 +19,21 @@ export default function AuthPage() {
   const [mostrarSenha, setMostrarSenha] = useState(false)
   const [loading, setLoading] = useState(false)
   const [msg, setMsg] = useState({ text: '', type: '' })
-  const [tipoConta, setTipoConta] = useState<TipoConta>(null)
+  const [escolha, setEscolha] = useState(false) // login com PJ e PF: mostra escolha
   const router = useRouter()
 
-  useEffect(() => {
-    const t = localStorage.getItem('fo_account_type') as TipoConta
-    if (t === 'pessoal' || t === 'empresarial') setTipoConta(t)
-  }, [])
-
-  function escolherTipo(t: TipoConta) {
-    setTipoConta(t)
-    if (t) localStorage.setItem('fo_account_type', t)
-    else localStorage.removeItem('fo_account_type')
+  // Depois do login: só PJ -> painel PJ; só PF -> painel PF; os dois -> escolher; novo -> onboarding.
+  async function routeAfterLogin() {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) { setLoading(false); return }
+    const { data: perfis } = await supabase.from('perfil_usuario').select('tipo').eq('user_id', user.id)
+    const tipos = (perfis ?? []).map(p => (p as { tipo: string }).tipo)
+    const hasPJ = tipos.includes('empresarial')
+    const hasPF = tipos.includes('pessoal')
+    if (hasPJ && hasPF) { setEscolha(true); setLoading(false); return }
+    if (hasPJ) { router.push('/dashboard'); return }
+    if (hasPF) { router.push('/dashboard-pessoal'); return }
+    router.push('/onboarding') // novo usuário: escolhe o perfil e configura
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -43,7 +44,7 @@ export default function AuthPage() {
       if (modo === 'entrar') {
         const { error } = await supabase.auth.signInWithPassword({ email, password: senha })
         if (error) throw error
-        router.push('/onboarding')
+        await routeAfterLogin()
       } else {
         const { error } = await supabase.auth.signUp({ email, password: senha })
         if (error) throw error
@@ -66,9 +67,8 @@ export default function AuthPage() {
   async function usarDemo() {
     setLoading(true)
     const { error } = await supabase.auth.signInWithPassword({ email: 'demo@factorone.com.br', password: 'demo123456' })
-    if (!error) router.push('/onboarding')
-    else setMsg({ text: 'Conta demo não encontrada. Crie uma conta primeiro.', type: 'error' })
-    setLoading(false)
+    if (!error) { await routeAfterLogin() }
+    else { setMsg({ text: 'Conta demo não encontrada. Crie uma conta primeiro.', type: 'error' }); setLoading(false) }
   }
 
   return (
@@ -105,26 +105,23 @@ export default function AuthPage() {
       {/* Right panel — form */}
       <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 32 }}>
         <div style={{ background: '#fff', borderRadius: 16, padding: 32, width: 400, maxWidth: '100%', border: '1px solid var(--gray-100)', boxShadow: '0 4px 32px rgba(0,0,0,.07)' }}>
-          {!tipoConta ? (
+          {escolha ? (
             <div>
-              <div style={{ fontFamily: "var(--font-sans)", fontSize: 18, fontWeight: 800, color: 'var(--navy)', marginBottom: 6 }}>Você é Pessoa Física ou Empresa?</div>
-              <div style={{ fontSize: 12, color: 'var(--gray-400)', marginBottom: 20 }}>Escolha como vai usar o FactorOne antes de continuar.</div>
+              <div style={{ fontFamily: "var(--font-sans)", fontSize: 18, fontWeight: 800, color: 'var(--navy)', marginBottom: 6 }}>Como você quer entrar?</div>
+              <div style={{ fontSize: 12, color: 'var(--gray-400)', marginBottom: 20 }}>Sua conta tem os dois perfis. Escolha por onde começar.</div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                <button onClick={() => escolherTipo('empresarial')} style={{ display: 'flex', gap: 12, alignItems: 'center', padding: '16px 18px', borderRadius: 12, border: '2px solid var(--teal)', background: 'rgba(61,122,110,.05)', cursor: 'pointer', textAlign: 'left' }}>
+                <button onClick={() => router.push('/dashboard')} style={{ display: 'flex', gap: 12, alignItems: 'center', padding: '16px 18px', borderRadius: 12, border: '2px solid var(--teal)', background: 'rgba(61,122,110,.05)', cursor: 'pointer', textAlign: 'left' }}>
                   <div style={{ width: 42, height: 42, borderRadius: 10, background: 'var(--teal)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><i className="fa-solid fa-building" style={{ color: '#fff', fontSize: 16 }} /></div>
-                  <div><div style={{ fontSize: 14, fontWeight: 700, color: 'var(--navy)' }}>Empresa (PJ)</div><div style={{ fontSize: 11, color: 'var(--gray-400)' }}>Gestão financeira completa: DRE, fluxo de caixa, NF-e.</div></div>
+                  <div><div style={{ fontSize: 14, fontWeight: 700, color: 'var(--navy)' }}>Empresa (PJ)</div><div style={{ fontSize: 11, color: 'var(--gray-400)' }}>DRE, fluxo de caixa, conta PJ, NF-e.</div></div>
                 </button>
-                <button onClick={() => escolherTipo('pessoal')} style={{ display: 'flex', gap: 12, alignItems: 'center', padding: '16px 18px', borderRadius: 12, border: '1px solid var(--gray-100)', background: '#fff', cursor: 'pointer', textAlign: 'left' }}>
+                <button onClick={() => router.push('/dashboard-pessoal')} style={{ display: 'flex', gap: 12, alignItems: 'center', padding: '16px 18px', borderRadius: 12, border: '1px solid var(--gray-100)', background: '#fff', cursor: 'pointer', textAlign: 'left' }}>
                   <div style={{ width: 42, height: 42, borderRadius: 10, background: 'var(--gray-100)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><i className="fa-solid fa-user" style={{ color: 'var(--gray-500)', fontSize: 16 }} /></div>
-                  <div><div style={{ fontSize: 14, fontWeight: 700, color: 'var(--navy)' }}>Pessoa Física</div><div style={{ fontSize: 11, color: 'var(--gray-400)' }}>Controle de gastos, metas e orçamento pessoal.</div></div>
+                  <div><div style={{ fontSize: 14, fontWeight: 700, color: 'var(--navy)' }}>Pessoa Física</div><div style={{ fontSize: 11, color: 'var(--gray-400)' }}>Gastos, metas e orçamento pessoal.</div></div>
                 </button>
               </div>
             </div>
           ) : (
           <>
-          <button onClick={() => escolherTipo(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 11, color: 'var(--teal)', marginBottom: 14, padding: 0 }}>
-            <i className="fa-solid fa-arrow-left" style={{ marginRight: 6 }} />{tipoConta === 'empresarial' ? 'Empresa (PJ)' : 'Pessoa Física'} · trocar
-          </button>
           {/* Tab switcher */}
           <div style={{ display: 'flex', background: 'var(--cream)', borderRadius: 10, padding: 4, gap: 4, marginBottom: 28 }}>
             {(['entrar', 'cadastrar'] as const).map(m => (
