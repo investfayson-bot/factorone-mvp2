@@ -63,12 +63,19 @@ export default function DashboardPage() {
   const [periodo, setPeriodo] = useState<'mes' | 'trimestre' | 'ano'>('mes')
   const [showExportMenu, setShowExportMenu] = useState(false)
   const [aRevisar, setARevisar] = useState(0)
+  const [insight, setInsight] = useState('')
   const router = useRouter()
 
   useEffect(() => {
     if (!empresaId) return
     void supabase.from('transacoes').select('categoria').eq('empresa_id', empresaId).limit(500).then(({ data }) => {
       setARevisar(((data ?? []) as { categoria: string | null }[]).filter(t => !t.categoria || t.categoria.trim() === '').length)
+    })
+    // Insight proativo da IA (Tier 2 no dashboard)
+    void supabase.auth.getSession().then(({ data }) => {
+      const tk = data.session?.access_token
+      fetch('/api/transacoes/analisar', { method: 'POST', headers: tk ? { Authorization: `Bearer ${tk}` } : {} })
+        .then(r => r.json()).then(j => { if (Array.isArray(j.analise) && j.analise[0]) setInsight(j.analise[0] as string) }).catch(() => {})
     })
   }, [empresaId])
 
@@ -369,6 +376,22 @@ export default function DashboardPage() {
           ))}
         </div>
       </div>
+
+      {/* Insight proativo da IA */}
+      {insight && (
+        <Link href="/dashboard/classificar" style={{ textDecoration: 'none', display: 'block', marginBottom: 16 }}>
+          <div style={{ background: 'var(--sage-tint)', border: '1px solid var(--sage)', borderRadius: 12, padding: '14px 18px', display: 'flex', gap: 12, alignItems: 'flex-start', boxShadow: 'var(--shadow-card)' }}>
+            <div style={{ width: 32, height: 32, borderRadius: '50%', background: 'var(--sage)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <i className="fa-solid fa-robot" style={{ color: '#fff', fontSize: 14 }} />
+            </div>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--sage-deep)', textTransform: 'uppercase', letterSpacing: '.1em', marginBottom: 3 }}>Insight da IA</div>
+              <div style={{ fontSize: 13, color: 'var(--ink)', lineHeight: 1.5 }}>{insight}</div>
+            </div>
+            <span style={{ fontSize: 12, color: 'var(--sage-deep)', fontWeight: 600, flexShrink: 0 }}>ver análise →</span>
+          </div>
+        </Link>
+      )}
 
       {/* Contas bancárias + A classificar (estilo QuickBooks BANK ACCOUNTS) */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 16 }}>
