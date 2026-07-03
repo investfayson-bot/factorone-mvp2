@@ -9,11 +9,11 @@
    Hairlines no lugar de sombras · cantos retos · display serifado
    ═══════════════════════════════════════════════════════════ */
 :root {
-  /* superfícies — tema CLARO em verde bem clarinho (no lugar de branco) */
-  --paper: #E7EFE9;      /* fundo (verde claro) */
-  --paper-2: #DCE8DE;    /* fundo alternado */
-  --surface: #F3F8F3;    /* cartão (verde clarinho, não branco puro) */
-  --surface-2: #E9F1EA;  /* cartão realçado / cabeçalho de tabela */
+  /* superfícies — CLARO e limpo, com um sopro de verde (não branco puro) */
+  --paper: #EFF4F0;      /* fundo claro (verde bem clarinho) */
+  --paper-2: #E6EEE8;    /* fundo alternado */
+  --surface: #FAFCFA;    /* cartão (quase branco, hint de verde) */
+  --surface-2: #F2F7F3;  /* cartão realçado / cabeçalho de tabela */
 
   /* tinta / texto */
   --ink: #13201D;        /* títulos, texto forte */
