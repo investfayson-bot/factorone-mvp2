@@ -48,6 +48,9 @@ export default function ClassificarPage() {
   const [sel, setSel] = useState<Set<string>>(new Set())
   const [loading, setLoading] = useState(true)
   const [busy, setBusy] = useState(false)
+  const [showNova, setShowNova] = useState(false)
+  const [nova, setNova] = useState({ descricao: '', valor: '', tipo: 'saida' as 'entrada' | 'saida', data: new Date().toISOString().slice(0, 10) })
+  const [ocr, setOcr] = useState(false)
 
   const carregar = useCallback(async () => {
     setLoading(true)
@@ -115,6 +118,31 @@ export default function ClassificarPage() {
     try { await fetch('/api/transacoes/classificar', { method: 'POST', headers: auth, body: JSON.stringify({ categorias: { [t.id]: '' } }) }) } catch {}
     setEscolhas(p => ({ ...p, [t.id]: sugerir(t.descricao) })); setBusy(false)
   }
+  async function ocrRecibo(file: File) {
+    setOcr(true)
+    try {
+      const fd = new FormData(); fd.append('file', file)
+      const r = await fetch('/api/despesas/extrair-comprovante', { method: 'POST', headers: token ? { Authorization: `Bearer ${token}` } : {}, body: fd })
+      const j = await r.json()
+      if (!r.ok) throw new Error(j.error || 'Falha ao ler o recibo')
+      const ex = (j.extracted ?? {}) as { merchant?: string; description?: string; amount?: number | null; issue_date?: string | null }
+      setNova(n => ({ ...n, tipo: 'saida', descricao: ex.merchant || ex.description || n.descricao, valor: ex.amount ? String(ex.amount) : n.valor, data: ex.issue_date || n.data }))
+      toast.success('Recibo lido — confira os dados e adicione')
+    } catch (e) { toast.error(e instanceof Error ? e.message : 'Erro no OCR') }
+    finally { setOcr(false) }
+  }
+  async function salvarNova() {
+    if (!nova.descricao.trim() || !nova.valor) { toast.error('Preencha descrição e valor'); return }
+    setBusy(true)
+    try {
+      const r = await fetch('/api/transacoes/criar', { method: 'POST', headers: auth, body: JSON.stringify({ descricao: nova.descricao.trim(), valor: Number(nova.valor), tipo: nova.tipo, data: nova.data }) })
+      if (!r.ok) throw new Error((await r.json()).error || 'Falha')
+      toast.success('Transação adicionada — está em “A revisar”')
+      setShowNova(false); setNova({ descricao: '', valor: '', tipo: 'saida', data: new Date().toISOString().slice(0, 10) })
+      setAba('revisar'); await carregar()
+    } catch (e) { toast.error(e instanceof Error ? e.message : 'Erro') }
+    finally { setBusy(false) }
+  }
   function toggleSel(id: string) { setSel(p => { const n = new Set(p); n.has(id) ? n.delete(id) : n.add(id); return n }) }
   function toggleTodos() { setSel(sel.size === revisar.length ? new Set() : new Set(revisar.map(t => t.id))) }
 
@@ -129,11 +157,48 @@ export default function ClassificarPage() {
         </div>
         <div style={{ display: 'flex', gap: 8 }}>
           <button className="btn-ghost" style={{ fontSize: 12 }} disabled={busy} onClick={() => void popular('clear')}>Limpar teste</button>
-          <button className="btn-action" style={{ fontSize: 12 }} disabled={busy} onClick={() => void popular('seed')}>
-            <i className="fa-solid fa-wand-magic-sparkles" style={{ marginRight: 6 }} />Popular dados de teste
+          <button className="btn-ghost" style={{ fontSize: 12 }} disabled={busy} onClick={() => void popular('seed')}>
+            <i className="fa-solid fa-wand-magic-sparkles" style={{ marginRight: 6 }} />Dados de teste
+          </button>
+          <button className="btn-action" style={{ fontSize: 12 }} onClick={() => setShowNova(true)}>
+            <i className="fa-solid fa-plus" style={{ marginRight: 6 }} />Nova transação
           </button>
         </div>
       </div>
+
+      {/* Modal — nova transação (manual ou foto do recibo) */}
+      {showNova && (
+        <div className="modal-bg" onClick={() => setShowNova(false)}>
+          <div className="modal-box" onClick={e => e.stopPropagation()}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
+              <div className="modal-title">Nova transação</div>
+              <button className="modal-close" onClick={() => setShowNova(false)}><i className="fa-solid fa-xmark" /></button>
+            </div>
+            <div style={{ fontSize: 12, color: 'var(--ink-mut)', marginBottom: 16 }}>Digite manual ou tire foto do recibo — a IA preenche. Entra em “A revisar”.</div>
+            <label style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '13px 14px', border: '1.5px dashed var(--line)', borderRadius: 10, cursor: 'pointer', marginBottom: 16, background: 'var(--surface-2)' }}>
+              <input type="file" accept="image/*,application/pdf" style={{ display: 'none' }} onChange={e => { const f = e.target.files?.[0]; if (f) void ocrRecibo(f) }} />
+              <i className={`fa-solid ${ocr ? 'fa-circle-notch fa-spin' : 'fa-camera'}`} style={{ color: 'var(--sage)', fontSize: 15 }} />
+              <span style={{ fontSize: 12.5, color: 'var(--ink-soft)', fontWeight: 600 }}>{ocr ? 'Lendo recibo…' : 'Tirar foto / enviar recibo (a IA preenche)'}</span>
+            </label>
+            <div className="form-group"><label className="form-label">Descrição</label>
+              <input className="form-input" value={nova.descricao} onChange={e => setNova(n => ({ ...n, descricao: e.target.value }))} placeholder="Ex: Almoço com cliente" /></div>
+            <div className="form-row">
+              <div className="form-group"><label className="form-label">Valor (R$)</label>
+                <input className="form-input" type="number" step="0.01" value={nova.valor} onChange={e => setNova(n => ({ ...n, valor: e.target.value }))} placeholder="0,00" /></div>
+              <div className="form-group"><label className="form-label">Tipo</label>
+                <select className="form-input" value={nova.tipo} onChange={e => setNova(n => ({ ...n, tipo: e.target.value as 'entrada' | 'saida' }))}>
+                  <option value="saida">Saída (despesa)</option><option value="entrada">Entrada (receita)</option>
+                </select></div>
+            </div>
+            <div className="form-group"><label className="form-label">Data</label>
+              <input className="form-input" type="date" value={nova.data} onChange={e => setNova(n => ({ ...n, data: e.target.value }))} /></div>
+            <div className="modal-actions">
+              <button className="btn-ghost" onClick={() => setShowNova(false)}>Cancelar</button>
+              <button className="btn-action" disabled={busy} onClick={() => void salvarNova()}>Adicionar</button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Resumo */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 12, marginBottom: 16 }}>

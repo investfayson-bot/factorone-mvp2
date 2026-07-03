@@ -62,7 +62,15 @@ export default function DashboardPage() {
   const [topCats, setTopCats] = useState<{ cat: string; val: number }[]>([])
   const [periodo, setPeriodo] = useState<'mes' | 'trimestre' | 'ano'>('mes')
   const [showExportMenu, setShowExportMenu] = useState(false)
+  const [aRevisar, setARevisar] = useState(0)
   const router = useRouter()
+
+  useEffect(() => {
+    if (!empresaId) return
+    void supabase.from('transacoes').select('categoria').eq('empresa_id', empresaId).limit(500).then(({ data }) => {
+      setARevisar(((data ?? []) as { categoria: string | null }[]).filter(t => !t.categoria || t.categoria.trim() === '').length)
+    })
+  }, [empresaId])
 
   useEffect(() => {
     async function load() {
@@ -360,6 +368,32 @@ export default function DashboardPage() {
             </Link>
           ))}
         </div>
+      </div>
+
+      {/* Contas bancárias + A classificar (estilo QuickBooks BANK ACCOUNTS) */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 16 }}>
+        <Link href="/dashboard/conta-pj" style={{ textDecoration: 'none' }}>
+          <div style={{ background: 'var(--surface)', border: '1px solid var(--line)', borderRadius: 12, padding: '16px 20px', boxShadow: 'var(--shadow-card)', height: '100%' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+              <span style={{ fontSize: 10, fontWeight: 600, color: 'var(--ink-mut)', textTransform: 'uppercase', letterSpacing: '.1em' }}>Contas bancárias</span>
+              <i className="fa-solid fa-building-columns" style={{ color: 'var(--sage)', fontSize: 13 }} />
+            </div>
+            <div style={{ fontSize: 11, color: 'var(--ink-mut)', marginBottom: 2 }}>Saldo total</div>
+            <div style={{ fontSize: 26, fontWeight: 700, color: 'var(--navy)', fontVariantNumeric: 'tabular-nums' }}>{fmtBRL(pendencias.saldoBanco)}</div>
+          </div>
+        </Link>
+        <Link href="/dashboard/classificar" style={{ textDecoration: 'none' }}>
+          <div style={{ background: 'var(--surface)', border: '1px solid var(--line)', borderRadius: 12, padding: '16px 20px', boxShadow: 'var(--shadow-card)', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ fontSize: 10, fontWeight: 600, color: 'var(--ink-mut)', textTransform: 'uppercase', letterSpacing: '.1em' }}>A classificar</span>
+              <i className="fa-solid fa-layer-group" style={{ color: aRevisar > 0 ? '#B0413E' : 'var(--sage)', fontSize: 13 }} />
+            </div>
+            <div>
+              <div style={{ fontSize: 26, fontWeight: 700, color: aRevisar > 0 ? '#B0413E' : 'var(--sage)', fontVariantNumeric: 'tabular-nums' }}>{aRevisar}</div>
+              <div style={{ fontSize: 11.5, color: 'var(--sage-deep)', fontWeight: 600 }}>{aRevisar > 0 ? 'transações a revisar →' : 'tudo classificado ✓'}</div>
+            </div>
+          </div>
+        </Link>
       </div>
 
       {/* KPIs */}
