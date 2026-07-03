@@ -44,7 +44,6 @@ function buildNavGroups(badges: { reembolsos: number; aprovacoes: number }, inst
         { href: '/dashboard/contadores', icon: 'fa-calculator', label: 'Contador' },
         { href: '/dashboard/contabilidade/livros', icon: 'fa-book', label: 'Livros contábeis' },
         { href: '/dashboard/notas', icon: 'fa-file-invoice-dollar', label: 'Fiscal & NF-e' },
-        { href: '/dashboard/fiscal', icon: 'fa-building-flag', label: 'Portais Fiscais' },
       ],
     },
     ...(installedIds.includes('banco') ? [{
@@ -57,20 +56,13 @@ function buildNavGroups(badges: { reembolsos: number; aprovacoes: number }, inst
         { href: '/dashboard/cartoes', icon: 'fa-credit-card', label: 'Cartões' },
         { href: '/dashboard/credito', icon: 'fa-hand-holding-dollar', label: 'Crédito & Financiamento' },
         { href: '/dashboard/conexoes', icon: 'fa-link', label: 'Open Finance (Belvo)' },
-        { href: '/dashboard/conta-pj/solucoes', icon: 'fa-grip', label: 'Mais soluções' },
         { href: '/dashboard/conta-pj/abrir', icon: 'fa-circle-plus', label: 'Abrir conta' },
       ],
     }] : []),
     {
-      label: 'Marketplace',
-      items: [
-        { href: '/dashboard/integracoes', icon: 'fa-plug', label: 'Integrações' },
-        { href: '/dashboard/marketplace', icon: 'fa-store', label: 'Marketplace', badge: 'NEW', badgeColor: '#7A6A9E' },
-      ],
-    },
-    {
       label: 'Configurações',
       items: [
+        { href: '/dashboard/marketplace', icon: 'fa-store', label: 'Apps & Marketplace', badge: 'NEW', badgeColor: '#7A6A9E' },
         { href: '/dashboard/equipe', icon: 'fa-users-gear', label: 'Equipe' },
         { href: '/dashboard/planos', icon: 'fa-star', label: 'Planos & Billing' },
       ],
