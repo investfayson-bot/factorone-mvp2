@@ -624,6 +624,18 @@ export default function ContaPJPage() {
         </div>
       </div>
 
+      {/* Banner premium — digital bank */}
+      <div style={{ position: 'relative', borderRadius: 16, overflow: 'hidden', marginBottom: 18, minHeight: 148, backgroundImage: 'linear-gradient(90deg, rgba(28,43,42,.96) 0%, rgba(28,43,42,.72) 48%, rgba(28,43,42,.12) 100%), url(/banco-banner.jpg)', backgroundSize: 'cover', backgroundPosition: 'center right' }}>
+        <div style={{ padding: '24px 28px', maxWidth: '64%' }}>
+          <div style={{ fontSize: 10.5, fontWeight: 700, color: '#7EBDB8', textTransform: 'uppercase', letterSpacing: '.08em' }}>FactorOne Bank</div>
+          <div style={{ fontSize: 21, fontWeight: 800, color: '#fff', letterSpacing: '-.03em', margin: '4px 0 10px', lineHeight: 1.15 }}>Seu banco PJ — sem tarifas, com IA</div>
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+            <Link href="/dashboard/conta-pj/transferencias" style={{ background: '#5E8C87', color: '#fff', textDecoration: 'none', fontSize: 12, fontWeight: 700, padding: '8px 16px', borderRadius: 9 }}><i className="fa-solid fa-bolt" style={{ marginRight: 6 }} />Fazer PIX</Link>
+            <Link href="/dashboard/cartoes" style={{ background: 'rgba(255,255,255,.14)', color: '#fff', textDecoration: 'none', fontSize: 12, fontWeight: 700, padding: '8px 16px', borderRadius: 9 }}><i className="fa-solid fa-credit-card" style={{ marginRight: 6 }} />Cartões</Link>
+          </div>
+        </div>
+      </div>
+
       {/* KPIs */}
       <div className="kpis" style={{ gridTemplateColumns: 'repeat(4,1fr)', marginBottom: 20 }}>
         <div className="kpi">
