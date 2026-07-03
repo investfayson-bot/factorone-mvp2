@@ -36,6 +36,8 @@ export type CrudConfig = {
   icon: string
   addLabel: string
   emptyLabel: string
+  /** Dica opcional exibida no estado vazio (o que fazer / por quê). */
+  emptyHint?: string
   fields: FieldDef[]
   columns: ColDef[]
   kpis: KpiDef[]
@@ -155,7 +157,11 @@ export default function GenericCrud(cfg: CrudConfig) {
           <div style={{ padding: 30, textAlign: 'center', color: 'var(--gray-400)', fontSize: 13 }}>Carregando…</div>
         ) : rows.length === 0 ? (
           <div style={{ padding: 36, textAlign: 'center' }}>
-            <EmptyState label={cfg.emptyLabel} />
+            <EmptyState
+              title={cfg.emptyLabel}
+              hint={cfg.emptyHint ?? `Adicione o primeiro registro para começar a acompanhar ${cfg.titulo.toLowerCase()}.`}
+              cta={{ label: cfg.addLabel, icon: 'fa-plus', onClick: () => setShowForm(true) }}
+            />
           </div>
         ) : (
           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>

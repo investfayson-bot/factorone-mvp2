@@ -1,4 +1,5 @@
 // Ilustrações flat (estilo unDraw) na paleta FactorOne — SVG inline, sem assets externos.
+import Link from 'next/link'
 
 const NAVY = '#13201D'
 const TEAL = '#3D7A6E'
@@ -82,21 +83,43 @@ export function FinanceHero({ width = 320 }: { width?: number }) {
   )
 }
 
-/** Ilustração neutra para estados vazios (fundos claros). */
-export function EmptyState({ width = 160, label }: { width?: number; label?: string }) {
+/**
+ * Estado vazio que ENSINA (não tela crua). Compatível com quem passa só `label`.
+ * - label/title → vira o título (serifado, Fraunces)
+ * - hint → linha explicativa do que fazer
+ * - cta → botão primário (href OU onClick)
+ */
+export function EmptyState({ width = 132, label, title, hint, cta }: {
+  width?: number
+  label?: string
+  title?: string
+  hint?: string
+  cta?: { label: string; href?: string; onClick?: () => void; icon?: string }
+}) {
+  const heading = title ?? label
+  const btnStyle: React.CSSProperties = {
+    display: 'inline-flex', alignItems: 'center', gap: 8, padding: '9px 18px', borderRadius: 4,
+    fontSize: 12.5, fontWeight: 600, cursor: 'pointer', textDecoration: 'none',
+    fontFamily: 'var(--font-sans)', border: '1px solid var(--ink)', background: 'var(--ink)', color: 'var(--paper)',
+  }
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
-      <svg width={width} viewBox="0 0 200 150" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label={label || 'Vazio'}>
-        <rect x="40" y="34" width="120" height="84" rx="10" fill="#fff" stroke="#EAEBEA" strokeWidth="2" />
-        <rect x="40" y="34" width="120" height="22" rx="10" fill="#EFF3F2" />
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14, textAlign: 'center', padding: '36px 24px' }}>
+      <svg width={width} viewBox="0 0 200 150" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label={heading || 'Vazio'}>
+        <rect x="40" y="34" width="120" height="84" rx="8" fill={CREAM} stroke="#E4DCCC" strokeWidth="2" />
+        <rect x="40" y="34" width="120" height="22" rx="8" fill="#EFE9DC" />
         <rect x="54" y="42" width="44" height="6" rx="3" fill={TEAL_SOFT} />
-        <rect x="54" y="70" width="92" height="7" rx="3.5" fill="#EAEBEA" />
-        <rect x="54" y="84" width="70" height="7" rx="3.5" fill="#EAEBEA" />
-        <rect x="54" y="98" width="84" height="7" rx="3.5" fill="#EAEBEA" />
+        <rect x="54" y="70" width="92" height="7" rx="3.5" fill="#E4DCCC" />
+        <rect x="54" y="84" width="70" height="7" rx="3.5" fill="#E4DCCC" />
+        <rect x="54" y="98" width="84" height="7" rx="3.5" fill="#E4DCCC" />
         <circle cx="150" cy="112" r="20" fill={TEAL} />
         <path d="M150 104v16M142 112h16" stroke="#fff" strokeWidth="3" strokeLinecap="round" />
       </svg>
-      {label && <div style={{ fontSize: 13, color: 'var(--gray-400)' }}>{label}</div>}
+      {heading && <div style={{ fontFamily: 'var(--font-display)', fontSize: 17, fontWeight: 500, color: 'var(--ink)', letterSpacing: '-.02em' }}>{heading}</div>}
+      {hint && <div style={{ fontSize: 12.5, color: 'var(--ink-mut)', maxWidth: 360, lineHeight: 1.55 }}>{hint}</div>}
+      {cta && (cta.href
+        ? <Link href={cta.href} style={btnStyle}>{cta.icon && <i className={`fa-solid ${cta.icon}`} />}{cta.label}</Link>
+        : <button onClick={cta.onClick} style={btnStyle}>{cta.icon && <i className={`fa-solid ${cta.icon}`} />}{cta.label}</button>
+      )}
     </div>
   )
 }

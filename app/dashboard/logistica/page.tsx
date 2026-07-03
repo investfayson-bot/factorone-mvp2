@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useState, useRef } from 'react'
 import { supabase } from '@/lib/supabase'
+import { EmptyState } from '@/components/ui/Illustration'
 
 type Rota = {
   id: string
@@ -511,10 +512,11 @@ export default function LogisticaPage() {
         {!loading && tab === 'rotas' && (
           <div>
             {rotas.length === 0 ? (
-              <div style={{ textAlign: 'center', padding: 60, color: '#7B8C88' }}>
-                <i className="fa-solid fa-route" style={{ fontSize: 40, marginBottom: 12, display: 'block' }} />
-                Nenhuma rota cadastrada
-              </div>
+              <EmptyState
+                title="Sua primeira rota"
+                hint="Cadastre uma rota para calcular custo por km, receita de frete e margem por viagem — com OCR do romaneio."
+                cta={{ label: 'Nova rota', icon: 'fa-plus', onClick: () => { setRotaDetalhe(null); setOcrResult(null); setShowRota(true) } }}
+              />
             ) : (
               <table className="expenses-table" style={{ width: '100%' }}>
                 <thead>
@@ -584,10 +586,11 @@ export default function LogisticaPage() {
               Monitore o km rodado de cada pneu por posição. Troque quando atingir o limite.
             </div>
             {pneus.length === 0 ? (
-              <div style={{ textAlign: 'center', padding: 60, color: '#7B8C88' }}>
-                <i className="fa-solid fa-circle-dot" style={{ fontSize: 40, marginBottom: 12, display: 'block' }} />
-                Nenhum pneu cadastrado
-              </div>
+              <EmptyState
+                title="Controle de pneus"
+                hint="Cadastre um pneu por posição para monitorar km rodado, custo por km e a hora certa de trocar — sem perder rodagem."
+                cta={{ label: 'Novo pneu', icon: 'fa-plus', onClick: () => setShowPneu(true) }}
+              />
             ) : (
               <table className="expenses-table" style={{ width: '100%' }}>
                 <thead>
@@ -642,10 +645,11 @@ export default function LogisticaPage() {
               </div>
             )}
             {manutencoes.length === 0 ? (
-              <div style={{ textAlign: 'center', padding: 60, color: '#7B8C88' }}>
-                <i className="fa-solid fa-wrench" style={{ fontSize: 40, marginBottom: 12, display: 'block' }} />
-                Nenhuma manutenção registrada
-              </div>
+              <EmptyState
+                title="Histórico de manutenção"
+                hint="Registre revisões e reparos para acompanhar o custo de manutenção por veículo e por km — e prever a próxima."
+                cta={{ label: 'Nova manutenção', icon: 'fa-plus', onClick: () => setShowManut(true) }}
+              />
             ) : (
               <table className="expenses-table" style={{ width: '100%' }}>
                 <thead>

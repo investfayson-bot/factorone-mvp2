@@ -130,7 +130,11 @@ export default function EstoquePage() {
           <div style={{ padding: 30, textAlign: 'center', color: '#7B8C88', fontSize: 13 }}>Carregando…</div>
         ) : produtos.length === 0 ? (
           <div style={{ padding: 36, textAlign: 'center' }}>
-            <EmptyState label="Nenhum produto cadastrado." />
+            <EmptyState
+              title="Seu estoque começa aqui"
+              hint="Cadastre seu primeiro produto para acompanhar quantidade, custo e valor imobilizado — e ver tudo refletido nos seus números."
+              cta={{ label: 'Novo produto', icon: 'fa-plus', onClick: () => setShowForm(true) }}
+            />
           </div>
         ) : (
           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>

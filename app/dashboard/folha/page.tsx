@@ -131,7 +131,11 @@ export default function FolhaPage() {
           <div style={{ padding: 30, textAlign: 'center', color: 'var(--gray-400)', fontSize: 13 }}>Carregando…</div>
         ) : funcs.length === 0 ? (
           <div style={{ padding: 36, textAlign: 'center' }}>
-            <EmptyState label="Nenhum funcionário cadastrado." />
+            <EmptyState
+              title="Monte sua folha de pagamento"
+              hint="Cadastre o primeiro funcionário para calcular salários, encargos e provisões — e integrar tudo ao seu fluxo de caixa."
+              cta={{ label: 'Novo funcionário', icon: 'fa-plus', onClick: () => setShowForm(true) }}
+            />
           </div>
         ) : (
           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
