@@ -47,36 +47,36 @@ export default function CentralComando({ empresaId }: { empresaId: string }) {
   useEffect(() => { void carregar() }, [carregar])
 
   const cards: { label: string; valor: string; sub: string; cor: string; icon: string; href: string }[] = d ? [
-    { label: 'Arrecadação', valor: fmt(d.arrecada), sub: 'receita do mês', cor: '#16A085', icon: 'fa-arrow-trend-up', href: '/dashboard/relatorios' },
-    { label: 'Custos', valor: fmt(d.custos), sub: 'CMV + operacional', cor: '#E74C3C', icon: 'fa-arrow-trend-down', href: '/dashboard/despesas' },
-    { label: 'Resultado', valor: fmt(d.resultado), sub: `margem ${d.margem.toFixed(0)}%`, cor: d.resultado >= 0 ? '#1C2B2A' : '#E74C3C', icon: 'fa-scale-balanced', href: '/dashboard/indicadores' },
-    { label: 'A receber', valor: fmt(d.aReceber), sub: 'em aberto', cor: '#10B981', icon: 'fa-inbox', href: '/dashboard/financeiro?tab=receber' },
-    { label: 'A pagar', valor: fmt(d.aPagar), sub: 'em aberto', cor: '#D97706', icon: 'fa-paper-plane', href: '/dashboard/financeiro?tab=pagar' },
-    { label: 'ROI marketing', valor: d.roi != null ? `${d.roi >= 0 ? '+' : ''}${d.roi.toFixed(0)}%` : '—', sub: 'retorno de anúncio', cor: '#7C3AED', icon: 'fa-bullseye', href: '/dashboard/indicadores' },
+    { label: 'Arrecadação', valor: fmt(d.arrecada), sub: 'receita do mês', cor: '#3D7A6E', icon: 'fa-arrow-trend-up', href: '/dashboard/relatorios' },
+    { label: 'Custos', valor: fmt(d.custos), sub: 'CMV + operacional', cor: '#B0413E', icon: 'fa-arrow-trend-down', href: '/dashboard/despesas' },
+    { label: 'Resultado', valor: fmt(d.resultado), sub: `margem ${d.margem.toFixed(0)}%`, cor: d.resultado >= 0 ? '#13201D' : '#B0413E', icon: 'fa-scale-balanced', href: '/dashboard/indicadores' },
+    { label: 'A receber', valor: fmt(d.aReceber), sub: 'em aberto', cor: '#3D7A6E', icon: 'fa-inbox', href: '/dashboard/financeiro?tab=receber' },
+    { label: 'A pagar', valor: fmt(d.aPagar), sub: 'em aberto', cor: '#B08A3E', icon: 'fa-paper-plane', href: '/dashboard/financeiro?tab=pagar' },
+    { label: 'ROI marketing', valor: d.roi != null ? `${d.roi >= 0 ? '+' : ''}${d.roi.toFixed(0)}%` : '—', sub: 'retorno de anúncio', cor: '#2B564D', icon: 'fa-bullseye', href: '/dashboard/indicadores' },
   ] : []
 
   return (
-    <div style={{ marginBottom: 16 }}>
-      <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: 8, display: 'flex', alignItems: 'center', gap: 6 }}>
-        <i className="fa-solid fa-gauge-high" style={{ color: '#10B981' }} />Central de comando
+    <div style={{ marginBottom: 22 }}>
+      <div style={{ fontSize: 9.5, fontWeight: 600, color: 'var(--ink-mut)', textTransform: 'uppercase', letterSpacing: '.16em', marginBottom: 12, display: 'flex', alignItems: 'center', gap: 8, fontFamily: 'var(--font-mono)' }}>
+        <span style={{ width: 14, height: 1, background: 'var(--sage)' }} />Central de comando
       </div>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 8 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 12 }}>
         {cards.length === 0
           ? Array.from({ length: 6 }).map((_, i) => (
-            <div key={i} style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 12, padding: '12px 14px', height: 78, opacity: .5 }}>
-              <div style={{ height: 10, width: '60%', background: '#EEF2F1', borderRadius: 4, marginBottom: 12 }} />
-              <div style={{ height: 16, width: '80%', background: '#EEF2F1', borderRadius: 4 }} />
+            <div key={i} style={{ background: 'var(--surface)', border: '1px solid var(--line)', borderRadius: 4, padding: '16px 16px', height: 96, opacity: .55 }}>
+              <div style={{ height: 9, width: '55%', background: 'var(--paper-2)', borderRadius: 2, marginBottom: 16 }} />
+              <div style={{ height: 18, width: '80%', background: 'var(--paper-2)', borderRadius: 2 }} />
             </div>
           ))
           : cards.map(c => (
             <Link key={c.label} href={c.href} style={{ textDecoration: 'none' }}>
-              <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 12, padding: '12px 14px', cursor: 'pointer', height: '100%', transition: 'box-shadow .15s' }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
-                  <span style={{ fontSize: 10, fontWeight: 700, color: '#7A8F8E', textTransform: 'uppercase', letterSpacing: '.04em' }}>{c.label}</span>
-                  <div style={{ width: 24, height: 24, borderRadius: 7, background: `${c.cor}15`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><i className={`fa-solid ${c.icon}`} style={{ fontSize: 10, color: c.cor }} /></div>
+              <div className="cmd-card" style={{ background: 'var(--surface)', border: '1px solid var(--line)', borderRadius: 4, padding: '16px', cursor: 'pointer', height: '100%', transition: 'border-color .15s, background .15s' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+                  <span style={{ fontSize: 9, fontWeight: 600, color: 'var(--ink-mut)', textTransform: 'uppercase', letterSpacing: '.12em', fontFamily: 'var(--font-mono)' }}>{c.label}</span>
+                  <i className={`fa-solid ${c.icon}`} style={{ fontSize: 11, color: c.cor, opacity: .9 }} />
                 </div>
-                <div style={{ fontSize: 18, fontWeight: 800, color: c.cor, fontFamily: "'Inter', system-ui, sans-serif", letterSpacing: '-.02em', lineHeight: 1 }}>{c.valor}</div>
-                <div style={{ fontSize: 10, color: '#AAB8B7', marginTop: 4 }}>{c.sub}</div>
+                <div style={{ fontSize: 22, fontWeight: 500, color: c.cor, fontFamily: 'var(--font-display)', letterSpacing: '-.03em', lineHeight: 1, fontVariantNumeric: 'tabular-nums' }}>{c.valor}</div>
+                <div style={{ fontSize: 10, color: 'var(--ink-faint)', marginTop: 6, fontFamily: 'var(--font-mono)', letterSpacing: '.02em' }}>{c.sub}</div>
               </div>
             </Link>
           ))}

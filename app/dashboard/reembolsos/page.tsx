@@ -221,10 +221,10 @@ export default function ReembolsosPage() {
 
   function statusTag(s: string) {
     const map: Record<string, [string, string]> = {
-      pendente:  ['rgba(184,146,42,.12)',  'var(--gold)'],
-      aprovado:  ['rgba(16,185,129,.12)', 'var(--teal2)'],
-      pago:      ['rgba(45,155,111,.12)', 'var(--green)'],
-      rejeitado: ['rgba(192,80,74,.08)', 'var(--red)'],
+      pendente:  ['rgba(176,138,62,.12)',  'var(--gold)'],
+      aprovado:  ['rgba(61,122,110,.12)', 'var(--teal2)'],
+      pago:      ['rgba(61,122,110,.12)', 'var(--green)'],
+      rejeitado: ['rgba(176,65,62,.08)', 'var(--red)'],
     }
     const [bg, color] = map[s] ?? ['#f1f5f9', '#64748b']
     return <span style={{ fontSize: 10, padding: '2px 8px', borderRadius: 20, background: bg, color, fontWeight: 600 }}>{s.charAt(0).toUpperCase() + s.slice(1)}</span>
@@ -310,22 +310,22 @@ export default function ReembolsosPage() {
               </div>
               <div style={{ display: 'flex', gap: 5, alignItems: 'center', flexShrink: 0 }}>
                 {item.comprovante_url && (
-                  <button onClick={() => void abrirComprovante(item.comprovante_url!)} title="Ver comprovante" style={{ background: 'rgba(16,185,129,.1)', color: 'var(--teal)', border: '1px solid rgba(16,185,129,.2)', borderRadius: 7, padding: '4px 8px', fontSize: 10.5, cursor: 'pointer' }}>
+                  <button onClick={() => void abrirComprovante(item.comprovante_url!)} title="Ver comprovante" style={{ background: 'rgba(61,122,110,.1)', color: 'var(--teal)', border: '1px solid rgba(61,122,110,.2)', borderRadius: 7, padding: '4px 8px', fontSize: 10.5, cursor: 'pointer' }}>
                     <i className="fa-solid fa-paperclip" />
                   </button>
                 )}
                 {item.status === 'pendente' && (
                   <>
-                    <button disabled={bloqueado} onClick={() => void aprovar(item.id)} style={{ background: 'rgba(45,155,111,.1)', color: 'var(--green)', border: '1px solid rgba(45,155,111,.25)', borderRadius: 7, padding: '4px 10px', fontSize: 11, fontWeight: 600, cursor: 'pointer' }}>
+                    <button disabled={bloqueado} onClick={() => void aprovar(item.id)} style={{ background: 'rgba(61,122,110,.1)', color: 'var(--green)', border: '1px solid rgba(61,122,110,.25)', borderRadius: 7, padding: '4px 10px', fontSize: 11, fontWeight: 600, cursor: 'pointer' }}>
                       <i className="fa-solid fa-check" style={{ marginRight: 4 }} />Aprovar
                     </button>
-                    <button disabled={bloqueado} onClick={() => abrirMotivo(item.id, item.descricao)} style={{ background: 'rgba(192,80,74,.08)', color: 'var(--red)', border: '1px solid rgba(192,80,74,.2)', borderRadius: 7, padding: '4px 8px', fontSize: 11, cursor: 'pointer' }}>
+                    <button disabled={bloqueado} onClick={() => abrirMotivo(item.id, item.descricao)} style={{ background: 'rgba(176,65,62,.08)', color: 'var(--red)', border: '1px solid rgba(176,65,62,.2)', borderRadius: 7, padding: '4px 8px', fontSize: 11, cursor: 'pointer' }}>
                       <i className="fa-solid fa-xmark" />
                     </button>
                   </>
                 )}
                 {item.status === 'aprovado' && (
-                  <button disabled={bloqueado} onClick={() => void marcarPago(item)} style={{ background: 'rgba(45,155,111,.1)', color: 'var(--green)', border: '1px solid rgba(45,155,111,.2)', borderRadius: 7, padding: '4px 10px', fontSize: 11, fontWeight: 600, cursor: 'pointer' }}>
+                  <button disabled={bloqueado} onClick={() => void marcarPago(item)} style={{ background: 'rgba(61,122,110,.1)', color: 'var(--green)', border: '1px solid rgba(61,122,110,.2)', borderRadius: 7, padding: '4px 10px', fontSize: 11, fontWeight: 600, cursor: 'pointer' }}>
                     <i className="fa-solid fa-money-bill" style={{ marginRight: 4 }} />Pagar
                   </button>
                 )}
@@ -393,7 +393,7 @@ export default function ReembolsosPage() {
                       display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5,
                       padding: '9px 6px', borderRadius: 9, cursor: 'pointer', fontSize: 10, fontWeight: 600,
                       border: form.categoria === c.label ? '2px solid var(--teal)' : '1px solid var(--gray-100)',
-                      background: form.categoria === c.label ? 'rgba(16,185,129,0.08)' : '#fafafa',
+                      background: form.categoria === c.label ? 'rgba(61,122,110,0.08)' : '#fafafa',
                       color: form.categoria === c.label ? 'var(--teal)' : 'var(--gray-500)',
                       transition: 'all 0.15s',
                     }}
@@ -412,7 +412,7 @@ export default function ReembolsosPage() {
               <label className="form-label">Comprovante (opcional)</label>
               <div
                 onClick={() => fileInputRef.current?.click()}
-                style={{ border: '1.5px dashed var(--gray-200)', borderRadius: 9, padding: '12px 14px', cursor: 'pointer', background: arquivo ? 'rgba(45,155,111,.04)' : '#fafafa', display: 'flex', alignItems: 'center', gap: 10 }}
+                style={{ border: '1.5px dashed var(--gray-200)', borderRadius: 9, padding: '12px 14px', cursor: 'pointer', background: arquivo ? 'rgba(61,122,110,.04)' : '#fafafa', display: 'flex', alignItems: 'center', gap: 10 }}
               >
                 <i className={`fa-solid ${arquivo ? 'fa-paperclip' : 'fa-cloud-arrow-up'}`} style={{ fontSize: 16, color: arquivo ? 'var(--green)' : 'var(--gray-400)' }} />
                 <div>

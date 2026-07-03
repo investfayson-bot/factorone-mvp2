@@ -112,41 +112,41 @@ export default function NotificationBell() {
   }
 
   const iconeTipo = {
-    vencimento: { icon: 'fa-clock', bg: '#FEF3C7', color: '#D97706' },
-    orcamento: { icon: 'fa-chart-pie', bg: '#EEF2F1', color: '#7A8F8E' },
-    conciliacao: { icon: 'fa-building-columns', bg: '#E6F1FB', color: '#2563eb' },
-    ai: { icon: 'fa-robot', bg: '#EAF5F3', color: '#10B981' },
-    info: { icon: 'fa-circle-info', bg: '#EEF2F1', color: '#7A8F8E' },
+    vencimento: { icon: 'fa-clock', bg: '#F3ECDA', color: '#B08A3E' },
+    orcamento: { icon: 'fa-chart-pie', bg: '#F1ECE1', color: '#7B8C88' },
+    conciliacao: { icon: 'fa-building-columns', bg: '#E6F1FB', color: '#3D6E8E' },
+    ai: { icon: 'fa-robot', bg: '#E9F0ED', color: '#3D7A6E' },
+    info: { icon: 'fa-circle-info', bg: '#F1ECE1', color: '#7B8C88' },
   }
 
   return (
     <div ref={ref} style={{ position: 'relative' }}>
       <button
         onClick={() => setOpen(o => !o)}
-        style={{ width: 34, height: 34, borderRadius: 9, border: '0.5px solid #E2E8E7', background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', position: 'relative' }}
+        style={{ width: 34, height: 34, borderRadius: 9, border: '0.5px solid #E4DCCC', background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', position: 'relative' }}
       >
-        <i className="fa-solid fa-bell" style={{ fontSize: 14, color: naoLidas > 0 ? '#D97706' : '#7A8F8E' }} />
+        <i className="fa-solid fa-bell" style={{ fontSize: 14, color: naoLidas > 0 ? '#B08A3E' : '#7B8C88' }} />
         {naoLidas > 0 && (
-          <div style={{ position: 'absolute', top: 4, right: 4, width: 14, height: 14, borderRadius: '50%', background: '#E74C3C', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 8, fontWeight: 700, color: '#fff', border: '2px solid #fff' }}>
+          <div style={{ position: 'absolute', top: 4, right: 4, width: 14, height: 14, borderRadius: '50%', background: '#B0413E', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 8, fontWeight: 700, color: '#fff', border: '2px solid #fff' }}>
             {naoLidas > 9 ? '9+' : naoLidas}
           </div>
         )}
       </button>
 
       {open && (
-        <div style={{ position: 'absolute', top: 42, right: 0, width: 320, background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 14, boxShadow: '0 8px 32px rgba(0,0,0,0.12)', zIndex: 9999, overflow: 'hidden' }}>
-          <div style={{ padding: '12px 16px', borderBottom: '0.5px solid #E2E8E7', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <div style={{ fontSize: 13, fontWeight: 700, color: '#1C2B2A', fontFamily: "'Inter', sans-serif" }}>Notificações</div>
+        <div style={{ position: 'absolute', top: 42, right: 0, width: 320, background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 14, boxShadow: '0 8px 32px rgba(0,0,0,0.12)', zIndex: 9999, overflow: 'hidden' }}>
+          <div style={{ padding: '12px 16px', borderBottom: '0.5px solid #E4DCCC', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div style={{ fontSize: 13, fontWeight: 700, color: '#13201D', fontFamily: "'Inter', sans-serif" }}>Notificações</div>
             {naoLidas > 0 && (
-              <button onClick={marcarTodas} style={{ fontSize: 10, color: '#10B981', fontWeight: 600, background: 'none', border: 'none', cursor: 'pointer' }}>
+              <button onClick={marcarTodas} style={{ fontSize: 10, color: '#3D7A6E', fontWeight: 600, background: 'none', border: 'none', cursor: 'pointer' }}>
                 Marcar todas como lidas
               </button>
             )}
           </div>
 
           {notifs.length === 0 ? (
-            <div style={{ padding: '32px 16px', textAlign: 'center', color: '#7A8F8E', fontSize: 12 }}>
-              <i className="fa-solid fa-check-circle" style={{ fontSize: 24, color: '#10B981', marginBottom: 8, display: 'block' }} />
+            <div style={{ padding: '32px 16px', textAlign: 'center', color: '#7B8C88', fontSize: 12 }}>
+              <i className="fa-solid fa-check-circle" style={{ fontSize: 24, color: '#3D7A6E', marginBottom: 8, display: 'block' }} />
               Tudo em dia! Sem alertas.
             </div>
           ) : (
@@ -156,18 +156,18 @@ export default function NotificationBell() {
                 const isLida = lidas.has(n.id)
                 return (
                   <Link key={n.id} href={n.href} onClick={() => { setLidas(l => { const next = new Set(l); next.add(n.id); return next }); setOpen(false) }} style={{ textDecoration: 'none' }}>
-                    <div style={{ display: 'flex', gap: 10, padding: '11px 16px', borderBottom: '0.5px solid #F0F4F3', background: isLida ? '#fff' : '#FAFCFB', transition: 'background 0.15s' }}
-                      onMouseEnter={e => (e.currentTarget.style.background = '#F4F6F5')}
+                    <div style={{ display: 'flex', gap: 10, padding: '11px 16px', borderBottom: '0.5px solid #EFE9DC', background: isLida ? '#fff' : '#FAFCFB', transition: 'background 0.15s' }}
+                      onMouseEnter={e => (e.currentTarget.style.background = '#F7F4EE')}
                       onMouseLeave={e => (e.currentTarget.style.background = isLida ? '#fff' : '#FAFCFB')}
                     >
                       <div style={{ width: 32, height: 32, borderRadius: 8, background: ic.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                         <i className={`fa-solid ${ic.icon}`} style={{ fontSize: 13, color: ic.color }} />
                       </div>
                       <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ fontSize: 12, fontWeight: isLida ? 500 : 700, color: '#1C2B2A', marginBottom: 2 }}>{n.titulo}</div>
-                        <div style={{ fontSize: 11, color: '#7A8F8E', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{n.mensagem}</div>
+                        <div style={{ fontSize: 12, fontWeight: isLida ? 500 : 700, color: '#13201D', marginBottom: 2 }}>{n.titulo}</div>
+                        <div style={{ fontSize: 11, color: '#7B8C88', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{n.mensagem}</div>
                       </div>
-                      {!isLida && <div style={{ width: 7, height: 7, borderRadius: '50%', background: '#10B981', flexShrink: 0, marginTop: 6 }} />}
+                      {!isLida && <div style={{ width: 7, height: 7, borderRadius: '50%', background: '#3D7A6E', flexShrink: 0, marginTop: 6 }} />}
                     </div>
                   </Link>
                 )

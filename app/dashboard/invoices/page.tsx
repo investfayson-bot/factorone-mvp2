@@ -78,7 +78,7 @@ export default function InvoicesPage() {
       padding: '8px 16px',
       borderRadius: 8,
       border: 'none',
-      background: '#D97706',
+      background: '#B08A3E',
       color: '#000',
       fontSize: 12,
       fontWeight: 700,
@@ -86,7 +86,7 @@ export default function InvoicesPage() {
     },
     input: {
       width: '100%',
-      background: '#182120',
+      background: '#13201D',
       border: '1px solid #2E3D3B',
       borderRadius: 7,
       padding: '9px 12px',
@@ -122,7 +122,7 @@ export default function InvoicesPage() {
       <div style={{ display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:10, marginBottom:14 }}>
         {[
           { l:'A Receber', v:fmt(totalAberto), c:'#22C97A' },
-          { l:'Recebido', v:fmt(totalPago), c:'#D97706' },
+          { l:'Recebido', v:fmt(totalPago), c:'#B08A3E' },
           { l:'Vencidas', v:invoices.filter(i=>i.status==='vencida').length, c:'#FF4F4F' },
           { l:'Total emitido', v:fmt(invoices.reduce((a,i)=>a+i.valor,0)), c:'#E4E8E7' },
         ].map(({ l, v, c }) => (
@@ -136,7 +136,7 @@ export default function InvoicesPage() {
       <div style={S.card}>
         {invoices.length === 0 ? (
           <div style={{ textAlign:'center', padding:'40px 0', color:'#4A6260' }}>
-            <i className="fa-solid fa-file-invoice" style={{ fontSize: 28, color: "#AAB8B7", marginBottom: 10, display: "block" }} />
+            <i className="fa-solid fa-file-invoice" style={{ fontSize: 28, color: "#A6B0AC", marginBottom: 10, display: "block" }} />
             <div style={{ fontSize:13, marginBottom:6 }}>Nenhuma invoice criada ainda</div>
             <button style={S.btnPrimary} onClick={() => setModal(true)}>Criar primeira invoice</button>
           </div>

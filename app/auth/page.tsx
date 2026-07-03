@@ -110,7 +110,7 @@ export default function AuthPage() {
               <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 18, fontWeight: 800, color: 'var(--navy)', marginBottom: 6 }}>Você é Pessoa Física ou Empresa?</div>
               <div style={{ fontSize: 12, color: 'var(--gray-400)', marginBottom: 20 }}>Escolha como vai usar o FactorOne antes de continuar.</div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                <button onClick={() => escolherTipo('empresarial')} style={{ display: 'flex', gap: 12, alignItems: 'center', padding: '16px 18px', borderRadius: 12, border: '2px solid var(--teal)', background: 'rgba(16,185,129,.05)', cursor: 'pointer', textAlign: 'left' }}>
+                <button onClick={() => escolherTipo('empresarial')} style={{ display: 'flex', gap: 12, alignItems: 'center', padding: '16px 18px', borderRadius: 12, border: '2px solid var(--teal)', background: 'rgba(61,122,110,.05)', cursor: 'pointer', textAlign: 'left' }}>
                   <div style={{ width: 42, height: 42, borderRadius: 10, background: 'var(--teal)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><i className="fa-solid fa-building" style={{ color: '#fff', fontSize: 16 }} /></div>
                   <div><div style={{ fontSize: 14, fontWeight: 700, color: 'var(--navy)' }}>Empresa (PJ)</div><div style={{ fontSize: 11, color: 'var(--gray-400)' }}>Gestão financeira completa: DRE, fluxo de caixa, NF-e.</div></div>
                 </button>
@@ -184,8 +184,8 @@ export default function AuthPage() {
             {msg.text && (
               <div style={{
                 padding: '9px 12px', borderRadius: 8, fontSize: 12, marginBottom: 12,
-                background: msg.type === 'success' ? 'rgba(45,155,111,.08)' : 'rgba(192,80,74,.08)',
-                border: `1px solid ${msg.type === 'success' ? 'rgba(45,155,111,.2)' : 'rgba(192,80,74,.2)'}`,
+                background: msg.type === 'success' ? 'rgba(61,122,110,.08)' : 'rgba(176,65,62,.08)',
+                border: `1px solid ${msg.type === 'success' ? 'rgba(61,122,110,.2)' : 'rgba(176,65,62,.2)'}`,
                 color: msg.type === 'success' ? 'var(--green)' : 'var(--red)',
               }}>
                 {msg.text}
@@ -211,7 +211,7 @@ export default function AuthPage() {
             <i className="fa-solid fa-bolt" /> Usar conta demo
           </button>
 
-          <div style={{ marginTop: 20, paddingTop: 16, borderTop: '0.5px solid #E2E8E7', textAlign: 'center', fontSize: 11, color: '#7A8F8E' }}>
+          <div style={{ marginTop: 20, paddingTop: 16, borderTop: '0.5px solid #E4DCCC', textAlign: 'center', fontSize: 11, color: '#7B8C88' }}>
             Ao continuar você concorda com os{' '}
             <span style={{ color: 'var(--teal)', cursor: 'pointer' }}>Termos de Uso</span>
             {' · '}

@@ -212,7 +212,7 @@ export default function OnboardingPage() {
               <button
                 onClick={() => void escolherEmpresarial()}
                 disabled={loading}
-                style={{ background: '#fff', border: '2px solid var(--teal)', borderRadius: 14, padding: '24px 22px', textAlign: 'left', cursor: 'pointer', opacity: loading ? .6 : 1, transition: 'box-shadow .15s', boxShadow: '0 2px 10px rgba(16,185,129,.1)' }}
+                style={{ background: '#fff', border: '2px solid var(--teal)', borderRadius: 14, padding: '24px 22px', textAlign: 'left', cursor: 'pointer', opacity: loading ? .6 : 1, transition: 'box-shadow .15s', boxShadow: '0 2px 10px rgba(61,122,110,.1)' }}
               >
                 <div style={{ width: 46, height: 46, background: 'var(--teal)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16 }}>
                   <i className="fa-solid fa-building" style={{ color: '#fff', fontSize: 18 }} />
@@ -280,7 +280,7 @@ export default function OnboardingPage() {
         {/* PRONTO */}
         {screen === 'pronto' && (
           <div style={{ maxWidth: 480, width: '100%', textAlign: 'center' }}>
-            <div style={{ width: 64, height: 64, background: 'linear-gradient(135deg, var(--teal), #3A7A74)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px', boxShadow: '0 6px 20px rgba(16,185,129,.3)' }}>
+            <div style={{ width: 64, height: 64, background: 'linear-gradient(135deg, var(--teal), #3A7A74)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px', boxShadow: '0 6px 20px rgba(61,122,110,.3)' }}>
               <i className="fa-solid fa-check" style={{ color: '#fff', fontSize: 26 }} />
             </div>
             <div style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: 24, fontWeight: 800, color: 'var(--navy)', marginBottom: 6 }}>

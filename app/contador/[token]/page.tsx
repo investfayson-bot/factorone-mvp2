@@ -19,7 +19,7 @@ const PERM_KEYS: Record<Tab, string> = { dre: 'ver_dre', lancamentos: 'ver_lanca
 
 function PermBadge({ ok, label }: { ok: boolean; label: string }) {
   return (
-    <span style={{ fontSize: 10, padding: '2px 8px', borderRadius: 20, fontWeight: 600, background: ok ? '#EAF5F3' : '#EEF2F1', color: ok ? '#0F6E56' : '#7A8F8E' }}>
+    <span style={{ fontSize: 10, padding: '2px 8px', borderRadius: 20, fontWeight: 600, background: ok ? '#E9F0ED' : '#F1ECE1', color: ok ? '#2B564D' : '#7B8C88' }}>
       {ok ? '✓' : '✗'} {label}
     </span>
   )
@@ -27,7 +27,7 @@ function PermBadge({ ok, label }: { ok: boolean; label: string }) {
 
 function EmptyState({ msg }: { msg: string }) {
   return (
-    <div style={{ padding: '48px 16px', textAlign: 'center', color: '#7A8F8E' }}>
+    <div style={{ padding: '48px 16px', textAlign: 'center', color: '#7B8C88' }}>
       <i className="fa-solid fa-folder-open" style={{ fontSize: 32, marginBottom: 12, display: 'block', color: '#D1D9D8' }} />
       <div style={{ fontSize: 12 }}>{msg}</div>
     </div>
@@ -79,9 +79,9 @@ export default function PortalContadorPage() {
 
   // Loading
   if (loading) return (
-    <div style={{ minHeight: '100vh', background: '#F4F6F5', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <div style={{ textAlign: 'center', color: '#7A8F8E', fontSize: 13 }}>
-        <i className="fa-solid fa-circle-notch fa-spin" style={{ fontSize: 24, marginBottom: 12, display: 'block', color: '#10B981' }} />
+    <div style={{ minHeight: '100vh', background: '#F7F4EE', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div style={{ textAlign: 'center', color: '#7B8C88', fontSize: 13 }}>
+        <i className="fa-solid fa-circle-notch fa-spin" style={{ fontSize: 24, marginBottom: 12, display: 'block', color: '#3D7A6E' }} />
         Carregando portal...
       </div>
     </div>
@@ -91,15 +91,15 @@ export default function PortalContadorPage() {
   if (error || !cont) {
     const isRevoked = error === 'revoked'
     return (
-      <div style={{ minHeight: '100vh', background: '#F4F6F5', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
-        <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 16, padding: '40px 32px', textAlign: 'center', maxWidth: 400 }}>
-          <div style={{ width: 56, height: 56, borderRadius: 14, background: isRevoked ? '#FEE2E2' : '#EEF2F1', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
-            <i className={`fa-solid ${isRevoked ? 'fa-ban' : 'fa-lock'}`} style={{ fontSize: 24, color: isRevoked ? '#E74C3C' : '#7A8F8E' }} />
+      <div style={{ minHeight: '100vh', background: '#F7F4EE', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
+        <div style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 16, padding: '40px 32px', textAlign: 'center', maxWidth: 400 }}>
+          <div style={{ width: 56, height: 56, borderRadius: 14, background: isRevoked ? '#F4E4E1' : '#F1ECE1', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
+            <i className={`fa-solid ${isRevoked ? 'fa-ban' : 'fa-lock'}`} style={{ fontSize: 24, color: isRevoked ? '#B0413E' : '#7B8C88' }} />
           </div>
-          <div style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 17, color: '#1C2B2A', marginBottom: 8 }}>
+          <div style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 17, color: '#13201D', marginBottom: 8 }}>
             {isRevoked ? 'Acesso revogado' : 'Acesso inválido'}
           </div>
-          <div style={{ fontSize: 12, color: '#7A8F8E', lineHeight: 1.6 }}>
+          <div style={{ fontSize: 12, color: '#7B8C88', lineHeight: 1.6 }}>
             {isRevoked
               ? 'O cliente revogou seu acesso a este portal. Entre em contato para solicitar reativação.'
               : 'Token expirado ou inválido. Solicite um novo link de acesso ao seu cliente.'}
@@ -116,18 +116,18 @@ export default function PortalContadorPage() {
   const exportUrl = `/api/contador/${token}/export?tipo=${tab}${competencia ? `&competencia=${competencia}` : ''}`
 
   return (
-    <div style={{ minHeight: '100vh', background: '#F4F6F5' }}>
+    <div style={{ minHeight: '100vh', background: '#F7F4EE' }}>
       {/* Topbar */}
-      <div style={{ background: '#1C2B2A', padding: '12px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+      <div style={{ background: '#13201D', padding: '12px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 16, fontWeight: 700, color: '#fff' }}>
-            Factor<span style={{ color: '#6EE7B7' }}>One</span>
+            Factor<span style={{ color: '#6FA595' }}>One</span>
           </div>
           <div style={{ width: 1, height: 18, background: 'rgba(255,255,255,0.15)' }} />
           <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.5)', fontWeight: 500 }}>Portal do Contador</div>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <span style={{ fontSize: 10, padding: '3px 10px', borderRadius: 20, background: '#EAF5F3', color: '#0F6E56', fontWeight: 700 }}>
+          <span style={{ fontSize: 10, padding: '3px 10px', borderRadius: 20, background: '#E9F0ED', color: '#2B564D', fontWeight: 700 }}>
             ✓ Somente leitura
           </span>
         </div>
@@ -136,17 +136,17 @@ export default function PortalContadorPage() {
       <div style={{ maxWidth: 960, margin: '0 auto', padding: '24px 16px' }}>
 
         {/* Card de boas-vindas */}
-        <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 14, padding: '18px 20px', marginBottom: 16 }}>
+        <div style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 14, padding: '18px 20px', marginBottom: 16 }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, flexWrap: 'wrap' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-              <div style={{ width: 44, height: 44, borderRadius: 11, background: '#1C2B2A', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                <i className="fa-solid fa-calculator" style={{ fontSize: 18, color: '#6EE7B7' }} />
+              <div style={{ width: 44, height: 44, borderRadius: 11, background: '#13201D', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <i className="fa-solid fa-calculator" style={{ fontSize: 18, color: '#6FA595' }} />
               </div>
               <div>
-                <div style={{ fontSize: 15, fontWeight: 700, color: '#1C2B2A', fontFamily: "'Inter', sans-serif" }}>
+                <div style={{ fontSize: 15, fontWeight: 700, color: '#13201D', fontFamily: "'Inter', sans-serif" }}>
                   Olá, {cont.nome}
                 </div>
-                <div style={{ fontSize: 11, color: '#7A8F8E', marginTop: 3 }}>
+                <div style={{ fontSize: 11, color: '#7B8C88', marginTop: 3 }}>
                   {cont.empresa_nome ? `Empresa: ${cont.empresa_nome} · ` : ''}Acesso em tempo real · Dados confidenciais
                 </div>
               </div>
@@ -166,23 +166,23 @@ export default function PortalContadorPage() {
           const ultimo = metricas[0]
           return (
             <div className="kpis" style={{ marginBottom: 16 }}>
-              <div className="kpi" style={{ borderTop: '3px solid #10B981' }}>
-                <div className="kpi-lbl">Receita Bruta <div style={{ width: 26, height: 26, borderRadius: 7, background: '#EAF5F3', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><i className="fa-solid fa-arrow-trend-up" style={{ fontSize: 11, color: '#10B981' }} /></div></div>
+              <div className="kpi" style={{ borderTop: '3px solid #3D7A6E' }}>
+                <div className="kpi-lbl">Receita Bruta <div style={{ width: 26, height: 26, borderRadius: 7, background: '#E9F0ED', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><i className="fa-solid fa-arrow-trend-up" style={{ fontSize: 11, color: '#3D7A6E' }} /></div></div>
                 <div className="kpi-val">{formatBRL(ultimo.receita_bruta)}</div>
                 <div className="kpi-delta">{ultimo.competencia?.slice(0, 7)}</div>
               </div>
-              <div className="kpi" style={{ borderTop: `3px solid ${ultimo.lucro_liquido >= 0 ? '#10B981' : '#E74C3C'}` }}>
-                <div className="kpi-lbl">Lucro Líquido <div style={{ width: 26, height: 26, borderRadius: 7, background: ultimo.lucro_liquido >= 0 ? '#EAF5F3' : '#FEE2E2', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><i className="fa-solid fa-chart-line" style={{ fontSize: 11, color: ultimo.lucro_liquido >= 0 ? '#10B981' : '#E74C3C' }} /></div></div>
+              <div className="kpi" style={{ borderTop: `3px solid ${ultimo.lucro_liquido >= 0 ? '#3D7A6E' : '#B0413E'}` }}>
+                <div className="kpi-lbl">Lucro Líquido <div style={{ width: 26, height: 26, borderRadius: 7, background: ultimo.lucro_liquido >= 0 ? '#E9F0ED' : '#F4E4E1', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><i className="fa-solid fa-chart-line" style={{ fontSize: 11, color: ultimo.lucro_liquido >= 0 ? '#3D7A6E' : '#B0413E' }} /></div></div>
                 <div className="kpi-val">{formatBRL(ultimo.lucro_liquido)}</div>
                 <div className={`kpi-delta ${ultimo.lucro_liquido >= 0 ? 'up' : 'dn'}`}>Margem {(Number(ultimo.margem_liquida) * 100).toFixed(1)}%</div>
               </div>
-              <div className="kpi" style={{ borderTop: '3px solid #D97706' }}>
-                <div className="kpi-lbl">EBITDA <div style={{ width: 26, height: 26, borderRadius: 7, background: '#FEF3C7', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><i className="fa-solid fa-gauge-high" style={{ fontSize: 11, color: '#D97706' }} /></div></div>
+              <div className="kpi" style={{ borderTop: '3px solid #B08A3E' }}>
+                <div className="kpi-lbl">EBITDA <div style={{ width: 26, height: 26, borderRadius: 7, background: '#F3ECDA', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><i className="fa-solid fa-gauge-high" style={{ fontSize: 11, color: '#B08A3E' }} /></div></div>
                 <div className="kpi-val">{formatBRL(ultimo.ebitda)}</div>
                 <div className="kpi-delta">mês atual</div>
               </div>
-              <div className="kpi" style={{ borderTop: '3px solid #7C3AED' }}>
-                <div className="kpi-lbl">Meses analisados <div style={{ width: 26, height: 26, borderRadius: 7, background: '#F3F0FF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><i className="fa-solid fa-calendar" style={{ fontSize: 11, color: '#7C3AED' }} /></div></div>
+              <div className="kpi" style={{ borderTop: '3px solid #7A6A9E' }}>
+                <div className="kpi-lbl">Meses analisados <div style={{ width: 26, height: 26, borderRadius: 7, background: '#F3F0FF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><i className="fa-solid fa-calendar" style={{ fontSize: 11, color: '#7A6A9E' }} /></div></div>
                 <div className="kpi-val">{metricas.length}</div>
                 <div className="kpi-delta">histórico disponível</div>
               </div>
@@ -191,14 +191,14 @@ export default function PortalContadorPage() {
         })()}
 
         {/* Tabs */}
-        <div style={{ display: 'flex', gap: 2, background: '#E8EDEC', padding: 3, borderRadius: 10, width: 'fit-content', marginBottom: 16 }}>
+        <div style={{ display: 'flex', gap: 2, background: '#F1ECE1', padding: 3, borderRadius: 10, width: 'fit-content', marginBottom: 16 }}>
           {tabsVisiveis.map(t => (
             <button key={t} onClick={() => setTab(t)} style={{
               display: 'flex', alignItems: 'center', gap: 6,
               fontSize: 11, fontWeight: tab === t ? 700 : 500,
               padding: '6px 14px', borderRadius: 8, border: 'none', cursor: 'pointer',
               background: tab === t ? '#fff' : 'transparent',
-              color: tab === t ? '#1C2B2A' : '#7A8F8E',
+              color: tab === t ? '#13201D' : '#7B8C88',
               transition: 'all 0.15s',
             }}>
               <i className={`fa-solid ${TAB_ICONS[t]}`} style={{ fontSize: 10 }} />
@@ -208,10 +208,10 @@ export default function PortalContadorPage() {
         </div>
 
         {/* Conteúdo */}
-        <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 14, overflow: 'hidden' }}>
+        <div style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 14, overflow: 'hidden' }}>
           {podeExportar && exportavel && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', padding: '10px 16px', borderBottom: '0.5px solid #E2E8E7', background: '#F8FAFA' }}>
-              <span style={{ fontSize: 11, color: '#7A8F8E', marginRight: 'auto', display: 'flex', alignItems: 'center', gap: 6 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', padding: '10px 16px', borderBottom: '0.5px solid #E4DCCC', background: '#FBF8F1' }}>
+              <span style={{ fontSize: 11, color: '#7B8C88', marginRight: 'auto', display: 'flex', alignItems: 'center', gap: 6 }}>
                 <i className="fa-solid fa-filter" style={{ fontSize: 10 }} />
                 Filtrar competência (opcional)
               </span>
@@ -219,16 +219,16 @@ export default function PortalContadorPage() {
                 type="month"
                 value={competencia}
                 onChange={e => setCompetencia(e.target.value)}
-                style={{ fontSize: 12, padding: '6px 10px', borderRadius: 8, border: '0.5px solid #E2E8E7', color: '#1C2B2A', background: '#fff' }}
+                style={{ fontSize: 12, padding: '6px 10px', borderRadius: 8, border: '0.5px solid #E4DCCC', color: '#13201D', background: '#fff' }}
               />
               {competencia && (
-                <button onClick={() => setCompetencia('')} title="Limpar filtro" style={{ fontSize: 12, padding: '6px 10px', borderRadius: 8, border: '0.5px solid #E2E8E7', background: '#fff', color: '#7A8F8E', cursor: 'pointer' }}>
+                <button onClick={() => setCompetencia('')} title="Limpar filtro" style={{ fontSize: 12, padding: '6px 10px', borderRadius: 8, border: '0.5px solid #E4DCCC', background: '#fff', color: '#7B8C88', cursor: 'pointer' }}>
                   <i className="fa-solid fa-xmark" />
                 </button>
               )}
               <a
                 href={exportUrl}
-                style={{ display: 'inline-flex', alignItems: 'center', gap: 7, fontSize: 12, fontWeight: 600, padding: '7px 16px', borderRadius: 8, background: '#1C2B2A', color: '#fff', textDecoration: 'none' }}
+                style={{ display: 'inline-flex', alignItems: 'center', gap: 7, fontSize: 12, fontWeight: 600, padding: '7px 16px', borderRadius: 8, background: '#13201D', color: '#fff', textDecoration: 'none' }}
               >
                 <i className="fa-solid fa-file-csv" />
                 Baixar CSV
@@ -238,16 +238,16 @@ export default function PortalContadorPage() {
 
           {dataLoading && (
             <div style={{ padding: '48px 16px', textAlign: 'center' }}>
-              <i className="fa-solid fa-circle-notch fa-spin" style={{ fontSize: 20, color: '#10B981' }} />
+              <i className="fa-solid fa-circle-notch fa-spin" style={{ fontSize: 20, color: '#3D7A6E' }} />
             </div>
           )}
 
           {/* DRE */}
           {!dataLoading && tab === 'dre' && (
             <>
-              <div style={{ padding: '12px 16px', borderBottom: '0.5px solid #E2E8E7', background: '#F8FAFA', display: 'flex', alignItems: 'center', gap: 8 }}>
-                <i className="fa-solid fa-chart-bar" style={{ fontSize: 13, color: '#10B981' }} />
-                <span style={{ fontSize: 12, fontWeight: 600, color: '#1C2B2A' }}>DRE — Últimos 12 meses</span>
+              <div style={{ padding: '12px 16px', borderBottom: '0.5px solid #E4DCCC', background: '#FBF8F1', display: 'flex', alignItems: 'center', gap: 8 }}>
+                <i className="fa-solid fa-chart-bar" style={{ fontSize: 13, color: '#3D7A6E' }} />
+                <span style={{ fontSize: 12, fontWeight: 600, color: '#13201D' }}>DRE — Últimos 12 meses</span>
               </div>
               {metricas.length === 0 ? <EmptyState msg="Sem dados de DRE. Execute o recálculo no módulo Relatórios." /> : (
                 <div style={{ overflowX: 'auto' }}>
@@ -255,21 +255,21 @@ export default function PortalContadorPage() {
                     <thead>
                       <tr>
                         {['Competência', 'Receita Bruta', 'EBITDA', 'Lucro Líquido', 'Margem'].map(h => (
-                          <th key={h} style={{ padding: '10px 14px', textAlign: h === 'Competência' ? 'left' : 'right', background: '#F8FAFA', borderBottom: '0.5px solid #E2E8E7', fontSize: 10, fontWeight: 600, color: '#7A8F8E', textTransform: 'uppercase', letterSpacing: '0.07em' }}>{h}</th>
+                          <th key={h} style={{ padding: '10px 14px', textAlign: h === 'Competência' ? 'left' : 'right', background: '#FBF8F1', borderBottom: '0.5px solid #E4DCCC', fontSize: 10, fontWeight: 600, color: '#7B8C88', textTransform: 'uppercase', letterSpacing: '0.07em' }}>{h}</th>
                         ))}
                       </tr>
                     </thead>
                     <tbody>
                       {metricas.map((m, i) => (
-                        <tr key={m.competencia} style={{ borderBottom: i < metricas.length - 1 ? '0.5px solid #F0F4F3' : 'none' }}>
-                          <td style={{ padding: '11px 14px', fontWeight: 700, color: '#1C2B2A', fontFamily: 'monospace' }}>{m.competencia?.slice(0, 7)}</td>
+                        <tr key={m.competencia} style={{ borderBottom: i < metricas.length - 1 ? '0.5px solid #EFE9DC' : 'none' }}>
+                          <td style={{ padding: '11px 14px', fontWeight: 700, color: '#13201D', fontFamily: 'monospace' }}>{m.competencia?.slice(0, 7)}</td>
                           <td style={{ padding: '11px 14px', textAlign: 'right', fontFamily: "'Inter', sans-serif", fontWeight: 500 }}>{formatBRL(m.receita_bruta)}</td>
-                          <td style={{ padding: '11px 14px', textAlign: 'right', fontFamily: "'Inter', sans-serif", color: '#7A8F8E' }}>{formatBRL(m.ebitda)}</td>
-                          <td style={{ padding: '11px 14px', textAlign: 'right', fontFamily: "'Inter', sans-serif", fontWeight: 700, color: m.lucro_liquido >= 0 ? '#10B981' : '#E74C3C' }}>
+                          <td style={{ padding: '11px 14px', textAlign: 'right', fontFamily: "'Inter', sans-serif", color: '#7B8C88' }}>{formatBRL(m.ebitda)}</td>
+                          <td style={{ padding: '11px 14px', textAlign: 'right', fontFamily: "'Inter', sans-serif", fontWeight: 700, color: m.lucro_liquido >= 0 ? '#3D7A6E' : '#B0413E' }}>
                             {formatBRL(m.lucro_liquido)}
                           </td>
                           <td style={{ padding: '11px 14px', textAlign: 'right' }}>
-                            <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 20, fontWeight: 600, background: Number(m.margem_liquida) >= 0.1 ? '#EAF5F3' : '#FEF3C7', color: Number(m.margem_liquida) >= 0.1 ? '#0F6E56' : '#92400E' }}>
+                            <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 20, fontWeight: 600, background: Number(m.margem_liquida) >= 0.1 ? '#E9F0ED' : '#F3ECDA', color: Number(m.margem_liquida) >= 0.1 ? '#2B564D' : '#B08A3E' }}>
                               {(Number(m.margem_liquida) * 100).toFixed(1)}%
                             </span>
                           </td>
@@ -285,22 +285,22 @@ export default function PortalContadorPage() {
           {/* Lançamentos */}
           {!dataLoading && tab === 'lancamentos' && (
             <>
-              <div style={{ padding: '12px 16px', borderBottom: '0.5px solid #E2E8E7', background: '#F8FAFA', display: 'flex', alignItems: 'center', gap: 8 }}>
-                <i className="fa-solid fa-list" style={{ fontSize: 13, color: '#10B981' }} />
-                <span style={{ fontSize: 12, fontWeight: 600, color: '#1C2B2A' }}>Lançamentos contábeis</span>
-                <span style={{ fontSize: 10, color: '#7A8F8E', marginLeft: 'auto' }}>{lancamentos.length} registros</span>
+              <div style={{ padding: '12px 16px', borderBottom: '0.5px solid #E4DCCC', background: '#FBF8F1', display: 'flex', alignItems: 'center', gap: 8 }}>
+                <i className="fa-solid fa-list" style={{ fontSize: 13, color: '#3D7A6E' }} />
+                <span style={{ fontSize: 12, fontWeight: 600, color: '#13201D' }}>Lançamentos contábeis</span>
+                <span style={{ fontSize: 10, color: '#7B8C88', marginLeft: 'auto' }}>{lancamentos.length} registros</span>
               </div>
               {lancamentos.length === 0 ? <EmptyState msg="Sem lançamentos registrados." /> : (
                 lancamentos.map((l, i) => (
-                  <div key={l.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '11px 16px', borderBottom: i < lancamentos.length - 1 ? '0.5px solid #F0F4F3' : 'none' }}>
-                    <div style={{ width: 30, height: 30, borderRadius: 8, background: l.tipo === 'credito' ? '#EAF5F3' : '#FEE2E2', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                      <i className={`fa-solid ${l.tipo === 'credito' ? 'fa-arrow-down' : 'fa-arrow-up'}`} style={{ fontSize: 12, color: l.tipo === 'credito' ? '#10B981' : '#E74C3C' }} />
+                  <div key={l.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '11px 16px', borderBottom: i < lancamentos.length - 1 ? '0.5px solid #EFE9DC' : 'none' }}>
+                    <div style={{ width: 30, height: 30, borderRadius: 8, background: l.tipo === 'credito' ? '#E9F0ED' : '#F4E4E1', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                      <i className={`fa-solid ${l.tipo === 'credito' ? 'fa-arrow-down' : 'fa-arrow-up'}`} style={{ fontSize: 12, color: l.tipo === 'credito' ? '#3D7A6E' : '#B0413E' }} />
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontSize: 12, fontWeight: 600, color: '#1C2B2A', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{l.descricao}</div>
-                      <div style={{ fontSize: 10, color: '#7A8F8E', marginTop: 2 }}>{l.competencia?.slice(0, 7)} · {l.origem}</div>
+                      <div style={{ fontSize: 12, fontWeight: 600, color: '#13201D', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{l.descricao}</div>
+                      <div style={{ fontSize: 10, color: '#7B8C88', marginTop: 2 }}>{l.competencia?.slice(0, 7)} · {l.origem}</div>
                     </div>
-                    <div style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 13, color: l.tipo === 'credito' ? '#10B981' : '#E74C3C', flexShrink: 0 }}>
+                    <div style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 13, color: l.tipo === 'credito' ? '#3D7A6E' : '#B0413E', flexShrink: 0 }}>
                       {l.tipo === 'credito' ? '+' : '-'}{formatBRL(l.valor)}
                     </div>
                   </div>
@@ -312,36 +312,36 @@ export default function PortalContadorPage() {
           {/* Notas */}
           {!dataLoading && tab === 'notas' && (
             <>
-              <div style={{ padding: '12px 16px', borderBottom: '0.5px solid #E2E8E7', background: '#F8FAFA', display: 'flex', alignItems: 'center', gap: 8 }}>
-                <i className="fa-solid fa-file-invoice" style={{ fontSize: 13, color: '#10B981' }} />
-                <span style={{ fontSize: 12, fontWeight: 600, color: '#1C2B2A' }}>Notas fiscais emitidas</span>
-                <span style={{ fontSize: 10, color: '#7A8F8E', marginLeft: 'auto' }}>{notas.length} emitidas</span>
+              <div style={{ padding: '12px 16px', borderBottom: '0.5px solid #E4DCCC', background: '#FBF8F1', display: 'flex', alignItems: 'center', gap: 8 }}>
+                <i className="fa-solid fa-file-invoice" style={{ fontSize: 13, color: '#3D7A6E' }} />
+                <span style={{ fontSize: 12, fontWeight: 600, color: '#13201D' }}>Notas fiscais emitidas</span>
+                <span style={{ fontSize: 10, color: '#7B8C88', marginLeft: 'auto' }}>{notas.length} emitidas</span>
               </div>
               {notas.length === 0 ? <EmptyState msg="Sem notas emitidas no período." /> : (
                 notas.map((n, i) => (
-                  <div key={n.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '11px 16px', borderBottom: i < notas.length - 1 ? '0.5px solid #F0F4F3' : 'none' }}>
-                    <div style={{ width: 30, height: 30, borderRadius: 8, background: n.status === 'autorizada' ? '#EAF5F3' : '#FEF3C7', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                      <i className={`fa-solid ${n.status === 'autorizada' ? 'fa-file-check' : 'fa-file-clock'}`} style={{ fontSize: 12, color: n.status === 'autorizada' ? '#10B981' : '#D97706' }} />
+                  <div key={n.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '11px 16px', borderBottom: i < notas.length - 1 ? '0.5px solid #EFE9DC' : 'none' }}>
+                    <div style={{ width: 30, height: 30, borderRadius: 8, background: n.status === 'autorizada' ? '#E9F0ED' : '#F3ECDA', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                      <i className={`fa-solid ${n.status === 'autorizada' ? 'fa-file-check' : 'fa-file-clock'}`} style={{ fontSize: 12, color: n.status === 'autorizada' ? '#3D7A6E' : '#B08A3E' }} />
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontSize: 12, fontWeight: 600, color: '#1C2B2A' }}>{n.destinatario_nome ?? '—'}</div>
-                      <div style={{ fontSize: 10, color: '#7A8F8E', marginTop: 2 }}>NF {n.numero ?? 'pendente'} · {n.created_at?.slice(0, 10)}</div>
+                      <div style={{ fontSize: 12, fontWeight: 600, color: '#13201D' }}>{n.destinatario_nome ?? '—'}</div>
+                      <div style={{ fontSize: 10, color: '#7B8C88', marginTop: 2 }}>NF {n.numero ?? 'pendente'} · {n.created_at?.slice(0, 10)}</div>
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                       {podeExportar && n.xml_url && (
-                        <a href={n.xml_url} target="_blank" rel="noopener noreferrer" title="Baixar XML" style={{ fontSize: 10.5, fontWeight: 700, padding: '3px 9px', borderRadius: 6, border: '0.5px solid #E2E8E7', color: '#10B981', textDecoration: 'none' }}>
+                        <a href={n.xml_url} target="_blank" rel="noopener noreferrer" title="Baixar XML" style={{ fontSize: 10.5, fontWeight: 700, padding: '3px 9px', borderRadius: 6, border: '0.5px solid #E4DCCC', color: '#3D7A6E', textDecoration: 'none' }}>
                           <i className="fa-solid fa-code" style={{ marginRight: 4 }} />XML
                         </a>
                       )}
                       {podeExportar && n.pdf_url && (
-                        <a href={n.pdf_url} target="_blank" rel="noopener noreferrer" title="Baixar DANFE (PDF)" style={{ fontSize: 10.5, fontWeight: 700, padding: '3px 9px', borderRadius: 6, border: '0.5px solid #E2E8E7', color: '#E74C3C', textDecoration: 'none' }}>
+                        <a href={n.pdf_url} target="_blank" rel="noopener noreferrer" title="Baixar DANFE (PDF)" style={{ fontSize: 10.5, fontWeight: 700, padding: '3px 9px', borderRadius: 6, border: '0.5px solid #E4DCCC', color: '#B0413E', textDecoration: 'none' }}>
                           <i className="fa-solid fa-file-pdf" style={{ marginRight: 4 }} />PDF
                         </a>
                       )}
-                      <span style={{ fontSize: 10, padding: '2px 8px', borderRadius: 20, fontWeight: 600, background: n.status === 'autorizada' ? '#EAF5F3' : '#FEF3C7', color: n.status === 'autorizada' ? '#0F6E56' : '#92400E' }}>
+                      <span style={{ fontSize: 10, padding: '2px 8px', borderRadius: 20, fontWeight: 600, background: n.status === 'autorizada' ? '#E9F0ED' : '#F3ECDA', color: n.status === 'autorizada' ? '#2B564D' : '#B08A3E' }}>
                         {n.status}
                       </span>
-                      <div style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 13, color: '#1C2B2A' }}>{formatBRL(n.valor_total)}</div>
+                      <div style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 13, color: '#13201D' }}>{formatBRL(n.valor_total)}</div>
                     </div>
                   </div>
                 ))
@@ -352,26 +352,26 @@ export default function PortalContadorPage() {
           {/* Despesas */}
           {!dataLoading && tab === 'despesas' && (
             <>
-              <div style={{ padding: '12px 16px', borderBottom: '0.5px solid #E2E8E7', background: '#F8FAFA', display: 'flex', alignItems: 'center', gap: 8 }}>
-                <i className="fa-solid fa-receipt" style={{ fontSize: 13, color: '#10B981' }} />
-                <span style={{ fontSize: 12, fontWeight: 600, color: '#1C2B2A' }}>Despesas</span>
-                <span style={{ fontSize: 10, color: '#7A8F8E', marginLeft: 'auto' }}>{despesas.length} registros</span>
+              <div style={{ padding: '12px 16px', borderBottom: '0.5px solid #E4DCCC', background: '#FBF8F1', display: 'flex', alignItems: 'center', gap: 8 }}>
+                <i className="fa-solid fa-receipt" style={{ fontSize: 13, color: '#3D7A6E' }} />
+                <span style={{ fontSize: 12, fontWeight: 600, color: '#13201D' }}>Despesas</span>
+                <span style={{ fontSize: 10, color: '#7B8C88', marginLeft: 'auto' }}>{despesas.length} registros</span>
               </div>
               {despesas.length === 0 ? <EmptyState msg="Sem despesas registradas no período." /> : (
                 despesas.map((d, i) => (
-                  <div key={d.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '11px 16px', borderBottom: i < despesas.length - 1 ? '0.5px solid #F0F4F3' : 'none' }}>
-                    <div style={{ width: 30, height: 30, borderRadius: 8, background: '#EEF2F1', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                      <i className="fa-solid fa-receipt" style={{ fontSize: 12, color: '#7A8F8E' }} />
+                  <div key={d.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '11px 16px', borderBottom: i < despesas.length - 1 ? '0.5px solid #EFE9DC' : 'none' }}>
+                    <div style={{ width: 30, height: 30, borderRadius: 8, background: '#F1ECE1', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                      <i className="fa-solid fa-receipt" style={{ fontSize: 12, color: '#7B8C88' }} />
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontSize: 12, fontWeight: 600, color: '#1C2B2A', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{d.descricao}</div>
-                      <div style={{ fontSize: 10, color: '#7A8F8E', marginTop: 2 }}>{d.categoria} · {d.data_despesa ?? '—'}</div>
+                      <div style={{ fontSize: 12, fontWeight: 600, color: '#13201D', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{d.descricao}</div>
+                      <div style={{ fontSize: 10, color: '#7B8C88', marginTop: 2 }}>{d.categoria} · {d.data_despesa ?? '—'}</div>
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                      <span style={{ fontSize: 10, padding: '2px 8px', borderRadius: 20, fontWeight: 600, background: d.status === 'pago' ? '#EAF5F3' : '#FEF3C7', color: d.status === 'pago' ? '#0F6E56' : '#92400E' }}>
+                      <span style={{ fontSize: 10, padding: '2px 8px', borderRadius: 20, fontWeight: 600, background: d.status === 'pago' ? '#E9F0ED' : '#F3ECDA', color: d.status === 'pago' ? '#2B564D' : '#B08A3E' }}>
                         {d.status}
                       </span>
-                      <div style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 13, color: '#E74C3C' }}>{formatBRL(Number(d.valor))}</div>
+                      <div style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 13, color: '#B0413E' }}>{formatBRL(Number(d.valor))}</div>
                     </div>
                   </div>
                 ))
@@ -380,7 +380,7 @@ export default function PortalContadorPage() {
           )}
         </div>
 
-        <div style={{ textAlign: 'center', marginTop: 20, fontSize: 10, color: '#AAB8B7' }}>
+        <div style={{ textAlign: 'center', marginTop: 20, fontSize: 10, color: '#A6B0AC' }}>
           FactorOne Finance OS · Portal somente leitura · Dados confidenciais · {new Date().getFullYear()}
         </div>
       </div>

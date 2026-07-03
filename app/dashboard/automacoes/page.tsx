@@ -46,7 +46,7 @@ const TIPOS: Record<string, TipoInfo> = {
     label: 'Oportunidade sem follow-up',
     desc: 'Avisa sobre oportunidades no CRM sem atualização.',
     icon: 'fa-handshake',
-    color: '#7C3AED',
+    color: '#7A6A9E',
     campos: [{ key: 'dias', label: 'Dias sem atualização', type: 'number', placeholder: '7', default: 7 }],
   },
   pneu_desgaste: {
@@ -182,7 +182,7 @@ export default function AutomacoesPage() {
       </div>
 
       {/* Info */}
-      <div style={{ background: 'rgba(16,185,129,.04)', border: '1px solid rgba(16,185,129,.15)', borderRadius: 10, padding: '12px 16px', fontSize: 12, color: 'var(--gray-500)', marginBottom: 16, lineHeight: 1.7 }}>
+      <div style={{ background: 'rgba(61,122,110,.04)', border: '1px solid rgba(61,122,110,.15)', borderRadius: 10, padding: '12px 16px', fontSize: 12, color: 'var(--gray-500)', marginBottom: 16, lineHeight: 1.7 }}>
         <i className="fa-solid fa-circle-info" style={{ color: 'var(--teal)', marginRight: 6 }} />
         As automações geram notificações no sino do topo. Clique em <strong>Executar agora</strong> para rodar manualmente, ou configure uma tarefa cron em <code>/api/automacoes/processar</code> com Authorization header.
       </div>
@@ -194,8 +194,8 @@ export default function AutomacoesPage() {
           const info = TIPOS[regra.tipo]
           if (!info) return null
           return (
-            <div key={regra.id} style={{ background: '#fff', border: `1px solid ${regra.ativa ? 'rgba(16,185,129,.2)' : 'var(--gray-100)'}`, borderRadius: 12, padding: '14px 18px', display: 'flex', alignItems: 'center', gap: 14 }}>
-              <div style={{ width: 40, height: 40, borderRadius: 10, background: regra.ativa ? 'rgba(16,185,129,.08)' : 'var(--gray-100)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            <div key={regra.id} style={{ background: '#fff', border: `1px solid ${regra.ativa ? 'rgba(61,122,110,.2)' : 'var(--gray-100)'}`, borderRadius: 12, padding: '14px 18px', display: 'flex', alignItems: 'center', gap: 14 }}>
+              <div style={{ width: 40, height: 40, borderRadius: 10, background: regra.ativa ? 'rgba(61,122,110,.08)' : 'var(--gray-100)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                 <i className={`fa-solid ${info.icon}`} style={{ color: regra.ativa ? info.color : 'var(--gray-400)', fontSize: 16 }} />
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>

@@ -18,7 +18,7 @@ const CATEGORIAS: Record<string, { label: string; icon: string; iconColor: strin
   despesas:    { label: 'Despesas',        icon: 'fa-receipt',                iconColor: 'var(--red)' },
   clientes:    { label: 'Clientes',        icon: 'fa-users',                  iconColor: '#1E40AF' },
   fornecedores:{ label: 'Fornecedores',    icon: 'fa-truck',                  iconColor: 'var(--gold)' },
-  crm:         { label: 'CRM',             icon: 'fa-handshake',              iconColor: '#7C3AED' },
+  crm:         { label: 'CRM',             icon: 'fa-handshake',              iconColor: '#7A6A9E' },
   rotas:       { label: 'Logística',       icon: 'fa-truck-fast',             iconColor: '#0891b2' },
   nav:         { label: 'Navegação',       icon: 'fa-compass',                iconColor: 'var(--navy)' },
 }
@@ -67,7 +67,7 @@ async function buscarDados(q: string, empresaId: string): Promise<Resultado[]> {
     results.push({ id: `f-${f.id}`, label: f.nome, sub: f.cnpj ?? 'Fornecedor', icon: 'fa-truck', iconColor: 'var(--gold)', href: '/dashboard/fornecedores', categoria: 'fornecedores' })
   }
   for (const o of crmRes.data ?? []) {
-    results.push({ id: `crm-${o.id}`, label: o.titulo, sub: `${o.etapa} · ${o.valor_estimado ? fmt(o.valor_estimado) : '—'}`, icon: 'fa-handshake', iconColor: '#7C3AED', href: '/dashboard/crm', categoria: 'crm' })
+    results.push({ id: `crm-${o.id}`, label: o.titulo, sub: `${o.etapa} · ${o.valor_estimado ? fmt(o.valor_estimado) : '—'}`, icon: 'fa-handshake', iconColor: '#7A6A9E', href: '/dashboard/crm', categoria: 'crm' })
   }
   for (const r of rotasRes.data ?? []) {
     results.push({ id: `rt-${r.id}`, label: `${r.origem} → ${r.destino}`, sub: r.status, icon: 'fa-truck-fast', iconColor: '#0891b2', href: '/dashboard/logistica', categoria: 'rotas' })
@@ -177,11 +177,11 @@ export default function GlobalSearch({ empresaId }: { empresaId: string }) {
                     onMouseEnter={() => setCursor(globalIdx)}
                     style={{
                       display: 'flex', alignItems: 'center', gap: 10, padding: '8px 16px', cursor: 'pointer',
-                      background: ativo ? 'rgba(16,185,129,.08)' : 'transparent',
+                      background: ativo ? 'rgba(61,122,110,.08)' : 'transparent',
                       borderLeft: ativo ? '2px solid var(--teal)' : '2px solid transparent',
                     }}
                   >
-                    <div style={{ width: 30, height: 30, borderRadius: 7, background: ativo ? 'rgba(16,185,129,.12)' : 'var(--gray-100)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <div style={{ width: 30, height: 30, borderRadius: 7, background: ativo ? 'rgba(61,122,110,.12)' : 'var(--gray-100)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                       <i className={`fa-solid ${r.icon}`} style={{ color: r.iconColor, fontSize: 12 }} />
                     </div>
                     <div style={{ flex: 1, overflow: 'hidden' }}>

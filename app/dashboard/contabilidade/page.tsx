@@ -154,7 +154,7 @@ export default function ContabilidadePage() {
           <div className="page-title">Contabilidade</div>
           <div className="page-sub">Recibos, lançamentos, portal do contador e exportações</div>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'rgba(16,185,129,.08)', border: '1px solid rgba(16,185,129,.25)', borderRadius: 20, padding: '5px 12px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'rgba(61,122,110,.08)', border: '1px solid rgba(61,122,110,.25)', borderRadius: 20, padding: '5px 12px' }}>
           <div className="live-dot" style={{ width: 6, height: 6 }} />
           <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--teal)', letterSpacing: '.04em' }}>Tempo Real</span>
         </div>
@@ -269,7 +269,7 @@ export default function ContabilidadePage() {
               { icon: 'fa-chart-pie', label: 'DRE Atualizado' },
               { icon: 'fa-user-tie', label: 'Contador Valida' },
             ].map(({ icon, label }) => (
-              <div key={label} style={{ background: 'rgba(16,185,129,.04)', border: '1px solid var(--gray-100)', borderRadius: 10, padding: '14px 12px', textAlign: 'center' }}>
+              <div key={label} style={{ background: 'rgba(61,122,110,.04)', border: '1px solid var(--gray-100)', borderRadius: 10, padding: '14px 12px', textAlign: 'center' }}>
                 <i className={'fa-solid ' + icon} style={{ fontSize: 18, color: 'var(--teal)', marginBottom: 8, display: 'block' }} />
                 <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--navy)' }}>{label}</div>
               </div>

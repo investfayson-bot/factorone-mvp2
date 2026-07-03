@@ -24,7 +24,7 @@ const PLANOS = [
     id: 'FactorOne Cash+',
     nome: 'Enterprise',
     preco: 'R$ 149/mês',
-    cor: '#7C3AED',
+    cor: '#7A6A9E',
     features: ['Tudo do Profissional', 'Cartões ilimitados', 'Multiusuários', 'Conciliação automática', 'Open Finance', 'Gerente dedicado'],
   },
 ]
@@ -106,7 +106,7 @@ export default function AberturaContaWizard() {
   if (enviado) {
     return (
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 64, textAlign: 'center' }}>
-        <div style={{ width: 72, height: 72, borderRadius: '50%', background: 'rgba(16,185,129,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 20 }}>
+        <div style={{ width: 72, height: 72, borderRadius: '50%', background: 'rgba(61,122,110,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 20 }}>
           <i className="fa-solid fa-circle-check" style={{ fontSize: 36, color: 'var(--teal)' }} />
         </div>
         <h2 style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: 22, fontWeight: 700, color: 'var(--navy)', marginBottom: 10 }}>Solicitação enviada!</h2>
@@ -230,7 +230,7 @@ export default function AberturaContaWizard() {
                 </div>
               ))}
               <button type="button" onClick={() => setSocios([...socios, { nome: '', cpf: '', participacao: 0 }])}
-                style={{ alignSelf: 'flex-start', padding: '6px 14px', borderRadius: 8, border: '1px dashed var(--teal)', background: 'rgba(16,185,129,0.04)', color: 'var(--teal)', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
+                style={{ alignSelf: 'flex-start', padding: '6px 14px', borderRadius: 8, border: '1px dashed var(--teal)', background: 'rgba(61,122,110,0.04)', color: 'var(--teal)', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
                 <i className="fa-solid fa-plus" style={{ marginRight: 5, fontSize: 10 }} />Adicionar sócio
               </button>
             </div>
@@ -244,8 +244,8 @@ export default function AberturaContaWizard() {
             <p style={{ fontSize: 12, color: 'var(--gray-400)', marginBottom: 24 }}>Faça upload dos documentos para análise KYB.</p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               {DOCS.map(doc => (
-                <label key={doc.id} style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '12px 16px', border: documentos[doc.id] ? '1px solid var(--teal)' : '1px solid var(--gray-100)', borderRadius: 10, background: documentos[doc.id] ? 'rgba(16,185,129,0.04)' : '#fafafa', cursor: 'pointer' }}>
-                  <div style={{ width: 36, height: 36, borderRadius: 8, background: documentos[doc.id] ? 'rgba(16,185,129,0.1)' : 'var(--gray-100)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <label key={doc.id} style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '12px 16px', border: documentos[doc.id] ? '1px solid var(--teal)' : '1px solid var(--gray-100)', borderRadius: 10, background: documentos[doc.id] ? 'rgba(61,122,110,0.04)' : '#fafafa', cursor: 'pointer' }}>
+                  <div style={{ width: 36, height: 36, borderRadius: 8, background: documentos[doc.id] ? 'rgba(61,122,110,0.1)' : 'var(--gray-100)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                     <i className={`fa-solid ${documentos[doc.id] ? 'fa-circle-check' : doc.icon}`} style={{ fontSize: 14, color: documentos[doc.id] ? 'var(--teal)' : 'var(--gray-400)' }} />
                   </div>
                   <div style={{ flex: 1 }}>
@@ -268,13 +268,13 @@ export default function AberturaContaWizard() {
               {PLANOS.map(p => (
                 <button key={p.id} type="button" onClick={() => setPlano(p.id)} style={{
                   borderRadius: 12, border: plano === p.id ? `2px solid ${p.cor}` : '1px solid var(--gray-100)',
-                  background: plano === p.id ? (p.cor === 'var(--navy)' ? 'rgba(10,25,47,0.04)' : `rgba(16,185,129,0.04)`) : '#fff',
+                  background: plano === p.id ? (p.cor === 'var(--navy)' ? 'rgba(10,25,47,0.04)' : `rgba(61,122,110,0.04)`) : '#fff',
                   padding: 14, textAlign: 'left', cursor: 'pointer', position: 'relative',
                 }}>
                   {p.destaque && (
                     <div style={{ position: 'absolute', top: -8, right: 10, background: 'var(--teal)', color: '#fff', fontSize: 9, fontWeight: 800, padding: '2px 8px', borderRadius: 20, textTransform: 'uppercase' }}>Recomendado</div>
                   )}
-                  <p style={{ fontSize: 13, fontWeight: 700, color: p.cor === 'var(--teal)' ? 'var(--teal)' : p.cor === '#7C3AED' ? '#7C3AED' : 'var(--navy)', margin: '0 0 2px' }}>{p.nome}</p>
+                  <p style={{ fontSize: 13, fontWeight: 700, color: p.cor === 'var(--teal)' ? 'var(--teal)' : p.cor === '#7A6A9E' ? '#7A6A9E' : 'var(--navy)', margin: '0 0 2px' }}>{p.nome}</p>
                   <p style={{ fontSize: 11, color: 'var(--gray-500)', margin: '0 0 10px', fontWeight: 600 }}>{p.preco}</p>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                     {p.features.map(f => (

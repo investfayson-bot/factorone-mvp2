@@ -21,34 +21,34 @@ const ECOM = [
 ] as const
 
 const TEMPLATES = [
-  { nome: 'Restaurante & Delivery', ramo: 'Alimentação', g: 'linear-gradient(135deg,#E74C3C,#D97706)', icon: 'fa-utensils' },
-  { nome: 'Loja Online', ramo: 'Ecommerce', g: 'linear-gradient(135deg,#7C3AED,#2563eb)', icon: 'fa-bag-shopping' },
-  { nome: 'Consultoria & Serviços', ramo: 'Serviços', g: 'linear-gradient(135deg,#1C2B2A,#10B981)', icon: 'fa-briefcase' },
-  { nome: 'Clínica & Saúde', ramo: 'Saúde', g: 'linear-gradient(135deg,#16A085,#2D9B6F)', icon: 'fa-heart-pulse' },
-  { nome: 'Imobiliária', ramo: 'Imóveis', g: 'linear-gradient(135deg,#0E7490,#2563eb)', icon: 'fa-building' },
-  { nome: 'Tech & SaaS', ramo: 'Tecnologia', g: 'linear-gradient(135deg,#1C2B2A,#7C3AED)', icon: 'fa-microchip' },
-  { nome: 'Beleza & Estética', ramo: 'Beleza', g: 'linear-gradient(135deg,#BE185D,#7C3AED)', icon: 'fa-scissors' },
-  { nome: 'Academia & Fitness', ramo: 'Fitness', g: 'linear-gradient(135deg,#D97706,#E74C3C)', icon: 'fa-dumbbell' },
-  { nome: 'Advocacia', ramo: 'Jurídico', g: 'linear-gradient(135deg,#1C2B2A,#243736)', icon: 'fa-scale-balanced' },
-  { nome: 'Educação & Cursos', ramo: 'Educação', g: 'linear-gradient(135deg,#2563eb,#16A085)', icon: 'fa-graduation-cap' },
+  { nome: 'Restaurante & Delivery', ramo: 'Alimentação', g: 'linear-gradient(135deg,#B0413E,#B08A3E)', icon: 'fa-utensils' },
+  { nome: 'Loja Online', ramo: 'Ecommerce', g: 'linear-gradient(135deg,#7A6A9E,#3D6E8E)', icon: 'fa-bag-shopping' },
+  { nome: 'Consultoria & Serviços', ramo: 'Serviços', g: 'linear-gradient(135deg,#13201D,#3D7A6E)', icon: 'fa-briefcase' },
+  { nome: 'Clínica & Saúde', ramo: 'Saúde', g: 'linear-gradient(135deg,#3D7A6E,#3D7A6E)', icon: 'fa-heart-pulse' },
+  { nome: 'Imobiliária', ramo: 'Imóveis', g: 'linear-gradient(135deg,#0E7490,#3D6E8E)', icon: 'fa-building' },
+  { nome: 'Tech & SaaS', ramo: 'Tecnologia', g: 'linear-gradient(135deg,#13201D,#7A6A9E)', icon: 'fa-microchip' },
+  { nome: 'Beleza & Estética', ramo: 'Beleza', g: 'linear-gradient(135deg,#BE185D,#7A6A9E)', icon: 'fa-scissors' },
+  { nome: 'Academia & Fitness', ramo: 'Fitness', g: 'linear-gradient(135deg,#B08A3E,#B0413E)', icon: 'fa-dumbbell' },
+  { nome: 'Advocacia', ramo: 'Jurídico', g: 'linear-gradient(135deg,#13201D,#1C2E29)', icon: 'fa-scale-balanced' },
+  { nome: 'Educação & Cursos', ramo: 'Educação', g: 'linear-gradient(135deg,#3D6E8E,#3D7A6E)', icon: 'fa-graduation-cap' },
 ]
 
 function ConnectCard({ nome, desc, icon, cor, dark, on }: { nome: string; desc: string; icon: string; cor: string; dark?: boolean; on: boolean }) {
   return (
-    <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 14, padding: '16px 18px', display: 'flex', flexDirection: 'column', gap: 12 }}>
+    <div style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 14, padding: '16px 18px', display: 'flex', flexDirection: 'column', gap: 12 }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 11 }}>
         <div style={{ width: 40, height: 40, borderRadius: 11, background: cor, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-          <i className={`fa-brands ${icon}`} style={{ fontSize: 18, color: dark ? '#1C2B2A' : '#fff' }} />
+          <i className={`fa-brands ${icon}`} style={{ fontSize: 18, color: dark ? '#13201D' : '#fff' }} />
         </div>
         <div>
-          <div style={{ fontSize: 13.5, fontWeight: 700, color: '#1C2B2A' }}>{nome}</div>
-          <div style={{ fontSize: 11, color: '#7A8F8E' }}>{desc}</div>
+          <div style={{ fontSize: 13.5, fontWeight: 700, color: '#13201D' }}>{nome}</div>
+          <div style={{ fontSize: 11, color: '#7B8C88' }}>{desc}</div>
         </div>
       </div>
       <button
         onClick={() => on ? undefined : toast('Conexão via OAuth entra quando a chave da API estiver configurada.', { icon: '🔌' })}
         disabled={on}
-        style={{ fontSize: 12, fontWeight: 700, padding: '8px', borderRadius: 9, border: 'none', cursor: on ? 'default' : 'pointer', background: on ? '#EAF5F3' : '#1C2B2A', color: on ? '#0F6E56' : '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7 }}
+        style={{ fontSize: 12, fontWeight: 700, padding: '8px', borderRadius: 9, border: 'none', cursor: on ? 'default' : 'pointer', background: on ? '#E9F0ED' : '#13201D', color: on ? '#2B564D' : '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7 }}
       >
         {on ? (<><i className="fa-solid fa-circle-check" />Conectado</>) : (<><i className="fa-solid fa-link" />Conectar</>)}
       </button>
@@ -73,10 +73,10 @@ export default function MarketingCentralPage() {
       </div>
 
       {/* Banner */}
-      <div style={{ background: 'linear-gradient(135deg,#1C2B2A,#243736)', borderRadius: 16, padding: '22px 26px', marginBottom: 22, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
+      <div style={{ background: 'linear-gradient(135deg,#13201D,#1C2E29)', borderRadius: 16, padding: '22px 26px', marginBottom: 22, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
         <div>
           <div style={{ fontSize: 18, fontWeight: 800, color: '#fff', fontFamily: "'Inter', system-ui, sans-serif", letterSpacing: '-.02em' }}>Central de Marketing</div>
-          <div style={{ fontSize: 13, color: '#6EE7B7', marginTop: 4 }}>Conecte seus anúncios e loja, meça o ROI real e publique sites em minutos.</div>
+          <div style={{ fontSize: 13, color: '#6FA595', marginTop: 4 }}>Conecte seus anúncios e loja, meça o ROI real e publique sites em minutos.</div>
         </div>
       </div>
 
@@ -95,25 +95,25 @@ export default function MarketingCentralPage() {
       {/* Templates de site por ramo */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
         <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.04em' }}>Sites & landing pages · por ramo</div>
-        <span style={{ fontSize: 11, color: '#7A8F8E' }}>escolha um modelo e publique</span>
+        <span style={{ fontSize: 11, color: '#7B8C88' }}>escolha um modelo e publique</span>
       </div>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(210px, 1fr))', gap: 12 }}>
         {TEMPLATES.map(t => (
-          <button key={t.nome} onClick={() => toast('Editor de site em breve — o template abre pra personalizar e publicar.', { icon: '🎨' })} style={{ padding: 0, border: '0.5px solid #E2E8E7', borderRadius: 14, overflow: 'hidden', cursor: 'pointer', background: '#fff', textAlign: 'left' }}>
+          <button key={t.nome} onClick={() => toast('Editor de site em breve — o template abre pra personalizar e publicar.', { icon: '🎨' })} style={{ padding: 0, border: '0.5px solid #E4DCCC', borderRadius: 14, overflow: 'hidden', cursor: 'pointer', background: '#fff', textAlign: 'left' }}>
             <div style={{ height: 110, background: t.g, position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <i className={`fa-solid ${t.icon}`} style={{ fontSize: 30, color: 'rgba(255,255,255,.9)' }} />
               <div style={{ position: 'absolute', top: 8, right: 8, fontSize: 9, fontWeight: 700, color: '#fff', background: 'rgba(0,0,0,.25)', padding: '2px 8px', borderRadius: 20 }}>{t.ramo}</div>
             </div>
             <div style={{ padding: '11px 14px' }}>
-              <div style={{ fontSize: 13, fontWeight: 700, color: '#1C2B2A' }}>{t.nome}</div>
-              <div style={{ fontSize: 11, color: '#10B981', fontWeight: 600, marginTop: 3 }}><i className="fa-solid fa-wand-magic-sparkles" style={{ marginRight: 5 }} />Usar template</div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: '#13201D' }}>{t.nome}</div>
+              <div style={{ fontSize: 11, color: '#3D7A6E', fontWeight: 600, marginTop: 3 }}><i className="fa-solid fa-wand-magic-sparkles" style={{ marginRight: 5 }} />Usar template</div>
             </div>
           </button>
         ))}
       </div>
 
-      <div style={{ fontSize: 11, color: '#AAB8B7', marginTop: 16, lineHeight: 1.6 }}>
-        <i className="fa-solid fa-circle-info" style={{ color: '#10B981', marginRight: 6 }} />
+      <div style={{ fontSize: 11, color: '#A6B0AC', marginTop: 16, lineHeight: 1.6 }}>
+        <i className="fa-solid fa-circle-info" style={{ color: '#3D7A6E', marginRight: 6 }} />
         Ads e ecommerce conectam via OAuth do provedor quando as chaves de API estiverem configuradas. Os templates de site abrem no editor (em construção) pra personalizar e publicar.
       </div>
     </>

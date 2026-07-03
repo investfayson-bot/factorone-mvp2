@@ -61,7 +61,7 @@ const PLANOS_PJ = [
     preco: 'R$ 297',
     subPreco: 'por mês',
     badge: 'Recomendado PME',
-    badgeBg: '#EAF5F3', badgeColor: '#0F6E56',
+    badgeBg: '#E9F0ED', badgeColor: '#2B564D',
     priceId: process.env.NEXT_PUBLIC_STRIPE_PRICE_PRO_PJ ?? 'price_pro_pj',
     destaque: true,
     features: [
@@ -87,7 +87,7 @@ const PLANOS_FAMILIA = [
     preco: 'R$ 397',
     subPreco: 'por mês · tudo num só plano',
     badge: 'Bundle exclusivo',
-    badgeBg: '#EAF5F3', badgeColor: '#0F6E56',
+    badgeBg: '#E9F0ED', badgeColor: '#2B564D',
     priceId: process.env.NEXT_PUBLIC_STRIPE_PRICE_FAMILIA ?? 'price_familia',
     destaque: false,
     economia: 'Separado custaria R$ 685/mês — economia de R$ 288',
@@ -174,7 +174,7 @@ export default function PlanosPage() {
 
       {/* Toggle PJ / Família */}
       <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 24 }}>
-        <div style={{ display: 'flex', background: '#E8EDEC', padding: 3, borderRadius: 12, border: '0.5px solid #D1D9D8' }}>
+        <div style={{ display: 'flex', background: '#F1ECE1', padding: 3, borderRadius: 12, border: '0.5px solid #D1D9D8' }}>
           {([
             { id: 'pj', label: 'Pessoa Jurídica', icon: 'fa-building' },
             { id: 'familia', label: 'Família & Empresa', icon: 'fa-people-roof' },
@@ -184,7 +184,7 @@ export default function PlanosPage() {
               fontSize: 12, fontWeight: tab === t.id ? 700 : 500,
               padding: '8px 18px', borderRadius: 9, border: 'none', cursor: 'pointer',
               background: tab === t.id ? '#fff' : 'transparent',
-              color: tab === t.id ? '#1C2B2A' : '#7A8F8E',
+              color: tab === t.id ? '#13201D' : '#7B8C88',
               boxShadow: tab === t.id ? '0 1px 4px rgba(0,0,0,0.08)' : 'none',
               transition: 'all 0.15s',
             }}>
@@ -197,9 +197,9 @@ export default function PlanosPage() {
 
       {/* Banner informativo */}
       {tab === 'familia' && (
-        <div style={{ background: '#1C2B2A', borderRadius: 14, padding: '16px 20px', marginBottom: 20, display: 'flex', alignItems: 'center', gap: 14 }}>
-          <div style={{ width: 40, height: 40, borderRadius: 10, background: 'rgba(16,185,129,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-            <i className="fa-solid fa-people-roof" style={{ fontSize: 18, color: '#6EE7B7' }} />
+        <div style={{ background: '#13201D', borderRadius: 14, padding: '16px 20px', marginBottom: 20, display: 'flex', alignItems: 'center', gap: 14 }}>
+          <div style={{ width: 40, height: 40, borderRadius: 10, background: 'rgba(61,122,110,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            <i className="fa-solid fa-people-roof" style={{ fontSize: 18, color: '#6FA595' }} />
           </div>
           <div>
             <div style={{ fontSize: 13, fontWeight: 700, color: '#fff', marginBottom: 3 }}>Um plano para empresa e família</div>
@@ -223,7 +223,7 @@ export default function PlanosPage() {
           return (
             <div key={p.key} style={{
               background: '#fff',
-              border: p.destaque ? '2px solid #10B981' : '0.5px solid #E2E8E7',
+              border: p.destaque ? '2px solid #3D7A6E' : '0.5px solid #E4DCCC',
               borderRadius: 14,
               padding: '18px 16px',
               display: 'flex',
@@ -231,7 +231,7 @@ export default function PlanosPage() {
               position: 'relative',
             }}>
               {p.destaque && (
-                <div style={{ position: 'absolute', top: -1, left: '50%', transform: 'translateX(-50%)', background: '#10B981', color: '#fff', fontSize: 9, fontWeight: 700, padding: '3px 12px', borderRadius: '0 0 8px 8px', letterSpacing: '0.06em', whiteSpace: 'nowrap' }}>
+                <div style={{ position: 'absolute', top: -1, left: '50%', transform: 'translateX(-50%)', background: '#3D7A6E', color: '#fff', fontSize: 9, fontWeight: 700, padding: '3px 12px', borderRadius: '0 0 8px 8px', letterSpacing: '0.06em', whiteSpace: 'nowrap' }}>
                   MAIS POPULAR
                 </div>
               )}
@@ -240,29 +240,29 @@ export default function PlanosPage() {
                 {p.badge}
               </span>
 
-              <div style={{ fontSize: 14, fontWeight: 700, color: '#1C2B2A', marginBottom: 4 }}>{p.nome}</div>
-              <div style={{ fontSize: 26, fontWeight: 700, color: '#1C2B2A', letterSpacing: '-0.03em', lineHeight: 1 }}>{p.preco}</div>
-              <div style={{ fontSize: 11, color: '#7A8F8E', marginBottom: 14, marginTop: 3 }}>{p.subPreco}</div>
+              <div style={{ fontSize: 14, fontWeight: 700, color: '#13201D', marginBottom: 4 }}>{p.nome}</div>
+              <div style={{ fontSize: 26, fontWeight: 700, color: '#13201D', letterSpacing: '-0.03em', lineHeight: 1 }}>{p.preco}</div>
+              <div style={{ fontSize: 11, color: '#7B8C88', marginBottom: 14, marginTop: 3 }}>{p.subPreco}</div>
 
               {'economia' in p && (p as { economia?: string }).economia && (
-                <div style={{ background: '#EAF5F3', borderRadius: 8, padding: '7px 10px', fontSize: 10, color: '#0F6E56', fontWeight: 500, marginBottom: 12, lineHeight: 1.4 }}>
+                <div style={{ background: '#E9F0ED', borderRadius: 8, padding: '7px 10px', fontSize: 10, color: '#2B564D', fontWeight: 500, marginBottom: 12, lineHeight: 1.4 }}>
                   <i className="fa-solid fa-piggy-bank" style={{ marginRight: 5 }} />{(p as { economia?: string }).economia}
                 </div>
               )}
 
-              <div style={{ height: '0.5px', background: '#E2E8E7', marginBottom: 12 }} />
+              <div style={{ height: '0.5px', background: '#E4DCCC', marginBottom: 12 }} />
 
               <div style={{ flex: 1 }}>
                 {p.features.map(f => (
-                  <div key={f} style={{ display: 'flex', alignItems: 'flex-start', gap: 7, padding: '3px 0', fontSize: 11, color: '#3A5150', lineHeight: 1.4 }}>
-                    <i className="fa-solid fa-check" style={{ fontSize: 11, color: '#10B981', flexShrink: 0, marginTop: 2 }} />{f}
+                  <div key={f} style={{ display: 'flex', alignItems: 'flex-start', gap: 7, padding: '3px 0', fontSize: 11, color: '#3C4A46', lineHeight: 1.4 }}>
+                    <i className="fa-solid fa-check" style={{ fontSize: 11, color: '#3D7A6E', flexShrink: 0, marginTop: 2 }} />{f}
                   </div>
                 ))}
                 {p.nao.length > 0 && (
                   <>
-                    <div style={{ height: '0.5px', background: '#E2E8E7', margin: '10px 0 8px' }} />
+                    <div style={{ height: '0.5px', background: '#E4DCCC', margin: '10px 0 8px' }} />
                     {p.nao.map(f => (
-                      <div key={f} style={{ display: 'flex', alignItems: 'flex-start', gap: 7, padding: '3px 0', fontSize: 11, color: '#AAB8B7', lineHeight: 1.4 }}>
+                      <div key={f} style={{ display: 'flex', alignItems: 'flex-start', gap: 7, padding: '3px 0', fontSize: 11, color: '#A6B0AC', lineHeight: 1.4 }}>
                         <i className="fa-solid fa-lock" style={{ fontSize: 11, flexShrink: 0, marginTop: 2 }} />{f}
                       </div>
                     ))}
@@ -277,8 +277,8 @@ export default function PlanosPage() {
                   marginTop: 16, width: '100%', padding: '10px', borderRadius: 9,
                   fontSize: 12, fontWeight: 700, cursor: ativo ? 'default' : 'pointer',
                   border: 'none',
-                  background: ativo ? '#EAF5F3' : p.destaque ? '#1C2B2A' : '#F4F6F5',
-                  color: ativo ? '#0F6E56' : p.destaque ? '#fff' : '#1C2B2A',
+                  background: ativo ? '#E9F0ED' : p.destaque ? '#13201D' : '#F7F4EE',
+                  color: ativo ? '#2B564D' : p.destaque ? '#fff' : '#13201D',
                   transition: 'all 0.15s',
                 }}
               >
@@ -290,10 +290,10 @@ export default function PlanosPage() {
       </div>
 
       {/* Banner Conta PJ */}
-      <div style={{ background: 'linear-gradient(135deg, #1C2B2A 0%, #2A3F3E 100%)', borderRadius: 14, padding: '20px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 20, marginBottom: 20 }}>
+      <div style={{ background: 'linear-gradient(135deg, #13201D 0%, #2A3F3E 100%)', borderRadius: 14, padding: '20px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 20, marginBottom: 20 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-          <div style={{ width: 48, height: 48, borderRadius: 12, background: 'rgba(16,185,129,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-            <i className="fa-solid fa-credit-card" style={{ fontSize: 22, color: '#6EE7B7' }} />
+          <div style={{ width: 48, height: 48, borderRadius: 12, background: 'rgba(61,122,110,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            <i className="fa-solid fa-credit-card" style={{ fontSize: 22, color: '#6FA595' }} />
           </div>
           <div>
             <div style={{ fontSize: 14, fontWeight: 700, color: '#fff', marginBottom: 4 }}>Abra sua Conta PJ</div>
@@ -304,15 +304,15 @@ export default function PlanosPage() {
         </div>
         <button
           onClick={() => router.push('/dashboard/marketplace')}
-          style={{ background: '#10B981', color: '#fff', border: 'none', borderRadius: 9, padding: '10px 20px', fontSize: 12, fontWeight: 700, cursor: 'pointer', whiteSpace: 'nowrap', flexShrink: 0 }}
+          style={{ background: '#3D7A6E', color: '#fff', border: 'none', borderRadius: 9, padding: '10px 20px', fontSize: 12, fontWeight: 700, cursor: 'pointer', whiteSpace: 'nowrap', flexShrink: 0 }}
         >
           Ver no Marketplace
         </button>
       </div>
 
       {/* FAQ */}
-      <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 14, padding: '18px 20px' }}>
-        <div style={{ fontSize: 13, fontWeight: 700, color: '#1C2B2A', marginBottom: 14 }}>Perguntas frequentes</div>
+      <div style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 14, padding: '18px 20px' }}>
+        <div style={{ fontSize: 13, fontWeight: 700, color: '#13201D', marginBottom: 14 }}>Perguntas frequentes</div>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px 24px' }}>
           {[
             { q: 'Posso cancelar a qualquer momento?', r: 'Sim. Sem fidelidade ou multa. Cancele quando quiser pelo painel.' },
@@ -321,8 +321,8 @@ export default function PlanosPage() {
             { q: 'A Conta PJ é cobrada à parte?', r: 'Sim. É um produto financeiro do marketplace, ativado no plano Profissional. Sem tarifas mensais — você paga só o que usar.' },
           ].map(item => (
             <div key={item.q}>
-              <div style={{ fontSize: 12, fontWeight: 600, color: '#1C2B2A', marginBottom: 4 }}>{item.q}</div>
-              <div style={{ fontSize: 11, color: '#7A8F8E', lineHeight: 1.5 }}>{item.r}</div>
+              <div style={{ fontSize: 12, fontWeight: 600, color: '#13201D', marginBottom: 4 }}>{item.q}</div>
+              <div style={{ fontSize: 11, color: '#7B8C88', lineHeight: 1.5 }}>{item.r}</div>
             </div>
           ))}
         </div>

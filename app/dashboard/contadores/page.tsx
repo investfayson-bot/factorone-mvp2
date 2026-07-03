@@ -160,10 +160,10 @@ export default function ContadoresPage() {
   }
 
   function statusObrig(s: string) {
-    if (s === 'pago') return { label: 'Pago', bg: '#EAF5F3', color: '#0F6E56' }
-    if (s === 'pendente') return { label: 'Pendente', bg: '#FEF3C7', color: '#92400E' }
-    if (s === 'em_preparo') return { label: 'Em preparo', bg: '#FEF3C7', color: '#92400E' }
-    return { label: s, bg: '#EEF2F1', color: '#7A8F8E' }
+    if (s === 'pago') return { label: 'Pago', bg: '#E9F0ED', color: '#2B564D' }
+    if (s === 'pendente') return { label: 'Pendente', bg: '#F3ECDA', color: '#B08A3E' }
+    if (s === 'em_preparo') return { label: 'Em preparo', bg: '#F3ECDA', color: '#B08A3E' }
+    return { label: s, bg: '#F1ECE1', color: '#7B8C88' }
   }
 
   function diasAte(d: string) {
@@ -181,14 +181,14 @@ export default function ContadoresPage() {
           <div className="page-sub">Competência: {mesLabel} · Fechamento e bookkeeping</div>
         </div>
         <div style={{ display: 'flex', gap: 8 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'var(--navy)', color: '#6EE7B7', fontSize: 10, padding: '5px 12px', borderRadius: 20, fontWeight: 700, letterSpacing: '0.05em' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'var(--navy)', color: '#6FA595', fontSize: 10, padding: '5px 12px', borderRadius: 20, fontWeight: 700, letterSpacing: '0.05em' }}>
             <i className="fa-solid fa-calculator" style={{ fontSize: 11 }} />MODO CONTADOR
           </div>
           <button className="btn-action" onClick={() => { setTab('acessos'); setModal(true) }} style={{ fontSize: 12, padding: '6px 14px' }}>
             <i className="fa-solid fa-key" style={{ marginRight: 6 }} />Gerenciar acessos
           </button>
           <button
-            style={{ fontSize: 12, padding: '6px 14px', background: '#10B981', color: '#fff', border: 'none', borderRadius: 8, cursor: 'pointer', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 6 }}
+            style={{ fontSize: 12, padding: '6px 14px', background: '#3D7A6E', color: '#fff', border: 'none', borderRadius: 8, cursor: 'pointer', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 6 }}
             onClick={async () => {
               const { baixarArquivo } = await import('@/lib/download-arquivo')
               const r = await baixarArquivo('/api/contador/exportar-pdf', 'bookkeeping.pdf')
@@ -201,12 +201,12 @@ export default function ContadoresPage() {
       </div>
 
       {/* Tabs */}
-      <div style={{ display: 'flex', gap: 2, background: '#E8EDEC', padding: 3, borderRadius: 10, width: 'fit-content', marginBottom: 16 }}>
+      <div style={{ display: 'flex', gap: 2, background: '#F1ECE1', padding: 3, borderRadius: 10, width: 'fit-content', marginBottom: 16 }}>
         {TABS.map(t => (
           <button key={t.id} onClick={() => setTab(t.id)} style={{
             fontSize: 11, padding: '6px 14px', borderRadius: 8, cursor: 'pointer', border: 'none',
             background: tab === t.id ? '#fff' : 'transparent',
-            color: tab === t.id ? 'var(--navy)' : '#7A8F8E',
+            color: tab === t.id ? 'var(--navy)' : '#7B8C88',
             fontWeight: tab === t.id ? 700 : 500,
           }}>{t.label}</button>
         ))}
@@ -217,10 +217,10 @@ export default function ContadoresPage() {
         <>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10, marginBottom: 12 }}>
             {/* Fechamento */}
-            <div style={{ background: '#fff', borderRadius: 12, border: '0.5px solid #E2E8E7', padding: '14px 16px' }}>
+            <div style={{ background: '#fff', borderRadius: 12, border: '0.5px solid #E4DCCC', padding: '14px 16px' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
                 <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--navy)' }}>Status do fechamento</div>
-                <span style={{ fontSize: 9, padding: '2px 8px', borderRadius: 20, background: '#FEF3C7', color: '#92400E', fontWeight: 700 }}>Em andamento</span>
+                <span style={{ fontSize: 9, padding: '2px 8px', borderRadius: 20, background: '#F3ECDA', color: '#B08A3E', fontWeight: 700 }}>Em andamento</span>
               </div>
               {[
                 { label: 'Lançamentos classificados', pct: progresso.lancamentos },
@@ -230,34 +230,34 @@ export default function ContadoresPage() {
               ].map(item => (
                 <div key={item.label} style={{ marginBottom: 10 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
-                    <span style={{ fontSize: 11, color: '#3A5150' }}>{item.label}</span>
-                    <span style={{ fontSize: 11, fontWeight: 700, color: item.pct >= 80 ? '#16A085' : item.pct >= 50 ? '#D97706' : '#E74C3C' }}>{item.pct}%</span>
+                    <span style={{ fontSize: 11, color: '#3C4A46' }}>{item.label}</span>
+                    <span style={{ fontSize: 11, fontWeight: 700, color: item.pct >= 80 ? '#3D7A6E' : item.pct >= 50 ? '#B08A3E' : '#B0413E' }}>{item.pct}%</span>
                   </div>
-                  <div style={{ height: 6, background: '#EEF2F1', borderRadius: 99, overflow: 'hidden' }}>
-                    <div style={{ height: '100%', width: `${item.pct}%`, borderRadius: 99, background: item.pct >= 80 ? '#10B981' : item.pct >= 50 ? '#D97706' : '#E74C3C' }} />
+                  <div style={{ height: 6, background: '#F1ECE1', borderRadius: 99, overflow: 'hidden' }}>
+                    <div style={{ height: '100%', width: `${item.pct}%`, borderRadius: 99, background: item.pct >= 80 ? '#3D7A6E' : item.pct >= 50 ? '#B08A3E' : '#B0413E' }} />
                   </div>
                 </div>
               ))}
             </div>
 
             {/* Lançamentos pendentes */}
-            <div style={{ background: '#fff', borderRadius: 12, border: '0.5px solid #E2E8E7', padding: '14px 16px' }}>
+            <div style={{ background: '#fff', borderRadius: 12, border: '0.5px solid #E4DCCC', padding: '14px 16px' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
                 <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--navy)' }}>Lançamentos pendentes</div>
-                {lancPend > 0 && <span style={{ fontSize: 9, padding: '2px 8px', borderRadius: 20, background: '#FEE2E2', color: '#991B1B', fontWeight: 700 }}>{lancPend} pendentes</span>}
+                {lancPend > 0 && <span style={{ fontSize: 9, padding: '2px 8px', borderRadius: 20, background: '#F4E4E1', color: '#B0413E', fontWeight: 700 }}>{lancPend} pendentes</span>}
               </div>
               {lancamentos.slice(0, 3).length === 0 ? (
-                <div style={{ fontSize: 11, color: '#7A8F8E', textAlign: 'center', padding: '20px 0' }}>Todos classificados ✓</div>
+                <div style={{ fontSize: 11, color: '#7B8C88', textAlign: 'center', padding: '20px 0' }}>Todos classificados ✓</div>
               ) : lancamentos.slice(0, 3).map(l => (
-                <div key={l.id} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 0', borderBottom: '0.5px solid #F0F4F3' }}>
-                  <div style={{ width: 30, height: 30, borderRadius: 8, background: l.tipo === 'entrada' ? '#EAF5F3' : '#FEE2E2', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                    <i className={`fa-solid ${l.tipo === 'entrada' ? 'fa-arrow-down' : 'fa-question'}`} style={{ fontSize: 12, color: l.tipo === 'entrada' ? '#16A085' : '#E74C3C' }} />
+                <div key={l.id} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 0', borderBottom: '0.5px solid #EFE9DC' }}>
+                  <div style={{ width: 30, height: 30, borderRadius: 8, background: l.tipo === 'entrada' ? '#E9F0ED' : '#F4E4E1', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <i className={`fa-solid ${l.tipo === 'entrada' ? 'fa-arrow-down' : 'fa-question'}`} style={{ fontSize: 12, color: l.tipo === 'entrada' ? '#3D7A6E' : '#B0413E' }} />
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--navy)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{l.descricao || 'Sem descrição'}</div>
-                    <div style={{ fontSize: 10, color: '#7A8F8E' }}>{l.categoria || 'Não classificado'}</div>
+                    <div style={{ fontSize: 10, color: '#7B8C88' }}>{l.categoria || 'Não classificado'}</div>
                   </div>
-                  <div style={{ fontSize: 11, fontWeight: 700, color: l.tipo === 'entrada' ? '#16A085' : '#E74C3C', flexShrink: 0 }}>
+                  <div style={{ fontSize: 11, fontWeight: 700, color: l.tipo === 'entrada' ? '#3D7A6E' : '#B0413E', flexShrink: 0 }}>
                     {l.tipo === 'entrada' ? '+' : '-'}{fmtBRLCompact(Number(l.valor))}
                   </div>
                 </div>
@@ -270,7 +270,7 @@ export default function ContadoresPage() {
             </div>
 
             {/* Obrigações */}
-            <div style={{ background: '#fff', borderRadius: 12, border: '0.5px solid #E2E8E7', padding: '14px 16px' }}>
+            <div style={{ background: '#fff', borderRadius: 12, border: '0.5px solid #E4DCCC', padding: '14px 16px' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
                 <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--navy)' }}>Obrigações acessórias</div>
               </div>
@@ -278,13 +278,13 @@ export default function ContadoresPage() {
                 const st = statusObrig(o.status)
                 const dias = diasAte(o.vencimento)
                 return (
-                  <div key={o.id} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 0', borderBottom: '0.5px solid #F0F4F3' }}>
-                    <div style={{ width: 30, height: 30, borderRadius: 8, background: o.status === 'pago' ? '#EAF5F3' : '#FEF3C7', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                      <i className={`fa-solid ${o.status === 'pago' ? 'fa-check' : 'fa-clock'}`} style={{ fontSize: 12, color: o.status === 'pago' ? '#10B981' : '#D97706' }} />
+                  <div key={o.id} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 0', borderBottom: '0.5px solid #EFE9DC' }}>
+                    <div style={{ width: 30, height: 30, borderRadius: 8, background: o.status === 'pago' ? '#E9F0ED' : '#F3ECDA', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                      <i className={`fa-solid ${o.status === 'pago' ? 'fa-check' : 'fa-clock'}`} style={{ fontSize: 12, color: o.status === 'pago' ? '#3D7A6E' : '#B08A3E' }} />
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--navy)' }}>{o.nome}</div>
-                      <div style={{ fontSize: 10, color: '#7A8F8E' }}>
+                      <div style={{ fontSize: 10, color: '#7B8C88' }}>
                         {o.status === 'pago' ? 'Recolhido' : dias > 0 ? `Vence em ${dias} dias` : 'Vencido'}
                       </div>
                     </div>
@@ -299,50 +299,50 @@ export default function ContadoresPage() {
 
           {/* Recibos + Notas */}
           <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: 10 }}>
-            <div style={{ background: '#fff', borderRadius: 12, border: '0.5px solid #E2E8E7', padding: '14px 16px' }}>
+            <div style={{ background: '#fff', borderRadius: 12, border: '0.5px solid #E4DCCC', padding: '14px 16px' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
                 <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--navy)' }}>Recibos e comprovantes</div>
                 <button onClick={() => setTab('recibos')} style={{ fontSize: 10, color: 'var(--teal)', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 600 }}>Ver todos</button>
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 8 }}>
                 {recibos.slice(0, 3).map(r => (
-                  <div key={r.id} style={{ aspectRatio: '1', background: '#EEF2F1', borderRadius: 8, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 4, border: '0.5px solid #E2E8E7', cursor: 'pointer' }}>
+                  <div key={r.id} style={{ aspectRatio: '1', background: '#F1ECE1', borderRadius: 8, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 4, border: '0.5px solid #E4DCCC', cursor: 'pointer' }}>
                     <i className="fa-solid fa-file-invoice" style={{ fontSize: 18, color: 'var(--teal)' }} />
-                    <div style={{ fontSize: 9, color: '#7A8F8E', textAlign: 'center', padding: '0 4px', lineHeight: 1.3 }}>{r.descricao?.slice(0, 14) || 'Recibo'}</div>
+                    <div style={{ fontSize: 9, color: '#7B8C88', textAlign: 'center', padding: '0 4px', lineHeight: 1.3 }}>{r.descricao?.slice(0, 14) || 'Recibo'}</div>
                     <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--navy)' }}>{fmtBRLCompact(Number(r.valor))}</div>
                   </div>
                 ))}
                 <Link href="/dashboard/despesas" style={{ textDecoration: 'none' }}>
-                  <div style={{ aspectRatio: '1', border: '1.5px dashed #C4CFCE', background: '#F8FAFA', borderRadius: 8, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 4, cursor: 'pointer' }}>
+                  <div style={{ aspectRatio: '1', border: '1.5px dashed #C4CFCE', background: '#FBF8F1', borderRadius: 8, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 4, cursor: 'pointer' }}>
                     <i className="fa-solid fa-cloud-arrow-up" style={{ fontSize: 16, color: '#C4CFCE' }} />
-                    <div style={{ fontSize: 9, color: '#AAB8B7' }}>Anexar</div>
+                    <div style={{ fontSize: 9, color: '#A6B0AC' }}>Anexar</div>
                   </div>
                 </Link>
               </div>
-              <div style={{ marginTop: 10, fontSize: 11, color: '#7A8F8E' }}>
+              <div style={{ marginTop: 10, fontSize: 11, color: '#7B8C88' }}>
                 <span style={{ color: 'var(--navy)', fontWeight: 700 }}>{totalRecibos}</span> comprovantes anexados
               </div>
             </div>
 
-            <div style={{ background: '#fff', borderRadius: 12, border: '0.5px solid #E2E8E7', padding: '14px 16px' }}>
+            <div style={{ background: '#fff', borderRadius: 12, border: '0.5px solid #E4DCCC', padding: '14px 16px' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
                 <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--navy)' }}>Notas fiscais</div>
-                <span style={{ fontSize: 9, padding: '2px 8px', borderRadius: 20, background: '#EAF5F3', color: '#0F6E56', fontWeight: 700 }}>{totalNotas} emitidas</span>
+                <span style={{ fontSize: 9, padding: '2px 8px', borderRadius: 20, background: '#E9F0ED', color: '#2B564D', fontWeight: 700 }}>{totalNotas} emitidas</span>
               </div>
               {notas.slice(0, 3).length === 0 ? (
-                <div style={{ fontSize: 11, color: '#7A8F8E', textAlign: 'center', padding: '20px 0' }}>Nenhuma NF neste mês</div>
+                <div style={{ fontSize: 11, color: '#7B8C88', textAlign: 'center', padding: '20px 0' }}>Nenhuma NF neste mês</div>
               ) : notas.slice(0, 3).map(n => (
-                <div key={n.id} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 0', borderBottom: '0.5px solid #F0F4F3' }}>
-                  <div style={{ width: 30, height: 30, borderRadius: 8, background: n.status === 'autorizada' ? '#EAF5F3' : '#FEF3C7', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                    <i className={`fa-solid ${n.status === 'autorizada' ? 'fa-file-check' : 'fa-file-circle-exclamation'}`} style={{ fontSize: 12, color: n.status === 'autorizada' ? '#10B981' : '#D97706' }} />
+                <div key={n.id} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 0', borderBottom: '0.5px solid #EFE9DC' }}>
+                  <div style={{ width: 30, height: 30, borderRadius: 8, background: n.status === 'autorizada' ? '#E9F0ED' : '#F3ECDA', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <i className={`fa-solid ${n.status === 'autorizada' ? 'fa-file-check' : 'fa-file-circle-exclamation'}`} style={{ fontSize: 12, color: n.status === 'autorizada' ? '#3D7A6E' : '#B08A3E' }} />
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--navy)' }}>NF {n.tipo?.toUpperCase()} {n.numero}</div>
-                    <div style={{ fontSize: 10, color: '#7A8F8E', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{n.fornecedor_nome || '—'}</div>
+                    <div style={{ fontSize: 10, color: '#7B8C88', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{n.fornecedor_nome || '—'}</div>
                   </div>
                   <div style={{ textAlign: 'right' }}>
                     <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--navy)' }}>{fmtBRLCompact(Number(n.valor))}</div>
-                    <div style={{ fontSize: 9, color: n.status === 'autorizada' ? '#16A085' : '#D97706' }}>{n.status === 'autorizada' ? 'Autorizada' : 'Pendente'}</div>
+                    <div style={{ fontSize: 9, color: n.status === 'autorizada' ? '#3D7A6E' : '#B08A3E' }}>{n.status === 'autorizada' ? 'Autorizada' : 'Pendente'}</div>
                   </div>
                 </div>
               ))}
@@ -358,26 +358,26 @@ export default function ContadoresPage() {
 
       {/* LANÇAMENTOS */}
       {tab === 'lancamentos' && (
-        <div style={{ background: '#fff', borderRadius: 12, border: '0.5px solid #E2E8E7', overflow: 'hidden' }}>
-          <div style={{ padding: '12px 16px', borderBottom: '0.5px solid #E2E8E7', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div style={{ background: '#fff', borderRadius: 12, border: '0.5px solid #E4DCCC', overflow: 'hidden' }}>
+          <div style={{ padding: '12px 16px', borderBottom: '0.5px solid #E4DCCC', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--navy)' }}>Lançamentos — {mesLabel}</div>
-            {lancPend > 0 && <span style={{ fontSize: 9, padding: '2px 10px', borderRadius: 20, background: '#FEE2E2', color: '#991B1B', fontWeight: 700 }}>{lancPend} pendentes</span>}
+            {lancPend > 0 && <span style={{ fontSize: 9, padding: '2px 10px', borderRadius: 20, background: '#F4E4E1', color: '#B0413E', fontWeight: 700 }}>{lancPend} pendentes</span>}
           </div>
           {lancamentos.length === 0 ? (
-            <div style={{ padding: '40px 16px', textAlign: 'center', color: '#7A8F8E', fontSize: 12 }}>Nenhum lançamento pendente.</div>
+            <div style={{ padding: '40px 16px', textAlign: 'center', color: '#7B8C88', fontSize: 12 }}>Nenhum lançamento pendente.</div>
           ) : lancamentos.map(l => (
-            <div key={l.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 16px', borderBottom: '0.5px solid #F0F4F3' }}>
-              <div style={{ width: 32, height: 32, borderRadius: 8, background: l.tipo === 'entrada' ? '#EAF5F3' : '#FEE2E2', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                <i className={`fa-solid ${l.tipo === 'entrada' ? 'fa-arrow-down-circle' : 'fa-question'}`} style={{ fontSize: 13, color: l.tipo === 'entrada' ? '#16A085' : '#E74C3C' }} />
+            <div key={l.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 16px', borderBottom: '0.5px solid #EFE9DC' }}>
+              <div style={{ width: 32, height: 32, borderRadius: 8, background: l.tipo === 'entrada' ? '#E9F0ED' : '#F4E4E1', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <i className={`fa-solid ${l.tipo === 'entrada' ? 'fa-arrow-down-circle' : 'fa-question'}`} style={{ fontSize: 13, color: l.tipo === 'entrada' ? '#3D7A6E' : '#B0413E' }} />
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--navy)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{l.descricao || 'Sem descrição'}</div>
-                <div style={{ fontSize: 10, color: '#7A8F8E' }}>{l.categoria || 'Não classificado'} · {new Date(l.data + 'T12:00:00').toLocaleDateString('pt-BR')}</div>
+                <div style={{ fontSize: 10, color: '#7B8C88' }}>{l.categoria || 'Não classificado'} · {new Date(l.data + 'T12:00:00').toLocaleDateString('pt-BR')}</div>
               </div>
-              <div style={{ fontSize: 12, fontWeight: 700, color: l.tipo === 'entrada' ? '#16A085' : '#E74C3C', flexShrink: 0 }}>
+              <div style={{ fontSize: 12, fontWeight: 700, color: l.tipo === 'entrada' ? '#3D7A6E' : '#B0413E', flexShrink: 0 }}>
                 {l.tipo === 'entrada' ? '+' : '-'}{fmtBRL(Number(l.valor))}
               </div>
-              <span style={{ fontSize: 9, padding: '2px 8px', borderRadius: 20, fontWeight: 700, background: l.status === 'conciliado' ? '#EAF5F3' : '#FEF3C7', color: l.status === 'conciliado' ? '#0F6E56' : '#92400E', flexShrink: 0 }}>
+              <span style={{ fontSize: 9, padding: '2px 8px', borderRadius: 20, fontWeight: 700, background: l.status === 'conciliado' ? '#E9F0ED' : '#F3ECDA', color: l.status === 'conciliado' ? '#2B564D' : '#B08A3E', flexShrink: 0 }}>
                 {l.status === 'conciliado' ? 'Conciliado' : 'Pendente'}
               </span>
             </div>
@@ -387,24 +387,24 @@ export default function ContadoresPage() {
 
       {/* NOTAS */}
       {tab === 'notas' && (
-        <div style={{ background: '#fff', borderRadius: 12, border: '0.5px solid #E2E8E7', overflow: 'hidden' }}>
-          <div style={{ padding: '12px 16px', borderBottom: '0.5px solid #E2E8E7', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div style={{ background: '#fff', borderRadius: 12, border: '0.5px solid #E4DCCC', overflow: 'hidden' }}>
+          <div style={{ padding: '12px 16px', borderBottom: '0.5px solid #E4DCCC', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--navy)' }}>Notas fiscais — {mesLabel}</div>
-            <span style={{ fontSize: 9, padding: '2px 10px', borderRadius: 20, background: '#EAF5F3', color: '#0F6E56', fontWeight: 700 }}>{totalNotas} emitidas</span>
+            <span style={{ fontSize: 9, padding: '2px 10px', borderRadius: 20, background: '#E9F0ED', color: '#2B564D', fontWeight: 700 }}>{totalNotas} emitidas</span>
           </div>
           {notas.length === 0 ? (
-            <div style={{ padding: '40px 16px', textAlign: 'center', color: '#7A8F8E', fontSize: 12 }}>Nenhuma nota fiscal neste mês.</div>
+            <div style={{ padding: '40px 16px', textAlign: 'center', color: '#7B8C88', fontSize: 12 }}>Nenhuma nota fiscal neste mês.</div>
           ) : notas.map(n => (
-            <div key={n.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 16px', borderBottom: '0.5px solid #F0F4F3' }}>
-              <div style={{ width: 32, height: 32, borderRadius: 8, background: n.status === 'autorizada' ? '#EAF5F3' : '#FEF3C7', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                <i className={`fa-solid ${n.status === 'autorizada' ? 'fa-file-check' : 'fa-file-circle-exclamation'}`} style={{ fontSize: 13, color: n.status === 'autorizada' ? '#10B981' : '#D97706' }} />
+            <div key={n.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 16px', borderBottom: '0.5px solid #EFE9DC' }}>
+              <div style={{ width: 32, height: 32, borderRadius: 8, background: n.status === 'autorizada' ? '#E9F0ED' : '#F3ECDA', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <i className={`fa-solid ${n.status === 'autorizada' ? 'fa-file-check' : 'fa-file-circle-exclamation'}`} style={{ fontSize: 13, color: n.status === 'autorizada' ? '#3D7A6E' : '#B08A3E' }} />
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--navy)' }}>NF-{n.tipo?.toLowerCase() === 'servico' ? 'Se' : 'e'} {n.numero || '—'}</div>
-                <div style={{ fontSize: 10, color: '#7A8F8E' }}>{n.fornecedor_nome || '—'} · {new Date((n.data_emissao || '') + 'T12:00:00').toLocaleDateString('pt-BR')}</div>
+                <div style={{ fontSize: 10, color: '#7B8C88' }}>{n.fornecedor_nome || '—'} · {new Date((n.data_emissao || '') + 'T12:00:00').toLocaleDateString('pt-BR')}</div>
               </div>
               <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--navy)', flexShrink: 0 }}>{fmtBRL(Number(n.valor))}</div>
-              <span style={{ fontSize: 9, padding: '2px 8px', borderRadius: 20, fontWeight: 700, background: n.status === 'autorizada' ? '#EAF5F3' : '#FEF3C7', color: n.status === 'autorizada' ? '#0F6E56' : '#92400E', flexShrink: 0 }}>
+              <span style={{ fontSize: 9, padding: '2px 8px', borderRadius: 20, fontWeight: 700, background: n.status === 'autorizada' ? '#E9F0ED' : '#F3ECDA', color: n.status === 'autorizada' ? '#2B564D' : '#B08A3E', flexShrink: 0 }}>
                 {n.status === 'autorizada' ? 'Autorizada' : n.status || 'Pendente'}
               </span>
             </div>
@@ -414,22 +414,22 @@ export default function ContadoresPage() {
 
       {/* RECIBOS */}
       {tab === 'recibos' && (
-        <div style={{ background: '#fff', borderRadius: 12, border: '0.5px solid #E2E8E7', padding: '14px 16px' }}>
+        <div style={{ background: '#fff', borderRadius: 12, border: '0.5px solid #E4DCCC', padding: '14px 16px' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
             <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--navy)' }}>Recibos — {mesLabel}</div>
-            <span style={{ fontSize: 10, color: '#7A8F8E' }}>{totalRecibos} comprovantes</span>
+            <span style={{ fontSize: 10, color: '#7B8C88' }}>{totalRecibos} comprovantes</span>
           </div>
           {recibos.length === 0 ? (
-            <div style={{ padding: '40px 16px', textAlign: 'center', color: '#7A8F8E', fontSize: 12 }}>Nenhum recibo anexado neste mês.</div>
+            <div style={{ padding: '40px 16px', textAlign: 'center', color: '#7B8C88', fontSize: 12 }}>Nenhum recibo anexado neste mês.</div>
           ) : (
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 10 }}>
               {recibos.map(r => (
                 <a key={r.id} href={r.arquivo_url || '#'} target="_blank" rel="noreferrer" style={{ textDecoration: 'none' }}>
-                  <div style={{ aspectRatio: '0.8', background: '#EEF2F1', borderRadius: 8, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 6, border: '0.5px solid #E2E8E7', cursor: 'pointer', padding: 8 }}>
+                  <div style={{ aspectRatio: '0.8', background: '#F1ECE1', borderRadius: 8, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 6, border: '0.5px solid #E4DCCC', cursor: 'pointer', padding: 8 }}>
                     <i className="fa-solid fa-file-invoice" style={{ fontSize: 22, color: 'var(--teal)' }} />
-                    <div style={{ fontSize: 9, color: '#7A8F8E', textAlign: 'center', lineHeight: 1.3 }}>{r.descricao?.slice(0, 18) || 'Recibo'}</div>
+                    <div style={{ fontSize: 9, color: '#7B8C88', textAlign: 'center', lineHeight: 1.3 }}>{r.descricao?.slice(0, 18) || 'Recibo'}</div>
                     <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--navy)' }}>{fmtBRLCompact(Number(r.valor))}</div>
-                    <div style={{ fontSize: 9, color: '#AAB8B7' }}>{new Date((r.data || '') + 'T12:00:00').toLocaleDateString('pt-BR')}</div>
+                    <div style={{ fontSize: 9, color: '#A6B0AC' }}>{new Date((r.data || '') + 'T12:00:00').toLocaleDateString('pt-BR')}</div>
                   </div>
                 </a>
               ))}
@@ -440,22 +440,22 @@ export default function ContadoresPage() {
 
       {/* OBRIGAÇÕES */}
       {tab === 'obrigacoes' && (
-        <div style={{ background: '#fff', borderRadius: 12, border: '0.5px solid #E2E8E7', overflow: 'hidden' }}>
-          <div style={{ padding: '12px 16px', borderBottom: '0.5px solid #E2E8E7' }}>
+        <div style={{ background: '#fff', borderRadius: 12, border: '0.5px solid #E4DCCC', overflow: 'hidden' }}>
+          <div style={{ padding: '12px 16px', borderBottom: '0.5px solid #E4DCCC' }}>
             <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--navy)' }}>Obrigações acessórias</div>
-            <div style={{ fontSize: 10, color: '#7A8F8E', marginTop: 2 }}>{obrigPend} pendentes</div>
+            <div style={{ fontSize: 10, color: '#7B8C88', marginTop: 2 }}>{obrigPend} pendentes</div>
           </div>
           {obrigacoes.map(o => {
             const st = statusObrig(o.status)
             const dias = diasAte(o.vencimento)
             return (
-              <div key={o.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px', borderBottom: '0.5px solid #F0F4F3' }}>
-                <div style={{ width: 32, height: 32, borderRadius: 8, background: o.status === 'pago' ? '#EAF5F3' : '#FEF3C7', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  <i className={`fa-solid ${o.status === 'pago' ? 'fa-check' : 'fa-clock'}`} style={{ fontSize: 13, color: o.status === 'pago' ? '#10B981' : '#D97706' }} />
+              <div key={o.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px', borderBottom: '0.5px solid #EFE9DC' }}>
+                <div style={{ width: 32, height: 32, borderRadius: 8, background: o.status === 'pago' ? '#E9F0ED' : '#F3ECDA', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <i className={`fa-solid ${o.status === 'pago' ? 'fa-check' : 'fa-clock'}`} style={{ fontSize: 13, color: o.status === 'pago' ? '#3D7A6E' : '#B08A3E' }} />
                 </div>
                 <div style={{ flex: 1 }}>
                   <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--navy)' }}>{o.nome}</div>
-                  <div style={{ fontSize: 10, color: '#7A8F8E' }}>
+                  <div style={{ fontSize: 10, color: '#7B8C88' }}>
                     Vencimento: {new Date(o.vencimento + 'T12:00:00').toLocaleDateString('pt-BR')}
                     {o.status !== 'pago' && ` · ${dias > 0 ? `em ${dias} dias` : 'vencido'}`}
                   </div>
@@ -472,12 +472,12 @@ export default function ContadoresPage() {
       {tab === 'acessos' && (
         <div>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
-            <div style={{ fontSize: 12, color: '#7A8F8E' }}>Gerencie links de acesso somente-leitura para contadores externos</div>
+            <div style={{ fontSize: 12, color: '#7B8C88' }}>Gerencie links de acesso somente-leitura para contadores externos</div>
             <button className="btn-action" onClick={() => setModal(true)} style={{ fontSize: 12, padding: '6px 14px' }}>+ Novo acesso</button>
           </div>
           {contadores.length === 0 && (
-            <div style={{ textAlign: 'center', padding: '3rem 1rem', color: '#7A8F8E', background: '#fff', borderRadius: 12, border: '0.5px solid #E2E8E7' }}>
-              <i className="fa-solid fa-key" style={{ fontSize: 32, color: '#D97706', marginBottom: 12, display: 'block' }} />
+            <div style={{ textAlign: 'center', padding: '3rem 1rem', color: '#7B8C88', background: '#fff', borderRadius: 12, border: '0.5px solid #E4DCCC' }}>
+              <i className="fa-solid fa-key" style={{ fontSize: 32, color: '#B08A3E', marginBottom: 12, display: 'block' }} />
               <p style={{ fontWeight: 600, color: 'var(--navy)', marginBottom: 8 }}>Nenhum acesso criado</p>
               <p style={{ fontSize: 12 }}>Crie um link seguro para que seu contador visualize os dados.</p>
             </div>
@@ -487,29 +487,29 @@ export default function ContadoresPage() {
               const ativo = c.status === 'ativo'
               const link = `${portalUrl}/contador/${c.token_acesso}`
               return (
-                <div key={c.id} style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 12, padding: '14px 16px', opacity: ativo ? 1 : 0.6 }}>
+                <div key={c.id} style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 12, padding: '14px 16px', opacity: ativo ? 1 : 0.6 }}>
                   <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }}>
                     <div style={{ flex: 1 }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
                         <span style={{ fontWeight: 700, fontSize: 14, color: 'var(--navy)' }}>{c.nome}</span>
-                        <span style={{ fontSize: 9, padding: '2px 8px', borderRadius: 20, fontWeight: 700, background: ativo ? '#EAF5F3' : '#FEE2E2', color: ativo ? '#0F6E56' : '#991B1B' }}>
+                        <span style={{ fontSize: 9, padding: '2px 8px', borderRadius: 20, fontWeight: 700, background: ativo ? '#E9F0ED' : '#F4E4E1', color: ativo ? '#2B564D' : '#B0413E' }}>
                           {ativo ? 'Ativo' : 'Revogado'}
                         </span>
                       </div>
-                      {c.email && <div style={{ fontSize: 12, color: '#7A8F8E', marginBottom: 8 }}>{c.email}</div>}
+                      {c.email && <div style={{ fontSize: 12, color: '#7B8C88', marginBottom: 8 }}>{c.email}</div>}
                       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 10 }}>
                         {Object.entries(PERM_LABELS).map(([key, label]) => (
                           (c.permissoes?.[key] !== false) && (
-                            <span key={key} style={{ fontSize: 10, padding: '2px 8px', borderRadius: 10, background: 'rgba(16,185,129,0.1)', color: 'var(--teal)', fontWeight: 600 }}>{label}</span>
+                            <span key={key} style={{ fontSize: 10, padding: '2px 8px', borderRadius: 10, background: 'rgba(61,122,110,0.1)', color: 'var(--teal)', fontWeight: 600 }}>{label}</span>
                           )
                         ))}
                       </div>
                       {ativo && (
                         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                          <div style={{ background: '#F8FAFA', borderRadius: 6, padding: '6px 10px', fontSize: 11, color: '#7A8F8E', fontFamily: 'monospace', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                          <div style={{ background: '#FBF8F1', borderRadius: 6, padding: '6px 10px', fontSize: 11, color: '#7B8C88', fontFamily: 'monospace', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                             {link}
                           </div>
-                          <button onClick={() => copiarLink(c.token_acesso, c.id)} style={{ padding: '6px 12px', borderRadius: 6, border: '0.5px solid #E2E8E7', background: copiedId === c.id ? '#EAF5F3' : '#fff', color: copiedId === c.id ? '#0F6E56' : '#7A8F8E', fontSize: 11, cursor: 'pointer', fontWeight: 600, whiteSpace: 'nowrap' }}>
+                          <button onClick={() => copiarLink(c.token_acesso, c.id)} style={{ padding: '6px 12px', borderRadius: 6, border: '0.5px solid #E4DCCC', background: copiedId === c.id ? '#E9F0ED' : '#fff', color: copiedId === c.id ? '#2B564D' : '#7B8C88', fontSize: 11, cursor: 'pointer', fontWeight: 600, whiteSpace: 'nowrap' }}>
                             {copiedId === c.id ? '✓ Copiado' : 'Copiar link'}
                           </button>
                         </div>
@@ -517,10 +517,10 @@ export default function ContadoresPage() {
                     </div>
                     <div style={{ display: 'flex', gap: 8, flexShrink: 0 }}>
                       {ativo
-                        ? <button onClick={() => revogarAcesso(c.id)} style={{ padding: '6px 12px', borderRadius: 6, border: '0.5px solid rgba(239,68,68,0.3)', background: 'transparent', color: '#E74C3C', fontSize: 11, cursor: 'pointer' }}>Revogar</button>
-                        : <button onClick={() => { supabase.from('contadores').update({ status: 'ativo' }).eq('id', c.id).then(load) }} style={{ padding: '6px 12px', borderRadius: 6, border: '0.5px solid #E2E8E7', background: 'transparent', color: '#7A8F8E', fontSize: 11, cursor: 'pointer' }}>Reativar</button>
+                        ? <button onClick={() => revogarAcesso(c.id)} style={{ padding: '6px 12px', borderRadius: 6, border: '0.5px solid rgba(239,68,68,0.3)', background: 'transparent', color: '#B0413E', fontSize: 11, cursor: 'pointer' }}>Revogar</button>
+                        : <button onClick={() => { supabase.from('contadores').update({ status: 'ativo' }).eq('id', c.id).then(load) }} style={{ padding: '6px 12px', borderRadius: 6, border: '0.5px solid #E4DCCC', background: 'transparent', color: '#7B8C88', fontSize: 11, cursor: 'pointer' }}>Reativar</button>
                       }
-                      <button onClick={() => excluirAcesso(c.id)} style={{ padding: '6px 12px', borderRadius: 6, border: '0.5px solid #E2E8E7', background: 'transparent', color: '#7A8F8E', fontSize: 11, cursor: 'pointer' }}>Excluir</button>
+                      <button onClick={() => excluirAcesso(c.id)} style={{ padding: '6px 12px', borderRadius: 6, border: '0.5px solid #E4DCCC', background: 'transparent', color: '#7B8C88', fontSize: 11, cursor: 'pointer' }}>Excluir</button>
                     </div>
                   </div>
                 </div>
@@ -533,22 +533,22 @@ export default function ContadoresPage() {
       {/* Modal novo acesso */}
       {modal && (
         <div className="modal-bg" onClick={e => { if (e.target === e.currentTarget) setModal(false) }}>
-          <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 16, padding: 28, width: '100%', maxWidth: 480 }}>
+          <div style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 16, padding: 28, width: '100%', maxWidth: 480 }}>
             <h2 style={{ fontSize: 16, fontWeight: 700, color: 'var(--navy)', marginBottom: 20, fontFamily: "'Inter', sans-serif" }}>Novo acesso para contador</h2>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
               <div>
-                <label style={{ fontSize: 11, color: '#7A8F8E', display: 'block', marginBottom: 6, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.07em' }}>Nome do contador *</label>
+                <label style={{ fontSize: 11, color: '#7B8C88', display: 'block', marginBottom: 6, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.07em' }}>Nome do contador *</label>
                 <input className="form-input" placeholder="Ex: João Silva Contabilidade" value={form.nome} onChange={e => setForm(f => ({ ...f, nome: e.target.value }))} style={{ width: '100%' }} />
               </div>
               <div>
-                <label style={{ fontSize: 11, color: '#7A8F8E', display: 'block', marginBottom: 6, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.07em' }}>E-mail (opcional)</label>
+                <label style={{ fontSize: 11, color: '#7B8C88', display: 'block', marginBottom: 6, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.07em' }}>E-mail (opcional)</label>
                 <input className="form-input" placeholder="contador@escritorio.com.br" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} style={{ width: '100%' }} />
               </div>
               <div>
-                <label style={{ fontSize: 11, color: '#7A8F8E', display: 'block', marginBottom: 10, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.07em' }}>Permissões</label>
+                <label style={{ fontSize: 11, color: '#7B8C88', display: 'block', marginBottom: 10, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.07em' }}>Permissões</label>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
                   {Object.entries(PERM_LABELS).map(([key, label]) => (
-                    <button key={key} type="button" onClick={() => setPerms(p => ({ ...p, [key]: !p[key] }))} style={{ padding: '6px 14px', borderRadius: 20, border: '0.5px solid', borderColor: perms[key] ? 'var(--teal)' : '#E2E8E7', background: perms[key] ? 'rgba(16,185,129,0.1)' : 'transparent', color: perms[key] ? 'var(--teal)' : '#7A8F8E', fontSize: 12, cursor: 'pointer', fontWeight: 600 }}>
+                    <button key={key} type="button" onClick={() => setPerms(p => ({ ...p, [key]: !p[key] }))} style={{ padding: '6px 14px', borderRadius: 20, border: '0.5px solid', borderColor: perms[key] ? 'var(--teal)' : '#E4DCCC', background: perms[key] ? 'rgba(61,122,110,0.1)' : 'transparent', color: perms[key] ? 'var(--teal)' : '#7B8C88', fontSize: 12, cursor: 'pointer', fontWeight: 600 }}>
                       {perms[key] ? '✓ ' : ''}{label}
                     </button>
                   ))}
@@ -556,7 +556,7 @@ export default function ContadoresPage() {
               </div>
             </div>
             <div style={{ display: 'flex', gap: 10, marginTop: 24, justifyContent: 'flex-end' }}>
-              <button onClick={() => setModal(false)} style={{ padding: '8px 16px', borderRadius: 8, border: '0.5px solid #E2E8E7', background: 'transparent', color: '#7A8F8E', fontSize: 12, cursor: 'pointer' }}>Cancelar</button>
+              <button onClick={() => setModal(false)} style={{ padding: '8px 16px', borderRadius: 8, border: '0.5px solid #E4DCCC', background: 'transparent', color: '#7B8C88', fontSize: 12, cursor: 'pointer' }}>Cancelar</button>
               <button className="btn-action" onClick={criarAcesso} disabled={saving} style={{ fontSize: 12, padding: '8px 20px' }}>
                 {saving ? 'Criando...' : 'Criar acesso'}
               </button>

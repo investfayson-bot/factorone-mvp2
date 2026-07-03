@@ -83,7 +83,7 @@ export default function MiniDRE({ empresaId }: Props) {
 
   if (error || !atual) {
     return (
-      <div style={{ background: 'rgba(192,80,74,.06)', border: '1px solid rgba(192,80,74,.2)', borderRadius: 12, padding: 20, fontSize: 12, color: 'var(--fo-red)' }}>
+      <div style={{ background: 'rgba(176,65,62,.06)', border: '1px solid rgba(176,65,62,.2)', borderRadius: 12, padding: 20, fontSize: 12, color: 'var(--fo-red)' }}>
         <p style={{ fontWeight: 700 }}>DRE resumido</p>
         <p style={{ marginTop: 4 }}>{error || 'Dados indisponíveis'}</p>
       </div>
@@ -129,7 +129,7 @@ export default function MiniDRE({ empresaId }: Props) {
                   {fmt(displayVal)}
                 </span>
                 {varPct === null ? (
-                  <span style={{ fontSize: 9, background: 'rgba(16,185,129,.1)', color: 'var(--teal2)', padding: '1px 5px', borderRadius: 20, fontFamily: "'Inter', system-ui, sans-serif" }}>1º mês</span>
+                  <span style={{ fontSize: 9, background: 'rgba(61,122,110,.1)', color: 'var(--teal2)', padding: '1px 5px', borderRadius: 20, fontFamily: "'Inter', system-ui, sans-serif" }}>1º mês</span>
                 ) : (
                   <span style={{
                     fontSize: 9, fontFamily: "'Inter', system-ui, sans-serif",

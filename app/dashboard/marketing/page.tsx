@@ -27,17 +27,17 @@ const TIPO_CAMP: Record<string, { label: string; icon: string; color: string }> 
   meta_ads:    { label: 'Meta Ads',    icon: 'fa-meta',      color: '#0866FF' },
   email:       { label: 'E-mail',      icon: 'fa-envelope',  color: 'var(--teal)' },
   seo:         { label: 'SEO',         icon: 'fa-magnifying-glass-chart', color: '#FF6B35' },
-  social:      { label: 'Social',      icon: 'fa-share-nodes', color: '#7C3AED' },
+  social:      { label: 'Social',      icon: 'fa-share-nodes', color: '#7A6A9E' },
   outro:       { label: 'Outro',       icon: 'fa-bullhorn',  color: '#64748b' },
 }
 
 const STATUS_CONT: Record<string, { label: string; color: string; bg: string }> = {
   ideia:      { label: 'Ideia',     color: '#94a3b8', bg: '#f1f5f9' },
   producao:   { label: 'Produção',  color: '#F59E0B', bg: '#fffbeb' },
-  revisao:    { label: 'Revisão',   color: '#7C3AED', bg: 'rgba(124,58,237,.08)' },
-  agendado:   { label: 'Agendado',  color: 'var(--teal)', bg: 'rgba(16,185,129,.08)' },
-  publicado:  { label: 'Publicado', color: 'var(--green)', bg: 'rgba(45,155,111,.08)' },
-  cancelado:  { label: 'Cancelado', color: 'var(--red)', bg: 'rgba(192,80,74,.08)' },
+  revisao:    { label: 'Revisão',   color: '#7A6A9E', bg: 'rgba(124,58,237,.08)' },
+  agendado:   { label: 'Agendado',  color: 'var(--teal)', bg: 'rgba(61,122,110,.08)' },
+  publicado:  { label: 'Publicado', color: 'var(--green)', bg: 'rgba(61,122,110,.08)' },
+  cancelado:  { label: 'Cancelado', color: 'var(--red)', bg: 'rgba(176,65,62,.08)' },
 }
 
 const TIPOS_CONT = ['post_instagram','post_linkedin','blog','video','email','story','reel','outro']
@@ -170,7 +170,7 @@ export default function MarketingPage() {
           { l: 'Investido', v: formatBRL(kpis.totalGasto), s: 'total campanhas', c: 'var(--navy)' },
           { l: 'Receita gerada', v: formatBRL(kpis.receitaGerada), s: 'via marketing', c: 'var(--green)' },
           { l: 'ROAS', v: `${kpis.roas.toFixed(2)}x`, s: 'retorno/investimento', c: kpis.roas >= 3 ? 'var(--green)' : kpis.roas >= 1 ? 'var(--gold)' : 'var(--red)' },
-          { l: 'Leads totais', v: kpis.leads, s: `${kpis.leadsNovos} novos`, c: '#7C3AED' },
+          { l: 'Leads totais', v: kpis.leads, s: `${kpis.leadsNovos} novos`, c: '#7A6A9E' },
           { l: 'Conteúdo', v: kpis.conteudosProg, s: 'em produção', c: 'var(--teal)' },
         ].map(k => (
           <div key={k.l} className="kpi">
@@ -244,7 +244,7 @@ export default function MarketingPage() {
                   <span style={{ fontWeight: 700, color: 'var(--navy)' }}>{f.n}</span>
                 </div>
                 <div style={{ height: 5, background: 'var(--gray-100)', borderRadius: 3 }}>
-                  <div style={{ height: 5, borderRadius: 3, width: `${f.pct}%`, background: ['#7C3AED','var(--teal)','var(--gold)','var(--green)','var(--red)'][i], transition: 'width .3s' }} />
+                  <div style={{ height: 5, borderRadius: 3, width: `${f.pct}%`, background: ['#7A6A9E','var(--teal)','var(--gold)','var(--green)','var(--red)'][i], transition: 'width .3s' }} />
                 </div>
               </div>
             ))}
@@ -287,11 +287,11 @@ export default function MarketingPage() {
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: 14 }}>
           <div>
             {funilLeads.map((f, i) => (
-              <div key={f.s} style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 10, padding: '14px 16px', marginBottom: 8, borderLeft: `4px solid ${['#7C3AED','var(--teal)','var(--gold)','var(--green)','var(--red)'][i]}` }}>
+              <div key={f.s} style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 10, padding: '14px 16px', marginBottom: 8, borderLeft: `4px solid ${['#7A6A9E','var(--teal)','var(--gold)','var(--green)','var(--red)'][i]}` }}>
                 <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '.06em', color: 'var(--gray-400)', margin: '0 0 2px' }}>{f.s}</p>
                 <p style={{ fontSize: 24, fontWeight: 800, fontFamily: 'DM Mono,monospace', color: 'var(--navy)', margin: 0 }}>{f.n}</p>
                 <div style={{ height: 4, background: 'var(--gray-100)', borderRadius: 2, marginTop: 8 }}>
-                  <div style={{ height: 4, width: `${f.pct}%`, background: ['#7C3AED','var(--teal)','var(--gold)','var(--green)','var(--red)'][i], borderRadius: 2 }} />
+                  <div style={{ height: 4, width: `${f.pct}%`, background: ['#7A6A9E','var(--teal)','var(--gold)','var(--green)','var(--red)'][i], borderRadius: 2 }} />
                 </div>
               </div>
             ))}
@@ -398,7 +398,7 @@ export default function MarketingPage() {
             {/* Meta Ads */}
             <div style={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: 12, padding: 20 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
-                <div style={{ width: 36, height: 36, borderRadius: 8, background: '#eff6ff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <div style={{ width: 36, height: 36, borderRadius: 8, background: '#E4EDEF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <i className="fa-brands fa-meta" style={{ color: '#0866FF', fontSize: 18 }} />
                 </div>
                 <div>

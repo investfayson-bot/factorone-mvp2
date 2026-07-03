@@ -88,7 +88,7 @@ export default function AssinaturasPage() {
       </div>
 
       {/* Populares */}
-      <div style={{ background: 'rgba(16,185,129,.04)', border: '1px solid rgba(16,185,129,.2)', borderRadius: 12, padding: 16, marginBottom: 8 }}>
+      <div style={{ background: 'rgba(61,122,110,.04)', border: '1px solid rgba(61,122,110,.2)', borderRadius: 12, padding: 16, marginBottom: 8 }}>
         <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--teal)', marginBottom: 10 }}>Adicionar rapidamente</div>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
           {POPULARES.map(p => (

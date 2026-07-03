@@ -20,9 +20,9 @@ export type NotaEmitidaRow = {
 const card: React.CSSProperties = { background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: 16, marginBottom: 14 }
 
 function BadgeStatus({ r }: { r: NotaEmitidaRow }) {
-  if (r.status === 'processando') return <span className="tag" style={{ background: 'rgba(184,146,42,.12)', color: 'var(--gold)' }}>⟳ Processando</span>
-  if (r.status === 'autorizada') return <span className="tag" style={{ background: 'rgba(45,155,111,.12)', color: 'var(--green)' }}>✓ Autorizada</span>
-  if (r.status === 'rejeitada') return <span className="tag" style={{ background: 'rgba(192,80,74,.1)', color: 'var(--red)' }} title={r.sefaz_motivo || ''}>✕ Rejeitada</span>
+  if (r.status === 'processando') return <span className="tag" style={{ background: 'rgba(176,138,62,.12)', color: 'var(--gold)' }}>⟳ Processando</span>
+  if (r.status === 'autorizada') return <span className="tag" style={{ background: 'rgba(61,122,110,.12)', color: 'var(--green)' }}>✓ Autorizada</span>
+  if (r.status === 'rejeitada') return <span className="tag" style={{ background: 'rgba(176,65,62,.1)', color: 'var(--red)' }} title={r.sefaz_motivo || ''}>✕ Rejeitada</span>
   return <span className="tag" style={{ background: 'var(--gray-100)', color: 'var(--gray-400)', textDecoration: 'line-through' }}>Cancelada</span>
 }
 
@@ -154,7 +154,7 @@ export default function HistoricoNotas() {
                       )}
                       <button type="button" title="E-mail" onClick={() => setEmailModal({ id: r.id, email: '' })} style={{ padding: '4px 7px', borderRadius: 6, border: '1px solid var(--gray-100)', background: '#fff', color: 'var(--navy)', fontSize: 11, cursor: 'pointer' }}></button>
                       {r.status !== 'cancelada' && r.status !== 'rejeitada' && (
-                        <button type="button" title="Cancelar" onClick={() => setCancelModal({ id: r.id, j: '' })} style={{ padding: '4px 7px', borderRadius: 6, border: '1px solid rgba(192,80,74,.2)', background: '#fff', color: 'var(--red)', fontSize: 11, cursor: 'pointer' }}>✕</button>
+                        <button type="button" title="Cancelar" onClick={() => setCancelModal({ id: r.id, j: '' })} style={{ padding: '4px 7px', borderRadius: 6, border: '1px solid rgba(176,65,62,.2)', background: '#fff', color: 'var(--red)', fontSize: 11, cursor: 'pointer' }}>✕</button>
                       )}
                     </div>
                   </td>

@@ -81,7 +81,7 @@ export default function AceitarConvitePage({ params }: { params: Promise<{ token
 
         {estado === 'sucesso' && (
           <div>
-            <i className="fa-solid fa-circle-check" style={{ fontSize: 52, color: '#2D9B6F', marginBottom: 16, display: 'block' }} />
+            <i className="fa-solid fa-circle-check" style={{ fontSize: 52, color: '#3D7A6E', marginBottom: 16, display: 'block' }} />
             <h2 style={{ color: '#0d1b2a', marginBottom: 8 }}>Acesso confirmado!</h2>
             <p style={{ color: '#64748b', fontSize: 14 }}>{msg || 'Bem-vindo à equipe. Redirecionando para o dashboard...'}</p>
           </div>
@@ -89,7 +89,7 @@ export default function AceitarConvitePage({ params }: { params: Promise<{ token
 
         {estado === 'erro' && (
           <div>
-            <i className="fa-solid fa-circle-xmark" style={{ fontSize: 52, color: '#C0504A', marginBottom: 16, display: 'block' }} />
+            <i className="fa-solid fa-circle-xmark" style={{ fontSize: 52, color: '#B0413E', marginBottom: 16, display: 'block' }} />
             <h2 style={{ color: '#0d1b2a', marginBottom: 8 }}>Convite inválido</h2>
             <p style={{ color: '#64748b', fontSize: 14 }}>{msg}</p>
           </div>

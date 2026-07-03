@@ -204,13 +204,13 @@ export default function NovaDespesaModal({
   if (!open) return null
 
   const inp: React.CSSProperties = {
-    width: '100%', border: '0.5px solid #E2E8E7', borderRadius: 8,
-    padding: '9px 12px', fontSize: 12, color: '#1C2B2A',
+    width: '100%', border: '0.5px solid #E4DCCC', borderRadius: 8,
+    padding: '9px 12px', fontSize: 12, color: '#13201D',
     background: '#fff', boxSizing: 'border-box', outline: 'none',
     fontFamily: "'Inter', system-ui, sans-serif",
   }
   const lbl: React.CSSProperties = {
-    fontSize: 10, fontWeight: 600, color: '#7A8F8E', marginBottom: 5,
+    fontSize: 10, fontWeight: 600, color: '#7B8C88', marginBottom: 5,
     display: 'block', textTransform: 'uppercase', letterSpacing: '0.07em',
   }
 
@@ -222,21 +222,21 @@ export default function NovaDespesaModal({
             <h3 className="modal-title" style={{ fontFamily: "'Inter', sans-serif", fontSize: 16 }}>
               {edit ? 'Editar despesa' : 'Nova despesa'}
             </h3>
-            <div style={{ fontSize: 11, color: '#7A8F8E', marginTop: 2 }}>
+            <div style={{ fontSize: 11, color: '#7B8C88', marginTop: 2 }}>
               {edit ? 'Atualize os dados abaixo' : 'Preencha ou escaneie o comprovante'}
             </div>
           </div>
-          <button className="modal-close" onClick={onClose} style={{ width: 32, height: 32, borderRadius: 8, border: '0.5px solid #E2E8E7', background: '#F8FAFA', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
-            <i className="fa-solid fa-xmark" style={{ fontSize: 13, color: '#7A8F8E' }} />
+          <button className="modal-close" onClick={onClose} style={{ width: 32, height: 32, borderRadius: 8, border: '0.5px solid #E4DCCC', background: '#FBF8F1', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+            <i className="fa-solid fa-xmark" style={{ fontSize: 13, color: '#7B8C88' }} />
           </button>
         </div>
 
         {/* OCR Zone */}
         <div
           style={{
-            border: file ? '0.5px solid #10B981' : '1.5px dashed #D1D9D8',
+            border: file ? '0.5px solid #3D7A6E' : '1.5px dashed #D1D9D8',
             borderRadius: 12, padding: 14, marginBottom: 18, textAlign: 'center',
-            background: file ? '#EAF5F3' : '#F8FAFA', cursor: 'pointer',
+            background: file ? '#E9F0ED' : '#FBF8F1', cursor: 'pointer',
             transition: 'all 0.2s',
           }}
           onClick={() => fileRef.current?.click()}
@@ -246,10 +246,10 @@ export default function NovaDespesaModal({
           {file ? (
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                <i className="fa-solid fa-file-image" style={{ fontSize: 20, color: '#10B981' }} />
+                <i className="fa-solid fa-file-image" style={{ fontSize: 20, color: '#3D7A6E' }} />
                 <div style={{ textAlign: 'left' }}>
-                  <p style={{ fontWeight: 600, fontSize: 12, color: '#1C2B2A', margin: 0 }}>{file.name}</p>
-                  <p style={{ fontSize: 10, color: '#7A8F8E', margin: 0 }}>{(file.size / 1024).toFixed(0)} KB</p>
+                  <p style={{ fontWeight: 600, fontSize: 12, color: '#13201D', margin: 0 }}>{file.name}</p>
+                  <p style={{ fontSize: 10, color: '#7B8C88', margin: 0 }}>{(file.size / 1024).toFixed(0)} KB</p>
                 </div>
               </div>
               <button
@@ -259,7 +259,7 @@ export default function NovaDespesaModal({
                 style={{
                   display: 'flex', alignItems: 'center', gap: 6, padding: '7px 14px',
                   borderRadius: 8, border: 'none', cursor: 'pointer', fontWeight: 700, fontSize: 11,
-                  background: '#1C2B2A', color: '#fff', opacity: ocrLoading ? 0.7 : 1,
+                  background: '#13201D', color: '#fff', opacity: ocrLoading ? 0.7 : 1,
                 }}
               >
                 <i className="fa-solid fa-wand-magic-sparkles" />
@@ -269,8 +269,8 @@ export default function NovaDespesaModal({
           ) : (
             <>
               <i className="fa-solid fa-camera" style={{ fontSize: 24, color: '#C4CFCE', marginBottom: 6 }} />
-              <p style={{ fontWeight: 600, fontSize: 12, color: '#3A5150', margin: '0 0 2px' }}>Escanear comprovante ou NF</p>
-              <p style={{ fontSize: 10, color: '#7A8F8E', margin: 0 }}>Clique para upload · FactorOne AI preenche automaticamente</p>
+              <p style={{ fontWeight: 600, fontSize: 12, color: '#3C4A46', margin: '0 0 2px' }}>Escanear comprovante ou NF</p>
+              <p style={{ fontSize: 10, color: '#7B8C88', margin: 0 }}>Clique para upload · FactorOne AI preenche automaticamente</p>
             </>
           )}
         </div>

@@ -65,7 +65,7 @@ export default function MarketplacePage() {
           <div className="page-sub">Adicione módulos à sua plataforma — ao instalar, aparecem no menu lateral</div>
         </div>
         <div style={{ position: 'relative' }}>
-          <i className="fa-solid fa-magnifying-glass" style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: '#AAB8B7', fontSize: 12 }} />
+          <i className="fa-solid fa-magnifying-glass" style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: '#A6B0AC', fontSize: 12 }} />
           <input
             className="form-input"
             placeholder="Buscar módulo..."
@@ -79,30 +79,30 @@ export default function MarketplacePage() {
       {/* Banner Conta PJ */}
       {!contaPjInstalled && (
         <div style={{
-          background: 'linear-gradient(135deg, #1C2B2A 0%, #2A3F3E 100%)',
+          background: 'linear-gradient(135deg, #13201D 0%, #2A3F3E 100%)',
           borderRadius: 16, padding: '20px 24px', marginBottom: 24,
           display: 'flex', alignItems: 'center', gap: 20,
         }}>
-          <div style={{ width: 56, height: 56, borderRadius: 14, background: 'rgba(16,185,129,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-            <i className="fa-solid fa-building-columns" style={{ fontSize: 24, color: '#6EE7B7' }} />
+          <div style={{ width: 56, height: 56, borderRadius: 14, background: 'rgba(61,122,110,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            <i className="fa-solid fa-building-columns" style={{ fontSize: 24, color: '#6FA595' }} />
           </div>
           <div style={{ flex: 1 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
               <div style={{ fontSize: 15, fontWeight: 700, color: '#fff', fontFamily: "'Inter', sans-serif" }}>Conta PJ — powered by Celcoin</div>
-              <span style={{ fontSize: 9, fontWeight: 700, padding: '2px 8px', borderRadius: 20, background: '#10B981', color: '#fff', letterSpacing: '0.06em' }}>DESTAQUE</span>
+              <span style={{ fontSize: 9, fontWeight: 700, padding: '2px 8px', borderRadius: 20, background: '#3D7A6E', color: '#fff', letterSpacing: '0.06em' }}>DESTAQUE</span>
             </div>
             <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)', lineHeight: 1.6, marginBottom: 10 }}>
               Conta bancária PJ com cartão corporativo, PIX, boleto e gestão de despesas — tudo integrado ao FactorOne. Aprovação em até 24h.
             </div>
             <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
               {['Cartão Visa Corporativo', 'PIX instantâneo', 'Boletos', 'Open Finance', 'Gestão de despesas'].map(tag => (
-                <span key={tag} style={{ fontSize: 10, padding: '3px 9px', borderRadius: 20, background: 'rgba(16,185,129,0.2)', color: '#6EE7B7', fontWeight: 600 }}>{tag}</span>
+                <span key={tag} style={{ fontSize: 10, padding: '3px 9px', borderRadius: 20, background: 'rgba(61,122,110,0.2)', color: '#6FA595', fontWeight: 600 }}>{tag}</span>
               ))}
             </div>
           </div>
           <button
             onClick={() => router.push('/dashboard/conta-pj/abrir')}
-            style={{ background: '#10B981', color: '#fff', border: 'none', borderRadius: 10, padding: '12px 24px', fontSize: 13, fontWeight: 700, cursor: 'pointer', whiteSpace: 'nowrap', flexShrink: 0 }}
+            style={{ background: '#3D7A6E', color: '#fff', border: 'none', borderRadius: 10, padding: '12px 24px', fontSize: 13, fontWeight: 700, cursor: 'pointer', whiteSpace: 'nowrap', flexShrink: 0 }}
           >
             Abrir Conta PJ
           </button>
@@ -110,24 +110,24 @@ export default function MarketplacePage() {
       )}
 
       {contaPjInstalled && (
-        <div style={{ background: '#EAF5F3', border: '0.5px solid #10B981', borderRadius: 12, padding: '12px 16px', marginBottom: 20, display: 'flex', alignItems: 'center', gap: 12 }}>
-          <i className="fa-solid fa-circle-check" style={{ fontSize: 18, color: '#10B981' }} />
-          <div style={{ fontSize: 12, color: '#0F6E56', fontWeight: 600 }}>Conta PJ ativa · aparece na sidebar como &quot;Conta PJ&quot;</div>
+        <div style={{ background: '#E9F0ED', border: '0.5px solid #3D7A6E', borderRadius: 12, padding: '12px 16px', marginBottom: 20, display: 'flex', alignItems: 'center', gap: 12 }}>
+          <i className="fa-solid fa-circle-check" style={{ fontSize: 18, color: '#3D7A6E' }} />
+          <div style={{ fontSize: 12, color: '#2B564D', fontWeight: 600 }}>Conta PJ ativa · aparece na sidebar como &quot;Conta PJ&quot;</div>
         </div>
       )}
 
       {/* Apps instalados */}
       {instalados.length > 0 && (
         <div style={{ marginBottom: 24 }}>
-          <div style={{ fontSize: 11, fontWeight: 600, color: '#7A8F8E', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }}>
+          <div style={{ fontSize: 11, fontWeight: 600, color: '#7B8C88', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }}>
             Instalados ({instalados.length})
           </div>
           <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
             {instalados.map(a => (
-              <div key={a.id} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '7px 12px', background: '#EAF5F3', border: '0.5px solid #10B981', borderRadius: 20 }}>
-                <i className={`fa-solid ${a.icon}`} style={{ fontSize: 12, color: '#10B981' }} />
-                <span style={{ fontSize: 12, fontWeight: 600, color: '#0F6E56' }}>{a.name}</span>
-                <button onClick={() => onToggle(a)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#7A8F8E', fontSize: 12, lineHeight: 1, padding: 0 }}>×</button>
+              <div key={a.id} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '7px 12px', background: '#E9F0ED', border: '0.5px solid #3D7A6E', borderRadius: 20 }}>
+                <i className={`fa-solid ${a.icon}`} style={{ fontSize: 12, color: '#3D7A6E' }} />
+                <span style={{ fontSize: 12, fontWeight: 600, color: '#2B564D' }}>{a.name}</span>
+                <button onClick={() => onToggle(a)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#7B8C88', fontSize: 12, lineHeight: 1, padding: 0 }}>×</button>
               </div>
             ))}
           </div>
@@ -141,9 +141,9 @@ export default function MarketplacePage() {
             display: 'flex', alignItems: 'center', gap: 6,
             fontSize: 11, fontWeight: filter === f.key ? 700 : 500,
             padding: '6px 14px', borderRadius: 20, border: '0.5px solid',
-            borderColor: filter === f.key ? '#1C2B2A' : '#E2E8E7',
-            background: filter === f.key ? '#1C2B2A' : '#fff',
-            color: filter === f.key ? '#fff' : '#7A8F8E',
+            borderColor: filter === f.key ? '#13201D' : '#E4DCCC',
+            background: filter === f.key ? '#13201D' : '#fff',
+            color: filter === f.key ? '#fff' : '#7B8C88',
             cursor: 'pointer', transition: 'all 0.15s',
           }}>
             <i className={`fa-solid ${f.icon}`} style={{ fontSize: 10 }} />
@@ -154,9 +154,9 @@ export default function MarketplacePage() {
 
       {/* Grid de apps */}
       {visible.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '48px 16px', color: '#7A8F8E' }}>
+        <div style={{ textAlign: 'center', padding: '48px 16px', color: '#7B8C88' }}>
           <i className="fa-solid fa-magnifying-glass" style={{ fontSize: 32, marginBottom: 12, display: 'block', color: '#D1D9D8' }} />
-          <div style={{ fontWeight: 600, color: '#1C2B2A', marginBottom: 4 }}>Nenhum módulo encontrado</div>
+          <div style={{ fontWeight: 600, color: '#13201D', marginBottom: 4 }}>Nenhum módulo encontrado</div>
           <div style={{ fontSize: 12 }}>Tente outro termo ou filtro</div>
         </div>
       ) : (
@@ -166,7 +166,7 @@ export default function MarketplacePage() {
             const isBusy = busy === a.id
             return (
               <div key={a.id} style={{
-                background: '#fff', border: `0.5px solid ${isOn ? '#10B981' : '#E2E8E7'}`,
+                background: '#fff', border: `0.5px solid ${isOn ? '#3D7A6E' : '#E4DCCC'}`,
                 borderRadius: 14, padding: '16px', display: 'flex', flexDirection: 'column', gap: 10,
                 transition: 'all 0.15s',
               }}>
@@ -177,28 +177,28 @@ export default function MarketplacePage() {
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 2 }}>
-                      <span style={{ fontSize: 13, fontWeight: 700, color: '#1C2B2A' }}>{a.name}</span>
+                      <span style={{ fontSize: 13, fontWeight: 700, color: '#13201D' }}>{a.name}</span>
                       {a.badge === 'popular' && (
                         <span style={{ fontSize: 9, fontWeight: 700, padding: '1px 6px', borderRadius: 20, background: '#EAF3DE', color: '#3B6D11' }}>POPULAR</span>
                       )}
                       {a.badge === 'new' && (
-                        <span style={{ fontSize: 9, fontWeight: 700, padding: '1px 6px', borderRadius: 20, background: '#EAF5F3', color: '#0F6E56' }}>NOVO</span>
+                        <span style={{ fontSize: 9, fontWeight: 700, padding: '1px 6px', borderRadius: 20, background: '#E9F0ED', color: '#2B564D' }}>NOVO</span>
                       )}
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
                       <Stars n={a.rating} />
-                      <span style={{ fontSize: 10, color: '#7A8F8E' }}>{a.rating} ({a.rev})</span>
+                      <span style={{ fontSize: 10, color: '#7B8C88' }}>{a.rating} ({a.rev})</span>
                     </div>
                   </div>
                   {isOn && (
-                    <div style={{ width: 20, height: 20, borderRadius: '50%', background: '#10B981', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <div style={{ width: 20, height: 20, borderRadius: '50%', background: '#3D7A6E', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                       <i className="fa-solid fa-check" style={{ fontSize: 9, color: '#fff' }} />
                     </div>
                   )}
                 </div>
 
                 {/* Desc */}
-                <div style={{ fontSize: 11, color: '#7A8F8E', lineHeight: 1.5 }}>{a.desc}</div>
+                <div style={{ fontSize: 11, color: '#7B8C88', lineHeight: 1.5 }}>{a.desc}</div>
 
                 {/* Footer */}
                 <div style={{ display: 'flex', gap: 8, marginTop: 'auto' }}>
@@ -206,7 +206,7 @@ export default function MarketplacePage() {
                     <button
                       onClick={() => onToggle(a)}
                       disabled={isBusy}
-                      style={{ flex: 1, padding: '8px', borderRadius: 8, border: 'none', fontSize: 12, fontWeight: 700, cursor: isBusy ? 'wait' : 'pointer', background: '#1C2B2A', color: '#fff', opacity: isBusy ? 0.7 : 1 }}
+                      style={{ flex: 1, padding: '8px', borderRadius: 8, border: 'none', fontSize: 12, fontWeight: 700, cursor: isBusy ? 'wait' : 'pointer', background: '#13201D', color: '#fff', opacity: isBusy ? 0.7 : 1 }}
                     >
                       {isBusy ? '...' : 'Adicionar'}
                     </button>
@@ -215,7 +215,7 @@ export default function MarketplacePage() {
                       {a.hasPage && (
                         <button
                           onClick={() => router.push(a.href)}
-                          style={{ flex: 1, padding: '8px', borderRadius: 8, border: 'none', background: '#1C2B2A', color: '#fff', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}
+                          style={{ flex: 1, padding: '8px', borderRadius: 8, border: 'none', background: '#13201D', color: '#fff', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}
                         >
                           Abrir
                         </button>
@@ -224,7 +224,7 @@ export default function MarketplacePage() {
                         onClick={() => onToggle(a)}
                         disabled={isBusy}
                         title="Remove do menu — seus dados ficam salvos"
-                        style={{ flex: a.hasPage ? '0 0 auto' : 1, padding: '8px 12px', borderRadius: 8, border: '0.5px solid #F1D4D0', background: '#fff', color: '#C0504A', fontSize: 12, fontWeight: 700, cursor: isBusy ? 'wait' : 'pointer', opacity: isBusy ? 0.7 : 1 }}
+                        style={{ flex: a.hasPage ? '0 0 auto' : 1, padding: '8px 12px', borderRadius: 8, border: '0.5px solid #F1D4D0', background: '#fff', color: '#B0413E', fontSize: 12, fontWeight: 700, cursor: isBusy ? 'wait' : 'pointer', opacity: isBusy ? 0.7 : 1 }}
                       >
                         {isBusy ? '...' : 'Desinstalar'}
                       </button>

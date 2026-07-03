@@ -73,7 +73,7 @@ export default function MaPage() {
   const faixaMax = Math.max(valReceita, valEbitda || valReceita) * 1.15
 
   const prontidao = useMemo(() => Math.round((checked.size / TOTAL_ITENS) * 100), [checked])
-  const corPront = prontidao >= 80 ? '#16A085' : prontidao >= 50 ? '#D97706' : '#E74C3C'
+  const corPront = prontidao >= 80 ? '#3D7A6E' : prontidao >= 50 ? '#B08A3E' : '#B0413E'
 
   if (loading) return <div style={{ padding: 32, color: 'var(--gray-400)', fontSize: 13 }}>Carregando…</div>
 
@@ -92,41 +92,41 @@ export default function MaPage() {
       {/* Valuation */}
       <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.04em', marginBottom: 10 }}>Valuation estimado</div>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: 12, marginBottom: 20, alignItems: 'start' }}>
-        <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 14, padding: '18px 20px' }}>
+        <div style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 14, padding: '18px 20px' }}>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
             <div>
-              <label style={{ fontSize: 10.5, fontWeight: 600, color: '#7A8F8E', display: 'block', marginBottom: 5, textTransform: 'uppercase', letterSpacing: '.06em' }}>Receita anual (R$)</label>
+              <label style={{ fontSize: 10.5, fontWeight: 600, color: '#7B8C88', display: 'block', marginBottom: 5, textTransform: 'uppercase', letterSpacing: '.06em' }}>Receita anual (R$)</label>
               <input className="form-input" type="number" value={Math.round(receitaAnual)} onChange={e => setReceitaAnual(Number(e.target.value) || 0)} />
             </div>
             <div>
-              <label style={{ fontSize: 10.5, fontWeight: 600, color: '#7A8F8E', display: 'block', marginBottom: 5, textTransform: 'uppercase', letterSpacing: '.06em' }}>EBITDA anual (R$)</label>
+              <label style={{ fontSize: 10.5, fontWeight: 600, color: '#7B8C88', display: 'block', marginBottom: 5, textTransform: 'uppercase', letterSpacing: '.06em' }}>EBITDA anual (R$)</label>
               <input className="form-input" type="number" value={Math.round(ebitdaAnual)} onChange={e => setEbitdaAnual(Number(e.target.value) || 0)} />
             </div>
             <div>
-              <label style={{ fontSize: 10.5, fontWeight: 600, color: '#7A8F8E', display: 'block', marginBottom: 5, textTransform: 'uppercase', letterSpacing: '.06em' }}>Múltiplo de receita (x)</label>
+              <label style={{ fontSize: 10.5, fontWeight: 600, color: '#7B8C88', display: 'block', marginBottom: 5, textTransform: 'uppercase', letterSpacing: '.06em' }}>Múltiplo de receita (x)</label>
               <input className="form-input" type="number" step="0.5" value={multReceita} onChange={e => setMultReceita(Number(e.target.value) || 0)} />
             </div>
             <div>
-              <label style={{ fontSize: 10.5, fontWeight: 600, color: '#7A8F8E', display: 'block', marginBottom: 5, textTransform: 'uppercase', letterSpacing: '.06em' }}>Múltiplo de EBITDA (x)</label>
+              <label style={{ fontSize: 10.5, fontWeight: 600, color: '#7B8C88', display: 'block', marginBottom: 5, textTransform: 'uppercase', letterSpacing: '.06em' }}>Múltiplo de EBITDA (x)</label>
               <input className="form-input" type="number" step="0.5" value={multEbitda} onChange={e => setMultEbitda(Number(e.target.value) || 0)} />
             </div>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginTop: 16 }}>
-            <div style={{ background: '#F8FAFA', borderRadius: 10, padding: '12px 14px' }}>
-              <div style={{ fontSize: 10.5, color: '#7A8F8E', marginBottom: 4 }}>Por múltiplo de receita</div>
-              <div style={{ fontSize: 20, fontWeight: 800, color: '#1C2B2A', fontFamily: "'Inter', system-ui, sans-serif" }}>{fmtC(valReceita)}</div>
-              <div style={{ fontSize: 10, color: '#AAB8B7' }}>{fmtC(receitaAnual)} × {multReceita}x</div>
+            <div style={{ background: '#FBF8F1', borderRadius: 10, padding: '12px 14px' }}>
+              <div style={{ fontSize: 10.5, color: '#7B8C88', marginBottom: 4 }}>Por múltiplo de receita</div>
+              <div style={{ fontSize: 20, fontWeight: 800, color: '#13201D', fontFamily: "'Inter', system-ui, sans-serif" }}>{fmtC(valReceita)}</div>
+              <div style={{ fontSize: 10, color: '#A6B0AC' }}>{fmtC(receitaAnual)} × {multReceita}x</div>
             </div>
-            <div style={{ background: '#F8FAFA', borderRadius: 10, padding: '12px 14px' }}>
-              <div style={{ fontSize: 10.5, color: '#7A8F8E', marginBottom: 4 }}>Por múltiplo de EBITDA</div>
-              <div style={{ fontSize: 20, fontWeight: 800, color: '#1C2B2A', fontFamily: "'Inter', system-ui, sans-serif" }}>{ebitdaAnual > 0 ? fmtC(valEbitda) : '—'}</div>
-              <div style={{ fontSize: 10, color: '#AAB8B7' }}>{fmtC(ebitdaAnual)} × {multEbitda}x</div>
+            <div style={{ background: '#FBF8F1', borderRadius: 10, padding: '12px 14px' }}>
+              <div style={{ fontSize: 10.5, color: '#7B8C88', marginBottom: 4 }}>Por múltiplo de EBITDA</div>
+              <div style={{ fontSize: 20, fontWeight: 800, color: '#13201D', fontFamily: "'Inter', system-ui, sans-serif" }}>{ebitdaAnual > 0 ? fmtC(valEbitda) : '—'}</div>
+              <div style={{ fontSize: 10, color: '#A6B0AC' }}>{fmtC(ebitdaAnual)} × {multEbitda}x</div>
             </div>
           </div>
         </div>
 
-        <div style={{ background: '#1C2B2A', borderRadius: 14, padding: '20px', display: 'flex', flexDirection: 'column', gap: 6 }}>
-          <div style={{ fontSize: 11, fontWeight: 700, color: '#6EE7B7', textTransform: 'uppercase', letterSpacing: '.08em' }}>Valor de referência</div>
+        <div style={{ background: '#13201D', borderRadius: 14, padding: '20px', display: 'flex', flexDirection: 'column', gap: 6 }}>
+          <div style={{ fontSize: 11, fontWeight: 700, color: '#6FA595', textTransform: 'uppercase', letterSpacing: '.08em' }}>Valor de referência</div>
           <div style={{ fontSize: 30, fontWeight: 800, color: '#fff', fontFamily: "'Inter', system-ui, sans-serif", letterSpacing: '-.02em' }}>{fmtC(referencia)}</div>
           <div style={{ fontSize: 12, color: 'rgba(255,255,255,.6)' }}>Faixa provável: {fmtC(faixaMin)} – {fmtC(faixaMax)}</div>
           <div style={{ marginTop: 10, fontSize: 10.5, color: 'rgba(255,255,255,.4)', lineHeight: 1.6 }}>
@@ -139,11 +139,11 @@ export default function MaPage() {
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10, flexWrap: 'wrap', gap: 8 }}>
         <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.04em' }}>Prontidão para due diligence</div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <div style={{ width: 180, height: 8, background: '#EEF2F1', borderRadius: 99, overflow: 'hidden' }}>
+          <div style={{ width: 180, height: 8, background: '#F1ECE1', borderRadius: 99, overflow: 'hidden' }}>
             <div style={{ height: '100%', width: `${prontidao}%`, background: corPront, borderRadius: 99, transition: 'width .3s' }} />
           </div>
           <span style={{ fontSize: 15, fontWeight: 800, color: corPront, fontFamily: "'Inter', system-ui, sans-serif" }}>{prontidao}%</span>
-          <span style={{ fontSize: 11, color: '#7A8F8E' }}>{checked.size}/{TOTAL_ITENS}</span>
+          <span style={{ fontSize: 11, color: '#7B8C88' }}>{checked.size}/{TOTAL_ITENS}</span>
         </div>
       </div>
 
@@ -151,20 +151,20 @@ export default function MaPage() {
         {CHECKLIST.map(g => {
           const feitos = g.itens.filter(i => checked.has(i)).length
           return (
-            <div key={g.grupo} style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 14, overflow: 'hidden' }}>
-              <div style={{ padding: '12px 16px', borderBottom: '0.5px solid #E2E8E7', background: '#F8FAFA', display: 'flex', alignItems: 'center', gap: 8 }}>
-                <i className={`fa-solid ${g.icon}`} style={{ fontSize: 13, color: '#10B981' }} />
-                <span style={{ fontSize: 12.5, fontWeight: 700, color: '#1C2B2A' }}>{g.grupo}</span>
-                <span style={{ marginLeft: 'auto', fontSize: 10.5, color: feitos === g.itens.length ? '#0F6E56' : '#7A8F8E', fontWeight: 600 }}>{feitos}/{g.itens.length}</span>
+            <div key={g.grupo} style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 14, overflow: 'hidden' }}>
+              <div style={{ padding: '12px 16px', borderBottom: '0.5px solid #E4DCCC', background: '#FBF8F1', display: 'flex', alignItems: 'center', gap: 8 }}>
+                <i className={`fa-solid ${g.icon}`} style={{ fontSize: 13, color: '#3D7A6E' }} />
+                <span style={{ fontSize: 12.5, fontWeight: 700, color: '#13201D' }}>{g.grupo}</span>
+                <span style={{ marginLeft: 'auto', fontSize: 10.5, color: feitos === g.itens.length ? '#2B564D' : '#7B8C88', fontWeight: 600 }}>{feitos}/{g.itens.length}</span>
               </div>
               {g.itens.map(item => {
                 const on = checked.has(item)
                 return (
-                  <button key={item} onClick={() => toggle(item)} style={{ display: 'flex', alignItems: 'center', gap: 10, width: '100%', textAlign: 'left', padding: '10px 16px', border: 'none', borderBottom: '0.5px solid #F0F4F3', background: '#fff', cursor: 'pointer' }}>
-                    <span style={{ width: 18, height: 18, borderRadius: 5, border: on ? 'none' : '1.5px solid #D1D9D8', background: on ? '#16A085' : '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <button key={item} onClick={() => toggle(item)} style={{ display: 'flex', alignItems: 'center', gap: 10, width: '100%', textAlign: 'left', padding: '10px 16px', border: 'none', borderBottom: '0.5px solid #EFE9DC', background: '#fff', cursor: 'pointer' }}>
+                    <span style={{ width: 18, height: 18, borderRadius: 5, border: on ? 'none' : '1.5px solid #D1D9D8', background: on ? '#3D7A6E' : '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                       {on && <i className="fa-solid fa-check" style={{ fontSize: 10, color: '#fff' }} />}
                     </span>
-                    <span style={{ fontSize: 12.5, color: on ? '#7A8F8E' : '#1C2B2A', textDecoration: on ? 'line-through' : 'none' }}>{item}</span>
+                    <span style={{ fontSize: 12.5, color: on ? '#7B8C88' : '#13201D', textDecoration: on ? 'line-through' : 'none' }}>{item}</span>
                   </button>
                 )
               })}
@@ -173,8 +173,8 @@ export default function MaPage() {
         })}
       </div>
 
-      <div style={{ fontSize: 11, color: '#AAB8B7', marginTop: 14, lineHeight: 1.6 }}>
-        <i className="fa-solid fa-circle-info" style={{ color: '#10B981', marginRight: 6 }} />
+      <div style={{ fontSize: 11, color: '#A6B0AC', marginTop: 14, lineHeight: 1.6 }}>
+        <i className="fa-solid fa-circle-info" style={{ color: '#3D7A6E', marginRight: 6 }} />
         Valuation por múltiplos é uma referência de mercado — não substitui um laudo profissional. O checklist fica salvo neste navegador.
       </div>
     </>

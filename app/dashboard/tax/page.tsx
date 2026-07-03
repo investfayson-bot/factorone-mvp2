@@ -10,7 +10,7 @@ type Row = Record<string, unknown>
 function PagarBtn({ row, ctx }: { row: Row; ctx: RowActionCtx }) {
   const [loading, setLoading] = useState(false)
   const pago = row.status === 'entregue'
-  if (pago) return <span style={{ fontSize: 11, color: '#2D9B6F', fontWeight: 600 }}><i className="fa-solid fa-check" style={{ marginRight: 4 }} />pago</span>
+  if (pago) return <span style={{ fontSize: 11, color: '#3D7A6E', fontWeight: 600 }}><i className="fa-solid fa-check" style={{ marginRight: 4 }} />pago</span>
 
   async function pagar() {
     setLoading(true)
@@ -40,7 +40,7 @@ function PagarBtn({ row, ctx }: { row: Row; ctx: RowActionCtx }) {
 
   return (
     <button onClick={pagar} disabled={loading} title="Registrar pagamento no caixa"
-      style={{ fontSize: 11, fontWeight: 600, cursor: loading ? 'default' : 'pointer', border: '1px solid var(--teal)', background: 'rgba(16,185,129,.08)', color: 'var(--teal)', borderRadius: 6, padding: '3px 9px', opacity: loading ? .6 : 1 }}>
+      style={{ fontSize: 11, fontWeight: 600, cursor: loading ? 'default' : 'pointer', border: '1px solid var(--teal)', background: 'rgba(61,122,110,.08)', color: 'var(--teal)', borderRadius: 6, padding: '3px 9px', opacity: loading ? .6 : 1 }}>
       {loading ? '...' : 'Registrar pagamento'}
     </button>
   )
@@ -73,7 +73,7 @@ export default function TaxPage() {
       ]}
       kpis={[
         { label: 'Obrigações', value: rows => String(rows.length) },
-        { label: 'Pendentes', value: rows => String(rows.filter(r => r.status === 'pendente').length), color: rows => rows.some(r => r.status === 'pendente') ? '#C0504A' : 'var(--green)' },
+        { label: 'Pendentes', value: rows => String(rows.filter(r => r.status === 'pendente').length), color: rows => rows.some(r => r.status === 'pendente') ? '#B0413E' : 'var(--green)' },
         { label: 'A pagar (pendente)', value: rows => formatBRL(rows.filter(r => r.status === 'pendente').reduce((s, r) => s + Number(r.valor ?? 0), 0)) },
       ]}
       actions={(row, ctx) => <PagarBtn row={row} ctx={ctx} />}

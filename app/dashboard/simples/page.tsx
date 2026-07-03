@@ -216,7 +216,7 @@ export default function SimplesPage() {
           </div>
 
           {r.acimaLimite && (
-            <div style={{ background: 'rgba(192,80,74,.08)', border: '1px solid rgba(192,80,74,.3)', borderRadius: 10, padding: '10px 14px', fontSize: 12, color: '#991B1B' }}>
+            <div style={{ background: 'rgba(176,65,62,.08)', border: '1px solid rgba(176,65,62,.3)', borderRadius: 10, padding: '10px 14px', fontSize: 12, color: '#B0413E' }}>
               RBT12 acima de R$ 4.800.000 — fora do limite do Simples Nacional. Considere Lucro Presumido/Real.
             </div>
           )}
@@ -238,7 +238,7 @@ export default function SimplesPage() {
             {faixas.map((f, i) => {
               const ativa = f === r.faixa && (Number(rbt12) || 0) > 0
               return (
-                <tr key={i} style={{ background: ativa ? 'rgba(16,185,129,.08)' : 'transparent' }}>
+                <tr key={i} style={{ background: ativa ? 'rgba(61,122,110,.08)' : 'transparent' }}>
                   <td style={{ padding: '6px 4px', fontWeight: ativa ? 700 : 400, color: ativa ? 'var(--navy)' : 'var(--gray-500)' }}>{formatBRL(f.ate)} {ativa && '←'}</td>
                   <td style={{ textAlign: 'right', padding: '6px 4px', fontWeight: ativa ? 700 : 400 }}>{(f.aliquota * 100).toFixed(2)}%</td>
                   <td style={{ textAlign: 'right', padding: '6px 4px', color: 'var(--gray-500)' }}>{formatBRL(f.pd)}</td>

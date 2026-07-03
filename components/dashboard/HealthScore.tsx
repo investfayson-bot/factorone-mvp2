@@ -98,9 +98,9 @@ export default function HealthScore({ empresaId }: Props) {
   }, [empresaId])
 
   const ring = useMemo(() => {
-    if (score <= 40) return { color: 'var(--fo-red)', stroke: '#C0504A' }
-    if (score <= 70) return { color: 'var(--fo-gold)', stroke: '#B8922A' }
-    return { color: 'var(--fo-green)', stroke: '#2D9B6F' }
+    if (score <= 40) return { color: 'var(--fo-red)', stroke: '#B0413E' }
+    if (score <= 70) return { color: 'var(--fo-gold)', stroke: '#B08A3E' }
+    return { color: 'var(--fo-green)', stroke: '#3D7A6E' }
   }, [score])
 
   if (loading) {
@@ -116,7 +116,7 @@ export default function HealthScore({ empresaId }: Props) {
 
   if (error) {
     return (
-      <div style={{ background: 'rgba(192,80,74,.06)', border: '1px solid rgba(192,80,74,.2)', borderRadius: 12, padding: 20, fontSize: 12, color: 'var(--fo-red)' }}>
+      <div style={{ background: 'rgba(176,65,62,.06)', border: '1px solid rgba(176,65,62,.2)', borderRadius: 12, padding: 20, fontSize: 12, color: 'var(--fo-red)' }}>
         <p style={{ fontWeight: 700 }}>Score de saúde</p>
         <p style={{ marginTop: 4 }}>{error}</p>
       </div>

@@ -13,12 +13,12 @@ type Membro = {
 }
 
 const ROLES: Record<string, { label: string; desc: string; color: string; bg: string }> = {
-  admin:       { label: 'Admin',       desc: 'Acesso total à plataforma',            color: '#1C2B2A',  bg: '#e0e7ff' },
-  financeiro:  { label: 'Financeiro',  desc: 'Financeiro, DRE, contas, relatórios',  color: '#10B981',  bg: '#e0f2fe' },
-  comercial:   { label: 'Comercial',   desc: 'Clientes, CRM, marketing',             color: '#7C3AED',      bg: '#ede9fe' },
-  operacional: { label: 'Operacional', desc: 'Despesas, aprovações, patrimônio',     color: '#D97706',  bg: '#fef3c7' },
-  logistica:   { label: 'Logística',   desc: 'Rotas, pneus, checklist, manutenção', color: '#0891b2',      bg: '#e0f2fe' },
-  viewer:      { label: 'Visualizador',desc: 'Apenas leitura do dashboard',          color: '#7A8F8E', bg: '#f1f5f9' },
+  admin:       { label: 'Admin',       desc: 'Acesso total à plataforma',            color: '#13201D',  bg: '#e0e7ff' },
+  financeiro:  { label: 'Financeiro',  desc: 'Financeiro, DRE, contas, relatórios',  color: '#3D7A6E',  bg: '#E4EDEF' },
+  comercial:   { label: 'Comercial',   desc: 'Clientes, CRM, marketing',             color: '#7A6A9E',      bg: '#ECE7F2' },
+  operacional: { label: 'Operacional', desc: 'Despesas, aprovações, patrimônio',     color: '#B08A3E',  bg: '#fef3c7' },
+  logistica:   { label: 'Logística',   desc: 'Rotas, pneus, checklist, manutenção', color: '#0891b2',      bg: '#E4EDEF' },
+  viewer:      { label: 'Visualizador',desc: 'Apenas leitura do dashboard',          color: '#7B8C88', bg: '#f1f5f9' },
 }
 
 export default function EquipePage() {
@@ -106,7 +106,7 @@ export default function EquipePage() {
         {Object.entries(ROLES).map(([k, r]) => (
           <div key={k} style={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: 10, padding: '12px 14px', display: 'flex', alignItems: 'center', gap: 10 }}>
             <span style={{ fontSize: 10, fontWeight: 700, padding: '3px 8px', borderRadius: 20, background: r.bg, color: r.color, whiteSpace: 'nowrap' }}>{r.label}</span>
-            <span style={{ fontSize: 11, color: '#7A8F8E' }}>{r.desc}</span>
+            <span style={{ fontSize: 11, color: '#7B8C88' }}>{r.desc}</span>
           </div>
         ))}
       </div>
@@ -114,7 +114,7 @@ export default function EquipePage() {
       {/* Members table */}
       <div style={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: 12, overflow: 'hidden' }}>
         {loading ? (
-          <div style={{ padding: 40, textAlign: 'center', color: '#7A8F8E' }}>Carregando...</div>
+          <div style={{ padding: 40, textAlign: 'center', color: '#7B8C88' }}>Carregando...</div>
         ) : (
           <table className="expenses-table" style={{ width: '100%' }}>
             <thead>
@@ -122,18 +122,18 @@ export default function EquipePage() {
             </thead>
             <tbody>
               {/* Current user (owner) */}
-              <tr style={{ background: 'rgba(16,185,129,.03)' }}>
+              <tr style={{ background: 'rgba(61,122,110,.03)' }}>
                 <td>
                   <div style={{ fontWeight: 700 }}>{currentUserEmail}</div>
-                  <div style={{ fontSize: 11, color: '#7A8F8E' }}>Você (proprietário)</div>
+                  <div style={{ fontSize: 11, color: '#7B8C88' }}>Você (proprietário)</div>
                 </td>
                 <td><span style={{ fontSize: 10, fontWeight: 700, padding: '3px 8px', borderRadius: 20, background: ROLES.admin.bg, color: ROLES.admin.color }}>Admin</span></td>
-                <td><span style={{ fontSize: 11, padding: '3px 8px', borderRadius: 12, background: '#dcfce7', color: '#10B981', fontWeight: 600 }}>Ativo</span></td>
+                <td><span style={{ fontSize: 11, padding: '3px 8px', borderRadius: 12, background: '#E9F0ED', color: '#3D7A6E', fontWeight: 600 }}>Ativo</span></td>
                 <td style={{ fontSize: 12 }}>—</td>
-                <td style={{ fontSize: 12, color: '#7A8F8E' }}>—</td>
+                <td style={{ fontSize: 12, color: '#7B8C88' }}>—</td>
               </tr>
               {membros.length === 0 && (
-                <tr><td colSpan={5} style={{ textAlign: 'center', color: '#7A8F8E', padding: '32px 0', fontSize: 13 }}>
+                <tr><td colSpan={5} style={{ textAlign: 'center', color: '#7B8C88', padding: '32px 0', fontSize: 13 }}>
                   Nenhum membro convidado ainda. Convide sua equipe!
                 </td></tr>
               )}
@@ -141,18 +141,18 @@ export default function EquipePage() {
                 <tr key={m.id} style={{ opacity: m.status === 'revogado' ? 0.5 : 1 }}>
                   <td>
                     <div style={{ fontWeight: 600 }}>{m.nome ?? m.email}</div>
-                    {m.nome && <div style={{ fontSize: 11, color: '#7A8F8E' }}>{m.email}</div>}
+                    {m.nome && <div style={{ fontSize: 11, color: '#7B8C88' }}>{m.email}</div>}
                   </td>
                   <td>
                     {m.status === 'revogado' ? (
-                      <span style={{ fontSize: 10, fontWeight: 700, padding: '3px 8px', borderRadius: 20, background: '#f1f5f9', color: '#7A8F8E' }}>
+                      <span style={{ fontSize: 10, fontWeight: 700, padding: '3px 8px', borderRadius: 20, background: '#f1f5f9', color: '#7B8C88' }}>
                         {ROLES[m.role]?.label ?? m.role}
                       </span>
                     ) : (
                       <select
                         value={m.role}
                         onChange={e => void alterarRole(m.id, e.target.value)}
-                        style={{ fontSize: 10, fontWeight: 700, padding: '3px 8px', borderRadius: 20, background: ROLES[m.role]?.bg ?? '#f1f5f9', color: ROLES[m.role]?.color ?? '#7A8F8E', border: 'none', cursor: 'pointer' }}
+                        style={{ fontSize: 10, fontWeight: 700, padding: '3px 8px', borderRadius: 20, background: ROLES[m.role]?.bg ?? '#f1f5f9', color: ROLES[m.role]?.color ?? '#7B8C88', border: 'none', cursor: 'pointer' }}
                       >
                         {Object.entries(ROLES).map(([k, r]) => <option key={k} value={k}>{r.label}</option>)}
                       </select>
@@ -161,8 +161,8 @@ export default function EquipePage() {
                   <td>
                     <span style={{
                       fontSize: 11, padding: '3px 8px', borderRadius: 12, fontWeight: 600,
-                      background: m.status === 'ativo' ? '#dcfce7' : m.status === 'pendente' ? '#fef3c7' : '#f1f5f9',
-                      color: m.status === 'ativo' ? '#10B981' : m.status === 'pendente' ? '#D97706' : '#7A8F8E',
+                      background: m.status === 'ativo' ? '#E9F0ED' : m.status === 'pendente' ? '#fef3c7' : '#f1f5f9',
+                      color: m.status === 'ativo' ? '#3D7A6E' : m.status === 'pendente' ? '#B08A3E' : '#7B8C88',
                     }}>
                       {m.status === 'ativo' ? 'Ativo' : m.status === 'pendente' ? 'Pendente' : 'Revogado'}
                     </span>
@@ -170,7 +170,7 @@ export default function EquipePage() {
                   <td style={{ fontSize: 12 }}>{new Date(m.created_at).toLocaleDateString('pt-BR')}</td>
                   <td>
                     {m.status !== 'revogado' && (
-                      <button onClick={() => void revogar(m.id)} className="btn-action btn-ghost" style={{ fontSize: 11, padding: '3px 10px', color: '#E74C3C', borderColor: 'rgba(192,80,74,.3)' }}>
+                      <button onClick={() => void revogar(m.id)} className="btn-action btn-ghost" style={{ fontSize: 11, padding: '3px 10px', color: '#B0413E', borderColor: 'rgba(176,65,62,.3)' }}>
                         Revogar
                       </button>
                     )}
@@ -193,9 +193,9 @@ export default function EquipePage() {
 
             {conviteEnviado ? (
               <div style={{ textAlign: 'center', padding: '24px 0' }}>
-                <i className="fa-solid fa-circle-check" style={{ fontSize: 48, color: '#10B981', marginBottom: 16, display: 'block' }} />
+                <i className="fa-solid fa-circle-check" style={{ fontSize: 48, color: '#3D7A6E', marginBottom: 16, display: 'block' }} />
                 <div style={{ fontWeight: 700, fontSize: 16, marginBottom: 8 }}>Convite enviado!</div>
-                <div style={{ fontSize: 13, color: '#7A8F8E' }}>Um e-mail foi enviado para <strong>{conviteEnviado}</strong> com o link de acesso.</div>
+                <div style={{ fontSize: 13, color: '#7B8C88' }}>Um e-mail foi enviado para <strong>{conviteEnviado}</strong> com o link de acesso.</div>
                 <div style={{ marginTop: 20, display: 'flex', justifyContent: 'center', gap: 10 }}>
                   <button className="btn-ghost" onClick={() => { setConviteEnviado(''); setShowConvidar(false) }}>Fechar</button>
                   <button className="btn-action" onClick={() => setConviteEnviado('')}>Convidar outro</button>
@@ -221,7 +221,7 @@ export default function EquipePage() {
                           background: form.role === k ? r.bg : '#fafafa', cursor: 'pointer', textAlign: 'left',
                         }}>
                           <div style={{ fontSize: 11, fontWeight: 700, color: r.color }}>{r.label}</div>
-                          <div style={{ fontSize: 10, color: '#7A8F8E', marginTop: 2 }}>{r.desc}</div>
+                          <div style={{ fontSize: 10, color: '#7B8C88', marginTop: 2 }}>{r.desc}</div>
                         </button>
                       ))}
                     </div>

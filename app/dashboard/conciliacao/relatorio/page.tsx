@@ -85,10 +85,10 @@ export default function RelatorioConciliacaoPage() {
   }
 
   const kpis = [
-    { label: '% conciliado', valor: `${r.pct.toFixed(1)}%`, cor: r.pct >= 80 ? 'var(--green)' : r.pct >= 50 ? 'var(--gold)' : '#C0504A' },
+    { label: '% conciliado', valor: `${r.pct.toFixed(1)}%`, cor: r.pct >= 80 ? 'var(--green)' : r.pct >= 50 ? 'var(--gold)' : '#B0413E' },
     { label: 'Lançamentos', valor: String(r.total), cor: 'var(--navy)' },
     { label: 'Conciliados', valor: String(r.conc), cor: 'var(--teal)' },
-    { label: 'Pendentes', valor: String(r.pend), cor: r.pend ? '#C0504A' : 'var(--green)' },
+    { label: 'Pendentes', valor: String(r.pend), cor: r.pend ? '#B0413E' : 'var(--green)' },
   ]
 
   return (
@@ -146,7 +146,7 @@ export default function RelatorioConciliacaoPage() {
                     <tr key={m} style={{ borderTop: '1px solid var(--gray-50,#f3f4f6)' }}>
                       <td style={{ padding: '6px 4px', color: 'var(--navy)' }}>{m}</td>
                       <td style={{ textAlign: 'right', padding: '6px 4px' }}>{g.conc}/{g.total}</td>
-                      <td style={{ textAlign: 'right', padding: '6px 4px', color: pct >= 80 ? 'var(--green)' : pct >= 50 ? 'var(--gold)' : '#C0504A', fontWeight: 600 }}>{pct.toFixed(0)}%</td>
+                      <td style={{ textAlign: 'right', padding: '6px 4px', color: pct >= 80 ? 'var(--green)' : pct >= 50 ? 'var(--gold)' : '#B0413E', fontWeight: 600 }}>{pct.toFixed(0)}%</td>
                       <td style={{ textAlign: 'right', padding: '6px 4px', color: 'var(--gray-500)' }}>{formatBRL(g.valorPend)}</td>
                     </tr>
                   )

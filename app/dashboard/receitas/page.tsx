@@ -307,9 +307,9 @@ export default function ReceitasPage() {
                       onChange={e => void alterarStatus(r.id, e.target.value)}
                       style={{
                         fontSize: 9, fontWeight: 700, padding: '2px 6px', borderRadius: 20, border: '1px solid',
-                        background: r.status === 'confirmada' ? 'rgba(45,155,111,.1)' : r.status === 'prevista' ? 'var(--gray-100)' : 'rgba(239,68,68,.1)',
+                        background: r.status === 'confirmada' ? 'rgba(61,122,110,.1)' : r.status === 'prevista' ? 'var(--gray-100)' : 'rgba(239,68,68,.1)',
                         color: r.status === 'confirmada' ? 'var(--green)' : r.status === 'prevista' ? 'var(--gray-500)' : 'var(--red)',
-                        borderColor: r.status === 'confirmada' ? 'rgba(45,155,111,.2)' : r.status === 'prevista' ? 'var(--gray-200)' : 'rgba(239,68,68,.2)',
+                        borderColor: r.status === 'confirmada' ? 'rgba(61,122,110,.2)' : r.status === 'prevista' ? 'var(--gray-200)' : 'rgba(239,68,68,.2)',
                         cursor: 'pointer',
                       }}
                     >
@@ -345,7 +345,7 @@ export default function ReceitasPage() {
               style={{
                 border: xmlFile ? '2px solid var(--green)' : '2px dashed var(--gray-100)',
                 borderRadius: 12, padding: 16, marginBottom: 20, textAlign: 'center',
-                background: xmlFile ? 'rgba(45,155,111,0.04)' : '#fafafa', cursor: 'pointer',
+                background: xmlFile ? 'rgba(61,122,110,0.04)' : '#fafafa', cursor: 'pointer',
                 transition: 'all 0.2s',
               }}
               onClick={() => xmlRef.current?.click()}

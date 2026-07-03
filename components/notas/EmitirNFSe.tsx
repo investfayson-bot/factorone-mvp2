@@ -131,7 +131,7 @@ export default function EmitirNFSe() {
       </div>
 
       {msg && (
-        <div style={{ borderRadius: 8, padding: '10px 14px', fontSize: 12, background: msg.type === 'ok' ? 'rgba(45,155,111,.1)' : 'rgba(192,80,74,.1)', color: msg.type === 'ok' ? 'var(--green)' : 'var(--red)', border: `1px solid ${msg.type === 'ok' ? 'rgba(45,155,111,.25)' : 'rgba(192,80,74,.2)'}` }}>
+        <div style={{ borderRadius: 8, padding: '10px 14px', fontSize: 12, background: msg.type === 'ok' ? 'rgba(61,122,110,.1)' : 'rgba(176,65,62,.1)', color: msg.type === 'ok' ? 'var(--green)' : 'var(--red)', border: `1px solid ${msg.type === 'ok' ? 'rgba(61,122,110,.25)' : 'rgba(176,65,62,.2)'}` }}>
           {msg.text}
         </div>
       )}

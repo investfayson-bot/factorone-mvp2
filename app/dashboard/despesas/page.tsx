@@ -54,7 +54,7 @@ function statusTag(status: string) {
 
 const menuItemStyle: React.CSSProperties = {
   display: 'block', width: '100%', padding: '8px 12px', textAlign: 'left',
-  fontSize: 12, background: 'none', border: 'none', cursor: 'pointer', color: '#1C2B2A',
+  fontSize: 12, background: 'none', border: 'none', cursor: 'pointer', color: '#13201D',
 }
 
 function lastDayOfMonth(y: number, m: number): string {
@@ -301,39 +301,39 @@ export default function DespesasPage() {
   <meta charset="utf-8">
   <title>Despesas — ${periodoLabel}</title>
   <style>
-    body { font-family: 'Segoe UI', sans-serif; padding: 32px; color: #1C2B2A; }
+    body { font-family: 'Segoe UI', sans-serif; padding: 32px; color: #13201D; }
     h1 { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
-    .sub { font-size: 12px; color: #7A8F8E; margin-bottom: 24px; }
+    .sub { font-size: 12px; color: #7B8C88; margin-bottom: 24px; }
     .header-bar { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; }
-    .logo { font-size: 18px; font-weight: 800; color: #1C2B2A; }
-    .logo span { color: #10B981; }
+    .logo { font-size: 18px; font-weight: 800; color: #13201D; }
+    .logo span { color: #3D7A6E; }
     table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 8px; }
-    th { text-align: left; padding: 8px 10px; font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; background: #F4F6F5; color: #7A8F8E; border-bottom: 1px solid #E2E8E7; }
-    td { padding: 9px 10px; border-bottom: 1px solid #F0F4F3; color: #1C2B2A; }
+    th { text-align: left; padding: 8px 10px; font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; background: #F7F4EE; color: #7B8C88; border-bottom: 1px solid #E4DCCC; }
+    td { padding: 9px 10px; border-bottom: 1px solid #EFE9DC; color: #13201D; }
     tr:last-child td { border: none; }
-    .val { font-weight: 700; color: #E74C3C; }
-    .total-row { background: #F4F6F5; font-weight: 700; }
-    .footer { margin-top: 32px; font-size: 10px; color: #AAB8B7; }
+    .val { font-weight: 700; color: #B0413E; }
+    .total-row { background: #F7F4EE; font-weight: 700; }
+    .footer { margin-top: 32px; font-size: 10px; color: #A6B0AC; }
     @media print { body { padding: 16px; } }
   </style>
 </head>
 <body>
   <div class="header-bar">
     <div>
-      <div class="logo">Factor<span>One</span> <span style="font-size:11px;font-weight:400;color:#7A8F8E">Finance OS</span></div>
+      <div class="logo">Factor<span>One</span> <span style="font-size:11px;font-weight:400;color:#7B8C88">Finance OS</span></div>
       <h1>Relatório de Despesas</h1>
       <div class="sub">${periodoLabel} · Gerado em ${new Date().toLocaleDateString('pt-BR')}</div>
     </div>
     <div style="text-align:right;font-size:13px">
-      <div style="font-size:10px;color:#7A8F8E;margin-bottom:2px">Total do período</div>
-      <div style="font-size:20px;font-weight:800;color:#E74C3C">${formatBRL(kpis.totalMes)}</div>
+      <div style="font-size:10px;color:#7B8C88;margin-bottom:2px">Total do período</div>
+      <div style="font-size:20px;font-weight:800;color:#B0413E">${formatBRL(kpis.totalMes)}</div>
     </div>
   </div>
   <table>
     <thead><tr><th>Descrição</th><th>Categoria</th><th>Vencimento</th><th>Status</th><th style="text-align:right">Valor</th></tr></thead>
     <tbody>
       ${filtradas.map(r => `<tr><td>${r.descricao || '—'}</td><td>${r.categoria || '—'}</td><td>${r.data_vencimento ? new Date(r.data_vencimento + 'T12:00:00').toLocaleDateString('pt-BR') : '—'}</td><td>${STATUS_LABEL[r.status] || r.status}</td><td style="text-align:right" class="val">${formatBRL(Number(r.valor))}</td></tr>`).join('')}
-      <tr class="total-row"><td colspan="4">Total</td><td style="text-align:right;color:#E74C3C">${formatBRL(kpis.totalMes)}</td></tr>
+      <tr class="total-row"><td colspan="4">Total</td><td style="text-align:right;color:#B0413E">${formatBRL(kpis.totalMes)}</td></tr>
     </tbody>
   </table>
   <div class="footer">FactorOne Finance OS · ${new Date().toLocaleString('pt-BR')}</div>
@@ -398,7 +398,7 @@ export default function DespesasPage() {
             {exportMenuOpen && (
               <>
                 <button type="button" style={{ position: 'fixed', inset: 0, zIndex: 10, cursor: 'default' }} aria-label="fechar" onClick={() => setExportMenuOpen(false)} />
-                <div style={{ position: 'absolute', right: 0, zIndex: 20, marginTop: 4, width: 180, background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 10, boxShadow: '0 8px 24px rgba(0,0,0,.12)', padding: '4px 0' }}>
+                <div style={{ position: 'absolute', right: 0, zIndex: 20, marginTop: 4, width: 180, background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 10, boxShadow: '0 8px 24px rgba(0,0,0,.12)', padding: '4px 0' }}>
                   <button style={menuItemStyle} onClick={() => { exportarCsv(filtradas); setExportMenuOpen(false) }}>CSV (filtradas)</button>
                   <button style={menuItemStyle} onClick={() => { exportarPdf(); setExportMenuOpen(false) }}>PDF / Imprimir</button>
                 </div>
@@ -406,7 +406,7 @@ export default function DespesasPage() {
             )}
           </div>
           <button className="btn-action btn-ghost" onClick={() => void categorizarComIA()} disabled={categorizando} title="Classifica automaticamente as despesas sem categoria">
-            <i className="fa-solid fa-wand-magic-sparkles" style={{ marginRight: 6, color: '#7C3AED' }} />{categorizando ? 'Categorizando…' : 'Categorizar com IA'}
+            <i className="fa-solid fa-wand-magic-sparkles" style={{ marginRight: 6, color: '#7A6A9E' }} />{categorizando ? 'Categorizando…' : 'Categorizar com IA'}
           </button>
           <button className="btn-action" onClick={() => { setEditRow(null); setModalOpen(true) }}>+ Nova despesa</button>
           <label className="btn-action btn-ghost" style={{ cursor: 'pointer' }}>
@@ -418,37 +418,37 @@ export default function DespesasPage() {
 
       {/* KPIs */}
       <div className="kpis">
-        <div className="kpi" style={{ borderTop: '3px solid #E74C3C' }}>
+        <div className="kpi" style={{ borderTop: '3px solid #B0413E' }}>
           <div className="kpi-lbl">Total do mês
-            <div style={{ width: 28, height: 28, borderRadius: 8, background: '#FEE2E2', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <i className="fa-solid fa-receipt" style={{ fontSize: 12, color: '#E74C3C' }} />
+            <div style={{ width: 28, height: 28, borderRadius: 8, background: '#F4E4E1', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <i className="fa-solid fa-receipt" style={{ fontSize: 12, color: '#B0413E' }} />
             </div>
           </div>
           <div className="kpi-val">{formatBRL(kpis.totalMes)}</div>
           <div className="kpi-delta dn">↓ despesas registradas</div>
         </div>
-        <div className="kpi" style={{ borderTop: '3px solid #D97706' }}>
+        <div className="kpi" style={{ borderTop: '3px solid #B08A3E' }}>
           <div className="kpi-lbl">A aprovar
-            <div style={{ width: 28, height: 28, borderRadius: 8, background: '#FEF3C7', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <i className="fa-solid fa-clock" style={{ fontSize: 12, color: '#D97706' }} />
+            <div style={{ width: 28, height: 28, borderRadius: 8, background: '#F3ECDA', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <i className="fa-solid fa-clock" style={{ fontSize: 12, color: '#B08A3E' }} />
             </div>
           </div>
           <div className="kpi-val">{formatBRL(kpis.aAprovar)}</div>
           <div className="kpi-delta warn">aguardando aprovação</div>
         </div>
-        <div className="kpi" style={{ borderTop: '3px solid #10B981' }}>
+        <div className="kpi" style={{ borderTop: '3px solid #3D7A6E' }}>
           <div className="kpi-lbl">A pagar
-            <div style={{ width: 28, height: 28, borderRadius: 8, background: '#EAF5F3', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <i className="fa-solid fa-check-circle" style={{ fontSize: 12, color: '#10B981' }} />
+            <div style={{ width: 28, height: 28, borderRadius: 8, background: '#E9F0ED', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <i className="fa-solid fa-check-circle" style={{ fontSize: 12, color: '#3D7A6E' }} />
             </div>
           </div>
           <div className="kpi-val">{formatBRL(kpis.aPagar)}</div>
           <div className="kpi-delta up">↑ já aprovadas</div>
         </div>
-        <div className="kpi" style={{ borderTop: `3px solid ${kpis.economia >= 0 ? '#10B981' : '#E74C3C'}` }}>
+        <div className="kpi" style={{ borderTop: `3px solid ${kpis.economia >= 0 ? '#3D7A6E' : '#B0413E'}` }}>
           <div className="kpi-lbl">Vs mês anterior
-            <div style={{ width: 28, height: 28, borderRadius: 8, background: kpis.economia >= 0 ? '#EAF5F3' : '#FEE2E2', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <i className={`fa-solid ${kpis.economia >= 0 ? 'fa-arrow-trend-down' : 'fa-arrow-trend-up'}`} style={{ fontSize: 12, color: kpis.economia >= 0 ? '#10B981' : '#E74C3C' }} />
+            <div style={{ width: 28, height: 28, borderRadius: 8, background: kpis.economia >= 0 ? '#E9F0ED' : '#F4E4E1', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <i className={`fa-solid ${kpis.economia >= 0 ? 'fa-arrow-trend-down' : 'fa-arrow-trend-up'}`} style={{ fontSize: 12, color: kpis.economia >= 0 ? '#3D7A6E' : '#B0413E' }} />
             </div>
           </div>
           <div className="kpi-val">{kpis.economia >= 0 ? '+' : ''}{kpis.economia.toFixed(1)}%</div>
@@ -460,22 +460,22 @@ export default function DespesasPage() {
       <div className="cf-chart-card" style={{ marginBottom: 14 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
           <div className="chart-title" style={{ marginBottom: 0 }}>Categorização de Gastos</div>
-          <div style={{ fontSize: 10, color: '#7A8F8E', fontFamily: "'Inter', sans-serif" }}>
+          <div style={{ fontSize: 10, color: '#7B8C88', fontFamily: "'Inter', sans-serif" }}>
             {categorizacao.pendentesN} pendentes · IA 94% automático
           </div>
         </div>
         {categorizacao.items.length === 0 ? (
-          <p style={{ fontSize: 12, color: '#7A8F8E', textAlign: 'center', padding: '16px 0' }}>Sem despesas no mês para exibir distribuição.</p>
+          <p style={{ fontSize: 12, color: '#7B8C88', textAlign: 'center', padding: '16px 0' }}>Sem despesas no mês para exibir distribuição.</p>
         ) : (
           <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 8 }}>
             {categorizacao.items.map(it => (
               <li key={it.nome}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, marginBottom: 4 }}>
-                  <span style={{ fontWeight: 600, color: '#1C2B2A' }}>{it.nome}</span>
-                  <span style={{ fontFamily: "'Inter', sans-serif", color: '#7A8F8E' }}>{formatBRL(it.valor)} · {it.pct.toFixed(1)}%</span>
+                  <span style={{ fontWeight: 600, color: '#13201D' }}>{it.nome}</span>
+                  <span style={{ fontFamily: "'Inter', sans-serif", color: '#7B8C88' }}>{formatBRL(it.valor)} · {it.pct.toFixed(1)}%</span>
                 </div>
-                <div style={{ height: 6, background: '#EEF2F1', borderRadius: 3, overflow: 'hidden' }}>
-                  <div style={{ height: '100%', width: `${Math.min(100, it.pct)}%`, background: '#10B981', borderRadius: 3 }} />
+                <div style={{ height: 6, background: '#F1ECE1', borderRadius: 3, overflow: 'hidden' }}>
+                  <div style={{ height: '100%', width: `${Math.min(100, it.pct)}%`, background: '#3D7A6E', borderRadius: 3 }} />
                 </div>
               </li>
             ))}
@@ -515,12 +515,12 @@ export default function DespesasPage() {
 
       {/* Lote */}
       {selected.size > 0 && (
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'rgba(16,185,129,.08)', border: '1px solid rgba(16,185,129,.2)', borderRadius: 10, padding: '8px 14px', fontSize: 12, marginBottom: 10 }}>
-          <span style={{ fontWeight: 600, color: '#10B981' }}>{selected.size} selecionada(s)</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'rgba(61,122,110,.08)', border: '1px solid rgba(61,122,110,.2)', borderRadius: 10, padding: '8px 14px', fontSize: 12, marginBottom: 10 }}>
+          <span style={{ fontWeight: 600, color: '#3D7A6E' }}>{selected.size} selecionada(s)</span>
           <button className="btn-action btn-ghost" style={{ fontSize: 11, padding: '4px 10px' }} onClick={() => void aprovarLote()}>Aprovar</button>
           <button className="btn-action btn-ghost" style={{ fontSize: 11, padding: '4px 10px' }} onClick={() => void marcarPagoLote()}>Pagar</button>
           <button className="btn-action btn-ghost" style={{ fontSize: 11, padding: '4px 10px' }} onClick={() => exportarCsv(rows.filter(r => selected.has(r.id)))}>Exportar</button>
-          <button style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 11, color: '#7A8F8E' }} onClick={() => setSelected(new Set())}>Limpar</button>
+          <button style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 11, color: '#7B8C88' }} onClick={() => setSelected(new Set())}>Limpar</button>
         </div>
       )}
 
@@ -536,20 +536,20 @@ export default function DespesasPage() {
           </thead>
           <tbody>
             {loading ? (
-              <tr><td colSpan={9} style={{ textAlign: 'center', color: '#7A8F8E', padding: 32 }}>Carregando…</td></tr>
+              <tr><td colSpan={9} style={{ textAlign: 'center', color: '#7B8C88', padding: 32 }}>Carregando…</td></tr>
             ) : filtradas.length === 0 ? (
-              <tr><td colSpan={9} style={{ textAlign: 'center', color: '#7A8F8E', padding: 32 }}>Nenhuma despesa neste período com os filtros atuais.</td></tr>
+              <tr><td colSpan={9} style={{ textAlign: 'center', color: '#7B8C88', padding: 32 }}>Nenhuma despesa neste período com os filtros atuais.</td></tr>
             ) : filtradas.map(r => (
               <tr key={r.id}>
                 <td><input type="checkbox" checked={selected.has(r.id)} onChange={() => toggleOne(r.id)} /></td>
                 <td style={{ fontWeight: 600 }}>
                   {r.descricao}
-                  {r.recorrente && <span style={{ fontSize: 10, color: '#7A8F8E', marginLeft: 6 }}>(recorrente)</span>}
+                  {r.recorrente && <span style={{ fontSize: 10, color: '#7B8C88', marginLeft: 6 }}>(recorrente)</span>}
                 </td>
                 <td>{r.responsavel_nome || '—'}</td>
                 <td>{r.categoria}</td>
                 <td>{centroNome(r.centro_custo_id)}</td>
-                <td style={{ fontWeight: 700, color: '#E74C3C', fontFamily: "'Inter', sans-serif" }}>{formatBRL(Number(r.valor))}</td>
+                <td style={{ fontWeight: 700, color: '#B0413E', fontFamily: "'Inter', sans-serif" }}>{formatBRL(Number(r.valor))}</td>
                 <td>{r.data_vencimento ? new Date(r.data_vencimento).toLocaleDateString('pt-BR') : '—'}</td>
                 <td>
                   <span title={r.status === 'rejeitado' ? r.rejeitado_motivo || '' : undefined}>
@@ -557,17 +557,17 @@ export default function DespesasPage() {
                   </span>
                 </td>
                 <td style={{ position: 'relative' }}>
-                  <button style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#7A8F8E', padding: 4, fontSize: 16 }} onClick={() => setMenuAberto(menuAberto === r.id ? null : r.id)}>⋯</button>
+                  <button style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#7B8C88', padding: 4, fontSize: 16 }} onClick={() => setMenuAberto(menuAberto === r.id ? null : r.id)}>⋯</button>
                   {menuAberto === r.id && (
                     <>
                       <button type="button" style={{ position: 'fixed', inset: 0, zIndex: 10, cursor: 'default' }} aria-label="fechar" onClick={() => setMenuAberto(null)} />
-                      <div style={{ position: 'absolute', right: 0, top: '100%', zIndex: 20, marginTop: 4, width: 200, background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 10, boxShadow: '0 8px 24px rgba(0,0,0,.12)', padding: '4px 0' }}>
+                      <div style={{ position: 'absolute', right: 0, top: '100%', zIndex: 20, marginTop: 4, width: 200, background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 10, boxShadow: '0 8px 24px rgba(0,0,0,.12)', padding: '4px 0' }}>
                         {r.status === 'pendente_aprovacao' && <button style={menuItemStyle} onClick={() => void aprovar(r.id)}>Aprovar</button>}
                         {r.status === 'pendente_aprovacao' && <button style={menuItemStyle} onClick={() => { setRejeitar({ id: r.id }); setMenuAberto(null) }}>Rejeitar…</button>}
                         {(r.status === 'aprovado' || r.status === 'pendente_aprovacao') && <button style={menuItemStyle} onClick={() => void marcarPago(r.id)}>Marcar como pago</button>}
                         {r.comprovante_url && <button style={menuItemStyle} onClick={() => void abrirComprovante(r.comprovante_url!)}>Ver comprovante</button>}
                         <button style={menuItemStyle} onClick={() => abrirEditar(r)}>Editar</button>
-                        <button style={{ ...menuItemStyle, color: '#E74C3C' }} onClick={() => void excluir(r.id)}>Excluir</button>
+                        <button style={{ ...menuItemStyle, color: '#B0413E' }} onClick={() => void excluir(r.id)}>Excluir</button>
                       </div>
                     </>
                   )}
@@ -599,11 +599,11 @@ export default function DespesasPage() {
         footer={
           <>
             <button className="btn-action btn-ghost" onClick={() => { setRejeitar(null); setMotivoRejeicao('') }}>Cancelar</button>
-            <button className="btn-action" style={{ background: '#E74C3C' }} onClick={confirmarRejeitar}>Rejeitar</button>
+            <button className="btn-action" style={{ background: '#B0413E' }} onClick={confirmarRejeitar}>Rejeitar</button>
           </>
         }
       >
-            <p style={{ fontSize: 12, color: '#7A8F8E', marginBottom: 12 }}>Informe o motivo (visível no histórico).</p>
+            <p style={{ fontSize: 12, color: '#7B8C88', marginBottom: 12 }}>Informe o motivo (visível no histórico).</p>
             <textarea value={motivoRejeicao} onChange={e => setMotivoRejeicao(e.target.value)} rows={3} className="form-input" style={{ resize: 'vertical', height: 80 }} placeholder="Motivo da rejeição" />
       </Modal>
     </>

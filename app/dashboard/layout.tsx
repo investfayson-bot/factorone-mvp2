@@ -64,7 +64,7 @@ function buildNavGroups(badges: { reembolsos: number; aprovacoes: number }, inst
       label: 'Marketplace',
       items: [
         { href: '/dashboard/integracoes', icon: 'fa-plug', label: 'Integrações' },
-        { href: '/dashboard/marketplace', icon: 'fa-store', label: 'Marketplace', badge: 'NEW', badgeColor: '#7C3AED' },
+        { href: '/dashboard/marketplace', icon: 'fa-store', label: 'Marketplace', badge: 'NEW', badgeColor: '#7A6A9E' },
       ],
     },
     {
@@ -80,7 +80,7 @@ function buildNavGroups(badges: { reembolsos: number; aprovacoes: number }, inst
   for (const app of MARKET_APPS) {
     if (app.id === 'banco') continue // Banco é um grupo inteiro, tratado acima
     if (!installedIds.includes(app.id)) continue
-    const item: NavItem = { href: app.href, icon: app.icon, label: app.name, badge: 'APP', badgeColor: '#7C3AED' }
+    const item: NavItem = { href: app.href, icon: app.icon, label: app.name, badge: 'APP', badgeColor: '#7A6A9E' }
     let group = groups.find(g => g.label === app.navGroup)
     if (!group) { group = { label: app.navGroup, items: [] }; groups.push(group) }
     if (!group.items.some(i => i.href === item.href)) group.items.push(item)

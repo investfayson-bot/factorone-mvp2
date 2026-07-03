@@ -3,7 +3,7 @@
 const PORTAIS = [
   {
     grupo: 'Receita Federal',
-    cor: '#1C2B2A', corBg: '#EAF5F3',
+    cor: '#13201D', corBg: '#E9F0ED',
     icone: 'fa-landmark',
     items: [
       { nome: 'e-CAC', desc: 'Centro Virtual de Atendimento — emissão de certidões, parcelamentos, procurações', url: 'https://cav.receita.fazenda.gov.br', tag: 'Essencial' },
@@ -14,7 +14,7 @@ const PORTAIS = [
   },
   {
     grupo: 'SEFAZ — Notas Fiscais',
-    cor: '#1C2B2A', corBg: '#EAF5F3',
+    cor: '#13201D', corBg: '#E9F0ED',
     icone: 'fa-file-invoice-dollar',
     items: [
       { nome: 'NF-e Nacional (SVRS)', desc: 'Emissão, consulta e cancelamento de NF-e — Sefaz Virtual', url: 'https://www.nfe.fazenda.gov.br/portal/principal.aspx', tag: 'NF-e' },
@@ -25,7 +25,7 @@ const PORTAIS = [
   },
   {
     grupo: 'eSocial & Trabalhista',
-    cor: '#1C2B2A', corBg: '#EAF5F3',
+    cor: '#13201D', corBg: '#E9F0ED',
     icone: 'fa-users',
     items: [
       { nome: 'eSocial', desc: 'Admissões, desligamentos, folha de pagamento e obrigações trabalhistas', url: 'https://www.esocial.gov.br', tag: 'RH' },
@@ -35,7 +35,7 @@ const PORTAIS = [
   },
   {
     grupo: 'Certidões & Regularidade',
-    cor: '#1C2B2A', corBg: '#EAF5F3',
+    cor: '#13201D', corBg: '#E9F0ED',
     icone: 'fa-file-shield',
     items: [
       { nome: 'CND Federal (Receita + PGFN)', desc: 'Certidão Negativa de Débitos Federais — válida para licitações e financiamentos', url: 'https://solucoes.receita.fazenda.gov.br/Servicos/certidaointernet/PJ/Emitir', tag: 'Certidão' },
@@ -46,7 +46,7 @@ const PORTAIS = [
   },
   {
     grupo: 'Outros portais úteis',
-    cor: '#1C2B2A', corBg: '#EAF5F3',
+    cor: '#13201D', corBg: '#E9F0ED',
     icone: 'fa-globe',
     items: [
       { nome: 'gov.br — Empresas', desc: 'Portal central do governo federal para serviços empresariais', url: 'https://www.gov.br/empresas-e-negocios/pt-br', tag: 'Portal' },
@@ -59,26 +59,26 @@ const PORTAIS = [
 
 function tagColor(tag: string) {
   const m: Record<string, { bg: string; color: string }> = {
-    Essencial: { bg: '#EAF5F3', color: '#0F6E56' },
+    Essencial: { bg: '#E9F0ED', color: '#2B564D' },
     'MEI/ME': { bg: '#EAF3DE', color: '#3B6D11' },
     Consulta: { bg: '#E6F1FB', color: '#185FA5' },
-    Débitos: { bg: '#FEE2E2', color: '#991B1B' },
-    'NF-e': { bg: '#EAF5F3', color: '#0F6E56' },
-    'NFS-e': { bg: '#EAF5F3', color: '#0F6E56' },
+    Débitos: { bg: '#F4E4E1', color: '#B0413E' },
+    'NF-e': { bg: '#E9F0ED', color: '#2B564D' },
+    'NFS-e': { bg: '#E9F0ED', color: '#2B564D' },
     Transporte: { bg: '#F1EFE8', color: '#5F5E5A' },
-    ICMS: { bg: '#FEF3C7', color: '#92400E' },
+    ICMS: { bg: '#F3ECDA', color: '#B08A3E' },
     RH: { bg: '#EEEDFE', color: '#3C3489' },
     FGTS: { bg: '#EAF3DE', color: '#3B6D11' },
     Emprego: { bg: '#E6F1FB', color: '#185FA5' },
-    Certidão: { bg: '#EAF5F3', color: '#0F6E56' },
+    Certidão: { bg: '#E9F0ED', color: '#2B564D' },
     Estadual: { bg: '#F1EFE8', color: '#5F5E5A' },
-    Crédito: { bg: '#FEE2E2', color: '#991B1B' },
-    Portal: { bg: '#1C2B2A', color: '#6EE7B7' },
+    Crédito: { bg: '#F4E4E1', color: '#B0413E' },
+    Portal: { bg: '#13201D', color: '#6FA595' },
     Abertura: { bg: '#EAF3DE', color: '#3B6D11' },
     MEI: { bg: '#EAF3DE', color: '#3B6D11' },
     Registro: { bg: '#F1EFE8', color: '#5F5E5A' },
   }
-  return m[tag] ?? { bg: '#F4F6F5', color: '#3A5150' }
+  return m[tag] ?? { bg: '#F7F4EE', color: '#3C4A46' }
 }
 
 export default function FiscalPortaisPage() {
@@ -89,15 +89,15 @@ export default function FiscalPortaisPage() {
           <div className="page-title">Portais Fiscais & Gov.br</div>
           <div className="page-sub">Acesso rápido aos principais portais do governo federal e estadual</div>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: '#EAF5F3', color: '#0F6E56', fontSize: 10, padding: '5px 12px', borderRadius: 20, fontWeight: 600 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: '#E9F0ED', color: '#2B564D', fontSize: 10, padding: '5px 12px', borderRadius: 20, fontWeight: 600 }}>
           <i className="fa-solid fa-link" style={{ fontSize: 10 }} />Links verificados
         </div>
       </div>
 
       {/* Banner */}
-      <div style={{ background: '#1C2B2A', borderRadius: 14, padding: '16px 20px', marginBottom: 20, display: 'flex', alignItems: 'center', gap: 14 }}>
-        <div style={{ width: 44, height: 44, borderRadius: 11, background: 'rgba(16,185,129,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-          <i className="fa-solid fa-shield-halved" style={{ fontSize: 20, color: '#6EE7B7' }} />
+      <div style={{ background: '#13201D', borderRadius: 14, padding: '16px 20px', marginBottom: 20, display: 'flex', alignItems: 'center', gap: 14 }}>
+        <div style={{ width: 44, height: 44, borderRadius: 11, background: 'rgba(61,122,110,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+          <i className="fa-solid fa-shield-halved" style={{ fontSize: 20, color: '#6FA595' }} />
         </div>
         <div>
           <div style={{ fontSize: 13, fontWeight: 700, color: '#fff', marginBottom: 3 }}>Fase 2 — Integração com Certificado Digital A1</div>
@@ -106,19 +106,19 @@ export default function FiscalPortaisPage() {
           </div>
         </div>
         <div style={{ marginLeft: 'auto', flexShrink: 0 }}>
-          <div style={{ fontSize: 10, background: 'rgba(16,185,129,0.2)', color: '#6EE7B7', padding: '4px 12px', borderRadius: 20, fontWeight: 600, whiteSpace: 'nowrap' }}>Em breve</div>
+          <div style={{ fontSize: 10, background: 'rgba(61,122,110,0.2)', color: '#6FA595', padding: '4px 12px', borderRadius: 20, fontWeight: 600, whiteSpace: 'nowrap' }}>Em breve</div>
         </div>
       </div>
 
       {/* Grupos */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
         {PORTAIS.map(grupo => (
-          <div key={grupo.grupo} style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 14, overflow: 'hidden' }}>
-            <div style={{ padding: '12px 16px', borderBottom: '0.5px solid #E2E8E7', display: 'flex', alignItems: 'center', gap: 10, background: '#F8FAFA' }}>
-              <div style={{ width: 30, height: 30, borderRadius: 8, background: '#1C2B2A', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <i className={`fa-solid ${grupo.icone}`} style={{ fontSize: 13, color: '#6EE7B7' }} />
+          <div key={grupo.grupo} style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 14, overflow: 'hidden' }}>
+            <div style={{ padding: '12px 16px', borderBottom: '0.5px solid #E4DCCC', display: 'flex', alignItems: 'center', gap: 10, background: '#FBF8F1' }}>
+              <div style={{ width: 30, height: 30, borderRadius: 8, background: '#13201D', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <i className={`fa-solid ${grupo.icone}`} style={{ fontSize: 13, color: '#6FA595' }} />
               </div>
-              <div style={{ fontSize: 12, fontWeight: 700, color: '#1C2B2A' }}>{grupo.grupo}</div>
+              <div style={{ fontSize: 12, fontWeight: 700, color: '#13201D' }}>{grupo.grupo}</div>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)' }}>
               {grupo.items.map((item, idx) => {
@@ -129,18 +129,18 @@ export default function FiscalPortaisPage() {
                   <a key={item.nome} href={item.url} target="_blank" rel="noreferrer" style={{ textDecoration: 'none' }}>
                     <div style={{
                       padding: '14px 16px', cursor: 'pointer', transition: 'background 0.15s',
-                      borderBottom: isLast ? 'none' : '0.5px solid #F0F4F3',
-                      borderRight: isRight ? 'none' : '0.5px solid #F0F4F3',
+                      borderBottom: isLast ? 'none' : '0.5px solid #EFE9DC',
+                      borderRight: isRight ? 'none' : '0.5px solid #EFE9DC',
                     }}
-                      onMouseEnter={e => (e.currentTarget.style.background = '#F8FAFA')}
+                      onMouseEnter={e => (e.currentTarget.style.background = '#FBF8F1')}
                       onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
                     >
                       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
-                        <span style={{ fontSize: 12, fontWeight: 700, color: '#1C2B2A' }}>{item.nome}</span>
+                        <span style={{ fontSize: 12, fontWeight: 700, color: '#13201D' }}>{item.nome}</span>
                         <span style={{ fontSize: 9, padding: '2px 7px', borderRadius: 20, fontWeight: 600, background: tc.bg, color: tc.color, marginLeft: 'auto', flexShrink: 0 }}>{item.tag}</span>
-                        <i className="fa-solid fa-arrow-up-right-from-square" style={{ fontSize: 9, color: '#AAB8B7', flexShrink: 0 }} />
+                        <i className="fa-solid fa-arrow-up-right-from-square" style={{ fontSize: 9, color: '#A6B0AC', flexShrink: 0 }} />
                       </div>
-                      <div style={{ fontSize: 11, color: '#7A8F8E', lineHeight: 1.4 }}>{item.desc}</div>
+                      <div style={{ fontSize: 11, color: '#7B8C88', lineHeight: 1.4 }}>{item.desc}</div>
                     </div>
                   </a>
                 )
@@ -150,7 +150,7 @@ export default function FiscalPortaisPage() {
         ))}
       </div>
 
-      <div style={{ textAlign: 'center', fontSize: 10, color: '#AAB8B7', marginTop: 16 }}>
+      <div style={{ textAlign: 'center', fontSize: 10, color: '#A6B0AC', marginTop: 16 }}>
         Links externos — o FactorOne não se responsabiliza pela disponibilidade dos portais governamentais
       </div>
     </div>

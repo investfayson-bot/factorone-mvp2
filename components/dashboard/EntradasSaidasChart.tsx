@@ -74,12 +74,12 @@ export default function EntradasSaidasChart({ empresaId }: Props) {
         <AreaChart data={chartData} margin={{ top: 4, right: 4, bottom: 0, left: 0 }}>
           <defs>
             <linearGradient id="gradEntradas" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#2D9B6F" stopOpacity={0.25} />
-              <stop offset="95%" stopColor="#2D9B6F" stopOpacity={0} />
+              <stop offset="5%" stopColor="#3D7A6E" stopOpacity={0.25} />
+              <stop offset="95%" stopColor="#3D7A6E" stopOpacity={0} />
             </linearGradient>
             <linearGradient id="gradSaidas" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#C0504A" stopOpacity={0.18} />
-              <stop offset="95%" stopColor="#C0504A" stopOpacity={0} />
+              <stop offset="5%" stopColor="#B0413E" stopOpacity={0.18} />
+              <stop offset="95%" stopColor="#B0413E" stopOpacity={0} />
             </linearGradient>
           </defs>
           <CartesianGrid strokeDasharray="3 3" stroke="var(--gray-100)" vertical={false} />
@@ -90,8 +90,8 @@ export default function EntradasSaidasChart({ empresaId }: Props) {
             contentStyle={{ fontSize: 11, borderRadius: 8, border: '1px solid var(--gray-100)', background: '#fff' }}
             labelStyle={{ fontWeight: 700, color: 'var(--navy)', fontSize: 11 }}
           />
-          <Area type="monotone" dataKey="entradas" stroke="#2D9B6F" strokeWidth={2} fill="url(#gradEntradas)" dot={false} activeDot={{ r: 4 }} />
-          <Area type="monotone" dataKey="saidas" stroke="#C0504A" strokeWidth={2} fill="url(#gradSaidas)" dot={false} activeDot={{ r: 4 }} />
+          <Area type="monotone" dataKey="entradas" stroke="#3D7A6E" strokeWidth={2} fill="url(#gradEntradas)" dot={false} activeDot={{ r: 4 }} />
+          <Area type="monotone" dataKey="saidas" stroke="#B0413E" strokeWidth={2} fill="url(#gradSaidas)" dot={false} activeDot={{ r: 4 }} />
         </AreaChart>
       </ResponsiveContainer>
     </div>

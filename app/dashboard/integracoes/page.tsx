@@ -46,7 +46,7 @@ const WEBHOOKS = [
   { id: 'whatsapp', nome: 'WhatsApp Business', path: '/api/webhooks/whatsapp', method: 'POST/GET', auth: 'WHATSAPP_VERIFY_TOKEN', desc: 'Mensagens do WhatsApp Business API para o AI CFO.', modulo: 'Comunicação', icon: 'fa-comment', color: '#25D366' },
   { id: 'lifeos', nome: 'LifeOS / n8n', path: '/api/lifeos/webhook', method: 'POST', auth: 'x-lifeos-secret: $LIFEOS_WEBHOOK_SECRET', desc: 'Webhook para automações externas via LifeOS ou n8n.', modulo: 'Automação', icon: 'fa-bolt', color: 'var(--gold)' },
   { id: 'fornecedor', nome: 'Portal Fornecedor', path: '/fornecedor/[token]', method: 'GET/POST', auth: 'token na URL', desc: 'Fornecedores submetem dados e contas a pagar sem login.', modulo: 'Financeiro', icon: 'fa-truck', color: 'var(--navy)' },
-  { id: 'cliente', nome: 'Portal do Cliente', path: '/cliente/[token]', method: 'GET', auth: 'token na URL', desc: 'Clientes visualizam faturas, entregas e contratos.', modulo: 'Clientes', icon: 'fa-users', color: '#7C3AED' },
+  { id: 'cliente', nome: 'Portal do Cliente', path: '/cliente/[token]', method: 'GET', auth: 'token na URL', desc: 'Clientes visualizam faturas, entregas e contratos.', modulo: 'Clientes', icon: 'fa-users', color: '#7A6A9E' },
 ]
 
 export default function IntegracoesPage() {
@@ -128,7 +128,7 @@ export default function IntegracoesPage() {
                 return (
                   <div key={item.id} style={{
                     background: '#fff',
-                    border: `1px solid ${ativo ? 'rgba(45,155,111,.25)' : 'var(--gray-100)'}`,
+                    border: `1px solid ${ativo ? 'rgba(61,122,110,.25)' : 'var(--gray-100)'}`,
                     borderRadius: 12, padding: '14px 16px',
                     opacity: emBreve ? 0.75 : 1,
                     transition: 'box-shadow .15s',
@@ -141,7 +141,7 @@ export default function IntegracoesPage() {
                         <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 3 }}>
                           <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy)' }}>{item.nome}</div>
                           {item.badge && (
-                            <span style={{ fontSize: 8, fontWeight: 700, padding: '1px 6px', borderRadius: 20, background: 'rgba(124,58,237,.12)', color: '#7C3AED' }}>
+                            <span style={{ fontSize: 8, fontWeight: 700, padding: '1px 6px', borderRadius: 20, background: 'rgba(124,58,237,.12)', color: '#7A6A9E' }}>
                               {item.badge}
                             </span>
                           )}
@@ -154,12 +154,12 @@ export default function IntegracoesPage() {
                         loading ? (
                           <div style={{ height: 18, width: 80, background: 'var(--gray-100)', borderRadius: 20, animation: 'pulse 1.5s infinite' }} />
                         ) : ativo ? (
-                          <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 10px', borderRadius: 20, background: 'rgba(45,155,111,.1)', color: 'var(--green)', display: 'flex', alignItems: 'center', gap: 4 }}><i className="fa-solid fa-circle-check" style={{ fontSize: 9 }} /> Ativo</span>
+                          <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 10px', borderRadius: 20, background: 'rgba(61,122,110,.1)', color: 'var(--green)', display: 'flex', alignItems: 'center', gap: 4 }}><i className="fa-solid fa-circle-check" style={{ fontSize: 9 }} /> Ativo</span>
                         ) : (
                           <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 10px', borderRadius: 20, background: 'var(--gray-100)', color: 'var(--gray-400)' }}>Não configurado</span>
                         )
                       ) : (
-                        <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 10px', borderRadius: 20, background: 'rgba(184,146,42,.1)', color: 'var(--gold)' }}>Em breve</span>
+                        <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 10px', borderRadius: 20, background: 'rgba(176,138,62,.1)', color: 'var(--gold)' }}>Em breve</span>
                       )}
                       {!ativo && (
                         <button onClick={() => acaoConectar(item.id)} style={{
@@ -181,7 +181,7 @@ export default function IntegracoesPage() {
 
       {/* Instrução */}
       {!loading && ativas < total && (
-        <div style={{ background: 'rgba(16,185,129,.04)', border: '1px solid rgba(16,185,129,.15)', borderRadius: 10, padding: '12px 16px', fontSize: 12, color: 'var(--gray-400)', lineHeight: 1.7 }}>
+        <div style={{ background: 'rgba(61,122,110,.04)', border: '1px solid rgba(61,122,110,.15)', borderRadius: 10, padding: '12px 16px', fontSize: 12, color: 'var(--gray-400)', lineHeight: 1.7 }}>
           <strong style={{ color: 'var(--navy)' }}>Como ativar integrações:</strong> Adicione as variáveis de ambiente no painel Vercel → Settings → Environment Variables. Após salvar, dispare um novo deploy para as mudanças entrarem em vigor.
         </div>
       )}
@@ -203,7 +203,7 @@ export default function IntegracoesPage() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4, flexWrap: 'wrap' }}>
                   <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy)' }}>{wh.nome}</span>
                   <span style={{ fontSize: 9, fontWeight: 700, padding: '1px 6px', borderRadius: 20, background: 'var(--gray-100)', color: 'var(--gray-500)' }}>{wh.modulo}</span>
-                  <span style={{ fontSize: 9, fontWeight: 700, padding: '1px 6px', borderRadius: 20, background: 'rgba(16,185,129,.1)', color: 'var(--teal)' }}>{wh.method}</span>
+                  <span style={{ fontSize: 9, fontWeight: 700, padding: '1px 6px', borderRadius: 20, background: 'rgba(61,122,110,.1)', color: 'var(--teal)' }}>{wh.method}</span>
                 </div>
                 <div style={{ fontSize: 11, color: 'var(--gray-400)', marginBottom: 8 }}>{wh.desc}</div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#f8fafc', borderRadius: 6, padding: '6px 10px' }}>

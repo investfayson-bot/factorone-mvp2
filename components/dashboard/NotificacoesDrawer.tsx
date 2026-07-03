@@ -15,8 +15,8 @@ type Notif = {
 }
 
 const TIPO_STYLE: Record<string, { color: string; bg: string; icon: string }> = {
-  info:    { color: 'var(--teal)',  bg: '#e0f2fe', icon: 'fa-circle-info' },
-  sucesso: { color: 'var(--green)', bg: '#dcfce7', icon: 'fa-circle-check' },
+  info:    { color: 'var(--teal)',  bg: '#E4EDEF', icon: 'fa-circle-info' },
+  sucesso: { color: 'var(--green)', bg: '#E9F0ED', icon: 'fa-circle-check' },
   aviso:   { color: 'var(--gold)',  bg: '#fef3c7', icon: 'fa-triangle-exclamation' },
   erro:    { color: 'var(--red)',   bg: '#fee2e2', icon: 'fa-circle-xmark' },
 }
@@ -118,7 +118,7 @@ export default function NotificacoesDrawer({ empresaId, open, onClose, onRead }:
                 onClick={() => { if (!n.lida) void marcarLida(n.id) }}
                 style={{
                   padding: '14px 20px', borderBottom: '1px solid #f1f5f9', cursor: n.lida ? 'default' : 'pointer',
-                  background: n.lida ? '#fff' : 'rgba(16,185,129,.03)',
+                  background: n.lida ? '#fff' : 'rgba(61,122,110,.03)',
                   display: 'flex', gap: 12, alignItems: 'flex-start',
                 }}
               >

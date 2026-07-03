@@ -114,7 +114,7 @@ export default function Conciliacao() {
             <button
               key={e.id}
               onClick={() => setSelectedExtrato(e)}
-              style={{ width: '100%', borderRadius: 8, border: selectedExtrato?.id === e.id ? '1.5px solid var(--teal)' : '1px solid var(--gray-100)', background: selectedExtrato?.id === e.id ? 'rgba(16,185,129,.07)' : '#fff', padding: '8px 10px', textAlign: 'left', cursor: 'pointer' }}
+              style={{ width: '100%', borderRadius: 8, border: selectedExtrato?.id === e.id ? '1.5px solid var(--teal)' : '1px solid var(--gray-100)', background: selectedExtrato?.id === e.id ? 'rgba(61,122,110,.07)' : '#fff', padding: '8px 10px', textAlign: 'left', cursor: 'pointer' }}
             >
               <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>{new Date(e.data_transacao).toLocaleDateString('pt-BR')} · {e.descricao}</div>
               <div style={{ fontSize: 12, fontWeight: 600, color: e.tipo === 'credito' ? 'var(--green)' : 'var(--red)' }}>{formatBRL(Number(e.valor || 0))}</div>
@@ -135,7 +135,7 @@ export default function Conciliacao() {
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
           {(selectedExtrato ? destaque : pendentes).map((p) => (
-            <div key={p.id} style={{ borderRadius: 8, border: selectedExtrato ? '1px solid var(--gold)' : '1px solid var(--gray-100)', background: selectedExtrato ? 'rgba(184,146,42,.06)' : '#fff', padding: '8px 10px' }}>
+            <div key={p.id} style={{ borderRadius: 8, border: selectedExtrato ? '1px solid var(--gold)' : '1px solid var(--gray-100)', background: selectedExtrato ? 'rgba(176,138,62,.06)' : '#fff', padding: '8px 10px' }}>
               <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>{p.nome} · {p.data}</div>
               <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--navy)' }}>{formatBRL(p.valor)} <span style={{ color: 'var(--gray-400)', fontWeight: 400 }}>({p.tipo})</span></div>
             </div>

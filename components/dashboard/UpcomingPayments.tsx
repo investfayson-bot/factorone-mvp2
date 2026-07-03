@@ -25,9 +25,9 @@ function diasRestantes(due: string) {
 }
 
 function badgeStyle(dias: number): React.CSSProperties {
-  if (dias <= 1) return { background: 'rgba(192,80,74,.12)', color: 'var(--fo-red)' }
-  if (dias <= 5) return { background: 'rgba(184,146,42,.12)', color: 'var(--fo-gold)' }
-  return { background: 'rgba(45,155,111,.12)', color: 'var(--fo-green)' }
+  if (dias <= 1) return { background: 'rgba(176,65,62,.12)', color: 'var(--fo-red)' }
+  if (dias <= 5) return { background: 'rgba(176,138,62,.12)', color: 'var(--fo-gold)' }
+  return { background: 'rgba(61,122,110,.12)', color: 'var(--fo-green)' }
 }
 
 export default function UpcomingPayments({ empresaId }: Props) {
@@ -88,7 +88,7 @@ export default function UpcomingPayments({ empresaId }: Props) {
 
   if (error) {
     return (
-      <div style={{ background: 'rgba(192,80,74,.06)', border: '1px solid rgba(192,80,74,.2)', borderRadius: 12, padding: 20, fontSize: 12, color: 'var(--fo-red)' }}>
+      <div style={{ background: 'rgba(176,65,62,.06)', border: '1px solid rgba(176,65,62,.2)', borderRadius: 12, padding: 20, fontSize: 12, color: 'var(--fo-red)' }}>
         <p style={{ fontWeight: 700 }}>Vencimentos</p>
         <p style={{ marginTop: 4 }}>{error}</p>
       </div>

@@ -48,7 +48,7 @@ const PLANOS_PF = [
     preco: 'R$ 97',
     subPreco: 'por mês',
     badge: 'Completo',
-    badgeBg: '#EAF5F3', badgeColor: '#0F6E56',
+    badgeBg: '#E9F0ED', badgeColor: '#2B564D',
     priceId: process.env.NEXT_PUBLIC_STRIPE_PRICE_PREMIUM_PF ?? 'price_premium_pf',
     destaque: true,
     features: [
@@ -112,33 +112,33 @@ export default function PlanosPFPage() {
           return (
             <div key={p.key} style={{
               background: '#fff',
-              border: p.destaque ? '2px solid #10B981' : '0.5px solid #E2E8E7',
+              border: p.destaque ? '2px solid #3D7A6E' : '0.5px solid #E4DCCC',
               borderRadius: 14, padding: '18px 16px',
               display: 'flex', flexDirection: 'column', position: 'relative',
             }}>
               {p.destaque && (
-                <div style={{ position: 'absolute', top: -1, left: '50%', transform: 'translateX(-50%)', background: '#10B981', color: '#fff', fontSize: 9, fontWeight: 700, padding: '3px 12px', borderRadius: '0 0 8px 8px', letterSpacing: '0.06em', whiteSpace: 'nowrap' }}>
+                <div style={{ position: 'absolute', top: -1, left: '50%', transform: 'translateX(-50%)', background: '#3D7A6E', color: '#fff', fontSize: 9, fontWeight: 700, padding: '3px 12px', borderRadius: '0 0 8px 8px', letterSpacing: '0.06em', whiteSpace: 'nowrap' }}>
                   MAIS POPULAR
                 </div>
               )}
               <span style={{ fontSize: 10, fontWeight: 600, padding: '3px 10px', borderRadius: 20, display: 'inline-block', marginBottom: 10, background: p.badgeBg, color: p.badgeColor, width: 'fit-content' }}>
                 {p.badge}
               </span>
-              <div style={{ fontSize: 14, fontWeight: 700, color: '#1C2B2A', marginBottom: 4 }}>{p.nome}</div>
-              <div style={{ fontSize: 26, fontWeight: 700, color: '#1C2B2A', letterSpacing: '-0.03em', lineHeight: 1 }}>{p.preco}</div>
-              <div style={{ fontSize: 11, color: '#7A8F8E', marginBottom: 14, marginTop: 3 }}>{p.subPreco}</div>
-              <div style={{ height: '0.5px', background: '#E2E8E7', marginBottom: 12 }} />
+              <div style={{ fontSize: 14, fontWeight: 700, color: '#13201D', marginBottom: 4 }}>{p.nome}</div>
+              <div style={{ fontSize: 26, fontWeight: 700, color: '#13201D', letterSpacing: '-0.03em', lineHeight: 1 }}>{p.preco}</div>
+              <div style={{ fontSize: 11, color: '#7B8C88', marginBottom: 14, marginTop: 3 }}>{p.subPreco}</div>
+              <div style={{ height: '0.5px', background: '#E4DCCC', marginBottom: 12 }} />
               <div style={{ flex: 1 }}>
                 {p.features.map(f => (
-                  <div key={f} style={{ display: 'flex', alignItems: 'flex-start', gap: 7, padding: '3px 0', fontSize: 11, color: '#3A5150', lineHeight: 1.4 }}>
-                    <i className="fa-solid fa-check" style={{ fontSize: 11, color: '#10B981', flexShrink: 0, marginTop: 2 }} />{f}
+                  <div key={f} style={{ display: 'flex', alignItems: 'flex-start', gap: 7, padding: '3px 0', fontSize: 11, color: '#3C4A46', lineHeight: 1.4 }}>
+                    <i className="fa-solid fa-check" style={{ fontSize: 11, color: '#3D7A6E', flexShrink: 0, marginTop: 2 }} />{f}
                   </div>
                 ))}
                 {p.nao.length > 0 && (
                   <>
-                    <div style={{ height: '0.5px', background: '#E2E8E7', margin: '10px 0 8px' }} />
+                    <div style={{ height: '0.5px', background: '#E4DCCC', margin: '10px 0 8px' }} />
                     {p.nao.map(f => (
-                      <div key={f} style={{ display: 'flex', alignItems: 'flex-start', gap: 7, padding: '3px 0', fontSize: 11, color: '#AAB8B7', lineHeight: 1.4 }}>
+                      <div key={f} style={{ display: 'flex', alignItems: 'flex-start', gap: 7, padding: '3px 0', fontSize: 11, color: '#A6B0AC', lineHeight: 1.4 }}>
                         <i className="fa-solid fa-lock" style={{ fontSize: 11, flexShrink: 0, marginTop: 2 }} />{f}
                       </div>
                     ))}
@@ -151,8 +151,8 @@ export default function PlanosPFPage() {
                 style={{
                   marginTop: 16, width: '100%', padding: '10px', borderRadius: 9,
                   fontSize: 12, fontWeight: 700, cursor: ativo ? 'default' : 'pointer', border: 'none',
-                  background: ativo ? '#EAF5F3' : p.destaque ? '#1C2B2A' : '#F4F6F5',
-                  color: ativo ? '#0F6E56' : p.destaque ? '#fff' : '#1C2B2A',
+                  background: ativo ? '#E9F0ED' : p.destaque ? '#13201D' : '#F7F4EE',
+                  color: ativo ? '#2B564D' : p.destaque ? '#fff' : '#13201D',
                   transition: 'all 0.15s',
                 }}
               >
@@ -164,11 +164,11 @@ export default function PlanosPFPage() {
       </div>
 
       {/* Banner upgrade para PJ */}
-      <div style={{ background: '#1C2B2A', borderRadius: 14, padding: '20px 24px', marginBottom: 20 }}>
+      <div style={{ background: '#13201D', borderRadius: 14, padding: '20px 24px', marginBottom: 20 }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 20 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-            <div style={{ width: 52, height: 52, borderRadius: 12, background: 'rgba(16,185,129,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-              <i className="fa-solid fa-building" style={{ fontSize: 22, color: '#6EE7B7' }} />
+            <div style={{ width: 52, height: 52, borderRadius: 12, background: 'rgba(61,122,110,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <i className="fa-solid fa-building" style={{ fontSize: 22, color: '#6FA595' }} />
             </div>
             <div>
               <div style={{ fontSize: 14, fontWeight: 700, color: '#fff', marginBottom: 5 }}>
@@ -179,7 +179,7 @@ export default function PlanosPFPage() {
               </div>
               <div style={{ display: 'flex', gap: 8, marginTop: 10, flexWrap: 'wrap' }}>
                 {['NF-e e fiscal', 'Portal do contador', 'Conta PJ + cartão', 'Open Finance'].map(tag => (
-                  <span key={tag} style={{ fontSize: 10, padding: '3px 9px', borderRadius: 20, background: 'rgba(16,185,129,0.2)', color: '#6EE7B7', fontWeight: 600 }}>{tag}</span>
+                  <span key={tag} style={{ fontSize: 10, padding: '3px 9px', borderRadius: 20, background: 'rgba(61,122,110,0.2)', color: '#6FA595', fontWeight: 600 }}>{tag}</span>
                 ))}
               </div>
             </div>
@@ -187,7 +187,7 @@ export default function PlanosPFPage() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8, flexShrink: 0 }}>
             <button
               onClick={() => router.push('/dashboard/planos')}
-              style={{ background: '#10B981', color: '#fff', border: 'none', borderRadius: 9, padding: '10px 20px', fontSize: 12, fontWeight: 700, cursor: 'pointer', whiteSpace: 'nowrap' }}
+              style={{ background: '#3D7A6E', color: '#fff', border: 'none', borderRadius: 9, padding: '10px 20px', fontSize: 12, fontWeight: 700, cursor: 'pointer', whiteSpace: 'nowrap' }}
             >
               Ver planos PJ
             </button>
@@ -202,17 +202,17 @@ export default function PlanosPFPage() {
       </div>
 
       {/* FAQ */}
-      <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 14, padding: '18px 20px' }}>
-        <div style={{ fontSize: 13, fontWeight: 700, color: '#1C2B2A', marginBottom: 14 }}>Perguntas frequentes</div>
+      <div style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 14, padding: '18px 20px' }}>
+        <div style={{ fontSize: 13, fontWeight: 700, color: '#13201D', marginBottom: 14 }}>Perguntas frequentes</div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           {[
             { q: 'Posso cancelar a qualquer momento?', r: 'Sim. Sem fidelidade ou multa. Cancele quando quiser pelo painel.' },
             { q: 'Os 30 dias grátis precisam de cartão?', r: 'Não. Você testa sem informar cartão. O plano pago começa só se você decidir continuar.' },
             { q: 'Como migro para PJ depois?', r: 'Basta clicar em "Ver planos PJ" acima. Seus dados são preservados na migração.' },
           ].map(item => (
-            <div key={item.q} style={{ borderBottom: '0.5px solid #F0F4F3', paddingBottom: 12 }}>
-              <div style={{ fontSize: 12, fontWeight: 600, color: '#1C2B2A', marginBottom: 4 }}>{item.q}</div>
-              <div style={{ fontSize: 11, color: '#7A8F8E', lineHeight: 1.5 }}>{item.r}</div>
+            <div key={item.q} style={{ borderBottom: '0.5px solid #EFE9DC', paddingBottom: 12 }}>
+              <div style={{ fontSize: 12, fontWeight: 600, color: '#13201D', marginBottom: 4 }}>{item.q}</div>
+              <div style={{ fontSize: 11, color: '#7B8C88', lineHeight: 1.5 }}>{item.r}</div>
             </div>
           ))}
         </div>

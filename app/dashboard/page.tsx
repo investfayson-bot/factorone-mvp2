@@ -282,7 +282,7 @@ export default function DashboardPage() {
         </div>
         <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
           {/* Filtro de período */}
-          <div style={{ display: 'flex', background: '#E8EDEC', padding: 3, borderRadius: 8, gap: 2 }}>
+          <div style={{ display: 'flex', background: '#F1ECE1', padding: 3, borderRadius: 8, gap: 2 }}>
             {([
               { key: 'mes', label: 'Mês' },
               { key: 'trimestre', label: 'Trimestre' },
@@ -292,7 +292,7 @@ export default function DashboardPage() {
                 fontSize: 11, fontWeight: periodo === p.key ? 700 : 500,
                 padding: '5px 12px', borderRadius: 6, border: 'none', cursor: 'pointer',
                 background: periodo === p.key ? '#fff' : 'transparent',
-                color: periodo === p.key ? '#1C2B2A' : '#7A8F8E',
+                color: periodo === p.key ? '#13201D' : '#7B8C88',
                 transition: 'all 0.15s',
               }}>{p.label}</button>
             ))}
@@ -302,25 +302,25 @@ export default function DashboardPage() {
           <div style={{ position: 'relative' }}>
             <button
               onClick={() => setShowExportMenu(m => !m)}
-              style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 14px', borderRadius: 8, border: '0.5px solid #E2E8E7', background: '#fff', color: '#3A5150', fontSize: 11, fontWeight: 600, cursor: 'pointer' }}
+              style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 14px', borderRadius: 8, border: '0.5px solid #E4DCCC', background: '#fff', color: '#3C4A46', fontSize: 11, fontWeight: 600, cursor: 'pointer' }}
             >
               <i className="fa-solid fa-file-export" style={{ fontSize: 11 }} />Exportar
-              <i className="fa-solid fa-chevron-down" style={{ fontSize: 8, color: '#AAB8B7' }} />
+              <i className="fa-solid fa-chevron-down" style={{ fontSize: 8, color: '#A6B0AC' }} />
             </button>
             {showExportMenu && (
-              <div style={{ position: 'absolute', top: 38, right: 0, background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 10, boxShadow: '0 8px 24px rgba(0,0,0,0.1)', zIndex: 100, minWidth: 180, overflow: 'hidden' }}>
+              <div style={{ position: 'absolute', top: 38, right: 0, background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 10, boxShadow: '0 8px 24px rgba(0,0,0,0.1)', zIndex: 100, minWidth: 180, overflow: 'hidden' }}>
                 {[
-                  { label: 'DRE em PDF', icon: 'fa-file-pdf', color: '#E74C3C', url: '/api/dre/exportar-pdf', method: 'POST' },
-                  { label: 'Financeiro PDF', icon: 'fa-file-pdf', color: '#E74C3C', url: '/api/financeiro/exportar-pdf', method: 'GET' },
-                  { label: 'Patrimônio PDF', icon: 'fa-file-pdf', color: '#E74C3C', url: '/api/patrimonio/relatorio', method: 'GET' },
+                  { label: 'DRE em PDF', icon: 'fa-file-pdf', color: '#B0413E', url: '/api/dre/exportar-pdf', method: 'POST' },
+                  { label: 'Financeiro PDF', icon: 'fa-file-pdf', color: '#B0413E', url: '/api/financeiro/exportar-pdf', method: 'GET' },
+                  { label: 'Patrimônio PDF', icon: 'fa-file-pdf', color: '#B0413E', url: '/api/patrimonio/relatorio', method: 'GET' },
                 ].map(item => (
                   <button key={item.label} onClick={async () => {
                     setShowExportMenu(false)
                     const { baixarArquivo } = await import('@/lib/download-arquivo')
                     const r = await baixarArquivo(item.url, `${item.label.toLowerCase().replace(/ /g, '_')}.pdf`)
                     if ('erro' in r) { const { default: toast } = await import('react-hot-toast'); toast.error(r.erro) }
-                  }} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '9px 14px', width: '100%', border: 'none', background: 'transparent', cursor: 'pointer', fontSize: 12, color: '#1C2B2A', textAlign: 'left', borderBottom: '0.5px solid #F0F4F3' }}
-                    onMouseOver={e => (e.currentTarget.style.background = '#F8FAFA')}
+                  }} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '9px 14px', width: '100%', border: 'none', background: 'transparent', cursor: 'pointer', fontSize: 12, color: '#13201D', textAlign: 'left', borderBottom: '0.5px solid #EFE9DC' }}
+                    onMouseOver={e => (e.currentTarget.style.background = '#FBF8F1')}
                     onMouseOut={e => (e.currentTarget.style.background = 'transparent')}
                   >
                     <i className={`fa-solid ${item.icon}`} style={{ color: item.color, fontSize: 12, width: 14 }} />
@@ -333,7 +333,7 @@ export default function DashboardPage() {
 
           {/* Link AI */}
           <Link href="/dashboard/aicfo" style={{ textDecoration: 'none' }}>
-            <button style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 14px', borderRadius: 8, border: 'none', background: '#1C2B2A', color: '#6EE7B7', fontSize: 11, fontWeight: 700, cursor: 'pointer' }}>
+            <button style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 14px', borderRadius: 8, border: 'none', background: '#13201D', color: '#6FA595', fontSize: 11, fontWeight: 700, cursor: 'pointer' }}>
               <i className="fa-solid fa-robot" style={{ fontSize: 11 }} />FactorOne AI
             </button>
           </Link>
@@ -351,11 +351,11 @@ export default function DashboardPage() {
       {/* KPIs */}
       <div className="kpis">
         {/* Receita */}
-        <div className="kpi" style={{ borderTop: '3px solid #10B981' }}>
+        <div className="kpi" style={{ borderTop: '3px solid #3D7A6E' }}>
           <div className="kpi-lbl">
             Receita Mensal
-            <div style={{ width: 28, height: 28, borderRadius: 8, background: '#EAF5F3', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <i className="fa-solid fa-arrow-trend-up" style={{ fontSize: 12, color: '#10B981' }} />
+            <div style={{ width: 28, height: 28, borderRadius: 8, background: '#E9F0ED', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <i className="fa-solid fa-arrow-trend-up" style={{ fontSize: 12, color: '#3D7A6E' }} />
             </div>
           </div>
           <div className="kpi-val">{fmtBRLCompact(kpiAtual.receita)}</div>
@@ -364,11 +364,11 @@ export default function DashboardPage() {
           </div>
         </div>
         {/* Lucro */}
-        <div className="kpi" style={{ borderTop: `3px solid ${dreMes.liquido >= 0 ? '#10B981' : '#E74C3C'}` }}>
+        <div className="kpi" style={{ borderTop: `3px solid ${dreMes.liquido >= 0 ? '#3D7A6E' : '#B0413E'}` }}>
           <div className="kpi-lbl">
             Lucro Líquido
-            <div style={{ width: 28, height: 28, borderRadius: 8, background: dreMes.liquido >= 0 ? '#EAF5F3' : '#FEE2E2', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <i className="fa-solid fa-chart-line" style={{ fontSize: 12, color: dreMes.liquido >= 0 ? '#10B981' : '#E74C3C' }} />
+            <div style={{ width: 28, height: 28, borderRadius: 8, background: dreMes.liquido >= 0 ? '#E9F0ED' : '#F4E4E1', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <i className="fa-solid fa-chart-line" style={{ fontSize: 12, color: dreMes.liquido >= 0 ? '#3D7A6E' : '#B0413E' }} />
             </div>
           </div>
           <div className="kpi-val">{fmtBRLCompact(dreMes.liquido)}</div>
@@ -378,22 +378,22 @@ export default function DashboardPage() {
           </div>
         </div>
         {/* Fluxo */}
-        <div className="kpi" style={{ borderTop: `3px solid ${fluxo30 >= 0 ? '#10B981' : '#D97706'}` }}>
+        <div className="kpi" style={{ borderTop: `3px solid ${fluxo30 >= 0 ? '#3D7A6E' : '#B08A3E'}` }}>
           <div className="kpi-lbl">
             Fluxo 30 dias
-            <div style={{ width: 28, height: 28, borderRadius: 8, background: fluxo30 >= 0 ? '#EAF5F3' : '#FEF3C7', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <i className="fa-solid fa-water" style={{ fontSize: 12, color: fluxo30 >= 0 ? '#10B981' : '#D97706' }} />
+            <div style={{ width: 28, height: 28, borderRadius: 8, background: fluxo30 >= 0 ? '#E9F0ED' : '#F3ECDA', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <i className="fa-solid fa-water" style={{ fontSize: 12, color: fluxo30 >= 0 ? '#3D7A6E' : '#B08A3E' }} />
             </div>
           </div>
           <div className="kpi-val">{fmtBRLCompact(fluxo30)}</div>
           <div className={`kpi-delta ${fluxo30 >= 0 ? 'up' : 'warn'}`}>{fluxo30 >= 0 ? '↑ caixa positivo' : '↓ atenção ao caixa'}</div>
         </div>
         {/* Runway */}
-        <div className="kpi" style={{ borderTop: `3px solid ${runway == null ? '#E2E8E7' : runway < 90 ? '#D97706' : '#10B981'}` }}>
+        <div className="kpi" style={{ borderTop: `3px solid ${runway == null ? '#E4DCCC' : runway < 90 ? '#B08A3E' : '#3D7A6E'}` }}>
           <div className="kpi-lbl">
             Runway
-            <div style={{ width: 28, height: 28, borderRadius: 8, background: runway != null && runway < 90 ? '#FEF3C7' : '#EAF5F3', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <i className="fa-solid fa-gauge-high" style={{ fontSize: 12, color: runway != null && runway < 90 ? '#D97706' : '#10B981' }} />
+            <div style={{ width: 28, height: 28, borderRadius: 8, background: runway != null && runway < 90 ? '#F3ECDA' : '#E9F0ED', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <i className="fa-solid fa-gauge-high" style={{ fontSize: 12, color: runway != null && runway < 90 ? '#B08A3E' : '#3D7A6E' }} />
             </div>
           </div>
           <div className="kpi-val">{runway != null ? `${runway > 30 ? Math.round(runway / 30) + ' meses' : runway + ' dias'}` : '—'}</div>
@@ -408,7 +408,7 @@ export default function DashboardPage() {
         <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: 16 }}>
           {pendencias.aprovacoes > 0 && (
             <Link href="/dashboard/aprovacoes" style={{ textDecoration: 'none', flex: 1, minWidth: 180 }}>
-              <div style={{ background: 'rgba(184,146,42,.06)', border: '1px solid rgba(184,146,42,.25)', borderRadius: 12, padding: '12px 16px', cursor: 'pointer' }}>
+              <div style={{ background: 'rgba(176,138,62,.06)', border: '1px solid rgba(176,138,62,.25)', borderRadius: 12, padding: '12px 16px', cursor: 'pointer' }}>
                 <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--gold)', letterSpacing: '.08em', textTransform: 'uppercase', marginBottom: 4 }}>Aprovações pendentes</div>
                 <div style={{ fontSize: 22, fontWeight: 800, color: 'var(--navy)' }}>{pendencias.aprovacoes}</div>
                 <div style={{ fontSize: 11, color: 'var(--gray-400)', marginTop: 2 }}>despesas aguardando → aprovar</div>
@@ -417,7 +417,7 @@ export default function DashboardPage() {
           )}
           {pendencias.reembolsos > 0 && (
             <Link href="/dashboard/reembolsos" style={{ textDecoration: 'none', flex: 1, minWidth: 180 }}>
-              <div style={{ background: 'rgba(16,185,129,.06)', border: '1px solid rgba(16,185,129,.25)', borderRadius: 12, padding: '12px 16px', cursor: 'pointer' }}>
+              <div style={{ background: 'rgba(61,122,110,.06)', border: '1px solid rgba(61,122,110,.25)', borderRadius: 12, padding: '12px 16px', cursor: 'pointer' }}>
                 <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--teal2)', letterSpacing: '.08em', textTransform: 'uppercase', marginBottom: 4 }}>Reembolsos pendentes</div>
                 <div style={{ fontSize: 22, fontWeight: 800, color: 'var(--navy)' }}>{pendencias.reembolsos}</div>
                 <div style={{ fontSize: 11, color: 'var(--gray-400)', marginTop: 2 }}>{fmtBRLCompact(pendencias.valorReembolsos)} a aprovar</div>
@@ -426,7 +426,7 @@ export default function DashboardPage() {
           )}
           {pendencias.dasDias !== null && pendencias.dasDias <= 10 && (
             <Link href="/contabilidade" style={{ textDecoration: 'none', flex: 1, minWidth: 180 }}>
-              <div style={{ background: pendencias.dasDias <= 3 ? 'rgba(192,80,74,.06)' : 'rgba(184,146,42,.06)', border: `1px solid ${pendencias.dasDias <= 3 ? 'rgba(192,80,74,.25)' : 'rgba(184,146,42,.25)'}`, borderRadius: 12, padding: '12px 16px', cursor: 'pointer' }}>
+              <div style={{ background: pendencias.dasDias <= 3 ? 'rgba(176,65,62,.06)' : 'rgba(176,138,62,.06)', border: `1px solid ${pendencias.dasDias <= 3 ? 'rgba(176,65,62,.25)' : 'rgba(176,138,62,.25)'}`, borderRadius: 12, padding: '12px 16px', cursor: 'pointer' }}>
                 <div style={{ fontSize: 10, fontWeight: 700, color: pendencias.dasDias <= 3 ? 'var(--red)' : 'var(--gold)', letterSpacing: '.08em', textTransform: 'uppercase', marginBottom: 4 }}>DAS vence em {pendencias.dasDias}d</div>
                 <div style={{ fontSize: 22, fontWeight: 800, color: 'var(--navy)' }}>{pendencias.dasValor ? fmtBRLCompact(pendencias.dasValor) : '—'}</div>
                 <div style={{ fontSize: 11, color: 'var(--gray-400)', marginTop: 2 }}>Simples Nacional · ver detalhes</div>
@@ -435,7 +435,7 @@ export default function DashboardPage() {
           )}
           {pendencias.saldoBanco > 0 && (
             <Link href="/dashboard/cashflow" style={{ textDecoration: 'none', flex: 1, minWidth: 180 }}>
-              <div style={{ background: 'rgba(45,155,111,.06)', border: '1px solid rgba(45,155,111,.2)', borderRadius: 12, padding: '12px 16px', cursor: 'pointer' }}>
+              <div style={{ background: 'rgba(61,122,110,.06)', border: '1px solid rgba(61,122,110,.2)', borderRadius: 12, padding: '12px 16px', cursor: 'pointer' }}>
                 <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--green)', letterSpacing: '.08em', textTransform: 'uppercase', marginBottom: 4 }}>Saldo bancário</div>
                 <div style={{ fontSize: 22, fontWeight: 800, color: 'var(--navy)' }}>{fmtBRLCompact(pendencias.saldoBanco)}</div>
                 <div style={{ fontSize: 11, color: 'var(--gray-400)', marginTop: 2 }}>conta principal</div>
@@ -477,8 +477,8 @@ export default function DashboardPage() {
       {clientesWidget && clientesWidget.total > 0 && (
         <Link href="/dashboard/clientes" style={{ textDecoration: 'none', display: 'block', marginBottom: 12 }}>
           <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: '12px 18px', display: 'flex', alignItems: 'center', gap: 20, cursor: 'pointer' }}>
-            <div style={{ width: 38, height: 38, borderRadius: 10, background: '#eff6ff', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-              <i className="fa-solid fa-users" style={{ color: '#2563eb', fontSize: 15 }} />
+            <div style={{ width: 38, height: 38, borderRadius: 10, background: '#E4EDEF', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <i className="fa-solid fa-users" style={{ color: '#3D6E8E', fontSize: 15 }} />
             </div>
             <div style={{ flex: 1, display: 'flex', gap: 28, flexWrap: 'wrap', alignItems: 'center' }}>
               <div>
@@ -502,11 +502,11 @@ export default function DashboardPage() {
             <Link href="/dashboard/crm" style={{ textDecoration: 'none' }}>
               <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: '14px 16px', cursor: 'pointer', height: '100%' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
-                  <div style={{ width: 28, height: 28, borderRadius: 8, background: '#ede9fe', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <i className="fa-solid fa-handshake" style={{ color: '#7C3AED', fontSize: 12 }} />
+                  <div style={{ width: 28, height: 28, borderRadius: 8, background: '#ECE7F2', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <i className="fa-solid fa-handshake" style={{ color: '#7A6A9E', fontSize: 12 }} />
                   </div>
                   <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.07em' }}>CRM</div>
-                  <span style={{ fontSize: 9, fontWeight: 700, padding: '1px 5px', borderRadius: 10, background: '#ede9fe', color: '#7C3AED', marginLeft: 'auto' }}>PLUS</span>
+                  <span style={{ fontSize: 9, fontWeight: 700, padding: '1px 5px', borderRadius: 10, background: '#ECE7F2', color: '#7A6A9E', marginLeft: 'auto' }}>PLUS</span>
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
                   <div>
@@ -542,7 +542,7 @@ export default function DashboardPage() {
                   </div>
                   <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.07em' }}>Marketing</div>
                   {mktWidget.campanhasAtivas > 0 && (
-                    <span style={{ fontSize: 9, fontWeight: 700, padding: '1px 6px', borderRadius: 10, background: '#dcfce7', color: 'var(--green)', marginLeft: 'auto' }}>
+                    <span style={{ fontSize: 9, fontWeight: 700, padding: '1px 6px', borderRadius: 10, background: '#E9F0ED', color: 'var(--green)', marginLeft: 'auto' }}>
                       {mktWidget.campanhasAtivas} ativa{mktWidget.campanhasAtivas > 1 ? 's' : ''}
                     </span>
                   )}
@@ -576,12 +576,12 @@ export default function DashboardPage() {
             <Link href="/dashboard/logistica" style={{ textDecoration: 'none' }}>
               <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: '14px 16px', cursor: 'pointer', height: '100%' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
-                  <div style={{ width: 28, height: 28, borderRadius: 8, background: '#e0f2fe', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <div style={{ width: 28, height: 28, borderRadius: 8, background: '#E4EDEF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <i className="fa-solid fa-truck-fast" style={{ color: 'var(--teal)', fontSize: 12 }} />
                   </div>
                   <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.07em' }}>Logística</div>
                   {logWidget.rotasAtivas > 0 && (
-                    <span style={{ fontSize: 9, fontWeight: 700, padding: '1px 6px', borderRadius: 10, background: '#e0f2fe', color: 'var(--teal)', marginLeft: 'auto' }}>
+                    <span style={{ fontSize: 9, fontWeight: 700, padding: '1px 6px', borderRadius: 10, background: '#E4EDEF', color: 'var(--teal)', marginLeft: 'auto' }}>
                       {logWidget.rotasAtivas} em trânsito
                     </span>
                   )}
@@ -625,7 +625,7 @@ export default function DashboardPage() {
                   {score.total}
                 </div>
                 <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>/ 1000</div>
-                <div style={{ fontSize: 13, fontWeight: 700, padding: '2px 10px', borderRadius: 20, background: score.total >= 700 ? 'rgba(45,155,111,.12)' : score.total >= 500 ? 'rgba(184,146,42,.12)' : 'rgba(192,80,74,.12)', color: score.total >= 700 ? 'var(--green)' : score.total >= 500 ? 'var(--gold)' : 'var(--red)' }}>
+                <div style={{ fontSize: 13, fontWeight: 700, padding: '2px 10px', borderRadius: 20, background: score.total >= 700 ? 'rgba(61,122,110,.12)' : score.total >= 500 ? 'rgba(176,138,62,.12)' : 'rgba(176,65,62,.12)', color: score.total >= 700 ? 'var(--green)' : score.total >= 500 ? 'var(--gold)' : 'var(--red)' }}>
                   {score.grade}
                 </div>
                 {/* Mini bar */}
@@ -670,11 +670,11 @@ export default function DashboardPage() {
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
             <div>
               <div className="chart-title">Entradas vs Saídas</div>
-              <div style={{ fontSize: 10, color: '#7A8F8E', marginTop: 2 }}>Últimos 6 meses</div>
+              <div style={{ fontSize: 10, color: '#7B8C88', marginTop: 2 }}>Últimos 6 meses</div>
             </div>
             <div style={{ display: 'flex', gap: 12 }}>
-              <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 10, color: '#3A5150' }}><span style={{ width: 8, height: 8, borderRadius: 2, background: '#10B981', display: 'inline-block' }} />Entradas</span>
-              <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 10, color: '#3A5150' }}><span style={{ width: 8, height: 8, borderRadius: 2, background: '#E74C3C', display: 'inline-block' }} />Saídas</span>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 10, color: '#3C4A46' }}><span style={{ width: 8, height: 8, borderRadius: 2, background: '#3D7A6E', display: 'inline-block' }} />Entradas</span>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 10, color: '#3C4A46' }}><span style={{ width: 8, height: 8, borderRadius: 2, background: '#B0413E', display: 'inline-block' }} />Saídas</span>
             </div>
           </div>
           <DashboardErrorBoundary title="Gráfico">
@@ -685,9 +685,9 @@ export default function DashboardPage() {
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
             <div>
               <div className="chart-title">Receita vs Despesas</div>
-              <div style={{ fontSize: 10, color: '#7A8F8E', marginTop: 2 }}>Atual vs mês anterior</div>
+              <div style={{ fontSize: 10, color: '#7B8C88', marginTop: 2 }}>Atual vs mês anterior</div>
             </div>
-            <Link href="/dashboard/relatorios" style={{ fontSize: 10, color: '#10B981', textDecoration: 'none', fontWeight: 600 }}>DRE →</Link>
+            <Link href="/dashboard/relatorios" style={{ fontSize: 10, color: '#3D7A6E', textDecoration: 'none', fontWeight: 600 }}>DRE →</Link>
           </div>
           {(() => {
             const dreChartData = [
@@ -695,18 +695,18 @@ export default function DashboardPage() {
               { name: 'Despesas', atual: kpiAtual.despesas, anterior: kpiAnt.despesas },
               { name: 'Lucro', atual: dreMes.liquido, anterior: dreMes.liquidoAnt },
             ]
-            const colors = ['#10B981', '#E74C3C', dreMes.liquido >= 0 ? '#10B981' : '#E74C3C']
+            const colors = ['#3D7A6E', '#B0413E', dreMes.liquido >= 0 ? '#3D7A6E' : '#B0413E']
             return (
               <ResponsiveContainer width="100%" height={160}>
                 <BarChart data={dreChartData} barGap={4} barCategoryGap="30%" margin={{ top: 4, right: 4, bottom: 0, left: 0 }}>
-                  <XAxis dataKey="name" tick={{ fontSize: 10, fill: '#7A8F8E' }} axisLine={false} tickLine={false} />
-                  <YAxis tick={{ fontSize: 9, fill: '#AAB8B7' }} axisLine={false} tickLine={false} tickFormatter={v => fmtBRLCompact(v)} width={52} />
+                  <XAxis dataKey="name" tick={{ fontSize: 10, fill: '#7B8C88' }} axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fontSize: 9, fill: '#A6B0AC' }} axisLine={false} tickLine={false} tickFormatter={v => fmtBRLCompact(v)} width={52} />
                   <Tooltip
                     formatter={(v: number, name: string) => [fmtBRLCompact(v), name === 'atual' ? 'Mês atual' : 'Mês anterior']}
-                    contentStyle={{ fontSize: 11, borderRadius: 10, border: '0.5px solid #E2E8E7', background: '#fff', boxShadow: '0 4px 16px rgba(0,0,0,0.08)' }}
-                    labelStyle={{ fontWeight: 700, color: '#1C2B2A', fontSize: 11 }}
+                    contentStyle={{ fontSize: 11, borderRadius: 10, border: '0.5px solid #E4DCCC', background: '#fff', boxShadow: '0 4px 16px rgba(0,0,0,0.08)' }}
+                    labelStyle={{ fontWeight: 700, color: '#13201D', fontSize: 11 }}
                   />
-                  <Bar dataKey="anterior" fill="#EEF2F1" radius={[4, 4, 0, 0]} maxBarSize={18} />
+                  <Bar dataKey="anterior" fill="#F1ECE1" radius={[4, 4, 0, 0]} maxBarSize={18} />
                   <Bar dataKey="atual" radius={[4, 4, 0, 0]} maxBarSize={18}>
                     {dreChartData.map((_, i) => <Cell key={i} fill={colors[i]} />)}
                   </Bar>
@@ -715,8 +715,8 @@ export default function DashboardPage() {
             )
           })()}
           <div style={{ display: 'flex', gap: 16, marginTop: 10 }}>
-            <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 10, color: '#7A8F8E' }}><span style={{ width: 8, height: 8, borderRadius: 2, background: '#EEF2F1', border: '0.5px solid #E2E8E7', display: 'inline-block' }} />Mês anterior</span>
-            <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 10, color: '#7A8F8E' }}><span style={{ width: 8, height: 8, borderRadius: 2, background: '#10B981', display: 'inline-block' }} />Mês atual</span>
+            <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 10, color: '#7B8C88' }}><span style={{ width: 8, height: 8, borderRadius: 2, background: '#F1ECE1', border: '0.5px solid #E4DCCC', display: 'inline-block' }} />Mês anterior</span>
+            <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 10, color: '#7B8C88' }}><span style={{ width: 8, height: 8, borderRadius: 2, background: '#3D7A6E', display: 'inline-block' }} />Mês atual</span>
           </div>
         </div>
       </div>
@@ -727,38 +727,38 @@ export default function DashboardPage() {
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
             <div>
               <div className="chart-title">Tendência 12 meses</div>
-              <div style={{ fontSize: 10, color: '#7A8F8E', marginTop: 2 }}>Receita vs Despesas</div>
+              <div style={{ fontSize: 10, color: '#7B8C88', marginTop: 2 }}>Receita vs Despesas</div>
             </div>
             <div style={{ display: 'flex', gap: 12 }}>
-              <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 10, color: '#3A5150' }}><span style={{ width: 8, height: 8, borderRadius: 2, background: '#10B981', display: 'inline-block' }} />Receita</span>
-              <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 10, color: '#3A5150' }}><span style={{ width: 8, height: 8, borderRadius: 2, background: '#E74C3C', display: 'inline-block' }} />Despesas</span>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 10, color: '#3C4A46' }}><span style={{ width: 8, height: 8, borderRadius: 2, background: '#3D7A6E', display: 'inline-block' }} />Receita</span>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 10, color: '#3C4A46' }}><span style={{ width: 8, height: 8, borderRadius: 2, background: '#B0413E', display: 'inline-block' }} />Despesas</span>
             </div>
           </div>
           {trend12.every(d => d.receita === 0 && d.despesas === 0) ? (
-            <div style={{ height: 140, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#AAB8B7', fontSize: 12 }}>Sem dados no período.</div>
+            <div style={{ height: 140, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#A6B0AC', fontSize: 12 }}>Sem dados no período.</div>
           ) : (
             <ResponsiveContainer width="100%" height={140}>
               <AreaChart data={trend12} margin={{ top: 4, right: 4, bottom: 0, left: 0 }}>
                 <defs>
                   <linearGradient id="gradR12" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#10B981" stopOpacity={0.2} />
-                    <stop offset="95%" stopColor="#10B981" stopOpacity={0} />
+                    <stop offset="5%" stopColor="#3D7A6E" stopOpacity={0.2} />
+                    <stop offset="95%" stopColor="#3D7A6E" stopOpacity={0} />
                   </linearGradient>
                   <linearGradient id="gradD12" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#E74C3C" stopOpacity={0.15} />
-                    <stop offset="95%" stopColor="#E74C3C" stopOpacity={0} />
+                    <stop offset="5%" stopColor="#B0413E" stopOpacity={0.15} />
+                    <stop offset="95%" stopColor="#B0413E" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#F0F4F3" vertical={false} />
-                <XAxis dataKey="mes" tick={{ fontSize: 9, fill: '#7A8F8E' }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fontSize: 9, fill: '#AAB8B7' }} axisLine={false} tickLine={false} tickFormatter={v => fmtBRLCompact(v)} width={52} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#EFE9DC" vertical={false} />
+                <XAxis dataKey="mes" tick={{ fontSize: 9, fill: '#7B8C88' }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fontSize: 9, fill: '#A6B0AC' }} axisLine={false} tickLine={false} tickFormatter={v => fmtBRLCompact(v)} width={52} />
                 <Tooltip
                   formatter={(v: number, name: string) => [fmtBRLCompact(v), name === 'receita' ? 'Receita' : 'Despesas']}
-                  contentStyle={{ fontSize: 11, borderRadius: 10, border: '0.5px solid #E2E8E7', background: '#fff', boxShadow: '0 4px 16px rgba(0,0,0,0.08)' }}
-                  labelStyle={{ fontWeight: 700, color: '#1C2B2A', fontSize: 11 }}
+                  contentStyle={{ fontSize: 11, borderRadius: 10, border: '0.5px solid #E4DCCC', background: '#fff', boxShadow: '0 4px 16px rgba(0,0,0,0.08)' }}
+                  labelStyle={{ fontWeight: 700, color: '#13201D', fontSize: 11 }}
                 />
-                <Area type="monotone" dataKey="receita" stroke="#10B981" strokeWidth={2} fill="url(#gradR12)" dot={false} activeDot={{ r: 4, fill: '#10B981', stroke: '#fff', strokeWidth: 2 }} />
-                <Area type="monotone" dataKey="despesas" stroke="#E74C3C" strokeWidth={2} fill="url(#gradD12)" dot={false} activeDot={{ r: 4, fill: '#E74C3C', stroke: '#fff', strokeWidth: 2 }} />
+                <Area type="monotone" dataKey="receita" stroke="#3D7A6E" strokeWidth={2} fill="url(#gradR12)" dot={false} activeDot={{ r: 4, fill: '#3D7A6E', stroke: '#fff', strokeWidth: 2 }} />
+                <Area type="monotone" dataKey="despesas" stroke="#B0413E" strokeWidth={2} fill="url(#gradD12)" dot={false} activeDot={{ r: 4, fill: '#B0413E', stroke: '#fff', strokeWidth: 2 }} />
               </AreaChart>
             </ResponsiveContainer>
           )}
@@ -768,24 +768,24 @@ export default function DashboardPage() {
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
             <div>
               <div className="chart-title">Top categorias</div>
-              <div style={{ fontSize: 10, color: '#7A8F8E', marginTop: 2 }}>Despesas do mês</div>
+              <div style={{ fontSize: 10, color: '#7B8C88', marginTop: 2 }}>Despesas do mês</div>
             </div>
-            <Link href="/dashboard/despesas" style={{ fontSize: 10, color: '#10B981', textDecoration: 'none', fontWeight: 600 }}>Ver →</Link>
+            <Link href="/dashboard/despesas" style={{ fontSize: 10, color: '#3D7A6E', textDecoration: 'none', fontWeight: 600 }}>Ver →</Link>
           </div>
           {topCats.length === 0 ? (
-            <div style={{ height: 140, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#AAB8B7', fontSize: 12 }}>Sem despesas categorizadas.</div>
+            <div style={{ height: 140, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#A6B0AC', fontSize: 12 }}>Sem despesas categorizadas.</div>
           ) : (
             <ResponsiveContainer width="100%" height={140}>
               <BarChart data={topCats} layout="vertical" margin={{ top: 0, right: 8, bottom: 0, left: 0 }}>
-                <XAxis type="number" tick={{ fontSize: 9, fill: '#AAB8B7' }} axisLine={false} tickLine={false} tickFormatter={v => fmtBRLCompact(v)} />
-                <YAxis type="category" dataKey="cat" tick={{ fontSize: 9, fill: '#7A8F8E' }} axisLine={false} tickLine={false} width={72} />
+                <XAxis type="number" tick={{ fontSize: 9, fill: '#A6B0AC' }} axisLine={false} tickLine={false} tickFormatter={v => fmtBRLCompact(v)} />
+                <YAxis type="category" dataKey="cat" tick={{ fontSize: 9, fill: '#7B8C88' }} axisLine={false} tickLine={false} width={72} />
                 <Tooltip
                   formatter={(v: number) => [fmtBRLCompact(v), 'Despesa']}
-                  contentStyle={{ fontSize: 11, borderRadius: 10, border: '0.5px solid #E2E8E7', background: '#fff', boxShadow: '0 4px 16px rgba(0,0,0,0.08)' }}
+                  contentStyle={{ fontSize: 11, borderRadius: 10, border: '0.5px solid #E4DCCC', background: '#fff', boxShadow: '0 4px 16px rgba(0,0,0,0.08)' }}
                 />
                 <Bar dataKey="val" radius={[0, 4, 4, 0]} maxBarSize={16}>
                   {topCats.map((_, i) => (
-                    <Cell key={i} fill={['#10B981', '#D97706', '#7C3AED', '#2563eb', '#E74C3C'][i % 5]} fillOpacity={0.85} />
+                    <Cell key={i} fill={['#3D7A6E', '#B08A3E', '#7A6A9E', '#3D6E8E', '#B0413E'][i % 5]} fillOpacity={0.85} />
                   ))}
                 </Bar>
               </BarChart>
@@ -799,31 +799,31 @@ export default function DashboardPage() {
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12, flexWrap: 'wrap', gap: 8 }}>
           <div>
             <div className="chart-title">Resultado consolidado — 12 meses</div>
-            <div style={{ fontSize: 10, color: '#7A8F8E', marginTop: 2 }}>Receita e despesas (barras) + lucro líquido (linha)</div>
+            <div style={{ fontSize: 10, color: '#7B8C88', marginTop: 2 }}>Receita e despesas (barras) + lucro líquido (linha)</div>
           </div>
-          <Link href="/dashboard/relatorios" style={{ fontSize: 10, color: '#10B981', textDecoration: 'none', fontWeight: 600 }}>Ver DRE completo →</Link>
+          <Link href="/dashboard/relatorios" style={{ fontSize: 10, color: '#3D7A6E', textDecoration: 'none', fontWeight: 600 }}>Ver DRE completo →</Link>
         </div>
         {(() => {
           const dataComp = trend12.map(d => ({ ...d, lucro: Number(d.receita) - Number(d.despesas) }))
           if (dataComp.every(d => d.receita === 0 && d.despesas === 0)) {
-            return <div style={{ height: 240, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#AAB8B7', fontSize: 12 }}>Sem dados no período.</div>
+            return <div style={{ height: 240, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#A6B0AC', fontSize: 12 }}>Sem dados no período.</div>
           }
           return (
             <ResponsiveContainer width="100%" height={260}>
               <ComposedChart data={dataComp} margin={{ top: 8, right: 8, bottom: 0, left: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#F0F4F3" vertical={false} />
-                <XAxis dataKey="mes" tick={{ fontSize: 10, fill: '#7A8F8E' }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fontSize: 9, fill: '#AAB8B7' }} axisLine={false} tickLine={false} tickFormatter={v => fmtBRLCompact(v)} width={54} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#EFE9DC" vertical={false} />
+                <XAxis dataKey="mes" tick={{ fontSize: 10, fill: '#7B8C88' }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fontSize: 9, fill: '#A6B0AC' }} axisLine={false} tickLine={false} tickFormatter={v => fmtBRLCompact(v)} width={54} />
                 <Tooltip
                   formatter={(v: number, name: string) => [fmtBRLCompact(v), name === 'receita' ? 'Receita' : name === 'despesas' ? 'Despesas' : 'Lucro']}
-                  contentStyle={{ fontSize: 11, borderRadius: 10, border: '0.5px solid #E2E8E7', background: '#fff', boxShadow: '0 4px 16px rgba(0,0,0,0.08)' }}
-                  labelStyle={{ fontWeight: 700, color: '#1C2B2A', fontSize: 11 }}
-                  cursor={{ fill: 'rgba(16,185,129,0.05)' }}
+                  contentStyle={{ fontSize: 11, borderRadius: 10, border: '0.5px solid #E4DCCC', background: '#fff', boxShadow: '0 4px 16px rgba(0,0,0,0.08)' }}
+                  labelStyle={{ fontWeight: 700, color: '#13201D', fontSize: 11 }}
+                  cursor={{ fill: 'rgba(61,122,110,0.05)' }}
                 />
-                <Legend wrapperStyle={{ fontSize: 10 }} iconType="circle" iconSize={8} formatter={(value) => <span style={{ color: '#3A5150' }}>{value === 'receita' ? 'Receita' : value === 'despesas' ? 'Despesas' : 'Lucro'}</span>} />
-                <Bar dataKey="receita" fill="#10B981" radius={[3, 3, 0, 0]} maxBarSize={18} />
-                <Bar dataKey="despesas" fill="#E74C3C" radius={[3, 3, 0, 0]} maxBarSize={18} fillOpacity={0.85} />
-                <Line type="monotone" dataKey="lucro" stroke="#1C2B2A" strokeWidth={2.5} dot={{ r: 3, fill: '#1C2B2A' }} activeDot={{ r: 5, fill: '#D97706', stroke: '#fff', strokeWidth: 2 }} />
+                <Legend wrapperStyle={{ fontSize: 10 }} iconType="circle" iconSize={8} formatter={(value) => <span style={{ color: '#3C4A46' }}>{value === 'receita' ? 'Receita' : value === 'despesas' ? 'Despesas' : 'Lucro'}</span>} />
+                <Bar dataKey="receita" fill="#3D7A6E" radius={[3, 3, 0, 0]} maxBarSize={18} />
+                <Bar dataKey="despesas" fill="#B0413E" radius={[3, 3, 0, 0]} maxBarSize={18} fillOpacity={0.85} />
+                <Line type="monotone" dataKey="lucro" stroke="#13201D" strokeWidth={2.5} dot={{ r: 3, fill: '#13201D' }} activeDot={{ r: 5, fill: '#B08A3E', stroke: '#fff', strokeWidth: 2 }} />
               </ComposedChart>
             </ResponsiveContainer>
           )
@@ -860,23 +860,23 @@ export default function DashboardPage() {
 
       {/* Atalhos rápidos + AI insight */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 14 }}>
-        <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 12, padding: '14px 16px' }}>
+        <div style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 12, padding: '14px 16px' }}>
           <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--navy)', marginBottom: 12, fontFamily: "'Inter', sans-serif" }}>Atalhos rápidos</div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
             {[
-              { href: '/dashboard/despesas', icon: 'fa-file-invoice', label: 'Nova despesa', bg: '#EAF5F3', color: 'var(--teal)' },
-              { href: '/dashboard/financeiro/receber', icon: 'fa-arrow-down-circle', label: 'Registrar recebimento', bg: '#EAF5F3', color: 'var(--teal)' },
-              { href: '/dashboard/relatorios', icon: 'fa-chart-bar', label: 'Ver DRE', bg: '#E6F1FB', color: '#2563eb' },
-              { href: '/dashboard/conciliacao', icon: 'fa-building-columns', label: 'Conciliar', bg: '#EAF5F3', color: 'var(--teal)' },
-              { href: '/dashboard/contadores', icon: 'fa-calculator', label: 'Portal Contador', bg: '#F3F0FF', color: '#7C3AED' },
-              { href: '/dashboard/aicfo', icon: 'fa-robot', label: 'Perguntar ao AI', bg: '#1C2B2A', color: '#6EE7B7' },
+              { href: '/dashboard/despesas', icon: 'fa-file-invoice', label: 'Nova despesa', bg: '#E9F0ED', color: 'var(--teal)' },
+              { href: '/dashboard/financeiro/receber', icon: 'fa-arrow-down-circle', label: 'Registrar recebimento', bg: '#E9F0ED', color: 'var(--teal)' },
+              { href: '/dashboard/relatorios', icon: 'fa-chart-bar', label: 'Ver DRE', bg: '#E6F1FB', color: '#3D6E8E' },
+              { href: '/dashboard/conciliacao', icon: 'fa-building-columns', label: 'Conciliar', bg: '#E9F0ED', color: 'var(--teal)' },
+              { href: '/dashboard/contadores', icon: 'fa-calculator', label: 'Portal Contador', bg: '#F3F0FF', color: '#7A6A9E' },
+              { href: '/dashboard/aicfo', icon: 'fa-robot', label: 'Perguntar ao AI', bg: '#13201D', color: '#6FA595' },
             ].map(item => (
               <Link key={item.href} href={item.href} style={{ textDecoration: 'none' }}>
-                <div style={{ padding: '8px 10px', background: '#F8FAFA', borderRadius: 8, border: '0.5px solid #E2E8E7', display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', transition: 'background 0.15s' }}>
+                <div style={{ padding: '8px 10px', background: '#FBF8F1', borderRadius: 8, border: '0.5px solid #E4DCCC', display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', transition: 'background 0.15s' }}>
                   <div style={{ width: 26, height: 26, borderRadius: 6, background: item.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                     <i className={`fa-solid ${item.icon}`} style={{ fontSize: 11, color: item.color }} />
                   </div>
-                  <span style={{ fontSize: 11, color: '#3A5150', fontWeight: 500 }}>{item.label}</span>
+                  <span style={{ fontSize: 11, color: '#3C4A46', fontWeight: 500 }}>{item.label}</span>
                 </div>
               </Link>
             ))}
@@ -886,8 +886,8 @@ export default function DashboardPage() {
         <Link href="/dashboard/aicfo" style={{ textDecoration: 'none' }}>
           <div style={{ background: 'var(--navy)', borderRadius: 12, padding: '14px 16px', height: '100%', display: 'flex', flexDirection: 'column', gap: 10, cursor: 'pointer' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <div style={{ width: 30, height: 30, borderRadius: 8, background: 'rgba(16,185,129,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <i className="fa-solid fa-robot" style={{ fontSize: 13, color: '#6EE7B7' }} />
+              <div style={{ width: 30, height: 30, borderRadius: 8, background: 'rgba(61,122,110,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <i className="fa-solid fa-robot" style={{ fontSize: 13, color: '#6FA595' }} />
               </div>
               <div>
                 <div style={{ fontSize: 12, fontWeight: 600, color: '#fff', fontFamily: "'Inter', sans-serif" }}>FactorOne AI</div>
@@ -900,7 +900,7 @@ export default function DashboardPage() {
                 : `Receita ${fmtBRLCompact(kpiAtual.receita)} com margem líquida de ${dreMes.receitaBruta > 0 ? ((dreMes.liquido / dreMes.receitaBruta) * 100).toFixed(1) : '0'}%. ${runway != null && runway < 6 ? `Atenção: runway de ${runway} meses.` : 'Saúde financeira dentro do esperado.'}`
               }
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 11, color: '#6EE7B7', fontWeight: 600 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 11, color: '#6FA595', fontWeight: 600 }}>
               <i className="fa-solid fa-arrow-right" style={{ fontSize: 10 }} /> Analisar com IA
             </div>
           </div>

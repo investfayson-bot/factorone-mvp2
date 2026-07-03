@@ -163,13 +163,13 @@ export default function LivrosContabeisPage() {
       </div>
 
       {/* Alternador de vista */}
-      <div style={{ display: 'flex', gap: 2, background: '#E8EDEC', padding: 3, borderRadius: 10, width: 'fit-content', marginBottom: 16, flexWrap: 'wrap' }}>
+      <div style={{ display: 'flex', gap: 2, background: '#F1ECE1', padding: 3, borderRadius: 10, width: 'fit-content', marginBottom: 16, flexWrap: 'wrap' }}>
         {([
           { k: 'balancete', label: 'Balancete', icon: 'fa-scale-balanced' },
           { k: 'balanco', label: 'Balanço patrimonial', icon: 'fa-layer-group' },
           { k: 'fechamento', label: 'Fechamento', icon: 'fa-lock' },
         ] as { k: typeof vista; label: string; icon: string }[]).map(t => (
-          <button key={t.k} onClick={() => { setVista(t.k); setContaSel(null) }} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11.5, fontWeight: vista === t.k ? 700 : 500, padding: '6px 12px', borderRadius: 8, border: 'none', cursor: 'pointer', background: vista === t.k ? '#fff' : 'transparent', color: vista === t.k ? '#1C2B2A' : '#7A8F8E' }}>
+          <button key={t.k} onClick={() => { setVista(t.k); setContaSel(null) }} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11.5, fontWeight: vista === t.k ? 700 : 500, padding: '6px 12px', borderRadius: 8, border: 'none', cursor: 'pointer', background: vista === t.k ? '#fff' : 'transparent', color: vista === t.k ? '#13201D' : '#7B8C88' }}>
             <i className={`fa-solid ${t.icon}`} style={{ fontSize: 10 }} />{t.label}
           </button>
         ))}
@@ -180,8 +180,8 @@ export default function LivrosContabeisPage() {
       ) : lancs.length === 0 ? (
         <div style={{ background: '#fff', border: '1.5px dashed #D1D9D8', borderRadius: 16, padding: '48px 24px', textAlign: 'center' }}>
           <i className="fa-solid fa-book" style={{ fontSize: 30, color: '#D1D9D8', display: 'block', marginBottom: 12 }} />
-          <div style={{ fontSize: 15, fontWeight: 700, color: '#1C2B2A', marginBottom: 6 }}>Sem lançamentos contábeis no período</div>
-          <div style={{ fontSize: 12, color: '#7A8F8E' }}>Os lançamentos são gerados das notas, despesas e conciliação. Categorize e concilie para o balancete se formar.</div>
+          <div style={{ fontSize: 15, fontWeight: 700, color: '#13201D', marginBottom: 6 }}>Sem lançamentos contábeis no período</div>
+          <div style={{ fontSize: 12, color: '#7B8C88' }}>Os lançamentos são gerados das notas, despesas e conciliação. Categorize e concilie para o balancete se formar.</div>
         </div>
       ) : !contaSel ? (
         <>
@@ -189,9 +189,9 @@ export default function LivrosContabeisPage() {
           <div className="kpis" style={{ gridTemplateColumns: 'repeat(3,1fr)', marginBottom: 14 }}>
             <div className="kpi"><div className="kpi-lbl">Total débitos</div><div className="kpi-val">{formatBRL(totalDeb)}</div></div>
             <div className="kpi"><div className="kpi-lbl">Total créditos</div><div className="kpi-val">{formatBRL(totalCred)}</div></div>
-            <div className="kpi" style={{ borderTop: `3px solid ${Math.abs(totalDeb - totalCred) < 0.01 ? '#16A085' : '#D97706'}` }}>
+            <div className="kpi" style={{ borderTop: `3px solid ${Math.abs(totalDeb - totalCred) < 0.01 ? '#3D7A6E' : '#B08A3E'}` }}>
               <div className="kpi-lbl">Diferença (deve fechar em 0)</div>
-              <div className="kpi-val" style={{ color: Math.abs(totalDeb - totalCred) < 0.01 ? '#16A085' : '#D97706' }}>{formatBRL(totalDeb - totalCred)}</div>
+              <div className="kpi-val" style={{ color: Math.abs(totalDeb - totalCred) < 0.01 ? '#3D7A6E' : '#B08A3E' }}>{formatBRL(totalDeb - totalCred)}</div>
             </div>
           </div>
 
@@ -200,16 +200,16 @@ export default function LivrosContabeisPage() {
             <button className="btn-ghost" style={{ fontSize: 12 }} onClick={exportarBalancete}><i className="fa-solid fa-file-csv" style={{ marginRight: 6 }} />Baixar CSV</button>
           </div>
 
-          <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 14, overflow: 'hidden' }}>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 120px 120px 130px', padding: '10px 16px', background: '#F8FAFA', borderBottom: '0.5px solid #E2E8E7' }}>
-              {['Conta', 'Débito', 'Crédito', 'Saldo'].map((h, i) => <div key={h} style={{ fontSize: 10, fontWeight: 600, color: '#7A8F8E', textTransform: 'uppercase', letterSpacing: '.06em', textAlign: i === 0 ? 'left' : 'right' }}>{h}</div>)}
+          <div style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 14, overflow: 'hidden' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 120px 120px 130px', padding: '10px 16px', background: '#FBF8F1', borderBottom: '0.5px solid #E4DCCC' }}>
+              {['Conta', 'Débito', 'Crédito', 'Saldo'].map((h, i) => <div key={h} style={{ fontSize: 10, fontWeight: 600, color: '#7B8C88', textTransform: 'uppercase', letterSpacing: '.06em', textAlign: i === 0 ? 'left' : 'right' }}>{h}</div>)}
             </div>
             {balancete.map((r, i) => (
-              <button key={r.conta} onClick={() => setContaSel(r.conta)} style={{ display: 'grid', gridTemplateColumns: '1fr 120px 120px 130px', padding: '11px 16px', borderBottom: i < balancete.length - 1 ? '0.5px solid #F0F4F3' : 'none', width: '100%', border: 'none', background: '#fff', cursor: 'pointer', alignItems: 'center' }}>
-                <div style={{ fontSize: 12.5, fontWeight: 600, color: '#1C2B2A', textAlign: 'left' }}>{r.conta}</div>
+              <button key={r.conta} onClick={() => setContaSel(r.conta)} style={{ display: 'grid', gridTemplateColumns: '1fr 120px 120px 130px', padding: '11px 16px', borderBottom: i < balancete.length - 1 ? '0.5px solid #EFE9DC' : 'none', width: '100%', border: 'none', background: '#fff', cursor: 'pointer', alignItems: 'center' }}>
+                <div style={{ fontSize: 12.5, fontWeight: 600, color: '#13201D', textAlign: 'left' }}>{r.conta}</div>
                 <div style={{ fontSize: 12, textAlign: 'right', color: '#374151', fontFamily: "'Inter', system-ui, sans-serif" }}>{r.debito ? formatBRL(r.debito) : '—'}</div>
                 <div style={{ fontSize: 12, textAlign: 'right', color: '#374151', fontFamily: "'Inter', system-ui, sans-serif" }}>{r.credito ? formatBRL(r.credito) : '—'}</div>
-                <div style={{ fontSize: 12.5, textAlign: 'right', fontWeight: 700, color: r.saldo >= 0 ? '#1C2B2A' : '#E74C3C', fontFamily: "'Inter', system-ui, sans-serif" }}>{formatBRL(r.saldo)}</div>
+                <div style={{ fontSize: 12.5, textAlign: 'right', fontWeight: 700, color: r.saldo >= 0 ? '#13201D' : '#B0413E', fontFamily: "'Inter', system-ui, sans-serif" }}>{formatBRL(r.saldo)}</div>
               </button>
             ))}
           </div>
@@ -218,20 +218,20 @@ export default function LivrosContabeisPage() {
         <>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
             <button className="btn-ghost" style={{ fontSize: 12 }} onClick={() => setContaSel(null)}><i className="fa-solid fa-arrow-left" style={{ marginRight: 6 }} />Balancete</button>
-            <div style={{ fontSize: 14, fontWeight: 800, color: '#1C2B2A' }}>Razão · {contaSel}</div>
-            <span style={{ fontSize: 12, color: '#7A8F8E', marginLeft: 'auto' }}>{razao.length} lançamentos</span>
+            <div style={{ fontSize: 14, fontWeight: 800, color: '#13201D' }}>Razão · {contaSel}</div>
+            <span style={{ fontSize: 12, color: '#7B8C88', marginLeft: 'auto' }}>{razao.length} lançamentos</span>
           </div>
-          <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 14, overflow: 'hidden' }}>
-            <div style={{ display: 'grid', gridTemplateColumns: '90px 1fr 110px 110px 120px', padding: '10px 16px', background: '#F8FAFA', borderBottom: '0.5px solid #E2E8E7' }}>
-              {['Compet.', 'Histórico', 'Débito', 'Crédito', 'Saldo'].map((h, i) => <div key={h} style={{ fontSize: 10, fontWeight: 600, color: '#7A8F8E', textTransform: 'uppercase', letterSpacing: '.06em', textAlign: i < 2 ? 'left' : 'right' }}>{h}</div>)}
+          <div style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 14, overflow: 'hidden' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '90px 1fr 110px 110px 120px', padding: '10px 16px', background: '#FBF8F1', borderBottom: '0.5px solid #E4DCCC' }}>
+              {['Compet.', 'Histórico', 'Débito', 'Crédito', 'Saldo'].map((h, i) => <div key={h} style={{ fontSize: 10, fontWeight: 600, color: '#7B8C88', textTransform: 'uppercase', letterSpacing: '.06em', textAlign: i < 2 ? 'left' : 'right' }}>{h}</div>)}
             </div>
             {razao.map((l, i) => (
-              <div key={l.id} style={{ display: 'grid', gridTemplateColumns: '90px 1fr 110px 110px 120px', padding: '10px 16px', borderBottom: i < razao.length - 1 ? '0.5px solid #F0F4F3' : 'none', alignItems: 'center' }}>
-                <div style={{ fontSize: 11, color: '#7A8F8E', fontFamily: "'Inter', system-ui, sans-serif" }}>{l.competencia?.slice(0, 7)}</div>
-                <div style={{ fontSize: 12.5, color: '#1C2B2A' }}>{l.descricao} <span style={{ fontSize: 10, color: '#AAB8B7' }}>· {l.origem}</span></div>
+              <div key={l.id} style={{ display: 'grid', gridTemplateColumns: '90px 1fr 110px 110px 120px', padding: '10px 16px', borderBottom: i < razao.length - 1 ? '0.5px solid #EFE9DC' : 'none', alignItems: 'center' }}>
+                <div style={{ fontSize: 11, color: '#7B8C88', fontFamily: "'Inter', system-ui, sans-serif" }}>{l.competencia?.slice(0, 7)}</div>
+                <div style={{ fontSize: 12.5, color: '#13201D' }}>{l.descricao} <span style={{ fontSize: 10, color: '#A6B0AC' }}>· {l.origem}</span></div>
                 <div style={{ fontSize: 12, textAlign: 'right', color: l.tipo === 'debito' ? '#374151' : '#C4CFCE', fontFamily: "'Inter', system-ui, sans-serif" }}>{l.tipo === 'debito' ? formatBRL(num(l.valor)) : '—'}</div>
                 <div style={{ fontSize: 12, textAlign: 'right', color: l.tipo === 'credito' ? '#374151' : '#C4CFCE', fontFamily: "'Inter', system-ui, sans-serif" }}>{l.tipo === 'credito' ? formatBRL(num(l.valor)) : '—'}</div>
-                <div style={{ fontSize: 12.5, textAlign: 'right', fontWeight: 700, color: l.saldo >= 0 ? '#1C2B2A' : '#E74C3C', fontFamily: "'Inter', system-ui, sans-serif" }}>{formatBRL(l.saldo)}</div>
+                <div style={{ fontSize: 12.5, textAlign: 'right', fontWeight: 700, color: l.saldo >= 0 ? '#13201D' : '#B0413E', fontFamily: "'Inter', system-ui, sans-serif" }}>{formatBRL(l.saldo)}</div>
               </div>
             ))}
           </div>
@@ -242,20 +242,20 @@ export default function LivrosContabeisPage() {
       {vista === 'balanco' && (
         <>
           <div className="kpis" style={{ gridTemplateColumns: 'repeat(3,1fr)', marginBottom: 14 }}>
-            <div className="kpi" style={{ borderTop: '3px solid #1C2B2A' }}><div className="kpi-lbl">Ativo</div><div className="kpi-val">{formatBRL(balanco.ativo)}</div><div className="kpi-delta">bens e direitos</div></div>
-            <div className="kpi" style={{ borderTop: '3px solid #D97706' }}><div className="kpi-lbl">Passivo</div><div className="kpi-val">{formatBRL(balanco.passivo)}</div><div className="kpi-delta">obrigações</div></div>
-            <div className="kpi" style={{ borderTop: '3px solid #10B981' }}><div className="kpi-lbl">Patrimônio líquido</div><div className="kpi-val" style={{ color: balanco.pl >= 0 ? '#1C2B2A' : '#E74C3C' }}>{formatBRL(balanco.pl)}</div><div className="kpi-delta">capital + resultado</div></div>
+            <div className="kpi" style={{ borderTop: '3px solid #13201D' }}><div className="kpi-lbl">Ativo</div><div className="kpi-val">{formatBRL(balanco.ativo)}</div><div className="kpi-delta">bens e direitos</div></div>
+            <div className="kpi" style={{ borderTop: '3px solid #B08A3E' }}><div className="kpi-lbl">Passivo</div><div className="kpi-val">{formatBRL(balanco.passivo)}</div><div className="kpi-delta">obrigações</div></div>
+            <div className="kpi" style={{ borderTop: '3px solid #3D7A6E' }}><div className="kpi-lbl">Patrimônio líquido</div><div className="kpi-val" style={{ color: balanco.pl >= 0 ? '#13201D' : '#B0413E' }}>{formatBRL(balanco.pl)}</div><div className="kpi-delta">capital + resultado</div></div>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-            <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 14, overflow: 'hidden' }}>
-              <div style={{ padding: '12px 16px', background: '#F8FAFA', borderBottom: '0.5px solid #E2E8E7', fontSize: 12, fontWeight: 700, color: '#1C2B2A' }}>ATIVO</div>
+            <div style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 14, overflow: 'hidden' }}>
+              <div style={{ padding: '12px 16px', background: '#FBF8F1', borderBottom: '0.5px solid #E4DCCC', fontSize: 12, fontWeight: 700, color: '#13201D' }}>ATIVO</div>
               <div style={{ display: 'flex', justifyContent: 'space-between', padding: '11px 16px' }}>
                 <span style={{ fontSize: 12.5, color: '#374151', fontWeight: 700 }}>Total do ativo</span>
-                <span style={{ fontSize: 12.5, fontWeight: 700, color: '#1C2B2A', fontFamily: "'Inter', system-ui, sans-serif" }}>{formatBRL(balanco.ativo)}</span>
+                <span style={{ fontSize: 12.5, fontWeight: 700, color: '#13201D', fontFamily: "'Inter', system-ui, sans-serif" }}>{formatBRL(balanco.ativo)}</span>
               </div>
             </div>
-            <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 14, overflow: 'hidden' }}>
-              <div style={{ padding: '12px 16px', background: '#F8FAFA', borderBottom: '0.5px solid #E2E8E7', fontSize: 12, fontWeight: 700, color: '#1C2B2A' }}>PASSIVO + PATRIMÔNIO LÍQUIDO</div>
+            <div style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 14, overflow: 'hidden' }}>
+              <div style={{ padding: '12px 16px', background: '#FBF8F1', borderBottom: '0.5px solid #E4DCCC', fontSize: 12, fontWeight: 700, color: '#13201D' }}>PASSIVO + PATRIMÔNIO LÍQUIDO</div>
               {[
                 { nome: 'Passivo (obrigações)', valor: balanco.passivo, bold: false },
                 { nome: 'Receitas', valor: balanco.receita, bold: false },
@@ -263,15 +263,15 @@ export default function LivrosContabeisPage() {
                 { nome: 'Resultado do exercício', valor: balanco.resultado, bold: true },
                 { nome: 'Patrimônio líquido', valor: balanco.pl, bold: true },
               ].map((r, i, arr) => (
-                <div key={r.nome} style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 16px', borderBottom: i < arr.length - 1 ? '0.5px solid #F0F4F3' : 'none' }}>
+                <div key={r.nome} style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 16px', borderBottom: i < arr.length - 1 ? '0.5px solid #EFE9DC' : 'none' }}>
                   <span style={{ fontSize: 12.5, color: '#374151', fontWeight: r.bold ? 700 : 400 }}>{r.nome}</span>
-                  <span style={{ fontSize: 12.5, fontWeight: 700, color: r.valor >= 0 ? '#1C2B2A' : '#E74C3C', fontFamily: "'Inter', system-ui, sans-serif" }}>{formatBRL(r.valor)}</span>
+                  <span style={{ fontSize: 12.5, fontWeight: 700, color: r.valor >= 0 ? '#13201D' : '#B0413E', fontFamily: "'Inter', system-ui, sans-serif" }}>{formatBRL(r.valor)}</span>
                 </div>
               ))}
             </div>
           </div>
-          <div style={{ marginTop: 12, padding: '12px 16px', borderRadius: 12, background: Math.abs(balanco.diferenca) < 0.01 ? 'rgba(45,155,111,.08)' : 'rgba(184,146,42,.08)', border: `1px solid ${Math.abs(balanco.diferenca) < 0.01 ? 'rgba(45,155,111,.25)' : 'rgba(184,146,42,.25)'}`, fontSize: 12.5, color: '#1C2B2A', display: 'flex', alignItems: 'center', gap: 8 }}>
-            <i className={`fa-solid ${Math.abs(balanco.diferenca) < 0.01 ? 'fa-circle-check' : 'fa-triangle-exclamation'}`} style={{ color: Math.abs(balanco.diferenca) < 0.01 ? '#2D9B6F' : '#B8922A' }} />
+          <div style={{ marginTop: 12, padding: '12px 16px', borderRadius: 12, background: Math.abs(balanco.diferenca) < 0.01 ? 'rgba(61,122,110,.08)' : 'rgba(176,138,62,.08)', border: `1px solid ${Math.abs(balanco.diferenca) < 0.01 ? 'rgba(61,122,110,.25)' : 'rgba(176,138,62,.25)'}`, fontSize: 12.5, color: '#13201D', display: 'flex', alignItems: 'center', gap: 8 }}>
+            <i className={`fa-solid ${Math.abs(balanco.diferenca) < 0.01 ? 'fa-circle-check' : 'fa-triangle-exclamation'}`} style={{ color: Math.abs(balanco.diferenca) < 0.01 ? '#3D7A6E' : '#B08A3E' }} />
             <span>Ativo = Passivo + PL — diferença <strong>{formatBRL(balanco.diferenca)}</strong> {Math.abs(balanco.diferenca) < 0.01 ? '(fecha ✓)' : '(gere os lançamentos p/ equilibrar)'}</span>
           </div>
         </>
@@ -282,23 +282,23 @@ export default function LivrosContabeisPage() {
         <>
           <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.04em', marginBottom: 10 }}>Fechamento mensal · {competencias.length} competências</div>
           {competencias.length === 0 ? (
-            <div style={{ background: '#fff', border: '1.5px dashed #D1D9D8', borderRadius: 14, padding: '40px', textAlign: 'center', color: '#7A8F8E', fontSize: 12 }}>Sem competências com lançamentos ainda.</div>
+            <div style={{ background: '#fff', border: '1.5px dashed #D1D9D8', borderRadius: 14, padding: '40px', textAlign: 'center', color: '#7B8C88', fontSize: 12 }}>Sem competências com lançamentos ainda.</div>
           ) : (
-            <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 14, overflow: 'hidden' }}>
+            <div style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 14, overflow: 'hidden' }}>
               {competencias.map((c, i) => {
                 const fech = fechados.has(c)
                 const [y, mm] = c.split('-')
                 const label = new Date(Number(y), Number(mm) - 1, 1).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })
                 return (
-                  <div key={c} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px', borderBottom: i < competencias.length - 1 ? '0.5px solid #F0F4F3' : 'none' }}>
-                    <div style={{ width: 34, height: 34, borderRadius: 9, background: fech ? '#EEF2F1' : '#EAF5F3', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <i className={`fa-solid ${fech ? 'fa-lock' : 'fa-lock-open'}`} style={{ fontSize: 14, color: fech ? '#7A8F8E' : '#10B981' }} />
+                  <div key={c} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px', borderBottom: i < competencias.length - 1 ? '0.5px solid #EFE9DC' : 'none' }}>
+                    <div style={{ width: 34, height: 34, borderRadius: 9, background: fech ? '#F1ECE1' : '#E9F0ED', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <i className={`fa-solid ${fech ? 'fa-lock' : 'fa-lock-open'}`} style={{ fontSize: 14, color: fech ? '#7B8C88' : '#3D7A6E' }} />
                     </div>
                     <div style={{ flex: 1 }}>
-                      <div style={{ fontSize: 13, fontWeight: 700, color: '#1C2B2A', textTransform: 'capitalize' }}>{label}</div>
-                      <div style={{ fontSize: 10.5, color: fech ? '#7A8F8E' : '#0F6E56' }}>{fech ? 'Período fechado' : 'Período aberto'}</div>
+                      <div style={{ fontSize: 13, fontWeight: 700, color: '#13201D', textTransform: 'capitalize' }}>{label}</div>
+                      <div style={{ fontSize: 10.5, color: fech ? '#7B8C88' : '#2B564D' }}>{fech ? 'Período fechado' : 'Período aberto'}</div>
                     </div>
-                    <button onClick={() => void fecharComp(c, !fech)} disabled={busyComp === c} style={{ fontSize: 11.5, fontWeight: 700, padding: '6px 14px', borderRadius: 8, border: fech ? '0.5px solid #E2E8E7' : 'none', background: fech ? '#fff' : '#1C2B2A', color: fech ? '#3A5150' : '#fff', cursor: 'pointer' }}>
+                    <button onClick={() => void fecharComp(c, !fech)} disabled={busyComp === c} style={{ fontSize: 11.5, fontWeight: 700, padding: '6px 14px', borderRadius: 8, border: fech ? '0.5px solid #E4DCCC' : 'none', background: fech ? '#fff' : '#13201D', color: fech ? '#3C4A46' : '#fff', cursor: 'pointer' }}>
                       {busyComp === c ? '...' : fech ? 'Reabrir' : 'Fechar mês'}
                     </button>
                   </div>
@@ -309,8 +309,8 @@ export default function LivrosContabeisPage() {
         </>
       )}
 
-      <div style={{ fontSize: 11, color: '#AAB8B7', marginTop: 14, lineHeight: 1.6 }}>
-        <i className="fa-solid fa-circle-info" style={{ color: '#10B981', marginRight: 6 }} />
+      <div style={{ fontSize: 11, color: '#A6B0AC', marginTop: 14, lineHeight: 1.6 }}>
+        <i className="fa-solid fa-circle-info" style={{ color: '#3D7A6E', marginRight: 6 }} />
         Balancete, razão e balanço gerados dos lançamentos (notas, despesas, conciliação). O fechamento registra a competência como fechada.
       </div>
     </>

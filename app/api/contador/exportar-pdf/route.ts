@@ -53,7 +53,7 @@ export async function GET(req: NextRequest) {
 
           // Info empresa
           React.createElement(
-            View, { style: { backgroundColor: COLORS.tealLight, borderRadius: 6, padding: '8 12', marginBottom: 12, border: `1 solid rgba(16,185,129,.25)` } },
+            View, { style: { backgroundColor: COLORS.tealLight, borderRadius: 6, padding: '8 12', marginBottom: 12, border: `1 solid rgba(61,122,110,.25)` } },
             React.createElement(Text, { style: { fontSize: 7.5, fontFamily: 'Helvetica-Bold', color: COLORS.navy, marginBottom: 2 } }, empresaNome),
             cnpj && React.createElement(Text, { style: { fontSize: 7, color: COLORS.gray } }, `CNPJ: ${cnpj} · Competência: ${periodo}`)
           ),

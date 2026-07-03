@@ -69,7 +69,7 @@ export default function ExtratoCompletoPage() {
           <div className="page-sub">Banco PJ · histórico de movimentações</div>
         </div>
         <button className="btn-action btn-ghost" style={{ fontSize: 12 }} onClick={() => void categorizarComIA()} disabled={categorizando} title="Classifica automaticamente as transações sem categoria">
-          <i className="fa-solid fa-wand-magic-sparkles" style={{ marginRight: 6, color: '#7C3AED' }} />{categorizando ? 'Categorizando…' : 'Categorizar com IA'}
+          <i className="fa-solid fa-wand-magic-sparkles" style={{ marginRight: 6, color: '#7A6A9E' }} />{categorizando ? 'Categorizando…' : 'Categorizar com IA'}
         </button>
       </div>
 
@@ -133,7 +133,7 @@ export default function ExtratoCompletoPage() {
                   <td style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: 11 }}>{new Date(r.data_transacao).toLocaleString('pt-BR')}</td>
                   <td style={{ fontWeight: 600 }}>{r.descricao}</td>
                   <td style={{ color: 'var(--gray-500)' }}>{r.contraparte_nome || '—'}</td>
-                  <td>{r.categoria ? <span style={{ fontSize: 10.5, fontWeight: 600, padding: '2px 8px', borderRadius: 20, background: '#EEF2F1', color: '#3A5150' }}>{r.categoria}</span> : <span style={{ color: '#C4CFCE' }}>—</span>}</td>
+                  <td>{r.categoria ? <span style={{ fontSize: 10.5, fontWeight: 600, padding: '2px 8px', borderRadius: 20, background: '#F1ECE1', color: '#3C4A46' }}>{r.categoria}</span> : <span style={{ color: '#C4CFCE' }}>—</span>}</td>
                   <td style={{ textAlign: 'right', fontWeight: 700, fontFamily: "'Inter', system-ui, sans-serif", color: r.tipo === 'credito' ? 'var(--green)' : 'var(--red)' }}>
                     {r.tipo === 'credito' ? '+' : '-'}{formatBRL(Number(r.valor || 0))}
                   </td>

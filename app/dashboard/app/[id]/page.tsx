@@ -21,7 +21,7 @@ export default function AppPlaceholderPage() {
         {app?.desc ?? 'Este aplicativo está instalado.'}
         <br />A tela completa deste módulo está em construção.
       </p>
-      <span style={{ display: 'inline-block', fontSize: 11, fontWeight: 700, color: '#7C3AED', background: 'rgba(124,58,237,.1)', padding: '4px 12px', borderRadius: 20, marginBottom: 24 }}>
+      <span style={{ display: 'inline-block', fontSize: 11, fontWeight: 700, color: '#7A6A9E', background: 'rgba(124,58,237,.1)', padding: '4px 12px', borderRadius: 20, marginBottom: 24 }}>
         EM BREVE
       </span>
       <div>

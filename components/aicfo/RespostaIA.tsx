@@ -6,14 +6,14 @@ import toast from 'react-hot-toast'
 export type { RespostaData }
 
 const STATUS = {
-  positivo: { bg: '#EAF5F3', border: '#10B981', color: '#0F6E56', icon: '↑' },
-  atencao:  { bg: '#FEF3C7', border: '#F59E0B', color: '#92400E', icon: '⚠' },
-  critico:  { bg: '#FEE2E2', border: '#F87171', color: '#991B1B', icon: '!' },
+  positivo: { bg: '#E9F0ED', border: '#3D7A6E', color: '#2B564D', icon: '↑' },
+  atencao:  { bg: '#F3ECDA', border: '#F59E0B', color: '#B08A3E', icon: '⚠' },
+  critico:  { bg: '#F4E4E1', border: '#F87171', color: '#B0413E', icon: '!' },
 }
 const DESTAQUE = {
-  positivo: '#16A085',
-  negativo: '#E74C3C',
-  neutro:   '#1C2B2A',
+  positivo: '#3D7A6E',
+  negativo: '#B0413E',
+  neutro:   '#13201D',
 }
 
 export function RespostaIA({ data, pergunta = '' }: { data: RespostaData; pergunta?: string }) {
@@ -56,7 +56,7 @@ export function RespostaIA({ data, pergunta = '' }: { data: RespostaData; pergun
         style={{
           display: 'inline-flex', alignItems: 'center', gap: 5,
           padding: '5px 12px', borderRadius: 7, border: 'none',
-          background: disabled ? '#AAB8B7' : bg, color: '#fff',
+          background: disabled ? '#A6B0AC' : bg, color: '#fff',
           fontSize: 11, fontWeight: 700, cursor: disabled ? 'not-allowed' : 'pointer',
           fontFamily: "'Inter', sans-serif", opacity: disabled ? 0.7 : 1,
           transition: 'opacity 0.15s',
@@ -74,23 +74,23 @@ export function RespostaIA({ data, pergunta = '' }: { data: RespostaData; pergun
         {!fechar && (
           <button
             onClick={() => setExpandido(true)}
-            style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '5px 12px', borderRadius: 7, border: '0.5px solid #E2E8E7', background: '#fff', color: '#1C2B2A', fontSize: 11, fontWeight: 700, cursor: 'pointer', fontFamily: "'Inter', sans-serif" }}
+            style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '5px 12px', borderRadius: 7, border: '0.5px solid #E4DCCC', background: '#fff', color: '#13201D', fontSize: 11, fontWeight: 700, cursor: 'pointer', fontFamily: "'Inter', sans-serif" }}
           >
             <i className="fa-solid fa-expand" style={{ fontSize: 10 }} />Tela cheia
           </button>
         )}
-        <BotaoAcao label={exportandoExcel ? 'Gerando...' : 'Excel'} onClick={handleExportExcel} bg="#0F6E56" disabled={exportandoExcel} icon="fa-file-excel" />
-        <BotaoAcao label={exportandoPdf ? 'Gerando...' : 'PDF'} onClick={() => void handleExportPDF()} bg="#E74C3C" disabled={exportandoPdf} icon="fa-file-pdf" />
+        <BotaoAcao label={exportandoExcel ? 'Gerando...' : 'Excel'} onClick={handleExportExcel} bg="#2B564D" disabled={exportandoExcel} icon="fa-file-excel" />
+        <BotaoAcao label={exportandoPdf ? 'Gerando...' : 'PDF'} onClick={() => void handleExportPDF()} bg="#B0413E" disabled={exportandoPdf} icon="fa-file-pdf" />
         <a href={wppUrl} target="_blank" rel="noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '5px 12px', borderRadius: 7, border: 'none', background: '#25D366', color: '#fff', fontSize: 11, fontWeight: 700, textDecoration: 'none', fontFamily: "'Inter', sans-serif" }}>
           <i className="fa-brands fa-whatsapp" style={{ fontSize: 12 }} />WhatsApp
         </a>
-        <a href={mailUrl} style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '5px 12px', borderRadius: 7, border: 'none', background: '#2563eb', color: '#fff', fontSize: 11, fontWeight: 700, textDecoration: 'none', fontFamily: "'Inter', sans-serif" }}>
+        <a href={mailUrl} style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '5px 12px', borderRadius: 7, border: 'none', background: '#3D6E8E', color: '#fff', fontSize: 11, fontWeight: 700, textDecoration: 'none', fontFamily: "'Inter', sans-serif" }}>
           <i className="fa-solid fa-envelope" style={{ fontSize: 10 }} />Email
         </a>
         {fechar && (
           <button
             onClick={() => setExpandido(false)}
-            style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '5px 12px', borderRadius: 7, border: '0.5px solid #E2E8E7', background: '#fff', color: '#7A8F8E', fontSize: 11, fontWeight: 700, cursor: 'pointer', fontFamily: "'Inter', sans-serif" }}
+            style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '5px 12px', borderRadius: 7, border: '0.5px solid #E4DCCC', background: '#fff', color: '#7B8C88', fontSize: 11, fontWeight: 700, cursor: 'pointer', fontFamily: "'Inter', sans-serif" }}
           >
             <i className="fa-solid fa-compress" style={{ fontSize: 10 }} />Fechar
           </button>
@@ -103,15 +103,15 @@ export function RespostaIA({ data, pergunta = '' }: { data: RespostaData; pergun
     return (
       <div style={{ display: 'grid', gridTemplateColumns: grande ? 'repeat(3,1fr)' : 'repeat(2,1fr)', gap: 8, marginBottom: 10 }}>
         {data.cards?.map((card, i) => (
-          <div key={i} style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 12, padding: grande ? '14px 16px' : '10px 12px' }}>
+          <div key={i} style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 12, padding: grande ? '14px 16px' : '10px 12px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: grande ? 10 : 7 }}>
-              {card.emoji && <i className={`fa-solid ${card.emoji}`} style={{ fontSize: grande ? 14 : 12, color: '#10B981', width: 16 }} />}
-              <span style={{ fontSize: grande ? 12 : 11, fontWeight: 700, color: '#1C2B2A', fontFamily: "'Inter', sans-serif" }}>{card.titulo}</span>
+              {card.emoji && <i className={`fa-solid ${card.emoji}`} style={{ fontSize: grande ? 14 : 12, color: '#3D7A6E', width: 16 }} />}
+              <span style={{ fontSize: grande ? 12 : 11, fontWeight: 700, color: '#13201D', fontFamily: "'Inter', sans-serif" }}>{card.titulo}</span>
             </div>
             {card.linhas?.map((l, j) => (
-              <div key={j} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '5px 0', borderBottom: j < (card.linhas?.length ?? 0) - 1 ? '0.5px solid #F0F4F3' : 'none' }}>
-                <span style={{ fontSize: grande ? 11 : 10, color: '#7A8F8E' }}>{l.label}</span>
-                <span style={{ fontSize: grande ? 12 : 11, fontWeight: 700, color: DESTAQUE[l.destaque as keyof typeof DESTAQUE] ?? '#1C2B2A', fontFamily: "'Inter', sans-serif" }}>{l.valor}</span>
+              <div key={j} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '5px 0', borderBottom: j < (card.linhas?.length ?? 0) - 1 ? '0.5px solid #EFE9DC' : 'none' }}>
+                <span style={{ fontSize: grande ? 11 : 10, color: '#7B8C88' }}>{l.label}</span>
+                <span style={{ fontSize: grande ? 12 : 11, fontWeight: 700, color: DESTAQUE[l.destaque as keyof typeof DESTAQUE] ?? '#13201D', fontFamily: "'Inter', sans-serif" }}>{l.valor}</span>
               </div>
             ))}
           </div>
@@ -123,12 +123,12 @@ export function RespostaIA({ data, pergunta = '' }: { data: RespostaData; pergun
   function Alertas({ grande }: { grande?: boolean }) {
     if (!data.alertas?.length) return null
     return (
-      <div style={{ background: '#FEF3C7', border: '0.5px solid #F59E0B', borderRadius: 10, padding: grande ? '12px 16px' : '8px 12px', marginBottom: 10 }}>
-        {grande && <div style={{ fontSize: 10, fontWeight: 700, color: '#92400E', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 8 }}>Alertas</div>}
+      <div style={{ background: '#F3ECDA', border: '0.5px solid #F59E0B', borderRadius: 10, padding: grande ? '12px 16px' : '8px 12px', marginBottom: 10 }}>
+        {grande && <div style={{ fontSize: 10, fontWeight: 700, color: '#B08A3E', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 8 }}>Alertas</div>}
         {data.alertas.map((a, i) => (
           <div key={i} style={{ display: 'flex', gap: 7, alignItems: 'flex-start', marginBottom: i < data.alertas.length - 1 ? 5 : 0 }}>
-            <span style={{ color: '#D97706', fontSize: 11, flexShrink: 0, marginTop: 1 }}>•</span>
-            <span style={{ fontSize: grande ? 12 : 11, color: '#92400E', lineHeight: 1.5 }}>{a}</span>
+            <span style={{ color: '#B08A3E', fontSize: 11, flexShrink: 0, marginTop: 1 }}>•</span>
+            <span style={{ fontSize: grande ? 12 : 11, color: '#B08A3E', lineHeight: 1.5 }}>{a}</span>
           </div>
         ))}
       </div>
@@ -139,12 +139,12 @@ export function RespostaIA({ data, pergunta = '' }: { data: RespostaData; pergun
     <>
       {/* MODAL TELA CHEIA */}
       {expandido && (
-        <div style={{ position: 'fixed', inset: 0, zIndex: 9999, background: '#F4F6F5', overflowY: 'auto' }}>
+        <div style={{ position: 'fixed', inset: 0, zIndex: 9999, background: '#F7F4EE', overflowY: 'auto' }}>
           {/* Header */}
-          <div style={{ background: '#1C2B2A', padding: '16px 28px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
+          <div style={{ background: '#13201D', padding: '16px 28px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-              <div style={{ width: 36, height: 36, borderRadius: 10, background: 'rgba(16,185,129,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <i className="fa-solid fa-robot" style={{ fontSize: 16, color: '#6EE7B7' }} />
+              <div style={{ width: 36, height: 36, borderRadius: 10, background: 'rgba(61,122,110,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <i className="fa-solid fa-robot" style={{ fontSize: 16, color: '#6FA595' }} />
               </div>
               <div>
                 <div style={{ fontSize: 15, fontWeight: 700, color: '#fff', fontFamily: "'Inter', sans-serif" }}>FactorOne CFO — Análise Completa</div>
@@ -165,7 +165,7 @@ export function RespostaIA({ data, pergunta = '' }: { data: RespostaData; pergun
                 <div style={{ fontSize: 11, fontWeight: 700, color: st.color, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 3 }}>
                   Status: {data.status?.toUpperCase()}
                 </div>
-                <div style={{ fontSize: 13, color: '#1C2B2A', lineHeight: 1.5 }}>{data.resumo}</div>
+                <div style={{ fontSize: 13, color: '#13201D', lineHeight: 1.5 }}>{data.resumo}</div>
               </div>
             </div>
 
@@ -173,9 +173,9 @@ export function RespostaIA({ data, pergunta = '' }: { data: RespostaData; pergun
             <Alertas grande />
 
             {data.proxima_pergunta && (
-              <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 12, padding: '14px 16px' }}>
-                <div style={{ fontSize: 10, fontWeight: 700, color: '#7A8F8E', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 6 }}>Próxima análise sugerida</div>
-                <div style={{ fontSize: 13, color: '#1C2B2A', lineHeight: 1.6 }}>{data.proxima_pergunta}</div>
+              <div style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 12, padding: '14px 16px' }}>
+                <div style={{ fontSize: 10, fontWeight: 700, color: '#7B8C88', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 6 }}>Próxima análise sugerida</div>
+                <div style={{ fontSize: 13, color: '#13201D', lineHeight: 1.6 }}>{data.proxima_pergunta}</div>
               </div>
             )}
           </div>
@@ -196,8 +196,8 @@ export function RespostaIA({ data, pergunta = '' }: { data: RespostaData; pergun
         <BarraAcoes />
 
         {data.proxima_pergunta && (
-          <div style={{ fontSize: 11, color: '#7A8F8E', fontStyle: 'italic', paddingLeft: 4 }}>
-            <i className="fa-solid fa-circle-arrow-right" style={{ marginRight: 5, color: '#10B981', fontSize: 10 }} />
+          <div style={{ fontSize: 11, color: '#7B8C88', fontStyle: 'italic', paddingLeft: 4 }}>
+            <i className="fa-solid fa-circle-arrow-right" style={{ marginRight: 5, color: '#3D7A6E', fontSize: 10 }} />
             {data.proxima_pergunta}
           </div>
         )}

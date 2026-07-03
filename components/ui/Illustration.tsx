@@ -1,11 +1,11 @@
 // Ilustrações flat (estilo unDraw) na paleta FactorOne — SVG inline, sem assets externos.
 
-const NAVY = '#1C2B2A'
-const TEAL = '#10B981'
+const NAVY = '#13201D'
+const TEAL = '#3D7A6E'
 const TEAL_SOFT = '#8FB3AF'
 const TEAL_BG = '#E3EEEC'
-const CREAM = '#F5F6F5'
-const GOLD = '#B8922A'
+const CREAM = '#F7F4EE'
+const GOLD = '#B08A3E'
 
 /** Ilustração de boas-vindas/configuração para fundos claros (ex.: onboarding). */
 export function OnboardingHero({ width = 280 }: { width?: number }) {
@@ -77,7 +77,7 @@ export function FinanceHero({ width = 320 }: { width?: number }) {
       <path d="M244 134v32M236 142h12a6 6 0 010 12h-12M236 154h12a6 6 0 010 12h-14" stroke={CREAM} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" fill="none" />
       {/* badge topo */}
       <rect x="190" y="36" width="56" height="22" rx="11" fill={GOLD} />
-      <path d="M204 47l4 4 8-8" stroke="#1C2B2A" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+      <path d="M204 47l4 4 8-8" stroke="#13201D" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
     </svg>
   )
 }

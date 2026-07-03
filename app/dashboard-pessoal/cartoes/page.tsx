@@ -8,7 +8,7 @@ type Cartao = { id: string; nome: string; bandeira: string; limite: number; dia_
 type Gasto = { id: string; descricao: string; valor: number; categoria: string; data_despesa: string; parcela_atual: number | null; total_parcelas: number | null }
 
 const BANDEIRAS = ['Visa','Mastercard','Elo','American Express','Hipercard']
-const CORES = ['#1B2E4B','#0F766E','#7C3AED','#DC2626','#D97706','#0369A1']
+const CORES = ['#1B2E4B','#0F766E','#7A6A9E','#DC2626','#B08A3E','#0369A1']
 const EMPTY = { nome: '', bandeira: 'Visa', limite: '', dia_fechamento: '1', dia_vencimento: '10', cor: '#1B2E4B' }
 
 export default function CartoesPage() {

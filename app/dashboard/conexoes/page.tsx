@@ -206,9 +206,9 @@ export default function ConexoesPage() {
         )}
       </div>
 
-      {okSync && <div style={{ marginTop: 16, padding: 12, borderRadius: 8, background: 'rgba(45,155,111,.1)', color: '#2D9B6F', fontSize: 13 }}>{okSync}</div>}
+      {okSync && <div style={{ marginTop: 16, padding: 12, borderRadius: 8, background: 'rgba(61,122,110,.1)', color: '#3D7A6E', fontSize: 13 }}>{okSync}</div>}
       {status && <div style={{ marginTop: 16, padding: 12, borderRadius: 8, background: '#EFF6F5', color: 'var(--navy)', fontSize: 13 }}>{status}</div>}
-      {erro && <div style={{ marginTop: 16, padding: 12, borderRadius: 8, background: '#FEE2E2', color: '#991B1B', fontSize: 13 }}>{erro}</div>}
+      {erro && <div style={{ marginTop: 16, padding: 12, borderRadius: 8, background: '#F4E4E1', color: '#B0413E', fontSize: 13 }}>{erro}</div>}
 
       <div id="belvo" style={{ marginTop: 16 }} />
 
@@ -283,7 +283,7 @@ export default function ConexoesPage() {
                     </div>
                     <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>{[t.data, t.categoria, t.conta].filter(Boolean).join(' · ')}</div>
                   </div>
-                  <div style={{ fontSize: 13, fontWeight: 700, color: outflow ? '#C0504A' : '#2D9B6F', whiteSpace: 'nowrap', marginLeft: 12 }}>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: outflow ? '#B0413E' : '#3D7A6E', whiteSpace: 'nowrap', marginLeft: 12 }}>
                     {fmtBRL(t.valor, t.moeda)}
                   </div>
                 </div>

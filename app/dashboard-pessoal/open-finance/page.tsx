@@ -69,7 +69,7 @@ export default function OpenFinancePage() {
           </div>
         </div>
       ) : (
-        <div style={{ background: 'rgba(45,155,111,.08)', border: '1px solid rgba(45,155,111,.3)', borderRadius: 10, padding: '12px 16px', marginBottom: 16, fontSize: 13, color: 'var(--teal)', fontWeight: 600 }}>
+        <div style={{ background: 'rgba(61,122,110,.08)', border: '1px solid rgba(61,122,110,.3)', borderRadius: 10, padding: '12px 16px', marginBottom: 16, fontSize: 13, color: 'var(--teal)', fontWeight: 600 }}>
           ✓ Pluggy configurado — você pode conectar seus bancos abaixo
         </div>
       )}
@@ -114,7 +114,7 @@ export default function OpenFinancePage() {
       <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: 20, marginTop: 16 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
           <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy)' }}>Score de Crédito Serasa</div>
-          <span style={{ fontSize: 9, fontWeight: 700, padding: '2px 8px', borderRadius: 20, background: '#7C3AED', color: '#fff' }}>EM BREVE</span>
+          <span style={{ fontSize: 9, fontWeight: 700, padding: '2px 8px', borderRadius: 20, background: '#7A6A9E', color: '#fff' }}>EM BREVE</span>
         </div>
         <div style={{ fontSize: 12, color: 'var(--gray-400)', marginBottom: 16 }}>Consulte seu score sem sair do FactorOne — integração via Serasa Experian API</div>
         <div style={{ display: 'flex', gap: 32, alignItems: 'center' }}>

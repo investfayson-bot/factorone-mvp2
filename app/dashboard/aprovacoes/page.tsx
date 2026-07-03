@@ -21,9 +21,9 @@ type Despesa = {
 type Tab = 'pendentes' | 'historico'
 
 function nivel(valor: number) {
-  if (valor <= 500)  return { label: 'Auto',    color: 'var(--green)',  bg: 'rgba(45,155,111,.1)' }
-  if (valor <= 5000) return { label: 'Nível 1', color: 'var(--teal)',   bg: 'rgba(16,185,129,.12)' }
-  return               { label: 'Nível 2',       color: '#7C3AED',       bg: 'rgba(124,58,237,.12)' }
+  if (valor <= 500)  return { label: 'Auto',    color: 'var(--green)',  bg: 'rgba(61,122,110,.1)' }
+  if (valor <= 5000) return { label: 'Nível 1', color: 'var(--teal)',   bg: 'rgba(61,122,110,.12)' }
+  return               { label: 'Nível 2',       color: '#7A6A9E',       bg: 'rgba(124,58,237,.12)' }
 }
 
 export default function AprovacoesPage() {
@@ -162,9 +162,9 @@ export default function AprovacoesPage() {
       {/* Política */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 10, marginBottom: 16 }}>
         {[
-          { label: 'Aprovação automática', desc: 'Despesas até R$ 500 com recibo', color: 'var(--green)', bg: 'rgba(45,155,111,.04)', border: 'rgba(45,155,111,.2)' },
-          { label: 'Nível 1', desc: 'R$ 500 – R$ 5.000 → gestor direto', color: 'var(--gold)', bg: 'rgba(184,146,42,.04)', border: 'rgba(184,146,42,.2)' },
-          { label: 'Nível 2', desc: 'Acima de R$ 5.000 → CFO obrigatório', color: '#7C3AED', bg: 'rgba(124,58,237,.04)', border: 'rgba(124,58,237,.2)' },
+          { label: 'Aprovação automática', desc: 'Despesas até R$ 500 com recibo', color: 'var(--green)', bg: 'rgba(61,122,110,.04)', border: 'rgba(61,122,110,.2)' },
+          { label: 'Nível 1', desc: 'R$ 500 – R$ 5.000 → gestor direto', color: 'var(--gold)', bg: 'rgba(176,138,62,.04)', border: 'rgba(176,138,62,.2)' },
+          { label: 'Nível 2', desc: 'Acima de R$ 5.000 → CFO obrigatório', color: '#7A6A9E', bg: 'rgba(124,58,237,.04)', border: 'rgba(124,58,237,.2)' },
         ].map(p => (
           <div key={p.label} style={{ background: p.bg, border: `1px solid ${p.border}`, borderRadius: 12, padding: 14 }}>
             <div style={{ fontSize: 11, fontWeight: 700, color: p.color, marginBottom: 4 }}>{p.label}</div>
@@ -215,10 +215,10 @@ export default function AprovacoesPage() {
                   <span style={{ fontSize: 10, padding: '2px 8px', borderRadius: 20, background: n.bg, color: n.color, fontWeight: 600 }}>{n.label}</span>
                 </div>
                 <div style={{ display: 'flex', gap: 5, flexShrink: 0 }}>
-                  <button onClick={() => void aprovar(item.id)} disabled={bloqueado} style={{ background: 'rgba(45,155,111,.1)', color: 'var(--green)', border: '1px solid rgba(45,155,111,.25)', borderRadius: 7, padding: '5px 12px', fontSize: 11, fontWeight: 600, cursor: 'pointer' }}>
+                  <button onClick={() => void aprovar(item.id)} disabled={bloqueado} style={{ background: 'rgba(61,122,110,.1)', color: 'var(--green)', border: '1px solid rgba(61,122,110,.25)', borderRadius: 7, padding: '5px 12px', fontSize: 11, fontWeight: 600, cursor: 'pointer' }}>
                     <i className="fa-solid fa-check" style={{ marginRight: 4 }} />Aprovar
                   </button>
-                  <button onClick={() => abrirMotivo(item.id, item.descricao)} disabled={bloqueado} style={{ background: 'rgba(192,80,74,.08)', color: 'var(--red)', border: '1px solid rgba(192,80,74,.2)', borderRadius: 7, padding: '5px 10px', fontSize: 11, cursor: 'pointer' }}>
+                  <button onClick={() => abrirMotivo(item.id, item.descricao)} disabled={bloqueado} style={{ background: 'rgba(176,65,62,.08)', color: 'var(--red)', border: '1px solid rgba(176,65,62,.2)', borderRadius: 7, padding: '5px 10px', fontSize: 11, cursor: 'pointer' }}>
                     <i className="fa-solid fa-xmark" />
                   </button>
                 </div>
@@ -254,7 +254,7 @@ export default function AprovacoesPage() {
                     <td style={{ fontSize: 12, color: 'var(--gray-500)' }}>{h.responsavel_nome || '—'}</td>
                     <td style={{ textAlign: 'right', fontFamily: "'Inter', system-ui, sans-serif", fontWeight: 700, fontSize: 12 }}>{formatBRL(Number(h.valor))}</td>
                     <td style={{ textAlign: 'center' }}>
-                      <span style={{ fontSize: 10, fontWeight: 700, padding: '3px 8px', borderRadius: 20, background: h.status === 'aprovado' ? 'rgba(45,155,111,.1)' : 'rgba(192,80,74,.1)', color: h.status === 'aprovado' ? 'var(--green)' : 'var(--red)' }}>
+                      <span style={{ fontSize: 10, fontWeight: 700, padding: '3px 8px', borderRadius: 20, background: h.status === 'aprovado' ? 'rgba(61,122,110,.1)' : 'rgba(176,65,62,.1)', color: h.status === 'aprovado' ? 'var(--green)' : 'var(--red)' }}>
                         {h.status === 'aprovado' ? 'Aprovado' : 'Rejeitado'}
                       </span>
                     </td>

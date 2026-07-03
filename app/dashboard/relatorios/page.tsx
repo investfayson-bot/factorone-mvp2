@@ -255,13 +255,13 @@ export default function RelatoriosPage() {
       </div>
 
       {/* Tabs */}
-      <div style={{ display: 'flex', gap: 2, background: '#E8EDEC', padding: 3, borderRadius: 10, width: 'fit-content', marginBottom: 14 }}>
+      <div style={{ display: 'flex', gap: 2, background: '#F1ECE1', padding: 3, borderRadius: 10, width: 'fit-content', marginBottom: 14 }}>
         {TABS.map((t) => (
           <button key={t} onClick={() => setTab(t)} style={{
             fontSize: 11, fontWeight: tab === t ? 700 : 500,
             padding: '6px 13px', borderRadius: 8, border: 'none', cursor: 'pointer',
             background: tab === t ? '#fff' : 'transparent',
-            color: tab === t ? '#1C2B2A' : '#7A8F8E',
+            color: tab === t ? '#13201D' : '#7B8C88',
             transition: 'all 0.15s', whiteSpace: 'nowrap',
           }}>{t}</button>
         ))}
@@ -269,28 +269,28 @@ export default function RelatoriosPage() {
 
       {/* KPIs */}
       <div className="kpis">
-        <div className="kpi" style={{ borderTop: '3px solid #10B981' }}>
+        <div className="kpi" style={{ borderTop: '3px solid #3D7A6E' }}>
           <div className="kpi-lbl">Receita Bruta
-            <div style={{ width: 28, height: 28, borderRadius: 8, background: '#EAF5F3', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <i className="fa-solid fa-arrow-trend-up" style={{ fontSize: 12, color: '#10B981' }} />
+            <div style={{ width: 28, height: 28, borderRadius: 8, background: '#E9F0ED', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <i className="fa-solid fa-arrow-trend-up" style={{ fontSize: 12, color: '#3D7A6E' }} />
             </div>
           </div>
           <div className="kpi-val">{metricas ? fmtBRL(Number(metricas.receita_bruta || 0)) : '—'}</div>
           <div className="kpi-delta up">{competencia}</div>
         </div>
-        <div className="kpi" style={{ borderTop: '3px solid #2563eb' }}>
+        <div className="kpi" style={{ borderTop: '3px solid #3D6E8E' }}>
           <div className="kpi-lbl">Margem Bruta
             <div style={{ width: 28, height: 28, borderRadius: 8, background: '#E6F1FB', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <i className="fa-solid fa-percent" style={{ fontSize: 12, color: '#2563eb' }} />
+              <i className="fa-solid fa-percent" style={{ fontSize: 12, color: '#3D6E8E' }} />
             </div>
           </div>
           <div className="kpi-val">{metricas ? `${Number(metricas.margem_bruta || 0).toFixed(1)}%` : '—'}</div>
           <div className="kpi-delta">sobre receita líquida</div>
         </div>
-        <div className="kpi" style={{ borderTop: `3px solid ${Number(metricas?.ebitda || 0) >= 0 ? '#D97706' : '#E74C3C'}` }}>
+        <div className="kpi" style={{ borderTop: `3px solid ${Number(metricas?.ebitda || 0) >= 0 ? '#B08A3E' : '#B0413E'}` }}>
           <div className="kpi-lbl">EBITDA
-            <div style={{ width: 28, height: 28, borderRadius: 8, background: Number(metricas?.ebitda || 0) >= 0 ? '#FEF3C7' : '#FEE2E2', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <i className="fa-solid fa-gauge-high" style={{ fontSize: 12, color: Number(metricas?.ebitda || 0) >= 0 ? '#D97706' : '#E74C3C' }} />
+            <div style={{ width: 28, height: 28, borderRadius: 8, background: Number(metricas?.ebitda || 0) >= 0 ? '#F3ECDA' : '#F4E4E1', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <i className="fa-solid fa-gauge-high" style={{ fontSize: 12, color: Number(metricas?.ebitda || 0) >= 0 ? '#B08A3E' : '#B0413E' }} />
             </div>
           </div>
           <div className="kpi-val">{metricas ? fmtBRL(Number(metricas.ebitda || 0)) : '—'}</div>
@@ -298,10 +298,10 @@ export default function RelatoriosPage() {
             {metricas ? `${Number(metricas.margem_ebitda || 0).toFixed(1)}% margem` : 'carregando'}
           </div>
         </div>
-        <div className="kpi" style={{ borderTop: `3px solid ${Number(metricas?.lucro_liquido || 0) >= 0 ? '#10B981' : '#E74C3C'}` }}>
+        <div className="kpi" style={{ borderTop: `3px solid ${Number(metricas?.lucro_liquido || 0) >= 0 ? '#3D7A6E' : '#B0413E'}` }}>
           <div className="kpi-lbl">Lucro Líquido
-            <div style={{ width: 28, height: 28, borderRadius: 8, background: Number(metricas?.lucro_liquido || 0) >= 0 ? '#EAF5F3' : '#FEE2E2', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <i className="fa-solid fa-chart-line" style={{ fontSize: 12, color: Number(metricas?.lucro_liquido || 0) >= 0 ? '#10B981' : '#E74C3C' }} />
+            <div style={{ width: 28, height: 28, borderRadius: 8, background: Number(metricas?.lucro_liquido || 0) >= 0 ? '#E9F0ED' : '#F4E4E1', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <i className="fa-solid fa-chart-line" style={{ fontSize: 12, color: Number(metricas?.lucro_liquido || 0) >= 0 ? '#3D7A6E' : '#B0413E' }} />
             </div>
           </div>
           <div className="kpi-val">{metricas ? fmtBRL(Number(metricas.lucro_liquido || 0)) : '—'}</div>
@@ -313,10 +313,10 @@ export default function RelatoriosPage() {
 
       {/* DRE Completo */}
       {tab === 'DRE Completo' && (
-        <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 14, overflow: 'hidden' }}>
-          <div style={{ padding: '12px 16px', borderBottom: '0.5px solid #E2E8E7', background: '#F8FAFA', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <div style={{ fontSize: 12, fontWeight: 600, color: '#1C2B2A', fontFamily: "'Inter', sans-serif" }}>Demonstrativo de Resultado</div>
-            <div style={{ fontSize: 10, color: '#7A8F8E' }}>Clique em uma linha para ver os lançamentos</div>
+        <div style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 14, overflow: 'hidden' }}>
+          <div style={{ padding: '12px 16px', borderBottom: '0.5px solid #E4DCCC', background: '#FBF8F1', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div style={{ fontSize: 12, fontWeight: 600, color: '#13201D', fontFamily: "'Inter', sans-serif" }}>Demonstrativo de Resultado</div>
+            <div style={{ fontSize: 10, color: '#7B8C88' }}>Clique em uma linha para ver os lançamentos</div>
           </div>
           {linhas.map((l, i) => {
             const ant = Number(historico[1]?.[l.chave] || 0)
@@ -327,25 +327,25 @@ export default function RelatoriosPage() {
               <button
                 key={l.linha}
                 style={{
-                  width: '100%', textAlign: 'left', background: isTotal ? '#F8FAFA' : '#fff',
+                  width: '100%', textAlign: 'left', background: isTotal ? '#FBF8F1' : '#fff',
                   border: 'none', cursor: 'pointer',
-                  borderBottom: i < linhas.length - 1 ? '0.5px solid #F0F4F3' : 'none',
+                  borderBottom: i < linhas.length - 1 ? '0.5px solid #EFE9DC' : 'none',
                   padding: `${isTotal ? 12 : 10}px 16px`,
                   display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                   transition: 'background 0.1s',
                 }}
                 onClick={() => void abrirDrill(l.linha)}
-                onMouseEnter={e => (e.currentTarget.style.background = '#F4F6F5')}
-                onMouseLeave={e => (e.currentTarget.style.background = isTotal ? '#F8FAFA' : '#fff')}
+                onMouseEnter={e => (e.currentTarget.style.background = '#F7F4EE')}
+                onMouseLeave={e => (e.currentTarget.style.background = isTotal ? '#FBF8F1' : '#fff')}
               >
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                   {!isTotal && (
-                    <div style={{ width: 3, height: 16, borderRadius: 99, background: isNeg ? '#E74C3C' : '#10B981', flexShrink: 0 }} />
+                    <div style={{ width: 3, height: 16, borderRadius: 99, background: isNeg ? '#B0413E' : '#3D7A6E', flexShrink: 0 }} />
                   )}
                   <span style={{
                     fontSize: isTotal ? 12 : 11,
                     fontWeight: isTotal ? 700 : 500,
-                    color: isTotal ? '#1C2B2A' : '#3A5150',
+                    color: isTotal ? '#13201D' : '#3C4A46',
                     fontFamily: isTotal ? "'Inter', sans-serif" : 'inherit',
                     paddingLeft: isTotal ? 11 : 0,
                   }}>{l.linha}</span>
@@ -354,16 +354,16 @@ export default function RelatoriosPage() {
                   <span style={{
                     fontFamily: "'Inter', sans-serif",
                     fontWeight: isTotal ? 700 : 600,
-                    color: l.atual >= 0 ? '#10B981' : '#E74C3C',
+                    color: l.atual >= 0 ? '#3D7A6E' : '#B0413E',
                     fontSize: isTotal ? 14 : 12,
                     minWidth: 110, textAlign: 'right',
                   }}>{fmtBRL(l.atual)}</span>
-                  <span style={{ fontFamily: "'Inter', sans-serif", color: '#AAB8B7', fontSize: 11, minWidth: 90, textAlign: 'right' }}>{fmtBRL(ant)}</span>
+                  <span style={{ fontFamily: "'Inter', sans-serif", color: '#A6B0AC', fontSize: 11, minWidth: 90, textAlign: 'right' }}>{fmtBRL(ant)}</span>
                   <span style={{
                     fontSize: 10, fontWeight: 600, minWidth: 52, textAlign: 'right',
                     padding: '2px 6px', borderRadius: 20,
-                    background: vari >= 0 ? '#EAF5F3' : '#FEE2E2',
-                    color: vari >= 0 ? '#0F6E56' : '#991B1B',
+                    background: vari >= 0 ? '#E9F0ED' : '#F4E4E1',
+                    color: vari >= 0 ? '#2B564D' : '#B0413E',
                   }}>{vari >= 0 ? '+' : ''}{vari.toFixed(1)}%</span>
                   <i className="fa-solid fa-chevron-right" style={{ fontSize: 9, color: '#C4CFCE' }} />
                 </div>
@@ -396,7 +396,7 @@ export default function RelatoriosPage() {
             </div>
             <div style={{ display: 'flex', gap: 12, marginTop: 8 }}>
               <div className="cf-leg-item"><div className="cf-leg-dot" style={{ background: 'var(--teal)' }} /> Receita</div>
-              <div className="cf-leg-item"><div className="cf-leg-dot" style={{ background: 'rgba(184,146,42,.5)' }} /> Despesas</div>
+              <div className="cf-leg-item"><div className="cf-leg-dot" style={{ background: 'rgba(176,138,62,.5)' }} /> Despesas</div>
             </div>
           </div>
           <div className="chart-card">
@@ -424,50 +424,50 @@ export default function RelatoriosPage() {
       {tab === 'Métricas' && (
         <>
           {/* Métricas de rentabilidade */}
-          <div style={{ fontSize: 10, fontWeight: 700, color: '#7A8F8E', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }}>Rentabilidade</div>
+          <div style={{ fontSize: 10, fontWeight: 700, color: '#7B8C88', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }}>Rentabilidade</div>
           <div className="kpis" style={{ gridTemplateColumns: 'repeat(4,1fr)', marginBottom: 16 }}>
             {[
-              { key: 'margem_liquida',  label: 'Margem Líquida',  icon: 'fa-percent',       bg: '#EAF5F3', color: '#10B981', fmt: (v: number) => `${Number(v).toFixed(1)}%`,  desc: 'Lucro / Receita' },
-              { key: 'margem_bruta',    label: 'Margem Bruta',    icon: 'fa-chart-line',     bg: '#EAF5F3', color: '#10B981', fmt: (v: number) => `${Number(v).toFixed(1)}%`,  desc: 'Lucro Bruto / Receita' },
-              { key: 'margem_ebitda',   label: 'Margem EBITDA',   icon: 'fa-gauge-high',     bg: '#FEF3C7', color: '#D97706', fmt: (v: number) => `${Number(v).toFixed(1)}%`,  desc: 'EBITDA / Receita' },
-              { key: 'roi',             label: 'ROI',             icon: 'fa-arrow-trend-up', bg: '#EAF5F3', color: '#10B981', fmt: (v: number) => `${Number(v).toFixed(2)}%`,  desc: 'Retorno sobre investimento' },
+              { key: 'margem_liquida',  label: 'Margem Líquida',  icon: 'fa-percent',       bg: '#E9F0ED', color: '#3D7A6E', fmt: (v: number) => `${Number(v).toFixed(1)}%`,  desc: 'Lucro / Receita' },
+              { key: 'margem_bruta',    label: 'Margem Bruta',    icon: 'fa-chart-line',     bg: '#E9F0ED', color: '#3D7A6E', fmt: (v: number) => `${Number(v).toFixed(1)}%`,  desc: 'Lucro Bruto / Receita' },
+              { key: 'margem_ebitda',   label: 'Margem EBITDA',   icon: 'fa-gauge-high',     bg: '#F3ECDA', color: '#B08A3E', fmt: (v: number) => `${Number(v).toFixed(1)}%`,  desc: 'EBITDA / Receita' },
+              { key: 'roi',             label: 'ROI',             icon: 'fa-arrow-trend-up', bg: '#E9F0ED', color: '#3D7A6E', fmt: (v: number) => `${Number(v).toFixed(2)}%`,  desc: 'Retorno sobre investimento' },
             ].map(m => {
               const val = Number(metricas?.[m.key] || 0)
               const isNeg = val < 0
               return (
-                <div key={m.key} className="kpi" style={{ borderTop: `3px solid ${isNeg ? '#E74C3C' : m.color}` }}>
+                <div key={m.key} className="kpi" style={{ borderTop: `3px solid ${isNeg ? '#B0413E' : m.color}` }}>
                   <div className="kpi-lbl">
                     {m.label}
-                    <div style={{ width: 26, height: 26, borderRadius: 7, background: isNeg ? '#FEE2E2' : m.bg, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <i className={`fa-solid ${m.icon}`} style={{ fontSize: 11, color: isNeg ? '#E74C3C' : m.color }} />
+                    <div style={{ width: 26, height: 26, borderRadius: 7, background: isNeg ? '#F4E4E1' : m.bg, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <i className={`fa-solid ${m.icon}`} style={{ fontSize: 11, color: isNeg ? '#B0413E' : m.color }} />
                     </div>
                   </div>
-                  <div className="kpi-val" style={{ color: isNeg ? '#E74C3C' : '#1C2B2A' }}>{m.fmt(val)}</div>
-                  <div className="kpi-delta" style={{ color: '#AAB8B7' }}>{m.desc}</div>
+                  <div className="kpi-val" style={{ color: isNeg ? '#B0413E' : '#13201D' }}>{m.fmt(val)}</div>
+                  <div className="kpi-delta" style={{ color: '#A6B0AC' }}>{m.desc}</div>
                 </div>
               )
             })}
           </div>
 
           {/* Métricas operacionais */}
-          <div style={{ fontSize: 10, fontWeight: 700, color: '#7A8F8E', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10, marginTop: 4 }}>Resultado operacional</div>
+          <div style={{ fontSize: 10, fontWeight: 700, color: '#7B8C88', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10, marginTop: 4 }}>Resultado operacional</div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 10, marginBottom: 16 }}>
             {[
-              { key: 'ebitda',          label: 'EBITDA',             desc: 'Resultado antes de juros, impostos e depreciação', color: '#D97706' },
-              { key: 'ebit',            label: 'EBIT (Lucro Operacional)', desc: 'Resultado operacional líquido', color: '#10B981' },
-              { key: 'capital_investido', label: 'Capital Investido', desc: 'Base de cálculo do ROIC',          color: '#7C3AED' },
+              { key: 'ebitda',          label: 'EBITDA',             desc: 'Resultado antes de juros, impostos e depreciação', color: '#B08A3E' },
+              { key: 'ebit',            label: 'EBIT (Lucro Operacional)', desc: 'Resultado operacional líquido', color: '#3D7A6E' },
+              { key: 'capital_investido', label: 'Capital Investido', desc: 'Base de cálculo do ROIC',          color: '#7A6A9E' },
             ].map(m => {
               const val = Number(metricas?.[m.key] || 0)
               return (
-                <div key={m.key} style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 12, padding: '14px 16px' }}>
-                  <div style={{ fontSize: 10, fontWeight: 600, color: '#7A8F8E', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 6 }}>{m.label}</div>
-                  <div style={{ fontSize: 20, fontWeight: 700, color: val < 0 ? '#E74C3C' : m.color, fontFamily: "'Inter', sans-serif", letterSpacing: '-0.03em', marginBottom: 4 }}>
+                <div key={m.key} style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 12, padding: '14px 16px' }}>
+                  <div style={{ fontSize: 10, fontWeight: 600, color: '#7B8C88', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 6 }}>{m.label}</div>
+                  <div style={{ fontSize: 20, fontWeight: 700, color: val < 0 ? '#B0413E' : m.color, fontFamily: "'Inter', sans-serif", letterSpacing: '-0.03em', marginBottom: 4 }}>
                     {val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 })}
                   </div>
-                  <div style={{ fontSize: 11, color: '#AAB8B7' }}>{m.desc}</div>
+                  <div style={{ fontSize: 11, color: '#A6B0AC' }}>{m.desc}</div>
                   {/* Mini barra de contexto */}
-                  <div style={{ marginTop: 10, height: 4, background: '#EEF2F1', borderRadius: 99, overflow: 'hidden' }}>
-                    <div style={{ height: '100%', width: `${Math.min(100, Math.abs(val) > 0 ? 60 : 0)}%`, background: val < 0 ? '#E74C3C' : m.color, borderRadius: 99 }} />
+                  <div style={{ marginTop: 10, height: 4, background: '#F1ECE1', borderRadius: 99, overflow: 'hidden' }}>
+                    <div style={{ height: '100%', width: `${Math.min(100, Math.abs(val) > 0 ? 60 : 0)}%`, background: val < 0 ? '#B0413E' : m.color, borderRadius: 99 }} />
                   </div>
                 </div>
               )
@@ -475,8 +475,8 @@ export default function RelatoriosPage() {
           </div>
 
           {/* Saúde financeira — score visual */}
-          <div style={{ fontSize: 10, fontWeight: 700, color: '#7A8F8E', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }}>Indicadores de saúde</div>
-          <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 12, padding: '16px 18px' }}>
+          <div style={{ fontSize: 10, fontWeight: 700, color: '#7B8C88', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }}>Indicadores de saúde</div>
+          <div style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 12, padding: '16px 18px' }}>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: 14 }}>
               {[
                 { label: 'Liquidez (Receita/Despesas)', val: metricas?.receita_bruta && metricas?.despesas_totais ? Number(metricas.receita_bruta) / Math.max(1, Number(metricas.despesas_totais)) : null, bom: 1.2, otimo: 1.5, fmt: (v: number) => `${v.toFixed(2)}x`, desc: 'Acima de 1.2 = saudável' },
@@ -486,21 +486,21 @@ export default function RelatoriosPage() {
               ].map(ind => {
                 const v = ind.val
                 const pct = v == null ? 0 : Math.min(100, Math.max(0, (v / ind.otimo) * 100))
-                const cor = v == null ? '#AAB8B7' : v >= ind.otimo ? '#10B981' : v >= ind.bom ? '#D97706' : '#E74C3C'
+                const cor = v == null ? '#A6B0AC' : v >= ind.otimo ? '#3D7A6E' : v >= ind.bom ? '#B08A3E' : '#B0413E'
                 const status = v == null ? '—' : v >= ind.otimo ? 'Ótimo' : v >= ind.bom ? 'Bom' : 'Atenção'
                 return (
                   <div key={ind.label}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 5 }}>
-                      <span style={{ fontSize: 11, fontWeight: 600, color: '#1C2B2A' }}>{ind.label}</span>
+                      <span style={{ fontSize: 11, fontWeight: 600, color: '#13201D' }}>{ind.label}</span>
                       <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
                         <span style={{ fontSize: 12, fontWeight: 700, color: cor, fontFamily: "'Inter', sans-serif" }}>{v == null ? '—' : ind.fmt(v)}</span>
-                        <span style={{ fontSize: 9, padding: '1px 7px', borderRadius: 20, background: v == null ? '#EEF2F1' : v >= ind.otimo ? '#EAF5F3' : v >= ind.bom ? '#FEF3C7' : '#FEE2E2', color: cor, fontWeight: 700 }}>{status}</span>
+                        <span style={{ fontSize: 9, padding: '1px 7px', borderRadius: 20, background: v == null ? '#F1ECE1' : v >= ind.otimo ? '#E9F0ED' : v >= ind.bom ? '#F3ECDA' : '#F4E4E1', color: cor, fontWeight: 700 }}>{status}</span>
                       </div>
                     </div>
-                    <div style={{ height: 6, background: '#EEF2F1', borderRadius: 99, overflow: 'hidden' }}>
+                    <div style={{ height: 6, background: '#F1ECE1', borderRadius: 99, overflow: 'hidden' }}>
                       <div style={{ height: '100%', width: `${pct}%`, background: cor, borderRadius: 99, transition: 'width 0.5s' }} />
                     </div>
-                    <div style={{ fontSize: 10, color: '#AAB8B7', marginTop: 3 }}>{ind.desc}</div>
+                    <div style={{ fontSize: 10, color: '#A6B0AC', marginTop: 3 }}>{ind.desc}</div>
                   </div>
                 )
               })}
@@ -523,7 +523,7 @@ export default function RelatoriosPage() {
                   <div key={h.mes} className="cf-col">
                     <div className="cf-bgrp">
                       <div className="cf-bar i" style={{ height: hR }} />
-                      <div className="cf-bar o" style={{ height: hL, background: h.lucro >= 0 ? 'rgba(45,155,111,.4)' : 'rgba(192,80,74,.4)' }} />
+                      <div className="cf-bar o" style={{ height: hL, background: h.lucro >= 0 ? 'rgba(61,122,110,.4)' : 'rgba(176,65,62,.4)' }} />
                     </div>
                     <div className="cf-lbl">{h.mes}</div>
                   </div>
@@ -538,7 +538,7 @@ export default function RelatoriosPage() {
                 {histChart.map((h) => (
                   <tr key={h.mes}>
                     <td style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>{h.mes}</td>
-                    <td style={{ color: '#10B981', fontWeight: 600 }}>{fmtBRL(h.receita)}</td>
+                    <td style={{ color: '#3D7A6E', fontWeight: 600 }}>{fmtBRL(h.receita)}</td>
                     <td style={{ color: h.lucro >= 0 ? 'var(--green)' : 'var(--red)', fontWeight: 600 }}>{fmtBRL(h.lucro)}</td>
                     <td style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>{h.margem.toFixed(2)}%</td>
                   </tr>
@@ -552,12 +552,12 @@ export default function RelatoriosPage() {
       {/* Gerencial */}
       {tab === 'Gerencial' && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-          {gerLoading && <div style={{ padding: 40, textAlign: 'center', color: '#7A8F8E' }}><i className="fa-solid fa-spinner fa-spin" /> Carregando…</div>}
+          {gerLoading && <div style={{ padding: 40, textAlign: 'center', color: '#7B8C88' }}><i className="fa-solid fa-spinner fa-spin" /> Carregando…</div>}
           {!gerLoading && gerencial && (
             <>
               {/* Financeiro */}
-              <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 12, padding: '16px 20px' }}>
-                <div style={{ fontSize: 11, fontWeight: 700, color: '#7A8F8E', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: 12 }}>Financeiro — {competencia}</div>
+              <div style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 12, padding: '16px 20px' }}>
+                <div style={{ fontSize: 11, fontWeight: 700, color: '#7B8C88', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: 12 }}>Financeiro — {competencia}</div>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 12 }}>
                   {[
                     { l: 'Receita Bruta', v: fmtBRL(Number(metricas?.receita_bruta || 0)), c: 'var(--teal)' },
@@ -566,7 +566,7 @@ export default function RelatoriosPage() {
                     { l: 'Lucro Líquido', v: fmtBRL(Number(metricas?.lucro_liquido || 0)), c: Number(metricas?.lucro_liquido || 0) >= 0 ? 'var(--green)' : 'var(--red)' },
                   ].map(k => (
                     <div key={k.l}>
-                      <div style={{ fontSize: 11, color: '#7A8F8E', marginBottom: 4 }}>{k.l}</div>
+                      <div style={{ fontSize: 11, color: '#7B8C88', marginBottom: 4 }}>{k.l}</div>
                       <div style={{ fontSize: 16, fontWeight: 800, color: k.c, fontFamily: 'monospace' }}>{k.v}</div>
                     </div>
                   ))}
@@ -576,10 +576,10 @@ export default function RelatoriosPage() {
               {/* Grid setorial */}
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: 14 }}>
                 {/* CRM */}
-                <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 12, padding: '16px 20px' }}>
+                <div style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 12, padding: '16px 20px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
-                    <i className="fa-solid fa-handshake" style={{ color: '#7C3AED', fontSize: 14 }} />
-                    <span style={{ fontSize: 11, fontWeight: 700, color: '#7A8F8E', textTransform: 'uppercase', letterSpacing: '.06em' }}>CRM / Vendas</span>
+                    <i className="fa-solid fa-handshake" style={{ color: '#7A6A9E', fontSize: 14 }} />
+                    <span style={{ fontSize: 11, fontWeight: 700, color: '#7B8C88', textTransform: 'uppercase', letterSpacing: '.06em' }}>CRM / Vendas</span>
                   </div>
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: 10 }}>
                     {[
@@ -589,18 +589,18 @@ export default function RelatoriosPage() {
                       { l: 'Perdidas', v: String(gerencial.crm.perdidas) },
                     ].map(k => (
                       <div key={k.l}>
-                        <div style={{ fontSize: 10, color: '#7A8F8E', marginBottom: 2 }}>{k.l}</div>
-                        <div style={{ fontSize: 14, fontWeight: 700, color: '#1C2B2A', fontFamily: 'monospace' }}>{k.v}</div>
+                        <div style={{ fontSize: 10, color: '#7B8C88', marginBottom: 2 }}>{k.l}</div>
+                        <div style={{ fontSize: 14, fontWeight: 700, color: '#13201D', fontFamily: 'monospace' }}>{k.v}</div>
                       </div>
                     ))}
                   </div>
                 </div>
 
                 {/* Marketing */}
-                <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 12, padding: '16px 20px' }}>
+                <div style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 12, padding: '16px 20px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
-                    <i className="fa-solid fa-bullhorn" style={{ color: '#D97706', fontSize: 14 }} />
-                    <span style={{ fontSize: 11, fontWeight: 700, color: '#7A8F8E', textTransform: 'uppercase', letterSpacing: '.06em' }}>Marketing</span>
+                    <i className="fa-solid fa-bullhorn" style={{ color: '#B08A3E', fontSize: 14 }} />
+                    <span style={{ fontSize: 11, fontWeight: 700, color: '#7B8C88', textTransform: 'uppercase', letterSpacing: '.06em' }}>Marketing</span>
                   </div>
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: 10 }}>
                     {[
@@ -610,18 +610,18 @@ export default function RelatoriosPage() {
                       { l: 'Leads', v: String(gerencial.mkt.leads) },
                     ].map(k => (
                       <div key={k.l}>
-                        <div style={{ fontSize: 10, color: '#7A8F8E', marginBottom: 2 }}>{k.l}</div>
-                        <div style={{ fontSize: 14, fontWeight: 700, color: '#1C2B2A', fontFamily: 'monospace' }}>{k.v}</div>
+                        <div style={{ fontSize: 10, color: '#7B8C88', marginBottom: 2 }}>{k.l}</div>
+                        <div style={{ fontSize: 14, fontWeight: 700, color: '#13201D', fontFamily: 'monospace' }}>{k.v}</div>
                       </div>
                     ))}
                   </div>
                 </div>
 
                 {/* Logística */}
-                <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 12, padding: '16px 20px' }}>
+                <div style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 12, padding: '16px 20px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
-                    <i className="fa-solid fa-truck-fast" style={{ color: '#10B981', fontSize: 14 }} />
-                    <span style={{ fontSize: 11, fontWeight: 700, color: '#7A8F8E', textTransform: 'uppercase', letterSpacing: '.06em' }}>Logística</span>
+                    <i className="fa-solid fa-truck-fast" style={{ color: '#3D7A6E', fontSize: 14 }} />
+                    <span style={{ fontSize: 11, fontWeight: 700, color: '#7B8C88', textTransform: 'uppercase', letterSpacing: '.06em' }}>Logística</span>
                   </div>
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: 10 }}>
                     {[
@@ -631,18 +631,18 @@ export default function RelatoriosPage() {
                       { l: 'Entrega rate', v: gerencial.log.em_transito + gerencial.log.entregues > 0 ? `${Math.round(gerencial.log.entregues / (gerencial.log.em_transito + gerencial.log.entregues) * 100)}%` : '—' },
                     ].map(k => (
                       <div key={k.l}>
-                        <div style={{ fontSize: 10, color: '#7A8F8E', marginBottom: 2 }}>{k.l}</div>
-                        <div style={{ fontSize: 14, fontWeight: 700, color: '#1C2B2A', fontFamily: 'monospace' }}>{k.v}</div>
+                        <div style={{ fontSize: 10, color: '#7B8C88', marginBottom: 2 }}>{k.l}</div>
+                        <div style={{ fontSize: 14, fontWeight: 700, color: '#13201D', fontFamily: 'monospace' }}>{k.v}</div>
                       </div>
                     ))}
                   </div>
                 </div>
 
                 {/* Clientes + Equipe */}
-                <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 12, padding: '16px 20px' }}>
+                <div style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 12, padding: '16px 20px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
-                    <i className="fa-solid fa-users" style={{ color: '#10B981', fontSize: 14 }} />
-                    <span style={{ fontSize: 11, fontWeight: 700, color: '#7A8F8E', textTransform: 'uppercase', letterSpacing: '.06em' }}>Clientes & Equipe</span>
+                    <i className="fa-solid fa-users" style={{ color: '#3D7A6E', fontSize: 14 }} />
+                    <span style={{ fontSize: 11, fontWeight: 700, color: '#7B8C88', textTransform: 'uppercase', letterSpacing: '.06em' }}>Clientes & Equipe</span>
                   </div>
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: 10 }}>
                     {[
@@ -652,8 +652,8 @@ export default function RelatoriosPage() {
                       { l: 'Equipe ativa', v: `${gerencial.equipe.ativos}/${gerencial.equipe.total}` },
                     ].map(k => (
                       <div key={k.l}>
-                        <div style={{ fontSize: 10, color: '#7A8F8E', marginBottom: 2 }}>{k.l}</div>
-                        <div style={{ fontSize: 14, fontWeight: 700, color: '#1C2B2A', fontFamily: 'monospace' }}>{k.v}</div>
+                        <div style={{ fontSize: 10, color: '#7B8C88', marginBottom: 2 }}>{k.l}</div>
+                        <div style={{ fontSize: 14, fontWeight: 700, color: '#13201D', fontFamily: 'monospace' }}>{k.v}</div>
                       </div>
                     ))}
                   </div>
@@ -677,19 +677,19 @@ export default function RelatoriosPage() {
       {tab === 'Exportações' && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
           {/* Filtro de período */}
-          <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 12, padding: '16px 20px' }}>
-            <div style={{ fontSize: 12, fontWeight: 700, color: '#1C2B2A', marginBottom: 12 }}>Filtros do período</div>
+          <div style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 12, padding: '16px 20px' }}>
+            <div style={{ fontSize: 12, fontWeight: 700, color: '#13201D', marginBottom: 12 }}>Filtros do período</div>
             <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-                <label style={{ fontSize: 11, color: '#7A8F8E', fontWeight: 600 }}>Data início</label>
+                <label style={{ fontSize: 11, color: '#7B8C88', fontWeight: 600 }}>Data início</label>
                 <input type="date" className="form-input" style={{ width: 150 }} value={expInicio} onChange={e => setExpInicio(e.target.value)} />
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-                <label style={{ fontSize: 11, color: '#7A8F8E', fontWeight: 600 }}>Data fim</label>
+                <label style={{ fontSize: 11, color: '#7B8C88', fontWeight: 600 }}>Data fim</label>
                 <input type="date" className="form-input" style={{ width: 150 }} value={expFim} onChange={e => setExpFim(e.target.value)} />
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-                <label style={{ fontSize: 11, color: '#7A8F8E', fontWeight: 600 }}>Status despesas</label>
+                <label style={{ fontSize: 11, color: '#7B8C88', fontWeight: 600 }}>Status despesas</label>
                 <select className="form-input" style={{ width: 160 }} value={expStatus} onChange={e => setExpStatus(e.target.value)}>
                   <option value="">Todos</option>
                   <option value="pendente">Pendente</option>
@@ -705,30 +705,30 @@ export default function RelatoriosPage() {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 14 }}>
 
             {/* DRE PDF */}
-            <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 12, padding: 20 }}>
+            <div style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 12, padding: 20 }}>
               <div style={{ marginBottom: 10 }}><i className="fa-solid fa-file-pdf" style={{ fontSize: 24, color: "#DC2626" }} /></div>
-              <div style={{ fontSize: 13, fontWeight: 700, color: '#1C2B2A', marginBottom: 4 }}>DRE — PDF</div>
-              <div style={{ fontSize: 12, color: '#7A8F8E', marginBottom: 16, lineHeight: 1.6 }}>Demonstrativo de Resultados em PDF com análise IA</div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: '#13201D', marginBottom: 4 }}>DRE — PDF</div>
+              <div style={{ fontSize: 12, color: '#7B8C88', marginBottom: 16, lineHeight: 1.6 }}>Demonstrativo de Resultados em PDF com análise IA</div>
               <button className="btn-action" style={{ width: '100%' }} disabled={exportandoPdf} onClick={() => void exportarPdf()}>
                 {exportandoPdf ? 'Gerando PDF...' : 'Baixar PDF'}
               </button>
             </div>
 
             {/* DRE Excel */}
-            <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 12, padding: 20 }}>
+            <div style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 12, padding: 20 }}>
               <div style={{ marginBottom: 10 }}><i className="fa-solid fa-file-excel" style={{ fontSize: 24, color: "#16A34A" }} /></div>
-              <div style={{ fontSize: 13, fontWeight: 700, color: '#1C2B2A', marginBottom: 4 }}>DRE — Excel</div>
-              <div style={{ fontSize: 12, color: '#7A8F8E', marginBottom: 16, lineHeight: 1.6 }}>DRE completo + comparativo 12 meses + métricas avançadas</div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: '#13201D', marginBottom: 4 }}>DRE — Excel</div>
+              <div style={{ fontSize: 12, color: '#7B8C88', marginBottom: 16, lineHeight: 1.6 }}>DRE completo + comparativo 12 meses + métricas avançadas</div>
               <button className="btn-action" style={{ width: '100%' }} onClick={() => void exportarExcel()}>
                 Baixar Excel (.xlsx)
               </button>
             </div>
 
             {/* Transações CSV */}
-            <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 12, padding: 20 }}>
+            <div style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 12, padding: 20 }}>
               <div style={{ marginBottom: 10 }}><i className="fa-solid fa-file-csv" style={{ fontSize: 24, color: "#0891B2" }} /></div>
-              <div style={{ fontSize: 13, fontWeight: 700, color: '#1C2B2A', marginBottom: 4 }}>Transações — CSV</div>
-              <div style={{ fontSize: 12, color: '#7A8F8E', marginBottom: 16, lineHeight: 1.6 }}>Todas as transações do período filtrado (entradas e saídas)</div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: '#13201D', marginBottom: 4 }}>Transações — CSV</div>
+              <div style={{ fontSize: 12, color: '#7B8C88', marginBottom: 16, lineHeight: 1.6 }}>Todas as transações do período filtrado (entradas e saídas)</div>
               <button
                 className="btn-action"
                 style={{ width: '100%', opacity: expLoading === 'transacoes' ? 0.6 : 1 }}
@@ -740,10 +740,10 @@ export default function RelatoriosPage() {
             </div>
 
             {/* Despesas CSV */}
-            <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 12, padding: 20 }}>
+            <div style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 12, padding: 20 }}>
               <div style={{ marginBottom: 10 }}><i className="fa-solid fa-money-bill-transfer" style={{ fontSize: 24, color: "var(--teal)" }} /></div>
-              <div style={{ fontSize: 13, fontWeight: 700, color: '#1C2B2A', marginBottom: 4 }}>Despesas — CSV</div>
-              <div style={{ fontSize: 12, color: '#7A8F8E', marginBottom: 16, lineHeight: 1.6 }}>Contas a pagar com fornecedor, categoria, status e centro de custo</div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: '#13201D', marginBottom: 4 }}>Despesas — CSV</div>
+              <div style={{ fontSize: 12, color: '#7B8C88', marginBottom: 16, lineHeight: 1.6 }}>Contas a pagar com fornecedor, categoria, status e centro de custo</div>
               <button
                 className="btn-action"
                 style={{ width: '100%', opacity: expLoading === 'despesas' ? 0.6 : 1 }}
@@ -757,7 +757,7 @@ export default function RelatoriosPage() {
           </div>
 
           {/* Info */}
-          <div style={{ fontSize: 11, color: '#7A8F8E', padding: '0 4px', lineHeight: 1.7 }}>
+          <div style={{ fontSize: 11, color: '#7B8C88', padding: '0 4px', lineHeight: 1.7 }}>
             Os arquivos CSV usam separador <code>;</code> e codificação UTF-8 com BOM — compatíveis com Excel, Google Sheets e LibreOffice.
           </div>
         </div>
@@ -765,10 +765,10 @@ export default function RelatoriosPage() {
 
       {/* Análise IA */}
       {analise && (
-        <div style={{ marginTop: 14, background: 'rgba(16,185,129,.06)', border: '1px solid rgba(16,185,129,.2)', borderRadius: 12, padding: 16 }}>
+        <div style={{ marginTop: 14, background: 'rgba(61,122,110,.06)', border: '1px solid rgba(61,122,110,.2)', borderRadius: 12, padding: 16 }}>
           <div className="chart-title" style={{ marginBottom: 8 }}>Análise FactorOne</div>
-          <p style={{ fontSize: 12, fontWeight: 700, color: '#1C2B2A', marginBottom: 6 }}>Score de saúde: {String(analise.score_saude ?? '—')}</p>
-          <p style={{ fontSize: 12, color: '#1C2B2A', lineHeight: 1.65 }}>{String(analise.resumo_executivo ?? '')}</p>
+          <p style={{ fontSize: 12, fontWeight: 700, color: '#13201D', marginBottom: 6 }}>Score de saúde: {String(analise.score_saude ?? '—')}</p>
+          <p style={{ fontSize: 12, color: '#13201D', lineHeight: 1.65 }}>{String(analise.resumo_executivo ?? '')}</p>
         </div>
       )}
 
@@ -788,7 +788,7 @@ export default function RelatoriosPage() {
                   <thead><tr><th>Data</th><th>Descrição</th><th>Origem</th><th>Valor</th></tr></thead>
                   <tbody>
                     {drillRows.length === 0 ? (
-                      <tr><td colSpan={4} style={{ textAlign: 'center', color: '#7A8F8E', padding: 24 }}>Sem lançamentos.</td></tr>
+                      <tr><td colSpan={4} style={{ textAlign: 'center', color: '#7B8C88', padding: 24 }}>Sem lançamentos.</td></tr>
                     ) : drillRows.map(r => (
                       <tr key={r.id}>
                         <td>{new Date(r.created_at).toLocaleDateString('pt-BR')}</td>

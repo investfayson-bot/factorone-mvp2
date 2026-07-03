@@ -12,7 +12,7 @@ type PortalData = {
 const STATUS_FAT: Record<string, { label: string; color: string; bg: string }> = {
   pendente:  { label: 'Pendente',  color: '#b45309', bg: '#fef3c7' },
   vencida:   { label: 'Vencida',   color: '#dc2626', bg: '#fee2e2' },
-  paga:      { label: 'Paga',      color: '#16a34a', bg: '#dcfce7' },
+  paga:      { label: 'Paga',      color: '#16a34a', bg: '#E9F0ED' },
   cancelada: { label: 'Cancelada', color: '#64748b', bg: '#f1f5f9' },
 }
 

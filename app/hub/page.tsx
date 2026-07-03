@@ -49,7 +49,7 @@ export default function HubHomePage() {
   }, [])
 
   const kpis = [
-    { label: 'Projetos', value: counts?.projetos ?? '—', icon: 'fa-diagram-project', href: '/hub/projetos', cor: '#7C3AED' },
+    { label: 'Projetos', value: counts?.projetos ?? '—', icon: 'fa-diagram-project', href: '/hub/projetos', cor: '#7A6A9E' },
     { label: 'Ideias', value: counts?.ideias ?? '—', icon: 'fa-lightbulb', href: '/hub/ideias', cor: '#F59E0B' },
     { label: 'Clientes & Leads', value: counts?.clientes ?? '—', icon: 'fa-users', href: '/hub/clientes', cor: '#2563EB' },
     { label: 'Eventos', value: counts?.eventos ?? '—', icon: 'fa-calendar-star', href: '/hub/eventos', cor: '#DB2777' },

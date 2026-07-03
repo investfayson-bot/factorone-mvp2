@@ -90,9 +90,9 @@ export default function NotasRecebidas() {
   }
 
   function statusColor(s: string) {
-    if (s === 'aprovada') return { bg: 'rgba(45,155,111,.12)', color: 'var(--green)' }
-    if (s === 'rejeitada') return { bg: 'rgba(192,80,74,.1)', color: 'var(--red)' }
-    if (s === 'aguardando_captacao') return { bg: 'rgba(16,185,129,.12)', color: 'var(--teal)' }
+    if (s === 'aprovada') return { bg: 'rgba(61,122,110,.12)', color: 'var(--green)' }
+    if (s === 'rejeitada') return { bg: 'rgba(176,65,62,.1)', color: 'var(--red)' }
+    if (s === 'aguardando_captacao') return { bg: 'rgba(61,122,110,.12)', color: 'var(--teal)' }
     return { bg: 'var(--gray-100)', color: 'var(--gray-400)' }
   }
 
@@ -163,9 +163,9 @@ export default function NotasRecebidas() {
             ))}
           </div>
           <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
-            <span className="tag" style={{ background: 'rgba(184,146,42,.1)', color: 'var(--gold)' }}>{resultado.classificacao || 'sem classificação'}</span>
+            <span className="tag" style={{ background: 'rgba(176,138,62,.1)', color: 'var(--gold)' }}>{resultado.classificacao || 'sem classificação'}</span>
             {resultado.adequado_para_factoring && (
-              <span className="tag" style={{ background: 'rgba(45,155,111,.12)', color: 'var(--green)' }}>✓ Factoring</span>
+              <span className="tag" style={{ background: 'rgba(61,122,110,.12)', color: 'var(--green)' }}>✓ Factoring</span>
             )}
           </div>
           <button type="button" onClick={() => enviarCaptacao(resultado.id)} className="btn-action">

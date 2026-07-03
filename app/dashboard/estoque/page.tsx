@@ -77,18 +77,18 @@ export default function EstoquePage() {
   const abaixoMinimo = produtos.filter(p => p.quantidade <= p.estoque_minimo)
 
   const kpis = [
-    { label: 'Produtos', valor: String(produtos.length), cor: '#1C2B2A' },
-    { label: 'Itens em estoque', valor: String(totalItens), cor: '#10B981' },
-    { label: 'Valor em estoque', valor: formatBRL(valorEstoque), cor: '#1C2B2A' },
-    { label: 'Abaixo do mínimo', valor: String(abaixoMinimo.length), cor: abaixoMinimo.length ? '#C0504A' : '#16A085' },
+    { label: 'Produtos', valor: String(produtos.length), cor: '#13201D' },
+    { label: 'Itens em estoque', valor: String(totalItens), cor: '#3D7A6E' },
+    { label: 'Valor em estoque', valor: formatBRL(valorEstoque), cor: '#13201D' },
+    { label: 'Abaixo do mínimo', valor: String(abaixoMinimo.length), cor: abaixoMinimo.length ? '#B0413E' : '#3D7A6E' },
   ]
 
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 18, gap: 12, flexWrap: 'wrap' }}>
         <div>
-          <h1 style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: 18, fontWeight: 700, color: '#1C2B2A', margin: 0 }}>Gestão de Estoque</h1>
-          <div style={{ fontSize: 12, color: '#7A8F8E', marginTop: 3 }}>Produtos, quantidades e valor em estoque.</div>
+          <h1 style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: 18, fontWeight: 700, color: '#13201D', margin: 0 }}>Gestão de Estoque</h1>
+          <div style={{ fontSize: 12, color: '#7B8C88', marginTop: 3 }}>Produtos, quantidades e valor em estoque.</div>
         </div>
         <button className="btn-action" style={{ borderRadius: 8, padding: '9px 16px' }} onClick={() => setShowForm(v => !v)}>
           <i className="fa-solid fa-plus" style={{ marginRight: 6 }} />Novo produto
@@ -98,8 +98,8 @@ export default function EstoquePage() {
       {/* KPIs */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(160px,1fr))', gap: 12, marginBottom: 18 }}>
         {kpis.map(k => (
-          <div key={k.label} style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 12, padding: '14px 16px' }}>
-            <div style={{ fontSize: 11, color: '#7A8F8E', textTransform: 'uppercase', letterSpacing: .4 }}>{k.label}</div>
+          <div key={k.label} style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 12, padding: '14px 16px' }}>
+            <div style={{ fontSize: 11, color: '#7B8C88', textTransform: 'uppercase', letterSpacing: .4 }}>{k.label}</div>
             <div style={{ fontSize: 20, fontWeight: 800, color: k.cor, marginTop: 4 }}>{k.valor}</div>
           </div>
         ))}
@@ -107,7 +107,7 @@ export default function EstoquePage() {
 
       {/* Form inline */}
       {showForm && (
-        <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 12, padding: 18, marginBottom: 18 }}>
+        <div style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 12, padding: 18, marginBottom: 18 }}>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(150px,1fr))', gap: 12 }}>
             <Campo label="Nome *"><input className="form-input" value={form.nome} onChange={e => setForm(f => ({ ...f, nome: e.target.value }))} /></Campo>
             <Campo label="SKU"><input className="form-input" value={form.sku} onChange={e => setForm(f => ({ ...f, sku: e.target.value }))} /></Campo>
@@ -125,9 +125,9 @@ export default function EstoquePage() {
       )}
 
       {/* Tabela */}
-      <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 12, overflow: 'hidden' }}>
+      <div style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 12, overflow: 'hidden' }}>
         {loading ? (
-          <div style={{ padding: 30, textAlign: 'center', color: '#7A8F8E', fontSize: 13 }}>Carregando…</div>
+          <div style={{ padding: 30, textAlign: 'center', color: '#7B8C88', fontSize: 13 }}>Carregando…</div>
         ) : produtos.length === 0 ? (
           <div style={{ padding: 36, textAlign: 'center' }}>
             <EmptyState label="Nenhum produto cadastrado." />
@@ -135,7 +135,7 @@ export default function EstoquePage() {
         ) : (
           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
             <thead>
-              <tr style={{ background: '#F8FAFA', color: '#7A8F8E', fontSize: 11, textTransform: 'uppercase' }}>
+              <tr style={{ background: '#FBF8F1', color: '#7B8C88', fontSize: 11, textTransform: 'uppercase' }}>
                 <th style={th}>Produto</th><th style={th}>SKU</th><th style={th}>Categoria</th>
                 <th style={{ ...th, textAlign: 'right' }}>Qtd</th><th style={{ ...th, textAlign: 'right' }}>Custo</th>
                 <th style={{ ...th, textAlign: 'right' }}>Preço</th><th style={th}></th>
@@ -145,18 +145,18 @@ export default function EstoquePage() {
               {produtos.map(p => {
                 const baixo = p.quantidade <= p.estoque_minimo
                 return (
-                  <tr key={p.id} style={{ borderTop: '0.5px solid #F0F4F3' }}>
-                    <td style={{ ...td, fontWeight: 600, color: '#1C2B2A' }}>{p.nome}</td>
-                    <td style={{ ...td, color: '#7A8F8E' }}>{p.sku || '—'}</td>
-                    <td style={{ ...td, color: '#7A8F8E' }}>{p.categoria || '—'}</td>
+                  <tr key={p.id} style={{ borderTop: '0.5px solid #EFE9DC' }}>
+                    <td style={{ ...td, fontWeight: 600, color: '#13201D' }}>{p.nome}</td>
+                    <td style={{ ...td, color: '#7B8C88' }}>{p.sku || '—'}</td>
+                    <td style={{ ...td, color: '#7B8C88' }}>{p.categoria || '—'}</td>
                     <td style={{ ...td, textAlign: 'right' }}>
-                      <span style={{ color: baixo ? '#C0504A' : '#1C2B2A', fontWeight: baixo ? 700 : 400 }}>{p.quantidade}</span>
-                      {baixo && <i className="fa-solid fa-triangle-exclamation" title="Abaixo do mínimo" style={{ color: '#C0504A', fontSize: 10, marginLeft: 6 }} />}
+                      <span style={{ color: baixo ? '#B0413E' : '#13201D', fontWeight: baixo ? 700 : 400 }}>{p.quantidade}</span>
+                      {baixo && <i className="fa-solid fa-triangle-exclamation" title="Abaixo do mínimo" style={{ color: '#B0413E', fontSize: 10, marginLeft: 6 }} />}
                     </td>
                     <td style={{ ...td, textAlign: 'right' }}>{formatBRL(Number(p.custo_unitario))}</td>
                     <td style={{ ...td, textAlign: 'right' }}>{formatBRL(Number(p.preco_venda))}</td>
                     <td style={{ ...td, textAlign: 'right' }}>
-                      <button onClick={() => remover(p.id)} title="Remover" style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#7A8F8E' }}>
+                      <button onClick={() => remover(p.id)} title="Remover" style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#7B8C88' }}>
                         <i className="fa-solid fa-trash" style={{ fontSize: 12 }} />
                       </button>
                     </td>

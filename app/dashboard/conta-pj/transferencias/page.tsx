@@ -19,11 +19,11 @@ const TIPOS = [
 const EMPTY = { tipo: 'pix', destinatario_nome: '', chave_pix: '', destinatario_banco: '', destinatario_agencia: '', destinatario_conta: '', valor: '', data_agendada: new Date().toISOString().slice(0, 10), descricao: '' }
 
 const statusCor: Record<string, { bg: string; c: string }> = {
-  agendado: { bg: '#FEF3C7', c: '#92400E' },
+  agendado: { bg: '#F3ECDA', c: '#B08A3E' },
   processando: { bg: '#DBEAFE', c: '#1D4ED8' },
-  concluido: { bg: '#EAF5F3', c: '#0F6E56' },
+  concluido: { bg: '#E9F0ED', c: '#2B564D' },
   cancelado: { bg: '#F1F5F9', c: '#64748B' },
-  erro: { bg: '#FEE2E2', c: '#C0504A' },
+  erro: { bg: '#F4E4E1', c: '#B0413E' },
 }
 
 export default function TransferenciasPage() {
@@ -99,17 +99,17 @@ export default function TransferenciasPage() {
 
       {/* KPIs */}
       <div className="kpis" style={{ gridTemplateColumns: 'repeat(3,1fr)', marginBottom: 16 }}>
-        <div className="kpi" style={{ borderTop: '3px solid #D97706' }}>
+        <div className="kpi" style={{ borderTop: '3px solid #B08A3E' }}>
           <div className="kpi-lbl">Agendadas</div>
           <div className="kpi-val">{pendentes.length}</div>
           <div className="kpi-delta">{formatBRL(totalAgendado)} a enviar</div>
         </div>
-        <div className="kpi" style={{ borderTop: '3px solid #10B981' }}>
+        <div className="kpi" style={{ borderTop: '3px solid #3D7A6E' }}>
           <div className="kpi-lbl">Concluídas</div>
           <div className="kpi-val">{rows.filter(r => r.status === 'concluido').length}</div>
           <div className="kpi-delta up">total no histórico</div>
         </div>
-        <div className="kpi" style={{ borderTop: '3px solid #7C3AED' }}>
+        <div className="kpi" style={{ borderTop: '3px solid #7A6A9E' }}>
           <div className="kpi-lbl">Total de operações</div>
           <div className="kpi-val">{rows.length}</div>
           <div className="kpi-delta">PIX · TED · DOC</div>
@@ -117,28 +117,28 @@ export default function TransferenciasPage() {
       </div>
 
       {/* Lista */}
-      <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 14, overflow: 'hidden' }}>
-        <div style={{ padding: '12px 16px', borderBottom: '0.5px solid #E2E8E7', background: '#F8FAFA', fontSize: 12, fontWeight: 700, color: '#1C2B2A' }}>Histórico de transferências</div>
+      <div style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 14, overflow: 'hidden' }}>
+        <div style={{ padding: '12px 16px', borderBottom: '0.5px solid #E4DCCC', background: '#FBF8F1', fontSize: 12, fontWeight: 700, color: '#13201D' }}>Histórico de transferências</div>
         {rows.length === 0 ? (
-          <div style={{ padding: '40px 16px', textAlign: 'center', color: '#7A8F8E', fontSize: 12 }}>
+          <div style={{ padding: '40px 16px', textAlign: 'center', color: '#7B8C88', fontSize: 12 }}>
             <i className="fa-solid fa-paper-plane" style={{ fontSize: 26, color: '#D1D9D8', display: 'block', marginBottom: 10 }} />
             Nenhuma transferência ainda. Clique em <strong>Nova transferência</strong> para começar.
           </div>
         ) : rows.map((r, i) => {
           const sc = statusCor[r.status] ?? statusCor.agendado
           return (
-            <div key={r.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px', borderBottom: i < rows.length - 1 ? '0.5px solid #F0F4F3' : 'none' }}>
-              <div style={{ width: 36, height: 36, borderRadius: 10, background: '#EEF2F1', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                <i className={`fa-solid ${TIPOS.find(t => t.v === r.tipo)?.icon ?? 'fa-bolt'}`} style={{ fontSize: 14, color: '#10B981' }} />
+            <div key={r.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px', borderBottom: i < rows.length - 1 ? '0.5px solid #EFE9DC' : 'none' }}>
+              <div style={{ width: 36, height: 36, borderRadius: 10, background: '#F1ECE1', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <i className={`fa-solid ${TIPOS.find(t => t.v === r.tipo)?.icon ?? 'fa-bolt'}`} style={{ fontSize: 14, color: '#3D7A6E' }} />
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontSize: 13, fontWeight: 600, color: '#1C2B2A' }}>{r.destinatario_nome}</div>
-                <div style={{ fontSize: 10.5, color: '#7A8F8E' }}>{r.tipo.toUpperCase()} · {r.data_agendada}{r.chave_pix ? ` · ${r.chave_pix}` : ''}</div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: '#13201D' }}>{r.destinatario_nome}</div>
+                <div style={{ fontSize: 10.5, color: '#7B8C88' }}>{r.tipo.toUpperCase()} · {r.data_agendada}{r.chave_pix ? ` · ${r.chave_pix}` : ''}</div>
               </div>
-              <div style={{ fontSize: 13, fontWeight: 700, color: '#1C2B2A', fontFamily: "'Inter', system-ui, sans-serif" }}>{formatBRL(Number(r.valor || 0))}</div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: '#13201D', fontFamily: "'Inter', system-ui, sans-serif" }}>{formatBRL(Number(r.valor || 0))}</div>
               <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 9px', borderRadius: 20, background: sc.bg, color: sc.c }}>{r.status}</span>
               {r.status === 'agendado' && (
-                <button onClick={() => void cancelar(r.id)} style={{ fontSize: 11, color: '#C0504A', background: 'none', border: '0.5px solid #E2E8E7', borderRadius: 7, padding: '4px 10px', cursor: 'pointer', fontWeight: 600 }}>Cancelar</button>
+                <button onClick={() => void cancelar(r.id)} style={{ fontSize: 11, color: '#B0413E', background: 'none', border: '0.5px solid #E4DCCC', borderRadius: 7, padding: '4px 10px', cursor: 'pointer', fontWeight: 600 }}>Cancelar</button>
               )}
             </div>
           )
@@ -150,7 +150,7 @@ export default function TransferenciasPage() {
         <div className="modal-bg" onClick={e => e.target === e.currentTarget && setModal(false)}>
           <div className="modal-box">
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 18 }}>
-              <div><h3 className="modal-title">Nova transferência</h3><div style={{ fontSize: 11, color: '#7A8F8E' }}>PIX, TED ou DOC</div></div>
+              <div><h3 className="modal-title">Nova transferência</h3><div style={{ fontSize: 11, color: '#7B8C88' }}>PIX, TED ou DOC</div></div>
               <button className="modal-close" onClick={() => setModal(false)}><i className="fa-solid fa-xmark" /></button>
             </div>
 
@@ -159,38 +159,38 @@ export default function TransferenciasPage() {
               {TIPOS.map(t => (
                 <button key={t.v} onClick={() => setForm(p => ({ ...p, tipo: t.v }))} style={{
                   flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, padding: '10px', borderRadius: 10, cursor: 'pointer',
-                  border: form.tipo === t.v ? '1px solid #10B981' : '0.5px solid #E2E8E7', background: form.tipo === t.v ? '#EAF5F3' : '#fff',
+                  border: form.tipo === t.v ? '1px solid #3D7A6E' : '0.5px solid #E4DCCC', background: form.tipo === t.v ? '#E9F0ED' : '#fff',
                 }}>
-                  <i className={`fa-solid ${t.icon}`} style={{ fontSize: 15, color: form.tipo === t.v ? '#0F6E56' : '#7A8F8E' }} />
-                  <span style={{ fontSize: 12, fontWeight: 700, color: form.tipo === t.v ? '#0F6E56' : '#3A5150' }}>{t.label}</span>
-                  <span style={{ fontSize: 9, color: '#7A8F8E' }}>{t.desc}</span>
+                  <i className={`fa-solid ${t.icon}`} style={{ fontSize: 15, color: form.tipo === t.v ? '#2B564D' : '#7B8C88' }} />
+                  <span style={{ fontSize: 12, fontWeight: 700, color: form.tipo === t.v ? '#2B564D' : '#3C4A46' }}>{t.label}</span>
+                  <span style={{ fontSize: 9, color: '#7B8C88' }}>{t.desc}</span>
                 </button>
               ))}
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               <div>
-                <label style={{ fontSize: 10, fontWeight: 600, color: '#7A8F8E', display: 'block', marginBottom: 5, textTransform: 'uppercase', letterSpacing: '.07em' }}>Destinatário *</label>
+                <label style={{ fontSize: 10, fontWeight: 600, color: '#7B8C88', display: 'block', marginBottom: 5, textTransform: 'uppercase', letterSpacing: '.07em' }}>Destinatário *</label>
                 <input className="form-input" placeholder="Nome do favorecido" value={form.destinatario_nome} onChange={e => setForm(p => ({ ...p, destinatario_nome: e.target.value }))} />
               </div>
 
               {form.tipo === 'pix' ? (
                 <div>
-                  <label style={{ fontSize: 10, fontWeight: 600, color: '#7A8F8E', display: 'block', marginBottom: 5, textTransform: 'uppercase', letterSpacing: '.07em' }}>Chave PIX *</label>
+                  <label style={{ fontSize: 10, fontWeight: 600, color: '#7B8C88', display: 'block', marginBottom: 5, textTransform: 'uppercase', letterSpacing: '.07em' }}>Chave PIX *</label>
                   <input className="form-input" placeholder="CPF/CNPJ, e-mail, telefone ou aleatória" value={form.chave_pix} onChange={e => setForm(p => ({ ...p, chave_pix: e.target.value }))} />
                 </div>
               ) : (
                 <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr 1fr', gap: 10 }}>
                   <div>
-                    <label style={{ fontSize: 10, fontWeight: 600, color: '#7A8F8E', display: 'block', marginBottom: 5, textTransform: 'uppercase', letterSpacing: '.07em' }}>Banco *</label>
+                    <label style={{ fontSize: 10, fontWeight: 600, color: '#7B8C88', display: 'block', marginBottom: 5, textTransform: 'uppercase', letterSpacing: '.07em' }}>Banco *</label>
                     <input className="form-input" placeholder="Ex: Itaú" value={form.destinatario_banco} onChange={e => setForm(p => ({ ...p, destinatario_banco: e.target.value }))} />
                   </div>
                   <div>
-                    <label style={{ fontSize: 10, fontWeight: 600, color: '#7A8F8E', display: 'block', marginBottom: 5, textTransform: 'uppercase', letterSpacing: '.07em' }}>Agência</label>
+                    <label style={{ fontSize: 10, fontWeight: 600, color: '#7B8C88', display: 'block', marginBottom: 5, textTransform: 'uppercase', letterSpacing: '.07em' }}>Agência</label>
                     <input className="form-input" placeholder="0000" value={form.destinatario_agencia} onChange={e => setForm(p => ({ ...p, destinatario_agencia: e.target.value }))} />
                   </div>
                   <div>
-                    <label style={{ fontSize: 10, fontWeight: 600, color: '#7A8F8E', display: 'block', marginBottom: 5, textTransform: 'uppercase', letterSpacing: '.07em' }}>Conta *</label>
+                    <label style={{ fontSize: 10, fontWeight: 600, color: '#7B8C88', display: 'block', marginBottom: 5, textTransform: 'uppercase', letterSpacing: '.07em' }}>Conta *</label>
                     <input className="form-input" placeholder="00000-0" value={form.destinatario_conta} onChange={e => setForm(p => ({ ...p, destinatario_conta: e.target.value }))} />
                   </div>
                 </div>
@@ -198,22 +198,22 @@ export default function TransferenciasPage() {
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
                 <div>
-                  <label style={{ fontSize: 10, fontWeight: 600, color: '#7A8F8E', display: 'block', marginBottom: 5, textTransform: 'uppercase', letterSpacing: '.07em' }}>Valor (R$) *</label>
+                  <label style={{ fontSize: 10, fontWeight: 600, color: '#7B8C88', display: 'block', marginBottom: 5, textTransform: 'uppercase', letterSpacing: '.07em' }}>Valor (R$) *</label>
                   <input className="form-input" type="number" placeholder="0,00" value={form.valor} onChange={e => setForm(p => ({ ...p, valor: e.target.value }))} />
                 </div>
                 <div>
-                  <label style={{ fontSize: 10, fontWeight: 600, color: '#7A8F8E', display: 'block', marginBottom: 5, textTransform: 'uppercase', letterSpacing: '.07em' }}>Data</label>
+                  <label style={{ fontSize: 10, fontWeight: 600, color: '#7B8C88', display: 'block', marginBottom: 5, textTransform: 'uppercase', letterSpacing: '.07em' }}>Data</label>
                   <input className="form-input" type="date" value={form.data_agendada} onChange={e => setForm(p => ({ ...p, data_agendada: e.target.value }))} />
                 </div>
               </div>
               <div>
-                <label style={{ fontSize: 10, fontWeight: 600, color: '#7A8F8E', display: 'block', marginBottom: 5, textTransform: 'uppercase', letterSpacing: '.07em' }}>Descrição</label>
+                <label style={{ fontSize: 10, fontWeight: 600, color: '#7B8C88', display: 'block', marginBottom: 5, textTransform: 'uppercase', letterSpacing: '.07em' }}>Descrição</label>
                 <input className="form-input" placeholder="Ex: Pagamento fornecedor" value={form.descricao} onChange={e => setForm(p => ({ ...p, descricao: e.target.value }))} />
               </div>
             </div>
 
             <div style={{ display: 'flex', gap: 10, marginTop: 20, justifyContent: 'flex-end' }}>
-              <button onClick={() => setModal(false)} style={{ padding: '8px 16px', borderRadius: 8, border: '0.5px solid #E2E8E7', background: 'transparent', color: '#7A8F8E', fontSize: 12, cursor: 'pointer' }}>Cancelar</button>
+              <button onClick={() => setModal(false)} style={{ padding: '8px 16px', borderRadius: 8, border: '0.5px solid #E4DCCC', background: 'transparent', color: '#7B8C88', fontSize: 12, cursor: 'pointer' }}>Cancelar</button>
               <button className="btn-action" onClick={() => void salvar()} disabled={saving} style={{ fontSize: 12, padding: '8px 20px' }}>{saving ? 'Enviando…' : 'Confirmar transferência'}</button>
             </div>
           </div>

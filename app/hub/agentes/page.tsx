@@ -86,7 +86,7 @@ export default function AgentesPage() {
             <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--navy)' }}>{ativo.nome}</div>
             <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>{ativo.especialidade}</div>
           </div>
-          <div style={{ marginLeft: 'auto', fontSize: 9, fontWeight: 700, padding: '3px 8px', borderRadius: 20, background: 'rgba(124,58,237,.1)', color: '#7C3AED' }}>FactorOne AI</div>
+          <div style={{ marginLeft: 'auto', fontSize: 9, fontWeight: 700, padding: '3px 8px', borderRadius: 20, background: 'rgba(124,58,237,.1)', color: '#7A6A9E' }}>FactorOne AI</div>
         </div>
 
         <div ref={scrollRef} style={{ flex: 1, overflowY: 'auto', padding: 16, display: 'flex', flexDirection: 'column', gap: 12, minHeight: 0 }}>

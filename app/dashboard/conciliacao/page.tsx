@@ -235,18 +235,18 @@ export default function ConciliacaoPage() {
 
       {/* Alertas de sem lançamento */}
       {(semLancamento.length > 0 || semEntrada.length > 0) && !loading && (
-        <div style={{ background: '#FEF3C7', border: '0.5px solid #F59E0B', borderRadius: 12, padding: '12px 16px', fontSize: 12, color: '#1C2B2A', lineHeight: 1.7 }}>
+        <div style={{ background: '#F3ECDA', border: '0.5px solid #F59E0B', borderRadius: 12, padding: '12px 16px', fontSize: 12, color: '#13201D', lineHeight: 1.7 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
-            <i className="fa-solid fa-triangle-exclamation" style={{ color: '#D97706' }} />
+            <i className="fa-solid fa-triangle-exclamation" style={{ color: '#B08A3E' }} />
             <strong>{semLancamento.length + semEntrada.length} lançamento(s)</strong> no sistema sem transação bancária correspondente
           </div>
           {semLancamento.slice(0, 3).map(p => (
-            <div key={p.id} style={{ fontSize: 11, color: '#7A8F8E', paddingLeft: 20 }}>
+            <div key={p.id} style={{ fontSize: 11, color: '#7B8C88', paddingLeft: 20 }}>
               · {p.descricao} — {fmt(p.valor)} (venc. {new Date(p.data_vencimento + 'T12:00:00').toLocaleDateString('pt-BR')})
             </div>
           ))}
           {semEntrada.slice(0, 2).map(r => (
-            <div key={r.id} style={{ fontSize: 11, color: '#7A8F8E', paddingLeft: 20 }}>
+            <div key={r.id} style={{ fontSize: 11, color: '#7B8C88', paddingLeft: 20 }}>
               · {r.descricao} — {fmt(r.valor)} (venc. {new Date(r.data_vencimento + 'T12:00:00').toLocaleDateString('pt-BR')})
             </div>
           ))}
@@ -255,37 +255,37 @@ export default function ConciliacaoPage() {
 
       {/* Barra progresso */}
       {!loading && items.length > 0 && (
-        <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 12, padding: '12px 16px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: '#7A8F8E', marginBottom: 8 }}>
-            <span style={{ fontWeight: 600, color: '#1C2B2A' }}>Progresso da conciliação</span>
+        <div style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 12, padding: '12px 16px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: '#7B8C88', marginBottom: 8 }}>
+            <span style={{ fontWeight: 600, color: '#13201D' }}>Progresso da conciliação</span>
             <span>{conciliadas} de {items.length} transações · {Math.round((conciliadas / items.length) * 100)}%</span>
           </div>
-          <div style={{ height: 8, background: '#EEF2F1', borderRadius: 99, overflow: 'hidden' }}>
+          <div style={{ height: 8, background: '#F1ECE1', borderRadius: 99, overflow: 'hidden' }}>
             <div style={{ display: 'flex', height: '100%' }}>
-              <div style={{ width: `${pctAuto}%`, background: '#10B981', transition: 'width .4s', borderRadius: 99 }} />
-              <div style={{ width: `${Math.round((divergencias / items.length) * 100)}%`, background: '#E74C3C', transition: 'width .4s' }} />
+              <div style={{ width: `${pctAuto}%`, background: '#3D7A6E', transition: 'width .4s', borderRadius: 99 }} />
+              <div style={{ width: `${Math.round((divergencias / items.length) * 100)}%`, background: '#B0413E', transition: 'width .4s' }} />
             </div>
           </div>
           <div style={{ display: 'flex', gap: 16, marginTop: 8 }}>
-            <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 10, color: '#7A8F8E' }}><span style={{ width: 8, height: 8, borderRadius: 2, background: '#10B981', display: 'inline-block' }} />Conciliados</span>
-            <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 10, color: '#7A8F8E' }}><span style={{ width: 8, height: 8, borderRadius: 2, background: '#E74C3C', display: 'inline-block' }} />Divergências</span>
-            <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 10, color: '#7A8F8E' }}><span style={{ width: 8, height: 8, borderRadius: 2, background: '#EEF2F1', border: '0.5px solid #D1D9D8', display: 'inline-block' }} />Pendentes</span>
+            <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 10, color: '#7B8C88' }}><span style={{ width: 8, height: 8, borderRadius: 2, background: '#3D7A6E', display: 'inline-block' }} />Conciliados</span>
+            <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 10, color: '#7B8C88' }}><span style={{ width: 8, height: 8, borderRadius: 2, background: '#B0413E', display: 'inline-block' }} />Divergências</span>
+            <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 10, color: '#7B8C88' }}><span style={{ width: 8, height: 8, borderRadius: 2, background: '#F1ECE1', border: '0.5px solid #D1D9D8', display: 'inline-block' }} />Pendentes</span>
           </div>
         </div>
       )}
 
       {/* Tabela principal */}
-      <div style={{ background: '#fff', border: '0.5px solid #E2E8E7', borderRadius: 12, overflow: 'hidden' }}>
-        <div style={{ padding: '12px 16px', borderBottom: '0.5px solid #E2E8E7', display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
-          <div style={{ fontSize: 12, fontWeight: 600, color: '#1C2B2A', fontFamily: "'Inter', sans-serif", flex: 1 }}>
+      <div style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 12, overflow: 'hidden' }}>
+        <div style={{ padding: '12px 16px', borderBottom: '0.5px solid #E4DCCC', display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
+          <div style={{ fontSize: 12, fontWeight: 600, color: '#13201D', fontFamily: "'Inter', sans-serif", flex: 1 }}>
             Transações ({filtrados.length})
           </div>
           {(['todos', 'conciliado', 'pendente', 'divergencia'] as const).map(s => (
             <button key={s} onClick={() => setFiltroStatus(s)} style={{
               fontSize: 11, padding: '4px 12px', borderRadius: 20, border: '0.5px solid',
-              borderColor: filtroStatus === s ? '#1C2B2A' : '#E2E8E7',
-              background: filtroStatus === s ? '#1C2B2A' : 'transparent',
-              color: filtroStatus === s ? '#fff' : '#7A8F8E',
+              borderColor: filtroStatus === s ? '#13201D' : '#E4DCCC',
+              background: filtroStatus === s ? '#13201D' : 'transparent',
+              color: filtroStatus === s ? '#fff' : '#7B8C88',
               cursor: 'pointer', fontWeight: filtroStatus === s ? 700 : 500,
             }}>
               {s === 'todos' ? 'Todos' : s}
@@ -344,7 +344,7 @@ export default function ConciliacaoPage() {
                         </button>
                       )}
                       {manual[item.id] && (
-                        <button onClick={() => desconciliar(item.id)} className="btn-action btn-ghost" style={{ fontSize: 11, padding: '2px 8px', color: 'var(--red)', borderColor: 'rgba(192,80,74,.3)' }}>
+                        <button onClick={() => desconciliar(item.id)} className="btn-action btn-ghost" style={{ fontSize: 11, padding: '2px 8px', color: 'var(--red)', borderColor: 'rgba(176,65,62,.3)' }}>
                           Remover
                         </button>
                       )}

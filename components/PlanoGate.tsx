@@ -23,7 +23,7 @@ export default function PlanoGate({ children, feature = 'esta funcionalidade' }:
       {/* Overlay */}
       <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10 }}>
         <div style={{ background: '#fff', borderRadius: 16, padding: '36px 40px', textAlign: 'center', boxShadow: '0 8px 40px rgba(0,0,0,.12)', border: '1px solid var(--gray-100)', maxWidth: 380 }}>
-          <div style={{ width: 52, height: 52, background: 'linear-gradient(135deg, #7C3AED, #9F5AF7)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
+          <div style={{ width: 52, height: 52, background: 'linear-gradient(135deg, #7A6A9E, #9F5AF7)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
             <i className="fa-solid fa-star" style={{ color: '#fff', fontSize: 20 }} />
           </div>
           <div style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: 18, fontWeight: 800, color: 'var(--navy)', marginBottom: 8 }}>
@@ -34,7 +34,7 @@ export default function PlanoGate({ children, feature = 'esta funcionalidade' }:
           </div>
           <button
             className="btn-action"
-            style={{ width: '100%', padding: '11px 0', fontSize: 13, background: 'linear-gradient(135deg, #7C3AED, #9F5AF7)', border: 'none' }}
+            style={{ width: '100%', padding: '11px 0', fontSize: 13, background: 'linear-gradient(135deg, #7A6A9E, #9F5AF7)', border: 'none' }}
             onClick={() => router.push('/dashboard/planos')}
           >
             <i className="fa-solid fa-arrow-up" style={{ marginRight: 8 }} />

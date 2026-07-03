@@ -12,7 +12,7 @@ const NAV: { label: string; items: NavItem[] }[] = [
     label: 'FactorHub',
     items: [
       { href: '/hub', icon: 'fa-house', label: 'Visão Geral', match: (p) => p === '/hub' || p === '/hub/' },
-      { href: '/hub/agentes', icon: 'fa-robot', label: 'Agentes IA', badge: 'AI', badgeColor: '#7C3AED' },
+      { href: '/hub/agentes', icon: 'fa-robot', label: 'Agentes IA', badge: 'AI', badgeColor: '#7A6A9E' },
       { href: '/hub/uso', icon: 'fa-chart-bar', label: 'Consumo & Custo' },
     ],
   },

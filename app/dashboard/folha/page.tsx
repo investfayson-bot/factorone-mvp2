@@ -149,7 +149,7 @@ export default function FolhaPage() {
                   <td style={{ ...td, color: 'var(--gray-500)' }}>{f.departamento || '—'}</td>
                   <td style={{ ...td, textAlign: 'right' }}>{formatBRL(Number(f.salario))}</td>
                   <td style={td}>
-                    <button onClick={() => toggleStatus(f)} style={{ cursor: 'pointer', border: 'none', borderRadius: 20, padding: '2px 10px', fontSize: 11, fontWeight: 600, background: f.status === 'ativo' ? 'rgba(45,155,111,.12)' : 'var(--gray-100)', color: f.status === 'ativo' ? '#2D9B6F' : 'var(--gray-500)' }}>
+                    <button onClick={() => toggleStatus(f)} style={{ cursor: 'pointer', border: 'none', borderRadius: 20, padding: '2px 10px', fontSize: 11, fontWeight: 600, background: f.status === 'ativo' ? 'rgba(61,122,110,.12)' : 'var(--gray-100)', color: f.status === 'ativo' ? '#3D7A6E' : 'var(--gray-500)' }}>
                       {f.status === 'ativo' ? 'Ativo' : 'Inativo'}
                     </button>
                   </td>
