@@ -9,11 +9,11 @@
    Hairlines no lugar de sombras · cantos retos · display serifado
    ═══════════════════════════════════════════════════════════ */
 :root {
-  /* superfícies */
-  --paper: #F7F4EE;      /* fundo (papel) */
-  --paper-2: #F1ECE1;    /* fundo alternado */
-  --surface: #FFFFFF;    /* cartão */
-  --surface-2: #FBF8F1;  /* cartão realçado / cabeçalho de tabela */
+  /* superfícies — tema CLARO em verde bem clarinho (no lugar de branco) */
+  --paper: #E7EFE9;      /* fundo (verde claro) */
+  --paper-2: #DCE8DE;    /* fundo alternado */
+  --surface: #F3F8F3;    /* cartão (verde clarinho, não branco puro) */
+  --surface-2: #E9F1EA;  /* cartão realçado / cabeçalho de tabela */
 
   /* tinta / texto */
   --ink: #13201D;        /* títulos, texto forte */
@@ -64,6 +64,42 @@
   --fo-border: #E4DCCC; --fo-text: #13201D; --fo-text-muted: #7B8C88;
   --fo-green: #3D7A6E; --fo-red: #B0413E; --fo-live: #3D7A6E;
 }
+
+/* ═══ TEMA ESCURO — verde-floresta (barra + fundo escuros) ═══ */
+html[data-theme="dark"] {
+  --paper: #10201C;      /* fundo verde bem escuro */
+  --paper-2: #16292440;  /* alternado */
+  --surface: #16302A;    /* cartão (verde escuro) */
+  --surface-2: #1C3A33;  /* realçado */
+
+  --ink: #EAF2ED;        /* texto forte (claro) */
+  --ink-soft: #C0D0C9;
+  --ink-mut: #86988F;
+  --ink-faint: #5F726B;
+
+  --sage: #6FA595;       /* acento sálvia mais claro p/ contraste no escuro */
+  --sage-deep: #8FBDB0;
+  --sage-tint: #1E3A33;
+  --gold: #D0A85A; --gold-tint: #2E2A1C;
+  --brick: #D97A6E; --brick-tint: #33211E;
+  --sand: #C9B98F; --sand-soft: #3A3626;
+
+  --line: #26403A;
+  --line-soft: #1E332E;
+  --line-ink: rgba(234,242,237,.10);
+
+  --shadow-card: 0 1px 2px rgba(0,0,0,.30), 0 4px 16px rgba(0,0,0,.32);
+  --shadow-soft: 0 1px 3px rgba(0,0,0,.35);
+  --shadow-pop: 0 12px 40px rgba(0,0,0,.55);
+
+  /* aliases legados no escuro */
+  --navy: #EAF2ED; --white: #16302A; --cream: #10201C;
+  --gray-100: #1E332E; --gray-200: #26403A; --gray-400: #86988F;
+  --gray-500: #C0D0C9; --gray-700: #EAF2ED;
+  --fo-card: #16302A; --fo-bg: #10201C; --fo-border: #26403A;
+  --fo-text: #EAF2ED; --fo-text-muted: #86988F;
+}
+html[data-theme="dark"] .nav-item.active { background: var(--surface-2); }
 
 body {
   font-family: var(--font-sans);

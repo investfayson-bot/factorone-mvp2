@@ -3,6 +3,7 @@ import InsightFloating from '@/components/aicfo/InsightFloating'
 import NotificacoesDrawer, { useNotificacoes } from '@/components/dashboard/NotificacoesDrawer'
 import GlobalSearch from '@/components/dashboard/GlobalSearch'
 import NotificationBell from '@/components/ui/NotificationBell'
+import ThemeToggle from '@/components/ui/ThemeToggle'
 import { useEffect, useState } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import type { User } from '@supabase/supabase-js'
@@ -294,6 +295,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               <span>Buscar</span>
               <kbd style={{ fontSize: 9, background: '#fff', border: '1px solid var(--gray-200)', borderRadius: 3, padding: '1px 4px', fontFamily: 'monospace', color: 'var(--gray-400)' }}>⌘K</kbd>
             </button>
+            <ThemeToggle compact />
             <NotificationBell />
             <div className="topbar-av" onClick={sair} title="Sair">{initials}</div>
           </div>

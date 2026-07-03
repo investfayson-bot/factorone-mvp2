@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import EditorialBanner from '@/components/ui/EditorialBanner'
+import ThemeToggle from '@/components/ui/ThemeToggle'
 
 export const metadata = { title: 'FactorOne — o sistema operacional financeiro da sua empresa' }
 
@@ -32,7 +33,8 @@ export default function Landing() {
         <div style={{ fontFamily: 'var(--font-display)', fontSize: 22, fontWeight: 600, letterSpacing: '-.02em', color: 'var(--ink)' }}>
           Factor<span style={{ color: 'var(--sage)', fontStyle: 'italic' }}>One</span>
         </div>
-        <div style={{ display: 'flex', gap: 20, alignItems: 'center' }}>
+        <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
+          <ThemeToggle compact />
           <Link href="/precos" style={{ textDecoration: 'none', fontSize: 13, color: 'var(--ink-soft)', fontWeight: 500 }}>Preços</Link>
           <Link href="/auth" style={{ textDecoration: 'none', fontSize: 13, color: 'var(--ink-soft)', fontWeight: 500 }}>Entrar</Link>
           <Link href="/auth" style={{ textDecoration: 'none', fontSize: 13, fontWeight: 600, background: 'var(--ink)', color: 'var(--paper)', padding: '9px 18px', borderRadius: 4 }}>Começar grátis →</Link>
@@ -47,7 +49,7 @@ export default function Landing() {
           variant="split"
           imageSide="right"
           eyebrow="Finance OS · para empresas modernas"
-          title={<>O sistema operacional<br />financeiro da sua empresa.</>}
+          title={<>O sistema operacional financeiro<br /><span style={{ color: 'var(--sage)' }}>em tempo real.</span></>}
           subtitle="Gestão financeira, contabilidade afiada, conta PJ e um CFO com IA — no mesmo lugar, com a clareza que o seu negócio merece."
           stats={[
             { valor: '30 dias', label: 'grátis, sem cartão' },
