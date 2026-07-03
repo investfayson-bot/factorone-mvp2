@@ -146,6 +146,22 @@ export default function ClassificarPage() {
     } catch { toast.error('Falha na análise') }
     finally { setAnalisando(false) }
   }
+  // Tier 4 — execução: a IA classifica TODAS as pendentes sozinha.
+  async function classificarTudoIA() {
+    if (revisar.length === 0) { toast('Nada a classificar'); return }
+    setBusy(true)
+    try {
+      const rs = await fetch('/api/transacoes/sugerir', { method: 'POST', headers: auth })
+      const js = await rs.json()
+      const sug = (js.sugestoes ?? {}) as Record<string, { categoria: string; fonte: 'aprendido' | 'ia' }>
+      setFontes(prev => { const n = { ...prev }; for (const [id, s] of Object.entries(sug)) n[id] = s.fonte; return n })
+      const mapa: Record<string, string> = {}
+      for (const t of revisar) mapa[t.id] = sug[t.id]?.categoria ?? escolhas[t.id] ?? sugerir(t.descricao)
+      await classificar(mapa)
+      toast.success(`A IA classificou ${Object.keys(mapa).length} pra você`)
+    } catch { toast.error('Falha ao classificar') }
+    finally { setBusy(false) }
+  }
   async function projetar() {
     setProjetando(true)
     try {
@@ -377,6 +393,16 @@ export default function ClassificarPage() {
               </>
             )}
           </div>
+        </div>
+      )}
+
+      {aba === 'revisar' && revisar.length > 0 && sel.size === 0 && (
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 16px', background: 'var(--sage-tint)', border: '1px solid var(--sage)', borderRadius: 10, marginBottom: 12 }}>
+          <i className="fa-solid fa-robot" style={{ color: 'var(--sage-deep)' }} />
+          <span style={{ fontSize: 12.5, fontWeight: 600, color: 'var(--sage-deep)' }}>Deixa a IA classificar as {revisar.length} de uma vez.</span>
+          <button className="btn-action" style={{ fontSize: 12, padding: '7px 16px', marginLeft: 'auto' }} disabled={busy} onClick={() => void classificarTudoIA()}>
+            <i className="fa-solid fa-wand-magic-sparkles" style={{ marginRight: 6 }} />IA classifica tudo
+          </button>
         </div>
       )}
 
