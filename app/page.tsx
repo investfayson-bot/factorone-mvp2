@@ -1,6 +1,5 @@
 import Link from 'next/link'
 import EditorialBanner from '@/components/ui/EditorialBanner'
-import ThemeToggle from '@/components/ui/ThemeToggle'
 
 export const metadata = { title: 'FactorOne — o sistema operacional financeiro da sua empresa' }
 
@@ -34,7 +33,6 @@ export default function Landing() {
           Factor<span style={{ color: 'var(--sage)', fontStyle: 'italic' }}>One</span>
         </div>
         <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
-          <ThemeToggle compact />
           <Link href="/precos" style={{ textDecoration: 'none', fontSize: 13, color: 'var(--ink-soft)', fontWeight: 500 }}>Preços</Link>
           <Link href="/auth" style={{ textDecoration: 'none', fontSize: 13, color: 'var(--ink-soft)', fontWeight: 500 }}>Entrar</Link>
           <Link href="/auth" style={{ textDecoration: 'none', fontSize: 13, fontWeight: 600, background: 'var(--ink)', color: 'var(--paper)', padding: '9px 18px', borderRadius: 4 }}>Começar grátis →</Link>
