@@ -113,7 +113,7 @@ export default function InvoicesPage() {
     <div>
       <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:20 }}>
         <div>
-          <h1 style={{ fontSize:18, fontWeight:700, fontFamily: "'Inter', system-ui, sans-serif", margin:0 }}>Invoices & Billing</h1>
+          <h1 style={{ fontSize:18, fontWeight:700, fontFamily: "var(--font-sans)", margin:0 }}>Invoices & Billing</h1>
           <p style={{ fontSize:11, color:'#7A9290', fontFamily:'monospace', margin:0 }}>{invoices.length} documentos</p>
         </div>
         <button style={S.btnPrimary} onClick={() => setModal(true)}>+ Nova Invoice</button>
@@ -128,7 +128,7 @@ export default function InvoicesPage() {
         ].map(({ l, v, c }) => (
           <div key={l} style={S.card}>
             <div style={{ fontSize:10, color:'#7A9290', fontFamily:'monospace', textTransform:'uppercase', letterSpacing:'.04em', marginBottom:4 }}>{l}</div>
-            <div style={{ fontSize:22, fontWeight:800, fontFamily: "'Inter', system-ui, sans-serif", color:c }}>{v}</div>
+            <div style={{ fontSize:22, fontWeight:800, fontFamily: "var(--font-sans)", color:c }}>{v}</div>
           </div>
         ))}
       </div>
@@ -186,7 +186,7 @@ export default function InvoicesPage() {
         <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,.75)', display:'flex', alignItems:'center', justifyContent:'center', zIndex:1000, padding:20 }} onClick={e=>e.target===e.currentTarget&&setModal(false)}>
           <div style={{ background:'#111A19', border:'1px solid #2E3D3B', borderRadius:14, padding:24, width:460, maxWidth:'95vw' }}>
             <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:16 }}>
-              <span style={{ fontSize:15, fontWeight:700, fontFamily: "'Inter', system-ui, sans-serif" }}>Nova Invoice</span>
+              <span style={{ fontSize:15, fontWeight:700, fontFamily: "var(--font-sans)" }}>Nova Invoice</span>
               <button onClick={()=>setModal(false)} style={{ background:'none', border:'none', color:'#7A9290', cursor:'pointer', fontSize:20 }}>×</button>
             </div>
             <div style={{ marginBottom:12 }}>

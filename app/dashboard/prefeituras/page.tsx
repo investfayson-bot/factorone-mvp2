@@ -111,7 +111,7 @@ export default function PrefeiturasPage() {
               <button key={e.uf} onClick={() => void abrirEstado(e.uf)} style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 12, padding: '14px 16px', textAlign: 'left', cursor: 'pointer', transition: 'box-shadow .15s' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                   <div style={{ width: 38, height: 38, borderRadius: 9, background: '#13201D', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                    <span style={{ fontSize: 13, fontWeight: 800, color: '#6FA595', fontFamily: "'Inter', system-ui, sans-serif" }}>{e.uf}</span>
+                    <span style={{ fontSize: 13, fontWeight: 800, color: '#6FA595', fontFamily: "var(--font-sans)" }}>{e.uf}</span>
                   </div>
                   <div>
                     <div style={{ fontSize: 13, fontWeight: 700, color: '#13201D' }}>{e.nome}</div>

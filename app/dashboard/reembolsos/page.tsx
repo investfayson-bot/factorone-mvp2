@@ -305,7 +305,7 @@ export default function ReembolsosPage() {
                 </div>
               </div>
               <div style={{ textAlign: 'right', marginRight: 8 }}>
-                <div style={{ fontWeight: 700, fontFamily: "'Inter', system-ui, sans-serif", color: 'var(--navy)', marginBottom: 3 }}>{formatBRL(Number(item.valor))}</div>
+                <div style={{ fontWeight: 700, fontFamily: "var(--font-sans)", color: 'var(--navy)', marginBottom: 3 }}>{formatBRL(Number(item.valor))}</div>
                 {statusTag(item.status)}
               </div>
               <div style={{ display: 'flex', gap: 5, alignItems: 'center', flexShrink: 0 }}>

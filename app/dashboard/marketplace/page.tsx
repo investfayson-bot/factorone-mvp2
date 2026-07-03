@@ -88,7 +88,7 @@ export default function MarketplacePage() {
           </div>
           <div style={{ flex: 1 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
-              <div style={{ fontSize: 15, fontWeight: 700, color: '#fff', fontFamily: "'Inter', sans-serif" }}>Conta PJ — powered by Celcoin</div>
+              <div style={{ fontSize: 15, fontWeight: 700, color: '#fff', fontFamily: "var(--font-sans)" }}>Conta PJ — powered by Celcoin</div>
               <span style={{ fontSize: 9, fontWeight: 700, padding: '2px 8px', borderRadius: 20, background: '#3D7A6E', color: '#fff', letterSpacing: '0.06em' }}>DESTAQUE</span>
             </div>
             <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)', lineHeight: 1.6, marginBottom: 10 }}>

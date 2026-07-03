@@ -98,7 +98,7 @@ export default function ConectarBancoPage() {
         <div style={{ background: '#13201D', borderRadius: 14, padding: '16px 20px', marginBottom: 16, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
           <div>
             <div style={{ fontSize: 11, color: 'rgba(255,255,255,.55)', textTransform: 'uppercase', letterSpacing: '.06em' }}>Saldo consolidado · {contas.length} banco{contas.length > 1 ? 's' : ''} conectado{contas.length > 1 ? 's' : ''}</div>
-            <div style={{ fontSize: 26, fontWeight: 800, color: '#fff', fontFamily: "'Inter', system-ui, sans-serif", letterSpacing: '-.02em', marginTop: 2 }}>{formatBRL(totalConectado)}</div>
+            <div style={{ fontSize: 26, fontWeight: 800, color: '#fff', fontFamily: "var(--font-sans)", letterSpacing: '-.02em', marginTop: 2 }}>{formatBRL(totalConectado)}</div>
           </div>
           <Link href="/dashboard/conta-pj" style={{ fontSize: 12, color: '#6FA595', textDecoration: 'none', fontWeight: 600 }}>Ver no dashboard →</Link>
         </div>
@@ -125,7 +125,7 @@ export default function ConectarBancoPage() {
                     </div>
                     <span style={{ fontSize: 9, fontWeight: 700, color: '#2B564D', background: '#E9F0ED', padding: '2px 7px', borderRadius: 20 }}>ATIVO</span>
                   </div>
-                  <div style={{ fontSize: 16, fontWeight: 800, color: '#13201D', fontFamily: "'Inter', system-ui, sans-serif" }}>{formatBRL(Number(c.saldo_disponivel ?? 0))}</div>
+                  <div style={{ fontSize: 16, fontWeight: 800, color: '#13201D', fontFamily: "var(--font-sans)" }}>{formatBRL(Number(c.saldo_disponivel ?? 0))}</div>
                   <button onClick={() => void desconectar(c)} style={{ marginTop: 8, fontSize: 10.5, color: '#B0413E', background: 'none', border: 'none', cursor: 'pointer', padding: 0, fontWeight: 600 }}>
                     <i className="fa-solid fa-link-slash" style={{ marginRight: 5 }} />Desconectar
                   </button>

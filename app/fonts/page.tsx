@@ -4,7 +4,7 @@ export const metadata: Metadata = { title: 'FactorOne — Comparador de Fontes' 
 
 // Fontes candidatas — todas profissionais, foco em clareza/legibilidade.
 const FONTS = [
-  { name: 'Inter', stack: "'Inter', system-ui, sans-serif", rec: true, nota: 'Padrão de SaaS financeiro sério (Stripe, Linear, Notion). Clareza máxima, neutra.' },
+  { name: 'Inter', stack: "var(--font-sans)", rec: true, nota: 'Padrão de SaaS financeiro sério (Stripe, Linear, Notion). Clareza máxima, neutra.' },
   { name: 'Geist', stack: "'Geist', system-ui, sans-serif", nota: 'Fonte da Vercel. Moderna, técnica e sofisticada — cara de fintech premium.' },
   { name: 'IBM Plex Sans', stack: "'IBM Plex Sans', system-ui, sans-serif", nota: 'Corporativa e sólida, com leve personalidade. Transmite confiança de banco.' },
   { name: 'Figtree', stack: "'Figtree', system-ui, sans-serif", nota: 'Limpa e amigável, ótima leitura em texto denso.' },
@@ -83,7 +83,7 @@ function FontCard({ name, stack, rec, nota }: { name: string; stack: string; rec
           0123456789 · R$ 1.234.567,89 · +12,5% · -3,8%
         </div>
 
-        <div style={{ marginTop: 16, paddingTop: 14, borderTop: '0.5px solid #EFE9DC', fontSize: 12, color: '#7B8C88', fontFamily: "'Inter', system-ui, sans-serif" }}>
+        <div style={{ marginTop: 16, paddingTop: 14, borderTop: '0.5px solid #EFE9DC', fontSize: 12, color: '#7B8C88', fontFamily: "var(--font-sans)" }}>
           {nota}
           <div style={{ marginTop: 6, color: '#13201D', fontWeight: 600 }}>→ Para escolher esta, me diga: <span style={{ color: '#3D7A6E' }}>&quot;quero {name}&quot;</span></div>
         </div>
@@ -94,7 +94,7 @@ function FontCard({ name, stack, rec, nota }: { name: string; stack: string; rec
 
 export default function FontsComparePage() {
   return (
-    <div style={{ minHeight: '100vh', background: '#F7F4EE', padding: '32px 16px', fontFamily: "'Inter', system-ui, sans-serif" }}>
+    <div style={{ minHeight: '100vh', background: '#F7F4EE', padding: '32px 16px', fontFamily: "var(--font-sans)" }}>
       {/* eslint-disable-next-line @next/next/no-page-custom-font */}
       <link rel="preconnect" href="https://fonts.googleapis.com" />
       <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />

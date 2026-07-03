@@ -460,7 +460,7 @@ export default function DespesasPage() {
       <div className="cf-chart-card" style={{ marginBottom: 14 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
           <div className="chart-title" style={{ marginBottom: 0 }}>Categorização de Gastos</div>
-          <div style={{ fontSize: 10, color: '#7B8C88', fontFamily: "'Inter', sans-serif" }}>
+          <div style={{ fontSize: 10, color: '#7B8C88', fontFamily: "var(--font-sans)" }}>
             {categorizacao.pendentesN} pendentes · IA 94% automático
           </div>
         </div>
@@ -472,7 +472,7 @@ export default function DespesasPage() {
               <li key={it.nome}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, marginBottom: 4 }}>
                   <span style={{ fontWeight: 600, color: '#13201D' }}>{it.nome}</span>
-                  <span style={{ fontFamily: "'Inter', sans-serif", color: '#7B8C88' }}>{formatBRL(it.valor)} · {it.pct.toFixed(1)}%</span>
+                  <span style={{ fontFamily: "var(--font-sans)", color: '#7B8C88' }}>{formatBRL(it.valor)} · {it.pct.toFixed(1)}%</span>
                 </div>
                 <div style={{ height: 6, background: '#F1ECE1', borderRadius: 3, overflow: 'hidden' }}>
                   <div style={{ height: '100%', width: `${Math.min(100, it.pct)}%`, background: '#3D7A6E', borderRadius: 3 }} />
@@ -549,7 +549,7 @@ export default function DespesasPage() {
                 <td>{r.responsavel_nome || '—'}</td>
                 <td>{r.categoria}</td>
                 <td>{centroNome(r.centro_custo_id)}</td>
-                <td style={{ fontWeight: 700, color: '#B0413E', fontFamily: "'Inter', sans-serif" }}>{formatBRL(Number(r.valor))}</td>
+                <td style={{ fontWeight: 700, color: '#B0413E', fontFamily: "var(--font-sans)" }}>{formatBRL(Number(r.valor))}</td>
                 <td>{r.data_vencimento ? new Date(r.data_vencimento).toLocaleDateString('pt-BR') : '—'}</td>
                 <td>
                   <span title={r.status === 'rejeitado' ? r.rejeitado_motivo || '' : undefined}>

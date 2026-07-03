@@ -234,7 +234,7 @@ function FinanceiroInner() {
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
           <div style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 12, overflow: 'hidden' }}>
             <div style={{ padding: '12px 16px', borderBottom: '0.5px solid #E4DCCC', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#FBF8F1' }}>
-              <div style={{ fontSize: 12, fontWeight: 700, color: '#13201D', fontFamily: "'Inter', sans-serif" }}>Próximas a pagar</div>
+              <div style={{ fontSize: 12, fontWeight: 700, color: '#13201D', fontFamily: "var(--font-sans)" }}>Próximas a pagar</div>
               <button onClick={() => setTab('pagar')} style={{ fontSize: 10, color: '#3D7A6E', fontWeight: 600, background: 'none', border: 'none', cursor: 'pointer' }}>Ver todas →</button>
             </div>
             {pagar.filter(c => c.status !== 'paga').slice(0, 5).length === 0 ? (
@@ -245,7 +245,7 @@ function FinanceiroInner() {
                   <div style={{ fontSize: 12, fontWeight: 600, color: '#13201D', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{c.fornecedor_nome || c.descricao}</div>
                   <div style={{ fontSize: 10, color: '#7B8C88' }}>{fmtDate(c.data_vencimento)}</div>
                 </div>
-                <div style={{ fontSize: 12, fontWeight: 700, color: '#B0413E', fontFamily: "'Inter', sans-serif" }}>{formatBRL(Number(c.valor || 0))}</div>
+                <div style={{ fontSize: 12, fontWeight: 700, color: '#B0413E', fontFamily: "var(--font-sans)" }}>{formatBRL(Number(c.valor || 0))}</div>
                 <StatusTag status={c.status} />
               </div>
             ))}
@@ -253,7 +253,7 @@ function FinanceiroInner() {
 
           <div style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 12, overflow: 'hidden' }}>
             <div style={{ padding: '12px 16px', borderBottom: '0.5px solid #E4DCCC', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#FBF8F1' }}>
-              <div style={{ fontSize: 12, fontWeight: 700, color: '#13201D', fontFamily: "'Inter', sans-serif" }}>Próximas a receber</div>
+              <div style={{ fontSize: 12, fontWeight: 700, color: '#13201D', fontFamily: "var(--font-sans)" }}>Próximas a receber</div>
               <button onClick={() => setTab('receber')} style={{ fontSize: 10, color: '#3D7A6E', fontWeight: 600, background: 'none', border: 'none', cursor: 'pointer' }}>Ver todas →</button>
             </div>
             {receber.filter(c => c.status !== 'recebida').slice(0, 5).length === 0 ? (
@@ -264,7 +264,7 @@ function FinanceiroInner() {
                   <div style={{ fontSize: 12, fontWeight: 600, color: '#13201D', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{c.cliente_nome || c.descricao}</div>
                   <div style={{ fontSize: 10, color: '#7B8C88' }}>{fmtDate(c.data_vencimento)}</div>
                 </div>
-                <div style={{ fontSize: 12, fontWeight: 700, color: '#3D7A6E', fontFamily: "'Inter', sans-serif" }}>{formatBRL(Number(c.valor || 0))}</div>
+                <div style={{ fontSize: 12, fontWeight: 700, color: '#3D7A6E', fontFamily: "var(--font-sans)" }}>{formatBRL(Number(c.valor || 0))}</div>
                 <StatusTag status={c.status} />
               </div>
             ))}
@@ -309,7 +309,7 @@ function FinanceiroInner() {
                 <div style={{ fontSize: 11, color: '#3C4A46', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{c.descricao}</div>
                 <div style={{ fontSize: 11, color: '#7B8C88' }}>{c.categoria || '—'}</div>
                 <div style={{ fontSize: 11, color: c.status === 'vencida' ? '#B0413E' : '#3C4A46', fontWeight: c.status === 'vencida' ? 700 : 400 }}>{fmtDate(c.data_vencimento)}</div>
-                <div style={{ fontSize: 12, fontWeight: 700, color: '#B0413E', fontFamily: "'Inter', sans-serif" }}>{formatBRL(Number(c.valor || 0))}</div>
+                <div style={{ fontSize: 12, fontWeight: 700, color: '#B0413E', fontFamily: "var(--font-sans)" }}>{formatBRL(Number(c.valor || 0))}</div>
                 <div><StatusTag status={c.status} /></div>
                 <div>
                   {c.status !== 'paga' && (
@@ -367,7 +367,7 @@ function FinanceiroInner() {
                 <div style={{ fontSize: 11, fontWeight: c.dias_atraso > 0 ? 700 : 400, color: c.dias_atraso > 0 ? '#B0413E' : '#7B8C88' }}>
                   {c.dias_atraso > 0 ? `${c.dias_atraso}d` : '—'}
                 </div>
-                <div style={{ fontSize: 12, fontWeight: 700, color: '#3D7A6E', fontFamily: "'Inter', sans-serif" }}>{formatBRL(Number(c.valor || 0))}</div>
+                <div style={{ fontSize: 12, fontWeight: 700, color: '#3D7A6E', fontFamily: "var(--font-sans)" }}>{formatBRL(Number(c.valor || 0))}</div>
                 <div><StatusTag status={c.status} /></div>
                 <div style={{ display: 'flex', gap: 5 }}>
                   {c.status !== 'recebida' && (

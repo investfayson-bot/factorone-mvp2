@@ -118,7 +118,7 @@ export default function InvestimentosPage() {
                 <div style={{ fontSize: 10.5, color: '#7B8C88', textTransform: 'uppercase' }}>{r.tipo}{r.data_vencimento ? ` · venc. ${r.data_vencimento}` : ''}</div>
               </div>
               <div style={{ textAlign: 'right' }}>
-                <div style={{ fontSize: 13, fontWeight: 700, color: '#13201D', fontFamily: "'Inter', system-ui, sans-serif" }}>{formatBRL(Number(r.valor_atual || 0))}</div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: '#13201D', fontFamily: "var(--font-sans)" }}>{formatBRL(Number(r.valor_atual || 0))}</div>
                 <div style={{ fontSize: 10.5, fontWeight: 600, color: rend >= 0 ? '#3D7A6E' : '#B0413E' }}>{rend >= 0 ? '+' : ''}{formatBRL(rend)}</div>
               </div>
               <button onClick={() => void resgatar(r.id)} style={{ fontSize: 11, color: '#3C4A46', background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 7, padding: '5px 11px', cursor: 'pointer', fontWeight: 600 }}>Resgatar</button>

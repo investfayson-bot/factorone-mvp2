@@ -207,7 +207,7 @@ export default function NovaDespesaModal({
     width: '100%', border: '0.5px solid #E4DCCC', borderRadius: 8,
     padding: '9px 12px', fontSize: 12, color: '#13201D',
     background: '#fff', boxSizing: 'border-box', outline: 'none',
-    fontFamily: "'Inter', system-ui, sans-serif",
+    fontFamily: "var(--font-sans)",
   }
   const lbl: React.CSSProperties = {
     fontSize: 10, fontWeight: 600, color: '#7B8C88', marginBottom: 5,
@@ -219,7 +219,7 @@ export default function NovaDespesaModal({
       <div className="modal-box" style={{ maxWidth: 540, maxHeight: '90vh', overflowY: 'auto', borderRadius: 16 }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
           <div>
-            <h3 className="modal-title" style={{ fontFamily: "'Inter', sans-serif", fontSize: 16 }}>
+            <h3 className="modal-title" style={{ fontFamily: "var(--font-sans)", fontSize: 16 }}>
               {edit ? 'Editar despesa' : 'Nova despesa'}
             </h3>
             <div style={{ fontSize: 11, color: '#7B8C88', marginTop: 2 }}>

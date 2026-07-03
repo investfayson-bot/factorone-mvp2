@@ -135,7 +135,7 @@ export default function TransferenciasPage() {
                 <div style={{ fontSize: 13, fontWeight: 600, color: '#13201D' }}>{r.destinatario_nome}</div>
                 <div style={{ fontSize: 10.5, color: '#7B8C88' }}>{r.tipo.toUpperCase()} · {r.data_agendada}{r.chave_pix ? ` · ${r.chave_pix}` : ''}</div>
               </div>
-              <div style={{ fontSize: 13, fontWeight: 700, color: '#13201D', fontFamily: "'Inter', system-ui, sans-serif" }}>{formatBRL(Number(r.valor || 0))}</div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: '#13201D', fontFamily: "var(--font-sans)" }}>{formatBRL(Number(r.valor || 0))}</div>
               <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 9px', borderRadius: 20, background: sc.bg, color: sc.c }}>{r.status}</span>
               {r.status === 'agendado' && (
                 <button onClick={() => void cancelar(r.id)} style={{ fontSize: 11, color: '#B0413E', background: 'none', border: '0.5px solid #E4DCCC', borderRadius: 7, padding: '4px 10px', cursor: 'pointer', fontWeight: 600 }}>Cancelar</button>

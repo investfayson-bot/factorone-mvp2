@@ -102,7 +102,7 @@ export default function ReceitasPage() {
                 <td><span className="tag green">{r.categoria}</span></td>
                 <td style={{ color: 'var(--gray-400)' }}>{r.data_recebimento?.split('-').reverse().join('/')}</td>
                 <td>{r.recorrente ? <span className="tag green">sim</span> : <span className="tag gray">não</span>}</td>
-                <td style={{ fontFamily: "'Inter', system-ui, sans-serif", fontWeight: 700, color: 'var(--teal)' }}>{formatBRL(Number(r.valor))}</td>
+                <td style={{ fontFamily: "var(--font-sans)", fontWeight: 700, color: 'var(--teal)' }}>{formatBRL(Number(r.valor))}</td>
                 <td><button onClick={() => excluir(r.id)} className="btn-ghost" style={{ fontSize: 10, padding: '3px 8px', color: 'var(--red)' }}>✕</button></td>
               </tr>
             ))}

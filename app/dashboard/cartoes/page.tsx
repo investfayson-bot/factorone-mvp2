@@ -253,7 +253,7 @@ export default function CartoesPage() {
           <div style={{ width: 60, height: 60, borderRadius: 16, background: '#13201D', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
             <i className="fa-solid fa-credit-card" style={{ fontSize: 26, color: '#6FA595' }} />
           </div>
-          <div style={{ fontSize: 16, fontWeight: 700, color: '#13201D', marginBottom: 8, fontFamily: "'Inter', sans-serif" }}>Nenhum cartão cadastrado</div>
+          <div style={{ fontSize: 16, fontWeight: 700, color: '#13201D', marginBottom: 8, fontFamily: "var(--font-sans)" }}>Nenhum cartão cadastrado</div>
           <div style={{ fontSize: 12, color: '#7B8C88', marginBottom: 20, lineHeight: 1.6 }}>Adicione seus cartões corporativos para gerenciar limites, faturas e gastos por categoria.</div>
           <button className="btn-action" onClick={() => setModalCartao(true)}>
             <i className="fa-solid fa-plus" style={{ marginRight: 6 }} />Adicionar cartão
@@ -289,12 +289,12 @@ export default function CartoesPage() {
                       </span>
                     </span>
                   </div>
-                  <div style={{ fontSize: 13, fontWeight: 700, color: '#fff', fontFamily: "'Inter', sans-serif" }}>{c.nome}</div>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: '#fff', fontFamily: "var(--font-sans)" }}>{c.nome}</div>
                   <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.6)', marginBottom: 10, minHeight: 12 }}>{c.titular_nome ? `👤 ${c.titular_nome}` : 'Sem titular'}</div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
                     <div>
                       <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.6)', marginBottom: 2 }}>DISPONÍVEL</div>
-                      <div style={{ fontSize: 13, fontWeight: 700, color: '#fff', fontFamily: "'Inter', sans-serif" }}>{formatBRL(Number(c.limite_disponivel))}</div>
+                      <div style={{ fontSize: 13, fontWeight: 700, color: '#fff', fontFamily: "var(--font-sans)" }}>{formatBRL(Number(c.limite_disponivel))}</div>
                     </div>
                     <div style={{ textAlign: 'right' }}>
                       <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.6)', marginBottom: 2 }}>USO</div>
@@ -344,7 +344,7 @@ export default function CartoesPage() {
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
               {/* Uso por categoria (donut) */}
               <div style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 14, padding: '16px 18px' }}>
-                <div style={{ fontSize: 12, fontWeight: 700, color: '#13201D', marginBottom: 14, fontFamily: "'Inter', sans-serif" }}>Gastos por categoria</div>
+                <div style={{ fontSize: 12, fontWeight: 700, color: '#13201D', marginBottom: 14, fontFamily: "var(--font-sans)" }}>Gastos por categoria</div>
                 {porCat.length === 0 ? (
                   <div style={{ textAlign: 'center', padding: '30px 0', color: '#A6B0AC', fontSize: 12 }}>Nenhum gasto neste cartão</div>
                 ) : (
@@ -375,7 +375,7 @@ export default function CartoesPage() {
 
               {/* Histórico */}
               <div style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 14, padding: '16px 18px' }}>
-                <div style={{ fontSize: 12, fontWeight: 700, color: '#13201D', marginBottom: 14, fontFamily: "'Inter', sans-serif" }}>Histórico de gastos</div>
+                <div style={{ fontSize: 12, fontWeight: 700, color: '#13201D', marginBottom: 14, fontFamily: "var(--font-sans)" }}>Histórico de gastos</div>
                 <ResponsiveContainer width="100%" height={140}>
                   <BarChart data={historicoMeses} margin={{ top: 4, right: 4, bottom: 0, left: 0 }} barSize={28}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#EFE9DC" vertical={false} />
@@ -390,7 +390,7 @@ export default function CartoesPage() {
               {/* Info do cartão selecionado */}
               {cartaoAtual && (
                 <div style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 14, padding: '16px 18px', gridColumn: '1 / -1' }}>
-                  <div style={{ fontSize: 12, fontWeight: 700, color: '#13201D', marginBottom: 14, fontFamily: "'Inter', sans-serif" }}>Detalhes — {cartaoAtual.nome}</div>
+                  <div style={{ fontSize: 12, fontWeight: 700, color: '#13201D', marginBottom: 14, fontFamily: "var(--font-sans)" }}>Detalhes — {cartaoAtual.nome}</div>
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 12 }}>
                     {[
                       { label: 'Limite total', val: formatBRL(Number(cartaoAtual.limite)) },
@@ -400,7 +400,7 @@ export default function CartoesPage() {
                     ].map(item => (
                       <div key={item.label} style={{ background: '#FBF8F1', borderRadius: 10, padding: '10px 12px' }}>
                         <div style={{ fontSize: 10, color: '#7B8C88', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '0.06em' }}>{item.label}</div>
-                        <div style={{ fontSize: 14, fontWeight: 700, color: item.cor || '#13201D', fontFamily: "'Inter', sans-serif" }}>{item.val}</div>
+                        <div style={{ fontSize: 14, fontWeight: 700, color: item.cor || '#13201D', fontFamily: "var(--font-sans)" }}>{item.val}</div>
                       </div>
                     ))}
                   </div>
@@ -427,7 +427,7 @@ export default function CartoesPage() {
           {tab === 'gastos' && (
             <div style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 14, overflow: 'hidden' }}>
               <div style={{ padding: '12px 16px', borderBottom: '0.5px solid #E4DCCC', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#FBF8F1' }}>
-                <div style={{ fontSize: 12, fontWeight: 700, color: '#13201D', fontFamily: "'Inter', sans-serif" }}>
+                <div style={{ fontSize: 12, fontWeight: 700, color: '#13201D', fontFamily: "var(--font-sans)" }}>
                   Lançamentos · {cartaoAtual?.nome} · {formatBRL(totalGastos)} total
                 </div>
                 <button className="btn-action" style={{ fontSize: 11, padding: '5px 12px' }} onClick={() => setModalGasto(true)}>
@@ -455,7 +455,7 @@ export default function CartoesPage() {
                   <div style={{ fontSize: 11, color: '#7B8C88' }}>
                     {g.parcelas && g.parcelas > 1 ? `${g.parcela_atual || 1}/${g.parcelas}x` : 'À vista'}
                   </div>
-                  <div style={{ fontSize: 12, fontWeight: 700, color: '#B0413E', fontFamily: "'Inter', sans-serif" }}>{formatBRL(Number(g.valor))}</div>
+                  <div style={{ fontSize: 12, fontWeight: 700, color: '#B0413E', fontFamily: "var(--font-sans)" }}>{formatBRL(Number(g.valor))}</div>
                 </div>
               ))}
             </div>
@@ -500,7 +500,7 @@ export default function CartoesPage() {
                             <div style={{ fontSize: 10, color: '#7B8C88' }}>{new Date(g.data + 'T12:00:00').toLocaleDateString('pt-BR')} · {g.categoria || 'Outros'}</div>
                           </div>
                         </div>
-                        <div style={{ fontSize: 12, fontWeight: 700, color: '#13201D', fontFamily: "'Inter', sans-serif" }}>{formatBRL(Number(g.valor))}</div>
+                        <div style={{ fontSize: 12, fontWeight: 700, color: '#13201D', fontFamily: "var(--font-sans)" }}>{formatBRL(Number(g.valor))}</div>
                       </div>
                     ))}
                   </div>
@@ -515,7 +515,7 @@ export default function CartoesPage() {
                             <div style={{ fontSize: 12.5, fontWeight: 600, color: '#13201D', textTransform: 'capitalize' }}>{labelComp(f.comp)}</div>
                             <div style={{ fontSize: 10, color: '#7B8C88' }}>{f.itens.length} lançamento{f.itens.length !== 1 ? 's' : ''} · fechou {f.fech.toLocaleDateString('pt-BR')}</div>
                           </div>
-                          <div style={{ fontSize: 13, fontWeight: 700, color: '#13201D', fontFamily: "'Inter', sans-serif" }}>{formatBRL(f.total)}</div>
+                          <div style={{ fontSize: 13, fontWeight: 700, color: '#13201D', fontFamily: "var(--font-sans)" }}>{formatBRL(f.total)}</div>
                           {f.status === 'paga' ? (
                             <span style={{ fontSize: 10, fontWeight: 700, padding: '3px 10px', borderRadius: 20, background: '#E9F0ED', color: '#2B564D' }}><i className="fa-solid fa-check" style={{ marginRight: 4 }} />Paga</span>
                           ) : (
@@ -537,7 +537,7 @@ export default function CartoesPage() {
                   ].map(item => (
                     <div key={item.label} style={{ borderBottom: '0.5px solid rgba(255,255,255,0.08)', paddingBottom: 12 }}>
                       <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.45)', marginBottom: 4 }}>{item.label}</div>
-                      <div style={{ fontSize: item.size, fontWeight: 700, color: item.cor, fontFamily: "'Inter', sans-serif" }}>{item.val}</div>
+                      <div style={{ fontSize: item.size, fontWeight: 700, color: item.cor, fontFamily: "var(--font-sans)" }}>{item.val}</div>
                     </div>
                   ))}
                   {limite > 0 && (
@@ -573,7 +573,7 @@ export default function CartoesPage() {
                         </div>
                       </div>
                       <div style={{ textAlign: 'right' }}>
-                        <div style={{ fontSize: 14, fontWeight: 700, color: cor, fontFamily: "'Inter', sans-serif" }}>{pct.toFixed(0)}% usado</div>
+                        <div style={{ fontSize: 14, fontWeight: 700, color: cor, fontFamily: "var(--font-sans)" }}>{pct.toFixed(0)}% usado</div>
                         <div style={{ fontSize: 11, color: '#7B8C88' }}>{formatBRL(usado)} de {formatBRL(Number(c.limite))}</div>
                       </div>
                     </div>

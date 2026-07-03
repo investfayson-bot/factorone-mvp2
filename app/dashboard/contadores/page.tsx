@@ -534,7 +534,7 @@ export default function ContadoresPage() {
       {modal && (
         <div className="modal-bg" onClick={e => { if (e.target === e.currentTarget) setModal(false) }}>
           <div style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 16, padding: 28, width: '100%', maxWidth: 480 }}>
-            <h2 style={{ fontSize: 16, fontWeight: 700, color: 'var(--navy)', marginBottom: 20, fontFamily: "'Inter', sans-serif" }}>Novo acesso para contador</h2>
+            <h2 style={{ fontSize: 16, fontWeight: 700, color: 'var(--navy)', marginBottom: 20, fontFamily: "var(--font-sans)" }}>Novo acesso para contador</h2>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
               <div>
                 <label style={{ fontSize: 11, color: '#7B8C88', display: 'block', marginBottom: 6, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.07em' }}>Nome do contador *</label>

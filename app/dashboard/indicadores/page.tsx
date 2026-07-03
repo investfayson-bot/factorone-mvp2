@@ -120,7 +120,7 @@ export default function IndicadoresPage() {
         ].map(t => (
           <div key={t.l}>
             <div style={{ fontSize: 10, color: 'rgba(255,255,255,.5)' }}>{t.l}</div>
-            <div style={{ fontSize: 18, fontWeight: 800, color: '#fff', fontFamily: "'Inter', system-ui, sans-serif" }}>{t.v != null ? `${t.v.toFixed(2)}${t.s === '%' ? '%' : ' ' + t.s}` : '—'}</div>
+            <div style={{ fontSize: 18, fontWeight: 800, color: '#fff', fontFamily: "var(--font-sans)" }}>{t.v != null ? `${t.v.toFixed(2)}${t.s === '%' ? '%' : ' ' + t.s}` : '—'}</div>
           </div>
         ))}
       </div>

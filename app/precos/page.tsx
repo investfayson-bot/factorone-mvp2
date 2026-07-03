@@ -111,11 +111,11 @@ export default function PrecosPage() {
   const planos = PLANOS[tab]
 
   return (
-    <div style={{ minHeight: '100vh', background: '#F7F4EE', fontFamily: "'Inter', system-ui, sans-serif" }}>
+    <div style={{ minHeight: '100vh', background: '#F7F4EE', fontFamily: "var(--font-sans)" }}>
       {/* Nav */}
       <nav style={{ background: '#13201D', padding: '0 28px', height: 56, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <Link href="/" style={{ textDecoration: 'none' }}>
-          <div style={{ fontSize: 20, fontWeight: 800, color: '#fff', fontFamily: "'Inter', sans-serif", letterSpacing: '-0.03em' }}>
+          <div style={{ fontSize: 20, fontWeight: 800, color: '#fff', fontFamily: "var(--font-sans)", letterSpacing: '-0.03em' }}>
             Factor<span style={{ color: '#6FA595' }}>One</span>
             <span style={{ fontSize: 11, fontWeight: 400, color: 'rgba(255,255,255,0.4)', letterSpacing: '0.06em', marginLeft: 8 }}>FINANCE OS</span>
           </div>
@@ -207,8 +207,8 @@ export default function PrecosPage() {
                 <span style={{ fontSize: 10, fontWeight: 700, padding: '3px 10px', borderRadius: 20, display: 'inline-block', marginBottom: 12, background: p.badgeBg, color: p.badgeColor, width: 'fit-content' }}>
                   {p.badge}
                 </span>
-                <div style={{ fontSize: 15, fontWeight: 700, color: '#13201D', marginBottom: 4, fontFamily: "'Inter', sans-serif" }}>{p.nome}</div>
-                <div style={{ fontSize: 28, fontWeight: 800, color: '#13201D', letterSpacing: '-0.04em', lineHeight: 1, fontFamily: "'Inter', sans-serif" }}>{p.preco}</div>
+                <div style={{ fontSize: 15, fontWeight: 700, color: '#13201D', marginBottom: 4, fontFamily: "var(--font-sans)" }}>{p.nome}</div>
+                <div style={{ fontSize: 28, fontWeight: 800, color: '#13201D', letterSpacing: '-0.04em', lineHeight: 1, fontFamily: "var(--font-sans)" }}>{p.preco}</div>
                 <div style={{ fontSize: 11, color: '#7B8C88', marginBottom: 14, marginTop: 3 }}>{p.subPreco}</div>
 
                 {'economia' in p && p.economia && (
@@ -247,7 +247,7 @@ export default function PrecosPage() {
                     background: p.destaque ? '#13201D' : '#F7F4EE',
                     color: p.destaque ? '#fff' : '#13201D',
                     opacity: isLoading ? 0.7 : 1,
-                    fontFamily: "'Inter', sans-serif",
+                    fontFamily: "var(--font-sans)",
                   }}
                 >
                   {isLoading ? 'Aguarde...' : p.priceId ? `Assinar ${p.nome}` : 'Começar grátis'}
@@ -259,7 +259,7 @@ export default function PrecosPage() {
 
         {/* Comparativo de features */}
         <div style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 14, padding: '24px 28px', marginBottom: 40 }}>
-          <div style={{ fontSize: 16, fontWeight: 700, color: '#13201D', marginBottom: 20, fontFamily: "'Inter', sans-serif" }}>O que está incluído em todos os planos</div>
+          <div style={{ fontSize: 16, fontWeight: 700, color: '#13201D', marginBottom: 20, fontFamily: "var(--font-sans)" }}>O que está incluído em todos os planos</div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 16 }}>
             {[
               { icon: 'fa-robot', title: 'FactorOne AI', desc: 'CFO digital com análise em tempo real dos seus dados financeiros' },
@@ -284,7 +284,7 @@ export default function PrecosPage() {
 
         {/* FAQ */}
         <div style={{ marginBottom: 48 }}>
-          <div style={{ fontSize: 20, fontWeight: 700, color: '#13201D', textAlign: 'center', marginBottom: 24, fontFamily: "'Inter', sans-serif" }}>Perguntas frequentes</div>
+          <div style={{ fontSize: 20, fontWeight: 700, color: '#13201D', textAlign: 'center', marginBottom: 24, fontFamily: "var(--font-sans)" }}>Perguntas frequentes</div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: 16 }}>
             {FAQ.map(item => (
               <div key={item.q} style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 12, padding: '16px 18px' }}>
@@ -297,13 +297,13 @@ export default function PrecosPage() {
 
         {/* CTA final */}
         <div style={{ background: '#13201D', borderRadius: 16, padding: '36px 40px', textAlign: 'center' }}>
-          <div style={{ fontSize: 24, fontWeight: 800, color: '#fff', marginBottom: 10, fontFamily: "'Inter', sans-serif", letterSpacing: '-0.02em' }}>
+          <div style={{ fontSize: 24, fontWeight: 800, color: '#fff', marginBottom: 10, fontFamily: "var(--font-sans)", letterSpacing: '-0.02em' }}>
             Pronto para ter clareza financeira?
           </div>
           <div style={{ fontSize: 14, color: 'rgba(255,255,255,0.6)', marginBottom: 24, lineHeight: 1.6 }}>
             30 dias grátis, sem cartão, sem compromisso. Se não gostar, cancele com 1 clique.
           </div>
-          <Link href="/auth" style={{ textDecoration: 'none', display: 'inline-block', background: '#3D7A6E', color: '#fff', padding: '13px 32px', borderRadius: 10, fontSize: 14, fontWeight: 700, fontFamily: "'Inter', sans-serif" }}>
+          <Link href="/auth" style={{ textDecoration: 'none', display: 'inline-block', background: '#3D7A6E', color: '#fff', padding: '13px 32px', borderRadius: 10, fontSize: 14, fontWeight: 700, fontFamily: "var(--font-sans)" }}>
             Começar grátis agora
           </Link>
         </div>
@@ -312,7 +312,7 @@ export default function PrecosPage() {
       {/* Footer */}
       <footer style={{ background: '#13201D', padding: '20px 28px', marginTop: 40 }}>
         <div style={{ maxWidth: 960, margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
-          <div style={{ fontSize: 14, fontWeight: 800, color: '#fff', fontFamily: "'Inter', sans-serif" }}>
+          <div style={{ fontSize: 14, fontWeight: 800, color: '#fff', fontFamily: "var(--font-sans)" }}>
             Factor<span style={{ color: '#6FA595' }}>One</span>
           </div>
           <div style={{ display: 'flex', gap: 20 }}>

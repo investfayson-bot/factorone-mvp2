@@ -489,7 +489,7 @@ export default function DashboardPage() {
               </div>
               <div><div style={{ fontSize: 10, color: 'var(--gray-400)' }}>Ativos</div><div style={{ fontWeight: 700, color: 'var(--green)' }}>{clientesWidget.ativos}</div></div>
               <div><div style={{ fontSize: 10, color: 'var(--gray-400)' }}>Prospects</div><div style={{ fontWeight: 700, color: 'var(--gold)' }}>{clientesWidget.prospects}</div></div>
-              <div><div style={{ fontSize: 10, color: 'var(--gray-400)' }}>MRR Contratos</div><div style={{ fontWeight: 700, color: 'var(--teal)', fontFamily: "'Inter', system-ui, sans-serif" }}>{fmtBRLCompact(clientesWidget.mrr)}</div></div>
+              <div><div style={{ fontSize: 10, color: 'var(--gray-400)' }}>MRR Contratos</div><div style={{ fontWeight: 700, color: 'var(--teal)', fontFamily: "var(--font-sans)" }}>{fmtBRLCompact(clientesWidget.mrr)}</div></div>
             </div>
             <div style={{ color: 'var(--teal)', fontSize: 13, fontWeight: 600 }}>→</div>
           </div>
@@ -513,11 +513,11 @@ export default function DashboardPage() {
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
                   <div>
                     <div style={{ fontSize: 10, color: 'var(--gray-400)', marginBottom: 2 }}>Pipeline</div>
-                    <div style={{ fontSize: 16, fontWeight: 800, color: 'var(--navy)', fontFamily: "'Inter', system-ui, sans-serif" }}>{fmtBRLCompact(crmWidget.pipeline)}</div>
+                    <div style={{ fontSize: 16, fontWeight: 800, color: 'var(--navy)', fontFamily: "var(--font-sans)" }}>{fmtBRLCompact(crmWidget.pipeline)}</div>
                   </div>
                   <div>
                     <div style={{ fontSize: 10, color: 'var(--gray-400)', marginBottom: 2 }}>Ganho</div>
-                    <div style={{ fontSize: 16, fontWeight: 800, color: 'var(--green)', fontFamily: "'Inter', system-ui, sans-serif" }}>{fmtBRLCompact(crmWidget.ganhaMes)}</div>
+                    <div style={{ fontSize: 16, fontWeight: 800, color: 'var(--green)', fontFamily: "var(--font-sans)" }}>{fmtBRLCompact(crmWidget.ganhaMes)}</div>
                   </div>
                   <div>
                     <div style={{ fontSize: 10, color: 'var(--gray-400)', marginBottom: 2 }}>Oportunidades</div>
@@ -552,11 +552,11 @@ export default function DashboardPage() {
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
                   <div>
                     <div style={{ fontSize: 10, color: 'var(--gray-400)', marginBottom: 2 }}>Investido</div>
-                    <div style={{ fontSize: 16, fontWeight: 800, color: 'var(--red)', fontFamily: "'Inter', system-ui, sans-serif" }}>{fmtBRLCompact(mktWidget.gasto)}</div>
+                    <div style={{ fontSize: 16, fontWeight: 800, color: 'var(--red)', fontFamily: "var(--font-sans)" }}>{fmtBRLCompact(mktWidget.gasto)}</div>
                   </div>
                   <div>
                     <div style={{ fontSize: 10, color: 'var(--gray-400)', marginBottom: 2 }}>Receita</div>
-                    <div style={{ fontSize: 16, fontWeight: 800, color: 'var(--green)', fontFamily: "'Inter', system-ui, sans-serif" }}>{fmtBRLCompact(mktWidget.receita)}</div>
+                    <div style={{ fontSize: 16, fontWeight: 800, color: 'var(--green)', fontFamily: "var(--font-sans)" }}>{fmtBRLCompact(mktWidget.receita)}</div>
                   </div>
                   <div>
                     <div style={{ fontSize: 10, color: 'var(--gray-400)', marginBottom: 2 }}>ROAS</div>
@@ -591,11 +591,11 @@ export default function DashboardPage() {
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
                   <div>
                     <div style={{ fontSize: 10, color: 'var(--gray-400)', marginBottom: 2 }}>Rec. Frete</div>
-                    <div style={{ fontSize: 16, fontWeight: 800, color: 'var(--teal)', fontFamily: "'Inter', system-ui, sans-serif" }}>{fmtBRLCompact(logWidget.receitaFrete)}</div>
+                    <div style={{ fontSize: 16, fontWeight: 800, color: 'var(--teal)', fontFamily: "var(--font-sans)" }}>{fmtBRLCompact(logWidget.receitaFrete)}</div>
                   </div>
                   <div>
                     <div style={{ fontSize: 10, color: 'var(--gray-400)', marginBottom: 2 }}>Entregues/mês</div>
-                    <div style={{ fontSize: 16, fontWeight: 800, color: 'var(--green)', fontFamily: "'Inter', system-ui, sans-serif" }}>{logWidget.entreguesMes}</div>
+                    <div style={{ fontSize: 16, fontWeight: 800, color: 'var(--green)', fontFamily: "var(--font-sans)" }}>{logWidget.entreguesMes}</div>
                   </div>
                   <div>
                     <div style={{ fontSize: 10, color: 'var(--gray-400)', marginBottom: 2 }}>Em trânsito</div>
@@ -619,11 +619,11 @@ export default function DashboardPage() {
         <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: '14px 18px', marginBottom: 16 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 16, cursor: 'pointer' }} onClick={() => setScoreExpanded(v => !v)}>
             <div style={{ flex: 1 }}>
-              <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--gray-400)', letterSpacing: '.08em', textTransform: 'uppercase', fontFamily: "'Inter', system-ui, sans-serif", marginBottom: 4 }}>
+              <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--gray-400)', letterSpacing: '.08em', textTransform: 'uppercase', fontFamily: "var(--font-sans)", marginBottom: 4 }}>
                 Score Financeiro FactorOne
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                <div style={{ fontSize: 28, fontWeight: 800, color: score.total >= 700 ? 'var(--green)' : score.total >= 500 ? 'var(--gold)' : 'var(--red)', fontFamily: "'Inter', system-ui, sans-serif" }}>
+                <div style={{ fontSize: 28, fontWeight: 800, color: score.total >= 700 ? 'var(--green)' : score.total >= 500 ? 'var(--gold)' : 'var(--red)', fontFamily: "var(--font-sans)" }}>
                   {score.total}
                 </div>
                 <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>/ 1000</div>
@@ -653,7 +653,7 @@ export default function DashboardPage() {
                         stroke={c.pontos >= 160 ? 'var(--green)' : c.pontos >= 100 ? 'var(--gold)' : 'var(--red)'}
                         strokeWidth="3" strokeDasharray={`${(c.pontos / c.max) * 100} 100`} strokeLinecap="round" />
                     </svg>
-                    <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 800, color: 'var(--navy)', fontFamily: "'Inter', system-ui, sans-serif" }}>{c.pontos}</div>
+                    <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 800, color: 'var(--navy)', fontFamily: "var(--font-sans)" }}>{c.pontos}</div>
                   </div>
                   <div style={{ fontSize: 11, color: 'var(--navy)', fontWeight: 600, marginBottom: 2 }}>{c.descricao}</div>
                   <div style={{ fontSize: 10, color: c.detalhe === 'Atenção' || c.detalhe === 'Queda' || c.detalhe === 'Baixo' || c.detalhe === 'Negativa' ? 'var(--red)' : 'var(--gray-400)' }}>
@@ -870,7 +870,7 @@ export default function DashboardPage() {
       {/* Atalhos rápidos + AI insight */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 14 }}>
         <div style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 12, padding: '14px 16px' }}>
-          <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--navy)', marginBottom: 12, fontFamily: "'Inter', sans-serif" }}>Atalhos rápidos</div>
+          <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--navy)', marginBottom: 12, fontFamily: "var(--font-sans)" }}>Atalhos rápidos</div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
             {[
               { href: '/dashboard/despesas', icon: 'fa-file-invoice', label: 'Nova despesa', bg: '#E9F0ED', color: 'var(--teal)' },
@@ -899,7 +899,7 @@ export default function DashboardPage() {
                 <i className="fa-solid fa-robot" style={{ fontSize: 13, color: '#6FA595' }} />
               </div>
               <div>
-                <div style={{ fontSize: 12, fontWeight: 600, color: '#fff', fontFamily: "'Inter', sans-serif" }}>FactorOne AI</div>
+                <div style={{ fontSize: 12, fontWeight: 600, color: '#fff', fontFamily: "var(--font-sans)" }}>FactorOne AI</div>
                 <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.45)' }}>CFO digital · análise em tempo real</div>
               </div>
             </div>

@@ -126,7 +126,7 @@ export default function DashboardPessoalPage() {
         <div style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 14, padding: '16px 18px' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
             <div>
-              <div style={{ fontSize: 12, fontWeight: 700, color: '#13201D', fontFamily: "'Inter', sans-serif" }}>Para onde vai o dinheiro</div>
+              <div style={{ fontSize: 12, fontWeight: 700, color: '#13201D', fontFamily: "var(--font-sans)" }}>Para onde vai o dinheiro</div>
               <div style={{ fontSize: 10, color: '#7B8C88', marginTop: 2 }}>Top categorias do mês</div>
             </div>
             <Link href="/dashboard-pessoal/gastos" style={{ fontSize: 10, color: '#3D7A6E', fontWeight: 600, textDecoration: 'none' }}>Ver todos →</Link>
@@ -166,7 +166,7 @@ export default function DashboardPessoalPage() {
           {/* Metas */}
           <div style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 14, padding: '16px 18px', flex: 1 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-              <div style={{ fontSize: 12, fontWeight: 700, color: '#13201D', fontFamily: "'Inter', sans-serif" }}>Metas financeiras</div>
+              <div style={{ fontSize: 12, fontWeight: 700, color: '#13201D', fontFamily: "var(--font-sans)" }}>Metas financeiras</div>
               <Link href="/dashboard-pessoal/metas" style={{ fontSize: 10, color: '#3D7A6E', fontWeight: 600, textDecoration: 'none' }}>Ver todas →</Link>
             </div>
             {metas.length === 0 ? (
@@ -192,7 +192,7 @@ export default function DashboardPessoalPage() {
           {/* Assinaturas resumo */}
           <div style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 14, padding: '16px 18px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-              <div style={{ fontSize: 12, fontWeight: 700, color: '#13201D', fontFamily: "'Inter', sans-serif" }}>Assinaturas ativas</div>
+              <div style={{ fontSize: 12, fontWeight: 700, color: '#13201D', fontFamily: "var(--font-sans)" }}>Assinaturas ativas</div>
               <Link href="/dashboard-pessoal/assinaturas" style={{ fontSize: 10, color: '#3D7A6E', fontWeight: 600, textDecoration: 'none' }}>Gerenciar →</Link>
             </div>
             {assinaturas.filter(a => a.ativa).length === 0 ? (
@@ -200,7 +200,7 @@ export default function DashboardPessoalPage() {
             ) : assinaturas.filter(a => a.ativa).slice(0, 4).map(a => (
               <div key={a.nome} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 11, padding: '7px 0', borderBottom: '0.5px solid #EFE9DC' }}>
                 <span style={{ fontWeight: 600, color: '#13201D' }}>{a.nome}</span>
-                <span style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, color: '#B0413E' }}>{formatBRL(Number(a.valor))}</span>
+                <span style={{ fontFamily: "var(--font-sans)", fontWeight: 700, color: '#B0413E' }}>{formatBRL(Number(a.valor))}</span>
               </div>
             ))}
           </div>

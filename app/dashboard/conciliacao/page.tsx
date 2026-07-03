@@ -277,7 +277,7 @@ export default function ConciliacaoPage() {
       {/* Tabela principal */}
       <div style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 12, overflow: 'hidden' }}>
         <div style={{ padding: '12px 16px', borderBottom: '0.5px solid #E4DCCC', display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
-          <div style={{ fontSize: 12, fontWeight: 600, color: '#13201D', fontFamily: "'Inter', sans-serif", flex: 1 }}>
+          <div style={{ fontSize: 12, fontWeight: 600, color: '#13201D', fontFamily: "var(--font-sans)", flex: 1 }}>
             Transações ({filtrados.length})
           </div>
           {(['todos', 'conciliado', 'pendente', 'divergencia'] as const).map(s => (
@@ -318,7 +318,7 @@ export default function ConciliacaoPage() {
                 </td></tr>
               ) : filtrados.map(item => (
                 <tr key={item.id}>
-                  <td style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: 11, color: 'var(--gray-400)' }}>
+                  <td style={{ fontFamily: "var(--font-sans)", fontSize: 11, color: 'var(--gray-400)' }}>
                     {new Date(item.data + 'T12:00:00').toLocaleDateString('pt-BR')}
                   </td>
                   <td style={{ fontWeight: 600, fontSize: 12 }}>{item.descBanco}</td>
@@ -328,7 +328,7 @@ export default function ConciliacaoPage() {
                       <span style={{ marginLeft: 6, fontSize: 9, color: 'var(--gold)', fontWeight: 700 }}>Δ{item.diffPct}%</span>
                     )}
                   </td>
-                  <td style={{ textAlign: 'right', fontFamily: "'Inter', system-ui, sans-serif", fontWeight: 700, color: item.tipo === 'entrada' ? 'var(--green)' : 'var(--red)' }}>
+                  <td style={{ textAlign: 'right', fontFamily: "var(--font-sans)", fontWeight: 700, color: item.tipo === 'entrada' ? 'var(--green)' : 'var(--red)' }}>
                     {item.tipo === 'entrada' ? '+' : '-'}{fmt(item.valor)}
                   </td>
                   <td style={{ textAlign: 'center' }}>

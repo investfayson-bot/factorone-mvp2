@@ -62,7 +62,7 @@ export default function SolucoesPage() {
       {/* Banner */}
       <div style={{ background: 'linear-gradient(135deg, #13201D 0%, #1C2E29 100%)', borderRadius: 16, padding: '22px 26px', marginBottom: 22, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
         <div>
-          <div style={{ fontSize: 18, fontWeight: 800, color: '#fff', fontFamily: "'Inter', system-ui, sans-serif", letterSpacing: '-.02em' }}>O super-app financeiro da sua empresa</div>
+          <div style={{ fontSize: 18, fontWeight: 800, color: '#fff', fontFamily: "var(--font-sans)", letterSpacing: '-.02em' }}>O super-app financeiro da sua empresa</div>
           <div style={{ fontSize: 13, color: '#6FA595', marginTop: 4 }}>Conta, cartões, crédito, Open Finance e mais — integrados e com IA.</div>
         </div>
         <Link href="/dashboard/conexoes" style={{ background: '#3D7A6E', color: '#fff', textDecoration: 'none', fontSize: 13, fontWeight: 700, padding: '10px 18px', borderRadius: 9 }}>

@@ -5,12 +5,12 @@ import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
 
-type Screen = 'splash' | 'perfil' | 'empresa' | 'pronto'
+type Screen = 'splash' | 'perfil' | 'empresa' | 'banco'
 
 const PJ_STEPS = [
-  { key: 'perfil',  label: 'Tipo de conta' },
-  { key: 'empresa', label: 'Sua empresa'   },
-  { key: 'pronto',  label: 'Pronto'        },
+  { key: 'perfil',  label: 'Tipo de conta'  },
+  { key: 'empresa', label: 'Sua empresa'    },
+  { key: 'banco',   label: 'Conectar banco' },
 ] as const
 
 export default function OnboardingPage() {
@@ -86,14 +86,14 @@ export default function OnboardingPage() {
           fetch('/api/email/boas-vindas', { method: 'POST', headers: { Authorization: `Bearer ${session.access_token}` } }).catch(() => {})
         }
       })
-      setScreen('pronto')
+      setScreen('banco')
     } catch { toast.error('Falha ao salvar empresa') }
     finally { setLoading(false) }
   }
 
   /* ── step index for sidebar ── */
   const stepIdx = PJ_STEPS.findIndex(s => s.key === screen)
-  const showSidebar = isPJ && screen !== 'splash' && screen !== 'pronto'
+  const showSidebar = isPJ && screen !== 'splash'
 
   /* ── layout ── */
   return (
@@ -103,7 +103,7 @@ export default function OnboardingPage() {
       {showSidebar && (
         <aside style={{ width: 260, background: 'var(--navy)', display: 'flex', flexDirection: 'column', padding: '32px 24px', flexShrink: 0 }}>
           {/* Logo */}
-          <div style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: 20, fontWeight: 800, color: '#fff', letterSpacing: '-.04em', marginBottom: 6 }}>
+          <div style={{ fontFamily: "var(--font-sans)", fontSize: 20, fontWeight: 800, color: '#fff', letterSpacing: '-.04em', marginBottom: 6 }}>
             Factor<span style={{ color: 'var(--teal)' }}>One</span>
           </div>
           {empresa.nome && (
@@ -165,10 +165,10 @@ export default function OnboardingPage() {
             </div>
 
             {/* Logo */}
-            <div style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: 13, fontWeight: 600, color: 'var(--gray-400)', letterSpacing: '.06em', textTransform: 'uppercase', marginBottom: 8 }}>
+            <div style={{ fontFamily: "var(--font-sans)", fontSize: 13, fontWeight: 600, color: 'var(--gray-400)', letterSpacing: '.06em', textTransform: 'uppercase', marginBottom: 8 }}>
               Finance OS
             </div>
-            <div style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: 28, fontWeight: 800, color: 'var(--navy)', letterSpacing: '-.03em', marginBottom: 6 }}>
+            <div style={{ fontFamily: "var(--font-sans)", fontSize: 28, fontWeight: 800, color: 'var(--navy)', letterSpacing: '-.03em', marginBottom: 6 }}>
               {userName ? `Bem-vindo, ${userName.split(' ')[0]}!` : 'Bem-vindo ao FactorOne'}
             </div>
             <div style={{ fontSize: 13, color: 'var(--gray-400)', lineHeight: 1.7, marginBottom: 32, maxWidth: 420 }}>
@@ -204,7 +204,7 @@ export default function OnboardingPage() {
         {screen === 'perfil' && (
           <div style={{ width: '100%', maxWidth: 600 }}>
             <div style={{ marginBottom: 28 }}>
-              <div style={{ fontSize: 22, fontFamily: "'Inter', system-ui, sans-serif", fontWeight: 800, color: 'var(--navy)', marginBottom: 6 }}>Como você vai usar o FactorOne?</div>
+              <div style={{ fontSize: 22, fontFamily: "var(--font-sans)", fontWeight: 800, color: 'var(--navy)', marginBottom: 6 }}>Como você vai usar o FactorOne?</div>
               <div style={{ fontSize: 13, color: 'var(--gray-400)' }}>Escolha o modo principal. Você pode usar os dois.</div>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
@@ -217,7 +217,7 @@ export default function OnboardingPage() {
                 <div style={{ width: 46, height: 46, background: 'var(--teal)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16 }}>
                   <i className="fa-solid fa-building" style={{ color: '#fff', fontSize: 18 }} />
                 </div>
-                <div style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: 16, fontWeight: 700, color: 'var(--navy)', marginBottom: 4 }}>Empresarial (PJ)</div>
+                <div style={{ fontFamily: "var(--font-sans)", fontSize: 16, fontWeight: 700, color: 'var(--navy)', marginBottom: 4 }}>Empresarial (PJ)</div>
                 <div style={{ fontSize: 12, color: 'var(--gray-400)', lineHeight: 1.6, marginBottom: 16 }}>PMEs, startups e agências que precisam de gestão financeira completa.</div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                   {['DRE & Fluxo de Caixa', 'AI CFO + Relatórios', 'NF-e, DAS, Contador'].map(f => (
@@ -236,7 +236,7 @@ export default function OnboardingPage() {
                 <div style={{ width: 46, height: 46, background: 'var(--gray-100)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16 }}>
                   <i className="fa-solid fa-user" style={{ color: 'var(--gray-500)', fontSize: 18 }} />
                 </div>
-                <div style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: 16, fontWeight: 700, color: 'var(--navy)', marginBottom: 4 }}>Pessoa Física</div>
+                <div style={{ fontFamily: "var(--font-sans)", fontSize: 16, fontWeight: 700, color: 'var(--navy)', marginBottom: 4 }}>Pessoa Física</div>
                 <div style={{ fontSize: 12, color: 'var(--gray-400)', lineHeight: 1.6, marginBottom: 16 }}>Organização financeira pessoal, metas e controle de gastos.</div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                   {['Controle de gastos & metas', 'IRPF & investimentos', 'Orçamento mensal'].map(f => (
@@ -257,7 +257,7 @@ export default function OnboardingPage() {
         {screen === 'empresa' && (
           <div style={{ width: '100%', maxWidth: 520 }}>
             <div style={{ marginBottom: 24 }}>
-              <div style={{ fontSize: 22, fontFamily: "'Inter', system-ui, sans-serif", fontWeight: 800, color: 'var(--navy)', marginBottom: 6 }}>Como chama sua empresa?</div>
+              <div style={{ fontSize: 22, fontFamily: "var(--font-sans)", fontWeight: 800, color: 'var(--navy)', marginBottom: 6 }}>Como chama sua empresa?</div>
               <div style={{ fontSize: 13, color: 'var(--gray-400)' }}>Um campo e pronto — CNPJ, setor e o resto você completa depois, dentro do sistema.</div>
             </div>
 
@@ -277,43 +277,48 @@ export default function OnboardingPage() {
           </div>
         )}
 
-        {/* PRONTO */}
-        {screen === 'pronto' && (
-          <div style={{ maxWidth: 480, width: '100%', textAlign: 'center' }}>
-            <div style={{ width: 64, height: 64, background: 'linear-gradient(135deg, var(--teal), #3A7A74)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px', boxShadow: '0 6px 20px rgba(61,122,110,.3)' }}>
-              <i className="fa-solid fa-check" style={{ color: '#fff', fontSize: 26 }} />
-            </div>
-            <div style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: 24, fontWeight: 800, color: 'var(--navy)', marginBottom: 6 }}>
-              {empresa.nome || 'Tudo pronto'}!
-            </div>
-            {userName && (
-              <div style={{ fontSize: 13, color: 'var(--gray-400)', marginBottom: 4 }}>
-                Boa sorte, <span style={{ fontWeight: 700, color: 'var(--teal)' }}>{userName.split(' ')[0]}</span>!
+        {/* CONECTAR BANCO (mesma página, depois do cadastro) */}
+        {screen === 'banco' && (
+          <div style={{ maxWidth: 540, width: '100%' }}>
+            <div style={{ marginBottom: 18 }}>
+              <div style={{ fontFamily: 'var(--font-sans)', fontSize: 24, fontWeight: 800, color: 'var(--navy)', letterSpacing: '-.02em', marginBottom: 6 }}>
+                {empresa.nome ? `${empresa.nome} criada! ` : 'Quase lá! '}Conecte seu banco.
               </div>
-            )}
-            <div style={{ fontSize: 13, color: 'var(--gray-400)', lineHeight: 1.7, marginBottom: 24 }}>
-              Bora colocar pra funcionar — comece por uma ação (leva 1 minuto):
+              <div style={{ fontSize: 13.5, color: 'var(--gray-500)', lineHeight: 1.65 }}>
+                Traga saldo e extrato por Open Finance. A IA já começa a <b>classificar suas compras</b> e montar a contabilidade — sem você digitar nada.
+              </div>
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 20, textAlign: 'left' }}>
+
+            {/* Banner com foto */}
+            <div style={{ borderRadius: 14, overflow: 'hidden', border: '1px solid var(--gray-100)', marginBottom: 16, boxShadow: '0 6px 20px rgba(19,32,29,.10)' }}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/banco-hero.jpg" alt="Conecte seu banco ao FactorOne" style={{ width: '100%', height: 168, objectFit: 'cover', objectPosition: 'center', display: 'block' }} />
+            </div>
+
+            {/* Benefícios */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 22 }}>
               {[
-                { icon: 'fa-building-columns', label: 'Conectar meu banco',    desc: 'Open Finance via Belvo — saldo e extrato', href: '/dashboard/conexoes', color: 'var(--teal)' },
-                { icon: 'fa-credit-card',      label: 'Criar um cartão',        desc: 'Virtual ou físico, por colaborador',    href: '/dashboard/cartoes',                 color: 'var(--navy)' },
-                { icon: 'fa-calculator',       label: 'Convidar meu contador',  desc: 'Acesso somente leitura à contabilidade',href: '/dashboard/contadores',              color: 'var(--gold)' },
-              ].map(item => (
-                <button key={item.label} onClick={() => router.push(item.href)} style={{ display: 'flex', gap: 12, alignItems: 'center', padding: '12px 14px', background: '#fff', borderRadius: 10, border: '1px solid var(--gray-100)', cursor: 'pointer', textAlign: 'left', width: '100%', transition: 'box-shadow .15s' }}>
-                  <div style={{ width: 36, height: 36, background: `${item.color}18`, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                    <i className={`fa-solid ${item.icon}`} style={{ color: item.color, fontSize: 14 }} />
+                { icon: 'fa-building-columns', title: 'Saldo e extrato automáticos', desc: 'Conexão segura via Belvo (Open Finance)' },
+                { icon: 'fa-wand-magic-sparkles', title: 'Classificação por IA', desc: 'Cada compra vira lançamento contábil sozinho' },
+                { icon: 'fa-shield-halved', title: 'Somente leitura', desc: 'O FactorOne nunca move o seu dinheiro' },
+              ].map(b => (
+                <div key={b.title} style={{ display: 'flex', gap: 12, alignItems: 'center', padding: '11px 14px', background: '#fff', borderRadius: 10, border: '1px solid var(--gray-100)' }}>
+                  <div style={{ width: 36, height: 36, background: 'rgba(61,122,110,.12)', borderRadius: 9, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <i className={`fa-solid ${b.icon}`} style={{ color: 'var(--teal)', fontSize: 14 }} />
                   </div>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: 12.5, fontWeight: 700, color: 'var(--navy)' }}>{item.label}</div>
-                    <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>{item.desc}</div>
+                  <div>
+                    <div style={{ fontSize: 12.5, fontWeight: 700, color: 'var(--navy)' }}>{b.title}</div>
+                    <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>{b.desc}</div>
                   </div>
-                  <i className="fa-solid fa-arrow-right" style={{ color: 'var(--gray-300)', fontSize: 12 }} />
-                </button>
+                </div>
               ))}
             </div>
-            <button className="btn-action btn-ghost" style={{ width: '100%', padding: '12px 0', fontSize: 13 }} onClick={() => router.push('/dashboard')}>
-              Pular — ir direto pro dashboard
+
+            <button className="btn-action" style={{ width: '100%', padding: '13px 0', fontSize: 14, marginBottom: 8 }} onClick={() => router.push('/dashboard/conexoes')}>
+              <i className="fa-solid fa-link" style={{ marginRight: 8 }} />Conectar meu banco
+            </button>
+            <button className="btn-action btn-ghost" style={{ width: '100%', padding: '11px 0', fontSize: 13 }} onClick={() => router.push('/dashboard')}>
+              Agora não — ir pro painel
             </button>
           </div>
         )}

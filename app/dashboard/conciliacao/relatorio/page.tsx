@@ -95,7 +95,7 @@ export default function RelatorioConciliacaoPage() {
     <div style={{ maxWidth: 960 }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 18, gap: 12, flexWrap: 'wrap' }}>
         <div>
-          <h1 style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: 18, fontWeight: 700, color: 'var(--navy)', margin: 0 }}>Relatório de Conciliação</h1>
+          <h1 style={{ fontFamily: "var(--font-sans)", fontSize: 18, fontWeight: 700, color: 'var(--navy)', margin: 0 }}>Relatório de Conciliação</h1>
           <div style={{ fontSize: 12, color: 'var(--gray-500)', marginTop: 3 }}>Status de conciliação do extrato bancário por período.</div>
         </div>
         <div style={{ display: 'flex', gap: 8, alignItems: 'flex-end', flexWrap: 'wrap' }}>

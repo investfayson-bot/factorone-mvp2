@@ -129,12 +129,12 @@ export default function MaPage() {
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginTop: 16 }}>
             <div style={{ background: '#FBF8F1', borderRadius: 10, padding: '12px 14px' }}>
               <div style={{ fontSize: 10.5, color: '#7B8C88', marginBottom: 4 }}>Por múltiplo de receita</div>
-              <div style={{ fontSize: 20, fontWeight: 800, color: '#13201D', fontFamily: "'Inter', system-ui, sans-serif" }}>{fmtC(valReceita)}</div>
+              <div style={{ fontSize: 20, fontWeight: 800, color: '#13201D', fontFamily: "var(--font-sans)" }}>{fmtC(valReceita)}</div>
               <div style={{ fontSize: 10, color: '#A6B0AC' }}>{fmtC(receitaAnual)} × {multReceita}x</div>
             </div>
             <div style={{ background: '#FBF8F1', borderRadius: 10, padding: '12px 14px' }}>
               <div style={{ fontSize: 10.5, color: '#7B8C88', marginBottom: 4 }}>Por múltiplo de EBITDA</div>
-              <div style={{ fontSize: 20, fontWeight: 800, color: '#13201D', fontFamily: "'Inter', system-ui, sans-serif" }}>{ebitdaAnual > 0 ? fmtC(valEbitda) : '—'}</div>
+              <div style={{ fontSize: 20, fontWeight: 800, color: '#13201D', fontFamily: "var(--font-sans)" }}>{ebitdaAnual > 0 ? fmtC(valEbitda) : '—'}</div>
               <div style={{ fontSize: 10, color: '#A6B0AC' }}>{fmtC(ebitdaAnual)} × {multEbitda}x</div>
             </div>
           </div>
@@ -142,7 +142,7 @@ export default function MaPage() {
 
         <div style={{ background: '#13201D', borderRadius: 14, padding: '20px', display: 'flex', flexDirection: 'column', gap: 6 }}>
           <div style={{ fontSize: 11, fontWeight: 700, color: '#6FA595', textTransform: 'uppercase', letterSpacing: '.08em' }}>Valor de referência</div>
-          <div style={{ fontSize: 30, fontWeight: 800, color: '#fff', fontFamily: "'Inter', system-ui, sans-serif", letterSpacing: '-.02em' }}>{fmtC(referencia)}</div>
+          <div style={{ fontSize: 30, fontWeight: 800, color: '#fff', fontFamily: "var(--font-sans)", letterSpacing: '-.02em' }}>{fmtC(referencia)}</div>
           <div style={{ fontSize: 12, color: 'rgba(255,255,255,.6)' }}>Faixa provável: {fmtC(faixaMin)} – {fmtC(faixaMax)}</div>
           <div style={{ marginTop: 10, fontSize: 10.5, color: 'rgba(255,255,255,.4)', lineHeight: 1.6 }}>
             Estimativa por múltiplos (comps). O valor final depende de crescimento, margem, retenção e due diligence.
@@ -157,7 +157,7 @@ export default function MaPage() {
           <div style={{ width: 180, height: 8, background: '#F1ECE1', borderRadius: 99, overflow: 'hidden' }}>
             <div style={{ height: '100%', width: `${prontidao}%`, background: corPront, borderRadius: 99, transition: 'width .3s' }} />
           </div>
-          <span style={{ fontSize: 15, fontWeight: 800, color: corPront, fontFamily: "'Inter', system-ui, sans-serif" }}>{prontidao}%</span>
+          <span style={{ fontSize: 15, fontWeight: 800, color: corPront, fontFamily: "var(--font-sans)" }}>{prontidao}%</span>
           <span style={{ fontSize: 11, color: '#7B8C88' }}>{checked.size}/{TOTAL_ITENS}</span>
         </div>
       </div>

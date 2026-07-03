@@ -125,7 +125,7 @@ export default function CartoesPage() {
                     <td><span className="tag gray">{g.categoria}</span></td>
                     <td style={{ color: 'var(--gray-400)' }}>{g.data_despesa?.split('-').reverse().join('/')}</td>
                     <td style={{ color: 'var(--gray-400)', fontSize: 11 }}>{g.parcela_atual ? `${g.parcela_atual}/${g.total_parcelas}x` : '—'}</td>
-                    <td style={{ fontFamily: "'Inter', system-ui, sans-serif", fontWeight: 700 }}>{formatBRL(Number(g.valor))}</td>
+                    <td style={{ fontFamily: "var(--font-sans)", fontWeight: 700 }}>{formatBRL(Number(g.valor))}</td>
                   </tr>
                 ))}
               </tbody>

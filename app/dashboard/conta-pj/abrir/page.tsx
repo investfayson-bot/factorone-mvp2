@@ -27,7 +27,7 @@ function CartaoVisual({ nome, numero, pausar }: { nome: string; numero: string; 
         <i className="fa-solid fa-wifi" style={{ color: 'rgba(255,255,255,.5)', transform: 'rotate(90deg)', fontSize: 13 }} />
       </div>
       <div style={{ width: 40, height: 30, borderRadius: 6, background: 'linear-gradient(135deg,#D9B54A,#B08A3E)', marginTop: 18 }} />
-      <div style={{ marginTop: 16, fontSize: 16, letterSpacing: '.16em', color: 'rgba(255,255,255,.92)', fontFamily: "'Inter', system-ui, monospace" }}>{numero}</div>
+      <div style={{ marginTop: 16, fontSize: 16, letterSpacing: '.16em', color: 'rgba(255,255,255,.92)', fontFamily: "var(--font-mono)" }}>{numero}</div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginTop: 12 }}>
         <div style={{ fontSize: 11.5, fontWeight: 600, color: 'rgba(255,255,255,.85)', textTransform: 'uppercase', letterSpacing: '.04em', maxWidth: 190, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{nome || 'SUA EMPRESA'}</div>
         <div style={{ fontSize: 11, fontWeight: 700, color: '#fff', fontStyle: 'italic' }}>VISA</div>
@@ -88,7 +88,7 @@ export default function AbrirContaPage() {
         <div style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 14, padding: '18px 22px', textAlign: 'left', marginBottom: 20 }}>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 14 }}>
             {[['Banco', 'FactorOne · 399'], ['Agência', pronto.agencia], ['Conta', `${pronto.conta}-${pronto.digito}`]].map(([l, v]) => (
-              <div key={l}><div style={{ fontSize: 10, color: '#7B8C88', textTransform: 'uppercase', letterSpacing: '.05em', marginBottom: 3 }}>{l}</div><div style={{ fontSize: 14, fontWeight: 700, color: '#13201D', fontFamily: "'Inter', system-ui, sans-serif" }}>{v}</div></div>
+              <div key={l}><div style={{ fontSize: 10, color: '#7B8C88', textTransform: 'uppercase', letterSpacing: '.05em', marginBottom: 3 }}>{l}</div><div style={{ fontSize: 14, fontWeight: 700, color: '#13201D', fontFamily: "var(--font-sans)" }}>{v}</div></div>
             ))}
           </div>
         </div>

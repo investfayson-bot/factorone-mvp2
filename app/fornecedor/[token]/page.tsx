@@ -69,15 +69,15 @@ export default function FornecedorPortalPage({ params }: { params: Promise<{ tok
     width: '100%', border: '1px solid #e2e8f0', borderRadius: 8,
     padding: '10px 14px', fontSize: 14, color: '#0f172a',
     background: '#fff', boxSizing: 'border-box', outline: 'none',
-    fontFamily: "'Inter', system-ui, sans-serif",
+    fontFamily: "var(--font-sans)",
   }
   const lbl: React.CSSProperties = { fontSize: 12, fontWeight: 600, color: '#64748b', marginBottom: 5, display: 'block' }
 
   return (
-    <div style={{ minHeight: '100vh', background: '#f8fafc', fontFamily: "'Inter', system-ui, sans-serif" }}>
+    <div style={{ minHeight: '100vh', background: '#f8fafc', fontFamily: "var(--font-sans)" }}>
       {/* Header */}
       <div style={{ background: '#0A192F', padding: '16px 24px', display: 'flex', alignItems: 'center', gap: 12 }}>
-        <div style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: 18, fontWeight: 800, color: '#fff' }}>
+        <div style={{ fontFamily: "var(--font-sans)", fontSize: 18, fontWeight: 800, color: '#fff' }}>
           Factor<span style={{ color: 'var(--teal)' }}>One</span>
         </div>
         <div style={{ width: 1, height: 20, background: 'rgba(255,255,255,0.15)' }} />
@@ -111,7 +111,7 @@ export default function FornecedorPortalPage({ params }: { params: Promise<{ tok
             {/* Card intro */}
             <div style={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: 16, padding: 28, marginBottom: 20, boxShadow: '0 1px 4px rgba(0,0,0,.06)' }}>
               <p style={{ fontSize: 11, fontWeight: 700, color: 'var(--teal)', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: 6 }}>Convite de {info.empresa_nome}</p>
-              <h1 style={{ fontSize: 20, fontWeight: 800, color: '#0f172a', margin: '0 0 8px', fontFamily: "'Inter', system-ui, sans-serif" }}>Envie sua fatura</h1>
+              <h1 style={{ fontSize: 20, fontWeight: 800, color: '#0f172a', margin: '0 0 8px', fontFamily: "var(--font-sans)" }}>Envie sua fatura</h1>
               <p style={{ fontSize: 13, color: '#64748b', lineHeight: 1.6, margin: 0 }}>
                 Preencha os dados abaixo. Sua fatura será cadastrada automaticamente no sistema financeiro de <strong>{info.empresa_nome}</strong>.
               </p>

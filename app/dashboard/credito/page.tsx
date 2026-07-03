@@ -136,7 +136,7 @@ export default function CreditoPage() {
           {/* Formulário */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
             <div style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 14, padding: '16px 18px' }}>
-              <div style={{ fontSize: 12, fontWeight: 700, color: '#13201D', marginBottom: 14, fontFamily: "'Inter', sans-serif" }}>Parâmetros</div>
+              <div style={{ fontSize: 12, fontWeight: 700, color: '#13201D', marginBottom: 14, fontFamily: "var(--font-sans)" }}>Parâmetros</div>
               {[
                 { label: 'Valor do bem (R$)', value: valor, set: setValor, placeholder: '100000' },
                 { label: 'Entrada (R$)', value: entrada, set: setEntrada, placeholder: '20000' },
@@ -145,7 +145,7 @@ export default function CreditoPage() {
               ].map(f => (
                 <div key={f.label} style={{ marginBottom: 12 }}>
                   <label style={{ fontSize: 10, fontWeight: 600, color: '#7B8C88', display: 'block', marginBottom: 5, textTransform: 'uppercase', letterSpacing: '0.07em' }}>{f.label}</label>
-                  <input className="form-input" type="number" placeholder={f.placeholder} value={f.value} onChange={e => f.set(e.target.value)} style={{ fontFamily: "'Inter', sans-serif", fontWeight: 600 }} />
+                  <input className="form-input" type="number" placeholder={f.placeholder} value={f.value} onChange={e => f.set(e.target.value)} style={{ fontFamily: "var(--font-sans)", fontWeight: 600 }} />
                 </div>
               ))}
               <div>
@@ -180,7 +180,7 @@ export default function CreditoPage() {
                 ].map(item => (
                   <div key={item.label} style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '0.5px solid rgba(255,255,255,.06)' }}>
                     <span style={{ fontSize: 11, color: 'rgba(255,255,255,.55)' }}>{item.label}</span>
-                    <span style={{ fontSize: 12, fontWeight: 700, color: item.cor, fontFamily: "'Inter', sans-serif" }}>{item.val}</span>
+                    <span style={{ fontSize: 12, fontWeight: 700, color: item.cor, fontFamily: "var(--font-sans)" }}>{item.val}</span>
                   </div>
                 ))}
               </div>
@@ -192,7 +192,7 @@ export default function CreditoPage() {
             {/* Gráfico Price vs SAC */}
             {comparativo.length > 0 && (
               <div style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 14, padding: '16px 18px' }}>
-                <div style={{ fontSize: 12, fontWeight: 700, color: '#13201D', marginBottom: 4, fontFamily: "'Inter', sans-serif" }}>Price vs SAC — parcelas (primeiros 12 meses)</div>
+                <div style={{ fontSize: 12, fontWeight: 700, color: '#13201D', marginBottom: 4, fontFamily: "var(--font-sans)" }}>Price vs SAC — parcelas (primeiros 12 meses)</div>
                 <div style={{ fontSize: 11, color: '#7B8C88', marginBottom: 14 }}>Price tem parcelas fixas. SAC começa maior mas você paga menos juros no total.</div>
                 <ResponsiveContainer width="100%" height={180}>
                   <LineChart data={comparativo} margin={{ top: 4, right: 4, bottom: 0, left: 0 }}>
@@ -212,7 +212,7 @@ export default function CreditoPage() {
             {tabela.length > 0 && (
               <div style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 14, overflow: 'hidden' }}>
                 <div style={{ padding: '12px 16px', borderBottom: '0.5px solid #E4DCCC', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#FBF8F1' }}>
-                  <div style={{ fontSize: 12, fontWeight: 700, color: '#13201D', fontFamily: "'Inter', sans-serif" }}>Tabela de amortização — {sistema.toUpperCase()}</div>
+                  <div style={{ fontSize: 12, fontWeight: 700, color: '#13201D', fontFamily: "var(--font-sans)" }}>Tabela de amortização — {sistema.toUpperCase()}</div>
                   <span style={{ fontSize: 10, color: '#7B8C88' }}>mostrando {Math.min(24, tabela.length)} de {tabela.length} meses</span>
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: '60px 1fr 1fr 1fr 1fr', padding: '9px 16px', background: '#FBF8F1', borderBottom: '0.5px solid #E4DCCC' }}>
@@ -223,11 +223,11 @@ export default function CreditoPage() {
                 <div style={{ maxHeight: 300, overflowY: 'auto' }}>
                   {tabela.slice(0, 24).map((r, i) => (
                     <div key={r.mes} style={{ display: 'grid', gridTemplateColumns: '60px 1fr 1fr 1fr 1fr', padding: '8px 16px', borderBottom: i < Math.min(24, tabela.length) - 1 ? '0.5px solid #EFE9DC' : 'none', alignItems: 'center' }}>
-                      <div style={{ fontSize: 11, color: '#7B8C88', fontFamily: "'Inter', sans-serif" }}>{r.mes}</div>
-                      <div style={{ fontSize: 11, fontWeight: 700, color: '#13201D', fontFamily: "'Inter', sans-serif" }}>{formatBRL(r.parcela)}</div>
-                      <div style={{ fontSize: 11, color: '#B0413E', fontFamily: "'Inter', sans-serif" }}>{formatBRL(r.juros)}</div>
-                      <div style={{ fontSize: 11, color: '#3D7A6E', fontFamily: "'Inter', sans-serif" }}>{formatBRL(r.amortizacao)}</div>
-                      <div style={{ fontSize: 11, color: '#7B8C88', fontFamily: "'Inter', sans-serif" }}>{formatBRL(r.saldo)}</div>
+                      <div style={{ fontSize: 11, color: '#7B8C88', fontFamily: "var(--font-sans)" }}>{r.mes}</div>
+                      <div style={{ fontSize: 11, fontWeight: 700, color: '#13201D', fontFamily: "var(--font-sans)" }}>{formatBRL(r.parcela)}</div>
+                      <div style={{ fontSize: 11, color: '#B0413E', fontFamily: "var(--font-sans)" }}>{formatBRL(r.juros)}</div>
+                      <div style={{ fontSize: 11, color: '#3D7A6E', fontFamily: "var(--font-sans)" }}>{formatBRL(r.amortizacao)}</div>
+                      <div style={{ fontSize: 11, color: '#7B8C88', fontFamily: "var(--font-sans)" }}>{formatBRL(r.saldo)}</div>
                     </div>
                   ))}
                 </div>
@@ -241,7 +241,7 @@ export default function CreditoPage() {
       {modo === 'consorcio' && (
         <div style={{ display: 'grid', gridTemplateColumns: '320px 1fr', gap: 14 }}>
           <div style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 14, padding: '16px 18px' }}>
-            <div style={{ fontSize: 12, fontWeight: 700, color: '#13201D', marginBottom: 14, fontFamily: "'Inter', sans-serif" }}>Simular consórcio</div>
+            <div style={{ fontSize: 12, fontWeight: 700, color: '#13201D', marginBottom: 14, fontFamily: "var(--font-sans)" }}>Simular consórcio</div>
             {[
               { label: 'Valor do bem (R$)', value: valor, set: setValor },
               { label: 'Taxa administrativa (%)', value: taxaAdm, set: setTaxaAdm, placeholder: '15' },
@@ -277,7 +277,7 @@ export default function CreditoPage() {
             </div>
 
             <div style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 14, padding: '16px 18px' }}>
-              <div style={{ fontSize: 12, fontWeight: 700, color: '#13201D', marginBottom: 12, fontFamily: "'Inter', sans-serif" }}>Pontos importantes sobre consórcio</div>
+              <div style={{ fontSize: 12, fontWeight: 700, color: '#13201D', marginBottom: 12, fontFamily: "var(--font-sans)" }}>Pontos importantes sobre consórcio</div>
               {[
                 { cor: '#3D7A6E', icon: 'fa-check', texto: 'Sem juros — só taxa de administração (geralmente 10-20% do valor)' },
                 { cor: '#3D7A6E', icon: 'fa-check', texto: 'Ideal para quem não tem urgência e quer parcelar com custo baixo' },
@@ -300,7 +300,7 @@ export default function CreditoPage() {
       {modo === 'credito_giro' && (
         <div style={{ display: 'grid', gridTemplateColumns: '320px 1fr', gap: 14 }}>
           <div style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 14, padding: '16px 18px' }}>
-            <div style={{ fontSize: 12, fontWeight: 700, color: '#13201D', marginBottom: 14, fontFamily: "'Inter', sans-serif" }}>Dados da empresa</div>
+            <div style={{ fontSize: 12, fontWeight: 700, color: '#13201D', marginBottom: 14, fontFamily: "var(--font-sans)" }}>Dados da empresa</div>
             {[
               { label: 'Faturamento mensal médio (R$)', value: faturamento, set: setFaturamento },
               { label: 'Taxa de juros (%/mês)', value: taxa, set: setTaxa },
@@ -333,7 +333,7 @@ export default function CreditoPage() {
             </div>
 
             <div style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 14, padding: '16px 18px' }}>
-              <div style={{ fontSize: 12, fontWeight: 700, color: '#13201D', marginBottom: 14, fontFamily: "'Inter', sans-serif" }}>Linhas recomendadas para sua empresa</div>
+              <div style={{ fontSize: 12, fontWeight: 700, color: '#13201D', marginBottom: 14, fontFamily: "var(--font-sans)" }}>Linhas recomendadas para sua empresa</div>
               {TAXAS_MERCADO.filter(t => t.tipo === 'Empresa').map(linha => (
                 <div key={linha.nome} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '9px 0', borderBottom: '0.5px solid #EFE9DC' }}>
                   <div>
@@ -341,7 +341,7 @@ export default function CreditoPage() {
                     <div style={{ fontSize: 10, color: '#7B8C88' }}>Custo sobre {formatBRL(limiteGiro)}: {formatBRL(limiteGiro * linha.taxa / 100)}/mês</div>
                   </div>
                   <div style={{ textAlign: 'right' }}>
-                    <div style={{ fontSize: 14, fontWeight: 700, color: linha.taxa > 2 ? '#B08A3E' : '#3D7A6E', fontFamily: "'Inter', sans-serif" }}>{linha.taxa}%/mês</div>
+                    <div style={{ fontSize: 14, fontWeight: 700, color: linha.taxa > 2 ? '#B08A3E' : '#3D7A6E', fontFamily: "var(--font-sans)" }}>{linha.taxa}%/mês</div>
                     <div style={{ fontSize: 10, color: '#7B8C88' }}>{(linha.taxa * 12).toFixed(1)}% a.a.</div>
                   </div>
                 </div>
@@ -356,7 +356,7 @@ export default function CreditoPage() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
           {/* Gráfico comparativo */}
           <div style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 14, padding: '16px 18px' }}>
-            <div style={{ fontSize: 12, fontWeight: 700, color: '#13201D', marginBottom: 4, fontFamily: "'Inter', sans-serif" }}>Taxas de crédito no mercado (Junho 2026)</div>
+            <div style={{ fontSize: 12, fontWeight: 700, color: '#13201D', marginBottom: 4, fontFamily: "var(--font-sans)" }}>Taxas de crédito no mercado (Junho 2026)</div>
             <div style={{ fontSize: 11, color: '#7B8C88', marginBottom: 14 }}>Taxas mensais — quanto menor, melhor. Cartão e cheque especial devem ser evitados.</div>
             <ResponsiveContainer width="100%" height={220}>
               <BarChart data={TAXAS_MERCADO} layout="vertical" margin={{ top: 0, right: 60, bottom: 0, left: 0 }}>
@@ -373,7 +373,7 @@ export default function CreditoPage() {
           </div>
 
           {/* Estratégias */}
-          <div style={{ fontSize: 12, fontWeight: 700, color: '#13201D', fontFamily: "'Inter', sans-serif" }}>Estratégias para conseguir mais crédito</div>
+          <div style={{ fontSize: 12, fontWeight: 700, color: '#13201D', fontFamily: "var(--font-sans)" }}>Estratégias para conseguir mais crédito</div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 12 }}>
             {ESTRATEGIAS.map(e => (
               <div key={e.titulo} style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 12, padding: '14px 16px' }}>

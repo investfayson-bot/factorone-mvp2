@@ -88,7 +88,7 @@ export default function EstoquePage() {
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 18, gap: 12, flexWrap: 'wrap' }}>
         <div>
-          <h1 style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: 18, fontWeight: 700, color: '#13201D', margin: 0 }}>Gestão de Estoque</h1>
+          <h1 style={{ fontFamily: "var(--font-sans)", fontSize: 18, fontWeight: 700, color: '#13201D', margin: 0 }}>Gestão de Estoque</h1>
           <div style={{ fontSize: 12, color: '#7B8C88', marginTop: 3 }}>Produtos, quantidades e valor em estoque.</div>
         </div>
         <button className="btn-action" style={{ borderRadius: 8, padding: '9px 16px' }} onClick={() => setShowForm(v => !v)}>

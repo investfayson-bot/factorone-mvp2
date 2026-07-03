@@ -75,7 +75,7 @@ export default function MarketingCentralPage() {
       {/* Banner */}
       <div style={{ background: 'linear-gradient(135deg,#13201D,#1C2E29)', borderRadius: 16, padding: '22px 26px', marginBottom: 22, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
         <div>
-          <div style={{ fontSize: 18, fontWeight: 800, color: '#fff', fontFamily: "'Inter', system-ui, sans-serif", letterSpacing: '-.02em' }}>Central de Marketing</div>
+          <div style={{ fontSize: 18, fontWeight: 800, color: '#fff', fontFamily: "var(--font-sans)", letterSpacing: '-.02em' }}>Central de Marketing</div>
           <div style={{ fontSize: 13, color: '#6FA595', marginTop: 4 }}>Conecte seus anúncios e loja, meça o ROI real e publique sites em minutos.</div>
         </div>
       </div>

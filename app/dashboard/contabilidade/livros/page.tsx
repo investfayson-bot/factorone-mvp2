@@ -207,9 +207,9 @@ export default function LivrosContabeisPage() {
             {balancete.map((r, i) => (
               <button key={r.conta} onClick={() => setContaSel(r.conta)} style={{ display: 'grid', gridTemplateColumns: '1fr 120px 120px 130px', padding: '11px 16px', borderBottom: i < balancete.length - 1 ? '0.5px solid #EFE9DC' : 'none', width: '100%', border: 'none', background: '#fff', cursor: 'pointer', alignItems: 'center' }}>
                 <div style={{ fontSize: 12.5, fontWeight: 600, color: '#13201D', textAlign: 'left' }}>{r.conta}</div>
-                <div style={{ fontSize: 12, textAlign: 'right', color: '#374151', fontFamily: "'Inter', system-ui, sans-serif" }}>{r.debito ? formatBRL(r.debito) : '—'}</div>
-                <div style={{ fontSize: 12, textAlign: 'right', color: '#374151', fontFamily: "'Inter', system-ui, sans-serif" }}>{r.credito ? formatBRL(r.credito) : '—'}</div>
-                <div style={{ fontSize: 12.5, textAlign: 'right', fontWeight: 700, color: r.saldo >= 0 ? '#13201D' : '#B0413E', fontFamily: "'Inter', system-ui, sans-serif" }}>{formatBRL(r.saldo)}</div>
+                <div style={{ fontSize: 12, textAlign: 'right', color: '#374151', fontFamily: "var(--font-sans)" }}>{r.debito ? formatBRL(r.debito) : '—'}</div>
+                <div style={{ fontSize: 12, textAlign: 'right', color: '#374151', fontFamily: "var(--font-sans)" }}>{r.credito ? formatBRL(r.credito) : '—'}</div>
+                <div style={{ fontSize: 12.5, textAlign: 'right', fontWeight: 700, color: r.saldo >= 0 ? '#13201D' : '#B0413E', fontFamily: "var(--font-sans)" }}>{formatBRL(r.saldo)}</div>
               </button>
             ))}
           </div>
@@ -227,11 +227,11 @@ export default function LivrosContabeisPage() {
             </div>
             {razao.map((l, i) => (
               <div key={l.id} style={{ display: 'grid', gridTemplateColumns: '90px 1fr 110px 110px 120px', padding: '10px 16px', borderBottom: i < razao.length - 1 ? '0.5px solid #EFE9DC' : 'none', alignItems: 'center' }}>
-                <div style={{ fontSize: 11, color: '#7B8C88', fontFamily: "'Inter', system-ui, sans-serif" }}>{l.competencia?.slice(0, 7)}</div>
+                <div style={{ fontSize: 11, color: '#7B8C88', fontFamily: "var(--font-sans)" }}>{l.competencia?.slice(0, 7)}</div>
                 <div style={{ fontSize: 12.5, color: '#13201D' }}>{l.descricao} <span style={{ fontSize: 10, color: '#A6B0AC' }}>· {l.origem}</span></div>
-                <div style={{ fontSize: 12, textAlign: 'right', color: l.tipo === 'debito' ? '#374151' : '#C4CFCE', fontFamily: "'Inter', system-ui, sans-serif" }}>{l.tipo === 'debito' ? formatBRL(num(l.valor)) : '—'}</div>
-                <div style={{ fontSize: 12, textAlign: 'right', color: l.tipo === 'credito' ? '#374151' : '#C4CFCE', fontFamily: "'Inter', system-ui, sans-serif" }}>{l.tipo === 'credito' ? formatBRL(num(l.valor)) : '—'}</div>
-                <div style={{ fontSize: 12.5, textAlign: 'right', fontWeight: 700, color: l.saldo >= 0 ? '#13201D' : '#B0413E', fontFamily: "'Inter', system-ui, sans-serif" }}>{formatBRL(l.saldo)}</div>
+                <div style={{ fontSize: 12, textAlign: 'right', color: l.tipo === 'debito' ? '#374151' : '#C4CFCE', fontFamily: "var(--font-sans)" }}>{l.tipo === 'debito' ? formatBRL(num(l.valor)) : '—'}</div>
+                <div style={{ fontSize: 12, textAlign: 'right', color: l.tipo === 'credito' ? '#374151' : '#C4CFCE', fontFamily: "var(--font-sans)" }}>{l.tipo === 'credito' ? formatBRL(num(l.valor)) : '—'}</div>
+                <div style={{ fontSize: 12.5, textAlign: 'right', fontWeight: 700, color: l.saldo >= 0 ? '#13201D' : '#B0413E', fontFamily: "var(--font-sans)" }}>{formatBRL(l.saldo)}</div>
               </div>
             ))}
           </div>
@@ -251,7 +251,7 @@ export default function LivrosContabeisPage() {
               <div style={{ padding: '12px 16px', background: '#FBF8F1', borderBottom: '0.5px solid #E4DCCC', fontSize: 12, fontWeight: 700, color: '#13201D' }}>ATIVO</div>
               <div style={{ display: 'flex', justifyContent: 'space-between', padding: '11px 16px' }}>
                 <span style={{ fontSize: 12.5, color: '#374151', fontWeight: 700 }}>Total do ativo</span>
-                <span style={{ fontSize: 12.5, fontWeight: 700, color: '#13201D', fontFamily: "'Inter', system-ui, sans-serif" }}>{formatBRL(balanco.ativo)}</span>
+                <span style={{ fontSize: 12.5, fontWeight: 700, color: '#13201D', fontFamily: "var(--font-sans)" }}>{formatBRL(balanco.ativo)}</span>
               </div>
             </div>
             <div style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 14, overflow: 'hidden' }}>
@@ -265,7 +265,7 @@ export default function LivrosContabeisPage() {
               ].map((r, i, arr) => (
                 <div key={r.nome} style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 16px', borderBottom: i < arr.length - 1 ? '0.5px solid #EFE9DC' : 'none' }}>
                   <span style={{ fontSize: 12.5, color: '#374151', fontWeight: r.bold ? 700 : 400 }}>{r.nome}</span>
-                  <span style={{ fontSize: 12.5, fontWeight: 700, color: r.valor >= 0 ? '#13201D' : '#B0413E', fontFamily: "'Inter', system-ui, sans-serif" }}>{formatBRL(r.valor)}</span>
+                  <span style={{ fontSize: 12.5, fontWeight: 700, color: r.valor >= 0 ? '#13201D' : '#B0413E', fontFamily: "var(--font-sans)" }}>{formatBRL(r.valor)}</span>
                 </div>
               ))}
             </div>

@@ -255,7 +255,7 @@ export default function ContaPJPage() {
       <div style={{ width: 72, height: 72, borderRadius: '50%', background: 'linear-gradient(135deg,var(--teal),#3D7A6E)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
         <i className="fa-solid fa-check" style={{ fontSize: 32, color: '#fff' }} />
       </div>
-      <div style={{ fontSize: 24, fontWeight: 800, color: 'var(--navy)', fontFamily: "'Inter', system-ui, sans-serif", marginBottom: 8 }}>
+      <div style={{ fontSize: 24, fontWeight: 800, color: 'var(--navy)', fontFamily: "var(--font-sans)", marginBottom: 8 }}>
         Conta PJ criada com sucesso!
       </div>
       <div style={{ fontSize: 13, color: 'var(--gray-400)', marginBottom: 28 }}>
@@ -332,7 +332,7 @@ export default function ContaPJPage() {
       {/* STEP 1 — Informações da empresa */}
       {wStep === 1 && (
         <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 14, padding: '28px 32px' }}>
-          <div style={{ fontSize: 15, fontWeight: 800, color: 'var(--navy)', fontFamily: "'Inter', system-ui, sans-serif", marginBottom: 4 }}>Informações da empresa</div>
+          <div style={{ fontSize: 15, fontWeight: 800, color: 'var(--navy)', fontFamily: "var(--font-sans)", marginBottom: 4 }}>Informações da empresa</div>
           <div style={{ fontSize: 12, color: 'var(--gray-400)', marginBottom: 24 }}>Dados básicos para abrir sua conta PJ gratuita.</div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 20px' }}>
             <FieldGroup label="CNPJ">
@@ -369,7 +369,7 @@ export default function ContaPJPage() {
       {/* STEP 2 — Dados dos responsáveis */}
       {wStep === 2 && (
         <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 14, padding: '28px 32px' }}>
-          <div style={{ fontSize: 15, fontWeight: 800, color: 'var(--navy)', fontFamily: "'Inter', system-ui, sans-serif", marginBottom: 4 }}>Dados dos responsáveis</div>
+          <div style={{ fontSize: 15, fontWeight: 800, color: 'var(--navy)', fontFamily: "var(--font-sans)", marginBottom: 4 }}>Dados dos responsáveis</div>
           <div style={{ fontSize: 12, color: 'var(--gray-400)', marginBottom: 24 }}>Informações do sócio ou administrador.</div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 20px' }}>
             <div style={{ gridColumn: '1 / -1' }}>
@@ -412,7 +412,7 @@ export default function ContaPJPage() {
       {/* STEP 3 — Endereço da empresa */}
       {wStep === 3 && (
         <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 14, padding: '28px 32px' }}>
-          <div style={{ fontSize: 15, fontWeight: 800, color: 'var(--navy)', fontFamily: "'Inter', system-ui, sans-serif", marginBottom: 4 }}>Endereço da empresa</div>
+          <div style={{ fontSize: 15, fontWeight: 800, color: 'var(--navy)', fontFamily: "var(--font-sans)", marginBottom: 4 }}>Endereço da empresa</div>
           <div style={{ fontSize: 12, color: 'var(--gray-400)', marginBottom: 24 }}>Confirme o endereço da sua empresa.</div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 20px' }}>
             <FieldGroup label="CEP">
@@ -472,7 +472,7 @@ export default function ContaPJPage() {
       {/* STEP 4 — Documentos */}
       {wStep === 4 && (
         <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 14, padding: '28px 32px' }}>
-          <div style={{ fontSize: 15, fontWeight: 800, color: 'var(--navy)', fontFamily: "'Inter', system-ui, sans-serif", marginBottom: 4 }}>Documentos</div>
+          <div style={{ fontSize: 15, fontWeight: 800, color: 'var(--navy)', fontFamily: "var(--font-sans)", marginBottom: 4 }}>Documentos</div>
           <div style={{ fontSize: 12, color: 'var(--gray-400)', marginBottom: 24 }}>Documentos da empresa e dos sócios.</div>
           <FileUploadBox
             label="Contrato Social ou Estatuto"
@@ -622,7 +622,7 @@ export default function ContaPJPage() {
       {/* HEADER */}
       <div className="page-hdr" style={{ flexWrap: 'wrap', gap: 12 }}>
         <div>
-          <div style={{ fontSize: 20, fontWeight: 800, color: 'var(--navy)', fontFamily: "'Inter', system-ui, sans-serif" }}>
+          <div style={{ fontSize: 20, fontWeight: 800, color: 'var(--navy)', fontFamily: "var(--font-sans)" }}>
             Olá, {empresa.nome || userName}! 
           </div>
           <div style={{ fontSize: 12, color: 'var(--gray-400)', marginTop: 2 }}>
@@ -713,7 +713,7 @@ export default function ContaPJPage() {
                     </div>
                     {c.is_principal && <span style={{ fontSize: 9, fontWeight: 700, color: 'var(--teal)', background: 'rgba(61,122,110,.12)', padding: '2px 7px', borderRadius: 20 }}>PRINCIPAL</span>}
                   </div>
-                  <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--navy)', fontFamily: "'Inter', system-ui, sans-serif", letterSpacing: '-.02em' }}>
+                  <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--navy)', fontFamily: "var(--font-sans)", letterSpacing: '-.02em' }}>
                     {hide ? '••••••' : formatBRL(Number(c.saldo_disponivel ?? c.saldo ?? 0))}
                   </div>
                   <div style={{ fontSize: 10.5, color: 'var(--gray-400)', marginTop: 4, fontFamily: 'monospace' }}>

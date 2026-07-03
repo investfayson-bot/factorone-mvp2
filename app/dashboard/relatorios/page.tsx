@@ -315,7 +315,7 @@ export default function RelatoriosPage() {
       {tab === 'DRE Completo' && (
         <div style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 14, overflow: 'hidden' }}>
           <div style={{ padding: '12px 16px', borderBottom: '0.5px solid #E4DCCC', background: '#FBF8F1', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <div style={{ fontSize: 12, fontWeight: 600, color: '#13201D', fontFamily: "'Inter', sans-serif" }}>Demonstrativo de Resultado</div>
+            <div style={{ fontSize: 12, fontWeight: 600, color: '#13201D', fontFamily: "var(--font-sans)" }}>Demonstrativo de Resultado</div>
             <div style={{ fontSize: 10, color: '#7B8C88' }}>Clique em uma linha para ver os lançamentos</div>
           </div>
           {linhas.map((l, i) => {
@@ -346,19 +346,19 @@ export default function RelatoriosPage() {
                     fontSize: isTotal ? 12 : 11,
                     fontWeight: isTotal ? 700 : 500,
                     color: isTotal ? '#13201D' : '#3C4A46',
-                    fontFamily: isTotal ? "'Inter', sans-serif" : 'inherit',
+                    fontFamily: isTotal ? "var(--font-sans)" : 'inherit',
                     paddingLeft: isTotal ? 11 : 0,
                   }}>{l.linha}</span>
                 </div>
                 <div style={{ display: 'flex', gap: 20, alignItems: 'center' }}>
                   <span style={{
-                    fontFamily: "'Inter', sans-serif",
+                    fontFamily: "var(--font-sans)",
                     fontWeight: isTotal ? 700 : 600,
                     color: l.atual >= 0 ? '#3D7A6E' : '#B0413E',
                     fontSize: isTotal ? 14 : 12,
                     minWidth: 110, textAlign: 'right',
                   }}>{fmtBRL(l.atual)}</span>
-                  <span style={{ fontFamily: "'Inter', sans-serif", color: '#A6B0AC', fontSize: 11, minWidth: 90, textAlign: 'right' }}>{fmtBRL(ant)}</span>
+                  <span style={{ fontFamily: "var(--font-sans)", color: '#A6B0AC', fontSize: 11, minWidth: 90, textAlign: 'right' }}>{fmtBRL(ant)}</span>
                   <span style={{
                     fontSize: 10, fontWeight: 600, minWidth: 52, textAlign: 'right',
                     padding: '2px 6px', borderRadius: 20,
@@ -408,7 +408,7 @@ export default function RelatoriosPage() {
                 <div key={h.mes} style={{ marginBottom: 8 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, marginBottom: 3 }}>
                     <span>{h.mes}</span>
-                    <span style={{ fontFamily: "'Inter', system-ui, sans-serif", fontWeight: 700, color: h.lucro >= 0 ? 'var(--green)' : 'var(--red)' }}>{fmtBRL(h.lucro)}</span>
+                    <span style={{ fontFamily: "var(--font-sans)", fontWeight: 700, color: h.lucro >= 0 ? 'var(--green)' : 'var(--red)' }}>{fmtBRL(h.lucro)}</span>
                   </div>
                   <div style={{ height: 4, background: 'var(--gray-100)', borderRadius: 2 }}>
                     <div style={{ height: '100%', width: `${pct}%`, background: h.lucro >= 0 ? 'var(--green)' : 'var(--red)', borderRadius: 2 }} />
@@ -461,7 +461,7 @@ export default function RelatoriosPage() {
               return (
                 <div key={m.key} style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 12, padding: '14px 16px' }}>
                   <div style={{ fontSize: 10, fontWeight: 600, color: '#7B8C88', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 6 }}>{m.label}</div>
-                  <div style={{ fontSize: 20, fontWeight: 700, color: val < 0 ? '#B0413E' : m.color, fontFamily: "'Inter', sans-serif", letterSpacing: '-0.03em', marginBottom: 4 }}>
+                  <div style={{ fontSize: 20, fontWeight: 700, color: val < 0 ? '#B0413E' : m.color, fontFamily: "var(--font-sans)", letterSpacing: '-0.03em', marginBottom: 4 }}>
                     {val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 })}
                   </div>
                   <div style={{ fontSize: 11, color: '#A6B0AC' }}>{m.desc}</div>
@@ -493,7 +493,7 @@ export default function RelatoriosPage() {
                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 5 }}>
                       <span style={{ fontSize: 11, fontWeight: 600, color: '#13201D' }}>{ind.label}</span>
                       <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-                        <span style={{ fontSize: 12, fontWeight: 700, color: cor, fontFamily: "'Inter', sans-serif" }}>{v == null ? '—' : ind.fmt(v)}</span>
+                        <span style={{ fontSize: 12, fontWeight: 700, color: cor, fontFamily: "var(--font-sans)" }}>{v == null ? '—' : ind.fmt(v)}</span>
                         <span style={{ fontSize: 9, padding: '1px 7px', borderRadius: 20, background: v == null ? '#F1ECE1' : v >= ind.otimo ? '#E9F0ED' : v >= ind.bom ? '#F3ECDA' : '#F4E4E1', color: cor, fontWeight: 700 }}>{status}</span>
                       </div>
                     </div>
@@ -537,10 +537,10 @@ export default function RelatoriosPage() {
               <tbody>
                 {histChart.map((h) => (
                   <tr key={h.mes}>
-                    <td style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>{h.mes}</td>
+                    <td style={{ fontFamily: "var(--font-sans)" }}>{h.mes}</td>
                     <td style={{ color: '#3D7A6E', fontWeight: 600 }}>{fmtBRL(h.receita)}</td>
                     <td style={{ color: h.lucro >= 0 ? 'var(--green)' : 'var(--red)', fontWeight: 600 }}>{fmtBRL(h.lucro)}</td>
-                    <td style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>{h.margem.toFixed(2)}%</td>
+                    <td style={{ fontFamily: "var(--font-sans)" }}>{h.margem.toFixed(2)}%</td>
                   </tr>
                 ))}
               </tbody>
@@ -794,7 +794,7 @@ export default function RelatoriosPage() {
                         <td>{new Date(r.created_at).toLocaleDateString('pt-BR')}</td>
                         <td>{r.descricao}</td>
                         <td><span className="tag gray">{r.origem}</span></td>
-                        <td style={{ fontFamily: "'Inter', system-ui, sans-serif", fontWeight: 600 }}>{fmtBRL(Number(r.valor || 0))}</td>
+                        <td style={{ fontFamily: "var(--font-sans)", fontWeight: 600 }}>{fmtBRL(Number(r.valor || 0))}</td>
                       </tr>
                     ))}
                   </tbody>

@@ -96,7 +96,7 @@ export default function PortalContadorPage() {
           <div style={{ width: 56, height: 56, borderRadius: 14, background: isRevoked ? '#F4E4E1' : '#F1ECE1', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
             <i className={`fa-solid ${isRevoked ? 'fa-ban' : 'fa-lock'}`} style={{ fontSize: 24, color: isRevoked ? '#B0413E' : '#7B8C88' }} />
           </div>
-          <div style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 17, color: '#13201D', marginBottom: 8 }}>
+          <div style={{ fontFamily: "var(--font-sans)", fontWeight: 700, fontSize: 17, color: '#13201D', marginBottom: 8 }}>
             {isRevoked ? 'Acesso revogado' : 'Acesso inválido'}
           </div>
           <div style={{ fontSize: 12, color: '#7B8C88', lineHeight: 1.6 }}>
@@ -120,7 +120,7 @@ export default function PortalContadorPage() {
       {/* Topbar */}
       <div style={{ background: '#13201D', padding: '12px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 16, fontWeight: 700, color: '#fff' }}>
+          <div style={{ fontFamily: "var(--font-sans)", fontSize: 16, fontWeight: 700, color: '#fff' }}>
             Factor<span style={{ color: '#6FA595' }}>One</span>
           </div>
           <div style={{ width: 1, height: 18, background: 'rgba(255,255,255,0.15)' }} />
@@ -143,7 +143,7 @@ export default function PortalContadorPage() {
                 <i className="fa-solid fa-calculator" style={{ fontSize: 18, color: '#6FA595' }} />
               </div>
               <div>
-                <div style={{ fontSize: 15, fontWeight: 700, color: '#13201D', fontFamily: "'Inter', sans-serif" }}>
+                <div style={{ fontSize: 15, fontWeight: 700, color: '#13201D', fontFamily: "var(--font-sans)" }}>
                   Olá, {cont.nome}
                 </div>
                 <div style={{ fontSize: 11, color: '#7B8C88', marginTop: 3 }}>
@@ -263,9 +263,9 @@ export default function PortalContadorPage() {
                       {metricas.map((m, i) => (
                         <tr key={m.competencia} style={{ borderBottom: i < metricas.length - 1 ? '0.5px solid #EFE9DC' : 'none' }}>
                           <td style={{ padding: '11px 14px', fontWeight: 700, color: '#13201D', fontFamily: 'monospace' }}>{m.competencia?.slice(0, 7)}</td>
-                          <td style={{ padding: '11px 14px', textAlign: 'right', fontFamily: "'Inter', sans-serif", fontWeight: 500 }}>{formatBRL(m.receita_bruta)}</td>
-                          <td style={{ padding: '11px 14px', textAlign: 'right', fontFamily: "'Inter', sans-serif", color: '#7B8C88' }}>{formatBRL(m.ebitda)}</td>
-                          <td style={{ padding: '11px 14px', textAlign: 'right', fontFamily: "'Inter', sans-serif", fontWeight: 700, color: m.lucro_liquido >= 0 ? '#3D7A6E' : '#B0413E' }}>
+                          <td style={{ padding: '11px 14px', textAlign: 'right', fontFamily: "var(--font-sans)", fontWeight: 500 }}>{formatBRL(m.receita_bruta)}</td>
+                          <td style={{ padding: '11px 14px', textAlign: 'right', fontFamily: "var(--font-sans)", color: '#7B8C88' }}>{formatBRL(m.ebitda)}</td>
+                          <td style={{ padding: '11px 14px', textAlign: 'right', fontFamily: "var(--font-sans)", fontWeight: 700, color: m.lucro_liquido >= 0 ? '#3D7A6E' : '#B0413E' }}>
                             {formatBRL(m.lucro_liquido)}
                           </td>
                           <td style={{ padding: '11px 14px', textAlign: 'right' }}>
@@ -300,7 +300,7 @@ export default function PortalContadorPage() {
                       <div style={{ fontSize: 12, fontWeight: 600, color: '#13201D', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{l.descricao}</div>
                       <div style={{ fontSize: 10, color: '#7B8C88', marginTop: 2 }}>{l.competencia?.slice(0, 7)} · {l.origem}</div>
                     </div>
-                    <div style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 13, color: l.tipo === 'credito' ? '#3D7A6E' : '#B0413E', flexShrink: 0 }}>
+                    <div style={{ fontFamily: "var(--font-sans)", fontWeight: 700, fontSize: 13, color: l.tipo === 'credito' ? '#3D7A6E' : '#B0413E', flexShrink: 0 }}>
                       {l.tipo === 'credito' ? '+' : '-'}{formatBRL(l.valor)}
                     </div>
                   </div>
@@ -341,7 +341,7 @@ export default function PortalContadorPage() {
                       <span style={{ fontSize: 10, padding: '2px 8px', borderRadius: 20, fontWeight: 600, background: n.status === 'autorizada' ? '#E9F0ED' : '#F3ECDA', color: n.status === 'autorizada' ? '#2B564D' : '#B08A3E' }}>
                         {n.status}
                       </span>
-                      <div style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 13, color: '#13201D' }}>{formatBRL(n.valor_total)}</div>
+                      <div style={{ fontFamily: "var(--font-sans)", fontWeight: 700, fontSize: 13, color: '#13201D' }}>{formatBRL(n.valor_total)}</div>
                     </div>
                   </div>
                 ))
@@ -371,7 +371,7 @@ export default function PortalContadorPage() {
                       <span style={{ fontSize: 10, padding: '2px 8px', borderRadius: 20, fontWeight: 600, background: d.status === 'pago' ? '#E9F0ED' : '#F3ECDA', color: d.status === 'pago' ? '#2B564D' : '#B08A3E' }}>
                         {d.status}
                       </span>
-                      <div style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 13, color: '#B0413E' }}>{formatBRL(Number(d.valor))}</div>
+                      <div style={{ fontFamily: "var(--font-sans)", fontWeight: 700, fontSize: 13, color: '#B0413E' }}>{formatBRL(Number(d.valor))}</div>
                     </div>
                   </div>
                 ))

@@ -236,7 +236,7 @@ export default function ReceitasPage() {
                 <div style={{ flex: 1, height: 6, background: 'var(--gray-100)', borderRadius: 3 }}>
                   <div style={{ height: 6, borderRadius: 3, width: `${Math.min((val / totalMes) * 100, 100)}%`, background: 'var(--green)', transition: 'width .3s' }} />
                 </div>
-                <div style={{ fontSize: 12, fontWeight: 700, fontFamily: "'Inter', system-ui, sans-serif", minWidth: 90, textAlign: 'right' }}>{formatBRL(val)}</div>
+                <div style={{ fontSize: 12, fontWeight: 700, fontFamily: "var(--font-sans)", minWidth: 90, textAlign: 'right' }}>{formatBRL(val)}</div>
                 <div style={{ fontSize: 11, color: 'var(--gray-400)', minWidth: 36, textAlign: 'right' }}>{totalMes > 0 ? ((val / totalMes) * 100).toFixed(0) : 0}%</div>
               </div>
             ))}
@@ -288,7 +288,7 @@ export default function ReceitasPage() {
               )}
               {filtradas.map(r => (
                 <tr key={r.id} style={{ opacity: r.status === 'cancelada' ? 0.5 : 1 }}>
-                  <td style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: 11 }}>
+                  <td style={{ fontFamily: "var(--font-sans)", fontSize: 11 }}>
                     {new Date(r.data + 'T12:00:00').toLocaleDateString('pt-BR')}
                   </td>
                   <td>
@@ -298,7 +298,7 @@ export default function ReceitasPage() {
                   <td><span className="tag gray" style={{ fontSize: 9 }}>{r.categoria}</span></td>
                   <td style={{ fontSize: 12, color: 'var(--gray-500)' }}>{r.cliente || '—'}</td>
                   <td style={{ fontSize: 11, color: 'var(--gray-400)' }}>{TIPOS[r.tipo]}</td>
-                  <td style={{ textAlign: 'right', fontFamily: "'Inter', system-ui, sans-serif", color: 'var(--green)', fontWeight: 700, fontSize: 13 }}>
+                  <td style={{ textAlign: 'right', fontFamily: "var(--font-sans)", color: 'var(--green)', fontWeight: 700, fontSize: 13 }}>
                     +{formatBRL(Number(r.valor))}
                   </td>
                   <td style={{ textAlign: 'center' }}>
