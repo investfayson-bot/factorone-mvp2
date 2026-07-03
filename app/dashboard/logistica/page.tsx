@@ -2,6 +2,7 @@
 import { useEffect, useState, useRef } from 'react'
 import { supabase } from '@/lib/supabase'
 import { EmptyState } from '@/components/ui/Illustration'
+import EditorialBanner from '@/components/ui/EditorialBanner'
 
 type Rota = {
   id: string
@@ -354,6 +355,21 @@ export default function LogisticaPage() {
             <i className="fa-solid fa-plus" /> Nova Rota
           </button>
         </div>
+      </div>
+
+      {/* Banner editorial — frota */}
+      <div style={{ padding: '18px 24px 0' }}>
+        <EditorialBanner
+          image="/img/fleet-logistics.png"
+          alt="Controle de frota FactorOne"
+          variant="strip"
+          imageSide="right"
+          eyebrow="Controle de frota"
+          title={<>Quanto custa,<br />por km rodado.</>}
+          subtitle="Rotas, pneus, manutenção e combustível viram custo real por km e margem por frete — com OCR do romaneio e GPS."
+          focal="center"
+          height={168}
+        />
       </div>
 
       {/* KPIs */}

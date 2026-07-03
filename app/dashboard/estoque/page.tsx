@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import { formatBRL } from '@/lib/currency-brl'
 import { EmptyState } from '@/components/ui/Illustration'
+import EditorialBanner from '@/components/ui/EditorialBanner'
 import toast from 'react-hot-toast'
 
 type Produto = {
@@ -94,6 +95,20 @@ export default function EstoquePage() {
           <i className="fa-solid fa-plus" style={{ marginRight: 6 }} />Novo produto
         </button>
       </div>
+
+      {/* Banner editorial — armazém */}
+      <EditorialBanner
+        image="/img/warehouse-inventory.png"
+        alt="Gestão de estoque FactorOne"
+        variant="strip"
+        imageSide="right"
+        eyebrow="Estoque & imobilizado"
+        title={<>Saiba quanto tem<br />parado em estoque.</>}
+        subtitle="Quantidade, custo e valor imobilizado de cada produto — com alerta de mínimo e reflexo direto nos seus números."
+        focal="center"
+        height={168}
+        style={{ marginBottom: 18 }}
+      />
 
       {/* KPIs */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(160px,1fr))', gap: 12, marginBottom: 18 }}>
