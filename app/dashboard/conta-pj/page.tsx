@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
 import { formatBRL } from '@/lib/currency-brl'
 import { maskCpfCnpj } from '@/lib/masks'
+import EditorialBanner from '@/components/ui/EditorialBanner'
 import toast from 'react-hot-toast'
 
 type Empresa = { nome: string; cnpj: string | null; email: string | null; setor: string | null }
@@ -624,17 +625,29 @@ export default function ContaPJPage() {
         </div>
       </div>
 
-      {/* Banner premium — digital bank */}
-      <div style={{ position: 'relative', borderRadius: 16, overflow: 'hidden', marginBottom: 18, minHeight: 148, backgroundImage: 'linear-gradient(90deg, rgba(28,43,42,.96) 0%, rgba(28,43,42,.72) 48%, rgba(28,43,42,.12) 100%), url(/banco-banner.jpg)', backgroundSize: 'cover', backgroundPosition: 'center right' }}>
-        <div style={{ padding: '24px 28px', maxWidth: '64%' }}>
-          <div style={{ fontSize: 10.5, fontWeight: 700, color: '#6FA595', textTransform: 'uppercase', letterSpacing: '.08em' }}>FactorOne Bank</div>
-          <div style={{ fontSize: 21, fontWeight: 800, color: '#fff', letterSpacing: '-.03em', margin: '4px 0 10px', lineHeight: 1.15 }}>Seu banco PJ — sem tarifas, com IA</div>
-          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-            <Link href="/dashboard/conta-pj/transferencias" style={{ background: '#3D7A6E', color: '#fff', textDecoration: 'none', fontSize: 12, fontWeight: 700, padding: '8px 16px', borderRadius: 9 }}><i className="fa-solid fa-bolt" style={{ marginRight: 6 }} />Fazer PIX</Link>
-            <Link href="/dashboard/cartoes" style={{ background: 'rgba(255,255,255,.14)', color: '#fff', textDecoration: 'none', fontSize: 12, fontWeight: 700, padding: '8px 16px', borderRadius: 9 }}><i className="fa-solid fa-credit-card" style={{ marginRight: 6 }} />Cartões</Link>
-          </div>
-        </div>
-      </div>
+      {/* Banner premium — digital bank (primitivo EditorialBanner) */}
+      <EditorialBanner
+        image="/banco-banner.jpg"
+        alt="FactorOne Bank — conta PJ digital"
+        variant="full"
+        tone="ink"
+        badge="Conta PJ"
+        eyebrow="FactorOne Bank"
+        title={<>Seu banco PJ —<br />sem tarifas, com IA.</>}
+        subtitle="Abra sua conta 100% digital, receba por PIX, peça cartões corporativos e deixe a IA cuidar da contabilidade."
+        focal="center right"
+        height={188}
+        stats={[
+          { valor: 'R$ 0', label: 'mensalidade' },
+          { valor: '24/7', label: 'PIX ilimitado' },
+          { valor: '~2min', label: 'para abrir' },
+        ]}
+        ctas={[
+          { label: 'Fazer PIX', href: '/dashboard/conta-pj/transferencias', variant: 'solid' },
+          { label: 'Cartões', href: '/dashboard/cartoes', variant: 'ghost' },
+        ]}
+        style={{ marginBottom: 18 }}
+      />
 
       {/* KPIs */}
       <div className="kpis" style={{ gridTemplateColumns: 'repeat(4,1fr)', marginBottom: 20 }}>
