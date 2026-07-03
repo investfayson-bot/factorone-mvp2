@@ -1,5 +1,6 @@
 'use client'
 import { useEffect, useMemo, useState } from 'react'
+import EditorialBanner from '@/components/ui/EditorialBanner'
 import toast from 'react-hot-toast'
 
 type Municipio = { id: number; nome: string }
@@ -72,6 +73,20 @@ export default function PrefeiturasPage() {
           </button>
         )}
       </div>
+
+      {/* Banner editorial que ensina */}
+      <EditorialBanner
+        image="/img/hands-phone-pix.png"
+        alt="Emissão de NFS-e em todas as prefeituras"
+        variant="strip"
+        imageSide="right"
+        eyebrow="NFS-e · todo o Brasil"
+        title={<>Emita nota de serviço<br />em qualquer município.</>}
+        subtitle="Conecte um agregador e emita NFS-e nas prefeituras de todos os estados — direto do FactorOne, sem prefeitura por prefeitura."
+        focal="center"
+        height={172}
+        style={{ marginBottom: 18 }}
+      />
 
       {/* Status da conexão */}
       <div style={{ background: status.configurado ? 'rgba(61,122,110,.08)' : 'rgba(176,138,62,.08)', border: `1px solid ${status.configurado ? 'rgba(61,122,110,.25)' : 'rgba(176,138,62,.25)'}`, borderRadius: 12, padding: '12px 16px', marginBottom: 18, display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>

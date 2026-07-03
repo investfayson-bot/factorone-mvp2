@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import EditorialBanner from '@/components/ui/EditorialBanner'
 import toast from 'react-hot-toast'
 
 type Servico = { icon: string; label: string; desc: string; href?: string; cor: string; soon?: boolean }
@@ -60,16 +61,20 @@ export default function JuridicoPage() {
         </button>
       </div>
 
-      {/* Banner */}
-      <div style={{ background: 'linear-gradient(135deg, #13201D 0%, #1C2E29 100%)', borderRadius: 16, padding: '22px 26px', marginBottom: 20, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
-        <div>
-          <div style={{ fontSize: 18, fontWeight: 800, color: '#fff', fontFamily: "'Inter', system-ui, sans-serif", letterSpacing: '-.02em' }}>Rede jurídica do FactorOne</div>
-          <div style={{ fontSize: 13, color: '#6FA595', marginTop: 4 }}>Contratos digitais, societário, marca e consultoria — em um só lugar, integrado às suas finanças.</div>
-        </div>
-        <Link href="/dashboard/contratos" style={{ background: '#3D7A6E', color: '#fff', textDecoration: 'none', fontSize: 13, fontWeight: 700, padding: '10px 18px', borderRadius: 9 }}>
-          <i className="fa-solid fa-file-signature" style={{ marginRight: 7 }} />Novo contrato
-        </Link>
-      </div>
+      {/* Banner editorial com foto */}
+      <EditorialBanner
+        image="/img/team-working.png"
+        alt="Rede jurídica do FactorOne"
+        variant="strip"
+        imageSide="right"
+        eyebrow="Rede jurídica do FactorOne"
+        title={<>Jurídico e finanças,<br />no mesmo lugar.</>}
+        subtitle="Contratos digitais, societário, marca e consultoria — integrados aos seus números, sem trocar de sistema."
+        focal="center"
+        height={176}
+        ctas={[{ label: 'Novo contrato', href: '/dashboard/contratos', variant: 'solid' }]}
+        style={{ marginBottom: 20 }}
+      />
 
       {/* Abas Empresarial / PF */}
       <div style={{ display: 'flex', gap: 2, background: '#F1ECE1', padding: 3, borderRadius: 10, width: 'fit-content', marginBottom: 16 }}>

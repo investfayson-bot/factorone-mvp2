@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import { formatBRL } from '@/lib/currency-brl'
+import EditorialBanner from '@/components/ui/EditorialBanner'
 
 type Campanha = {
   id: string; empresa_id: string; nome: string
@@ -163,6 +164,20 @@ export default function MarketingPage() {
           <button className="btn-action" onClick={() => setShowCamp(true)}>+ Nova campanha</button>
         </div>
       </div>
+
+      {/* Banner editorial que ensina */}
+      <EditorialBanner
+        image="/img/founder-smiling.png"
+        alt="Marketing conectado às finanças"
+        variant="strip"
+        imageSide="right"
+        eyebrow="Cada real de anúncio, rastreado"
+        title={<>Marketing que fala<br />a língua do caixa.</>}
+        subtitle="Campanhas, leads e ROAS conectados ao seu financeiro — veja quanto cada anúncio realmente devolve, não só cliques."
+        focal="center top"
+        height={172}
+        style={{ marginBottom: 18 }}
+      />
 
       {/* KPIs financeiros — conectados ao dashboard */}
       <div className="kpis" style={{ gridTemplateColumns: 'repeat(5,1fr)', marginBottom: 16 }}>

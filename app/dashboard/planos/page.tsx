@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import { usePlano } from '@/hooks/usePlano'
+import EditorialBanner from '@/components/ui/EditorialBanner'
 import toast from 'react-hot-toast'
 
 type TabTipo = 'pj' | 'familia'
@@ -166,11 +167,20 @@ export default function PlanosPage() {
 
   return (
     <div style={{ maxWidth: 900, margin: '0 auto' }}>
-      {/* Header */}
-      <div style={{ textAlign: 'center', marginBottom: 28 }}>
-        <div className="page-title" style={{ marginBottom: 6 }}>Planos FactorOne</div>
-        <div className="page-sub">Escolha o plano ideal para sua situação</div>
-      </div>
+      {/* Header — banner editorial com o cartão */}
+      <EditorialBanner
+        image="/img/card-product.png"
+        alt="Planos FactorOne"
+        variant="split"
+        imageSide="right"
+        eyebrow="Planos FactorOne"
+        title={<>Escolha o plano ideal<br />para a sua situação.</>}
+        subtitle="Do MEI à holding — gestão financeira, contabilidade, conta PJ e IA, com upgrade a qualquer momento."
+        stats={[{ valor: '30 dias', label: 'grátis' }, { valor: 'sem', label: 'fidelidade' }]}
+        focal="center"
+        height={240}
+        style={{ marginBottom: 28 }}
+      />
 
       {/* Toggle PJ / Família */}
       <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 24 }}>

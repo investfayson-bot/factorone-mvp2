@@ -2,6 +2,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import { formatBRL } from '@/lib/currency-brl'
+import EditorialBanner from '@/components/ui/EditorialBanner'
 
 type Metricas = { receita_bruta: number; receita_liquida: number; lucro_bruto: number; ebitda: number; lucro_liquido: number; margem_liquida: number; despesas_operacionais: number; cmv: number } | null
 type Taxas = { selic: number | null; cdi: number | null; ipca: number | null }
@@ -94,6 +95,20 @@ export default function IndicadoresPage() {
           <div className="page-sub">Métricas de investidor · unit economics · rentabilidade · caixa</div>
         </div>
       </div>
+
+      {/* Banner editorial que ensina */}
+      <EditorialBanner
+        image="/img/entrepreneur-cafe.png"
+        alt="Indicadores da sua empresa"
+        variant="strip"
+        imageSide="right"
+        eyebrow="Métricas de investidor"
+        title={<>Os números que provam<br />que o negócio cresce.</>}
+        subtitle="LTV, CAC, MRR, ROI e runway calculados a partir dos seus dados reais — a linguagem que investidor e conselho falam."
+        focal="center"
+        height={172}
+        style={{ marginBottom: 20 }}
+      />
 
       {/* Taxas de mercado */}
       <div style={{ background: '#13201D', borderRadius: 14, padding: '14px 20px', marginBottom: 18, display: 'flex', gap: 28, flexWrap: 'wrap', alignItems: 'center' }}>
