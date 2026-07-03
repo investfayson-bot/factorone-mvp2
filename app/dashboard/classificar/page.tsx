@@ -51,27 +51,46 @@ export default function ClassificarPage() {
   const [showNova, setShowNova] = useState(false)
   const [nova, setNova] = useState({ descricao: '', valor: '', tipo: 'saida' as 'entrada' | 'saida', data: new Date().toISOString().slice(0, 10) })
   const [ocr, setOcr] = useState(false)
+  const [fontes, setFontes] = useState<Record<string, 'aprendido' | 'ia'>>({})
+  const [sugerindo, setSugerindo] = useState(false)
 
   const carregar = useCallback(async () => {
     setLoading(true)
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) { setLoading(false); return }
     const { data: sess } = await supabase.auth.getSession()
-    setToken(sess.session?.access_token ?? '')
+    const tk = sess.session?.access_token ?? ''
+    setToken(tk)
     const { data: u } = await supabase.from('usuarios').select('empresa_id').eq('id', user.id).maybeSingle()
     const eid = (u?.empresa_id as string) ?? user.id
     setEmpresaId(eid)
     const { data } = await supabase.from('transacoes').select('id,data,descricao,tipo,valor,categoria').eq('empresa_id', eid).order('data', { ascending: false }).limit(200)
     const rows = (data ?? []) as Tx[]
     setTxs(rows)
-    // pré-preenche a sugestão da IA nas não classificadas
+    // fallback local imediato (keyword) enquanto a IA responde
     setEscolhas(prev => {
       const next = { ...prev }
       for (const t of rows) if (!t.categoria && !next[t.id]) next[t.id] = sugerir(t.descricao)
       return next
     })
     setLoading(false)
+    void aplicarSugestoes(tk) // IA real + aprende do histórico
   }, [])
+
+  // IA real: chama /sugerir (aprende do histórico → cai pra IA no resto)
+  async function aplicarSugestoes(tk: string) {
+    setSugerindo(true)
+    try {
+      const rs = await fetch('/api/transacoes/sugerir', { method: 'POST', headers: { 'Content-Type': 'application/json', ...(tk ? { Authorization: `Bearer ${tk}` } : {}) } })
+      const js = await rs.json()
+      const sug = (js.sugestoes ?? {}) as Record<string, { categoria: string; fonte: 'aprendido' | 'ia' }>
+      if (Object.keys(sug).length) {
+        setEscolhas(prev => { const n = { ...prev }; for (const [id, s] of Object.entries(sug)) n[id] = s.categoria; return n })
+        setFontes(prev => { const n = { ...prev }; for (const [id, s] of Object.entries(sug)) n[id] = s.fonte; return n })
+      }
+    } catch { /* mantém o fallback keyword */ }
+    finally { setSugerindo(false) }
+  }
   useEffect(() => { void carregar() }, [carregar])
 
   const auth = useMemo(() => ({ 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) }), [token])
@@ -169,6 +188,9 @@ export default function ClassificarPage() {
           </button>
           <button className="btn-ghost" style={{ fontSize: 12 }} disabled={busy} onClick={() => void popular('seed')}>
             <i className="fa-solid fa-wand-magic-sparkles" style={{ marginRight: 6 }} />Dados de teste
+          </button>
+          <button className="btn-ghost" style={{ fontSize: 12 }} disabled={sugerindo} onClick={() => void aplicarSugestoes(token)}>
+            <i className={`fa-solid ${sugerindo ? 'fa-circle-notch fa-spin' : 'fa-robot'}`} style={{ marginRight: 6, color: 'var(--sage)' }} />{sugerindo ? 'Analisando…' : 'Sugerir com IA'}
           </button>
           <button className="btn-action" style={{ fontSize: 12 }} onClick={() => setShowNova(true)}>
             <i className="fa-solid fa-plus" style={{ marginRight: 6 }} />Nova transação
@@ -317,9 +339,17 @@ export default function ClassificarPage() {
               {t.tipo === 'entrada' ? '+' : '−'}{formatBRL(Number(t.valor))}
             </span>
             {aba === 'revisar' ? (
-              <select className="form-input" value={escolhas[t.id] ?? sugerir(t.descricao)} onChange={e => setEscolhas(p => ({ ...p, [t.id]: e.target.value }))} style={{ fontSize: 12, padding: '7px 10px' }}>
-                {CATEGORIAS.map(c => <option key={c} value={c}>{c}</option>)}
-              </select>
+              <div>
+                <select className="form-input" value={escolhas[t.id] ?? sugerir(t.descricao)} onChange={e => setEscolhas(p => ({ ...p, [t.id]: e.target.value }))} style={{ fontSize: 12, padding: '7px 10px' }}>
+                  {CATEGORIAS.map(c => <option key={c} value={c}>{c}</option>)}
+                </select>
+                {fontes[t.id] && (
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, fontSize: 9, fontWeight: 600, marginTop: 4, color: fontes[t.id] === 'aprendido' ? '#B08A3E' : 'var(--sage)' }}>
+                    <i className={`fa-solid ${fontes[t.id] === 'aprendido' ? 'fa-graduation-cap' : 'fa-robot'}`} style={{ fontSize: 8 }} />
+                    {fontes[t.id] === 'aprendido' ? 'aprendido do seu histórico' : 'sugerido por IA'}
+                  </span>
+                )}
+              </div>
             ) : (
               <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--sage-deep)', background: 'var(--sage-tint)', padding: '5px 10px', borderRadius: 8, justifySelf: 'start' }}>
                 <i className="fa-solid fa-tag" style={{ marginRight: 6, fontSize: 10 }} />{t.categoria}
