@@ -80,6 +80,7 @@ function buildNavGroups(badges: { reembolsos: number; aprovacoes: number }, inst
   // Apps instalados pelo Marketplace aparecem no seu grupo funcional.
   for (const app of MARKET_APPS) {
     if (app.id === 'banco') continue // Banco é um grupo inteiro, tratado acima
+    if (app.id === 'classificar' || app.id === 'cfoia') continue // já são itens fixos do menu
     if (!installedIds.includes(app.id)) continue
     const item: NavItem = { href: app.href, icon: app.icon, label: app.name, badge: 'APP', badgeColor: '#7A6A9E' }
     let group = groups.find(g => g.label === app.navGroup)

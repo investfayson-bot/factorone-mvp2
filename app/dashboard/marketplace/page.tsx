@@ -124,10 +124,12 @@ export default function MarketplacePage() {
           </div>
           <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
             {instalados.map(a => (
-              <div key={a.id} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '7px 12px', background: '#E9F0ED', border: '0.5px solid #3D7A6E', borderRadius: 20 }}>
+              <div key={a.id} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '6px 8px 6px 12px', background: '#E9F0ED', border: '0.5px solid #3D7A6E', borderRadius: 20 }}>
                 <i className={`fa-solid ${a.icon}`} style={{ fontSize: 12, color: '#3D7A6E' }} />
                 <span style={{ fontSize: 12, fontWeight: 600, color: '#2B564D' }}>{a.name}</span>
-                <button onClick={() => onToggle(a)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#7B8C88', fontSize: 12, lineHeight: 1, padding: 0 }}>×</button>
+                <button onClick={() => onToggle(a)} disabled={busy === a.id} title={`Desinstalar ${a.name}`} style={{ display: 'inline-flex', alignItems: 'center', gap: 4, background: '#fff', border: '0.5px solid #B0413E', color: '#B0413E', cursor: 'pointer', fontSize: 10, fontWeight: 600, lineHeight: 1, padding: '4px 9px', borderRadius: 12 }}>
+                  <i className="fa-solid fa-xmark" style={{ fontSize: 9 }} />{busy === a.id ? '...' : 'Desinstalar'}
+                </button>
               </div>
             ))}
           </div>
