@@ -100,6 +100,18 @@ export default function AbrirContaPage() {
   }
 
   return (
+    <>
+      {/* Banco Fase 1: traga seu banco. Abrir conta PJ própria = em breve. */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px', background: 'var(--gold-tint)', border: '1px solid var(--gold)', borderRadius: 12, marginBottom: 14, flexWrap: 'wrap' }}>
+        <i className="fa-solid fa-clock" style={{ color: 'var(--gold)' }} />
+        <div style={{ flex: 1, minWidth: 200 }}>
+          <div style={{ fontSize: 12.5, fontWeight: 700, color: '#13201D' }}>Abrir Conta PJ FactorOne — <span style={{ color: 'var(--gold)' }}>em breve</span></div>
+          <div style={{ fontSize: 11.5, color: '#7B8C88' }}>Por enquanto, conecte o banco que você já tem (Open Finance) e gerencie cartões e transações aqui.</div>
+        </div>
+        <button className="btn-action" style={{ fontSize: 12 }} onClick={() => router.push('/dashboard/conexoes')}>
+          <i className="fa-solid fa-link" style={{ marginRight: 6 }} />Conectar meu banco
+        </button>
+      </div>
     <div style={{ display: 'grid', gridTemplateColumns: '380px 1fr', gap: 0, background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 18, overflow: 'hidden', minHeight: 520 }}>
       {/* Painel esquerdo — foto premium (banco digital) */}
       <div style={{ position: 'relative', padding: '32px 30px', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', minHeight: 540, backgroundImage: 'linear-gradient(180deg, rgba(28,43,42,.20) 0%, rgba(28,43,42,.55) 52%, rgba(15,25,24,.96) 100%), url(/banco-hero.jpg)', backgroundSize: 'cover', backgroundPosition: 'center top' }}>
@@ -179,6 +191,7 @@ export default function AbrirContaPage() {
         </div>
       </div>
     </div>
+    </>
   )
 }
 
