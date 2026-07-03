@@ -11,7 +11,9 @@ import EntradasSaidasChart from '@/components/dashboard/EntradasSaidasChart'
 import { DashboardErrorBoundary } from '@/components/dashboard/DashboardErrorBoundary'
 import Modal from '@/components/ui/Modal'
 import type { TransacaoLista } from '@/lib/transacao-types'
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, AreaChart, Area, CartesianGrid, ComposedChart, Line, Legend } from 'recharts'
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, AreaChart, Area, CartesianGrid, ComposedChart, Line, Legend, PieChart, Pie } from 'recharts'
+
+const PIE_COLORS = ['#3D7A6E', '#D8C9A0', '#7A6A9E', '#3D6E8E', '#B0413E', '#B08A3E']
 
 function mesKey(d: Date) { return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}` }
 function labelMes(key: string) {
@@ -775,21 +777,28 @@ export default function DashboardPage() {
           {topCats.length === 0 ? (
             <div style={{ height: 140, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#A6B0AC', fontSize: 12 }}>Sem despesas categorizadas.</div>
           ) : (
-            <ResponsiveContainer width="100%" height={140}>
-              <BarChart data={topCats} layout="vertical" margin={{ top: 0, right: 8, bottom: 0, left: 0 }}>
-                <XAxis type="number" tick={{ fontSize: 9, fill: '#A6B0AC' }} axisLine={false} tickLine={false} tickFormatter={v => fmtBRLCompact(v)} />
-                <YAxis type="category" dataKey="cat" tick={{ fontSize: 9, fill: '#7B8C88' }} axisLine={false} tickLine={false} width={72} />
-                <Tooltip
-                  formatter={(v: number) => [fmtBRLCompact(v), 'Despesa']}
-                  contentStyle={{ fontSize: 11, borderRadius: 10, border: '0.5px solid #E4DCCC', background: '#fff', boxShadow: '0 4px 16px rgba(0,0,0,0.08)' }}
-                />
-                <Bar dataKey="val" radius={[0, 4, 4, 0]} maxBarSize={16}>
-                  {topCats.map((_, i) => (
-                    <Cell key={i} fill={['#3D7A6E', '#B08A3E', '#7A6A9E', '#3D6E8E', '#B0413E'][i % 5]} fillOpacity={0.85} />
-                  ))}
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <ResponsiveContainer width="55%" height={150}>
+                <PieChart>
+                  <Pie data={topCats} dataKey="val" nameKey="cat" cx="50%" cy="50%" innerRadius={38} outerRadius={62} paddingAngle={2} stroke="none">
+                    {topCats.map((_, i) => <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />)}
+                  </Pie>
+                  <Tooltip
+                    formatter={(v: number) => [fmtBRLCompact(v), 'Despesa']}
+                    contentStyle={{ fontSize: 11, borderRadius: 12, border: '1px solid #E4DCCC', background: '#fff', boxShadow: '0 8px 24px rgba(19,32,29,0.10)' }}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+              <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 7, minWidth: 0 }}>
+                {topCats.map((c, i) => (
+                  <div key={c.cat} style={{ display: 'flex', alignItems: 'center', gap: 7, fontSize: 11 }}>
+                    <span style={{ width: 9, height: 9, borderRadius: 3, background: PIE_COLORS[i % PIE_COLORS.length], flexShrink: 0 }} />
+                    <span style={{ color: '#3C4A46', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{c.cat}</span>
+                    <span style={{ color: '#13201D', fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>{fmtBRLCompact(c.val)}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
           )}
         </div>
       </div>
