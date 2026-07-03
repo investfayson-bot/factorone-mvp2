@@ -38,10 +38,10 @@
   /* cor areia (barras secundárias, como no mock) */
   --sand: #D8C9A0; --sand-soft: #E7DDC2;
 
-  /* tipografia — arredondada (Poppins), amigável e global */
-  --font-display: 'Poppins', 'Nunito', system-ui, sans-serif;
-  --font-sans: 'Poppins', 'Nunito', system-ui, sans-serif;
-  --font-mono: 'Geist Mono', ui-monospace, monospace;
+  /* tipografia — IBM Plex (legível, sólida, "cara de banco") */
+  --font-display: 'IBM Plex Sans', system-ui, sans-serif;
+  --font-sans: 'IBM Plex Sans', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
 
   /* sombras suaves (cards flutuam de leve) */
   --shadow-card: 0 1px 2px rgba(19,32,29,.04), 0 4px 14px rgba(19,32,29,.06);
@@ -92,14 +92,14 @@ html[data-theme="dark"] {
   --shadow-soft: 0 1px 3px rgba(0,0,0,.35);
   --shadow-pop: 0 12px 40px rgba(0,0,0,.55);
 
-  /* aliases legados no escuro */
-  --navy: #EAF2ED; --white: #16302A; --cream: #10201C;
-  --gray-100: #1E332E; --gray-200: #26403A; --gray-400: #86988F;
-  --gray-500: #C0D0C9; --gray-700: #EAF2ED;
-  --fo-card: #16302A; --fo-bg: #10201C; --fo-border: #26403A;
-  --fo-text: #EAF2ED; --fo-text-muted: #86988F;
+  /* Aliases legados que carregam semântica clara/escura (--navy=painel escuro,
+     --cream=fundo claro, --white=cartão) NÃO são invertidos aqui de propósito:
+     várias telas (auth, onboarding) usam var(--navy) com texto branco fixo, e
+     inverter quebrava o contraste. O dark atua só nos tokens semânticos acima. */
 }
 html[data-theme="dark"] .nav-item.active { background: var(--surface-2); }
+/* moldura escura ao redor do sistema (pedido do Fayson) */
+html[data-theme="dark"] .fo-content { box-shadow: inset 0 0 0 1px var(--line); }
 
 body {
   font-family: var(--font-sans);
