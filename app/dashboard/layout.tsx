@@ -98,6 +98,7 @@ const pageTitles: Record<string, string> = {
   '/dashboard/ma': 'Preparação para M&A',
   '/dashboard/prefeituras': 'Prefeituras & NFS-e',
   '/dashboard/juridico': 'Jurídico',
+  '/dashboard/marketing/central': 'Marketing',
   '/dashboard/contabilidade/livros': 'Livros contábeis',
   '/dashboard/credito': 'Crédito & Financiamento',
   '/dashboard/financeiro': 'Financeiro',
