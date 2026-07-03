@@ -172,6 +172,18 @@ export default function ClassificarPage() {
     } catch { toast.error('Falha na projeção') }
     finally { setProjetando(false) }
   }
+  // Tier 4 — a IA monta o relatório pronto pra enviar (WhatsApp/e-mail).
+  function montarRelatorio(): string {
+    const L: string[] = ['📊 FactorOne — Relatório financeiro', '']
+    L.push(`Entrou: ${formatBRL(entrou)}`)
+    L.push(`Saiu: ${formatBRL(saiu)}`)
+    L.push(`Resultado: ${formatBRL(entrou - saiu)}`)
+    if (porCategoria.length) { L.push('', 'Onde você gastou:'); for (const [c, v] of porCategoria.slice(0, 6)) L.push(`• ${c}: ${formatBRL(v)}`) }
+    if (analise.length) { L.push('', 'Análise do CFO IA:'); for (const a of analise) L.push(`• ${a}`) }
+    if (proj) L.push('', `Projeção de caixa — hoje ${formatBRL(proj.saldoAtual)}, 30 dias ${formatBRL(proj.d30)}, 90 dias ${formatBRL(proj.d90)}`)
+    L.push('', '— gerado pelo FactorOne')
+    return L.join('\n')
+  }
   function confirmarUm(t: Tx) { void classificar({ [t.id]: escolhas[t.id] ?? sugerir(t.descricao) }) }
   function confirmarLote() {
     const mapa: Record<string, string> = {}
@@ -392,6 +404,26 @@ export default function ClassificarPage() {
                 </div>
               </>
             )}
+          </div>
+
+          {/* Relatório pronto pra enviar (Tier 4 — execução) */}
+          <div className="txs-card" style={{ padding: '18px 20px', marginTop: 12 }}>
+            <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--ink)', display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+              <i className="fa-solid fa-paper-plane" style={{ color: 'var(--sage)' }} />Relatório do mês
+            </div>
+            <div style={{ fontSize: 12, color: 'var(--ink-mut)', marginBottom: 12 }}>A IA monta o relatório (números + análise + projeção) e abre pronto pra você enviar.</div>
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+              <button className="btn-action" style={{ fontSize: 12 }} onClick={() => { void navigator.clipboard.writeText(montarRelatorio()); toast.success('Relatório copiado') }}>
+                <i className="fa-solid fa-copy" style={{ marginRight: 6 }} />Copiar
+              </button>
+              <button className="btn-ghost" style={{ fontSize: 12 }} onClick={() => window.open(`https://wa.me/?text=${encodeURIComponent(montarRelatorio())}`, '_blank')}>
+                <i className="fa-brands fa-whatsapp" style={{ marginRight: 6, color: '#25D366' }} />WhatsApp
+              </button>
+              <button className="btn-ghost" style={{ fontSize: 12 }} onClick={() => window.open(`mailto:?subject=${encodeURIComponent('Relatório FactorOne')}&body=${encodeURIComponent(montarRelatorio())}`)}>
+                <i className="fa-solid fa-envelope" style={{ marginRight: 6 }} />E-mail
+              </button>
+            </div>
+            <div style={{ fontSize: 10.5, color: 'var(--ink-faint)', marginTop: 10 }}>Abre pronto pra você enviar. Envio 100% automático (agendado, via Zap) é o próximo passo do FactorHub.</div>
           </div>
         </div>
       )}
