@@ -31,8 +31,6 @@ function buildNavGroups(badges: { reembolsos: number; aprovacoes: number }, inst
       items: [
         { href: '/dashboard/cashflow', icon: 'fa-chart-line', label: 'Fluxo de Caixa' },
         { href: '/dashboard/relatorios', icon: 'fa-chart-bar', label: 'DRE' },
-        { href: '/dashboard/indicadores', icon: 'fa-gauge-high', label: 'Indicadores' },
-        { href: '/dashboard/ma', icon: 'fa-handshake-angle', label: 'M&A' },
         { href: '/dashboard/financeiro', icon: 'fa-receipt', label: 'Financeiro', badge: badges.reembolsos > 0 ? String(badges.reembolsos) : undefined, badgeColor: 'var(--teal)' },
         { href: '/dashboard/despesas', icon: 'fa-file-invoice', label: 'Despesas' },
         { href: '/dashboard/orcamento', icon: 'fa-chart-pie', label: 'Orçamento' },
@@ -45,12 +43,10 @@ function buildNavGroups(badges: { reembolsos: number; aprovacoes: number }, inst
         { href: '/dashboard/contadores', icon: 'fa-calculator', label: 'Contador' },
         { href: '/dashboard/contabilidade/livros', icon: 'fa-book', label: 'Livros contábeis' },
         { href: '/dashboard/notas', icon: 'fa-file-invoice-dollar', label: 'Fiscal & NF-e' },
-        { href: '/dashboard/prefeituras', icon: 'fa-landmark', label: 'Prefeituras & NFS-e' },
         { href: '/dashboard/fiscal', icon: 'fa-building-flag', label: 'Portais Fiscais' },
-        { href: '/dashboard/juridico', icon: 'fa-scale-balanced', label: 'Jurídico' },
       ],
     },
-    {
+    ...(installedIds.includes('banco') ? [{
       label: 'Banco',
       collapsible: true,
       items: [
@@ -63,7 +59,7 @@ function buildNavGroups(badges: { reembolsos: number; aprovacoes: number }, inst
         { href: '/dashboard/conta-pj/solucoes', icon: 'fa-grip', label: 'Mais soluções' },
         { href: '/dashboard/conta-pj/abrir', icon: 'fa-circle-plus', label: 'Abrir conta' },
       ],
-    },
+    }] : []),
     {
       label: 'Marketplace',
       items: [
@@ -82,6 +78,7 @@ function buildNavGroups(badges: { reembolsos: number; aprovacoes: number }, inst
 
   // Apps instalados pelo Marketplace aparecem no seu grupo funcional.
   for (const app of MARKET_APPS) {
+    if (app.id === 'banco') continue // Banco é um grupo inteiro, tratado acima
     if (!installedIds.includes(app.id)) continue
     const item: NavItem = { href: app.href, icon: app.icon, label: app.name, badge: 'APP', badgeColor: '#7C3AED' }
     let group = groups.find(g => g.label === app.navGroup)
