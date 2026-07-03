@@ -53,6 +53,8 @@ export default function ClassificarPage() {
   const [ocr, setOcr] = useState(false)
   const [fontes, setFontes] = useState<Record<string, 'aprendido' | 'ia'>>({})
   const [sugerindo, setSugerindo] = useState(false)
+  const [analise, setAnalise] = useState<string[]>([])
+  const [analisando, setAnalisando] = useState(false)
 
   const carregar = useCallback(async () => {
     setLoading(true)
@@ -133,6 +135,15 @@ export default function ClassificarPage() {
     finally { setBusy(false) }
   }
 
+  async function analisar() {
+    setAnalisando(true)
+    try {
+      const r = await fetch('/api/transacoes/analisar', { method: 'POST', headers: auth })
+      const j = await r.json()
+      setAnalise(Array.isArray(j.analise) ? j.analise : [])
+    } catch { toast.error('Falha na análise') }
+    finally { setAnalisando(false) }
+  }
   function confirmarUm(t: Tx) { void classificar({ [t.id]: escolhas[t.id] ?? sugerir(t.descricao) }) }
   function confirmarLote() {
     const mapa: Record<string, string> = {}
@@ -295,6 +306,30 @@ export default function ClassificarPage() {
                 </div>
               )
             })}
+          </div>
+
+          {/* Análise da IA (CFO) */}
+          <div className="txs-card" style={{ padding: '18px 20px', marginTop: 12 }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+              <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--ink)', display: 'flex', alignItems: 'center', gap: 8 }}>
+                <i className="fa-solid fa-robot" style={{ color: 'var(--sage)' }} />Análise do CFO IA
+              </div>
+              <button className="btn-action" style={{ fontSize: 12, padding: '7px 14px' }} disabled={analisando} onClick={() => void analisar()}>
+                <i className={`fa-solid ${analisando ? 'fa-circle-notch fa-spin' : 'fa-wand-magic-sparkles'}`} style={{ marginRight: 6 }} />{analisando ? 'Analisando…' : 'Analisar'}
+              </button>
+            </div>
+            {analise.length === 0 ? (
+              <div style={{ fontSize: 12.5, color: 'var(--ink-mut)' }}>Clique em <b>Analisar</b> — a IA lê seus números e diz onde está o dinheiro, o que cortar e o risco.</div>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                {analise.map((a, i) => (
+                  <div key={i} style={{ display: 'flex', gap: 10, alignItems: 'flex-start', fontSize: 13, lineHeight: 1.55, color: 'var(--ink)' }}>
+                    <i className="fa-solid fa-circle" style={{ fontSize: 5, color: 'var(--sage)', marginTop: 7, flexShrink: 0 }} />
+                    <span>{a}</span>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       )}
