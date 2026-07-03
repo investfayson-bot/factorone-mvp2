@@ -26,6 +26,7 @@ type Imovel = {
   locatario: string
   ocupada: boolean
   vgv: number
+  reajustes?: { data: string; de: number; para: number }[]
 }
 
 const TIPOS = ['Loja', 'Sala', 'Apartamento', 'Casa', 'Galpão', 'Terreno', 'Kitnet', 'Outro']
@@ -39,6 +40,8 @@ export default function ImoveisPage() {
   const [form, setForm] = useState<Omit<Imovel, 'id'>>({ ...VAZIO })
   const [editId, setEditId] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
+  const [reajusteFor, setReajusteFor] = useState<Imovel | null>(null)
+  const [reajPct, setReajPct] = useState('')
 
   const chave = useCallback((eid: string) => `fo_imoveis_${eid}`, [])
 
@@ -69,6 +72,19 @@ export default function ImoveisPage() {
     setShowModal(false); toast.success(editId ? 'Imóvel atualizado' : 'Imóvel cadastrado')
   }
   function excluir(id: string) { if (window.confirm('Excluir este imóvel?')) persistir(imoveis.filter(i => i.id !== id)) }
+
+  function aplicarReajuste() {
+    if (!reajusteFor) return
+    const pct = Number(reajPct)
+    if (!pct) { toast.error('Informe o percentual'); return }
+    const de = reajusteFor.aluguel
+    const para = Math.round(de * (1 + pct / 100) * 100) / 100
+    persistir(imoveis.map(i => i.id === reajusteFor.id
+      ? { ...i, aluguel: para, reajustes: [...(i.reajustes ?? []), { data: new Date().toISOString().slice(0, 10), de, para }] }
+      : i))
+    toast.success(`Aluguel reajustado: ${formatBRL(de)} → ${formatBRL(para)}`)
+    setReajusteFor(null); setReajPct('')
+  }
 
   // Lança o aluguel do imóvel como RECEITA no fluxo (transacoes → DRE/Fluxo)
   async function lancarAluguel(im: Imovel) {
@@ -172,6 +188,7 @@ export default function ImoveisPage() {
                 <span style={{ justifySelf: 'start', fontSize: 9.5, fontWeight: 600, padding: '3px 9px', borderRadius: 100, textTransform: 'uppercase', letterSpacing: '.05em', color: im.ocupada ? 'var(--sage-deep)' : 'var(--gold)', background: im.ocupada ? 'var(--sage-tint)' : 'var(--gold-tint)' }}>{im.ocupada ? 'Ocupada' : 'Vaga'}</span>
                 <div style={{ display: 'flex', gap: 6, justifyContent: 'flex-end' }}>
                   <button className="btn-ghost" title="Lançar aluguel no fluxo" style={{ fontSize: 11, padding: '6px 10px' }} disabled={busy || !im.ocupada} onClick={() => void lancarAluguel(im)}><i className="fa-solid fa-money-bill-trend-up" /></button>
+                  <button className="btn-ghost" title="Reajustar aluguel" style={{ fontSize: 11, padding: '6px 10px' }} onClick={() => { setReajusteFor(im); setReajPct('') }}><i className="fa-solid fa-arrow-trend-up" /></button>
                   <button className="btn-ghost" title="Editar" style={{ fontSize: 11, padding: '6px 10px' }} onClick={() => abrirEdit(im)}><i className="fa-solid fa-pen" /></button>
                   <button className="btn-ghost" title="Excluir" style={{ fontSize: 11, padding: '6px 10px', color: '#B0413E', borderColor: '#B0413E' }} onClick={() => excluir(im.id)}><i className="fa-solid fa-trash-can" /></button>
                 </div>
@@ -185,6 +202,30 @@ export default function ImoveisPage() {
         <i className="fa-solid fa-circle-info" style={{ color: 'var(--sage)', marginRight: 6 }} />
         &quot;Lançar aluguel&quot; cria uma receita no Fluxo de Caixa e na DRE, já classificada como <b>Receita de aluguel</b>. (v1: imóveis salvos neste navegador; migração pro banco em seguida.)
       </div>
+
+      {/* Modal reajuste */}
+      {reajusteFor && (
+        <div className="modal-bg" onClick={() => setReajusteFor(null)}>
+          <div className="modal-box" style={{ width: 420 }} onClick={e => e.stopPropagation()}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
+              <div className="modal-title">Reajustar aluguel</div>
+              <button className="modal-close" onClick={() => setReajusteFor(null)}><i className="fa-solid fa-xmark" /></button>
+            </div>
+            <div style={{ fontSize: 12, color: 'var(--ink-mut)', marginBottom: 16 }}>{reajusteFor.unidade} · aluguel atual <b style={{ color: 'var(--ink)' }}>{formatBRL(reajusteFor.aluguel)}</b></div>
+            <div className="form-group"><label className="form-label">Reajuste (%)</label><input className="form-input" type="number" step="0.01" placeholder="Ex: 4.5 (IGP-M/IPCA)" value={reajPct} onChange={e => setReajPct(e.target.value)} autoFocus /></div>
+            {Number(reajPct) ? (
+              <div style={{ fontSize: 12.5, color: 'var(--sage-deep)', fontWeight: 600, marginBottom: 8 }}>Novo aluguel: {formatBRL(Math.round(reajusteFor.aluguel * (1 + Number(reajPct) / 100) * 100) / 100)}</div>
+            ) : null}
+            {reajusteFor.reajustes && reajusteFor.reajustes.length > 0 && (
+              <div style={{ fontSize: 11, color: 'var(--ink-mut)', marginBottom: 8 }}>Último: {reajusteFor.reajustes[reajusteFor.reajustes.length - 1].data.split('-').reverse().join('/')} · {formatBRL(reajusteFor.reajustes[reajusteFor.reajustes.length - 1].de)} → {formatBRL(reajusteFor.reajustes[reajusteFor.reajustes.length - 1].para)}</div>
+            )}
+            <div className="modal-actions">
+              <button className="btn-ghost" onClick={() => setReajusteFor(null)}>Cancelar</button>
+              <button className="btn-action" onClick={aplicarReajuste}>Aplicar reajuste</button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Modal cadastro/edição */}
       {showModal && (

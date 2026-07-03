@@ -34,7 +34,13 @@ function buildNavGroups(badges: { reembolsos: number; aprovacoes: number }, inst
         { href: '/dashboard/relatorios', icon: 'fa-chart-bar', label: 'DRE' },
         { href: '/dashboard/financeiro', icon: 'fa-receipt', label: 'Financeiro', badge: badges.reembolsos > 0 ? String(badges.reembolsos) : undefined, badgeColor: 'var(--teal)' },
         { href: '/dashboard/despesas', icon: 'fa-file-invoice', label: 'Despesas' },
+      ],
+    },
+    {
+      label: 'Patrimônio',
+      items: [
         { href: '/dashboard/patrimonio/imoveis', icon: 'fa-building', label: 'Imóveis', badge: 'NEW', badgeColor: 'var(--teal)' },
+        { href: '/dashboard/patrimonio/obras', icon: 'fa-helmet-safety', label: 'Obras' },
       ],
     },
     {
@@ -98,6 +104,7 @@ const pageTitles: Record<string, string> = {
   '/dashboard/financeiro': 'Financeiro',
   '/dashboard/despesas': 'Despesas',
   '/dashboard/patrimonio/imoveis': 'Imóveis',
+  '/dashboard/patrimonio/obras': 'Obras e Reformas',
   '/dashboard/classificar': 'Classificar transações',
   '/dashboard/orcamento': 'Orçamento',
   '/dashboard/conciliacao': 'Conciliação Bancária',
