@@ -113,6 +113,7 @@ const pageTitles: Record<string, string> = {
   '/dashboard/patrimonio/socios': 'Distribuição por sócio',
   '/dashboard/patrimonio/veiculos': 'Veículos',
   '/dashboard/classificar': 'Classificar transações',
+  '/dashboard/captacao': 'Captação de Leads',
   '/dashboard/orcamento': 'Orçamento',
   '/dashboard/conciliacao': 'Conciliação Bancária',
   '/dashboard/conciliacao/relatorio': 'Relatório de Conciliação',
