@@ -12,13 +12,14 @@ import toast from 'react-hot-toast'
 
 type Lead = { id: string; nome: string | null; email: string | null; telefone: string | null; origem: string | null; status: string; created_at: string }
 
-const CONECTORES: { nome: string; icon: string; cor: string; ativo: boolean; nota: string }[] = [
+type Conector = { nome: string; icon: string; cor: string; ativo: boolean; nota: string; sistema?: string; ajudaChave?: string }
+const CONECTORES: Conector[] = [
   { nome: 'Webhook / Zapier / Make', icon: 'fa-plug', cor: '#3D7A6E', ativo: true, nota: 'Cole a URL abaixo em qualquer ferramenta e conecte tudo.' },
   { nome: 'Formulário do site', icon: 'fa-window-maximize', cor: '#3D7A6E', ativo: true, nota: 'Aponte o form pra URL do webhook.' },
-  { nome: 'RD Station', icon: 'fa-rocket', cor: '#7A6A9E', ativo: false, nota: 'Conector nativo em breve.' },
-  { nome: 'Meta Ads (Lead Ads)', icon: 'fa-meta', cor: '#3D6E8E', ativo: false, nota: 'Conector nativo em breve.' },
-  { nome: 'Google Ads', icon: 'fa-google', cor: '#B08A3E', ativo: false, nota: 'Conector nativo em breve.' },
-  { nome: 'WhatsApp Business', icon: 'fa-whatsapp', cor: '#3D7A6E', ativo: false, nota: 'API oficial em breve.' },
+  { nome: 'RD Station', icon: 'fa-rocket', cor: '#7A6A9E', ativo: false, nota: 'Conecte com sua chave da RD.', sistema: 'rd_station', ajudaChave: 'Na RD Station: Integrações → Token de API.' },
+  { nome: 'Meta Ads (Lead Ads)', icon: 'fa-facebook', cor: '#3D6E8E', ativo: false, nota: 'Conecte com o token da Meta.', sistema: 'meta_ads', ajudaChave: 'Token de acesso do seu App da Meta (Marketing API).' },
+  { nome: 'Google Ads', icon: 'fa-google', cor: '#B08A3E', ativo: false, nota: 'Conecte com sua chave do Google Ads.', sistema: 'google_ads', ajudaChave: 'Developer token / OAuth do Google Ads.' },
+  { nome: 'WhatsApp Business', icon: 'fa-whatsapp', cor: '#3D7A6E', ativo: false, nota: 'Conecte a API oficial.', sistema: 'whatsapp', ajudaChave: 'Token permanente do WhatsApp Cloud API.' },
 ]
 
 export default function CaptacaoPage() {
@@ -27,13 +28,19 @@ export default function CaptacaoPage() {
   const [leads, setLeads] = useState<Lead[]>([])
   const [pipeline, setPipeline] = useState(0)
   const [origin, setOrigin] = useState('')
+  const [authToken, setAuthToken] = useState('')
+  const [configurados, setConfigurados] = useState<string[]>([])
+  const [plugFor, setPlugFor] = useState<Conector | null>(null)
+  const [apiKey, setApiKey] = useState('')
+  const [salvandoKey, setSalvandoKey] = useState(false)
 
   const carregar = useCallback(async () => {
     const { data: { user } } = await supabase.auth.getUser(); if (!user) return
-    const { data: sess } = await supabase.auth.getSession(); const tk = sess.session?.access_token ?? ''
+    const { data: sess } = await supabase.auth.getSession(); const tk = sess.session?.access_token ?? ''; setAuthToken(tk)
     const { data: u } = await supabase.from('usuarios').select('empresa_id').eq('id', user.id).maybeSingle()
     const eid = (u?.empresa_id as string) ?? user.id; setEmpresaId(eid)
     try { const r = await fetch('/api/captacao/token', { headers: tk ? { Authorization: `Bearer ${tk}` } : {} }); const j = await r.json(); if (j.token) setToken(j.token) } catch { /* ignore */ }
+    try { const { data: ic } = await supabase.from('integracoes_config').select('sistema').eq('empresa_id', eid); setConfigurados(((ic ?? []) as { sistema: string }[]).map(x => x.sistema)) } catch { /* ignore */ }
     const { data: ld } = await supabase.from('marketing_leads').select('id,nome,email,telefone,origem,status,created_at').eq('empresa_id', eid).order('created_at', { ascending: false }).limit(100)
     setLeads((ld ?? []) as Lead[])
     const { data: ops } = await supabase.from('crm_oportunidades').select('valor,etapa').eq('empresa_id', eid)
@@ -42,6 +49,18 @@ export default function CaptacaoPage() {
   useEffect(() => { void carregar(); setOrigin(window.location.origin) }, [carregar])
 
   const webhookUrl = token ? `${origin}/api/inbound?token=${token}` : ''
+
+  async function plugarChave() {
+    if (!plugFor?.sistema || !apiKey.trim()) { toast.error('Cole a chave da ferramenta'); return }
+    setSalvandoKey(true)
+    try {
+      const r = await fetch('/api/integracoes/configurar', { method: 'POST', headers: { 'Content-Type': 'application/json', ...(authToken ? { Authorization: `Bearer ${authToken}` } : {}) }, body: JSON.stringify({ sistema: plugFor.sistema, api_key: apiKey.trim() }) })
+      if (!r.ok) throw new Error((await r.json()).error || 'Falha')
+      toast.success(`${plugFor.nome} conectado ✓`)
+      setPlugFor(null); setApiKey(''); void carregar()
+    } catch (e) { toast.error(e instanceof Error ? e.message : 'Erro') }
+    finally { setSalvandoKey(false) }
+  }
 
   async function converter(l: Lead) {
     const { error } = await supabase.from('crm_oportunidades').insert({ empresa_id: empresaId, titulo: l.nome || 'Lead', etapa: 'prospeccao', probabilidade: 20, valor: null })
@@ -106,9 +125,15 @@ export default function CaptacaoPage() {
               <span style={{ fontSize: 12.5, fontWeight: 700, color: 'var(--ink)' }}>{c.nome}</span>
             </div>
             <div style={{ fontSize: 11, color: 'var(--ink-mut)', marginBottom: 8, lineHeight: 1.4 }}>{c.nota}</div>
-            <span style={{ fontSize: 9.5, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '.06em', color: c.ativo ? 'var(--sage)' : 'var(--ink-mut)' }}>
-              <i className="fa-solid fa-circle" style={{ fontSize: 6, marginRight: 5 }} />{c.ativo ? 'Ativo' : 'Em breve'}
-            </span>
+            {c.ativo ? (
+              <span style={{ fontSize: 9.5, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '.06em', color: 'var(--sage)' }}><i className="fa-solid fa-circle" style={{ fontSize: 6, marginRight: 5 }} />Ativo</span>
+            ) : c.sistema && configurados.includes(c.sistema) ? (
+              <span style={{ fontSize: 9.5, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '.06em', color: 'var(--sage-deep)' }}><i className="fa-solid fa-circle-check" style={{ marginRight: 5 }} />Conectado</span>
+            ) : c.sistema ? (
+              <button className="btn-ghost" style={{ fontSize: 11, padding: '5px 12px' }} onClick={() => { setPlugFor(c); setApiKey('') }}><i className="fa-solid fa-key" style={{ marginRight: 6 }} />Conectar</button>
+            ) : (
+              <span style={{ fontSize: 9.5, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '.06em', color: 'var(--ink-mut)' }}>Em breve</span>
+            )}
           </div>
         ))}
       </div>
@@ -140,6 +165,25 @@ export default function CaptacaoPage() {
         <i className="fa-solid fa-circle-info" style={{ color: 'var(--sage)', marginRight: 6 }} />
         Modelo único (canônico): não importa a ferramenta, o lead entra igual. &quot;Virar oportunidade&quot; joga no CRM → pipeline → ao fechar, vira receita na DRE. O funil inteiro num lugar só.
       </div>
+
+      {/* Modal — plugar a chave do conector */}
+      {plugFor && (
+        <div className="modal-bg" onClick={() => setPlugFor(null)}>
+          <div className="modal-box" onClick={e => e.stopPropagation()}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
+              <div className="modal-title">Conectar {plugFor.nome}</div>
+              <button className="modal-close" onClick={() => setPlugFor(null)}><i className="fa-solid fa-xmark" /></button>
+            </div>
+            <div style={{ fontSize: 12, color: 'var(--ink-mut)', marginBottom: 16 }}>Cole a chave/token da ferramenta. Fica guardada com segurança na sua conta.{plugFor.ajudaChave ? ` ${plugFor.ajudaChave}` : ''}</div>
+            <div className="form-group"><label className="form-label">Chave / Token de API</label><input className="form-input" type="password" value={apiKey} onChange={e => setApiKey(e.target.value)} placeholder="cole aqui" autoFocus /></div>
+            <div style={{ fontSize: 10.5, color: 'var(--ink-faint)', marginBottom: 4 }}>A sincronização automática do lead entra em breve — a chave já fica plugada e pronta.</div>
+            <div className="modal-actions">
+              <button className="btn-ghost" onClick={() => setPlugFor(null)}>Cancelar</button>
+              <button className="btn-action" disabled={salvandoKey} onClick={() => void plugarChave()}>{salvandoKey ? 'Salvando…' : 'Conectar'}</button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   )
 }
