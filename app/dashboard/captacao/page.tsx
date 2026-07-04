@@ -49,6 +49,8 @@ export default function CaptacaoPage() {
   useEffect(() => { void carregar(); setOrigin(window.location.origin) }, [carregar])
 
   const webhookUrl = token ? `${origin}/api/inbound?token=${token}` : ''
+  const formUrl = token ? `${origin}/form/${token}` : ''
+  const embedCode = formUrl ? `<iframe src="${formUrl}" width="440" height="560" style="border:none;max-width:100%"></iframe>` : ''
 
   async function plugarChave() {
     if (!plugFor?.sistema || !apiKey.trim()) { toast.error('Cole a chave da ferramenta'); return }
@@ -114,6 +116,16 @@ export default function CaptacaoPage() {
           <div style={{ fontSize: 12, color: 'var(--gold)' }}>Gerando token… se não aparecer, rode a migração <code>inbound_tokens</code> (SQL abaixo no chat).</div>
         )}
         <div style={{ fontSize: 10.5, color: 'var(--ink-faint)', marginTop: 10 }}>Aceita campos comuns: nome/name, email, telefone/phone/whatsapp, origem/source. Envie via POST (JSON).</div>
+        {formUrl && (
+          <div style={{ marginTop: 14, paddingTop: 14, borderTop: '1px solid var(--line-soft)' }}>
+            <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--ink)', marginBottom: 8 }}><i className="fa-solid fa-window-maximize" style={{ color: 'var(--sage)', marginRight: 8 }} />Formulário pronto (não precisa nem ter site)</div>
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+              <a href={formUrl} target="_blank" rel="noreferrer" className="btn-ghost" style={{ fontSize: 12, textDecoration: 'none' }}><i className="fa-solid fa-arrow-up-right-from-square" style={{ marginRight: 6 }} />Abrir formulário</a>
+              <button className="btn-ghost" style={{ fontSize: 12 }} onClick={() => { void navigator.clipboard.writeText(formUrl); toast.success('Link do formulário copiado') }}><i className="fa-solid fa-link" style={{ marginRight: 6 }} />Copiar link</button>
+              <button className="btn-ghost" style={{ fontSize: 12 }} onClick={() => { void navigator.clipboard.writeText(embedCode); toast.success('Código de incorporação copiado') }}><i className="fa-solid fa-code" style={{ marginRight: 6 }} />Copiar embed</button>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Conectores */}
