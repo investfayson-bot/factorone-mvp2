@@ -43,6 +43,7 @@ export default function ImoveisPage() {
   const [reajusteFor, setReajusteFor] = useState<Imovel | null>(null)
   const [reajPct, setReajPct] = useState('')
 
+  const [dbOk, setDbOk] = useState(false)
   const chave = useCallback((eid: string) => `fo_imoveis_${eid}`, [])
 
   useEffect(() => {
@@ -50,17 +51,29 @@ export default function ImoveisPage() {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) return
       const { data: sess } = await supabase.auth.getSession()
-      setToken(sess.session?.access_token ?? '')
+      const tk = sess.session?.access_token ?? ''
+      setToken(tk)
       const { data: u } = await supabase.from('usuarios').select('empresa_id').eq('id', user.id).maybeSingle()
       const eid = (u?.empresa_id as string) ?? user.id
       setEmpresaId(eid)
+      // DB-first; se a tabela ainda não existe, cai pro localStorage.
+      try {
+        const r = await fetch('/api/patrimonio/imoveis', { headers: tk ? { Authorization: `Bearer ${tk}` } : {} })
+        const j = await r.json()
+        if (j.ok) { setDbOk(true); setImoveis((j.imoveis ?? []) as Imovel[]); return }
+      } catch { /* fallback abaixo */ }
       try { const raw = localStorage.getItem(chave(eid)); if (raw) setImoveis(JSON.parse(raw) as Imovel[]) } catch { /* ignore */ }
     })()
   }, [chave])
 
   function persistir(next: Imovel[]) {
     setImoveis(next)
-    try { localStorage.setItem(chave(empresaId), JSON.stringify(next)) } catch { /* ignore */ }
+    if (dbOk) {
+      void fetch('/api/patrimonio/imoveis', { method: 'POST', headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) }, body: JSON.stringify({ imoveis: next }) })
+        .then(r => { if (!r.ok) toast.error('Falha ao salvar no banco') })
+    } else {
+      try { localStorage.setItem(chave(empresaId), JSON.stringify(next)) } catch { /* ignore */ }
+    }
   }
 
   function abrirNovo() { setForm({ ...VAZIO }); setEditId(null); setShowModal(true) }

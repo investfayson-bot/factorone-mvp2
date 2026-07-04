@@ -32,17 +32,31 @@ export default function ObrasPage() {
   const [pag, setPag] = useState({ data: new Date().toISOString().slice(0, 10), descricao: '', valor: '' })
   const [busy, setBusy] = useState(false)
 
+  const [dbOk, setDbOk] = useState(false)
   const chave = useCallback((eid: string) => `fo_obras_${eid}`, [])
   useEffect(() => {
     void (async () => {
       const { data: { user } } = await supabase.auth.getUser(); if (!user) return
-      const { data: sess } = await supabase.auth.getSession(); setToken(sess.session?.access_token ?? '')
+      const { data: sess } = await supabase.auth.getSession(); const tk = sess.session?.access_token ?? ''; setToken(tk)
       const { data: u } = await supabase.from('usuarios').select('empresa_id').eq('id', user.id).maybeSingle()
       const eid = (u?.empresa_id as string) ?? user.id; setEmpresaId(eid)
+      try {
+        const r = await fetch('/api/patrimonio/obras', { headers: tk ? { Authorization: `Bearer ${tk}` } : {} })
+        const j = await r.json()
+        if (j.ok) { setDbOk(true); setObras((j.obras ?? []) as Obra[]); return }
+      } catch { /* fallback */ }
       try { const raw = localStorage.getItem(chave(eid)); if (raw) setObras(JSON.parse(raw) as Obra[]) } catch { /* ignore */ }
     })()
   }, [chave])
-  function persistir(next: Obra[]) { setObras(next); try { localStorage.setItem(chave(empresaId), JSON.stringify(next)) } catch { /* ignore */ } }
+  function persistir(next: Obra[]) {
+    setObras(next)
+    if (dbOk) {
+      void fetch('/api/patrimonio/obras', { method: 'POST', headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) }, body: JSON.stringify({ obras: next }) })
+        .then(r => { if (!r.ok) toast.error('Falha ao salvar no banco') })
+    } else {
+      try { localStorage.setItem(chave(empresaId), JSON.stringify(next)) } catch { /* ignore */ }
+    }
+  }
 
   function abrirNova() { setForm({ ...VAZIA }); setEditId(null); setShowObra(true) }
   function abrirEdit(o: Obra) { const { id, pagamentos, ...rest } = o; void id; void pagamentos; setForm(rest); setEditId(o.id); setShowObra(true) }
