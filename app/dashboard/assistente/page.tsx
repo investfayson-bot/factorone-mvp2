@@ -8,6 +8,7 @@ type Resumo = {
   resultado: number; entrou: number; saiu: number; aClassificar: number
   aReceberQtd: number; aReceberValor: number; vencimentos: string[]; obrasEstouro: string[]
   aluguelMes: number; imoveis: number; topCats: [string, number][]
+  pipelineAberto: number; ganhoValor: number; atividadesPendentes: number; oportunidadesAbertas: number
 }
 type Msg = { autor: 'ai' | 'user'; texto: string }
 
@@ -47,6 +48,7 @@ export default function AssistentePage() {
     ...(resumo.aReceberQtd > 0 ? [{ txt: `${resumo.aReceberQtd} aluguéis a receber · ${formatBRL(resumo.aReceberValor)}`, cor: 'var(--gold)', ic: 'fa-hand-holding-dollar', href: '/dashboard/patrimonio/recibos' }] : []),
     ...resumo.vencimentos.map(v => ({ txt: v, cor: 'var(--gold)', ic: 'fa-car', href: '/dashboard/patrimonio/veiculos' })),
     ...resumo.obrasEstouro.map(o => ({ txt: `Obra estourando: ${o}`, cor: '#B0413E', ic: 'fa-helmet-safety', href: '/dashboard/patrimonio/obras' })),
+    ...(resumo.atividadesPendentes > 0 ? [{ txt: `${resumo.atividadesPendentes} atividades pendentes no CRM`, cor: 'var(--gold)', ic: 'fa-list-check', href: '/dashboard/crm' }] : []),
   ] : []
 
   return (
@@ -92,9 +94,10 @@ export default function AssistentePage() {
             {!resumo ? <div style={{ fontSize: 12, color: 'var(--ink-mut)' }}>Carregando…</div> : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                 <div><div style={{ fontSize: 11, color: 'var(--ink-mut)' }}>Resultado do período</div><div style={{ fontSize: 20, fontWeight: 700, color: resumo.resultado >= 0 ? 'var(--sage)' : '#B0413E', fontVariantNumeric: 'tabular-nums' }}>{formatBRL(resumo.resultado)}</div></div>
-                <div style={{ display: 'flex', gap: 16 }}>
+                <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
                   <div><div style={{ fontSize: 10, color: 'var(--ink-mut)' }}>Aluguel/mês</div><div style={{ fontSize: 13, fontWeight: 700, color: 'var(--ink)' }}>{formatBRL(resumo.aluguelMes)}</div></div>
                   <div><div style={{ fontSize: 10, color: 'var(--ink-mut)' }}>Imóveis</div><div style={{ fontSize: 13, fontWeight: 700, color: 'var(--ink)' }}>{resumo.imoveis}</div></div>
+                  <div><div style={{ fontSize: 10, color: 'var(--ink-mut)' }}>Pipeline</div><div style={{ fontSize: 13, fontWeight: 700, color: 'var(--sage-deep)' }}>{formatBRL(resumo.pipelineAberto)}</div></div>
                 </div>
               </div>
             )}

@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import { formatBRL } from '@/lib/currency-brl'
+import toast from 'react-hot-toast'
 
 type Op = {
   id: string; empresa_id: string; cliente_id: string | null; titulo: string
@@ -110,6 +111,19 @@ export default function CRMPage() {
   async function moverEtapa(opId: string, etapa: string) {
     const e = ETAPAS.find(e => e.id === etapa)
     await supabase.from('crm_oportunidades').update({ etapa, probabilidade: e?.prob ?? 50 }).eq('id', opId)
+    // Negócio ganho → vira receita no Fluxo/DRE (uma base, muitos módulos)
+    if (etapa === 'fechado_ganho') {
+      const op = oportunidades.find(o => o.id === opId)
+      const valor = Number(op?.valor || 0)
+      if (valor > 0 && window.confirm(`Negócio ganho! 🎉 Lançar ${formatBRL(valor)} como receita no Fluxo/DRE?`)) {
+        const { data: sess } = await supabase.auth.getSession()
+        const tk = sess.session?.access_token
+        try {
+          await fetch('/api/transacoes/criar', { method: 'POST', headers: { 'Content-Type': 'application/json', ...(tk ? { Authorization: `Bearer ${tk}` } : {}) }, body: JSON.stringify({ descricao: `Venda — ${op?.titulo ?? ''}${op?.clientes?.nome ? ' · ' + op.clientes.nome : ''}`, valor, tipo: 'entrada', categoria: 'Receita de vendas' }) })
+          toast.success('Receita lançada no Fluxo/DRE ✓')
+        } catch { toast.error('Falha ao lançar a receita') }
+      }
+    }
     void carregar()
   }
 

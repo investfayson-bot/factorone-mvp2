@@ -18,6 +18,8 @@ async function reunirContexto(empresa: string) {
   const veiculos = await safe<{ modelo: string | null; placa: string | null; ipva_venc: string | null; seguro_venc: string | null }>(d.from('veiculos').select('modelo,placa,ipva_venc,seguro_venc').eq('empresa_id', empresa))
   const obras = await safe<{ nome: string | null; orcamento: number; pagamentos: { valor: number }[] }>(d.from('obras').select('nome,orcamento,pagamentos').eq('empresa_id', empresa))
   const imoveis = await safe<{ ocupada: boolean; aluguel: number }>(d.from('imoveis').select('ocupada,aluguel').eq('empresa_id', empresa))
+  const ops = await safe<{ valor: number | null; etapa: string }>(d.from('crm_oportunidades').select('valor,etapa').eq('empresa_id', empresa))
+  const atvs = await safe<{ status: string }>(d.from('crm_atividades').select('status').eq('empresa_id', empresa))
 
   const entrou = tx.filter(t => t.tipo === 'entrada').reduce((s, t) => s + Number(t.valor), 0)
   const saiu = tx.filter(t => t.tipo === 'saida').reduce((s, t) => s + Number(t.valor), 0)
@@ -35,12 +37,17 @@ async function reunirContexto(empresa: string) {
   }
   const obrasEstouro = obras.filter(o => o.pagamentos.reduce((s, p) => s + Number(p.valor), 0) > Number(o.orcamento) && Number(o.orcamento) > 0).map(o => o.nome ?? 'obra')
   const aluguelMes = imoveis.filter(i => i.ocupada).reduce((s, i) => s + Number(i.aluguel), 0)
+  const abertas = ops.filter(o => !['fechado_ganho', 'fechado_perdido'].includes(o.etapa))
+  const pipelineAberto = abertas.reduce((s, o) => s + Number(o.valor ?? 0), 0)
+  const ganhoValor = ops.filter(o => o.etapa === 'fechado_ganho').reduce((s, o) => s + Number(o.valor ?? 0), 0)
+  const atividadesPendentes = atvs.filter(a => a.status === 'pendente').length
 
   return {
     resumo: {
       resultado: entrou - saiu, entrou, saiu, aClassificar,
       aReceberQtd: aReceber.length, aReceberValor: aReceber.reduce((s, r) => s + liq(r), 0),
       vencimentos: vencs, obrasEstouro, aluguelMes, imoveis: imoveis.length, topCats,
+      pipelineAberto, ganhoValor, atividadesPendentes, oportunidadesAbertas: abertas.length,
     },
   }
 }
@@ -70,6 +77,7 @@ export async function POST(req: NextRequest) {
     `Recibos a receber: ${resumo.aReceberQtd} (${fmt(resumo.aReceberValor)}).`,
     `Vencimentos (30d): ${resumo.vencimentos.join('; ') || 'nenhum'}.`,
     `Obras estourando o orçamento: ${resumo.obrasEstouro.join('; ') || 'nenhuma'}.`,
+    `CRM: ${resumo.oportunidadesAbertas} oportunidades abertas (pipeline ${fmt(resumo.pipelineAberto)}), ganho ${fmt(resumo.ganhoValor)}, ${resumo.atividadesPendentes} atividades pendentes.`,
     `Maiores gastos: ${resumo.topCats.map(([c, v]) => `${c}=${fmt(v)}`).join('; ') || 'n/d'}.`,
   ].join('\n')
 
