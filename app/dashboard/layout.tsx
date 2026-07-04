@@ -42,6 +42,7 @@ function buildNavGroups(badges: { reembolsos: number; aprovacoes: number }, inst
         { href: '/dashboard/patrimonio/imoveis', icon: 'fa-building', label: 'Imóveis', badge: 'NEW', badgeColor: 'var(--teal)' },
         { href: '/dashboard/patrimonio/recibos', icon: 'fa-receipt', label: 'Recibos' },
         { href: '/dashboard/patrimonio/obras', icon: 'fa-helmet-safety', label: 'Obras' },
+        { href: '/dashboard/patrimonio/socios', icon: 'fa-users', label: 'Distribuição' },
       ],
     },
     {
@@ -107,6 +108,7 @@ const pageTitles: Record<string, string> = {
   '/dashboard/patrimonio/imoveis': 'Imóveis',
   '/dashboard/patrimonio/obras': 'Obras e Reformas',
   '/dashboard/patrimonio/recibos': 'Recibos de Locação',
+  '/dashboard/patrimonio/socios': 'Distribuição por sócio',
   '/dashboard/classificar': 'Classificar transações',
   '/dashboard/orcamento': 'Orçamento',
   '/dashboard/conciliacao': 'Conciliação Bancária',
