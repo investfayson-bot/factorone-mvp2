@@ -103,6 +103,7 @@ const pageTitles: Record<string, string> = {
   '/dashboard/prefeituras': 'Prefeituras & NFS-e',
   '/dashboard/juridico': 'Jurídico',
   '/dashboard/marketing/central': 'Marketing',
+  '/dashboard/marketing/site': 'Gere seu site',
   '/dashboard/contabilidade/livros': 'Livros contábeis',
   '/dashboard/credito': 'Crédito & Financiamento',
   '/dashboard/financeiro': 'Financeiro',

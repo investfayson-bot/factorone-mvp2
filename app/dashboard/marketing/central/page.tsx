@@ -20,19 +20,6 @@ const ECOM = [
   { key: 'shopify', nome: 'Shopify', desc: 'Loja Shopify', icon: 'fa-shopify', cor: '#95BF47' },
 ] as const
 
-const TEMPLATES = [
-  { nome: 'Restaurante & Delivery', ramo: 'Alimentação', g: 'linear-gradient(135deg,#B0413E,#B08A3E)', icon: 'fa-utensils' },
-  { nome: 'Loja Online', ramo: 'Ecommerce', g: 'linear-gradient(135deg,#7A6A9E,#3D6E8E)', icon: 'fa-bag-shopping' },
-  { nome: 'Consultoria & Serviços', ramo: 'Serviços', g: 'linear-gradient(135deg,#13201D,#3D7A6E)', icon: 'fa-briefcase' },
-  { nome: 'Clínica & Saúde', ramo: 'Saúde', g: 'linear-gradient(135deg,#3D7A6E,#3D7A6E)', icon: 'fa-heart-pulse' },
-  { nome: 'Imobiliária', ramo: 'Imóveis', g: 'linear-gradient(135deg,#0E7490,#3D6E8E)', icon: 'fa-building' },
-  { nome: 'Tech & SaaS', ramo: 'Tecnologia', g: 'linear-gradient(135deg,#13201D,#7A6A9E)', icon: 'fa-microchip' },
-  { nome: 'Beleza & Estética', ramo: 'Beleza', g: 'linear-gradient(135deg,#BE185D,#7A6A9E)', icon: 'fa-scissors' },
-  { nome: 'Academia & Fitness', ramo: 'Fitness', g: 'linear-gradient(135deg,#B08A3E,#B0413E)', icon: 'fa-dumbbell' },
-  { nome: 'Advocacia', ramo: 'Jurídico', g: 'linear-gradient(135deg,#13201D,#1C2E29)', icon: 'fa-scale-balanced' },
-  { nome: 'Educação & Cursos', ramo: 'Educação', g: 'linear-gradient(135deg,#3D6E8E,#3D7A6E)', icon: 'fa-graduation-cap' },
-]
-
 function ConnectCard({ nome, desc, icon, cor, dark, on }: { nome: string; desc: string; icon: string; cor: string; dark?: boolean; on: boolean }) {
   return (
     <div style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 14, padding: '16px 18px', display: 'flex', flexDirection: 'column', gap: 12 }}>
@@ -72,50 +59,35 @@ export default function MarketingCentralPage() {
         </Link>
       </div>
 
-      {/* Banner */}
-      <div style={{ background: 'linear-gradient(135deg,#13201D,#1C2E29)', borderRadius: 16, padding: '22px 26px', marginBottom: 22, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
-        <div>
-          <div style={{ fontSize: 18, fontWeight: 800, color: '#fff', fontFamily: "var(--font-sans)", letterSpacing: '-.02em' }}>Central de Marketing</div>
-          <div style={{ fontSize: 13, color: '#6FA595', marginTop: 4 }}>Conecte seus anúncios e loja, meça o ROI real e publique sites em minutos.</div>
-        </div>
-      </div>
-
-      {/* Canais de anúncio */}
-      <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.04em', marginBottom: 10 }}>Canais de anúncio</div>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: 12, marginBottom: 24 }}>
-        {ADS.map(a => <ConnectCard key={a.key} nome={a.nome} desc={a.desc} icon={a.icon} cor={a.cor} on={!!st?.ads[a.key]} />)}
-      </div>
-
-      {/* Ecommerce */}
-      <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.04em', marginBottom: 10 }}>Ecommerce</div>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: 12, marginBottom: 24 }}>
-        {ECOM.map(e => <ConnectCard key={e.key} nome={e.nome} desc={e.desc} icon={e.icon} cor={e.cor} dark={'dark' in e ? e.dark : false} on={!!st?.ecommerce[e.key]} />)}
-      </div>
-
-      {/* Templates de site por ramo */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-        <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.04em' }}>Sites & landing pages · por ramo</div>
-        <span style={{ fontSize: 11, color: '#7B8C88' }}>escolha um modelo e publique</span>
-      </div>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(210px, 1fr))', gap: 12 }}>
-        {TEMPLATES.map(t => (
-          <button key={t.nome} onClick={() => toast('Editor de site em breve — o template abre pra personalizar e publicar.', { icon: '🎨' })} style={{ padding: 0, border: '0.5px solid #E4DCCC', borderRadius: 14, overflow: 'hidden', cursor: 'pointer', background: '#fff', textAlign: 'left' }}>
-            <div style={{ height: 110, background: t.g, position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <i className={`fa-solid ${t.icon}`} style={{ fontSize: 30, color: 'rgba(255,255,255,.9)' }} />
-              <div style={{ position: 'absolute', top: 8, right: 8, fontSize: 9, fontWeight: 700, color: '#fff', background: 'rgba(0,0,0,.25)', padding: '2px 8px', borderRadius: 20 }}>{t.ramo}</div>
+      {/* Ações principais — convidativo */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 12, marginBottom: 24 }}>
+        {[
+          { t: 'Crie sua campanha', d: 'Anúncio com investido, receita e ROAS medidos de verdade.', ic: 'fa-bullhorn', href: '/dashboard/marketing', cta: 'Nova campanha' },
+          { t: 'Gere seu site', d: 'Mini-quiz de 5 passos → site no ar com formulário que captura cliente.', ic: 'fa-wand-magic-sparkles', href: '/dashboard/marketing/site', cta: 'Gerar site', destaque: true },
+          { t: 'Capte leads', d: 'Plugue qualquer ferramenta e veja o lead virar receita.', ic: 'fa-magnet', href: '/dashboard/captacao', cta: 'Abrir Captação' },
+        ].map(a => (
+          <Link key={a.t} href={a.href} style={{ textDecoration: 'none' }}>
+            <div className="txs-card" style={{ padding: '20px', height: '100%', display: 'flex', flexDirection: 'column', gap: 8, border: a.destaque ? '1px solid var(--sage)' : undefined, boxShadow: 'var(--shadow-card)' }}>
+              <div style={{ width: 42, height: 42, borderRadius: 11, background: 'var(--sage-tint)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><i className={`fa-solid ${a.ic}`} style={{ fontSize: 17, color: 'var(--sage-deep)' }} /></div>
+              <div style={{ fontFamily: 'var(--font-display)', fontSize: 15, fontWeight: 700, color: 'var(--ink)' }}>{a.t}</div>
+              <div style={{ fontSize: 12, color: 'var(--ink-mut)', lineHeight: 1.5, flex: 1 }}>{a.d}</div>
+              <span style={{ fontSize: 12.5, fontWeight: 700, color: 'var(--sage-deep)' }}>{a.cta} →</span>
             </div>
-            <div style={{ padding: '11px 14px' }}>
-              <div style={{ fontSize: 13, fontWeight: 700, color: '#13201D' }}>{t.nome}</div>
-              <div style={{ fontSize: 11, color: '#3D7A6E', fontWeight: 600, marginTop: 3 }}><i className="fa-solid fa-wand-magic-sparkles" style={{ marginRight: 5 }} />Usar template</div>
-            </div>
-          </button>
+          </Link>
         ))}
       </div>
 
-      <div style={{ fontSize: 11, color: '#A6B0AC', marginTop: 16, lineHeight: 1.6 }}>
-        <i className="fa-solid fa-circle-info" style={{ color: '#3D7A6E', marginRight: 6 }} />
-        Ads e ecommerce conectam via OAuth do provedor quando as chaves de API estiverem configuradas. Os templates de site abrem no editor (em construção) pra personalizar e publicar.
-      </div>
+      {/* Conexões — secundário (não na frente) */}
+      <details>
+        <summary style={{ cursor: 'pointer', fontSize: 12, fontWeight: 700, color: 'var(--ink-mut)', textTransform: 'uppercase', letterSpacing: '.04em', marginBottom: 12, listStyle: 'none' }}>
+          <i className="fa-solid fa-chevron-right" style={{ fontSize: 10, marginRight: 8 }} />Conexões · anúncios & ecommerce (opcional)
+        </summary>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 12, marginBottom: 20 }}>
+          {ADS.map(a => <ConnectCard key={a.key} nome={a.nome} desc={a.desc} icon={a.icon} cor={a.cor} on={!!st?.ads[a.key]} />)}
+          {ECOM.map(e => <ConnectCard key={e.key} nome={e.nome} desc={e.desc} icon={e.icon} cor={e.cor} dark={'dark' in e ? e.dark : false} on={!!st?.ecommerce[e.key]} />)}
+        </div>
+        <div style={{ fontSize: 11, color: 'var(--ink-faint)', lineHeight: 1.6 }}>Conectam via OAuth do provedor quando a chave de API estiver configurada — ou plugue tudo pelo webhook da Captação.</div>
+      </details>
     </>
   )
 }
