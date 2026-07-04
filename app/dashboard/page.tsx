@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { calcDREFromTransacoes, fmtBRL, fmtBRLCompact, variacaoPct, type TransacaoDRE } from '@/lib/dre-calculations'
 import CentralComando from '@/components/dashboard/CentralComando'
+import AtivacaoChecklist from '@/components/dashboard/AtivacaoChecklist'
 import EntradasSaidasChart from '@/components/dashboard/EntradasSaidasChart'
 import { DashboardErrorBoundary } from '@/components/dashboard/DashboardErrorBoundary'
 import Modal from '@/components/ui/Modal'
@@ -376,6 +377,9 @@ export default function DashboardPage() {
           ))}
         </div>
       </div>
+
+      {/* Ativação — Comece por aqui */}
+      <AtivacaoChecklist empresaId={empresaId} />
 
       {/* Insight proativo da IA */}
       {insight && (
