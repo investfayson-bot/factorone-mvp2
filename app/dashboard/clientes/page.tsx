@@ -368,7 +368,7 @@ export default function ClientesPage() {
                   Compartilhe este link com o cliente. Ele terá acesso somente leitura às faturas, entregas e contratos. O link expira em 90 dias.
                 </p>
                 <div style={{ display: 'flex', gap: 8, alignItems: 'center', background: '#f8fafc', border: '0.5px solid #E4DCCC', borderRadius: 8, padding: '10px 14px', marginBottom: 16 }}>
-                  <span style={{ flex: 1, fontSize: 12, fontFamily: 'monospace', color: '#13201D', wordBreak: 'break-all' }}>{portalUrl}</span>
+                  <span style={{ flex: 1, fontSize: 12, fontVariantNumeric: 'tabular-nums', color: '#13201D', wordBreak: 'break-all' }}>{portalUrl}</span>
                   <button
                     className="btn-ghost"
                     style={{ fontSize: 11, flexShrink: 0 }}

@@ -276,11 +276,11 @@ export default function ContaPJPage() {
             <>
               <div>
                 <div style={{ fontSize: 10, color: 'var(--gray-400)', marginBottom: 3 }}>Agência</div>
-                <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--navy)', fontFamily: 'monospace' }}>{conta.agencia}</div>
+                <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--navy)', fontVariantNumeric: 'tabular-nums' }}>{conta.agencia}</div>
               </div>
               <div>
                 <div style={{ fontSize: 10, color: 'var(--gray-400)', marginBottom: 3 }}>Conta</div>
-                <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--navy)', fontFamily: 'monospace' }}>{conta.numero_conta}{conta.digito ? `-${conta.digito}` : ''}</div>
+                <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--navy)', fontVariantNumeric: 'tabular-nums' }}>{conta.numero_conta}{conta.digito ? `-${conta.digito}` : ''}</div>
               </div>
             </>
           )}
@@ -627,7 +627,7 @@ export default function ContaPJPage() {
           </div>
           <div style={{ fontSize: 12, color: 'var(--gray-400)', marginTop: 2 }}>
             Bem-vindo à sua conta PJ gratuita
-            {conta.agencia && <span style={{ marginLeft: 8, fontFamily: 'monospace', fontSize: 11, color: 'var(--gray-300)' }}>Ag {conta.agencia} · CC {conta.numero_conta}{conta.digito ? `-${conta.digito}` : ''}</span>}
+            {conta.agencia && <span style={{ marginLeft: 8, fontVariantNumeric: 'tabular-nums', fontSize: 11, color: 'var(--gray-300)' }}>Ag {conta.agencia} · CC {conta.numero_conta}{conta.digito ? `-${conta.digito}` : ''}</span>}
           </div>
         </div>
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
@@ -716,7 +716,7 @@ export default function ContaPJPage() {
                   <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--navy)', fontFamily: "var(--font-sans)", letterSpacing: '-.02em' }}>
                     {hide ? '••••••' : formatBRL(Number(c.saldo_disponivel ?? c.saldo ?? 0))}
                   </div>
-                  <div style={{ fontSize: 10.5, color: 'var(--gray-400)', marginTop: 4, fontFamily: 'monospace' }}>
+                  <div style={{ fontSize: 10.5, color: 'var(--gray-400)', marginTop: 4, fontVariantNumeric: 'tabular-nums' }}>
                     {c.agencia ? `Ag ${c.agencia} · CC ${c.numero_conta ?? '—'}${c.digito ? `-${c.digito}` : ''}` : (c.tipo === 'conta_pj_factorone' ? 'Conta PJ FactorOne' : 'Conta conectada')}
                   </div>
                 </button>
@@ -760,7 +760,7 @@ export default function ContaPJPage() {
                       <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--navy)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{tx.descricao}</div>
                       <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>{tx.contraparte_nome ?? ''} · {new Date(tx.data_transacao + 'T12:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' })}</div>
                     </div>
-                    <div style={{ fontFamily: 'monospace', fontWeight: 700, fontSize: 13, color: tx.tipo === 'credito' ? 'var(--green)' : 'var(--red)', flexShrink: 0 }}>
+                    <div style={{ fontVariantNumeric: 'tabular-nums', fontWeight: 700, fontSize: 13, color: tx.tipo === 'credito' ? 'var(--green)' : 'var(--red)', flexShrink: 0 }}>
                       {tx.tipo === 'credito' ? '+' : '-'}{formatBRL(Number(tx.valor))}
                     </div>
                   </div>
@@ -865,7 +865,7 @@ export default function ContaPJPage() {
                     <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--navy)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{tx.descricao}</div>
                     <div style={{ fontSize: 10, color: 'var(--gray-400)' }}>{new Date(tx.data_transacao + 'T12:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' })}</div>
                   </div>
-                  <span style={{ fontFamily: 'monospace', fontWeight: 700, fontSize: 12, color: tx.tipo === 'credito' ? 'var(--green)' : 'var(--red)', flexShrink: 0 }}>
+                  <span style={{ fontVariantNumeric: 'tabular-nums', fontWeight: 700, fontSize: 12, color: tx.tipo === 'credito' ? 'var(--green)' : 'var(--red)', flexShrink: 0 }}>
                     {tx.tipo === 'credito' ? '+' : '-'}{formatBRL(Number(tx.valor))}
                   </span>
                 </div>

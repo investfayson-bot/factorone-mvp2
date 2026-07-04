@@ -1,6 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
 import { formatBRL } from '@/lib/currency-brl'
 import EditorialBanner from '@/components/ui/EditorialBanner'
@@ -179,6 +180,22 @@ export default function MarketingPage() {
         style={{ marginBottom: 18 }}
       />
 
+      {/* Motor de Receita — a esteira que liga o funil (investido → lead → receita) */}
+      <div style={{ display: 'flex', marginBottom: 16, background: 'var(--surface)', border: '1px solid var(--line)', borderRadius: 12, overflow: 'hidden', boxShadow: 'var(--shadow-card)' }}>
+        {([
+          { lbl: 'Investido', val: formatBRL(kpis.totalGasto), cor: '#B0413E', ic: 'fa-bullhorn', href: '/dashboard/marketing' },
+          { lbl: 'Leads', val: String(kpis.leads), cor: 'var(--gold)', ic: 'fa-magnet', href: '/dashboard/captacao' },
+          { lbl: 'Receita gerada', val: formatBRL(kpis.receitaGerada), cor: 'var(--sage)', ic: 'fa-sack-dollar', href: '/dashboard/relatorios' },
+          { lbl: 'ROAS', val: `${kpis.roas.toFixed(1)}x`, cor: kpis.roas >= 3 ? 'var(--sage)' : 'var(--gold)', ic: 'fa-arrow-trend-up', href: '/dashboard/relatorios' },
+        ] as const).map((s, i, arr) => (
+          <Link key={s.lbl} href={s.href} style={{ flex: 1, textDecoration: 'none', padding: '14px 18px', borderRight: i < arr.length - 1 ? '1px solid var(--line-soft)' : 'none', display: 'flex', flexDirection: 'column', gap: 5, position: 'relative' }}>
+            <span style={{ fontSize: 10, fontWeight: 600, color: 'var(--ink-mut)', textTransform: 'uppercase', letterSpacing: '.08em' }}><i className={`fa-solid ${s.ic}`} style={{ marginRight: 6, color: s.cor }} />{s.lbl}</span>
+            <span style={{ fontSize: 19, fontWeight: 700, color: s.cor, fontVariantNumeric: 'tabular-nums' }}>{s.val}</span>
+            {i < arr.length - 1 && <i className="fa-solid fa-chevron-right" style={{ position: 'absolute', right: -8, top: '50%', transform: 'translateY(-50%)', fontSize: 12, color: 'var(--ink-faint)', background: 'var(--surface)', padding: '2px 0', zIndex: 1 }} />}
+          </Link>
+        ))}
+      </div>
+
       {/* KPIs financeiros — conectados ao dashboard */}
       <div className="kpis" style={{ gridTemplateColumns: 'repeat(5,1fr)', marginBottom: 16 }}>
         {[
@@ -206,7 +223,7 @@ export default function MarketingPage() {
         ].map(m => (
           <div key={m.l} style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 10, padding: '12px 14px' }}>
             <p style={{ fontSize: 10, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.06em', margin: '0 0 4px' }}>{m.l}</p>
-            <p style={{ fontSize: 18, fontWeight: 800, color: 'var(--navy)', fontFamily: 'DM Mono,monospace', margin: 0 }}>{m.v}</p>
+            <p style={{ fontSize: 18, fontWeight: 800, color: 'var(--navy)', fontVariantNumeric: 'tabular-nums', margin: 0 }}>{m.v}</p>
           </div>
         ))}
       </div>

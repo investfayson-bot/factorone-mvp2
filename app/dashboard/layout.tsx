@@ -304,7 +304,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             >
               <i className="fa-solid fa-magnifying-glass" style={{ fontSize: 11 }} />
               <span>Buscar</span>
-              <kbd style={{ fontSize: 9, background: '#fff', border: '1px solid var(--gray-200)', borderRadius: 3, padding: '1px 4px', fontFamily: 'monospace', color: 'var(--gray-400)' }}>⌘K</kbd>
+              <kbd style={{ fontSize: 9, background: '#fff', border: '1px solid var(--gray-200)', borderRadius: 3, padding: '1px 4px', fontVariantNumeric: 'tabular-nums', color: 'var(--gray-400)' }}>⌘K</kbd>
             </button>
             <NotificationBell />
             <div className="topbar-av" onClick={sair} title="Sair">{initials}</div>

@@ -85,7 +85,7 @@ export default function ClientePortalPage({ params }: { params: Promise<{ token:
           <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
             <div>
               <div style={{ fontSize: 22, fontWeight: 800, color: '#0d1b2a' }}>{data.cliente.nome}</div>
-              {data.cliente.cnpj_cpf && <div style={{ fontSize: 12, color: '#94a3b8', marginTop: 2, fontFamily: 'monospace' }}>{data.cliente.cnpj_cpf}</div>}
+              {data.cliente.cnpj_cpf && <div style={{ fontSize: 12, color: '#94a3b8', marginTop: 2, fontVariantNumeric: 'tabular-nums' }}>{data.cliente.cnpj_cpf}</div>}
               {data.cliente.segmento && <div style={{ fontSize: 12, color: '#64748b', marginTop: 4 }}>{data.cliente.segmento}</div>}
             </div>
             {data.cliente.valor_contrato && (
@@ -106,7 +106,7 @@ export default function ClientePortalPage({ params }: { params: Promise<{ token:
           ].map(k => (
             <div key={k.l} style={{ background: '#fff', borderRadius: 12, padding: '16px 18px', boxShadow: '0 1px 4px rgba(0,0,0,.06)' }}>
               <div style={{ fontSize: 11, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: 4 }}>{k.l}</div>
-              <div style={{ fontSize: 20, fontWeight: 800, color: k.c, fontFamily: 'monospace' }}>{k.v}</div>
+              <div style={{ fontSize: 20, fontWeight: 800, color: k.c, fontVariantNumeric: 'tabular-nums' }}>{k.v}</div>
             </div>
           ))}
         </div>
@@ -142,7 +142,7 @@ export default function ClientePortalPage({ params }: { params: Promise<{ token:
                       <tr key={i} style={{ borderBottom: '1px solid #f8fafc' }}>
                         <td style={{ padding: '12px 16px', fontWeight: 500 }}>{f.descricao}</td>
                         <td style={{ padding: '12px 16px', color: '#64748b' }}>{new Date(f.data_vencimento + 'T12:00:00').toLocaleDateString('pt-BR')}</td>
-                        <td style={{ padding: '12px 16px', fontWeight: 700, fontFamily: 'monospace' }}>{fmt(Number(f.valor))}</td>
+                        <td style={{ padding: '12px 16px', fontWeight: 700, fontVariantNumeric: 'tabular-nums' }}>{fmt(Number(f.valor))}</td>
                         <td style={{ padding: '12px 16px' }}>
                           <span style={{ fontSize: 11, padding: '3px 8px', borderRadius: 12, background: s.bg, color: s.color, fontWeight: 600 }}>{s.label}</span>
                         </td>
@@ -173,7 +173,7 @@ export default function ClientePortalPage({ params }: { params: Promise<{ token:
                     return (
                       <tr key={i} style={{ borderBottom: '1px solid #f8fafc' }}>
                         <td style={{ padding: '12px 16px', fontWeight: 500 }}>{e.origem} → {e.destino}</td>
-                        <td style={{ padding: '12px 16px', fontFamily: 'monospace' }}>{fmt(e.valor_frete)}</td>
+                        <td style={{ padding: '12px 16px', fontVariantNumeric: 'tabular-nums' }}>{fmt(e.valor_frete)}</td>
                         <td style={{ padding: '12px 16px', color: '#64748b', fontSize: 12 }}>
                           {e.data_entrega ? new Date(e.data_entrega).toLocaleDateString('pt-BR') : '—'}
                         </td>
@@ -205,7 +205,7 @@ export default function ClientePortalPage({ params }: { params: Promise<{ token:
                   {data.oportunidades.map((o, i) => (
                     <tr key={i} style={{ borderBottom: '1px solid #f8fafc' }}>
                       <td style={{ padding: '12px 16px', fontWeight: 500 }}>{o.titulo}</td>
-                      <td style={{ padding: '12px 16px', fontFamily: 'monospace', fontWeight: 700 }}>{fmt(o.valor)}</td>
+                      <td style={{ padding: '12px 16px', fontVariantNumeric: 'tabular-nums', fontWeight: 700 }}>{fmt(o.valor)}</td>
                       <td style={{ padding: '12px 16px', color: '#64748b', fontSize: 12 }}>
                         {o.data_fechamento ? new Date(o.data_fechamento + 'T12:00:00').toLocaleDateString('pt-BR') : '—'}
                       </td>

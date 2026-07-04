@@ -98,7 +98,7 @@ export default function InvoicesPage() {
     label: {
       fontSize: 10,
       color: '#7A9290',
-      fontFamily: 'monospace',
+      fontVariantNumeric: 'tabular-nums',
       textTransform: 'uppercase',
       letterSpacing: '.05em',
       display: 'block',
@@ -114,7 +114,7 @@ export default function InvoicesPage() {
       <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:20 }}>
         <div>
           <h1 style={{ fontSize:18, fontWeight:700, fontFamily: "var(--font-sans)", margin:0 }}>Invoices & Billing</h1>
-          <p style={{ fontSize:11, color:'#7A9290', fontFamily:'monospace', margin:0 }}>{invoices.length} documentos</p>
+          <p style={{ fontSize:11, color:'#7A9290', fontVariantNumeric: 'tabular-nums', margin:0 }}>{invoices.length} documentos</p>
         </div>
         <button style={S.btnPrimary} onClick={() => setModal(true)}>+ Nova Invoice</button>
       </div>
@@ -127,7 +127,7 @@ export default function InvoicesPage() {
           { l:'Total emitido', v:fmt(invoices.reduce((a,i)=>a+i.valor,0)), c:'#E4E8E7' },
         ].map(({ l, v, c }) => (
           <div key={l} style={S.card}>
-            <div style={{ fontSize:10, color:'#7A9290', fontFamily:'monospace', textTransform:'uppercase', letterSpacing:'.04em', marginBottom:4 }}>{l}</div>
+            <div style={{ fontSize:10, color:'#7A9290', fontVariantNumeric: 'tabular-nums', textTransform:'uppercase', letterSpacing:'.04em', marginBottom:4 }}>{l}</div>
             <div style={{ fontSize:22, fontWeight:800, fontFamily: "var(--font-sans)", color:c }}>{v}</div>
           </div>
         ))}
@@ -144,20 +144,20 @@ export default function InvoicesPage() {
           <table style={{ width:'100%', borderCollapse:'collapse', fontSize:12 }}>
             <thead>
               <tr>{['Número','Cliente','Vencimento','Valor','Status','Ações'].map(h=>(
-                <th key={h} style={{ textAlign:'left', padding:'6px 10px', fontSize:9, fontFamily:'monospace', color:'#4A6260', letterSpacing:'.08em', textTransform:'uppercase', borderBottom:'1px solid #1F2A29' }}>{h}</th>
+                <th key={h} style={{ textAlign:'left', padding:'6px 10px', fontSize:9, fontVariantNumeric: 'tabular-nums', color:'#4A6260', letterSpacing:'.08em', textTransform:'uppercase', borderBottom:'1px solid #1F2A29' }}>{h}</th>
               ))}</tr>
             </thead>
             <tbody>
               {invoices.map(inv => (
                 <tr key={inv.id} style={{ borderBottom:'1px solid #1F2A29' }}>
-                  <td style={{ padding:'9px 10px', fontFamily:'monospace', color:'#4A6260', fontSize:11 }}>{inv.numero}</td>
+                  <td style={{ padding:'9px 10px', fontVariantNumeric: 'tabular-nums', color:'#4A6260', fontSize:11 }}>{inv.numero}</td>
                   <td style={{ padding:'9px 10px', fontWeight:600, color:'#E4E8E7' }}>{inv.cliente_nome}</td>
-                  <td style={{ padding:'9px 10px', fontFamily:'monospace', color:'#4A6260', fontSize:11 }}>
+                  <td style={{ padding:'9px 10px', fontVariantNumeric: 'tabular-nums', color:'#4A6260', fontSize:11 }}>
                     {inv.vencimento ? new Date(inv.vencimento).toLocaleDateString('pt-BR') : '—'}
                   </td>
-                  <td style={{ padding:'9px 10px', fontFamily:'monospace', fontWeight:700, color:'#E4E8E7' }}>{fmt(inv.valor)}</td>
+                  <td style={{ padding:'9px 10px', fontVariantNumeric: 'tabular-nums', fontWeight:700, color:'#E4E8E7' }}>{fmt(inv.valor)}</td>
                   <td style={{ padding:'9px 10px' }}>
-                    <span style={{ fontSize:10, padding:'2px 7px', borderRadius:20, fontFamily:'monospace', background:`${statusColor[inv.status]}22`, color:statusColor[inv.status] }}>{inv.status}</span>
+                    <span style={{ fontSize:10, padding:'2px 7px', borderRadius:20, fontVariantNumeric: 'tabular-nums', background:`${statusColor[inv.status]}22`, color:statusColor[inv.status] }}>{inv.status}</span>
                   </td>
                   <td style={{ padding:'9px 10px' }}>
                     <div style={{ display:'flex', gap:4 }}>

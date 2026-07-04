@@ -147,7 +147,7 @@ export default function PrefeiturasPage() {
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ fontSize: 13, fontWeight: 600, color: '#13201D' }}>{m.nome}</div>
-                  <div style={{ fontSize: 10, color: '#A6B0AC', fontFamily: 'monospace' }}>IBGE {m.id}</div>
+                  <div style={{ fontSize: 10, color: '#A6B0AC', fontVariantNumeric: 'tabular-nums' }}>IBGE {m.id}</div>
                 </div>
                 <button onClick={() => emitir(m)} style={{ fontSize: 11, fontWeight: 700, padding: '5px 12px', borderRadius: 8, border: 'none', background: status.configurado ? '#13201D' : '#F1ECE1', color: status.configurado ? '#fff' : '#7B8C88', cursor: 'pointer' }}>
                   <i className="fa-solid fa-file-invoice" style={{ marginRight: 5 }} />Emitir NFS-e

@@ -262,7 +262,7 @@ export default function PortalContadorPage() {
                     <tbody>
                       {metricas.map((m, i) => (
                         <tr key={m.competencia} style={{ borderBottom: i < metricas.length - 1 ? '0.5px solid #EFE9DC' : 'none' }}>
-                          <td style={{ padding: '11px 14px', fontWeight: 700, color: '#13201D', fontFamily: 'monospace' }}>{m.competencia?.slice(0, 7)}</td>
+                          <td style={{ padding: '11px 14px', fontWeight: 700, color: '#13201D', fontVariantNumeric: 'tabular-nums' }}>{m.competencia?.slice(0, 7)}</td>
                           <td style={{ padding: '11px 14px', textAlign: 'right', fontFamily: "var(--font-sans)", fontWeight: 500 }}>{formatBRL(m.receita_bruta)}</td>
                           <td style={{ padding: '11px 14px', textAlign: 'right', fontFamily: "var(--font-sans)", color: '#7B8C88' }}>{formatBRL(m.ebitda)}</td>
                           <td style={{ padding: '11px 14px', textAlign: 'right', fontFamily: "var(--font-sans)", fontWeight: 700, color: m.lucro_liquido >= 0 ? '#3D7A6E' : '#B0413E' }}>

@@ -567,7 +567,7 @@ export default function RelatoriosPage() {
                   ].map(k => (
                     <div key={k.l}>
                       <div style={{ fontSize: 11, color: '#7B8C88', marginBottom: 4 }}>{k.l}</div>
-                      <div style={{ fontSize: 16, fontWeight: 800, color: k.c, fontFamily: 'monospace' }}>{k.v}</div>
+                      <div style={{ fontSize: 16, fontWeight: 800, color: k.c, fontVariantNumeric: 'tabular-nums' }}>{k.v}</div>
                     </div>
                   ))}
                 </div>
@@ -590,7 +590,7 @@ export default function RelatoriosPage() {
                     ].map(k => (
                       <div key={k.l}>
                         <div style={{ fontSize: 10, color: '#7B8C88', marginBottom: 2 }}>{k.l}</div>
-                        <div style={{ fontSize: 14, fontWeight: 700, color: '#13201D', fontFamily: 'monospace' }}>{k.v}</div>
+                        <div style={{ fontSize: 14, fontWeight: 700, color: '#13201D', fontVariantNumeric: 'tabular-nums' }}>{k.v}</div>
                       </div>
                     ))}
                   </div>
@@ -611,7 +611,7 @@ export default function RelatoriosPage() {
                     ].map(k => (
                       <div key={k.l}>
                         <div style={{ fontSize: 10, color: '#7B8C88', marginBottom: 2 }}>{k.l}</div>
-                        <div style={{ fontSize: 14, fontWeight: 700, color: '#13201D', fontFamily: 'monospace' }}>{k.v}</div>
+                        <div style={{ fontSize: 14, fontWeight: 700, color: '#13201D', fontVariantNumeric: 'tabular-nums' }}>{k.v}</div>
                       </div>
                     ))}
                   </div>
@@ -632,7 +632,7 @@ export default function RelatoriosPage() {
                     ].map(k => (
                       <div key={k.l}>
                         <div style={{ fontSize: 10, color: '#7B8C88', marginBottom: 2 }}>{k.l}</div>
-                        <div style={{ fontSize: 14, fontWeight: 700, color: '#13201D', fontFamily: 'monospace' }}>{k.v}</div>
+                        <div style={{ fontSize: 14, fontWeight: 700, color: '#13201D', fontVariantNumeric: 'tabular-nums' }}>{k.v}</div>
                       </div>
                     ))}
                   </div>
@@ -653,7 +653,7 @@ export default function RelatoriosPage() {
                     ].map(k => (
                       <div key={k.l}>
                         <div style={{ fontSize: 10, color: '#7B8C88', marginBottom: 2 }}>{k.l}</div>
-                        <div style={{ fontSize: 14, fontWeight: 700, color: '#13201D', fontFamily: 'monospace' }}>{k.v}</div>
+                        <div style={{ fontSize: 14, fontWeight: 700, color: '#13201D', fontVariantNumeric: 'tabular-nums' }}>{k.v}</div>
                       </div>
                     ))}
                   </div>

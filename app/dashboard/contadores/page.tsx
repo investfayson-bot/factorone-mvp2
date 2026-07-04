@@ -506,7 +506,7 @@ export default function ContadoresPage() {
                       </div>
                       {ativo && (
                         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                          <div style={{ background: '#FBF8F1', borderRadius: 6, padding: '6px 10px', fontSize: 11, color: '#7B8C88', fontFamily: 'monospace', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                          <div style={{ background: '#FBF8F1', borderRadius: 6, padding: '6px 10px', fontSize: 11, color: '#7B8C88', fontVariantNumeric: 'tabular-nums', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                             {link}
                           </div>
                           <button onClick={() => copiarLink(c.token_acesso, c.id)} style={{ padding: '6px 12px', borderRadius: 6, border: '0.5px solid #E4DCCC', background: copiedId === c.id ? '#E9F0ED' : '#fff', color: copiedId === c.id ? '#2B564D' : '#7B8C88', fontSize: 11, cursor: 'pointer', fontWeight: 600, whiteSpace: 'nowrap' }}>

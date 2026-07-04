@@ -120,7 +120,7 @@ export default function ConectarBancoPage() {
                       </div>
                       <div>
                         <div style={{ fontSize: 13, fontWeight: 700, color: '#13201D' }}>{c.banco_nome}</div>
-                        <div style={{ fontSize: 10, color: '#7B8C88', fontFamily: 'monospace' }}>Ag {c.agencia} · CC {c.numero_conta}-{c.digito}</div>
+                        <div style={{ fontSize: 10, color: '#7B8C88', fontVariantNumeric: 'tabular-nums' }}>Ag {c.agencia} · CC {c.numero_conta}-{c.digito}</div>
                       </div>
                     </div>
                     <span style={{ fontSize: 9, fontWeight: 700, color: '#2B564D', background: '#E9F0ED', padding: '2px 7px', borderRadius: 20 }}>ATIVO</span>
