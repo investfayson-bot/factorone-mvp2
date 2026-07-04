@@ -23,7 +23,7 @@ function buildNavGroups(badges: { reembolsos: number; aprovacoes: number }, inst
       label: 'Visão geral',
       items: [
         { href: '/dashboard', icon: 'fa-layout-dashboard', label: 'Dashboard', match: (p) => p === '/dashboard' || p === '/dashboard/' },
-        { href: '/dashboard/aicfo', icon: 'fa-robot', label: 'FactorOne AI' },
+        { href: '/dashboard/assistente', icon: 'fa-robot', label: 'Assistente', badge: '24/7', badgeColor: 'var(--teal)' },
       ],
     },
     {
@@ -95,6 +95,7 @@ function buildNavGroups(badges: { reembolsos: number; aprovacoes: number }, inst
 const pageTitles: Record<string, string> = {
   '/dashboard': 'Dashboard',
   '/dashboard/aicfo': 'FactorOne AI',
+  '/dashboard/assistente': 'Assistente',
   '/dashboard/cashflow': 'Fluxo de Caixa',
   '/dashboard/relatorios': 'DRE',
   '/dashboard/indicadores': 'Indicadores',
