@@ -73,7 +73,17 @@ export async function calcularMetricasMes(
   const receita_liquida = receita_bruta - deducoes
   const cmv = txs.filter((t) => ['custo', 'cmv', 'csp'].includes(String(t.categoria || '').toLowerCase())).reduce((s, t) => s + Number(t.valor || 0), 0)
   const lucro_bruto = receita_liquida - cmv
-  const despesas_operacionais = despesas.reduce((s, d) => s + Number(d.valor || 0), 0)
+  // Loop contábil: saídas classificadas em `transacoes` (Marketing, Aluguel, Obras…)
+  // entram como despesa operacional — exceto o que já é CMV/imposto/financeira/depreciação.
+  const cat = (t: { categoria?: string | null }) => String(t.categoria || '').toLowerCase()
+  const saidasOperacionais = txs
+    .filter((t) => t.tipo === 'saida'
+      && !['custo', 'cmv', 'csp'].includes(cat(t))
+      && !cat(t).includes('impost')
+      && !cat(t).includes('financeira')
+      && !cat(t).includes('depreci'))
+    .reduce((s, t) => s + Number(t.valor || 0), 0)
+  const despesas_operacionais = despesas.reduce((s, d) => s + Number(d.valor || 0), 0) + saidasOperacionais
   const ebitda = lucro_bruto - despesas_operacionais
   const depreciacao = txs.filter((t) => String(t.categoria || '').toLowerCase().includes('depreci')).reduce((s, t) => s + Number(t.valor || 0), 0)
   const ebit = ebitda - depreciacao
