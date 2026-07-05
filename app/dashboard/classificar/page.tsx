@@ -51,6 +51,8 @@ export default function ClassificarPage() {
   const [showNova, setShowNova] = useState(false)
   const [nova, setNova] = useState({ descricao: '', valor: '', tipo: 'saida' as 'entrada' | 'saida', data: new Date().toISOString().slice(0, 10) })
   const [ocr, setOcr] = useState(false)
+  const [matchCand, setMatchCand] = useState<Tx | null>(null)
+  const [matchCat, setMatchCat] = useState('')
   const [fontes, setFontes] = useState<Record<string, 'aprendido' | 'ia'>>({})
   const [sugerindo, setSugerindo] = useState(false)
   const [analise, setAnalise] = useState<string[]>([])
@@ -203,11 +205,26 @@ export default function ClassificarPage() {
       const r = await fetch('/api/despesas/extrair-comprovante', { method: 'POST', headers: token ? { Authorization: `Bearer ${token}` } : {}, body: fd })
       const j = await r.json()
       if (!r.ok) throw new Error(j.error || 'Falha ao ler o recibo')
-      const ex = (j.extracted ?? {}) as { merchant?: string; description?: string; amount?: number | null; issue_date?: string | null }
+      const ex = (j.extracted ?? {}) as { merchant?: string; description?: string; amount?: number | null; issue_date?: string | null; suggested_category?: string }
       setNova(n => ({ ...n, tipo: 'saida', descricao: ex.merchant || ex.description || n.descricao, valor: ex.amount ? String(ex.amount) : n.valor, data: ex.issue_date || n.data }))
+      // Dedup: procura uma compra já lançada (banco/cartão) que bate valor+data → oferece casar.
+      const amount = Number(ex.amount ?? 0)
+      const data = ex.issue_date ?? ''
+      if (amount > 0) {
+        const cand = txs.find(t => t.tipo === 'saida' && Math.abs(Number(t.valor) - amount) <= Math.max(1, amount * 0.02)
+          && (!data || Math.abs((new Date(t.data).getTime() - new Date(data).getTime()) / 86400000) <= 3))
+        setMatchCand(cand ?? null)
+        setMatchCat(ex.suggested_category || (cand ? sugerir(cand.descricao) : ''))
+      }
       toast.success('Recibo lido — confira os dados e adicione')
     } catch (e) { toast.error(e instanceof Error ? e.message : 'Erro no OCR') }
     finally { setOcr(false) }
+  }
+  async function casarRecibo() {
+    if (!matchCand) return
+    await classificar({ [matchCand.id]: matchCat || sugerir(matchCand.descricao) })
+    toast.success('Recibo casado com a compra — 1 lançamento só ✓')
+    setShowNova(false); setMatchCand(null); setNova({ descricao: '', valor: '', tipo: 'saida', data: new Date().toISOString().slice(0, 10) })
   }
   async function salvarNova() {
     if (!nova.descricao.trim() || !nova.valor) { toast.error('Preencha descrição e valor'); return }
@@ -243,7 +260,7 @@ export default function ClassificarPage() {
           <button className="btn-ghost" style={{ fontSize: 12 }} disabled={sugerindo} onClick={() => void aplicarSugestoes(token)}>
             <i className={`fa-solid ${sugerindo ? 'fa-circle-notch fa-spin' : 'fa-robot'}`} style={{ marginRight: 6, color: 'var(--sage)' }} />{sugerindo ? 'Analisando…' : 'Sugerir com IA'}
           </button>
-          <button className="btn-action" style={{ fontSize: 12 }} onClick={() => setShowNova(true)}>
+          <button className="btn-action" style={{ fontSize: 12 }} onClick={() => { setShowNova(true); setMatchCand(null) }}>
             <i className="fa-solid fa-plus" style={{ marginRight: 6 }} />Nova transação
           </button>
         </div>
@@ -263,6 +280,16 @@ export default function ClassificarPage() {
               <i className={`fa-solid ${ocr ? 'fa-circle-notch fa-spin' : 'fa-camera'}`} style={{ color: 'var(--sage)', fontSize: 15 }} />
               <span style={{ fontSize: 12.5, color: 'var(--ink-soft)', fontWeight: 600 }}>{ocr ? 'Lendo recibo…' : 'Tirar foto / enviar recibo (a IA preenche)'}</span>
             </label>
+            {matchCand && (
+              <div style={{ border: '1px solid var(--sage)', background: 'var(--sage-tint)', borderRadius: 10, padding: '12px 14px', marginBottom: 16 }}>
+                <div style={{ fontSize: 12.5, fontWeight: 700, color: 'var(--sage-deep)', marginBottom: 4 }}><i className="fa-solid fa-link" style={{ marginRight: 6 }} />Encontramos essa compra no cartão/banco</div>
+                <div style={{ fontSize: 12, color: 'var(--ink)', marginBottom: 8 }}>{limpo(matchCand.descricao)} · <b>{formatBRL(Number(matchCand.valor))}</b> · {matchCand.data.slice(8, 10)}/{matchCand.data.slice(5, 7)}. É a mesma? Casa os dois — 1 lançamento só.</div>
+                <div style={{ display: 'flex', gap: 8 }}>
+                  <button className="btn-action" style={{ fontSize: 12 }} disabled={busy} onClick={() => void casarRecibo()}><i className="fa-solid fa-check" style={{ marginRight: 6 }} />Sim, casar recibo</button>
+                  <button className="btn-ghost" style={{ fontSize: 12 }} onClick={() => setMatchCand(null)}>Não, é outra compra</button>
+                </div>
+              </div>
+            )}
             <div className="form-group"><label className="form-label">Descrição</label>
               <input className="form-input" value={nova.descricao} onChange={e => setNova(n => ({ ...n, descricao: e.target.value }))} placeholder="Ex: Almoço com cliente" /></div>
             <div className="form-row">
