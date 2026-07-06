@@ -13,12 +13,12 @@ type Membro = {
 }
 
 const ROLES: Record<string, { label: string; desc: string; color: string; bg: string }> = {
-  admin:       { label: 'Admin',       desc: 'Acesso total à plataforma',            color: '#13201D',  bg: '#e0e7ff' },
-  financeiro:  { label: 'Financeiro',  desc: 'Financeiro, DRE, contas, relatórios',  color: '#3D7A6E',  bg: '#E4EDEF' },
-  comercial:   { label: 'Comercial',   desc: 'Clientes, CRM, marketing',             color: '#7A6A9E',      bg: '#ECE7F2' },
-  operacional: { label: 'Operacional', desc: 'Despesas, aprovações, patrimônio',     color: '#B08A3E',  bg: '#fef3c7' },
-  logistica:   { label: 'Logística',   desc: 'Rotas, pneus, checklist, manutenção', color: '#0891b2',      bg: '#E4EDEF' },
-  viewer:      { label: 'Visualizador',desc: 'Apenas leitura do dashboard',          color: '#7B8C88', bg: '#f1f5f9' },
+  admin:       { label: 'Admin',       desc: 'Acesso total à plataforma',                    color: '#13201D',  bg: '#e0e7ff' },
+  financeiro:  { label: 'Financeiro',  desc: 'Financeiro, DRE, patrimônio, contabilidade e banco', color: '#3D7A6E',  bg: '#E4EDEF' },
+  comercial:   { label: 'Comercial',   desc: 'Clientes, CRM, marketing, captação e agenda',   color: '#7A6A9E',  bg: '#ECE7F2' },
+  operacional: { label: 'Operacional', desc: 'Logística, estoque e contratos',                color: '#B08A3E',  bg: '#fef3c7' },
+  logistica:   { label: 'Logística',   desc: 'Logística, estoque e contratos',                color: '#0891b2',  bg: '#E4EDEF' },
+  viewer:      { label: 'Visualizador',desc: 'Leitura: dashboard, DRE e relatórios',          color: '#7B8C88',  bg: '#f1f5f9' },
 }
 
 export default function EquipePage() {
@@ -30,6 +30,7 @@ export default function EquipePage() {
   const [conviteEnviado, setConviteEnviado] = useState('')
   const [form, setForm] = useState({ email: '', nome: '', role: 'viewer' })
   const [currentUserEmail, setCurrentUserEmail] = useState('')
+  const [meuRole, setMeuRole] = useState('admin')
 
   useEffect(() => { carregar() }, [])
 
@@ -43,7 +44,11 @@ export default function EquipePage() {
       const eid = ur?.empresa_id ?? user.id
       setEmpresaId(eid)
       const { data } = await supabase.from('membros_equipe').select('*').eq('empresa_id', eid).order('created_at')
-      setMembros((data ?? []) as Membro[])
+      const lista = (data ?? []) as Membro[]
+      setMembros(lista)
+      // Dono do workspace (sem empresa_id próprio) é admin; membro convidado carrega seu role.
+      const mine = lista.find(m => m.email === user.email && m.status !== 'revogado')
+      setMeuRole(!ur?.empresa_id ? 'admin' : (mine?.role ?? 'admin'))
     } finally {
       setLoading(false)
     }
@@ -88,6 +93,24 @@ export default function EquipePage() {
 
   const ativos = membros.filter(m => m.status === 'ativo').length
   const pendentes = membros.filter(m => m.status === 'pendente').length
+
+  if (!loading && meuRole !== 'admin') {
+    return (
+      <div>
+        <div className="page-hdr">
+          <div>
+            <div className="page-title">Equipe</div>
+            <div className="page-sub">Gestão de acessos</div>
+          </div>
+        </div>
+        <div style={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: 12, padding: '40px', textAlign: 'center', color: '#7B8C88' }}>
+          <i className="fa-solid fa-lock" style={{ fontSize: 26, color: '#B08A3E', marginBottom: 12, display: 'block' }} />
+          <div style={{ fontSize: 15, fontWeight: 700, color: '#13201D', marginBottom: 6 }}>Acesso restrito ao Admin</div>
+          <div style={{ fontSize: 12.5, maxWidth: 380, margin: '0 auto', lineHeight: 1.5 }}>Convites e papéis só podem ser gerenciados pelo proprietário do workspace. Fale com o Admin da sua empresa.</div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div>

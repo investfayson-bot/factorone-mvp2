@@ -11,6 +11,12 @@ export async function POST(req: NextRequest) {
   const { data: ur } = await supabase.from('usuarios').select('empresa_id').eq('id', user.id).maybeSingle()
   const empresaId = ur?.empresa_id ?? user.id
 
+  // Só admin (proprietário ou membro com role=admin) pode convidar/alterar papéis.
+  const { data: eu } = await supabase.from('membros_equipe').select('role,status').eq('empresa_id', empresaId).eq('email', user.email ?? '').maybeSingle()
+  if (eu && eu.status !== 'revogado' && eu.role !== 'admin') {
+    return NextResponse.json({ error: 'Apenas o Admin pode convidar membros.' }, { status: 403 })
+  }
+
   const { email, nome, role } = await req.json() as { email: string; nome?: string; role: string }
   if (!email) return NextResponse.json({ error: 'E-mail obrigatório' }, { status: 400 })
 

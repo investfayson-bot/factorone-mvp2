@@ -17,7 +17,20 @@ type NavGroup = {
   items: NavItem[]
 }
 
-function buildNavGroups(badges: { reembolsos: number; aprovacoes: number }, installedIds: string[] = []): NavGroup[] {
+// Quem vê qual grupo do menu. admin (dono) vê tudo. Grupo não listado = visível.
+const GRUPO_ROLES: Record<string, string[]> = {
+  'Gestão financeira': ['admin', 'financeiro', 'viewer'],
+  'Financeiro': ['admin', 'financeiro', 'viewer'],
+  'Patrimônio': ['admin', 'financeiro'],
+  'Contabilidade': ['admin', 'financeiro'],
+  'Contabilidade & Fiscal': ['admin', 'financeiro'],
+  'Banco': ['admin', 'financeiro'],
+  'Clientes & Vendas': ['admin', 'comercial'],
+  'Operacional': ['admin', 'operacional', 'logistica'],
+  'Configurações': ['admin'],
+}
+
+function buildNavGroups(badges: { reembolsos: number; aprovacoes: number }, installedIds: string[] = [], role: string = 'admin'): NavGroup[] {
   const groups: NavGroup[] = [
     {
       label: 'Visão geral',
@@ -89,6 +102,8 @@ function buildNavGroups(badges: { reembolsos: number; aprovacoes: number }, inst
     if (!group.items.some(i => i.href === item.href)) group.items.push(item)
   }
 
+  // Aplica o papel: admin vê tudo; os demais só os grupos permitidos.
+  if (role !== 'admin') return groups.filter(g => (GRUPO_ROLES[g.label] ?? ['admin', 'financeiro', 'comercial', 'operacional', 'logistica', 'viewer']).includes(role))
   return groups
 }
 
@@ -169,6 +184,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [empresaId, setEmpresaId] = useState('')
   const [badges, setBadges] = useState({ reembolsos: 0, aprovacoes: 0 })
   const [installedIds, setInstalledIds] = useState<string[]>([])
+  const [role, setRole] = useState('admin')
 
   useEffect(() => {
     const sync = () => { void fetchInstalledIds().then(setInstalledIds) }
@@ -187,6 +203,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       const { data: row } = await supabase.from('usuarios').select('empresa_id').eq('id', u.id).maybeSingle()
       const eid = row?.empresa_id ?? u.id
       setEmpresaId(eid)
+      // Papel do usuário: dono (sem empresa_id, é o próprio workspace) = admin;
+      // membro convidado carrega o role de membros_equipe. Sem registro = admin (não trava ninguém).
+      if (row?.empresa_id && u.email) {
+        try {
+          const { data: mem } = await supabase.from('membros_equipe').select('role,status').eq('empresa_id', eid).eq('email', u.email).maybeSingle()
+          if (mem?.role && mem.status !== 'revogado') setRole(mem.role as string)
+        } catch { /* tabela pode não existir → admin */ }
+      }
       if (row?.empresa_id) {
         const { data: emp } = await supabase.from('empresas').select('nome').eq('id', row.empresa_id).maybeSingle()
         if (emp?.nome) setEmpresaNome(emp.nome as string)
@@ -239,13 +263,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             </button>
           </div>
           <nav className="sb-nav">
-            {buildNavGroups(badges, installedIds).map(group => {
+            {buildNavGroups(badges, installedIds, role).map(group => {
               const inGroup = group.items.some(i => isActive(pathname, i))
               const isCollapsed = group.collapsible && collapsedGroups[group.label] && !inGroup
               return (
                 <div key={group.label}>
                   {group.collapsible ? (
-                    <div className="nav-section" onClick={() => toggleGroup(group.label, buildNavGroups(badges, installedIds))}
+                    <div className="nav-section" onClick={() => toggleGroup(group.label, buildNavGroups(badges, installedIds, role))}
                       style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between', userSelect: 'none' }}>
                       <span>{group.label}</span>
                       <i className={`fa-solid fa-chevron-${isCollapsed ? 'right' : 'down'}`} style={{ fontSize: 8, opacity: .5 }} />
