@@ -1,6 +1,7 @@
 'use client'
 
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState, Suspense } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import { formatBRL } from '@/lib/currency-brl'
 import toast from 'react-hot-toast'
@@ -40,13 +41,15 @@ const TIPO_ATI = [
 
 const TIPO_ICON: Record<string, string> = { reuniao: 'fa-users', ligacao: 'fa-phone', email: 'fa-envelope', tarefa: 'fa-square-check', visita: 'fa-map-marker-alt', whatsapp: 'fa-comment', outro: 'fa-ellipsis' }
 
-export default function CRMPage() {
+function CRMInner() {
+  const searchParams = useSearchParams()
   const [empresaId, setEmpresaId] = useState('')
   const [oportunidades, setOportunidades] = useState<Op[]>([])
   const [atividades, setAtividades] = useState<Atividade[]>([])
   const [clientes, setClientes] = useState<Cliente[]>([])
   const [loading, setLoading] = useState(true)
-  const [tab, setTab] = useState<'pipeline' | 'agenda' | 'atividades'>('pipeline')
+  const tabInicial = searchParams.get('tab') === 'agenda' ? 'agenda' : 'pipeline'
+  const [tab, setTab] = useState<'pipeline' | 'agenda' | 'atividades'>(tabInicial)
   const [showOp, setShowOp] = useState(false)
   const [showAtv, setShowAtv] = useState(false)
   const [savingOp, setSavingOp] = useState(false)
@@ -54,6 +57,7 @@ export default function CRMPage() {
   const [formOp, setFormOp] = useState({ titulo: '', cliente_id: '', valor: '', etapa: 'prospeccao', probabilidade: 10, data_fechamento: '', responsavel_nome: '', descricao: '' })
   const [formAtv, setFormAtv] = useState({ tipo: 'reuniao', titulo: '', cliente_id: '', oportunidade_id: '', data: new Date().toISOString().slice(0, 10), hora_inicio: '', hora_fim: '', local: '', descricao: '', responsavel_nome: '', status: 'pendente' })
   const [agendaMes, setAgendaMes] = useState(new Date().toISOString().slice(0, 7))
+  const [diaSelecionado, setDiaSelecionado] = useState(new Date().toISOString().slice(0, 10))
   const [showInsight, setShowInsight] = useState(false)
   const [insightText, setInsightText] = useState('')
   const [insightLoading, setInsightLoading] = useState(false)
@@ -152,11 +156,40 @@ export default function CRMPage() {
     }
   }, [oportunidades, atividades])
 
-  const agendaDias = useMemo(() => {
-    const ini = `${agendaMes}-01`
-    const fim = new Date(Number(agendaMes.slice(0, 4)), Number(agendaMes.slice(5, 7)), 0).toISOString().slice(0, 10)
-    return atividades.filter(a => a.data >= ini && a.data <= fim).sort((a, b) => a.data.localeCompare(b.data))
-  }, [atividades, agendaMes])
+  const hojeStr = useMemo(() => new Date().toISOString().slice(0, 10), [])
+
+  const atividadesPorDia = useMemo(() => {
+    const m: Record<string, Atividade[]> = {}
+    for (const a of atividades) { (m[a.data] ??= []).push(a) }
+    return m
+  }, [atividades])
+
+  // Grade do calendário mensal — semanas completas, com dias do mês vizinho pra preencher.
+  const agendaGrid = useMemo(() => {
+    const fmt = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+    const [anoStr, mesStr] = agendaMes.split('-')
+    const ano = Number(anoStr); const mes = Number(mesStr)
+    const primeiroDia = new Date(ano, mes - 1, 1)
+    const diasNoMes = new Date(ano, mes, 0).getDate()
+    const offsetInicio = primeiroDia.getDay()
+    type Celula = { dataStr: string; dia: number; foraDoMes: boolean }
+    const celulas: Celula[] = []
+    for (let i = offsetInicio; i > 0; i--) {
+      const d = new Date(ano, mes - 1, 1 - i)
+      celulas.push({ dataStr: fmt(d), dia: d.getDate(), foraDoMes: true })
+    }
+    for (let d = 1; d <= diasNoMes; d++) {
+      celulas.push({ dataStr: fmt(new Date(ano, mes - 1, d)), dia: d, foraDoMes: false })
+    }
+    while (celulas.length % 7 !== 0) {
+      const ultimo = celulas[celulas.length - 1]
+      const d = new Date(ultimo.dataStr + 'T12:00:00'); d.setDate(d.getDate() + 1)
+      celulas.push({ dataStr: fmt(d), dia: d.getDate(), foraDoMes: true })
+    }
+    const semanas: Celula[][] = []
+    for (let i = 0; i < celulas.length; i += 7) semanas.push(celulas.slice(i, i + 7))
+    return semanas
+  }, [agendaMes])
 
   const inp: React.CSSProperties = { width: '100%', border: '0.5px solid #E4DCCC', borderRadius: 8, padding: '8px 12px', fontSize: 13, color: '#13201D', background: '#fff', boxSizing: 'border-box', outline: 'none' }
   const lbl: React.CSSProperties = { fontSize: 11, fontWeight: 600, color: '#7B8C88', marginBottom: 4, display: 'block' }
@@ -255,48 +288,89 @@ export default function CRMPage() {
         </div>
       )}
 
-      {/* Agenda */}
+      {/* Agenda — calendário mensal */}
       {tab === 'agenda' && (
-        <>
-          <div style={{ display: 'flex', gap: 8, marginBottom: 12, alignItems: 'center' }}>
-            <button onClick={() => { const d = new Date(agendaMes + '-01'); d.setMonth(d.getMonth() - 1); setAgendaMes(d.toISOString().slice(0, 7)) }} className="btn-action btn-ghost" style={{ fontSize: 12, padding: '5px 10px' }}>‹</button>
-            <span style={{ fontSize: 13, fontWeight: 700, color: '#13201D', minWidth: 140, textAlign: 'center' }}>
-              {new Date(agendaMes + '-01').toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}
-            </span>
-            <button onClick={() => { const d = new Date(agendaMes + '-01'); d.setMonth(d.getMonth() + 1); setAgendaMes(d.toISOString().slice(0, 7)) }} className="btn-action btn-ghost" style={{ fontSize: 12, padding: '5px 10px' }}>›</button>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 300px', gap: 16, alignItems: 'start' }}>
+          <div>
+            <div style={{ display: 'flex', gap: 8, marginBottom: 12, alignItems: 'center' }}>
+              <button onClick={() => { const d = new Date(agendaMes + '-01'); d.setMonth(d.getMonth() - 1); setAgendaMes(d.toISOString().slice(0, 7)) }} className="btn-action btn-ghost" style={{ fontSize: 12, padding: '5px 10px' }}>‹</button>
+              <span style={{ fontSize: 13, fontWeight: 700, color: '#13201D', minWidth: 140, textAlign: 'center' }}>
+                {new Date(agendaMes + '-01').toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}
+              </span>
+              <button onClick={() => { const d = new Date(agendaMes + '-01'); d.setMonth(d.getMonth() + 1); setAgendaMes(d.toISOString().slice(0, 7)) }} className="btn-action btn-ghost" style={{ fontSize: 12, padding: '5px 10px' }}>›</button>
+              <button onClick={() => { const hoje = new Date(); setAgendaMes(hoje.toISOString().slice(0, 7)); setDiaSelecionado(hoje.toISOString().slice(0, 10)) }} className="btn-action btn-ghost" style={{ fontSize: 11, padding: '5px 10px', marginLeft: 4 }}>Hoje</button>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7,1fr)', gap: 4, marginBottom: 4 }}>
+              {['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'].map(d => (
+                <div key={d} style={{ textAlign: 'center', fontSize: 10, fontWeight: 700, color: '#7B8C88', textTransform: 'uppercase', letterSpacing: '.04em', padding: '2px 0' }}>{d}</div>
+              ))}
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7,1fr)', gap: 4 }}>
+              {agendaGrid.flat().map(cel => {
+                const evs = atividadesPorDia[cel.dataStr] || []
+                const isHoje = cel.dataStr === hojeStr
+                const isSelecionado = cel.dataStr === diaSelecionado
+                return (
+                  <div key={cel.dataStr} onClick={() => setDiaSelecionado(cel.dataStr)} style={{
+                    minHeight: 78, padding: 5, borderRadius: 8, cursor: 'pointer',
+                    border: isSelecionado ? '2px solid #3D7A6E' : '0.5px solid #E4DCCC',
+                    background: cel.foraDoMes ? '#FAFAF8' : '#fff',
+                    opacity: cel.foraDoMes ? 0.5 : 1,
+                    display: 'flex', flexDirection: 'column', gap: 3, transition: 'border-color .15s',
+                  }}>
+                    <span style={{ fontSize: 11, fontWeight: isHoje ? 800 : 600, color: isHoje ? '#3D7A6E' : '#13201D' }}>{cel.dia}</span>
+                    {evs.slice(0, 2).map(a => (
+                      <div key={a.id} title={a.titulo} style={{
+                        fontSize: 9, padding: '2px 5px', borderRadius: 5, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                        background: a.status === 'cancelada' ? '#F4E4E1' : a.status === 'realizada' ? '#E9F0ED' : '#FBF3E4',
+                        color: a.status === 'cancelada' ? '#B0413E' : '#13201D',
+                      }}>
+                        {a.hora_inicio ? `${a.hora_inicio.slice(0, 5)} ` : ''}{a.titulo}
+                      </div>
+                    ))}
+                    {evs.length > 2 && <span style={{ fontSize: 9, color: '#7B8C88', fontWeight: 600 }}>+{evs.length - 2} mais</span>}
+                  </div>
+                )
+              })}
+            </div>
           </div>
-          {agendaDias.length === 0 && (
-            <div style={{ textAlign: 'center', padding: '40px 0', color: '#7B8C88', fontSize: 13 }}>
-              Nenhum compromisso. <button onClick={() => setShowAtv(true)} style={{ color: '#3D7A6E', background: 'none', border: 'none', cursor: 'pointer', fontSize: 13 }}>Agendar →</button>
+
+          {/* Painel do dia selecionado */}
+          <div style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 12, padding: 14, position: 'sticky', top: 12 }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+              <span style={{ fontSize: 12, fontWeight: 700, color: '#13201D' }}>
+                {new Date(diaSelecionado + 'T12:00:00').toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'long' })}
+              </span>
+              <button onClick={() => { setFormAtv(f => ({ ...f, data: diaSelecionado })); setShowAtv(true) }} title="Agendar nesse dia" style={{ width: 24, height: 24, borderRadius: 6, border: 'none', background: '#E9F0ED', color: '#3D7A6E', cursor: 'pointer', fontSize: 11 }}>
+                <i className="fa-solid fa-plus" />
+              </button>
             </div>
-          )}
-          {agendaDias.map(a => (
-            <div key={a.id} style={{ display: 'flex', gap: 14, padding: '12px 0', borderBottom: '0.5px solid #E4DCCC', alignItems: 'flex-start' }}>
-              <div style={{ width: 48, textAlign: 'center', flexShrink: 0 }}>
-                <p style={{ fontSize: 11, fontWeight: 700, color: '#7B8C88', margin: 0 }}>
-                  {new Date(a.data + 'T12:00:00').toLocaleDateString('pt-BR', { weekday: 'short' }).toUpperCase()}
-                </p>
-                <p style={{ fontSize: 22, fontWeight: 800, color: '#13201D', margin: 0, fontFamily: "var(--font-sans)" }}>
-                  {new Date(a.data + 'T12:00:00').getDate()}
-                </p>
+            {(atividadesPorDia[diaSelecionado] || []).length === 0 && (
+              <div style={{ textAlign: 'center', padding: '24px 0', color: '#7B8C88', fontSize: 12 }}>
+                Nenhum compromisso.<br />
+                <button onClick={() => { setFormAtv(f => ({ ...f, data: diaSelecionado })); setShowAtv(true) }} style={{ color: '#3D7A6E', background: 'none', border: 'none', cursor: 'pointer', fontSize: 12, marginTop: 4 }}>Agendar →</button>
               </div>
-              <div style={{ width: 4, borderRadius: 2, alignSelf: 'stretch', background: a.status === 'realizada' ? '#3D7A6E' : a.status === 'cancelada' ? '#B0413E' : '#3D7A6E', flexShrink: 0 }} />
-              <div style={{ flex: 1 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 2 }}>
-                  <i className={`fa-solid ${TIPO_ICON[a.tipo] || 'fa-circle'}`} style={{ fontSize: 12, color: '#3D7A6E' }} />
-                  <p style={{ fontSize: 13, fontWeight: 700, color: '#13201D', margin: 0 }}>{a.titulo}</p>
+            )}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {(atividadesPorDia[diaSelecionado] || []).map(a => (
+                <div key={a.id} style={{ padding: '10px 10px', borderRadius: 9, background: '#fafafa', border: '0.5px solid #E4DCCC' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: 2 }}>
+                    <i className={`fa-solid ${TIPO_ICON[a.tipo] || 'fa-circle'}`} style={{ fontSize: 11, color: '#3D7A6E' }} />
+                    <p style={{ fontSize: 12, fontWeight: 700, color: '#13201D', margin: 0 }}>{a.titulo}</p>
+                  </div>
+                  {a.hora_inicio && <p style={{ fontSize: 10.5, color: '#7B8C88', margin: '1px 0' }}>{a.hora_inicio.slice(0, 5)}{a.hora_fim ? ` – ${a.hora_fim.slice(0, 5)}` : ''}{a.local ? ` · ${a.local}` : ''}</p>}
+                  {a.clientes && <p style={{ fontSize: 10.5, color: '#3D7A6E', margin: '2px 0 0' }}>{a.clientes.nome}</p>}
+                  <select value={a.status} onChange={e => void marcarAtividade(a.id, e.target.value)} style={{ fontSize: 9, padding: '2px 6px', borderRadius: 6, border: '0.5px solid #E4DCCC', color: a.status === 'realizada' ? '#3D7A6E' : '#7B8C88', marginTop: 6 }}>
+                    <option value="pendente">Pendente</option>
+                    <option value="realizada">Realizada</option>
+                    <option value="cancelada">Cancelada</option>
+                  </select>
                 </div>
-                {a.hora_inicio && <p style={{ fontSize: 11, color: '#7B8C88', margin: '1px 0' }}>{a.hora_inicio}{a.hora_fim ? ` – ${a.hora_fim}` : ''}{a.local ? ` · ${a.local}` : ''}</p>}
-                {a.clientes && <p style={{ fontSize: 11, color: '#3D7A6E', margin: '2px 0 0' }}>{a.clientes.nome}</p>}
-              </div>
-              <select value={a.status} onChange={e => void marcarAtividade(a.id, e.target.value)} style={{ fontSize: 10, padding: '3px 6px', borderRadius: 6, border: '0.5px solid #E4DCCC', color: a.status === 'realizada' ? '#3D7A6E' : '#7B8C88', flexShrink: 0 }}>
-                <option value="pendente">Pendente</option>
-                <option value="realizada">Realizada</option>
-                <option value="cancelada">Cancelada</option>
-              </select>
+              ))}
             </div>
-          ))}
-        </>
+          </div>
+        </div>
       )}
 
       {/* Atividades */}
@@ -482,5 +556,13 @@ export default function CRMPage() {
         </div>
       )}
     </>
+  )
+}
+
+export default function CRMPage() {
+  return (
+    <Suspense fallback={<div style={{ padding: 32, color: '#7B8C88', fontSize: 13 }}>Carregando…</div>}>
+      <CRMInner />
+    </Suspense>
   )
 }

@@ -7,6 +7,7 @@ import Link from 'next/link'
 import { calcDREFromTransacoes, fmtBRL, fmtBRLCompact, variacaoPct, type TransacaoDRE } from '@/lib/dre-calculations'
 import CentralComando from '@/components/dashboard/CentralComando'
 import AtivacaoChecklist from '@/components/dashboard/AtivacaoChecklist'
+import ProximosCompromissos from '@/components/dashboard/ProximosCompromissos'
 import EntradasSaidasChart from '@/components/dashboard/EntradasSaidasChart'
 import { DashboardErrorBoundary } from '@/components/dashboard/DashboardErrorBoundary'
 import Modal from '@/components/ui/Modal'
@@ -380,6 +381,9 @@ export default function DashboardPage() {
 
       {/* Ativação — Comece por aqui */}
       <AtivacaoChecklist empresaId={empresaId} />
+
+      {/* Próximos compromissos — agenda visível sem precisar entrar no CRM */}
+      <ProximosCompromissos empresaId={empresaId} />
 
       {/* Insight proativo da IA */}
       {insight && (
