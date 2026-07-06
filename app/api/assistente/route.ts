@@ -70,6 +70,15 @@ export async function POST(req: NextRequest) {
   const empresa = (u?.empresa_id as string) ?? user.id
   const { resumo } = await reunirContexto(empresa)
 
+  // Agente que age: detecta UMA ação concreta que o sistema pode executar (com gate no front).
+  const pl = pergunta.toLowerCase()
+  let acao: { tipo: string; label: string } | null = null
+  if (/classific|organiz|pend[êe]nc|categor|arruma|a revisar/.test(pl) && resumo.aClassificar > 0) {
+    acao = { tipo: 'classificar', label: `Classificar ${resumo.aClassificar} transações com a IA` }
+  } else if (/relat[óo]rio|resumo do dia|report/.test(pl)) {
+    acao = { tipo: 'relatorio', label: 'Gerar o relatório do dia' }
+  }
+
   const contexto = [
     `Resultado do período: ${fmt(resumo.resultado)} (entrou ${fmt(resumo.entrou)}, saiu ${fmt(resumo.saiu)}).`,
     `Transações a classificar: ${resumo.aClassificar}.`,
@@ -81,18 +90,18 @@ export async function POST(req: NextRequest) {
     `Maiores gastos: ${resumo.topCats.map(([c, v]) => `${c}=${fmt(v)}`).join('; ') || 'n/d'}.`,
   ].join('\n')
 
-  if (!process.env.OPENROUTER_API_KEY) return NextResponse.json({ resposta: `Aqui está o que vejo:\n${contexto}` })
+  if (!process.env.OPENROUTER_API_KEY) return NextResponse.json({ resposta: `Aqui está o que vejo:\n${contexto}`, acao })
   try {
     const completion = await openrouter.chat.completions.create({
       model: 'google/gemini-2.5-flash',
       messages: [
-        { role: 'system', content: 'Você é o assistente/gestor 24/7 do FactorOne — cuida das finanças e do patrimônio (imóveis, aluguéis, obras, veículos) do empresário. Responda em português, curto, direto e prático, SEMPRE usando os números do contexto. Se ele pedir uma ação (lançar, cobrar, agendar), explique o que fazer no sistema. Nunca invente números.' },
+        { role: 'system', content: 'Você é o gestor 24/7 do FactorOne. Você atua em vários "chapéus" conforme a pergunta: FINANÇAS (DRE, caixa, contas), VENDAS (CRM, pipeline, leads), PÓS-VENDA e relacionamento com o cliente, e PATRIMÔNIO (imóveis, aluguéis, obras, veículos). Identifique o chapéu certo e responda como aquele especialista. Português, curto, direto e prático, SEMPRE usando os números do contexto — nunca invente. Se houver uma ação óbvia que o sistema pode executar (classificar transações, gerar relatório, agendar follow-up), sugira UMA e diga que pode fazer por ele.' },
         { role: 'user', content: `Contexto atual:\n${contexto}\n\nPergunta: ${pergunta}` },
       ],
       temperature: 0.4,
     })
-    return NextResponse.json({ resposta: completion.choices[0]?.message?.content ?? 'Não consegui responder agora.' })
+    return NextResponse.json({ resposta: completion.choices[0]?.message?.content ?? 'Não consegui responder agora.', acao })
   } catch {
-    return NextResponse.json({ resposta: `Aqui está o que vejo:\n${contexto}` })
+    return NextResponse.json({ resposta: `Aqui está o que vejo:\n${contexto}`, acao })
   }
 }

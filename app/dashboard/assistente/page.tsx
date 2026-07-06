@@ -12,7 +12,8 @@ type Resumo = {
   pipelineAberto: number; ganhoValor: number; atividadesPendentes: number; oportunidadesAbertas: number
 }
 type Relatorio = { gerado: string; narrativa: string; r: Resumo }
-type Msg = { autor: 'ai' | 'user'; texto: string; relatorio?: Relatorio }
+type Acao = { tipo: string; label: string }
+type Msg = { autor: 'ai' | 'user'; texto: string; relatorio?: Relatorio; acao?: Acao }
 
 const SUGESTOES = ['Como estão meus números?', 'O que vence agora?', 'Quanto tenho a receber de aluguel?', 'Onde estou gastando mais?', 'Alguma obra estourando?']
 
@@ -67,9 +68,32 @@ export default function AssistentePage() {
     try {
       const r = await fetch('/api/assistente', { method: 'POST', headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) }, body: JSON.stringify({ pergunta }) })
       const j = await r.json()
-      setMsgs(m => [...m, { autor: 'ai', texto: j.resposta ?? 'Não consegui responder agora.' }])
+      setMsgs(m => [...m, { autor: 'ai', texto: j.resposta ?? 'Não consegui responder agora.', acao: j.acao ?? undefined }])
     } catch { setMsgs(m => [...m, { autor: 'ai', texto: 'Tive um problema pra responder. Tenta de novo.' }]) }
     finally { setPensando(false) }
+  }
+
+  // O agente executa a ação (com o clique do usuário como gate).
+  function tiraAcao(idx: number) { setMsgs(m => m.map((mm, i) => i === idx ? { ...mm, acao: undefined } : mm)) }
+  async function executarAcao(acao: Acao, idx: number) {
+    if (acao.tipo === 'relatorio') { tiraAcao(idx); void gerarRelatorio(); return }
+    if (acao.tipo === 'classificar') {
+      tiraAcao(idx); setPensando(true)
+      try {
+        const auth = { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) }
+        const s = await fetch('/api/transacoes/sugerir', { method: 'POST', headers: auth })
+        const sj = await s.json() as { sugestoes?: Record<string, { categoria: string }> }
+        const sug = sj.sugestoes ?? {}
+        const categorias: Record<string, string> = {}
+        for (const [id, v] of Object.entries(sug)) categorias[id] = v.categoria
+        const n = Object.keys(categorias).length
+        if (n === 0) { setMsgs(m => [...m, { autor: 'ai', texto: 'Olhei aqui e não achei nada pendente pra classificar 👍' }]); return }
+        await fetch('/api/transacoes/classificar', { method: 'POST', headers: auth, body: JSON.stringify({ categorias }) })
+        try { const rr = await fetch('/api/assistente', { headers: token ? { Authorization: `Bearer ${token}` } : {} }); const jj = await rr.json(); if (jj.resumo) setResumo(jj.resumo as Resumo) } catch { /* ignore */ }
+        setMsgs(m => [...m, { autor: 'ai', texto: `Feito! Classifiquei ${n} ${n === 1 ? 'transação' : 'transações'} pra você e já atualizei seus números. Quer que eu gere o relatório do dia?`, acao: { tipo: 'relatorio', label: 'Gerar o relatório do dia' } }])
+      } catch { setMsgs(m => [...m, { autor: 'ai', texto: 'Não consegui classificar agora. Tenta de novo?' }]) }
+      finally { setPensando(false) }
+    }
   }
 
   // Gera o relatório: pega os números, pede um resumo executivo à IA e posta um card no chat.
@@ -124,6 +148,12 @@ export default function AssistentePage() {
                 </div>
                 <div style={{ maxWidth: '80%', display: 'flex', flexDirection: 'column', gap: 8, alignItems: m.autor === 'user' ? 'flex-end' : 'flex-start' }}>
                   <div style={{ padding: '10px 14px', borderRadius: 12, fontSize: 13, lineHeight: 1.6, whiteSpace: 'pre-wrap', background: m.autor === 'ai' ? 'var(--surface-2)' : 'var(--ink)', color: m.autor === 'ai' ? 'var(--ink)' : 'var(--paper)', border: m.autor === 'ai' ? '1px solid var(--line)' : 'none' }}>{m.texto}</div>
+                  {m.acao && (
+                    <button onClick={() => void executarAcao(m.acao!, i)} disabled={pensando || gerando}
+                      style={{ alignSelf: 'flex-start', fontSize: 12, fontWeight: 700, padding: '8px 14px', borderRadius: 9, border: 'none', background: 'var(--sage)', color: '#fff', cursor: pensando || gerando ? 'default' : 'pointer', opacity: pensando || gerando ? .6 : 1, display: 'flex', alignItems: 'center', gap: 7 }}>
+                      <i className="fa-solid fa-bolt" />{m.acao.label}
+                    </button>
+                  )}
                   {m.relatorio && (
                     <div style={{ background: 'var(--surface)', border: '1px solid var(--sage)', borderRadius: 12, padding: '12px 14px', width: 260, boxShadow: 'var(--shadow-card)' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
