@@ -57,7 +57,7 @@ export default function IntegracoesPage() {
   const [status, setStatus] = useState<Status>({})
   const [loading, setLoading] = useState(true)
   const [baseUrl, setBaseUrl] = useState('')
-  const [telegramInfo, setTelegramInfo] = useState<{ codigo: string; bot: string | null } | null>(null)
+  const [vinculoInfo, setVinculoInfo] = useState<{ canal: 'telegram' | 'whatsapp'; codigo: string; extra: string | null } | null>(null)
 
   useEffect(() => {
     setBaseUrl(window.location.origin)
@@ -72,17 +72,17 @@ export default function IntegracoesPage() {
   const total = INTEGRACOES.filter(i => i.statusKey).length
   const categorias = Array.from(new Set(INTEGRACOES.map(i => i.categoria)))
 
-  async function gerarCodigoTelegram() {
+  async function gerarCodigoVinculo(canal: 'telegram' | 'whatsapp') {
     try {
       const { data: sess } = await supabase.auth.getSession()
       const token = sess.session?.access_token ?? ''
-      const r = await fetch('/api/integracoes/telegram/gerar-codigo', {
+      const r = await fetch(`/api/integracoes/${canal}/gerar-codigo`, {
         method: 'POST',
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       })
-      const j = await r.json() as { codigo?: string; bot?: string | null; error?: string }
+      const j = await r.json() as { codigo?: string; bot?: string | null; numero?: string | null; error?: string }
       if (!r.ok || !j.codigo) { toast.error(j.error || 'Não consegui gerar o código'); return }
-      setTelegramInfo({ codigo: j.codigo, bot: j.bot ?? null })
+      setVinculoInfo({ canal, codigo: j.codigo, extra: j.bot ?? j.numero ?? null })
     } catch { toast.error('Não consegui gerar o código') }
   }
 
@@ -179,12 +179,12 @@ export default function IntegracoesPage() {
                       ) : (
                         <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 10px', borderRadius: 20, background: 'rgba(176,138,62,.1)', color: 'var(--gold)' }}>Em breve</span>
                       )}
-                      {ativo && item.id === 'telegram' && (
-                        <button onClick={() => void gerarCodigoTelegram()} style={{
+                      {ativo && (item.id === 'telegram' || item.id === 'whatsapp') && (
+                        <button onClick={() => void gerarCodigoVinculo(item.id as 'telegram' | 'whatsapp')} style={{
                           fontSize: 11, padding: '3px 10px', borderRadius: 6, border: '1px solid var(--gray-100)',
                           background: 'transparent', color: 'var(--teal)', cursor: 'pointer', fontWeight: 600,
                         }}>
-                          Vincular meu Telegram →
+                          {item.id === 'telegram' ? 'Vincular meu Telegram →' : 'Vincular meu WhatsApp →'}
                         </button>
                       )}
                       {!ativo && (
@@ -251,19 +251,24 @@ export default function IntegracoesPage() {
         </div>
       )}
 
-      {/* Modal do código de pareamento do Telegram */}
-      {telegramInfo && (
-        <div onClick={() => setTelegramInfo(null)} style={{ position: 'fixed', inset: 0, background: 'rgba(19,32,29,.45)', zIndex: 60, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
+      {/* Modal do código de pareamento (Telegram / WhatsApp) */}
+      {vinculoInfo && (
+        <div onClick={() => setVinculoInfo(null)} style={{ position: 'fixed', inset: 0, background: 'rgba(19,32,29,.45)', zIndex: 60, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
           <div onClick={e => e.stopPropagation()} style={{ background: '#fff', borderRadius: 14, width: '100%', maxWidth: 380, padding: '24px 24px', boxShadow: '0 20px 60px rgba(19,32,29,.3)' }}>
-            <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--navy)', marginBottom: 8 }}>Vincular Telegram</div>
+            <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--navy)', marginBottom: 8 }}>
+              Vincular {vinculoInfo.canal === 'telegram' ? 'Telegram' : 'WhatsApp'}
+            </div>
             <div style={{ fontSize: 12, color: 'var(--gray-400)', lineHeight: 1.6, marginBottom: 16 }}>
-              1. Abra {telegramInfo.bot ? <b>@{telegramInfo.bot}</b> : 'o bot do FactorOne'} no Telegram e mande <b>/start</b>.<br />
-              2. Envie o código abaixo pro bot (válido por 10 minutos).
+              {vinculoInfo.canal === 'telegram' ? (
+                <>1. Abra {vinculoInfo.extra ? <b>@{vinculoInfo.extra}</b> : 'o bot do FactorOne'} no Telegram e mande <b>/start</b>.<br />2. Envie o código abaixo pro bot (válido por 10 minutos).</>
+              ) : (
+                <>1. Salve/abra {vinculoInfo.extra ? <b>{vinculoInfo.extra}</b> : 'o número do FactorOne'} no WhatsApp.<br />2. Envie o código abaixo por mensagem (válido por 10 minutos).</>
+              )}
             </div>
             <div style={{ fontSize: 28, fontWeight: 800, letterSpacing: '.15em', textAlign: 'center', color: 'var(--navy)', background: 'var(--gray-100)', borderRadius: 10, padding: '14px 0', marginBottom: 16, fontVariantNumeric: 'tabular-nums' }}>
-              {telegramInfo.codigo}
+              {vinculoInfo.codigo}
             </div>
-            <button className="btn-action" style={{ width: '100%' }} onClick={() => setTelegramInfo(null)}>Fechar</button>
+            <button className="btn-action" style={{ width: '100%' }} onClick={() => setVinculoInfo(null)}>Fechar</button>
           </div>
         </div>
       )}

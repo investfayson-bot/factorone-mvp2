@@ -61,8 +61,29 @@ export async function POST(req: NextRequest) {
       .maybeSingle()
 
     if (!usuario) {
+      const codigo = msgText.trim().replace(/\D/g, '')
+      if (codigo.length === 6) {
+        const { data: pendente } = await supabase
+          .from('usuarios')
+          .select('id')
+          .eq('whatsapp_link_code', codigo)
+          .gt('whatsapp_link_code_exp', new Date().toISOString())
+          .maybeSingle()
+
+        if (pendente) {
+          const { error } = await supabase
+            .from('usuarios')
+            .update({ whatsapp: from, whatsapp_link_code: null, whatsapp_link_code_exp: null })
+            .eq('id', pendente.id)
+          await sendWhatsApp(businessPhoneId, from, error
+            ? 'Esse WhatsApp já está vinculado a outra conta FactorOne.'
+            : 'Conta vinculada! Pode perguntar sobre suas finanças a qualquer hora — saldo, contas a vencer, DAS, o que quiser.')
+          return NextResponse.json({ status: error ? 'already_linked' : 'linked' })
+        }
+      }
+
       await sendWhatsApp(businessPhoneId, from,
-        'Olá! Seu número não está vinculado a nenhuma conta FactorOne. Acesse a plataforma e vincule seu WhatsApp nas configurações.')
+        'Olá! Não te reconheço ainda. Gere um código em /dashboard/integracoes (WhatsApp) e manda esse código aqui pra vincular sua conta.')
       return NextResponse.json({ status: 'user_not_found' })
     }
 
