@@ -3,15 +3,32 @@ export const dynamic = 'force-dynamic'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
+import { setInstalled } from '@/lib/marketplace'
 import toast from 'react-hot-toast'
 
-type Screen = 'splash' | 'perfil' | 'empresa' | 'banco'
+type Screen = 'splash' | 'perfil' | 'empresa' | 'segmento' | 'banco'
 
 const PJ_STEPS = [
-  { key: 'perfil',  label: 'Tipo de conta'  },
-  { key: 'empresa', label: 'Sua empresa'    },
-  { key: 'banco',   label: 'Conectar banco' },
+  { key: 'perfil',   label: 'Tipo de conta'  },
+  { key: 'empresa',  label: 'Sua empresa'    },
+  { key: 'segmento', label: 'O que você faz' },
+  { key: 'banco',    label: 'Conectar banco' },
 ] as const
+
+// Cada segmento monta o workspace: liga os apps certos, o resto fica no Marketplace.
+type Seg = { key: string; icon: string; cor: string; titulo: string; desc: string; apps: string[]; inclui: string[] }
+const SEGMENTOS: Seg[] = [
+  { key: 'produto', icon: 'fa-bag-shopping', cor: 'var(--teal)', titulo: 'Vendo produto', desc: 'Loja, e-commerce, artesanato — vende pelo site/Instagram/WhatsApp.',
+    apps: ['crm', 'mkt', 'captacao', 'agenda', 'sales', 'prop', 'ar'], inclui: ['CRM & vendas', 'Marketing & site', 'Captação de leads', 'Agendamento'] },
+  { key: 'servico', icon: 'fa-user-doctor', cor: 'var(--navy)', titulo: 'Presto serviço', desc: 'Dentista, advogado, consultoria, clínica — atende cliente e agenda.',
+    apps: ['crm', 'agenda', 'captacao', 'prop', 'mkt', 'juridico'], inclui: ['Agendamento', 'CRM & clientes', 'Propostas', 'Captação de leads'] },
+  { key: 'imoveis', icon: 'fa-building', cor: 'var(--gold)', titulo: 'Gerencio imóveis', desc: 'Aluguéis, obras, veículos, distribuição entre sócios.',
+    apps: ['invest'], inclui: ['Imóveis & aluguéis', 'Obras & reformas', 'Distribuição por sócio'] },
+  { key: 'industria', icon: 'fa-industry', cor: 'var(--teal)', titulo: 'Produzo e vendo', desc: 'Indústria/fabricação — produz, estoca e vende (ex: sabão, alimentos).',
+    apps: ['crm', 'mkt', 'captacao', 'inv', 'logistica', 'sales', 'ar'], inclui: ['Estoque', 'Logística', 'CRM & vendas', 'Marketing'] },
+  { key: 'completo', icon: 'fa-layer-group', cor: 'var(--navy)', titulo: 'Quero tudo', desc: 'Me mostra a plataforma completa — eu escolho depois.',
+    apps: ['crm', 'mkt', 'captacao', 'agenda'], inclui: ['Tudo ligado', 'Ajusta no Marketplace quando quiser'] },
+]
 
 export default function OnboardingPage() {
   const router = useRouter()
@@ -86,8 +103,22 @@ export default function OnboardingPage() {
           fetch('/api/email/boas-vindas', { method: 'POST', headers: { Authorization: `Bearer ${session.access_token}` } }).catch(() => {})
         }
       })
-      setScreen('banco')
+      setScreen('segmento')
     } catch { toast.error('Falha ao salvar empresa') }
+    finally { setLoading(false) }
+  }
+
+  // Monta o workspace pelo segmento: instala o preset de apps (durável no banco) e marca o segmento.
+  async function escolherSegmento(key: string) {
+    setLoading(true)
+    try {
+      const seg = SEGMENTOS.find(s => s.key === key)
+      if (seg) {
+        if (empresaId) localStorage.setItem(`fo_segmento_${empresaId}`, key)
+        await Promise.all(seg.apps.map(id => setInstalled(id, true).catch(() => {})))
+      }
+      setScreen('banco')
+    } catch { toast.error('Falha ao configurar workspace') }
     finally { setLoading(false) }
   }
 
@@ -272,6 +303,39 @@ export default function OnboardingPage() {
               <button className="btn-action btn-ghost" style={{ flex: 1 }} onClick={() => setScreen('perfil')}>Voltar</button>
               <button className="btn-action" style={{ flex: 2, opacity: loading ? .6 : 1 }} onClick={() => void salvarEmpresa()} disabled={loading}>
                 {loading ? 'Salvando…' : 'Continuar'}
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* STEP: Segmento de negócio — monta o workspace */}
+        {screen === 'segmento' && (
+          <div style={{ width: '100%', maxWidth: 640 }}>
+            <div style={{ marginBottom: 24 }}>
+              <div style={{ fontSize: 22, fontFamily: 'var(--font-sans)', fontWeight: 800, color: 'var(--navy)', marginBottom: 6 }}>O que você faz?</div>
+              <div style={{ fontSize: 13, color: 'var(--gray-400)' }}>Vou montar seu painel com as ferramentas certas. O resto fica no Marketplace — você liga quando quiser.</div>
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+              {SEGMENTOS.map(s => (
+                <button key={s.key} onClick={() => void escolherSegmento(s.key)} disabled={loading}
+                  style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 14, padding: '18px 18px', textAlign: 'left', cursor: loading ? 'default' : 'pointer', opacity: loading ? .6 : 1, display: 'flex', flexDirection: 'column', gap: 4 }}>
+                  <div style={{ width: 42, height: 42, background: `color-mix(in srgb, ${s.cor} 14%, #fff)`, borderRadius: 11, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 8 }}>
+                    <i className={`fa-solid ${s.icon}`} style={{ color: s.cor, fontSize: 17 }} />
+                  </div>
+                  <div style={{ fontFamily: 'var(--font-sans)', fontSize: 15, fontWeight: 700, color: 'var(--navy)' }}>{s.titulo}</div>
+                  <div style={{ fontSize: 11.5, color: 'var(--gray-400)', lineHeight: 1.5, marginBottom: 6 }}>{s.desc}</div>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5, marginTop: 'auto' }}>
+                    {s.inclui.map(f => <span key={f} style={{ fontSize: 10, fontWeight: 600, color: 'var(--teal)', background: 'rgba(61,122,110,.1)', padding: '2px 7px', borderRadius: 100 }}>{f}</span>)}
+                  </div>
+                </button>
+              ))}
+            </div>
+            <div style={{ display: 'flex', gap: 10, marginTop: 16, alignItems: 'center' }}>
+              <button className="btn-action btn-ghost" style={{ fontSize: 12 }} onClick={() => setScreen('empresa')}>
+                <i className="fa-solid fa-arrow-left" style={{ marginRight: 6 }} /> Voltar
+              </button>
+              <button className="btn-action btn-ghost" style={{ fontSize: 12 }} onClick={() => void escolherSegmento('completo')} disabled={loading}>
+                Pular — decido depois
               </button>
             </div>
           </div>
