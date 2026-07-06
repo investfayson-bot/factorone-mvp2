@@ -9,5 +9,6 @@ export async function GET() {
     supabase: Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL),
     openrouter: Boolean(process.env.OPENROUTER_API_KEY),
     whatsapp: Boolean(process.env.WHATSAPP_TOKEN),
+    telegram: Boolean(process.env.TELEGRAM_BOT_TOKEN),
   })
 }

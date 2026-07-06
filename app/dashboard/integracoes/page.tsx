@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
+import { supabase } from '@/lib/supabase'
 
 type Tab = 'integracoes' | 'webhooks'
 type Status = Record<string, boolean>
@@ -25,6 +26,7 @@ const INTEGRACOES: Integration[] = [
   { id: 'stripe',      icon: 'fa-credit-card',       iconColor: '#635BFF', iconBg: '#EEF2FF', nome: 'Stripe',                  desc: 'Cobrança de assinaturas e pagamentos do FactorOne.',              categoria: 'core',        statusKey: 'stripe'     },
   { id: 'resend',      icon: 'fa-envelope',          iconColor: '#1E293B', iconBg: '#F1F5F9', nome: 'Resend',                  desc: 'Emails transacionais — notificações, aprovações, alertas.',       categoria: 'comunicacao', statusKey: 'resend'     },
   { id: 'whatsapp',    icon: 'fa-comment',           iconColor: '#25D366', iconBg: '#DCFCE7', nome: 'WhatsApp Business',       desc: 'Consultas financeiras e alertas via WhatsApp.',                   categoria: 'comunicacao', statusKey: 'whatsapp'   },
+  { id: 'telegram',    icon: 'fa-paper-plane',       iconColor: '#26A5E4', iconBg: '#DBEEFB', nome: 'Telegram',                desc: 'Acessor de bolso — pergunte suas finanças pelo Telegram.',        categoria: 'comunicacao', statusKey: 'telegram'   },
   { id: 'nfeio',       icon: 'fa-file-invoice',      iconColor: 'var(--teal)', iconBg: '#CFFAFE', nome: 'NFe.io',              desc: 'Emissão automática de NF-e e NFS-e.',                             categoria: 'fiscal',      statusKey: 'nfeio'      },
   { id: 'openfinance', icon: 'fa-building-columns',  iconColor: 'var(--navy)', iconBg: '#DBEAFE', nome: 'Open Finance',        desc: 'Conexão com bancos externos via Bacen — extrato automático.',     categoria: 'bancario',    badge: 'Em breve'       },
   { id: 'celcoin',     icon: 'fa-bolt',              iconColor: 'var(--gold)', iconBg: '#FEF9C3', nome: 'Celcoin',             desc: 'PIX, boleto, TED — infraestrutura de pagamentos.',                categoria: 'bancario',    badge: 'Em breve'       },
@@ -44,6 +46,7 @@ const CAT_LABELS: Record<string, string> = {
 const WEBHOOKS = [
   { id: 'gps', nome: 'GPS de Frota', path: '/api/logistica/gps-update', method: 'POST', auth: 'x-api-key: $LOGISTICA_GPS_SECRET', desc: 'Recebe atualizações de posição e status de rotas.', modulo: 'Logística', icon: 'fa-location-dot', color: 'var(--teal)' },
   { id: 'whatsapp', nome: 'WhatsApp Business', path: '/api/webhooks/whatsapp', method: 'POST/GET', auth: 'WHATSAPP_VERIFY_TOKEN', desc: 'Mensagens do WhatsApp Business API para o AI CFO.', modulo: 'Comunicação', icon: 'fa-comment', color: '#25D366' },
+  { id: 'telegram', nome: 'Telegram Bot', path: '/api/webhooks/telegram', method: 'POST/GET', auth: 'x-telegram-bot-api-secret-token: $TELEGRAM_WEBHOOK_SECRET', desc: 'Acessor de bolso — bot do Telegram ligado aos dados reais da empresa.', modulo: 'Comunicação', icon: 'fa-paper-plane', color: '#26A5E4' },
   { id: 'lifeos', nome: 'LifeOS / n8n', path: '/api/lifeos/webhook', method: 'POST', auth: 'x-lifeos-secret: $LIFEOS_WEBHOOK_SECRET', desc: 'Webhook para automações externas via LifeOS ou n8n.', modulo: 'Automação', icon: 'fa-bolt', color: 'var(--gold)' },
   { id: 'fornecedor', nome: 'Portal Fornecedor', path: '/fornecedor/[token]', method: 'GET/POST', auth: 'token na URL', desc: 'Fornecedores submetem dados e contas a pagar sem login.', modulo: 'Financeiro', icon: 'fa-truck', color: 'var(--navy)' },
   { id: 'cliente', nome: 'Portal do Cliente', path: '/cliente/[token]', method: 'GET', auth: 'token na URL', desc: 'Clientes visualizam faturas, entregas e contratos.', modulo: 'Clientes', icon: 'fa-users', color: '#7A6A9E' },
@@ -54,6 +57,7 @@ export default function IntegracoesPage() {
   const [status, setStatus] = useState<Status>({})
   const [loading, setLoading] = useState(true)
   const [baseUrl, setBaseUrl] = useState('')
+  const [telegramInfo, setTelegramInfo] = useState<{ codigo: string; bot: string | null } | null>(null)
 
   useEffect(() => {
     setBaseUrl(window.location.origin)
@@ -67,6 +71,20 @@ export default function IntegracoesPage() {
   const ativas = INTEGRACOES.filter(i => i.statusKey && status[i.statusKey]).length
   const total = INTEGRACOES.filter(i => i.statusKey).length
   const categorias = Array.from(new Set(INTEGRACOES.map(i => i.categoria)))
+
+  async function gerarCodigoTelegram() {
+    try {
+      const { data: sess } = await supabase.auth.getSession()
+      const token = sess.session?.access_token ?? ''
+      const r = await fetch('/api/integracoes/telegram/gerar-codigo', {
+        method: 'POST',
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      })
+      const j = await r.json() as { codigo?: string; bot?: string | null; error?: string }
+      if (!r.ok || !j.codigo) { toast.error(j.error || 'Não consegui gerar o código'); return }
+      setTelegramInfo({ codigo: j.codigo, bot: j.bot ?? null })
+    } catch { toast.error('Não consegui gerar o código') }
+  }
 
   function acaoConectar(id: string) {
     if (['openfinance', 'whatsapp', 'celcoin', 'remessa', 'omie', 'zapier'].includes(id)) {
@@ -161,6 +179,14 @@ export default function IntegracoesPage() {
                       ) : (
                         <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 10px', borderRadius: 20, background: 'rgba(176,138,62,.1)', color: 'var(--gold)' }}>Em breve</span>
                       )}
+                      {ativo && item.id === 'telegram' && (
+                        <button onClick={() => void gerarCodigoTelegram()} style={{
+                          fontSize: 11, padding: '3px 10px', borderRadius: 6, border: '1px solid var(--gray-100)',
+                          background: 'transparent', color: 'var(--teal)', cursor: 'pointer', fontWeight: 600,
+                        }}>
+                          Vincular meu Telegram →
+                        </button>
+                      )}
                       {!ativo && (
                         <button onClick={() => acaoConectar(item.id)} style={{
                           fontSize: 11, padding: '3px 10px', borderRadius: 6, border: '1px solid var(--gray-100)',
@@ -222,6 +248,23 @@ export default function IntegracoesPage() {
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* Modal do código de pareamento do Telegram */}
+      {telegramInfo && (
+        <div onClick={() => setTelegramInfo(null)} style={{ position: 'fixed', inset: 0, background: 'rgba(19,32,29,.45)', zIndex: 60, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
+          <div onClick={e => e.stopPropagation()} style={{ background: '#fff', borderRadius: 14, width: '100%', maxWidth: 380, padding: '24px 24px', boxShadow: '0 20px 60px rgba(19,32,29,.3)' }}>
+            <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--navy)', marginBottom: 8 }}>Vincular Telegram</div>
+            <div style={{ fontSize: 12, color: 'var(--gray-400)', lineHeight: 1.6, marginBottom: 16 }}>
+              1. Abra {telegramInfo.bot ? <b>@{telegramInfo.bot}</b> : 'o bot do FactorOne'} no Telegram e mande <b>/start</b>.<br />
+              2. Envie o código abaixo pro bot (válido por 10 minutos).
+            </div>
+            <div style={{ fontSize: 28, fontWeight: 800, letterSpacing: '.15em', textAlign: 'center', color: 'var(--navy)', background: 'var(--gray-100)', borderRadius: 10, padding: '14px 0', marginBottom: 16, fontVariantNumeric: 'tabular-nums' }}>
+              {telegramInfo.codigo}
+            </div>
+            <button className="btn-action" style={{ width: '100%' }} onClick={() => setTelegramInfo(null)}>Fechar</button>
+          </div>
         </div>
       )}
     </>
