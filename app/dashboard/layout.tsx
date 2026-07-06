@@ -134,6 +134,7 @@ const pageTitles: Record<string, string> = {
   '/dashboard/classificar': 'Classificar transações',
   '/dashboard/captacao': 'Captação de Leads',
   '/dashboard/posvenda': 'Pós-venda & Follow-up',
+  '/dashboard/produtos': 'Produtos & Margem',
   '/dashboard/agenda': 'Agendamento',
   '/dashboard/orcamento': 'Orçamento',
   '/dashboard/conciliacao': 'Conciliação Bancária',

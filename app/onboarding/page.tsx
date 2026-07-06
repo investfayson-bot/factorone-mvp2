@@ -19,13 +19,13 @@ const PJ_STEPS = [
 type Seg = { key: string; icon: string; cor: string; titulo: string; desc: string; apps: string[]; inclui: string[] }
 const SEGMENTOS: Seg[] = [
   { key: 'produto', icon: 'fa-bag-shopping', cor: 'var(--teal)', titulo: 'Vendo produto', desc: 'Loja, e-commerce, artesanato — vende pelo site/Instagram/WhatsApp.',
-    apps: ['crm', 'mkt', 'captacao', 'agenda', 'posvenda', 'sales', 'prop', 'ar'], inclui: ['CRM & vendas', 'Marketing & site', 'Captação de leads', 'Pós-venda'] },
+    apps: ['crm', 'mkt', 'captacao', 'agenda', 'posvenda', 'produtos', 'sales', 'prop', 'ar'], inclui: ['CRM & vendas', 'Marketing & site', 'Produtos & margem', 'Pós-venda'] },
   { key: 'servico', icon: 'fa-user-doctor', cor: 'var(--navy)', titulo: 'Presto serviço', desc: 'Dentista, advogado, consultoria, clínica — atende cliente e agenda.',
     apps: ['crm', 'agenda', 'captacao', 'posvenda', 'prop', 'mkt', 'juridico'], inclui: ['Agendamento', 'CRM & clientes', 'Pós-venda', 'Propostas'] },
   { key: 'imoveis', icon: 'fa-building', cor: 'var(--gold)', titulo: 'Gerencio imóveis', desc: 'Aluguéis, obras, veículos, distribuição entre sócios.',
     apps: ['invest'], inclui: ['Imóveis & aluguéis', 'Obras & reformas', 'Distribuição por sócio'] },
   { key: 'industria', icon: 'fa-industry', cor: 'var(--teal)', titulo: 'Produzo e vendo', desc: 'Indústria/fabricação — produz, estoca e vende (ex: sabão, alimentos).',
-    apps: ['crm', 'mkt', 'captacao', 'posvenda', 'inv', 'logistica', 'sales', 'ar'], inclui: ['Estoque', 'Logística', 'CRM & vendas', 'Pós-venda'] },
+    apps: ['crm', 'mkt', 'captacao', 'posvenda', 'produtos', 'inv', 'logistica', 'sales', 'ar'], inclui: ['Produtos & margem', 'Estoque', 'Logística', 'Pós-venda'] },
   { key: 'completo', icon: 'fa-layer-group', cor: 'var(--navy)', titulo: 'Quero tudo', desc: 'Me mostra a plataforma completa — eu escolho depois.',
     apps: ['crm', 'mkt', 'captacao', 'agenda', 'posvenda'], inclui: ['Tudo ligado', 'Ajusta no Marketplace quando quiser'] },
 ]
