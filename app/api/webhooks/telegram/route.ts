@@ -34,6 +34,81 @@ export async function GET() {
   return NextResponse.json({ status: 'ok', servico: 'FactorOne Telegram Webhook' })
 }
 
+const TIPOS_ATIVIDADE = ['reuniao', 'ligacao', 'email', 'tarefa', 'visita', 'whatsapp', 'outro'] as const
+
+type ExtracaoAgendamento = {
+  eh_agendamento: boolean
+  cliente: string | null
+  data: string | null
+  hora_inicio: string | null
+  tipo: typeof TIPOS_ATIVIDADE[number]
+  titulo: string
+}
+
+// Detecta se a mensagem é um pedido de agendamento e, se for, cria a atividade
+// de verdade em crm_atividades — o "agente que age", não só responde.
+async function tentarAgendar(
+  supabase: ReturnType<typeof db>,
+  empresaId: string,
+  texto: string
+): Promise<string | null> {
+  const hoje = new Date()
+  const hojeStr = hoje.toISOString().slice(0, 10)
+  const diaSemana = hoje.toLocaleDateString('pt-BR', { weekday: 'long' })
+
+  let extraido: ExtracaoAgendamento | null = null
+  try {
+    const completion = await getAnthropic().messages.create({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 300,
+      system: `Você extrai dados de agendamento de mensagens em português do Brasil. Hoje é ${hojeStr} (${diaSemana}).
+Responda APENAS com um JSON válido, sem markdown, sem texto antes ou depois, no formato exato:
+{"eh_agendamento": boolean, "cliente": string|null, "data": "YYYY-MM-DD"|null, "hora_inicio": "HH:MM"|null, "tipo": "reuniao"|"ligacao"|"email"|"tarefa"|"visita"|"whatsapp"|"outro", "titulo": string}
+Use "eh_agendamento": false se a mensagem não for um pedido claro de marcar/agendar algo, ou se não conseguir identificar a data com confiança.
+Resolva datas relativas (amanhã, sexta, dia 15) usando a data de hoje acima.`,
+      messages: [{ role: 'user', content: texto }],
+    })
+    const raw = completion.content[0]?.type === 'text' ? completion.content[0].text : ''
+    const match = raw.match(/\{[\s\S]*\}/)
+    if (match) extraido = JSON.parse(match[0]) as ExtracaoAgendamento
+  } catch {
+    return null
+  }
+
+  if (!extraido || !extraido.eh_agendamento || !extraido.data) return null
+
+  let clienteId: string | null = null
+  if (extraido.cliente) {
+    const { data: cliente } = await supabase
+      .from('clientes')
+      .select('id, nome')
+      .eq('empresa_id', empresaId)
+      .ilike('nome', `%${extraido.cliente}%`)
+      .limit(1)
+      .maybeSingle()
+    clienteId = (cliente?.id as string) ?? null
+  }
+
+  const tipo = TIPOS_ATIVIDADE.includes(extraido.tipo) ? extraido.tipo : 'tarefa'
+  const { error } = await supabase.from('crm_atividades').insert({
+    empresa_id: empresaId,
+    cliente_id: clienteId,
+    tipo,
+    titulo: extraido.titulo || texto.slice(0, 80),
+    descricao: texto,
+    data: extraido.data,
+    hora_inicio: extraido.hora_inicio,
+    status: 'pendente',
+    lembrete: true,
+  })
+  if (error) return 'Entendi o pedido, mas não consegui salvar no CRM agora. Tenta de novo?'
+
+  const dataFmt = new Date(`${extraido.data}T12:00:00`).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long' })
+  const horaFmt = extraido.hora_inicio ? ` às ${extraido.hora_inicio}` : ''
+  const quemFmt = extraido.cliente ? ` com ${extraido.cliente}` : ''
+  return `Feito! Agendei ${tipo}${quemFmt} pra ${dataFmt}${horaFmt}. Já está no seu CRM (aba Agenda).`
+}
+
 export async function POST(req: NextRequest) {
   if (!autenticar(req)) return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
 
@@ -83,6 +158,17 @@ export async function POST(req: NextRequest) {
 
       await sendTelegram(chatId, 'Não te reconheço ainda. Gere um código em /dashboard/integracoes (Telegram) e manda esse código aqui pra vincular sua conta.')
       return NextResponse.json({ ok: true })
+    }
+
+    // Conta vinculada. Se parecer um pedido de agendamento, tenta agir de verdade
+    // (cria em crm_atividades) em vez de só responder em texto.
+    if (/\b(marca|marque|agend|reuni[ãa]o|visita|compromisso|lembr|liga[çc][ãa]o|ligar para)\b/i.test(texto)) {
+      const acao = await tentarAgendar(supabase, usuario.empresa_id as string, texto)
+      if (acao) {
+        await sendTelegram(chatId, acao)
+        return NextResponse.json({ ok: true })
+      }
+      // confiança baixa na extração — segue pro fluxo normal de resposta
     }
 
     // Conta vinculada — busca contexto financeiro real e responde.
