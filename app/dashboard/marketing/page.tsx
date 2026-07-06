@@ -321,7 +321,7 @@ export default function MarketingPage() {
             {funilLeads.map((f, i) => (
               <div key={f.s} style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 10, padding: '14px 16px', marginBottom: 8, borderLeft: `4px solid ${['#7A6A9E','var(--teal)','var(--gold)','var(--green)','var(--red)'][i]}` }}>
                 <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '.06em', color: 'var(--gray-400)', margin: '0 0 2px' }}>{f.s}</p>
-                <p style={{ fontSize: 24, fontWeight: 800, fontFamily: 'DM Mono,monospace', color: 'var(--navy)', margin: 0 }}>{f.n}</p>
+                <p style={{ fontSize: 24, fontWeight: 800, fontFamily: 'var(--font-mono)', color: 'var(--navy)', margin: 0 }}>{f.n}</p>
                 <div style={{ height: 4, background: 'var(--gray-100)', borderRadius: 2, marginTop: 8 }}>
                   <div style={{ height: 4, width: `${f.pct}%`, background: ['#7A6A9E','var(--teal)','var(--gold)','var(--green)','var(--red)'][i], borderRadius: 2 }} />
                 </div>
@@ -421,7 +421,7 @@ export default function MarketingPage() {
                 </div>
               </div>
               <label style={{ fontSize: 11, fontWeight: 600, display: 'block', marginBottom: 4 }}>Measurement ID (GA4)</label>
-              <input className="form-input" value={integForm.ga4_id} onChange={e => setIntegForm(f => ({ ...f, ga4_id: e.target.value }))} placeholder="G-XXXXXXXXXX" style={{ fontFamily: 'DM Mono, monospace', fontSize: 12 }} />
+              <input className="form-input" value={integForm.ga4_id} onChange={e => setIntegForm(f => ({ ...f, ga4_id: e.target.value }))} placeholder="G-XXXXXXXXXX" style={{ fontFamily: 'var(--font-mono)', fontSize: 12 }} />
               <div style={{ fontSize: 11, color: 'var(--gray-400)', marginTop: 6 }}>
                 Encontre em: <strong>GA4 → Admin → Data Streams → seu stream → Measurement ID</strong>
               </div>
@@ -439,9 +439,9 @@ export default function MarketingPage() {
                 </div>
               </div>
               <label style={{ fontSize: 11, fontWeight: 600, display: 'block', marginBottom: 4 }}>Pixel ID</label>
-              <input className="form-input" value={integForm.meta_pixel_id} onChange={e => setIntegForm(f => ({ ...f, meta_pixel_id: e.target.value }))} placeholder="000000000000000" style={{ fontFamily: 'DM Mono, monospace', fontSize: 12, marginBottom: 8 }} />
+              <input className="form-input" value={integForm.meta_pixel_id} onChange={e => setIntegForm(f => ({ ...f, meta_pixel_id: e.target.value }))} placeholder="000000000000000" style={{ fontFamily: 'var(--font-mono)', fontSize: 12, marginBottom: 8 }} />
               <label style={{ fontSize: 11, fontWeight: 600, display: 'block', marginBottom: 4 }}>Business Account ID</label>
-              <input className="form-input" value={integForm.meta_business_id} onChange={e => setIntegForm(f => ({ ...f, meta_business_id: e.target.value }))} placeholder="000000000000000" style={{ fontFamily: 'DM Mono, monospace', fontSize: 12 }} />
+              <input className="form-input" value={integForm.meta_business_id} onChange={e => setIntegForm(f => ({ ...f, meta_business_id: e.target.value }))} placeholder="000000000000000" style={{ fontFamily: 'var(--font-mono)', fontSize: 12 }} />
               <div style={{ fontSize: 11, color: 'var(--gray-400)', marginTop: 6 }}>
                 Encontre em: <strong>Meta Business Suite → Configurações → Pixel de Dados</strong>
               </div>
@@ -459,7 +459,7 @@ export default function MarketingPage() {
                 </div>
               </div>
               <label style={{ fontSize: 11, fontWeight: 600, display: 'block', marginBottom: 4 }}>Customer ID</label>
-              <input className="form-input" value={integForm.google_ads_id} onChange={e => setIntegForm(f => ({ ...f, google_ads_id: e.target.value }))} placeholder="000-000-0000" style={{ fontFamily: 'DM Mono, monospace', fontSize: 12 }} />
+              <input className="form-input" value={integForm.google_ads_id} onChange={e => setIntegForm(f => ({ ...f, google_ads_id: e.target.value }))} placeholder="000-000-0000" style={{ fontFamily: 'var(--font-mono)', fontSize: 12 }} />
               <div style={{ fontSize: 11, color: 'var(--gray-400)', marginTop: 6 }}>
                 Encontre em: <strong>Google Ads → Ferramentas → Configurações da conta → ID do cliente</strong>
               </div>

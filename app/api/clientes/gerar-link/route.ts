@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
     expires_at: expiresAt,
   })
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  if (error) return NextResponse.json({ error: 'Erro ao gerar link' }, { status: 500 })
 
   const origin = req.headers.get('origin') ?? 'https://factorone-mvp2.vercel.app'
   return NextResponse.json({ token, url: `${origin}/cliente/${token}` })

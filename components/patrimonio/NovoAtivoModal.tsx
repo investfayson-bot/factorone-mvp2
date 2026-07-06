@@ -333,7 +333,7 @@ export default function NovoAtivoModal({ open, onClose, onDone, empresaId, categ
               ].map(([l, v]) => (
                 <div key={l} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12 }}>
                   <span style={{ color: 'var(--gray-500)' }}>{l}</span>
-                  <span style={{ fontWeight: 600, color: 'var(--navy)', fontFamily: 'DM Mono, monospace' }}>{v}</span>
+                  <span style={{ fontWeight: 600, color: 'var(--navy)', fontFamily: 'var(--font-mono)' }}>{v}</span>
                 </div>
               ))}
             </div>

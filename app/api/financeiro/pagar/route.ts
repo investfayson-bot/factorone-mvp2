@@ -19,7 +19,7 @@ export async function GET(req: NextRequest) {
   if (fornecedor) q = q.ilike('fornecedor_nome', `%${fornecedor}%`)
   if (categoria) q = q.eq('categoria', categoria)
   const { data, error, count } = await q
-  if (error) return NextResponse.json({ error: error.message }, { status: 400 })
+  if (error) return NextResponse.json({ error: 'Erro ao processar solicitação' }, { status: 400 })
   return NextResponse.json({ data: data || [], pagination: { page, pageSize, total: count || 0 } })
 }
 
@@ -51,7 +51,7 @@ export async function POST(req: NextRequest) {
   }
   if (parcelas <= 1) {
     const { data, error } = await supabase.from('contas_pagar').insert({ ...base, valor, parcela_atual: 1 }).select('*').single()
-    if (error) return NextResponse.json({ error: error.message }, { status: 400 })
+    if (error) return NextResponse.json({ error: 'Erro ao processar solicitação' }, { status: 400 })
     return NextResponse.json({ data })
   }
   const valorParcela = valor / parcelas
@@ -61,6 +61,6 @@ export async function POST(req: NextRequest) {
     return { ...base, valor: valorParcela, parcela_atual: i + 1, data_vencimento: dt.toISOString().slice(0, 10) }
   })
   const { data, error } = await supabase.from('contas_pagar').insert(inserts).select('*')
-  if (error) return NextResponse.json({ error: error.message }, { status: 400 })
+  if (error) return NextResponse.json({ error: 'Erro ao processar solicitação' }, { status: 400 })
   return NextResponse.json({ data })
 }

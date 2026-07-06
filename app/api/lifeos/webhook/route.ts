@@ -7,7 +7,7 @@ const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY || '' })
 // Autenticacao simples por secret header (configurar LIFEOS_WEBHOOK_SECRET no env)
 function autenticar(req: NextRequest): boolean {
   const secret = process.env.LIFEOS_WEBHOOK_SECRET
-  if (!secret) return true // sem secret = aberto (apenas dev)
+  if (!secret) return false // sem secret configurado = rejeitar tudo
   return req.headers.get('x-lifeos-secret') === secret
 }
 
@@ -92,7 +92,7 @@ ${JSON.stringify(contexto, null, 2)}`,
     })
   } catch (e: unknown) {
     console.error('LifeOS webhook error:', e)
-    return NextResponse.json({ error: e instanceof Error ? e.message : 'Erro interno' }, { status: 500 })
+    return NextResponse.json({ error: 'Erro interno ao processar solicitação' }, { status: 500 })
   }
 }
 

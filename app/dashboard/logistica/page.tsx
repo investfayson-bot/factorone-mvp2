@@ -544,7 +544,7 @@ export default function LogisticaPage() {
                 <tbody>
                   {rotas.map(r => (
                     <tr key={r.id}>
-                      <td style={{ fontFamily: 'DM Mono, monospace', fontSize: 12 }}>{r.codigo ?? '—'}</td>
+                      <td style={{ fontFamily: 'var(--font-mono)', fontSize: 12 }}>{r.codigo ?? '—'}</td>
                       <td>
                         <div style={{ fontWeight: 600 }}>{r.origem} → {r.destino}</div>
                         {r.distancia_km && <div style={{ fontSize: 11, color: '#7B8C88' }}>{fmtNum(r.distancia_km, 0)} km</div>}
@@ -554,7 +554,7 @@ export default function LogisticaPage() {
                         <div>{r.carga ?? '—'}</div>
                         {r.peso_kg && <div style={{ fontSize: 11, color: '#7B8C88' }}>{fmtNum(r.peso_kg, 0)} kg</div>}
                       </td>
-                      <td style={{ fontWeight: 700, color: '#3D7A6E', fontFamily: 'DM Mono, monospace' }}>{fmt(r.valor_frete)}</td>
+                      <td style={{ fontWeight: 700, color: '#3D7A6E', fontFamily: 'var(--font-mono)' }}>{fmt(r.valor_frete)}</td>
                       <td>
                         <span style={{ fontSize: 11, padding: '3px 8px', borderRadius: 12, background: STATUS_BG[r.status], color: STATUS_COLOR[r.status], fontWeight: 600 }}>
                           {STATUS_LABEL[r.status]}
@@ -619,12 +619,12 @@ export default function LogisticaPage() {
                     return (
                       <tr key={p.id} style={{ background: alerta ? '#fff5f5' : undefined }}>
                         <td style={{ fontWeight: 600 }}>{p.veiculo_nome}</td>
-                        <td><span style={{ fontFamily: 'DM Mono, monospace', background: '#f1f5f9', padding: '2px 6px', borderRadius: 4, fontSize: 12 }}>{p.posicao}</span></td>
+                        <td><span style={{ fontFamily: 'var(--font-mono)', background: '#f1f5f9', padding: '2px 6px', borderRadius: 4, fontSize: 12 }}>{p.posicao}</span></td>
                         <td>{p.marca} {p.modelo}</td>
-                        <td style={{ fontFamily: 'DM Mono, monospace', fontSize: 12 }}>{p.dot ?? '—'}</td>
-                        <td style={{ fontFamily: 'DM Mono, monospace', fontSize: 12 }}>{fmtNum(p.km_instalado, 0)}</td>
-                        <td style={{ fontFamily: 'DM Mono, monospace', fontSize: 12, fontWeight: 600 }}>{fmtNum(p.km_rodado, 0)}</td>
-                        <td style={{ fontFamily: 'DM Mono, monospace', fontSize: 12 }}>{fmtNum(p.km_limite, 0)}</td>
+                        <td style={{ fontFamily: 'var(--font-mono)', fontSize: 12 }}>{p.dot ?? '—'}</td>
+                        <td style={{ fontFamily: 'var(--font-mono)', fontSize: 12 }}>{fmtNum(p.km_instalado, 0)}</td>
+                        <td style={{ fontFamily: 'var(--font-mono)', fontSize: 12, fontWeight: 600 }}>{fmtNum(p.km_rodado, 0)}</td>
+                        <td style={{ fontFamily: 'var(--font-mono)', fontSize: 12 }}>{fmtNum(p.km_limite, 0)}</td>
                         <td>
                           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                             <div style={{ width: 60, height: 6, background: '#e2e8f0', borderRadius: 3, overflow: 'hidden' }}>
@@ -682,9 +682,9 @@ export default function LogisticaPage() {
                         </span>
                       </td>
                       <td style={{ fontSize: 12 }}>{m.descricao ?? '—'}</td>
-                      <td style={{ fontFamily: 'DM Mono, monospace', fontSize: 12 }}>{m.km_ou_horas ? fmtNum(m.km_ou_horas, 0) : '—'}</td>
+                      <td style={{ fontFamily: 'var(--font-mono)', fontSize: 12 }}>{m.km_ou_horas ? fmtNum(m.km_ou_horas, 0) : '—'}</td>
                       <td style={{ fontSize: 12 }}>{m.oficina ?? '—'}</td>
-                      <td style={{ fontWeight: 700, color: '#B0413E', fontFamily: 'DM Mono, monospace' }}>{fmt(m.valor)}</td>
+                      <td style={{ fontWeight: 700, color: '#B0413E', fontFamily: 'var(--font-mono)' }}>{fmt(m.valor)}</td>
                       <td style={{ fontSize: 12, color: m.proxima_data && m.proxima_data <= new Date(Date.now() + 7 * 86400000).toISOString().slice(0, 10) ? '#B0413E' : 'inherit' }}>
                         {m.proxima_data ? new Date(m.proxima_data + 'T12:00:00').toLocaleDateString('pt-BR') : '—'}
                       </td>

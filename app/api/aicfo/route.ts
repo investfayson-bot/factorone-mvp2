@@ -3,6 +3,7 @@ import Anthropic from '@anthropic-ai/sdk'
 import { getSupabaseUser } from '@/lib/supabase-route'
 import { erroDesconhecido } from '@/lib/transacao-types'
 import { calcularDAS } from '@/lib/fiscal/simples-nacional'
+import { checkRateLimit } from '@/lib/rate-limit'
 
 function getAnthropic() {
   return new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! })
@@ -16,6 +17,12 @@ export async function POST(req: NextRequest) {
 
     const { user, supabase } = await getSupabaseUser(req)
     if (!user) return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
+
+    // Rate limit: 20 req/min per user
+    const rl = checkRateLimit(`aicfo:${user.id}`, 20, 60_000)
+    if (!rl.allowed) {
+      return NextResponse.json({ error: 'Muitas requisições. Aguarde um momento.' }, { status: 429 })
+    }
 
     const { data: usrRow } = await supabase
       .from('usuarios')
@@ -204,9 +211,9 @@ ${JSON.stringify(dadosContexto, null, 2)}`
       return NextResponse.json({ response: texto, structured: null })
     }
   } catch (error: unknown) {
-    console.error('Erro AI CFO:', error)
+    console.error('Erro AI CFO:', erroDesconhecido(error))
     return NextResponse.json(
-      { error: erroDesconhecido(error) || 'Erro interno' },
+      { error: 'Erro ao processar solicitação' },
       { status: 500 }
     )
   }
