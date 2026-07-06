@@ -10,6 +10,13 @@ const margem = (p: { preco: number; custo: number }) => p.preco - p.custo
 const margemPct = (p: { preco: number; custo: number }) => (p.preco > 0 ? (margem(p) / p.preco) * 100 : 0)
 const corMargem = (pct: number) => (pct >= 50 ? 'var(--sage)' : pct >= 25 ? 'var(--gold)' : '#B0413E')
 
+// Régua de pós-venda disparada ao registrar a venda (espelha a "Produto físico" do Pós-venda).
+const REGUA_PRODUTO = [
+  { dia: 2, tipo: 'satisfacao', msg: 'Oi {nome}! Chegou tudo certinho com seu pedido? Qualquer coisa, é só me chamar 💛' },
+  { dia: 20, tipo: 'garantia', msg: 'Oi {nome}! Tudo certo com sua peça? Se aparecer qualquer detalhe, a gente resolve — sua garantia cobre. 😉' },
+  { dia: 45, tipo: 'recompra', msg: 'Oi {nome}! Chegaram novidades com a sua cara ✨ Quer dar uma espiada antes de todo mundo?' },
+]
+
 export default function ProdutosPage() {
   const [empresaId, setEmpresaId] = useState('')
   const [usaDB, setUsaDB] = useState(false)
@@ -18,6 +25,8 @@ export default function ProdutosPage() {
   const [edit, setEdit] = useState<Produto | null>(null)
   const [vendendo, setVendendo] = useState<Produto | null>(null)
   const [qtd, setQtd] = useState('1')
+  const [vCliente, setVCliente] = useState('')
+  const [vContato, setVContato] = useState('')
 
   useEffect(() => { void load() }, [])
   async function load() {
@@ -53,6 +62,20 @@ export default function ProdutosPage() {
   }
   function excluir(id: string) { void persistir(itens.filter(p => p.id !== id)) }
 
+  // Cria a régua de follow-up do cliente (append no Pós-venda, DB ou localStorage).
+  async function agendarFollowup(cliente: string, contato: string, auth: Record<string, string>) {
+    const hoje = new Date().toISOString().slice(0, 10)
+    const addDias = (n: number) => { const d = new Date(hoje + 'T12:00:00'); d.setDate(d.getDate() + n); return d.toISOString().slice(0, 10) }
+    const nome = cliente.trim().split(' ')[0]
+    const novos = REGUA_PRODUTO.map(p => ({ id: crypto.randomUUID(), cliente: cliente.trim(), contato: contato.trim(), canal: 'whatsapp', tipo: p.tipo, mensagem: p.msg.replace(/\{nome\}/g, nome), status: 'pendente', valor: 0, agendado_para: addDias(p.dia) }))
+    try {
+      const r = await fetch('/api/posvenda', { headers: auth })
+      const j = await r.json()
+      if (j.ok) await fetch('/api/posvenda', { method: 'POST', headers: auth, body: JSON.stringify({ toques: [...(j.toques ?? []), ...novos] }) })
+      else { const raw = localStorage.getItem(`fo_posvenda_${empresaId}`); const cur = raw ? JSON.parse(raw) : []; localStorage.setItem(`fo_posvenda_${empresaId}`, JSON.stringify([...cur, ...novos])) }
+    } catch { /* não bloqueia a venda */ }
+  }
+
   async function registrarVenda() {
     if (!vendendo) return
     const q = Math.max(1, Math.floor(Number(qtd) || 1))
@@ -60,12 +83,13 @@ export default function ProdutosPage() {
     const { data: sess } = await supabase.auth.getSession()
     const auth = { 'Content-Type': 'application/json', ...(sess.session ? { Authorization: `Bearer ${sess.session.access_token}` } : {}) }
     try {
-      await fetch('/api/transacoes/criar', { method: 'POST', headers: auth, body: JSON.stringify({ tipo: 'entrada', descricao: `Venda: ${p.nome} x${q}`, valor: p.preco * q, categoria: 'Receita de vendas' }) })
+      await fetch('/api/transacoes/criar', { method: 'POST', headers: auth, body: JSON.stringify({ tipo: 'entrada', descricao: `Venda: ${p.nome} x${q}${vCliente.trim() ? ` — ${vCliente.trim()}` : ''}`, valor: p.preco * q, categoria: 'Receita de vendas' }) })
       if (p.custo > 0) await fetch('/api/transacoes/criar', { method: 'POST', headers: auth, body: JSON.stringify({ tipo: 'saida', descricao: `CMV: ${p.nome} x${q}`, valor: p.custo * q, categoria: 'CMV' }) })
       await persistir(itens.map(x => x.id === p.id ? { ...x, vendidos: x.vendidos + q } : x))
-      toast.success(`Venda registrada — ${formatBRL(margem(p) * q)} de margem foi pro DRE`)
+      if (vCliente.trim()) { await agendarFollowup(vCliente, vContato, auth); toast.success(`Venda + follow-up de ${vCliente.trim().split(' ')[0]} agendado`) }
+      else toast.success(`Venda registrada — ${formatBRL(margem(p) * q)} de margem foi pro DRE`)
     } catch { toast.error('Falha ao registrar venda') }
-    setVendendo(null); setQtd('1')
+    setVendendo(null); setQtd('1'); setVCliente(''); setVContato('')
   }
 
   const kpi = useMemo(() => {
@@ -134,7 +158,7 @@ export default function ProdutosPage() {
                     <span style={{ color: 'var(--ink-mut)' }}>Sobra por {p.unidade}</span><span style={{ fontWeight: 800, color: corMargem(pct), fontVariantNumeric: 'tabular-nums' }}>{formatBRL(m)}</span>
                   </div>
                   <div style={{ display: 'flex', gap: 6 }}>
-                    <button className="btn-action" style={{ fontSize: 11.5, padding: '6px 12px', flex: 1 }} onClick={() => { setVendendo(p); setQtd('1') }}><i className="fa-solid fa-cart-shopping" style={{ marginRight: 5 }} />Registrar venda</button>
+                    <button className="btn-action" style={{ fontSize: 11.5, padding: '6px 12px', flex: 1 }} onClick={() => { setVendendo(p); setQtd('1'); setVCliente(''); setVContato('') }}><i className="fa-solid fa-cart-shopping" style={{ marginRight: 5 }} />Registrar venda</button>
                     <button className="btn-ghost" style={{ fontSize: 11.5, padding: '6px 10px' }} onClick={() => setEdit(p)} title="Editar"><i className="fa-solid fa-pen" /></button>
                     <button className="btn-ghost" style={{ fontSize: 11.5, padding: '6px 9px', color: '#B0413E' }} onClick={() => excluir(p.id)} title="Excluir"><i className="fa-solid fa-trash" /></button>
                   </div>
@@ -162,6 +186,14 @@ export default function ProdutosPage() {
                 <div style={{ display: 'flex', justifyContent: 'space-between', paddingTop: 5, borderTop: '1px solid var(--line)' }}><span style={{ color: 'var(--sage-deep)', fontWeight: 700 }}>Sobra</span><b style={{ color: 'var(--sage-deep)' }}>{formatBRL(margem(vendendo) * q)}</b></div>
               </div>
             ) })()}
+            <div style={{ borderTop: '1px solid var(--line)', paddingTop: 14, marginBottom: 12 }}>
+              <div style={{ fontSize: 11.5, fontWeight: 700, color: 'var(--ink-mut)', marginBottom: 8 }}><i className="fa-solid fa-heart-pulse" style={{ marginRight: 6, color: '#B0413E' }} />Agendar follow-up <span style={{ fontWeight: 500 }}>(opcional)</span></div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+                <input className="form-input" placeholder="Nome do cliente" value={vCliente} onChange={e => setVCliente(e.target.value)} />
+                <input className="form-input" placeholder="WhatsApp (5531…)" value={vContato} onChange={e => setVContato(e.target.value)} />
+              </div>
+              {vCliente.trim() && <div style={{ fontSize: 10.5, color: 'var(--sage-deep)', marginTop: 6 }}><i className="fa-solid fa-circle-check" style={{ marginRight: 4 }} />Régua de 3 toques (satisfação, garantia, recompra) será agendada.</div>}
+            </div>
             <div style={{ fontSize: 11, color: 'var(--ink-faint)', marginBottom: 14, lineHeight: 1.5 }}><i className="fa-solid fa-arrow-trend-up" style={{ marginRight: 5 }} />Receita e custo vão direto pro seu DRE.</div>
             <div style={{ display: 'flex', gap: 10 }}>
               <button className="btn-ghost" style={{ flex: 1 }} onClick={() => setVendendo(null)}>Cancelar</button>
