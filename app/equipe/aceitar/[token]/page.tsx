@@ -12,13 +12,6 @@ export default function AceitarConvitePage({ params }: { params: Promise<{ token
   const [loginLoading, setLoginLoading] = useState(false)
   const router = useRouter()
 
-  useEffect(() => {
-    params.then(p => {
-      setToken(p.token)
-      verificar(p.token)
-    })
-  }, [])
-
   async function verificar(tk: string) {
     const { data } = await supabase.from('membros_equipe').select('email,role,nome,status,expires_at').eq('token', tk).maybeSingle()
     if (!data) { setEstado('erro'); setMsg('Convite inválido ou expirado.'); return }
@@ -29,24 +22,36 @@ export default function AceitarConvitePage({ params }: { params: Promise<{ token
     // Check if already logged in
     const { data: { user } } = await supabase.auth.getUser()
     if (user) {
-      await aceitar(tk, user.id)
+      await aceitar(tk)
     } else {
       setLoginForm(f => ({ ...f, email: data.email ?? '' }))
       setEstado('login')
     }
   }
 
-  async function aceitar(tk: string, userId: string) {
+  async function aceitar(tk: string) {
     setEstado('aceitando')
-    await supabase.from('membros_equipe').update({ status: 'ativo', user_id: userId, updated_at: new Date().toISOString() }).eq('token', tk)
-    // Also update usuarios.empresa_id if needed
-    const { data: membro } = await supabase.from('membros_equipe').select('empresa_id').eq('token', tk).maybeSingle()
-    if (membro?.empresa_id) {
-      await supabase.from('usuarios').upsert({ id: userId, empresa_id: membro.empresa_id }, { onConflict: 'id' })
-    }
+    try {
+      const { data: sess } = await supabase.auth.getSession()
+      const token = sess.session?.access_token ?? ''
+      const r = await fetch('/api/equipe/aceitar', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+        body: JSON.stringify({ token: tk }),
+      })
+      if (!r.ok) { const j = await r.json().catch(() => ({})); setEstado('erro'); setMsg(j.error || 'Falha ao aceitar o convite.'); return }
+    } catch { setEstado('erro'); setMsg('Falha ao aceitar o convite.'); return }
     setEstado('sucesso')
     setTimeout(() => router.push('/dashboard'), 2000)
   }
+
+  useEffect(() => {
+    params.then(p => {
+      setToken(p.token)
+      void verificar(p.token)
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   async function fazerLogin() {
     setLoginLoading(true)
@@ -55,9 +60,9 @@ export default function AceitarConvitePage({ params }: { params: Promise<{ token
       // Try sign up
       const { data: d2, error: e2 } = await supabase.auth.signUp({ email: loginForm.email, password: loginForm.senha })
       if (e2 || !d2.user) { setLoginLoading(false); alert('Erro ao autenticar: ' + (e2?.message ?? error?.message)); return }
-      await aceitar(token, d2.user.id)
+      await aceitar(token)
     } else {
-      await aceitar(token, data.user.id)
+      await aceitar(token)
     }
     setLoginLoading(false)
   }

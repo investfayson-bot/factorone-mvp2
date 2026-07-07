@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Anthropic from '@anthropic-ai/sdk'
 import { createClient } from '@supabase/supabase-js'
+import { registrarAcaoAgente } from '@/lib/agentes-log'
+import { encontrarRegra, type Regra } from '@/lib/donna/regras'
 
 export const runtime = 'nodejs'
 
@@ -45,18 +47,11 @@ type ExtracaoAgendamento = {
   titulo: string
 }
 
-// Detecta se a mensagem é um pedido de agendamento e, se for, cria a atividade
-// de verdade em crm_atividades — o "agente que age", não só responde.
-async function tentarAgendar(
-  supabase: ReturnType<typeof db>,
-  empresaId: string,
-  texto: string
-): Promise<string | null> {
+// Extrai a intenção de agendamento da mensagem (sem gravar nada ainda).
+async function extrairAgendamento(texto: string): Promise<ExtracaoAgendamento | null> {
   const hoje = new Date()
   const hojeStr = hoje.toISOString().slice(0, 10)
   const diaSemana = hoje.toLocaleDateString('pt-BR', { weekday: 'long' })
-
-  let extraido: ExtracaoAgendamento | null = null
   try {
     const completion = await getAnthropic().messages.create({
       model: 'claude-haiku-4-5-20251001',
@@ -70,13 +65,25 @@ Resolva datas relativas (amanhã, sexta, dia 15) usando a data de hoje acima.`,
     })
     const raw = completion.content[0]?.type === 'text' ? completion.content[0].text : ''
     const match = raw.match(/\{[\s\S]*\}/)
-    if (match) extraido = JSON.parse(match[0]) as ExtracaoAgendamento
+    if (!match) return null
+    const extraido = JSON.parse(match[0]) as ExtracaoAgendamento
+    if (!extraido.eh_agendamento || !extraido.data) return null
+    return extraido
   } catch {
     return null
   }
+}
 
-  if (!extraido || !extraido.eh_agendamento || !extraido.data) return null
-
+// Grava de verdade em crm_atividades e devolve a mensagem de confirmação —
+// o "agente que age", não só responde. Só é chamada quando a autonomia
+// (donna_regras, canal telegram) autoriza ação automática, ou depois que o
+// usuário confirmou um rascunho.
+async function commitAgendamento(
+  supabase: ReturnType<typeof db>,
+  empresaId: string,
+  extraido: ExtracaoAgendamento,
+  textoOriginal: string
+): Promise<string> {
   let clienteId: string | null = null
   if (extraido.cliente) {
     const { data: cliente } = await supabase
@@ -94,8 +101,8 @@ Resolva datas relativas (amanhã, sexta, dia 15) usando a data de hoje acima.`,
     empresa_id: empresaId,
     cliente_id: clienteId,
     tipo,
-    titulo: extraido.titulo || texto.slice(0, 80),
-    descricao: texto,
+    titulo: extraido.titulo || textoOriginal.slice(0, 80),
+    descricao: textoOriginal,
     data: extraido.data,
     hora_inicio: extraido.hora_inicio,
     status: 'pendente',
@@ -103,10 +110,73 @@ Resolva datas relativas (amanhã, sexta, dia 15) usando a data de hoje acima.`,
   })
   if (error) return 'Entendi o pedido, mas não consegui salvar no CRM agora. Tenta de novo?'
 
+  await registrarAcaoAgente(supabase, empresaId, 'donna', `Agendou ${tipo}${extraido.cliente ? ` com ${extraido.cliente}` : ''} via Telegram`, { detalhe: extraido.titulo })
+
   const dataFmt = new Date(`${extraido.data}T12:00:00`).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long' })
   const horaFmt = extraido.hora_inicio ? ` às ${extraido.hora_inicio}` : ''
   const quemFmt = extraido.cliente ? ` com ${extraido.cliente}` : ''
   return `Feito! Agendei ${tipo}${quemFmt} pra ${dataFmt}${horaFmt}. Já está no seu CRM (aba Agenda).`
+}
+
+const ACAO_PENDENTE = 'aguardando_confirmacao_agendamento'
+const AFIRMATIVO = /^(sim|s|ss|confirma|confirmado|pode|pode sim|ok|okay|beleza|isso|exato|correto|manda)\b/i
+
+// Se a regra da Donna pra Telegram exigir aprovação, ela pergunta antes de
+// agendar; a confirmação do usuário no próximo turno é resolvida aqui,
+// olhando o último "pedido pendente" registrado no log de ações.
+async function tentarConfirmarPendente(
+  supabase: ReturnType<typeof db>,
+  empresaId: string,
+  texto: string
+): Promise<string | null> {
+  if (!AFIRMATIVO.test(texto.trim())) return null
+  const dezMinAtras = new Date(Date.now() - 10 * 60 * 1000).toISOString()
+  const { data: pendente } = await supabase
+    .from('agentes_acoes')
+    .select('id, detalhe')
+    .eq('empresa_id', empresaId)
+    .eq('agente_id', 'donna')
+    .eq('acao', ACAO_PENDENTE)
+    .gt('created_at', dezMinAtras)
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .maybeSingle()
+  if (!pendente?.detalhe) return null
+
+  await supabase.from('agentes_acoes').delete().eq('id', pendente.id)
+  try {
+    const { extraido, textoOriginal } = JSON.parse(pendente.detalhe) as { extraido: ExtracaoAgendamento; textoOriginal: string }
+    return await commitAgendamento(supabase, empresaId, extraido, textoOriginal)
+  } catch {
+    return null
+  }
+}
+
+// Ponto de entrada: extrai, casa a regra de autonomia do canal 'telegram' e
+// decide entre agendar direto ou pedir confirmação antes.
+async function tentarAgendar(
+  supabase: ReturnType<typeof db>,
+  empresaId: string,
+  texto: string
+): Promise<string | null> {
+  const extraido = await extrairAgendamento(texto)
+  if (!extraido) return null
+
+  const { data: regrasData } = await supabase.from('donna_regras').select('*').eq('empresa_id', empresaId).eq('ativa', true)
+  const regra = encontrarRegra((regrasData ?? []) as Regra[], 'telegram', texto)
+  // Sem regra que capture isso, mantém o comportamento histórico (agenda direto)
+  // pra não regredir quem já usa — só vira "pergunta antes" com regra explícita.
+  const autonomia = regra?.autonomia ?? 'automatico'
+
+  if (autonomia === 'automatico') {
+    return commitAgendamento(supabase, empresaId, extraido, texto)
+  }
+
+  await registrarAcaoAgente(supabase, empresaId, 'donna', ACAO_PENDENTE, { detalhe: JSON.stringify({ extraido, textoOriginal: texto }) })
+  const dataFmt = new Date(`${extraido.data}T12:00:00`).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long' })
+  const horaFmt = extraido.hora_inicio ? ` às ${extraido.hora_inicio}` : ''
+  const quemFmt = extraido.cliente ? ` com ${extraido.cliente}` : ''
+  return `Posso marcar ${extraido.tipo}${quemFmt} pra ${dataFmt}${horaFmt}? Responde "sim" que eu confirmo.`
 }
 
 export async function POST(req: NextRequest) {
@@ -160,10 +230,21 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: true })
     }
 
-    // Conta vinculada. Se parecer um pedido de agendamento, tenta agir de verdade
-    // (cria em crm_atividades) em vez de só responder em texto.
+    // Conta vinculada. Uma resposta curta afirmativa pode estar confirmando um
+    // agendamento que a Donna deixou pendente (regra 'rascunho') — checa isso
+    // independente de bater a palavra-chave de agendamento.
+    const empresaIdTg = usuario.empresa_id as string
+    const confirmacaoPendente = await tentarConfirmarPendente(supabase, empresaIdTg, texto)
+    if (confirmacaoPendente) {
+      await sendTelegram(chatId, confirmacaoPendente)
+      return NextResponse.json({ ok: true })
+    }
+
+    // Se parecer um pedido de agendamento, tenta agir de verdade (cria em
+    // crm_atividades, ou pergunta antes conforme a regra de autonomia) em vez
+    // de só responder em texto.
     if (/\b(marca|marque|agend|reuni[ãa]o|visita|compromisso|lembr|liga[çc][ãa]o|ligar para)\b/i.test(texto)) {
-      const acao = await tentarAgendar(supabase, usuario.empresa_id as string, texto)
+      const acao = await tentarAgendar(supabase, empresaIdTg, texto)
       if (acao) {
         await sendTelegram(chatId, acao)
         return NextResponse.json({ ok: true })

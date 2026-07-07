@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
+import ChatWidget from '@/components/site/ChatWidget'
 
 type Site = { nome: string | null; slogan: string | null; ramo: string | null; template: string; cor: string; sobre: string | null; servicos: string[]; whatsapp: string | null; email: string | null; telefone: string | null }
 
@@ -103,6 +104,8 @@ export default function SitePublico() {
       <footer style={{ padding: '24px', textAlign: 'center', borderTop: '1px solid #eef2f0', fontSize: 12, color: '#94a3b8' }}>
         © {new Date().getFullYear()} {site.nome} · feito com Factor<span style={{ color: cor }}>One</span>
       </footer>
+
+      <ChatWidget slug={String(slug)} cor={cor} nome={site.nome ?? ''} />
     </div>
   )
 }

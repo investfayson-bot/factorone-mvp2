@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import Link from 'next/link'
 import toast from 'react-hot-toast'
 import { supabase } from '@/lib/supabase'
 
@@ -25,6 +26,7 @@ const INTEGRACOES: Integration[] = [
   { id: 'openrouter',  icon: 'fa-network-wired',     iconColor: '#FF6B35', iconBg: '#FFEDD5', nome: 'OpenRouter',              desc: 'Análise DRE via múltiplos modelos de IA.',                        categoria: 'core',        statusKey: 'openrouter' },
   { id: 'stripe',      icon: 'fa-credit-card',       iconColor: '#635BFF', iconBg: '#EEF2FF', nome: 'Stripe',                  desc: 'Cobrança de assinaturas e pagamentos do FactorOne.',              categoria: 'core',        statusKey: 'stripe'     },
   { id: 'resend',      icon: 'fa-envelope',          iconColor: '#1E293B', iconBg: '#F1F5F9', nome: 'Resend',                  desc: 'Emails transacionais — notificações, aprovações, alertas.',       categoria: 'comunicacao', statusKey: 'resend'     },
+  { id: 'google_donna', icon: 'fa-inbox',            iconColor: '#DB4437', iconBg: '#FDE8E6', nome: 'Google (Donna)',          desc: 'Gmail — a Donna lê, responde e rascunha e-mails por você.',       categoria: 'comunicacao', statusKey: 'google_donna' },
   { id: 'whatsapp',    icon: 'fa-comment',           iconColor: '#25D366', iconBg: '#DCFCE7', nome: 'WhatsApp Business',       desc: 'Consultas financeiras e alertas via WhatsApp.',                   categoria: 'comunicacao', statusKey: 'whatsapp'   },
   { id: 'telegram',    icon: 'fa-paper-plane',       iconColor: '#26A5E4', iconBg: '#DBEEFB', nome: 'Telegram',                desc: 'Acessor de bolso — pergunte suas finanças pelo Telegram.',        categoria: 'comunicacao', statusKey: 'telegram'   },
   { id: 'nfeio',       icon: 'fa-file-invoice',      iconColor: 'var(--teal)', iconBg: '#CFFAFE', nome: 'NFe.io',              desc: 'Emissão automática de NF-e e NFS-e.',                             categoria: 'fiscal',      statusKey: 'nfeio'      },
@@ -61,11 +63,16 @@ export default function IntegracoesPage() {
 
   useEffect(() => {
     setBaseUrl(window.location.origin)
-    fetch('/api/integracoes/status')
-      .then(r => r.ok ? r.json() as Promise<Status> : {})
-      .then(d => setStatus(d as Status))
-      .catch(() => {})
-      .finally(() => setLoading(false))
+    void (async () => {
+      const { data: sess } = await supabase.auth.getSession()
+      const tk = sess.session?.access_token ?? ''
+      try {
+        const r = await fetch('/api/integracoes/status', { headers: tk ? { Authorization: `Bearer ${tk}` } : {} })
+        const d = r.ok ? await r.json() as Status : {}
+        setStatus(d)
+      } catch { /* ignore */ }
+      finally { setLoading(false) }
+    })()
   }, [])
 
   const ativas = INTEGRACOES.filter(i => i.statusKey && status[i.statusKey]).length
@@ -187,7 +194,14 @@ export default function IntegracoesPage() {
                           {item.id === 'telegram' ? 'Vincular meu Telegram →' : 'Vincular meu WhatsApp →'}
                         </button>
                       )}
-                      {!ativo && (
+                      {item.id === 'google_donna' ? (
+                        <Link href="/dashboard/agentes/donna" style={{
+                          fontSize: 11, padding: '3px 10px', borderRadius: 6, border: '1px solid var(--gray-100)',
+                          color: 'var(--teal)', fontWeight: 600, textDecoration: 'none',
+                        }}>
+                          {ativo ? 'Gerenciar →' : 'Conectar →'}
+                        </Link>
+                      ) : !ativo && (
                         <button onClick={() => acaoConectar(item.id)} style={{
                           fontSize: 11, padding: '3px 10px', borderRadius: 6, border: '1px solid var(--gray-100)',
                           background: 'transparent', color: emBreve ? 'var(--gray-400)' : 'var(--teal)',

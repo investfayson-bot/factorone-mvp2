@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getSupabaseUser } from '@/lib/supabase-route'
 import { categorizarLoteIA } from '@/lib/categorizar-ia'
+import { registrarAcaoAgente } from '@/lib/agentes-log'
 
 export const runtime = 'nodejs'
 
@@ -55,6 +56,12 @@ export async function POST(req: NextRequest) {
   if (paraIA.length) {
     const mapa = await categorizarLoteIA(paraIA, CATS)
     for (const [id, cat] of Object.entries(mapa)) sugestoes[id] = { categoria: cat, fonte: 'ia' }
+  }
+  const nSugeridas = Object.keys(sugestoes).length
+  if (nSugeridas > 0) {
+    void registrarAcaoAgente(supabase, empresaId, 'louis', `Sugeriu categoria para ${nSugeridas} transaç${nSugeridas === 1 ? 'ão' : 'ões'}`, {
+      detalhe: `${paraIA.length} via IA · ${nSugeridas - paraIA.length} aprendidas do histórico`,
+    })
   }
   return NextResponse.json({ sugestoes })
 }

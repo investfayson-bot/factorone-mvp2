@@ -2,11 +2,28 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getSupabaseUser } from '@/lib/supabase-route'
 import { createClient } from '@supabase/supabase-js'
 import OpenAI from 'openai'
+import { registrarAcaoAgente } from '@/lib/agentes-log'
 
 export const runtime = 'nodejs'
 const openrouter = new OpenAI({ baseURL: 'https://openrouter.ai/api/v1', apiKey: process.env.OPENROUTER_API_KEY || '' })
 const db = () => createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!)
 const fmt = (v: number) => `R$ ${v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+
+// Conhecimento estático sobre o próprio produto, pra Donna orientar o usuário
+// sobre "como uso o FactorOne" (não só sobre os números do negócio dele).
+const SOBRE_FACTORONE = `
+- Fluxo de Caixa, DRE e Classificar: lançam e categorizam transações (com sugestão automática por IA).
+- Contas a Pagar & Receber, Despesas, Conciliação Bancária: rotina financeira do dia a dia.
+- CRM e Pipeline: funil de vendas, oportunidades e atividades com clientes.
+- Agenda: link público de agendamento (tipo Calendly) — quem marca vira lead + reunião no CRM.
+- Cofre: senhas pessoais e chaves de API, criptografadas (AES-256).
+- Tarefas (Scale): gerenciador de tarefas com Lista, Board (kanban), Gantt e Calendário.
+- Notas + Fluxograma: bloco de notas ao lado de um canvas visual de fluxo.
+- Agentes → Donna: e-mail (Gmail), atendimento do site (widget embutido) e Telegram — com regras de
+  autonomia por palavra-chave (responder sozinha ou só rascunhar aguardando aprovação).
+- Integrações: hub central pra conectar Google, WhatsApp, Telegram e outros serviços.
+- Marketing → Gere seu site: cria uma página pública com formulário de contato e o widget da Donna.
+`.trim()
 const dias = (d: string | null) => (d ? Math.ceil((new Date(d + 'T12:00:00').getTime() - Date.now()) / 86400000) : null)
 
 async function reunirContexto(empresa: string) {
@@ -95,10 +112,18 @@ export async function POST(req: NextRequest) {
     const completion = await openrouter.chat.completions.create({
       model: 'google/gemini-2.5-flash',
       messages: [
-        { role: 'system', content: 'Você é o gestor 24/7 do FactorOne. Você atua em vários "chapéus" conforme a pergunta: FINANÇAS (DRE, caixa, contas), VENDAS (CRM, pipeline, leads), PÓS-VENDA e relacionamento com o cliente, e PATRIMÔNIO (imóveis, aluguéis, obras, veículos). Identifique o chapéu certo e responda como aquele especialista. Português, curto, direto e prático, SEMPRE usando os números do contexto — nunca invente. Se houver uma ação óbvia que o sistema pode executar (classificar transações, gerar relatório, agendar follow-up), sugira UMA e diga que pode fazer por ele.' },
+        { role: 'system', content: `Você é o gestor 24/7 do FactorOne. Você atua em vários "chapéus" conforme a pergunta: FINANÇAS (DRE, caixa, contas), VENDAS (CRM, pipeline, leads), PÓS-VENDA e relacionamento com o cliente, PATRIMÔNIO (imóveis, aluguéis, obras, veículos), e PRODUTO — quando o usuário pergunta "como uso o FactorOne", "onde fica X", "pra que serve Y" ou parecido, explique usando o mapa de módulos abaixo. Identifique o chapéu certo e responda como aquele especialista. Português, curto, direto e prático. Nos chapéus de FINANÇAS/VENDAS/PATRIMÔNIO use SEMPRE os números do contexto — nunca invente. Se houver uma ação óbvia que o sistema pode executar (classificar transações, gerar relatório, agendar follow-up), sugira UMA e diga que pode fazer por ele.
+
+MÓDULOS DO FACTORONE (use isso pro chapéu PRODUTO):
+${SOBRE_FACTORONE}` },
         { role: 'user', content: `Contexto atual:\n${contexto}\n\nPergunta: ${pergunta}` },
       ],
       temperature: 0.4,
+    })
+    const tokens = completion.usage?.total_tokens ?? 0
+    void registrarAcaoAgente(db(), empresa, 'donna', 'Respondeu no assistente 24/7', {
+      detalhe: pergunta.slice(0, 140),
+      custoUsd: tokens ? (tokens / 1_000_000) * 0.15 : 0,
     })
     return NextResponse.json({ resposta: completion.choices[0]?.message?.content ?? 'Não consegui responder agora.', acao })
   } catch {

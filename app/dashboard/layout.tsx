@@ -2,6 +2,7 @@
 import InsightFloating from '@/components/aicfo/InsightFloating'
 import NotificacoesDrawer, { useNotificacoes } from '@/components/dashboard/NotificacoesDrawer'
 import GlobalSearch from '@/components/dashboard/GlobalSearch'
+import CompanySwitcher from '@/components/dashboard/CompanySwitcher'
 import NotificationBell from '@/components/ui/NotificationBell'
 import { useEffect, useState } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
@@ -37,6 +38,15 @@ function buildNavGroups(badges: { reembolsos: number; aprovacoes: number }, inst
       items: [
         { href: '/dashboard', icon: 'fa-layout-dashboard', label: 'Dashboard', match: (p) => p === '/dashboard' || p === '/dashboard/' },
         { href: '/dashboard/assistente', icon: 'fa-robot', label: 'Assistente', badge: '24/7', badgeColor: 'var(--teal)' },
+      ],
+    },
+    {
+      label: 'Produtividade',
+      items: [
+        { href: '/dashboard/agentes', icon: 'fa-user-astronaut', label: 'Agentes', badge: 'NEW', badgeColor: 'var(--teal)' },
+        { href: '/dashboard/tarefas', icon: 'fa-list-check', label: 'Tarefas' },
+        { href: '/dashboard/notas-fluxo', icon: 'fa-diagram-project', label: 'Notas + Fluxograma' },
+        { href: '/dashboard/cofre', icon: 'fa-vault', label: 'Cofre' },
       ],
     },
     {
@@ -114,6 +124,10 @@ const pageTitles: Record<string, string> = {
   '/dashboard': 'Dashboard',
   '/dashboard/aicfo': 'FactorOne AI',
   '/dashboard/assistente': 'Assistente',
+  '/dashboard/agentes': 'Agentes',
+  '/dashboard/tarefas': 'Scale · Tarefas',
+  '/dashboard/notas-fluxo': 'Notas + Fluxograma',
+  '/dashboard/cofre': 'Cofre',
   '/dashboard/cashflow': 'Fluxo de Caixa',
   '/dashboard/relatorios': 'DRE',
   '/dashboard/indicadores': 'Indicadores',
@@ -305,15 +319,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             })}
           </nav>
           <div className="sb-footer">
-            <div className="sb-co" onClick={sair} title="Clique para sair">
-              <div className="sb-co-av">{empresaInitials}</div>
-              <div>
-                <div className="sb-co-name" style={{ maxWidth: 130, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                  {empresaNome || user?.email?.split('@')[0] || 'Conta'}
-                </div>
-                <div className="sb-co-plan">Plano Profissional</div>
-              </div>
-            </div>
+            <CompanySwitcher nome={empresaNome || user?.email?.split('@')[0] || 'Conta'} iniciais={empresaInitials} onSair={sair} />
           </div>
         </aside>
 
