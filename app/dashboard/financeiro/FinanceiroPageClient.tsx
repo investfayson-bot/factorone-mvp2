@@ -135,8 +135,8 @@ function FinanceiroInner() {
       {/* Header */}
       <div className="page-hdr">
         <div>
-          <div className="page-title">Financeiro</div>
-          <div className="page-sub">Contas a pagar e receber · Conciliação · Aging report</div>
+          <div className="page-title">Contas a Pagar & Receber</div>
+          <div className="page-sub">Quem você deve pagar e quem te deve — compromissos assumidos, não o efeito no caixa</div>
         </div>
         <div style={{ display: 'flex', gap: 8 }}>
           <button

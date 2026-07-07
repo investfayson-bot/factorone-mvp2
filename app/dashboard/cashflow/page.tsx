@@ -32,7 +32,7 @@ const fmtCompact = (v: number) => {
   return fmt(v)
 }
 
-const CATEGORIAS_FORM = ['operacional', 'impostos', 'custo', 'receita_extra', 'financeira', 'depreciacao']
+const CATEGORIAS_FORM = ['operacional', 'impostos', 'custo', 'receita_extra', 'financeira']
 const TABS = ['Histórico', 'Previsão 90d', 'Simulador E se?']
 
 export default function CashflowPage() {
@@ -193,7 +193,7 @@ export default function CashflowPage() {
       <div className="page-hdr">
         <div>
           <div className="page-title">Fluxo de Caixa</div>
-          <div className="page-sub">Últimos {{ '30': '30 dias', '90': '90 dias', '365': '12 meses' }[filtroPeriodo]} · dados reais</div>
+          <div className="page-sub">Quanto sobra no seu caixa, dia a dia · realizado (últimos {{ '30': '30 dias', '90': '90 dias', '365': '12 meses' }[filtroPeriodo]}) + previsto nas abas ao lado</div>
         </div>
         <div style={{ display: 'flex', gap: 8 }}>
           <button className="btn-action btn-ghost" onClick={() => void analisarIA()} disabled={loadingIA || loading}>
@@ -397,6 +397,19 @@ export default function CashflowPage() {
               <div className={`kpi-delta ${previsao && previsao.d90 < 0 ? 'dn' : 'up'}`}>{previsao && previsao.d90 < 0 ? '↓ crítico' : '↑ positivo'}</div>
             </div>
           </div>
+
+          {/* Alerta de saldo negativo projetado */}
+          {previsao && (previsao.d7 < 0 || previsao.d30 < 0 || previsao.d90 < 0) && (
+            <div style={{ background: 'rgba(176,65,62,.08)', border: '1px solid rgba(176,65,62,.3)', borderRadius: 10, padding: '12px 16px', marginBottom: 16, display: 'flex', gap: 10, alignItems: 'flex-start' }}>
+              <i className="fa-solid fa-triangle-exclamation" style={{ color: 'var(--red)', fontSize: 15, marginTop: 1 }} />
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy)' }}>Seu caixa fica negativo na projeção</div>
+                <div style={{ fontSize: 12, color: 'var(--gray-500)', marginTop: 2 }}>
+                  {previsao.d7 < 0 ? 'Já em 7 dias' : previsao.d30 < 0 ? 'Entre 8 e 30 dias' : 'Entre 31 e 90 dias'} o saldo previsto vira negativo, mantendo o ritmo atual de entradas e saídas. Vale antecipar recebíveis, renegociar prazo com fornecedor, ou revisar despesas antes disso acontecer.
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Gráfico 90d */}
           <div className="cf-chart-card">

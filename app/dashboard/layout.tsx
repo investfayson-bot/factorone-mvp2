@@ -45,7 +45,7 @@ function buildNavGroups(badges: { reembolsos: number; aprovacoes: number }, inst
         { href: '/dashboard/classificar', icon: 'fa-layer-group', label: 'Classificar', badge: 'NEW', badgeColor: 'var(--teal)' },
         { href: '/dashboard/cashflow', icon: 'fa-chart-line', label: 'Fluxo de Caixa' },
         { href: '/dashboard/relatorios', icon: 'fa-chart-bar', label: 'DRE' },
-        { href: '/dashboard/financeiro', icon: 'fa-receipt', label: 'Financeiro', badge: badges.reembolsos > 0 ? String(badges.reembolsos) : undefined, badgeColor: 'var(--teal)' },
+        { href: '/dashboard/financeiro', icon: 'fa-receipt', label: 'Contas a Pagar & Receber', badge: badges.reembolsos > 0 ? String(badges.reembolsos) : undefined, badgeColor: 'var(--teal)' },
         { href: '/dashboard/despesas', icon: 'fa-file-invoice', label: 'Despesas' },
       ],
     },
@@ -62,7 +62,7 @@ function buildNavGroups(badges: { reembolsos: number; aprovacoes: number }, inst
     {
       label: 'Contabilidade',
       items: [
-        { href: '/dashboard/conciliacao', icon: 'fa-building-columns', label: 'Conciliação', badge: badges.aprovacoes > 0 ? String(badges.aprovacoes) : undefined, badgeColor: 'var(--teal)' },
+        { href: '/dashboard/conciliacao', icon: 'fa-building-columns', label: 'Conciliação Bancária', badge: badges.aprovacoes > 0 ? String(badges.aprovacoes) : undefined, badgeColor: 'var(--teal)' },
         { href: '/dashboard/contadores', icon: 'fa-calculator', label: 'Contador' },
         { href: '/dashboard/contabilidade/livros', icon: 'fa-book', label: 'Livros contábeis' },
         { href: '/dashboard/notas', icon: 'fa-file-invoice-dollar', label: 'Fiscal & NF-e' },
@@ -124,7 +124,7 @@ const pageTitles: Record<string, string> = {
   '/dashboard/marketing/site': 'Gere seu site',
   '/dashboard/contabilidade/livros': 'Livros contábeis',
   '/dashboard/credito': 'Crédito & Financiamento',
-  '/dashboard/financeiro': 'Financeiro',
+  '/dashboard/financeiro': 'Contas a Pagar & Receber',
   '/dashboard/despesas': 'Despesas',
   '/dashboard/patrimonio/imoveis': 'Imóveis',
   '/dashboard/patrimonio/obras': 'Obras e Reformas',
