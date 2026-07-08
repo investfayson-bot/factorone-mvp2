@@ -70,14 +70,14 @@ export default function ChatWidget({ slug, cor, nome, embutido }: { slug: string
         <div style={{ width: 320, height: 420, background: '#fff', borderRadius: 16, boxShadow: '0 12px 40px rgba(0,0,0,.18)', display: 'flex', flexDirection: 'column', overflow: 'hidden', marginBottom: 12, border: '1px solid #eef2f0' }}>
           <div style={{ background: cor, color: '#fff', padding: '14px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div>
-              <div style={{ fontSize: 13.5, fontWeight: 800 }}>{nome || 'Fale com a gente'}</div>
-              <div style={{ fontSize: 10.5, opacity: .85 }}>normalmente responde rápido</div>
+              <div style={{ fontSize: 15, fontWeight: 800 }}>{nome || 'Fale com a gente'}</div>
+              <div style={{ fontSize: 12.5, opacity: .85 }}>normalmente responde rápido</div>
             </div>
             <button onClick={() => setAberto(false)} style={{ background: 'transparent', border: 'none', color: '#fff', cursor: 'pointer', fontSize: 16 }}>×</button>
           </div>
           <div ref={scrollRef} style={{ flex: 1, overflowY: 'auto', padding: '14px 12px', display: 'flex', flexDirection: 'column', gap: 8, background: '#F7FAF8' }}>
             {mensagens.length === 0 && (
-              <div style={{ fontSize: 12.5, color: '#64748b', textAlign: 'center', marginTop: 20 }}>Manda sua dúvida que a gente te responde por aqui.</div>
+              <div style={{ fontSize: 14.5, color: '#64748b', textAlign: 'center', marginTop: 20 }}>Manda sua dúvida que a gente te responde por aqui.</div>
             )}
             {mensagens.map(m => (
               <div key={m.id} style={{
@@ -85,10 +85,10 @@ export default function ChatWidget({ slug, cor, nome, embutido }: { slug: string
                 background: m.autor === 'visitante' ? cor : '#fff',
                 color: m.autor === 'visitante' ? '#fff' : '#13201D',
                 border: m.autor === 'visitante' ? 'none' : '1px solid #eef2f0',
-                borderRadius: 12, padding: '8px 12px', fontSize: 13, maxWidth: '82%', lineHeight: 1.4, whiteSpace: 'pre-wrap',
+                borderRadius: 12, padding: '8px 12px', fontSize: 15, maxWidth: '82%', lineHeight: 1.4, whiteSpace: 'pre-wrap',
               }}>{m.texto}</div>
             ))}
-            {enviando && <div style={{ fontSize: 11, color: '#94a3b8', alignSelf: 'flex-start' }}>digitando…</div>}
+            {enviando && <div style={{ fontSize: 13, color: '#94a3b8', alignSelf: 'flex-start' }}>digitando…</div>}
           </div>
           <div style={{ padding: 10, borderTop: '1px solid #eef2f0', display: 'flex', gap: 8 }}>
             <input
@@ -96,9 +96,9 @@ export default function ChatWidget({ slug, cor, nome, embutido }: { slug: string
               onChange={e => setInput(e.target.value)}
               onKeyDown={e => { if (e.key === 'Enter') void enviar() }}
               placeholder="Escreva sua mensagem…"
-              style={{ flex: 1, border: '1px solid #e2e8f0', borderRadius: 10, padding: '9px 12px', fontSize: 13, outline: 'none', fontFamily: 'inherit' }}
+              style={{ flex: 1, border: '1px solid #e2e8f0', borderRadius: 10, padding: '9px 12px', fontSize: 15, outline: 'none', fontFamily: 'inherit' }}
             />
-            <button onClick={() => void enviar()} disabled={enviando || !input.trim()} style={{ background: cor, color: '#fff', border: 'none', borderRadius: 10, padding: '0 14px', fontSize: 13, fontWeight: 700, cursor: 'pointer', opacity: enviando ? .6 : 1 }}>
+            <button onClick={() => void enviar()} disabled={enviando || !input.trim()} style={{ background: cor, color: '#fff', border: 'none', borderRadius: 10, padding: '0 14px', fontSize: 15, fontWeight: 700, cursor: 'pointer', opacity: enviando ? .6 : 1 }}>
               Enviar
             </button>
           </div>

@@ -271,7 +271,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <div className="sb-logo">
             <div className="sb-logo-txt">Factor<span>One</span></div>
             {empresaNome && (
-              <div style={{ fontSize: 10, color: 'rgba(255,255,255,.4)', marginTop: 2, fontWeight: 500, maxWidth: 120, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+              <div style={{ fontSize: 12, color: 'rgba(255,255,255,.4)', marginTop: 2, fontWeight: 500, maxWidth: 120, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                 {empresaNome}
               </div>
             )}
@@ -293,7 +293,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                     <div className="nav-section" onClick={() => toggleGroup(group.label, buildNavGroups(badges, installedIds, role, ['produto', 'servico', 'industria'].includes(segmento)))}
                       style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between', userSelect: 'none' }}>
                       <span>{group.label}</span>
-                      <i className={`fa-solid fa-chevron-${isCollapsed ? 'right' : 'down'}`} style={{ fontSize: 8, opacity: .5 }} />
+                      <i className={`fa-solid fa-chevron-${isCollapsed ? 'right' : 'down'}`} style={{ fontSize: 11, opacity: .5 }} />
                     </div>
                   ) : (
                     <div className="nav-section">{group.label}</div>
@@ -308,7 +308,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                       <i className={`fa-solid ${item.icon}`} />
                       <span style={{ flex: 1 }}>{item.label}</span>
                       {item.badge && (
-                        <span style={{ fontSize: 8, fontWeight: 700, padding: '1px 5px', borderRadius: 20, background: item.badgeColor, color: '#fff' }}>
+                        <span style={{ fontSize: 11, fontWeight: 700, padding: '1px 5px', borderRadius: 20, background: item.badgeColor, color: '#fff' }}>
                           {item.badge}
                         </span>
                       )}
@@ -337,12 +337,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <div className="live-badge"><div className="live-dot" /> LIVE</div>
             <button
               onClick={() => { const e = new KeyboardEvent('keydown', { key: 'k', ctrlKey: true, bubbles: true }); window.dispatchEvent(e) }}
-              style={{ display: 'flex', alignItems: 'center', gap: 7, background: 'var(--gray-100)', border: '1px solid var(--gray-200)', borderRadius: 8, padding: '4px 10px', cursor: 'pointer', color: 'var(--gray-500)', fontSize: 12 }}
+              style={{ display: 'flex', alignItems: 'center', gap: 7, background: 'var(--gray-100)', border: '1px solid var(--gray-200)', borderRadius: 8, padding: '4px 10px', cursor: 'pointer', color: 'var(--gray-500)', fontSize: 14 }}
               title="Busca Global (Ctrl+K)"
             >
-              <i className="fa-solid fa-magnifying-glass" style={{ fontSize: 11 }} />
+              <i className="fa-solid fa-magnifying-glass" style={{ fontSize: 13 }} />
               <span>Buscar</span>
-              <kbd style={{ fontSize: 9, background: '#fff', border: '1px solid var(--gray-200)', borderRadius: 3, padding: '1px 4px', fontVariantNumeric: 'tabular-nums', color: 'var(--gray-400)' }}>⌘K</kbd>
+              <kbd style={{ fontSize: 11, background: '#fff', border: '1px solid var(--gray-200)', borderRadius: 3, padding: '1px 4px', fontVariantNumeric: 'tabular-nums', color: 'var(--gray-400)' }}>⌘K</kbd>
             </button>
             <NotificationBell />
             <div className="topbar-av" onClick={sair} title="Sair">{initials}</div>

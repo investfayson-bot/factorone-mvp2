@@ -123,17 +123,17 @@ export default function HistoricoNotas() {
       {/* Table */}
       <div style={{ ...card, overflow: 'hidden', padding: 0 }}>
         <div style={{ overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12 }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 14 }}>
             <thead>
               <tr style={{ background: 'var(--gray-50, #f8f9fa)' }}>
                 {['Número', 'Tipo', 'Destinatário', 'Valor', 'Status', 'Data', 'Ações'].map((h) => (
-                  <th key={h} style={{ textAlign: 'left', padding: '10px 12px', fontSize: 10, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', fontFamily: "var(--font-sans)", borderBottom: '1px solid var(--gray-100)' }}>{h}</th>
+                  <th key={h} style={{ textAlign: 'left', padding: '10px 12px', fontSize: 12, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', fontFamily: "var(--font-sans)", borderBottom: '1px solid var(--gray-100)' }}>{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
               {rows.length === 0 ? (
-                <tr><td colSpan={7} style={{ padding: '24px 12px', textAlign: 'center', color: 'var(--gray-400)', fontSize: 12 }}>Nenhuma nota emitida no período.</td></tr>
+                <tr><td colSpan={7} style={{ padding: '24px 12px', textAlign: 'center', color: 'var(--gray-400)', fontSize: 14 }}>Nenhuma nota emitida no período.</td></tr>
               ) : rows.map((r) => (
                 <tr key={r.id} style={{ borderTop: '1px solid var(--gray-100)' }}>
                   <td style={{ padding: '10px 12px', color: 'var(--navy)', fontFamily: "var(--font-sans)" }}>{r.numero || '—'}</td>
@@ -147,14 +147,14 @@ export default function HistoricoNotas() {
                   <td style={{ padding: '10px 12px' }}>
                     <div style={{ display: 'flex', gap: 4 }}>
                       {r.xml_url && (
-                        <a href={r.xml_url} target="_blank" rel="noreferrer" title="XML" style={{ padding: '4px 7px', borderRadius: 6, border: '1px solid var(--gray-100)', background: '#fff', color: 'var(--navy)', fontSize: 11, textDecoration: 'none' }}>XML</a>
+                        <a href={r.xml_url} target="_blank" rel="noreferrer" title="XML" style={{ padding: '4px 7px', borderRadius: 6, border: '1px solid var(--gray-100)', background: '#fff', color: 'var(--navy)', fontSize: 13, textDecoration: 'none' }}>XML</a>
                       )}
                       {r.pdf_url && (
-                        <a href={r.pdf_url} target="_blank" rel="noreferrer" title="PDF" style={{ padding: '4px 7px', borderRadius: 6, border: '1px solid var(--gray-100)', background: '#fff', color: 'var(--navy)', fontSize: 11, textDecoration: 'none' }}>PDF</a>
+                        <a href={r.pdf_url} target="_blank" rel="noreferrer" title="PDF" style={{ padding: '4px 7px', borderRadius: 6, border: '1px solid var(--gray-100)', background: '#fff', color: 'var(--navy)', fontSize: 13, textDecoration: 'none' }}>PDF</a>
                       )}
-                      <button type="button" title="E-mail" onClick={() => setEmailModal({ id: r.id, email: '' })} style={{ padding: '4px 7px', borderRadius: 6, border: '1px solid var(--gray-100)', background: '#fff', color: 'var(--navy)', fontSize: 11, cursor: 'pointer' }}></button>
+                      <button type="button" title="E-mail" onClick={() => setEmailModal({ id: r.id, email: '' })} style={{ padding: '4px 7px', borderRadius: 6, border: '1px solid var(--gray-100)', background: '#fff', color: 'var(--navy)', fontSize: 13, cursor: 'pointer' }}></button>
                       {r.status !== 'cancelada' && r.status !== 'rejeitada' && (
-                        <button type="button" title="Cancelar" onClick={() => setCancelModal({ id: r.id, j: '' })} style={{ padding: '4px 7px', borderRadius: 6, border: '1px solid rgba(176,65,62,.2)', background: '#fff', color: 'var(--red)', fontSize: 11, cursor: 'pointer' }}>✕</button>
+                        <button type="button" title="Cancelar" onClick={() => setCancelModal({ id: r.id, j: '' })} style={{ padding: '4px 7px', borderRadius: 6, border: '1px solid rgba(176,65,62,.2)', background: '#fff', color: 'var(--red)', fontSize: 13, cursor: 'pointer' }}>✕</button>
                       )}
                     </div>
                   </td>
@@ -190,11 +190,11 @@ export default function HistoricoNotas() {
         footer={
           <>
             <button type="button" className="btn-action btn-ghost" onClick={() => setCancelModal(null)}>Voltar</button>
-            <button type="button" disabled={(cancelModal?.j.trim().length ?? 0) < 15} onClick={cancelar} style={{ background: 'var(--red)', color: '#fff', border: 'none', borderRadius: 8, padding: '7px 16px', fontSize: 12, fontWeight: 600, cursor: 'pointer', opacity: (cancelModal?.j.trim().length ?? 0) < 15 ? .5 : 1 }}>Confirmar cancelamento</button>
+            <button type="button" disabled={(cancelModal?.j.trim().length ?? 0) < 15} onClick={cancelar} style={{ background: 'var(--red)', color: '#fff', border: 'none', borderRadius: 8, padding: '7px 16px', fontSize: 14, fontWeight: 600, cursor: 'pointer', opacity: (cancelModal?.j.trim().length ?? 0) < 15 ? .5 : 1 }}>Confirmar cancelamento</button>
           </>
         }
       >
-        <div style={{ fontSize: 12, color: 'var(--gray-400)', marginBottom: 8 }}>Justificativa (mín. 15 caracteres)</div>
+        <div style={{ fontSize: 14, color: 'var(--gray-400)', marginBottom: 8 }}>Justificativa (mín. 15 caracteres)</div>
         {cancelModal && (
           <textarea className="form-input" value={cancelModal.j} onChange={(e) => setCancelModal({ ...cancelModal, j: e.target.value })} style={{ minHeight: 80, resize: 'vertical', marginBottom: 12 }} />
         )}

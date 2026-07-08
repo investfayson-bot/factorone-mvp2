@@ -141,10 +141,10 @@ export default function NovoAtivoModal({ open, onClose, onDone, empresaId, categ
 
   const inp: React.CSSProperties = {
     width: '100%', border: '1px solid var(--gray-100)', borderRadius: 8,
-    padding: '8px 12px', fontSize: 13, color: 'var(--navy)',
+    padding: '8px 12px', fontSize: 15, color: 'var(--navy)',
     background: '#fff', boxSizing: 'border-box', outline: 'none',
   }
-  const lbl: React.CSSProperties = { fontSize: 11, fontWeight: 600, color: 'var(--gray-500)', marginBottom: 4, display: 'block' }
+  const lbl: React.CSSProperties = { fontSize: 13, fontWeight: 600, color: 'var(--gray-500)', marginBottom: 4, display: 'block' }
 
   return (
     <div className="modal-bg" onClick={(e) => e.target === e.currentTarget && onClose()}>
@@ -165,7 +165,7 @@ export default function NovoAtivoModal({ open, onClose, onDone, empresaId, categ
                 onClick={() => selecionarTipo(t.value)}
                 style={{
                   display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6,
-                  padding: '10px 8px', borderRadius: 10, cursor: 'pointer', fontSize: 11, fontWeight: 600,
+                  padding: '10px 8px', borderRadius: 10, cursor: 'pointer', fontSize: 13, fontWeight: 600,
                   border: tipoAtivo === t.value ? '2px solid var(--teal)' : '1px solid var(--gray-100)',
                   background: tipoAtivo === t.value ? 'rgba(61,122,110,0.08)' : '#fafafa',
                   color: tipoAtivo === t.value ? 'var(--teal)' : 'var(--gray-500)',
@@ -323,7 +323,7 @@ export default function NovoAtivoModal({ open, onClose, onDone, empresaId, categ
         {/* Preview depreciação */}
         {valor > 0 && (
           <div style={{ margin: '16px 0', padding: 14, borderRadius: 10, background: 'rgba(61,122,110,0.06)', border: '1px solid rgba(61,122,110,0.2)' }}>
-            <p style={{ fontSize: 11, fontWeight: 700, color: 'var(--teal)', marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Prévia de depreciação</p>
+            <p style={{ fontSize: 13, fontWeight: 700, color: 'var(--teal)', marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Prévia de depreciação</p>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '4px 16px' }}>
               {[
                 ['Depreciação mensal', formatBRL(depMensal)],
@@ -331,7 +331,7 @@ export default function NovoAtivoModal({ open, onClose, onDone, empresaId, categ
                 ['Totalmente depreciado em', depreciaTotalEm],
                 ['Valor contábil após 1 ano', formatBRL(valorAno1)],
               ].map(([l, v]) => (
-                <div key={l} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12 }}>
+                <div key={l} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14 }}>
                   <span style={{ color: 'var(--gray-500)' }}>{l}</span>
                   <span style={{ fontWeight: 600, color: 'var(--navy)', fontFamily: 'var(--font-mono)' }}>{v}</span>
                 </div>

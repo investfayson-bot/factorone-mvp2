@@ -427,8 +427,8 @@ export default function PatrimonioPage() {
     return (
       <div>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-          <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--navy)' }}>Documentos do ativo</div>
-          <label style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer', fontSize: 11, color: 'var(--teal)', fontWeight: 600 }}>
+          <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--navy)' }}>Documentos do ativo</div>
+          <label style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer', fontSize: 13, color: 'var(--teal)', fontWeight: 600 }}>
             <i className="fa-solid fa-camera" />
             {scanning ? 'Analisando…' : 'Scan documento'}
             <input ref={fileRef} type="file" accept="image/*,application/pdf" style={{ display: 'none' }}
@@ -437,23 +437,23 @@ export default function PatrimonioPage() {
         </div>
 
         {scanning && (
-          <div style={{ background: 'rgba(6,182,212,.06)', border: '1px solid rgba(6,182,212,.2)', borderRadius: 8, padding: 12, marginBottom: 8, fontSize: 12, color: 'var(--teal)' }}>
+          <div style={{ background: 'rgba(6,182,212,.06)', border: '1px solid rgba(6,182,212,.2)', borderRadius: 8, padding: 12, marginBottom: 8, fontSize: 14, color: 'var(--teal)' }}>
             <i className="fa-solid fa-spinner fa-spin" style={{ marginRight: 6 }} /> FactorOne IA analisando o documento…
           </div>
         )}
 
         {scanResult && !scanning && (
           <div style={{ background: 'rgba(6,182,212,.06)', border: '1px solid rgba(6,182,212,.2)', borderRadius: 8, padding: 12, marginBottom: 8 }}>
-            <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--teal)', marginBottom: 6 }}>Resultado do scan</div>
+            <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--teal)', marginBottom: 6 }}>Resultado do scan</div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6 }}>
               {Object.entries(scanResult).filter(([, v]) => v !== null).map(([k, v]) => (
-                <div key={k} style={{ fontSize: 11 }}>
+                <div key={k} style={{ fontSize: 13 }}>
                   <span style={{ color: 'var(--gray-400)', textTransform: 'capitalize' }}>{k.replace(/_/g, ' ')}: </span>
                   <span style={{ fontWeight: 600 }}>{String(v)}</span>
                 </div>
               ))}
             </div>
-            <div style={{ fontSize: 10, color: 'var(--gray-400)', marginTop: 6 }}>
+            <div style={{ fontSize: 12, color: 'var(--gray-400)', marginTop: 6 }}>
               <i className="fa-solid fa-check-circle" style={{ color: 'var(--green)', marginRight: 4 }} />
               Salvo automaticamente em Documentos
             </div>
@@ -465,14 +465,14 @@ export default function PatrimonioPage() {
             <table>
               <thead><tr><th>Tipo</th><th>Nome</th><th>Dados extraídos</th><th>Data</th></tr></thead>
               <tbody>
-                {docs.length === 0 && <tr><td colSpan={4} style={{ textAlign: 'center', color: 'var(--gray-400)', padding: '24px 0', fontSize: 12 }}>Nenhum documento. Use "Scan documento" para extrair dados com IA.</td></tr>}
+                {docs.length === 0 && <tr><td colSpan={4} style={{ textAlign: 'center', color: 'var(--gray-400)', padding: '24px 0', fontSize: 14 }}>Nenhum documento. Use "Scan documento" para extrair dados com IA.</td></tr>}
                 {docs.map(doc => {
                   const ocr = doc.extraido_ocr
                   return (
                     <tr key={doc.id}>
-                      <td><span className="tag gray" style={{ fontSize: 9 }}>{doc.tipo}</span></td>
-                      <td style={{ fontSize: 12, fontWeight: 600 }}>{doc.nome}</td>
-                      <td style={{ fontSize: 11, color: 'var(--gray-500)' }}>
+                      <td><span className="tag gray" style={{ fontSize: 11 }}>{doc.tipo}</span></td>
+                      <td style={{ fontSize: 14, fontWeight: 600 }}>{doc.nome}</td>
+                      <td style={{ fontSize: 13, color: 'var(--gray-500)' }}>
                         {ocr ? (
                           <span>
                             {ocr.data_vencimento ? `Venc. ${String(ocr.data_vencimento)} · ` : ''}
@@ -481,7 +481,7 @@ export default function PatrimonioPage() {
                           </span>
                         ) : '—'}
                       </td>
-                      <td style={{ fontFamily: "var(--font-sans)", fontSize: 11 }}>{doc.created_at?.slice(0, 10)}</td>
+                      <td style={{ fontFamily: "var(--font-sans)", fontSize: 13 }}>{doc.created_at?.slice(0, 10)}</td>
                     </tr>
                   )
                 })}
@@ -527,7 +527,7 @@ export default function PatrimonioPage() {
       <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 12 }}>
         {TABS.map(([k, l]) => (
           <button key={k} onClick={() => setTab(k as typeof tab)} style={{
-            padding: '7px 14px', borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: 'pointer', border: '1px solid',
+            padding: '7px 14px', borderRadius: 8, fontSize: 14, fontWeight: 600, cursor: 'pointer', border: '1px solid',
             background: tab === k ? 'var(--navy)' : '#fff', color: tab === k ? '#fff' : 'var(--gray-500)',
             borderColor: tab === k ? 'var(--navy)' : 'var(--gray-100)',
           }}>{l}</button>
@@ -548,12 +548,12 @@ export default function PatrimonioPage() {
             <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: 16 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
                 <i className="fa-solid fa-truck" style={{ color: 'var(--navy)' }} />
-                <div style={{ fontWeight: 700, fontSize: 13 }}>Frota</div>
-                <span style={{ marginLeft: 'auto', background: 'var(--navy)', color: '#fff', borderRadius: 20, padding: '1px 8px', fontSize: 10, fontWeight: 700 }}>{frota.length}</span>
+                <div style={{ fontWeight: 700, fontSize: 15 }}>Frota</div>
+                <span style={{ marginLeft: 'auto', background: 'var(--navy)', color: '#fff', borderRadius: 20, padding: '1px 8px', fontSize: 12, fontWeight: 700 }}>{frota.length}</span>
               </div>
-              {frota.length === 0 ? <div style={{ fontSize: 12, color: 'var(--gray-400)' }}>Nenhum veículo.</div> : frota.slice(0, 4).map(v => (
-                <div key={v.id} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, marginBottom: 4 }}>
-                  <span className={`tag ${STATUS_COLORS[v.status] || 'gray'}`} style={{ fontSize: 9 }}>{STATUS_LABEL[v.status]}</span>
+              {frota.length === 0 ? <div style={{ fontSize: 14, color: 'var(--gray-400)' }}>Nenhum veículo.</div> : frota.slice(0, 4).map(v => (
+                <div key={v.id} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, marginBottom: 4 }}>
+                  <span className={`tag ${STATUS_COLORS[v.status] || 'gray'}`} style={{ fontSize: 11 }}>{STATUS_LABEL[v.status]}</span>
                   <span style={{ flex: 1, fontWeight: 600 }}>{v.nome}</span>
                   <span style={{ fontFamily: "var(--font-sans)" }}>{v.placa || '—'}</span>
                 </div>
@@ -562,12 +562,12 @@ export default function PatrimonioPage() {
             <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: 16 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
                 <i className="fa-solid fa-gear" style={{ color: 'var(--teal)' }} />
-                <div style={{ fontWeight: 700, fontSize: 13 }}>Máquinas</div>
-                <span style={{ marginLeft: 'auto', background: 'var(--teal)', color: '#fff', borderRadius: 20, padding: '1px 8px', fontSize: 10, fontWeight: 700 }}>{maquinas.length}</span>
+                <div style={{ fontWeight: 700, fontSize: 15 }}>Máquinas</div>
+                <span style={{ marginLeft: 'auto', background: 'var(--teal)', color: '#fff', borderRadius: 20, padding: '1px 8px', fontSize: 12, fontWeight: 700 }}>{maquinas.length}</span>
               </div>
-              {maquinas.length === 0 ? <div style={{ fontSize: 12, color: 'var(--gray-400)' }}>Nenhuma máquina.</div> : maquinas.slice(0, 4).map(m => (
-                <div key={m.id} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, marginBottom: 4 }}>
-                  <span className={`tag ${STATUS_COLORS[m.status] || 'gray'}`} style={{ fontSize: 9 }}>{STATUS_LABEL[m.status]}</span>
+              {maquinas.length === 0 ? <div style={{ fontSize: 14, color: 'var(--gray-400)' }}>Nenhuma máquina.</div> : maquinas.slice(0, 4).map(m => (
+                <div key={m.id} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, marginBottom: 4 }}>
+                  <span className={`tag ${STATUS_COLORS[m.status] || 'gray'}`} style={{ fontSize: 11 }}>{STATUS_LABEL[m.status]}</span>
                   <span style={{ flex: 1, fontWeight: 600 }}>{m.nome}</span>
                   <span style={{ fontFamily: "var(--font-sans)", color: 'var(--gray-400)' }}>{Number(m.horas_operacao || 0).toLocaleString('pt-BR')}h</span>
                 </div>
@@ -576,11 +576,11 @@ export default function PatrimonioPage() {
             <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: 16 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
                 <i className="fa-solid fa-building" style={{ color: 'var(--gold)' }} />
-                <div style={{ fontWeight: 700, fontSize: 13 }}>Imóveis</div>
-                <span style={{ marginLeft: 'auto', background: 'var(--gold)', color: '#fff', borderRadius: 20, padding: '1px 8px', fontSize: 10, fontWeight: 700 }}>{imoveis.length}</span>
+                <div style={{ fontWeight: 700, fontSize: 15 }}>Imóveis</div>
+                <span style={{ marginLeft: 'auto', background: 'var(--gold)', color: '#fff', borderRadius: 20, padding: '1px 8px', fontSize: 12, fontWeight: 700 }}>{imoveis.length}</span>
               </div>
-              {imoveis.length === 0 ? <div style={{ fontSize: 12, color: 'var(--gray-400)' }}>Nenhum imóvel.</div> : imoveis.slice(0, 4).map(i => (
-                <div key={i.id} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, marginBottom: 4 }}>
+              {imoveis.length === 0 ? <div style={{ fontSize: 14, color: 'var(--gray-400)' }}>Nenhum imóvel.</div> : imoveis.slice(0, 4).map(i => (
+                <div key={i.id} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, marginBottom: 4 }}>
                   <span style={{ flex: 1, fontWeight: 600 }}>{i.nome}</span>
                   <span style={{ color: 'var(--teal)', fontWeight: 700 }}>{formatBRL(Number(i.valor_contabil || 0))}</span>
                 </div>
@@ -590,27 +590,27 @@ export default function PatrimonioPage() {
 
           {alertas.length > 0 && (
             <div style={{ background: 'rgba(239,68,68,.06)', border: '1px solid rgba(239,68,68,.2)', borderRadius: 12, padding: 16, marginBottom: 16 }}>
-              <div style={{ fontWeight: 700, fontSize: 13, color: 'var(--red)', marginBottom: 10 }}>
+              <div style={{ fontWeight: 700, fontSize: 15, color: 'var(--red)', marginBottom: 10 }}>
                 <i className="fa-solid fa-triangle-exclamation" style={{ marginRight: 6 }} />{alertas.length} alerta{alertas.length > 1 ? 's' : ''} de vencimento
               </div>
               {alertas.map(({ ativo, msgs }) => (
-                <div key={ativo.id} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, marginBottom: 4 }}>
+                <div key={ativo.id} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 14, marginBottom: 4 }}>
                   <span style={{ fontWeight: 600 }}>{ativo.nome}</span>
-                  <span style={{ fontFamily: "var(--font-sans)", fontSize: 11, color: 'var(--gray-400)' }}>{ativo.placa || ''}</span>
-                  {msgs.map((m, i) => <span key={i} style={{ color: 'var(--red)', background: 'rgba(239,68,68,.1)', borderRadius: 4, padding: '1px 6px', fontSize: 11 }}>{m}</span>)}
+                  <span style={{ fontFamily: "var(--font-sans)", fontSize: 13, color: 'var(--gray-400)' }}>{ativo.placa || ''}</span>
+                  {msgs.map((m, i) => <span key={i} style={{ color: 'var(--red)', background: 'rgba(239,68,68,.1)', borderRadius: 4, padding: '1px 6px', fontSize: 13 }}>{m}</span>)}
                 </div>
               ))}
             </div>
           )}
 
           <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: 16 }}>
-            <div style={{ fontWeight: 700, fontSize: 13, marginBottom: 10 }}>Taxas de depreciação (Receita Federal)</div>
+            <div style={{ fontWeight: 700, fontSize: 15, marginBottom: 10 }}>Taxas de depreciação (Receita Federal)</div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: 8 }}>
               {Object.entries(TAXA_DEP).map(([tipo, taxa]) => (
                 <div key={tipo} style={{ background: 'var(--gray-50)', borderRadius: 8, padding: '8px 12px' }}>
-                  <div style={{ fontSize: 11, color: 'var(--gray-500)' }}>{TIPO_LABEL[tipo]}</div>
+                  <div style={{ fontSize: 13, color: 'var(--gray-500)' }}>{TIPO_LABEL[tipo]}</div>
                   <div style={{ fontSize: 16, fontWeight: 700, fontFamily: "var(--font-sans)", color: 'var(--navy)' }}>{taxa}% a.a.</div>
-                  <div style={{ fontSize: 10, color: 'var(--gray-400)' }}>Vida útil: {Math.round(100 / taxa)} anos</div>
+                  <div style={{ fontSize: 12, color: 'var(--gray-400)' }}>Vida útil: {Math.round(100 / taxa)} anos</div>
                 </div>
               ))}
             </div>
@@ -623,24 +623,24 @@ export default function PatrimonioPage() {
         <>
           {frotaSel ? (
             <div>
-              <button className="btn-ghost" style={{ marginBottom: 12, fontSize: 11 }} onClick={() => { setFrotaSel(null); setScanResult(null) }}>← Voltar</button>
+              <button className="btn-ghost" style={{ marginBottom: 12, fontSize: 13 }} onClick={() => { setFrotaSel(null); setScanResult(null) }}>← Voltar</button>
               <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
                 <div style={{ width: 44, height: 44, borderRadius: 10, background: 'var(--navy)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <i className="fa-solid fa-truck" style={{ color: '#fff', fontSize: 16 }} />
                 </div>
                 <div>
                   <div style={{ fontWeight: 700, fontSize: 14 }}>{frotaSel.nome}</div>
-                  <div style={{ fontSize: 12, color: 'var(--gray-400)' }}>{frotaSel.placa || 'Sem placa'} · {frotaSel.modelo || ''} {frotaSel.ano_fabricacao || ''}</div>
+                  <div style={{ fontSize: 14, color: 'var(--gray-400)' }}>{frotaSel.placa || 'Sem placa'} · {frotaSel.modelo || ''} {frotaSel.ano_fabricacao || ''}</div>
                 </div>
                 <div style={{ marginLeft: 'auto', display: 'flex', gap: 16 }}>
-                  <div style={{ textAlign: 'right', fontSize: 11 }}><div style={{ color: 'var(--gray-400)' }}>Odômetro</div><div style={{ fontWeight: 700 }}>{Number(frotaSel.km_atual || 0).toLocaleString('pt-BR')} km</div></div>
-                  <div style={{ textAlign: 'right', fontSize: 11 }}><div style={{ color: 'var(--gray-400)' }}>Contábil</div><div style={{ fontWeight: 700, color: 'var(--teal)' }}>{formatBRL(Number(frotaSel.valor_contabil || 0))}</div></div>
+                  <div style={{ textAlign: 'right', fontSize: 13 }}><div style={{ color: 'var(--gray-400)' }}>Odômetro</div><div style={{ fontWeight: 700 }}>{Number(frotaSel.km_atual || 0).toLocaleString('pt-BR')} km</div></div>
+                  <div style={{ textAlign: 'right', fontSize: 13 }}><div style={{ color: 'var(--gray-400)' }}>Contábil</div><div style={{ fontWeight: 700, color: 'var(--teal)' }}>{formatBRL(Number(frotaSel.valor_contabil || 0))}</div></div>
                 </div>
               </div>
               <div style={{ display: 'flex', gap: 6, marginBottom: 10 }}>
                 {(['lista', 'abastecimentos', 'itinerarios', 'manutencoes', 'documentos'] as const).map(k => (
                   <button key={k} onClick={() => { setFrotatab(k); setScanResult(null) }} style={{
-                    padding: '5px 12px', borderRadius: 6, fontSize: 11, fontWeight: 600, cursor: 'pointer', border: '1px solid',
+                    padding: '5px 12px', borderRadius: 6, fontSize: 13, fontWeight: 600, cursor: 'pointer', border: '1px solid',
                     background: frotatab === k ? 'var(--teal)' : '#fff', color: frotatab === k ? '#fff' : 'var(--gray-500)',
                     borderColor: frotatab === k ? 'var(--teal)' : 'var(--gray-100)',
                   }}>{k === 'lista' ? 'KPIs' : k.charAt(0).toUpperCase() + k.slice(1)}</button>
@@ -659,11 +659,11 @@ export default function PatrimonioPage() {
               {frotatab === 'abastecimentos' && (
                 <>
                   <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 8 }}>
-                    <button className="btn-ghost" style={{ fontSize: 11 }} onClick={() => setShowFormAb(!showFormAb)}>+ Abastecimento</button>
+                    <button className="btn-ghost" style={{ fontSize: 13 }} onClick={() => setShowFormAb(!showFormAb)}>+ Abastecimento</button>
                   </div>
                   {showFormAb && (
                     <div style={inlineFormStyle}>
-                      <div style={{ gridColumn: '1/-1', fontWeight: 700, fontSize: 12 }}>Novo abastecimento</div>
+                      <div style={{ gridColumn: '1/-1', fontWeight: 700, fontSize: 14 }}>Novo abastecimento</div>
                       <input type="date" className="form-input" value={formAb.data} onChange={e => setFormAb(p => ({ ...p, data: e.target.value }))} />
                       <input className="form-input" placeholder="KM atual" type="number" value={formAb.km_atual} onChange={e => setFormAb(p => ({ ...p, km_atual: e.target.value }))} />
                       <input className="form-input" placeholder="Litros *" type="number" value={formAb.litros} onChange={e => setFormAb(p => ({ ...p, litros: e.target.value }))} />
@@ -674,8 +674,8 @@ export default function PatrimonioPage() {
                         <option value="etanol">Etanol</option><option value="gnv">GNV</option>
                       </select>
                       <div style={{ display: 'flex', gap: 6, gridColumn: '1/-1' }}>
-                        <button className="btn-action" style={{ fontSize: 11 }} onClick={() => void salvarAbastecimento()}>Salvar</button>
-                        <button className="btn-ghost" style={{ fontSize: 11 }} onClick={() => setShowFormAb(false)}>Cancelar</button>
+                        <button className="btn-action" style={{ fontSize: 13 }} onClick={() => void salvarAbastecimento()}>Salvar</button>
+                        <button className="btn-ghost" style={{ fontSize: 13 }} onClick={() => setShowFormAb(false)}>Cancelar</button>
                       </div>
                     </div>
                   )}
@@ -686,13 +686,13 @@ export default function PatrimonioPage() {
                         {abastecimentos.length === 0 && <tr><td colSpan={7} style={{ textAlign: 'center', color: 'var(--gray-400)', padding: '24px 0' }}>Nenhum abastecimento.</td></tr>}
                         {abastecimentos.map(ab => (
                           <tr key={ab.id}>
-                            <td style={{ fontFamily: "var(--font-sans)", fontSize: 11 }}>{ab.data}</td>
-                            <td style={{ fontFamily: "var(--font-sans)", fontSize: 11 }}>{ab.km_atual ? Number(ab.km_atual).toLocaleString('pt-BR') : '—'}</td>
-                            <td style={{ fontFamily: "var(--font-sans)", fontSize: 11 }}>{Number(ab.litros).toFixed(1)}L</td>
+                            <td style={{ fontFamily: "var(--font-sans)", fontSize: 13 }}>{ab.data}</td>
+                            <td style={{ fontFamily: "var(--font-sans)", fontSize: 13 }}>{ab.km_atual ? Number(ab.km_atual).toLocaleString('pt-BR') : '—'}</td>
+                            <td style={{ fontFamily: "var(--font-sans)", fontSize: 13 }}>{Number(ab.litros).toFixed(1)}L</td>
                             <td style={{ textAlign: 'right', fontFamily: "var(--font-sans)" }}>{formatBRL(Number(ab.valor_total))}</td>
-                            <td style={{ textAlign: 'right', fontFamily: "var(--font-sans)", fontSize: 11, color: 'var(--gray-400)' }}>{ab.preco_litro ? `R$ ${Number(ab.preco_litro).toFixed(3)}` : '—'}</td>
-                            <td style={{ fontSize: 11 }}>{ab.posto || '—'}</td>
-                            <td><span className="tag gray" style={{ fontSize: 9 }}>{ab.combustivel}</span></td>
+                            <td style={{ textAlign: 'right', fontFamily: "var(--font-sans)", fontSize: 13, color: 'var(--gray-400)' }}>{ab.preco_litro ? `R$ ${Number(ab.preco_litro).toFixed(3)}` : '—'}</td>
+                            <td style={{ fontSize: 13 }}>{ab.posto || '—'}</td>
+                            <td><span className="tag gray" style={{ fontSize: 11 }}>{ab.combustivel}</span></td>
                           </tr>
                         ))}
                       </tbody>
@@ -704,11 +704,11 @@ export default function PatrimonioPage() {
               {frotatab === 'itinerarios' && (
                 <>
                   <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 8 }}>
-                    <button className="btn-ghost" style={{ fontSize: 11 }} onClick={() => setShowFormIt(!showFormIt)}>+ Itinerário</button>
+                    <button className="btn-ghost" style={{ fontSize: 13 }} onClick={() => setShowFormIt(!showFormIt)}>+ Itinerário</button>
                   </div>
                   {showFormIt && (
                     <div style={inlineFormStyle}>
-                      <div style={{ gridColumn: '1/-1', fontWeight: 700, fontSize: 12 }}>Novo itinerário</div>
+                      <div style={{ gridColumn: '1/-1', fontWeight: 700, fontSize: 14 }}>Novo itinerário</div>
                       <input type="date" className="form-input" value={formIt.data} onChange={e => setFormIt(p => ({ ...p, data: e.target.value }))} />
                       <input className="form-input" placeholder="Origem" value={formIt.origem} onChange={e => setFormIt(p => ({ ...p, origem: e.target.value }))} />
                       <input className="form-input" placeholder="Destino" value={formIt.destino} onChange={e => setFormIt(p => ({ ...p, destino: e.target.value }))} />
@@ -721,8 +721,8 @@ export default function PatrimonioPage() {
                         <option value="concluido">Concluído</option><option value="cancelado">Cancelado</option>
                       </select>
                       <div style={{ display: 'flex', gap: 6, gridColumn: '1/-1' }}>
-                        <button className="btn-action" style={{ fontSize: 11 }} onClick={() => void salvarItinerario()}>Salvar</button>
-                        <button className="btn-ghost" style={{ fontSize: 11 }} onClick={() => setShowFormIt(false)}>Cancelar</button>
+                        <button className="btn-action" style={{ fontSize: 13 }} onClick={() => void salvarItinerario()}>Salvar</button>
+                        <button className="btn-ghost" style={{ fontSize: 13 }} onClick={() => setShowFormIt(false)}>Cancelar</button>
                       </div>
                     </div>
                   )}
@@ -733,12 +733,12 @@ export default function PatrimonioPage() {
                         {itinerarios.length === 0 && <tr><td colSpan={6} style={{ textAlign: 'center', color: 'var(--gray-400)', padding: '24px 0' }}>Nenhum itinerário.</td></tr>}
                         {itinerarios.map(it => (
                           <tr key={it.id}>
-                            <td style={{ fontFamily: "var(--font-sans)", fontSize: 11 }}>{it.data}</td>
-                            <td style={{ fontSize: 12 }}>{it.origem || '—'} → {it.destino || '—'}</td>
-                            <td style={{ fontFamily: "var(--font-sans)", fontSize: 11 }}>{it.km_percorrido ? `${Number(it.km_percorrido).toLocaleString('pt-BR')} km` : '—'}</td>
+                            <td style={{ fontFamily: "var(--font-sans)", fontSize: 13 }}>{it.data}</td>
+                            <td style={{ fontSize: 14 }}>{it.origem || '—'} → {it.destino || '—'}</td>
+                            <td style={{ fontFamily: "var(--font-sans)", fontSize: 13 }}>{it.km_percorrido ? `${Number(it.km_percorrido).toLocaleString('pt-BR')} km` : '—'}</td>
                             <td style={{ textAlign: 'right', fontFamily: "var(--font-sans)", color: 'var(--green)', fontWeight: 700 }}>{formatBRL(Number(it.valor_frete || 0))}</td>
-                            <td style={{ fontSize: 11 }}>{it.motorista || '—'}</td>
-                            <td><span className={`tag ${it.status === 'concluido' ? 'green' : 'gray'}`} style={{ fontSize: 9 }}>{it.status}</span></td>
+                            <td style={{ fontSize: 13 }}>{it.motorista || '—'}</td>
+                            <td><span className={`tag ${it.status === 'concluido' ? 'green' : 'gray'}`} style={{ fontSize: 11 }}>{it.status}</span></td>
                           </tr>
                         ))}
                       </tbody>
@@ -750,7 +750,7 @@ export default function PatrimonioPage() {
               {frotatab === 'manutencoes' && (
                 <>
                   <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 8 }}>
-                    <button className="btn-ghost" style={{ fontSize: 11 }} onClick={() => setShowFormMn(!showFormMn)}>+ Manutenção</button>
+                    <button className="btn-ghost" style={{ fontSize: 13 }} onClick={() => setShowFormMn(!showFormMn)}>+ Manutenção</button>
                   </div>
                   {showFormMn && <ManutForm form={formMn} setForm={setFormMn} onSave={() => void salvarManutencaoF()} onCancel={() => setShowFormMn(false)} showHoras />}
                   <ManutencaoTable manutencoes={manutencoesF} />
@@ -763,7 +763,7 @@ export default function PatrimonioPage() {
             </div>
           ) : (
             frota.length === 0 ? (
-              <div style={{ textAlign: 'center', padding: 40, color: 'var(--gray-400)', fontSize: 13 }}>
+              <div style={{ textAlign: 'center', padding: 40, color: 'var(--gray-400)', fontSize: 15 }}>
                 Nenhum veículo. Clique em <strong>+ Novo Ativo</strong> e selecione tipo Veículo.
               </div>
             ) : (
@@ -776,10 +776,10 @@ export default function PatrimonioPage() {
                         <div style={{ width: 36, height: 36, borderRadius: 8, background: 'var(--navy)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                           <i className={`fa-solid ${v.tipo_ativo === 'veiculo_pesado' ? 'fa-truck' : 'fa-car'}`} style={{ color: '#fff', fontSize: 14 }} />
                         </div>
-                        <div><div style={{ fontWeight: 700, fontSize: 13 }}>{v.nome}</div><div style={{ fontSize: 11, color: 'var(--gray-400)' }}>{v.placa || '—'}</div></div>
-                        <span className={`tag ${STATUS_COLORS[v.status] || 'gray'}`} style={{ marginLeft: 'auto', fontSize: 9 }}>{STATUS_LABEL[v.status]}</span>
+                        <div><div style={{ fontWeight: 700, fontSize: 15 }}>{v.nome}</div><div style={{ fontSize: 13, color: 'var(--gray-400)' }}>{v.placa || '—'}</div></div>
+                        <span className={`tag ${STATUS_COLORS[v.status] || 'gray'}`} style={{ marginLeft: 'auto', fontSize: 11 }}>{STATUS_LABEL[v.status]}</span>
                       </div>
-                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6, fontSize: 11, marginBottom: 8 }}>
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6, fontSize: 13, marginBottom: 8 }}>
                         <div><span style={{ color: 'var(--gray-400)' }}>Modelo</span><br /><span style={{ fontWeight: 600 }}>{v.modelo || '—'}</span></div>
                         <div><span style={{ color: 'var(--gray-400)' }}>Ano</span><br /><span style={{ fontWeight: 600 }}>{v.ano_fabricacao || '—'}</span></div>
                         <div><span style={{ color: 'var(--gray-400)' }}>Odômetro</span><br /><span style={{ fontFamily: "var(--font-sans)" }}>{Number(v.km_atual || 0).toLocaleString('pt-BR')} km</span></div>
@@ -789,8 +789,8 @@ export default function PatrimonioPage() {
                         <div style={{ height: 4, borderRadius: 2, width: `${Math.min(p, 100)}%`, background: depColor(p) }} />
                       </div>
                       <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
-                        {segD !== null && segD <= 30 && <span style={{ fontSize: 9, background: 'rgba(239,68,68,.1)', color: 'var(--red)', borderRadius: 4, padding: '1px 5px', fontWeight: 600 }}>Seguro {segD < 0 ? `vencido` : `${segD}d`}</span>}
-                        {ipvaD !== null && ipvaD <= 30 && <span style={{ fontSize: 9, background: 'rgba(245,158,11,.1)', color: 'var(--gold)', borderRadius: 4, padding: '1px 5px', fontWeight: 600 }}>IPVA {ipvaD < 0 ? `vencido` : `${ipvaD}d`}</span>}
+                        {segD !== null && segD <= 30 && <span style={{ fontSize: 11, background: 'rgba(239,68,68,.1)', color: 'var(--red)', borderRadius: 4, padding: '1px 5px', fontWeight: 600 }}>Seguro {segD < 0 ? `vencido` : `${segD}d`}</span>}
+                        {ipvaD !== null && ipvaD <= 30 && <span style={{ fontSize: 11, background: 'rgba(245,158,11,.1)', color: 'var(--gold)', borderRadius: 4, padding: '1px 5px', fontWeight: 600 }}>IPVA {ipvaD < 0 ? `vencido` : `${ipvaD}d`}</span>}
                       </div>
                     </button>
                   )
@@ -806,24 +806,24 @@ export default function PatrimonioPage() {
         <>
           {maqSel ? (
             <div>
-              <button className="btn-ghost" style={{ marginBottom: 12, fontSize: 11 }} onClick={() => { setMaqSel(null); setScanResult(null) }}>← Voltar</button>
+              <button className="btn-ghost" style={{ marginBottom: 12, fontSize: 13 }} onClick={() => { setMaqSel(null); setScanResult(null) }}>← Voltar</button>
               <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
                 <div style={{ width: 44, height: 44, borderRadius: 10, background: 'var(--teal)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <i className="fa-solid fa-gear" style={{ color: '#fff', fontSize: 16 }} />
                 </div>
                 <div>
                   <div style={{ fontWeight: 700, fontSize: 14 }}>{maqSel.nome}</div>
-                  <div style={{ fontSize: 12, color: 'var(--gray-400)' }}>{maqSel.modelo || ''} · {maqSel.localizacao || ''}</div>
+                  <div style={{ fontSize: 14, color: 'var(--gray-400)' }}>{maqSel.modelo || ''} · {maqSel.localizacao || ''}</div>
                 </div>
                 <div style={{ marginLeft: 'auto', display: 'flex', gap: 16 }}>
-                  <div style={{ textAlign: 'right', fontSize: 11 }}><div style={{ color: 'var(--gray-400)' }}>Horas totais</div><div style={{ fontWeight: 700 }}>{Number(maqSel.horas_operacao || 0).toLocaleString('pt-BR')} h</div></div>
-                  <div style={{ textAlign: 'right', fontSize: 11 }}><div style={{ color: 'var(--gray-400)' }}>Contábil</div><div style={{ fontWeight: 700, color: 'var(--teal)' }}>{formatBRL(Number(maqSel.valor_contabil || 0))}</div></div>
+                  <div style={{ textAlign: 'right', fontSize: 13 }}><div style={{ color: 'var(--gray-400)' }}>Horas totais</div><div style={{ fontWeight: 700 }}>{Number(maqSel.horas_operacao || 0).toLocaleString('pt-BR')} h</div></div>
+                  <div style={{ textAlign: 'right', fontSize: 13 }}><div style={{ color: 'var(--gray-400)' }}>Contábil</div><div style={{ fontWeight: 700, color: 'var(--teal)' }}>{formatBRL(Number(maqSel.valor_contabil || 0))}</div></div>
                 </div>
               </div>
               <div style={{ display: 'flex', gap: 6, marginBottom: 10 }}>
                 {(['lista', 'operacao', 'manutencoes', 'documentos'] as const).map(k => (
                   <button key={k} onClick={() => { setMaqtab(k); setScanResult(null) }} style={{
-                    padding: '5px 12px', borderRadius: 6, fontSize: 11, fontWeight: 600, cursor: 'pointer', border: '1px solid',
+                    padding: '5px 12px', borderRadius: 6, fontSize: 13, fontWeight: 600, cursor: 'pointer', border: '1px solid',
                     background: maqtab === k ? 'var(--teal)' : '#fff', color: maqtab === k ? '#fff' : 'var(--gray-500)',
                     borderColor: maqtab === k ? 'var(--teal)' : 'var(--gray-100)',
                   }}>{k === 'lista' ? 'KPIs' : k.charAt(0).toUpperCase() + k.slice(1)}</button>
@@ -839,11 +839,11 @@ export default function PatrimonioPage() {
               {maqtab === 'operacao' && (
                 <>
                   <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 8 }}>
-                    <button className="btn-ghost" style={{ fontSize: 11 }} onClick={() => setShowFormOp(!showFormOp)}>+ Operação</button>
+                    <button className="btn-ghost" style={{ fontSize: 13 }} onClick={() => setShowFormOp(!showFormOp)}>+ Operação</button>
                   </div>
                   {showFormOp && (
                     <div style={inlineFormStyle}>
-                      <div style={{ gridColumn: '1/-1', fontWeight: 700, fontSize: 12 }}>Nova operação</div>
+                      <div style={{ gridColumn: '1/-1', fontWeight: 700, fontSize: 14 }}>Nova operação</div>
                       <input type="date" className="form-input" value={formOp.data} onChange={e => setFormOp(p => ({ ...p, data: e.target.value }))} />
                       <input className="form-input" placeholder="Hora início" type="number" value={formOp.horas_inicio} onChange={e => setFormOp(p => ({ ...p, horas_inicio: e.target.value }))} />
                       <input className="form-input" placeholder="Hora fim" type="number" value={formOp.horas_fim} onChange={e => setFormOp(p => ({ ...p, horas_fim: e.target.value }))} />
@@ -851,8 +851,8 @@ export default function PatrimonioPage() {
                       <input className="form-input" placeholder="Produção" value={formOp.producao} onChange={e => setFormOp(p => ({ ...p, producao: e.target.value }))} />
                       <input className="form-input" placeholder="Custo/hora R$" type="number" value={formOp.custo_hora} onChange={e => setFormOp(p => ({ ...p, custo_hora: e.target.value }))} />
                       <div style={{ display: 'flex', gap: 6, gridColumn: '1/-1' }}>
-                        <button className="btn-action" style={{ fontSize: 11 }} onClick={() => void salvarOperacao()}>Salvar</button>
-                        <button className="btn-ghost" style={{ fontSize: 11 }} onClick={() => setShowFormOp(false)}>Cancelar</button>
+                        <button className="btn-action" style={{ fontSize: 13 }} onClick={() => void salvarOperacao()}>Salvar</button>
+                        <button className="btn-ghost" style={{ fontSize: 13 }} onClick={() => setShowFormOp(false)}>Cancelar</button>
                       </div>
                     </div>
                   )}
@@ -863,12 +863,12 @@ export default function PatrimonioPage() {
                         {operacoes.length === 0 && <tr><td colSpan={6} style={{ textAlign: 'center', color: 'var(--gray-400)', padding: '24px 0' }}>Nenhuma operação.</td></tr>}
                         {operacoes.map(op => (
                           <tr key={op.id}>
-                            <td style={{ fontFamily: "var(--font-sans)", fontSize: 11 }}>{op.data}</td>
-                            <td style={{ fontFamily: "var(--font-sans)", fontSize: 11 }}>{Number(op.horas_inicio).toFixed(1)}h</td>
-                            <td style={{ fontFamily: "var(--font-sans)", fontSize: 11 }}>{Number(op.horas_fim).toFixed(1)}h</td>
+                            <td style={{ fontFamily: "var(--font-sans)", fontSize: 13 }}>{op.data}</td>
+                            <td style={{ fontFamily: "var(--font-sans)", fontSize: 13 }}>{Number(op.horas_inicio).toFixed(1)}h</td>
+                            <td style={{ fontFamily: "var(--font-sans)", fontSize: 13 }}>{Number(op.horas_fim).toFixed(1)}h</td>
                             <td style={{ textAlign: 'right', fontFamily: "var(--font-sans)", color: 'var(--teal)', fontWeight: 700 }}>{(Number(op.horas_fim) - Number(op.horas_inicio)).toFixed(1)}h</td>
-                            <td style={{ fontSize: 11 }}>{op.operador || '—'}</td>
-                            <td style={{ fontSize: 11 }}>{op.producao || '—'}</td>
+                            <td style={{ fontSize: 13 }}>{op.operador || '—'}</td>
+                            <td style={{ fontSize: 13 }}>{op.producao || '—'}</td>
                           </tr>
                         ))}
                       </tbody>
@@ -879,7 +879,7 @@ export default function PatrimonioPage() {
               {maqtab === 'manutencoes' && (
                 <>
                   <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 8 }}>
-                    <button className="btn-ghost" style={{ fontSize: 11 }} onClick={() => setShowFormMn(!showFormMn)}>+ Manutenção</button>
+                    <button className="btn-ghost" style={{ fontSize: 13 }} onClick={() => setShowFormMn(!showFormMn)}>+ Manutenção</button>
                   </div>
                   {showFormMn && <ManutForm form={formMn} setForm={setFormMn} onSave={() => void salvarManutencaoM()} onCancel={() => setShowFormMn(false)} showHoras />}
                   <ManutencaoTable manutencoes={manutencoesM} />
@@ -891,7 +891,7 @@ export default function PatrimonioPage() {
             </div>
           ) : (
             maquinas.length === 0 ? (
-              <div style={{ textAlign: 'center', padding: 40, color: 'var(--gray-400)', fontSize: 13 }}>Nenhuma máquina. Clique em <strong>+ Novo Ativo</strong> e selecione tipo Máquina.</div>
+              <div style={{ textAlign: 'center', padding: 40, color: 'var(--gray-400)', fontSize: 15 }}>Nenhuma máquina. Clique em <strong>+ Novo Ativo</strong> e selecione tipo Máquina.</div>
             ) : (
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: 12 }}>
                 {maquinas.map(m => {
@@ -902,10 +902,10 @@ export default function PatrimonioPage() {
                         <div style={{ width: 36, height: 36, borderRadius: 8, background: 'var(--teal)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                           <i className="fa-solid fa-gear" style={{ color: '#fff', fontSize: 14 }} />
                         </div>
-                        <div><div style={{ fontWeight: 700, fontSize: 13 }}>{m.nome}</div><div style={{ fontSize: 11, color: 'var(--gray-400)' }}>{m.localizacao || '—'}</div></div>
-                        <span className={`tag ${STATUS_COLORS[m.status] || 'gray'}`} style={{ marginLeft: 'auto', fontSize: 9 }}>{STATUS_LABEL[m.status]}</span>
+                        <div><div style={{ fontWeight: 700, fontSize: 15 }}>{m.nome}</div><div style={{ fontSize: 13, color: 'var(--gray-400)' }}>{m.localizacao || '—'}</div></div>
+                        <span className={`tag ${STATUS_COLORS[m.status] || 'gray'}`} style={{ marginLeft: 'auto', fontSize: 11 }}>{STATUS_LABEL[m.status]}</span>
                       </div>
-                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6, fontSize: 11, marginBottom: 8 }}>
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6, fontSize: 13, marginBottom: 8 }}>
                         <div><span style={{ color: 'var(--gray-400)' }}>Horas</span><br /><span style={{ fontFamily: "var(--font-sans)" }}>{Number(m.horas_operacao || 0).toLocaleString('pt-BR')} h</span></div>
                         <div><span style={{ color: 'var(--gray-400)' }}>Contábil</span><br /><span style={{ color: 'var(--teal)', fontWeight: 700 }}>{formatBRL(Number(m.valor_contabil || 0))}</span></div>
                       </div>
@@ -926,18 +926,18 @@ export default function PatrimonioPage() {
         <>
           {imovelSel ? (
             <div>
-              <button className="btn-ghost" style={{ marginBottom: 12, fontSize: 11 }} onClick={() => { setImovelSel(null); setImovelDet(null); setEditandoIm(false) }}>← Voltar</button>
+              <button className="btn-ghost" style={{ marginBottom: 12, fontSize: 13 }} onClick={() => { setImovelSel(null); setImovelDet(null); setEditandoIm(false) }}>← Voltar</button>
               <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
                 <div style={{ width: 44, height: 44, borderRadius: 10, background: 'var(--gold)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <i className="fa-solid fa-building" style={{ color: '#fff', fontSize: 16 }} />
                 </div>
                 <div>
                   <div style={{ fontWeight: 700, fontSize: 14 }}>{imovelSel.nome}</div>
-                  <div style={{ fontSize: 12, color: 'var(--gray-400)' }}>{imovelSel.localizacao || ''}</div>
+                  <div style={{ fontSize: 14, color: 'var(--gray-400)' }}>{imovelSel.localizacao || ''}</div>
                 </div>
                 <div style={{ marginLeft: 'auto', display: 'flex', gap: 16 }}>
-                  <div style={{ textAlign: 'right', fontSize: 11 }}><div style={{ color: 'var(--gray-400)' }}>Valor aquisição</div><div style={{ fontWeight: 700 }}>{formatBRL(Number(imovelSel.valor_aquisicao || 0))}</div></div>
-                  <div style={{ textAlign: 'right', fontSize: 11 }}><div style={{ color: 'var(--gray-400)' }}>Valor contábil</div><div style={{ fontWeight: 700, color: 'var(--teal)' }}>{formatBRL(Number(imovelSel.valor_contabil || 0))}</div></div>
+                  <div style={{ textAlign: 'right', fontSize: 13 }}><div style={{ color: 'var(--gray-400)' }}>Valor aquisição</div><div style={{ fontWeight: 700 }}>{formatBRL(Number(imovelSel.valor_aquisicao || 0))}</div></div>
+                  <div style={{ textAlign: 'right', fontSize: 13 }}><div style={{ color: 'var(--gray-400)' }}>Valor contábil</div><div style={{ fontWeight: 700, color: 'var(--teal)' }}>{formatBRL(Number(imovelSel.valor_contabil || 0))}</div></div>
                 </div>
               </div>
 
@@ -954,43 +954,43 @@ export default function PatrimonioPage() {
               {/* Detalhes imóvel */}
               <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: 16 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-                  <div style={{ fontWeight: 700, fontSize: 13 }}>Ficha do Imóvel</div>
-                  <button className="btn-ghost" style={{ fontSize: 11 }} onClick={() => setEditandoIm(!editandoIm)}>
+                  <div style={{ fontWeight: 700, fontSize: 15 }}>Ficha do Imóvel</div>
+                  <button className="btn-ghost" style={{ fontSize: 13 }} onClick={() => setEditandoIm(!editandoIm)}>
                     {editandoIm ? 'Cancelar' : 'Editar'}
                   </button>
                 </div>
 
                 {editandoIm ? (
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: 10 }}>
-                    <div><label style={{ fontSize: 10, color: 'var(--gray-400)' }}>Tipo</label>
+                    <div><label style={{ fontSize: 12, color: 'var(--gray-400)' }}>Tipo</label>
                       <select className="form-input" value={formIm.tipo_imovel} onChange={e => setFormIm(p => ({ ...p, tipo_imovel: e.target.value }))}>
                         <option value="comercial">Comercial</option><option value="residencial">Residencial</option>
                         <option value="rural">Rural</option><option value="terreno">Terreno</option><option value="industrial">Industrial</option>
                       </select></div>
-                    <div><label style={{ fontSize: 10, color: 'var(--gray-400)' }}>Área m²</label><input className="form-input" type="number" value={formIm.area_m2} onChange={e => setFormIm(p => ({ ...p, area_m2: e.target.value }))} /></div>
-                    <div><label style={{ fontSize: 10, color: 'var(--gray-400)' }}>Matrícula</label><input className="form-input" value={formIm.matricula} onChange={e => setFormIm(p => ({ ...p, matricula: e.target.value }))} /></div>
-                    <div><label style={{ fontSize: 10, color: 'var(--gray-400)' }}>Endereço</label><input className="form-input" value={formIm.endereco} onChange={e => setFormIm(p => ({ ...p, endereco: e.target.value }))} /></div>
-                    <div><label style={{ fontSize: 10, color: 'var(--gray-400)' }}>CEP</label><input className="form-input" value={formIm.cep} onChange={e => setFormIm(p => ({ ...p, cep: e.target.value }))} /></div>
-                    <div><label style={{ fontSize: 10, color: 'var(--gray-400)' }}>Cidade</label><input className="form-input" value={formIm.cidade} onChange={e => setFormIm(p => ({ ...p, cidade: e.target.value }))} /></div>
-                    <div><label style={{ fontSize: 10, color: 'var(--gray-400)' }}>Estado</label><input className="form-input" value={formIm.estado} onChange={e => setFormIm(p => ({ ...p, estado: e.target.value }))} /></div>
-                    <div><label style={{ fontSize: 10, color: 'var(--gray-400)' }}>Valor venal</label><input className="form-input" type="number" value={formIm.valor_venal} onChange={e => setFormIm(p => ({ ...p, valor_venal: e.target.value }))} /></div>
-                    <div><label style={{ fontSize: 10, color: 'var(--gray-400)' }}>IPTU anual R$</label><input className="form-input" type="number" value={formIm.valor_iptu} onChange={e => setFormIm(p => ({ ...p, valor_iptu: e.target.value }))} /></div>
-                    <div><label style={{ fontSize: 10, color: 'var(--gray-400)' }}>Vencim. IPTU</label><input className="form-input" type="date" value={formIm.iptu_vencimento} onChange={e => setFormIm(p => ({ ...p, iptu_vencimento: e.target.value }))} /></div>
+                    <div><label style={{ fontSize: 12, color: 'var(--gray-400)' }}>Área m²</label><input className="form-input" type="number" value={formIm.area_m2} onChange={e => setFormIm(p => ({ ...p, area_m2: e.target.value }))} /></div>
+                    <div><label style={{ fontSize: 12, color: 'var(--gray-400)' }}>Matrícula</label><input className="form-input" value={formIm.matricula} onChange={e => setFormIm(p => ({ ...p, matricula: e.target.value }))} /></div>
+                    <div><label style={{ fontSize: 12, color: 'var(--gray-400)' }}>Endereço</label><input className="form-input" value={formIm.endereco} onChange={e => setFormIm(p => ({ ...p, endereco: e.target.value }))} /></div>
+                    <div><label style={{ fontSize: 12, color: 'var(--gray-400)' }}>CEP</label><input className="form-input" value={formIm.cep} onChange={e => setFormIm(p => ({ ...p, cep: e.target.value }))} /></div>
+                    <div><label style={{ fontSize: 12, color: 'var(--gray-400)' }}>Cidade</label><input className="form-input" value={formIm.cidade} onChange={e => setFormIm(p => ({ ...p, cidade: e.target.value }))} /></div>
+                    <div><label style={{ fontSize: 12, color: 'var(--gray-400)' }}>Estado</label><input className="form-input" value={formIm.estado} onChange={e => setFormIm(p => ({ ...p, estado: e.target.value }))} /></div>
+                    <div><label style={{ fontSize: 12, color: 'var(--gray-400)' }}>Valor venal</label><input className="form-input" type="number" value={formIm.valor_venal} onChange={e => setFormIm(p => ({ ...p, valor_venal: e.target.value }))} /></div>
+                    <div><label style={{ fontSize: 12, color: 'var(--gray-400)' }}>IPTU anual R$</label><input className="form-input" type="number" value={formIm.valor_iptu} onChange={e => setFormIm(p => ({ ...p, valor_iptu: e.target.value }))} /></div>
+                    <div><label style={{ fontSize: 12, color: 'var(--gray-400)' }}>Vencim. IPTU</label><input className="form-input" type="date" value={formIm.iptu_vencimento} onChange={e => setFormIm(p => ({ ...p, iptu_vencimento: e.target.value }))} /></div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8, paddingTop: 20 }}>
                       <input type="checkbox" checked={formIm.iptu_pago} onChange={e => setFormIm(p => ({ ...p, iptu_pago: e.target.checked }))} />
-                      <label style={{ fontSize: 12 }}>IPTU pago</label>
+                      <label style={{ fontSize: 14 }}>IPTU pago</label>
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8, paddingTop: 20 }}>
                       <input type="checkbox" checked={formIm.alugado} onChange={e => setFormIm(p => ({ ...p, alugado: e.target.checked }))} />
-                      <label style={{ fontSize: 12 }}>Alugado</label>
+                      <label style={{ fontSize: 14 }}>Alugado</label>
                     </div>
                     {formIm.alugado && (
                       <>
-                        <div><label style={{ fontSize: 10, color: 'var(--gray-400)' }}>Inquilino</label><input className="form-input" value={formIm.inquilino} onChange={e => setFormIm(p => ({ ...p, inquilino: e.target.value }))} /></div>
-                        <div><label style={{ fontSize: 10, color: 'var(--gray-400)' }}>Aluguel/mês R$</label><input className="form-input" type="number" value={formIm.valor_aluguel} onChange={e => setFormIm(p => ({ ...p, valor_aluguel: e.target.value }))} /></div>
-                        <div><label style={{ fontSize: 10, color: 'var(--gray-400)' }}>Início contrato</label><input className="form-input" type="date" value={formIm.contrato_inicio} onChange={e => setFormIm(p => ({ ...p, contrato_inicio: e.target.value }))} /></div>
-                        <div><label style={{ fontSize: 10, color: 'var(--gray-400)' }}>Fim contrato</label><input className="form-input" type="date" value={formIm.contrato_vencimento} onChange={e => setFormIm(p => ({ ...p, contrato_vencimento: e.target.value }))} /></div>
-                        <div><label style={{ fontSize: 10, color: 'var(--gray-400)' }}>Administradora</label><input className="form-input" value={formIm.administradora} onChange={e => setFormIm(p => ({ ...p, administradora: e.target.value }))} /></div>
+                        <div><label style={{ fontSize: 12, color: 'var(--gray-400)' }}>Inquilino</label><input className="form-input" value={formIm.inquilino} onChange={e => setFormIm(p => ({ ...p, inquilino: e.target.value }))} /></div>
+                        <div><label style={{ fontSize: 12, color: 'var(--gray-400)' }}>Aluguel/mês R$</label><input className="form-input" type="number" value={formIm.valor_aluguel} onChange={e => setFormIm(p => ({ ...p, valor_aluguel: e.target.value }))} /></div>
+                        <div><label style={{ fontSize: 12, color: 'var(--gray-400)' }}>Início contrato</label><input className="form-input" type="date" value={formIm.contrato_inicio} onChange={e => setFormIm(p => ({ ...p, contrato_inicio: e.target.value }))} /></div>
+                        <div><label style={{ fontSize: 12, color: 'var(--gray-400)' }}>Fim contrato</label><input className="form-input" type="date" value={formIm.contrato_vencimento} onChange={e => setFormIm(p => ({ ...p, contrato_vencimento: e.target.value }))} /></div>
+                        <div><label style={{ fontSize: 12, color: 'var(--gray-400)' }}>Administradora</label><input className="form-input" value={formIm.administradora} onChange={e => setFormIm(p => ({ ...p, administradora: e.target.value }))} /></div>
                       </>
                     )}
                     <div style={{ gridColumn: '1/-1', display: 'flex', gap: 8 }}>
@@ -1010,11 +1010,11 @@ export default function PatrimonioPage() {
                       ['Inquilino', imovelDet.alugado ? (imovelDet.inquilino || '—') : 'Vago'],
                       ['Contrato vence', imovelDet.contrato_vencimento || '—'],
                     ].map(([k, v]) => (
-                      <div key={k}><div style={{ fontSize: 10, color: 'var(--gray-400)' }}>{k}</div><div style={{ fontSize: 12, fontWeight: 600 }}>{v}</div></div>
+                      <div key={k}><div style={{ fontSize: 12, color: 'var(--gray-400)' }}>{k}</div><div style={{ fontSize: 14, fontWeight: 600 }}>{v}</div></div>
                     ))}
                   </div>
                 ) : (
-                  <div style={{ fontSize: 12, color: 'var(--gray-400)', textAlign: 'center', padding: 16 }}>
+                  <div style={{ fontSize: 14, color: 'var(--gray-400)', textAlign: 'center', padding: 16 }}>
                     Nenhuma ficha cadastrada. Clique em Editar para preencher.
                   </div>
                 )}
@@ -1022,7 +1022,7 @@ export default function PatrimonioPage() {
             </div>
           ) : (
             imoveis.length === 0 ? (
-              <div style={{ textAlign: 'center', padding: 40, color: 'var(--gray-400)', fontSize: 13 }}>Nenhum imóvel. Clique em <strong>+ Novo Ativo</strong> e selecione tipo Imóvel.</div>
+              <div style={{ textAlign: 'center', padding: 40, color: 'var(--gray-400)', fontSize: 15 }}>Nenhum imóvel. Clique em <strong>+ Novo Ativo</strong> e selecione tipo Imóvel.</div>
             ) : (
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 12 }}>
                 {imoveis.map(im => {
@@ -1033,17 +1033,17 @@ export default function PatrimonioPage() {
                         <div style={{ width: 36, height: 36, borderRadius: 8, background: 'var(--gold)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                           <i className="fa-solid fa-building" style={{ color: '#fff', fontSize: 14 }} />
                         </div>
-                        <div><div style={{ fontWeight: 700, fontSize: 13 }}>{im.nome}</div><div style={{ fontSize: 11, color: 'var(--gray-400)' }}>{im.localizacao || '—'}</div></div>
-                        <span className={`tag ${STATUS_COLORS[im.status] || 'gray'}`} style={{ marginLeft: 'auto', fontSize: 9 }}>{STATUS_LABEL[im.status]}</span>
+                        <div><div style={{ fontWeight: 700, fontSize: 15 }}>{im.nome}</div><div style={{ fontSize: 13, color: 'var(--gray-400)' }}>{im.localizacao || '—'}</div></div>
+                        <span className={`tag ${STATUS_COLORS[im.status] || 'gray'}`} style={{ marginLeft: 'auto', fontSize: 11 }}>{STATUS_LABEL[im.status]}</span>
                       </div>
-                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6, fontSize: 11, marginBottom: 8 }}>
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6, fontSize: 13, marginBottom: 8 }}>
                         <div><span style={{ color: 'var(--gray-400)' }}>Aquisição</span><br /><span style={{ fontFamily: "var(--font-sans)", fontWeight: 600 }}>{formatBRL(Number(im.valor_aquisicao || 0))}</span></div>
                         <div><span style={{ color: 'var(--gray-400)' }}>Contábil</span><br /><span style={{ color: 'var(--teal)', fontWeight: 700 }}>{formatBRL(Number(im.valor_contabil || 0))}</span></div>
                       </div>
                       <div style={{ height: 4, borderRadius: 2, background: 'var(--gray-100)' }}>
                         <div style={{ height: 4, borderRadius: 2, width: `${Math.min(p, 100)}%`, background: depColor(p) }} />
                       </div>
-                      <div style={{ fontSize: 10, color: 'var(--gray-400)', marginTop: 4 }}>Deprec. {p.toFixed(0)}%</div>
+                      <div style={{ fontSize: 12, color: 'var(--gray-400)', marginTop: 4 }}>Deprec. {p.toFixed(0)}%</div>
                     </button>
                   )
                 })}
@@ -1082,7 +1082,7 @@ export default function PatrimonioPage() {
             <input className="form-input" placeholder="Localização" value={fLocal} onChange={e => setFLocal(e.target.value)} />
           </div>
           {baixadosF.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: 40, color: 'var(--gray-400)', fontSize: 13 }}>Nenhum ativo baixado/alienado/sucateado.</div>
+            <div style={{ textAlign: 'center', padding: 40, color: 'var(--gray-400)', fontSize: 15 }}>Nenhum ativo baixado/alienado/sucateado.</div>
           ) : (
             <AtivoTable ativos={baixadosF} categorias={categorias} onDetalhes={setDetalhes} onBaixa={() => {}} onQr={setQr} />
           )}
@@ -1106,7 +1106,7 @@ function ManutForm({ form, setForm, onSave, onCancel, showHoras }: {
 }) {
   return (
     <div style={{ background: 'var(--gray-50)', border: '1px solid var(--gray-100)', borderRadius: 10, padding: 16, marginBottom: 10, display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: 8 }}>
-      <div style={{ gridColumn: '1/-1', fontWeight: 700, fontSize: 12 }}>Nova manutenção</div>
+      <div style={{ gridColumn: '1/-1', fontWeight: 700, fontSize: 14 }}>Nova manutenção</div>
       <select className="form-input" value={form.tipo} onChange={e => setForm(p => ({ ...p, tipo: e.target.value }))}>
         <option value="preventiva">Preventiva</option><option value="corretiva">Corretiva</option>
         <option value="calibracao">Calibração</option><option value="vistoria">Vistoria</option>
@@ -1119,8 +1119,8 @@ function ManutForm({ form, setForm, onSave, onCancel, showHoras }: {
       {showHoras && <input className="form-input" placeholder="KM ou horas" type="number" value={form.km_ou_horas} onChange={e => setForm(p => ({ ...p, km_ou_horas: e.target.value }))} />}
       <input type="date" className="form-input" value={form.proxima_data} onChange={e => setForm(p => ({ ...p, proxima_data: e.target.value }))} />
       <div style={{ display: 'flex', gap: 6, gridColumn: '1/-1' }}>
-        <button className="btn-action" style={{ fontSize: 11 }} onClick={onSave}>Salvar</button>
-        <button className="btn-ghost" style={{ fontSize: 11 }} onClick={onCancel}>Cancelar</button>
+        <button className="btn-action" style={{ fontSize: 13 }} onClick={onSave}>Salvar</button>
+        <button className="btn-ghost" style={{ fontSize: 13 }} onClick={onCancel}>Cancelar</button>
       </div>
     </div>
   )
@@ -1135,12 +1135,12 @@ function ManutencaoTable({ manutencoes }: { manutencoes: ManutencaoP[] }) {
           {manutencoes.length === 0 && <tr><td colSpan={6} style={{ textAlign: 'center', color: 'var(--gray-400)', padding: '24px 0' }}>Nenhuma manutenção.</td></tr>}
           {manutencoes.map(m => (
             <tr key={m.id}>
-              <td><span className="tag gray" style={{ fontSize: 9 }}>{m.tipo}</span></td>
-              <td style={{ fontSize: 12 }}>{m.descricao || '—'}</td>
-              <td style={{ fontFamily: "var(--font-sans)", fontSize: 11 }}>{m.data}</td>
+              <td><span className="tag gray" style={{ fontSize: 11 }}>{m.tipo}</span></td>
+              <td style={{ fontSize: 14 }}>{m.descricao || '—'}</td>
+              <td style={{ fontFamily: "var(--font-sans)", fontSize: 13 }}>{m.data}</td>
               <td style={{ textAlign: 'right', fontFamily: "var(--font-sans)" }}>{formatBRL(Number(m.valor || 0))}</td>
-              <td style={{ fontSize: 11 }}>{m.oficina || '—'}</td>
-              <td style={{ fontFamily: "var(--font-sans)", fontSize: 11, color: 'var(--gray-400)' }}>{m.proxima_data || '—'}</td>
+              <td style={{ fontSize: 13 }}>{m.oficina || '—'}</td>
+              <td style={{ fontFamily: "var(--font-sans)", fontSize: 13, color: 'var(--gray-400)' }}>{m.proxima_data || '—'}</td>
             </tr>
           ))}
         </tbody>
@@ -1172,24 +1172,24 @@ function AtivoTable({ ativos, categorias, onDetalhes, onBaixa, onQr }: {
             const p = depProgress(a)
             return (
               <tr key={a.id}>
-                <td><span className="tag gray" style={{ fontSize: 9 }}>{TIPO_LABEL[a.tipo_ativo] || a.tipo_ativo}</span></td>
-                <td style={{ fontFamily: "var(--font-sans)", fontSize: 11 }}>{a.codigo_interno || '—'}</td>
+                <td><span className="tag gray" style={{ fontSize: 11 }}>{TIPO_LABEL[a.tipo_ativo] || a.tipo_ativo}</span></td>
+                <td style={{ fontFamily: "var(--font-sans)", fontSize: 13 }}>{a.codigo_interno || '—'}</td>
                 <td>
-                  <div style={{ fontWeight: 600, fontSize: 12 }}>{a.nome}</div>
-                  {a.placa && <div style={{ fontSize: 10, color: 'var(--gray-400)' }}>{a.placa}</div>}
+                  <div style={{ fontWeight: 600, fontSize: 14 }}>{a.nome}</div>
+                  {a.placa && <div style={{ fontSize: 12, color: 'var(--gray-400)' }}>{a.placa}</div>}
                   <div style={{ marginTop: 4, height: 4, borderRadius: 2, background: 'var(--gray-100)', width: 80 }}>
                     <div style={{ height: 4, borderRadius: 2, width: `${Math.min(p, 100)}%`, background: depColor(p) }} />
                   </div>
                 </td>
-                <td style={{ fontSize: 12 }}>{categorias.find(c => c.id === a.categoria_id)?.nome || '—'}</td>
+                <td style={{ fontSize: 14 }}>{categorias.find(c => c.id === a.categoria_id)?.nome || '—'}</td>
                 <td style={{ textAlign: 'right', fontFamily: "var(--font-sans)" }}>{formatBRL(Number(a.valor_aquisicao || 0))}</td>
                 <td style={{ textAlign: 'right', fontFamily: "var(--font-sans)", color: 'var(--teal)', fontWeight: 700 }}>{formatBRL(Number(a.valor_contabil || 0))}</td>
                 <td style={{ textAlign: 'center' }}><span className={`tag ${STATUS_COLORS[a.status] || 'gray'}`}>{STATUS_LABEL[a.status] || a.status}</span></td>
                 <td style={{ textAlign: 'center' }}>
                   <div style={{ display: 'flex', justifyContent: 'center', gap: 4 }}>
-                    <button className="btn-ghost" style={{ padding: '3px 8px', fontSize: 10 }} onClick={() => onDetalhes(a)}>Ver</button>
-                    {!ATIVOS_BAIXADOS.includes(a.status) && <button className="btn-ghost" style={{ padding: '3px 8px', fontSize: 10 }} onClick={() => onBaixa(a)}>Baixar</button>}
-                    <button className="btn-ghost" style={{ padding: '3px 8px', fontSize: 10 }} onClick={() => onQr(a)}>QR</button>
+                    <button className="btn-ghost" style={{ padding: '3px 8px', fontSize: 12 }} onClick={() => onDetalhes(a)}>Ver</button>
+                    {!ATIVOS_BAIXADOS.includes(a.status) && <button className="btn-ghost" style={{ padding: '3px 8px', fontSize: 12 }} onClick={() => onBaixa(a)}>Baixar</button>}
+                    <button className="btn-ghost" style={{ padding: '3px 8px', fontSize: 12 }} onClick={() => onQr(a)}>QR</button>
                   </div>
                 </td>
               </tr>

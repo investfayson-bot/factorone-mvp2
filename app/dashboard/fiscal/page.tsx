@@ -89,8 +89,8 @@ export default function FiscalPortaisPage() {
           <div className="page-title">Portais Fiscais & Gov.br</div>
           <div className="page-sub">Acesso rápido aos principais portais do governo federal e estadual</div>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: '#E9F0ED', color: '#2B564D', fontSize: 10, padding: '5px 12px', borderRadius: 20, fontWeight: 600 }}>
-          <i className="fa-solid fa-link" style={{ fontSize: 10 }} />Links verificados
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: '#E9F0ED', color: '#2B564D', fontSize: 12, padding: '5px 12px', borderRadius: 20, fontWeight: 600 }}>
+          <i className="fa-solid fa-link" style={{ fontSize: 12 }} />Links verificados
         </div>
       </div>
 
@@ -100,13 +100,13 @@ export default function FiscalPortaisPage() {
           <i className="fa-solid fa-shield-halved" style={{ fontSize: 20, color: '#6FA595' }} />
         </div>
         <div>
-          <div style={{ fontSize: 13, fontWeight: 700, color: '#fff', marginBottom: 3 }}>Fase 2 — Integração com Certificado Digital A1</div>
-          <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.55)', lineHeight: 1.5 }}>
+          <div style={{ fontSize: 15, fontWeight: 700, color: '#fff', marginBottom: 3 }}>Fase 2 — Integração com Certificado Digital A1</div>
+          <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.55)', lineHeight: 1.5 }}>
             Em breve: faça upload do seu certificado A1 e o FactorOne buscará DAS, certidões e situação fiscal automaticamente — sem precisar entrar em cada portal.
           </div>
         </div>
         <div style={{ marginLeft: 'auto', flexShrink: 0 }}>
-          <div style={{ fontSize: 10, background: 'rgba(61,122,110,0.2)', color: '#6FA595', padding: '4px 12px', borderRadius: 20, fontWeight: 600, whiteSpace: 'nowrap' }}>Em breve</div>
+          <div style={{ fontSize: 12, background: 'rgba(61,122,110,0.2)', color: '#6FA595', padding: '4px 12px', borderRadius: 20, fontWeight: 600, whiteSpace: 'nowrap' }}>Em breve</div>
         </div>
       </div>
 
@@ -116,9 +116,9 @@ export default function FiscalPortaisPage() {
           <div key={grupo.grupo} style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 14, overflow: 'hidden' }}>
             <div style={{ padding: '12px 16px', borderBottom: '0.5px solid #E4DCCC', display: 'flex', alignItems: 'center', gap: 10, background: '#FBF8F1' }}>
               <div style={{ width: 30, height: 30, borderRadius: 8, background: '#13201D', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <i className={`fa-solid ${grupo.icone}`} style={{ fontSize: 13, color: '#6FA595' }} />
+                <i className={`fa-solid ${grupo.icone}`} style={{ fontSize: 15, color: '#6FA595' }} />
               </div>
-              <div style={{ fontSize: 12, fontWeight: 700, color: '#13201D' }}>{grupo.grupo}</div>
+              <div style={{ fontSize: 14, fontWeight: 700, color: '#13201D' }}>{grupo.grupo}</div>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)' }}>
               {grupo.items.map((item, idx) => {
@@ -136,11 +136,11 @@ export default function FiscalPortaisPage() {
                       onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
                     >
                       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
-                        <span style={{ fontSize: 12, fontWeight: 700, color: '#13201D' }}>{item.nome}</span>
-                        <span style={{ fontSize: 9, padding: '2px 7px', borderRadius: 20, fontWeight: 600, background: tc.bg, color: tc.color, marginLeft: 'auto', flexShrink: 0 }}>{item.tag}</span>
-                        <i className="fa-solid fa-arrow-up-right-from-square" style={{ fontSize: 9, color: '#A6B0AC', flexShrink: 0 }} />
+                        <span style={{ fontSize: 14, fontWeight: 700, color: '#13201D' }}>{item.nome}</span>
+                        <span style={{ fontSize: 11, padding: '2px 7px', borderRadius: 20, fontWeight: 600, background: tc.bg, color: tc.color, marginLeft: 'auto', flexShrink: 0 }}>{item.tag}</span>
+                        <i className="fa-solid fa-arrow-up-right-from-square" style={{ fontSize: 11, color: '#A6B0AC', flexShrink: 0 }} />
                       </div>
-                      <div style={{ fontSize: 11, color: '#7B8C88', lineHeight: 1.4 }}>{item.desc}</div>
+                      <div style={{ fontSize: 13, color: '#7B8C88', lineHeight: 1.4 }}>{item.desc}</div>
                     </div>
                   </a>
                 )
@@ -150,7 +150,7 @@ export default function FiscalPortaisPage() {
         ))}
       </div>
 
-      <div style={{ textAlign: 'center', fontSize: 10, color: '#A6B0AC', marginTop: 16 }}>
+      <div style={{ textAlign: 'center', fontSize: 12, color: '#A6B0AC', marginTop: 16 }}>
         Links externos — o FactorOne não se responsabiliza pela disponibilidade dos portais governamentais
       </div>
     </div>

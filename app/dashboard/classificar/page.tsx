@@ -251,16 +251,16 @@ export default function ClassificarPage() {
           <div className="page-sub">Banco e cartão numa caixa só. Confirmou → cai na DRE e no dashboard.</div>
         </div>
         <div style={{ display: 'flex', gap: 8 }}>
-          <button className="btn-ghost" style={{ fontSize: 12, color: '#B0413E', borderColor: '#B0413E' }} disabled={busy} onClick={() => void popular('reset')}>
+          <button className="btn-ghost" style={{ fontSize: 14, color: '#B0413E', borderColor: '#B0413E' }} disabled={busy} onClick={() => void popular('reset')}>
             <i className="fa-solid fa-trash-can" style={{ marginRight: 6 }} />Zerar tudo
           </button>
-          <button className="btn-ghost" style={{ fontSize: 12 }} disabled={busy} onClick={() => void popular('seed')}>
+          <button className="btn-ghost" style={{ fontSize: 14 }} disabled={busy} onClick={() => void popular('seed')}>
             <i className="fa-solid fa-wand-magic-sparkles" style={{ marginRight: 6 }} />Dados de teste
           </button>
-          <button className="btn-ghost" style={{ fontSize: 12 }} disabled={sugerindo} onClick={() => void aplicarSugestoes(token)}>
+          <button className="btn-ghost" style={{ fontSize: 14 }} disabled={sugerindo} onClick={() => void aplicarSugestoes(token)}>
             <i className={`fa-solid ${sugerindo ? 'fa-circle-notch fa-spin' : 'fa-robot'}`} style={{ marginRight: 6, color: 'var(--sage)' }} />{sugerindo ? 'Analisando…' : 'Sugerir com IA'}
           </button>
-          <button className="btn-action" style={{ fontSize: 12 }} onClick={() => { setShowNova(true); setMatchCand(null) }}>
+          <button className="btn-action" style={{ fontSize: 14 }} onClick={() => { setShowNova(true); setMatchCand(null) }}>
             <i className="fa-solid fa-plus" style={{ marginRight: 6 }} />Nova transação
           </button>
         </div>
@@ -274,19 +274,19 @@ export default function ClassificarPage() {
               <div className="modal-title">Nova transação</div>
               <button className="modal-close" onClick={() => setShowNova(false)}><i className="fa-solid fa-xmark" /></button>
             </div>
-            <div style={{ fontSize: 12, color: 'var(--ink-mut)', marginBottom: 16 }}>Digite manual ou tire foto do recibo — a IA preenche. Entra em “A revisar”.</div>
+            <div style={{ fontSize: 14, color: 'var(--ink-mut)', marginBottom: 16 }}>Digite manual ou tire foto do recibo — a IA preenche. Entra em “A revisar”.</div>
             <label style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '13px 14px', border: '1.5px dashed var(--line)', borderRadius: 10, cursor: 'pointer', marginBottom: 16, background: 'var(--surface-2)' }}>
               <input type="file" accept="image/*,application/pdf" style={{ display: 'none' }} onChange={e => { const f = e.target.files?.[0]; if (f) void ocrRecibo(f) }} />
               <i className={`fa-solid ${ocr ? 'fa-circle-notch fa-spin' : 'fa-camera'}`} style={{ color: 'var(--sage)', fontSize: 15 }} />
-              <span style={{ fontSize: 12.5, color: 'var(--ink-soft)', fontWeight: 600 }}>{ocr ? 'Lendo recibo…' : 'Tirar foto / enviar recibo (a IA preenche)'}</span>
+              <span style={{ fontSize: 14.5, color: 'var(--ink-soft)', fontWeight: 600 }}>{ocr ? 'Lendo recibo…' : 'Tirar foto / enviar recibo (a IA preenche)'}</span>
             </label>
             {matchCand && (
               <div style={{ border: '1px solid var(--sage)', background: 'var(--sage-tint)', borderRadius: 10, padding: '12px 14px', marginBottom: 16 }}>
-                <div style={{ fontSize: 12.5, fontWeight: 700, color: 'var(--sage-deep)', marginBottom: 4 }}><i className="fa-solid fa-link" style={{ marginRight: 6 }} />Encontramos essa compra no cartão/banco</div>
-                <div style={{ fontSize: 12, color: 'var(--ink)', marginBottom: 8 }}>{limpo(matchCand.descricao)} · <b>{formatBRL(Number(matchCand.valor))}</b> · {matchCand.data.slice(8, 10)}/{matchCand.data.slice(5, 7)}. É a mesma? Casa os dois — 1 lançamento só.</div>
+                <div style={{ fontSize: 14.5, fontWeight: 700, color: 'var(--sage-deep)', marginBottom: 4 }}><i className="fa-solid fa-link" style={{ marginRight: 6 }} />Encontramos essa compra no cartão/banco</div>
+                <div style={{ fontSize: 14, color: 'var(--ink)', marginBottom: 8 }}>{limpo(matchCand.descricao)} · <b>{formatBRL(Number(matchCand.valor))}</b> · {matchCand.data.slice(8, 10)}/{matchCand.data.slice(5, 7)}. É a mesma? Casa os dois — 1 lançamento só.</div>
                 <div style={{ display: 'flex', gap: 8 }}>
-                  <button className="btn-action" style={{ fontSize: 12 }} disabled={busy} onClick={() => void casarRecibo()}><i className="fa-solid fa-check" style={{ marginRight: 6 }} />Sim, casar recibo</button>
-                  <button className="btn-ghost" style={{ fontSize: 12 }} onClick={() => setMatchCand(null)}>Não, é outra compra</button>
+                  <button className="btn-action" style={{ fontSize: 14 }} disabled={busy} onClick={() => void casarRecibo()}><i className="fa-solid fa-check" style={{ marginRight: 6 }} />Sim, casar recibo</button>
+                  <button className="btn-ghost" style={{ fontSize: 14 }} onClick={() => setMatchCand(null)}>Não, é outra compra</button>
                 </div>
               </div>
             )}
@@ -319,8 +319,8 @@ export default function ClassificarPage() {
         ].map(k => (
           <div key={k.lbl} className="kpi" style={{ padding: '14px 16px' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <span style={{ fontSize: 10, fontWeight: 600, color: 'var(--ink-mut)', textTransform: 'uppercase', letterSpacing: '.08em' }}>{k.lbl}</span>
-              <i className={`fa-solid ${k.ic}`} style={{ fontSize: 12, color: k.cor }} />
+              <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--ink-mut)', textTransform: 'uppercase', letterSpacing: '.08em' }}>{k.lbl}</span>
+              <i className={`fa-solid ${k.ic}`} style={{ fontSize: 14, color: k.cor }} />
             </div>
             <div style={{ fontSize: 22, fontWeight: 700, color: k.cor, marginTop: 8, fontVariantNumeric: 'tabular-nums' }}>{k.val}</div>
           </div>
@@ -331,7 +331,7 @@ export default function ClassificarPage() {
       <div style={{ display: 'flex', gap: 4, marginBottom: 12 }}>
         {([['revisar', `A revisar (${revisar.length})`], ['classificadas', `Classificadas (${classificadas.length})`], ['resumo', 'Resumo']] as const).map(([k, label]) => (
           <button key={k} onClick={() => setAba(k)} style={{
-            fontSize: 12.5, fontWeight: aba === k ? 700 : 500, padding: '8px 16px', borderRadius: 8, cursor: 'pointer',
+            fontSize: 14.5, fontWeight: aba === k ? 700 : 500, padding: '8px 16px', borderRadius: 8, cursor: 'pointer',
             border: `1px solid ${aba === k ? 'var(--sage)' : 'var(--line)'}`,
             background: aba === k ? 'var(--sage-tint)' : 'var(--surface)', color: aba === k ? 'var(--sage-deep)' : 'var(--ink-mut)',
           }}>{label}</button>
@@ -348,22 +348,22 @@ export default function ClassificarPage() {
             ].map(k => (
               <div key={k.lbl} className="kpi" style={{ padding: '14px 16px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <span style={{ fontSize: 10, fontWeight: 600, color: 'var(--ink-mut)', textTransform: 'uppercase', letterSpacing: '.08em' }}>{k.lbl}</span>
-                  <i className={`fa-solid ${k.ic}`} style={{ fontSize: 12, color: k.cor }} />
+                  <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--ink-mut)', textTransform: 'uppercase', letterSpacing: '.08em' }}>{k.lbl}</span>
+                  <i className={`fa-solid ${k.ic}`} style={{ fontSize: 14, color: k.cor }} />
                 </div>
                 <div style={{ fontSize: 22, fontWeight: 700, color: k.cor, marginTop: 8, fontVariantNumeric: 'tabular-nums' }}>{formatBRL(k.v)}</div>
               </div>
             ))}
           </div>
           <div className="txs-card" style={{ padding: '18px 20px' }}>
-            <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--ink)', marginBottom: 14 }}>Onde você gastou</div>
+            <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--ink)', marginBottom: 14 }}>Onde você gastou</div>
             {porCategoria.length === 0 ? (
-              <div style={{ color: 'var(--ink-mut)', fontSize: 13 }}>Classifique as saídas pra ver o ranking por categoria.</div>
+              <div style={{ color: 'var(--ink-mut)', fontSize: 15 }}>Classifique as saídas pra ver o ranking por categoria.</div>
             ) : porCategoria.map(([cat, val]) => {
               const pct = saiu > 0 ? (val / saiu) * 100 : 0
               return (
                 <div key={cat} style={{ marginBottom: 12 }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12.5, marginBottom: 5 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14.5, marginBottom: 5 }}>
                     <span style={{ color: 'var(--ink)', fontWeight: 600 }}>{cat}</span>
                     <span style={{ color: 'var(--ink)', fontWeight: 700, fontVariantNumeric: 'tabular-nums' }}>{formatBRL(val)} <span style={{ color: 'var(--ink-mut)', fontWeight: 500 }}>· {pct.toFixed(0)}%</span></span>
                   </div>
@@ -378,19 +378,19 @@ export default function ClassificarPage() {
           {/* Análise da IA (CFO) */}
           <div className="txs-card" style={{ padding: '18px 20px', marginTop: 12 }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
-              <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--ink)', display: 'flex', alignItems: 'center', gap: 8 }}>
+              <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--ink)', display: 'flex', alignItems: 'center', gap: 8 }}>
                 <i className="fa-solid fa-robot" style={{ color: 'var(--sage)' }} />Análise do CFO IA
               </div>
-              <button className="btn-action" style={{ fontSize: 12, padding: '7px 14px' }} disabled={analisando} onClick={() => void analisar()}>
+              <button className="btn-action" style={{ fontSize: 14, padding: '7px 14px' }} disabled={analisando} onClick={() => void analisar()}>
                 <i className={`fa-solid ${analisando ? 'fa-circle-notch fa-spin' : 'fa-wand-magic-sparkles'}`} style={{ marginRight: 6 }} />{analisando ? 'Analisando…' : 'Analisar'}
               </button>
             </div>
             {analise.length === 0 ? (
-              <div style={{ fontSize: 12.5, color: 'var(--ink-mut)' }}>Clique em <b>Analisar</b> — a IA lê seus números e diz onde está o dinheiro, o que cortar e o risco.</div>
+              <div style={{ fontSize: 14.5, color: 'var(--ink-mut)' }}>Clique em <b>Analisar</b> — a IA lê seus números e diz onde está o dinheiro, o que cortar e o risco.</div>
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                 {analise.map((a, i) => (
-                  <div key={i} style={{ display: 'flex', gap: 10, alignItems: 'flex-start', fontSize: 13, lineHeight: 1.55, color: 'var(--ink)' }}>
+                  <div key={i} style={{ display: 'flex', gap: 10, alignItems: 'flex-start', fontSize: 15, lineHeight: 1.55, color: 'var(--ink)' }}>
                     <i className="fa-solid fa-circle" style={{ fontSize: 5, color: 'var(--sage)', marginTop: 7, flexShrink: 0 }} />
                     <span>{a}</span>
                   </div>
@@ -402,27 +402,27 @@ export default function ClassificarPage() {
           {/* Projeção de caixa (Tier 3) */}
           <div className="txs-card" style={{ padding: '18px 20px', marginTop: 12 }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
-              <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--ink)', display: 'flex', alignItems: 'center', gap: 8 }}>
+              <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--ink)', display: 'flex', alignItems: 'center', gap: 8 }}>
                 <i className="fa-solid fa-chart-line" style={{ color: 'var(--sage)' }} />Projeção de caixa
               </div>
-              <button className="btn-action" style={{ fontSize: 12, padding: '7px 14px' }} disabled={projetando} onClick={() => void projetar()}>
+              <button className="btn-action" style={{ fontSize: 14, padding: '7px 14px' }} disabled={projetando} onClick={() => void projetar()}>
                 <i className={`fa-solid ${projetando ? 'fa-circle-notch fa-spin' : 'fa-wand-magic-sparkles'}`} style={{ marginRight: 6 }} />{projetando ? 'Calculando…' : 'Projetar'}
               </button>
             </div>
             {!proj ? (
-              <div style={{ fontSize: 12.5, color: 'var(--ink-mut)' }}>Clique em <b>Projetar</b> — estima seu saldo em 30 e 90 dias com base no ritmo atual e avisa se falta caixa.</div>
+              <div style={{ fontSize: 14.5, color: 'var(--ink-mut)' }}>Clique em <b>Projetar</b> — estima seu saldo em 30 e 90 dias com base no ritmo atual e avisa se falta caixa.</div>
             ) : (
               <>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 12, marginBottom: 12 }}>
                   {([['Hoje', proj.saldoAtual], ['Em 30 dias', proj.d30], ['Em 90 dias', proj.d90]] as const).map(([l, v]) => (
                     <div key={l}>
-                      <div style={{ fontSize: 10, color: 'var(--ink-mut)', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: 4 }}>{l}</div>
+                      <div style={{ fontSize: 12, color: 'var(--ink-mut)', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: 4 }}>{l}</div>
                       <div style={{ fontSize: 18, fontWeight: 700, color: v >= 0 ? IN : OUT, fontVariantNumeric: 'tabular-nums' }}>{formatBRL(v)}</div>
                     </div>
                   ))}
                 </div>
-                <div style={{ fontSize: 12.5, color: 'var(--ink)', display: 'flex', gap: 8, alignItems: 'flex-start' }}>
-                  <i className="fa-solid fa-circle-info" style={{ color: 'var(--sage)', marginTop: 3, fontSize: 11 }} />
+                <div style={{ fontSize: 14.5, color: 'var(--ink)', display: 'flex', gap: 8, alignItems: 'flex-start' }}>
+                  <i className="fa-solid fa-circle-info" style={{ color: 'var(--sage)', marginTop: 3, fontSize: 13 }} />
                   <span>{(() => {
                     const net = proj.avgReceiveDaily - proj.avgBurnDaily
                     if (proj.d90 < 0) { const dias = net < 0 ? Math.max(0, Math.round(proj.saldoAtual / Math.abs(net))) : 90; return `Atenção: no ritmo atual, o caixa fica negativo em ~${dias} dias. Priorize receber ou cortar gasto.` }
@@ -435,22 +435,22 @@ export default function ClassificarPage() {
 
           {/* Relatório pronto pra enviar (Tier 4 — execução) */}
           <div className="txs-card" style={{ padding: '18px 20px', marginTop: 12 }}>
-            <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--ink)', display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+            <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--ink)', display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
               <i className="fa-solid fa-paper-plane" style={{ color: 'var(--sage)' }} />Relatório do mês
             </div>
-            <div style={{ fontSize: 12, color: 'var(--ink-mut)', marginBottom: 12 }}>A IA monta o relatório (números + análise + projeção) e abre pronto pra você enviar.</div>
+            <div style={{ fontSize: 14, color: 'var(--ink-mut)', marginBottom: 12 }}>A IA monta o relatório (números + análise + projeção) e abre pronto pra você enviar.</div>
             <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-              <button className="btn-action" style={{ fontSize: 12 }} onClick={() => { void navigator.clipboard.writeText(montarRelatorio()); toast.success('Relatório copiado') }}>
+              <button className="btn-action" style={{ fontSize: 14 }} onClick={() => { void navigator.clipboard.writeText(montarRelatorio()); toast.success('Relatório copiado') }}>
                 <i className="fa-solid fa-copy" style={{ marginRight: 6 }} />Copiar
               </button>
-              <button className="btn-ghost" style={{ fontSize: 12 }} onClick={() => window.open(`https://wa.me/?text=${encodeURIComponent(montarRelatorio())}`, '_blank')}>
+              <button className="btn-ghost" style={{ fontSize: 14 }} onClick={() => window.open(`https://wa.me/?text=${encodeURIComponent(montarRelatorio())}`, '_blank')}>
                 <i className="fa-brands fa-whatsapp" style={{ marginRight: 6, color: '#25D366' }} />WhatsApp
               </button>
-              <button className="btn-ghost" style={{ fontSize: 12 }} onClick={() => window.open(`mailto:?subject=${encodeURIComponent('Relatório FactorOne')}&body=${encodeURIComponent(montarRelatorio())}`)}>
+              <button className="btn-ghost" style={{ fontSize: 14 }} onClick={() => window.open(`mailto:?subject=${encodeURIComponent('Relatório FactorOne')}&body=${encodeURIComponent(montarRelatorio())}`)}>
                 <i className="fa-solid fa-envelope" style={{ marginRight: 6 }} />E-mail
               </button>
             </div>
-            <div style={{ fontSize: 10.5, color: 'var(--ink-faint)', marginTop: 10 }}>Abre pronto pra você enviar. Envio 100% automático (agendado, via Zap) é o próximo passo do FactorHub.</div>
+            <div style={{ fontSize: 12.5, color: 'var(--ink-faint)', marginTop: 10 }}>Abre pronto pra você enviar. Envio 100% automático (agendado, via Zap) é o próximo passo do FactorHub.</div>
           </div>
         </div>
       )}
@@ -458,8 +458,8 @@ export default function ClassificarPage() {
       {aba === 'revisar' && revisar.length > 0 && sel.size === 0 && (
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 16px', background: 'var(--sage-tint)', border: '1px solid var(--sage)', borderRadius: 10, marginBottom: 12 }}>
           <i className="fa-solid fa-robot" style={{ color: 'var(--sage-deep)' }} />
-          <span style={{ fontSize: 12.5, fontWeight: 600, color: 'var(--sage-deep)' }}>Deixa a IA classificar as {revisar.length} de uma vez.</span>
-          <button className="btn-action" style={{ fontSize: 12, padding: '7px 16px', marginLeft: 'auto' }} disabled={busy} onClick={() => void classificarTudoIA()}>
+          <span style={{ fontSize: 14.5, fontWeight: 600, color: 'var(--sage-deep)' }}>Deixa a IA classificar as {revisar.length} de uma vez.</span>
+          <button className="btn-action" style={{ fontSize: 14, padding: '7px 16px', marginLeft: 'auto' }} disabled={busy} onClick={() => void classificarTudoIA()}>
             <i className="fa-solid fa-wand-magic-sparkles" style={{ marginRight: 6 }} />IA classifica tudo
           </button>
         </div>
@@ -467,24 +467,24 @@ export default function ClassificarPage() {
 
       {aba === 'revisar' && sel.size > 0 && (
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 16px', background: 'var(--sage-tint)', border: '1px solid var(--sage)', borderRadius: 10, marginBottom: 12 }}>
-          <span style={{ fontSize: 12.5, fontWeight: 600, color: 'var(--sage-deep)' }}>{sel.size} selecionada{sel.size > 1 ? 's' : ''}</span>
-          <button className="btn-action" style={{ fontSize: 12, padding: '7px 16px', marginLeft: 'auto' }} disabled={busy} onClick={confirmarLote}>
+          <span style={{ fontSize: 14.5, fontWeight: 600, color: 'var(--sage-deep)' }}>{sel.size} selecionada{sel.size > 1 ? 's' : ''}</span>
+          <button className="btn-action" style={{ fontSize: 14, padding: '7px 16px', marginLeft: 'auto' }} disabled={busy} onClick={confirmarLote}>
             <i className="fa-solid fa-check" style={{ marginRight: 6 }} />Confirmar em lote
           </button>
-          <button className="btn-ghost" style={{ fontSize: 12 }} onClick={() => setSel(new Set())}>Limpar</button>
+          <button className="btn-ghost" style={{ fontSize: 14 }} onClick={() => setSel(new Set())}>Limpar</button>
         </div>
       )}
 
       <div className="txs-card" style={{ display: aba === 'resumo' ? 'none' : undefined }}>
-        <div style={{ display: 'grid', gridTemplateColumns: cols, gap: 12, padding: '11px 18px', borderBottom: '1px solid var(--line)', background: 'var(--surface-2)', fontSize: 10, fontWeight: 600, color: 'var(--ink-mut)', textTransform: 'uppercase', letterSpacing: '.08em' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: cols, gap: 12, padding: '11px 18px', borderBottom: '1px solid var(--line)', background: 'var(--surface-2)', fontSize: 12, fontWeight: 600, color: 'var(--ink-mut)', textTransform: 'uppercase', letterSpacing: '.08em' }}>
           {aba === 'revisar' && <input type="checkbox" checked={sel.size === revisar.length && revisar.length > 0} onChange={toggleTodos} style={{ accentColor: 'var(--sage)' }} />}
           <span>Data</span><span>Descrição</span><span style={{ textAlign: 'right' }}>Valor</span><span>Categoria</span><span />
         </div>
 
         {loading ? (
-          <div style={{ padding: 44, textAlign: 'center', color: 'var(--ink-mut)', fontSize: 13 }}>Carregando…</div>
+          <div style={{ padding: 44, textAlign: 'center', color: 'var(--ink-mut)', fontSize: 15 }}>Carregando…</div>
         ) : lista.length === 0 ? (
-          <div style={{ padding: 44, textAlign: 'center', color: 'var(--ink-mut)', fontSize: 13 }}>
+          <div style={{ padding: 44, textAlign: 'center', color: 'var(--ink-mut)', fontSize: 15 }}>
             <i className="fa-solid fa-circle-check" style={{ fontSize: 26, color: 'var(--sage)', display: 'block', marginBottom: 10 }} />
             {aba === 'revisar'
               ? (txs.length === 0 ? 'Sem transações. Clique em "Popular dados de teste" pra ver o fluxo.' : 'Tudo classificado! 🎉')
@@ -493,46 +493,46 @@ export default function ClassificarPage() {
         ) : lista.map((t, i) => (
           <div key={t.id} style={{ display: 'grid', gridTemplateColumns: cols, gap: 12, padding: '12px 18px', borderBottom: i < lista.length - 1 ? '1px solid var(--line-soft)' : 'none', alignItems: 'center' }}>
             {aba === 'revisar' && <input type="checkbox" checked={sel.has(t.id)} onChange={() => toggleSel(t.id)} style={{ accentColor: 'var(--sage)' }} />}
-            <span style={{ fontSize: 12, color: 'var(--ink-mut)', fontVariantNumeric: 'tabular-nums' }}>{t.data.slice(8, 10)}/{t.data.slice(5, 7)}</span>
+            <span style={{ fontSize: 14, color: 'var(--ink-mut)', fontVariantNumeric: 'tabular-nums' }}>{t.data.slice(8, 10)}/{t.data.slice(5, 7)}</span>
             <div style={{ minWidth: 0 }}>
-              <div style={{ fontSize: 12.5, fontWeight: 600, color: 'var(--ink)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{limpo(t.descricao)}</div>
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, fontSize: 9.5, fontWeight: 600, marginTop: 3, color: origemBanco(t.descricao) ? 'var(--sage-deep)' : '#7A6A9E', background: origemBanco(t.descricao) ? 'var(--sage-tint)' : '#ECE7F2', padding: '2px 7px', borderRadius: 20 }}>
-                <i className={`fa-solid ${origemBanco(t.descricao) ? 'fa-building-columns' : 'fa-credit-card'}`} style={{ fontSize: 9 }} />
+              <div style={{ fontSize: 14.5, fontWeight: 600, color: 'var(--ink)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{limpo(t.descricao)}</div>
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, fontSize: 11.5, fontWeight: 600, marginTop: 3, color: origemBanco(t.descricao) ? 'var(--sage-deep)' : '#7A6A9E', background: origemBanco(t.descricao) ? 'var(--sage-tint)' : '#ECE7F2', padding: '2px 7px', borderRadius: 20 }}>
+                <i className={`fa-solid ${origemBanco(t.descricao) ? 'fa-building-columns' : 'fa-credit-card'}`} style={{ fontSize: 11 }} />
                 {origemBanco(t.descricao) ? 'Banco' : 'Cartão'}
               </span>
             </div>
-            <span style={{ textAlign: 'right', fontSize: 13, fontWeight: 700, color: t.tipo === 'entrada' ? IN : OUT, fontVariantNumeric: 'tabular-nums' }}>
+            <span style={{ textAlign: 'right', fontSize: 15, fontWeight: 700, color: t.tipo === 'entrada' ? IN : OUT, fontVariantNumeric: 'tabular-nums' }}>
               {t.tipo === 'entrada' ? '+' : '−'}{formatBRL(Number(t.valor))}
             </span>
             {aba === 'revisar' ? (
               <div>
-                <select className="form-input" value={escolhas[t.id] ?? sugerir(t.descricao)} onChange={e => setEscolhas(p => ({ ...p, [t.id]: e.target.value }))} style={{ fontSize: 12, padding: '7px 10px' }}>
+                <select className="form-input" value={escolhas[t.id] ?? sugerir(t.descricao)} onChange={e => setEscolhas(p => ({ ...p, [t.id]: e.target.value }))} style={{ fontSize: 14, padding: '7px 10px' }}>
                   {CATEGORIAS.map(c => <option key={c} value={c}>{c}</option>)}
                 </select>
                 {fontes[t.id] && (
-                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, fontSize: 9, fontWeight: 600, marginTop: 4, color: fontes[t.id] === 'aprendido' ? '#B08A3E' : 'var(--sage)' }}>
-                    <i className={`fa-solid ${fontes[t.id] === 'aprendido' ? 'fa-graduation-cap' : 'fa-robot'}`} style={{ fontSize: 8 }} />
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, fontSize: 11, fontWeight: 600, marginTop: 4, color: fontes[t.id] === 'aprendido' ? '#B08A3E' : 'var(--sage)' }}>
+                    <i className={`fa-solid ${fontes[t.id] === 'aprendido' ? 'fa-graduation-cap' : 'fa-robot'}`} style={{ fontSize: 11 }} />
                     {fontes[t.id] === 'aprendido' ? 'aprendido do seu histórico' : 'sugerido por IA'}
                   </span>
                 )}
               </div>
             ) : (
-              <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--sage-deep)', background: 'var(--sage-tint)', padding: '5px 10px', borderRadius: 8, justifySelf: 'start' }}>
-                <i className="fa-solid fa-tag" style={{ marginRight: 6, fontSize: 10 }} />{t.categoria}
+              <span style={{ fontSize: 14, fontWeight: 600, color: 'var(--sage-deep)', background: 'var(--sage-tint)', padding: '5px 10px', borderRadius: 8, justifySelf: 'start' }}>
+                <i className="fa-solid fa-tag" style={{ marginRight: 6, fontSize: 12 }} />{t.categoria}
               </span>
             )}
             {aba === 'revisar' ? (
-              <button className="btn-action" style={{ fontSize: 12, padding: '7px 0' }} disabled={busy} onClick={() => confirmarUm(t)}>
+              <button className="btn-action" style={{ fontSize: 14, padding: '7px 0' }} disabled={busy} onClick={() => confirmarUm(t)}>
                 <i className="fa-solid fa-check" style={{ marginRight: 5 }} />Confirmar
               </button>
             ) : (
-              <button className="btn-ghost" style={{ fontSize: 11, padding: '6px 10px' }} disabled={busy} onClick={() => void desfazer(t)}>Desfazer</button>
+              <button className="btn-ghost" style={{ fontSize: 13, padding: '6px 10px' }} disabled={busy} onClick={() => void desfazer(t)}>Desfazer</button>
             )}
           </div>
         ))}
       </div>
 
-      <div style={{ fontSize: 11, color: 'var(--ink-faint)', marginTop: 12, lineHeight: 1.6 }}>
+      <div style={{ fontSize: 13, color: 'var(--ink-faint)', marginTop: 12, lineHeight: 1.6 }}>
         <i className="fa-solid fa-wand-magic-sparkles" style={{ color: 'var(--sage)', marginRight: 6 }} />
         A categoria já vem sugerida. Ao confirmar, a transação entra na <b>DRE</b> (Relatórios) e no <b>Top categorias</b> do dashboard. Use "Popular dados de teste" pra ver tudo vivo.
       </div>

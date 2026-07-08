@@ -89,7 +89,7 @@ export default function DashboardPessoalLayout({ children }: { children: React.R
       <aside className="sidebar">
         <div className="sb-logo">
           <div className="sb-logo-txt">Factor<span>One</span></div>
-          <div style={{ fontSize: 9, color: 'var(--teal)', fontWeight: 700, letterSpacing: '.08em', marginTop: 2 }}>PESSOAL</div>
+          <div style={{ fontSize: 11, color: 'var(--teal)', fontWeight: 700, letterSpacing: '.08em', marginTop: 2 }}>PESSOAL</div>
         </div>
         <nav className="sb-nav">
           {NAV.map(group => (
@@ -100,7 +100,7 @@ export default function DashboardPessoalLayout({ children }: { children: React.R
                   <i className={`fa-solid ${item.icon}`} />
                   <span style={{ flex: 1 }}>{item.label}</span>
                   {item.badge && (
-                    <span style={{ fontSize: 8, fontWeight: 700, padding: '1px 5px', borderRadius: 20, background: item.badgeColor, color: '#fff' }}>
+                    <span style={{ fontSize: 11, fontWeight: 700, padding: '1px 5px', borderRadius: 20, background: item.badgeColor, color: '#fff' }}>
                       {item.badge}
                     </span>
                   )}
@@ -117,10 +117,10 @@ export default function DashboardPessoalLayout({ children }: { children: React.R
               transition: 'background 0.15s',
             }}>
               <div style={{ width: 24, height: 24, borderRadius: 6, background: 'rgba(61,122,110,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <i className="fa-solid fa-building" style={{ fontSize: 10, color: '#6FA595' }} />
+                <i className="fa-solid fa-building" style={{ fontSize: 12, color: '#6FA595' }} />
               </div>
-              <span style={{ fontSize: 11, color: '#6FA595', fontWeight: 600 }}>Modo Empresarial</span>
-              <i className="fa-solid fa-arrow-right" style={{ fontSize: 9, color: '#6FA595', marginLeft: 'auto' }} />
+              <span style={{ fontSize: 13, color: '#6FA595', fontWeight: 600 }}>Modo Empresarial</span>
+              <i className="fa-solid fa-arrow-right" style={{ fontSize: 11, color: '#6FA595', marginLeft: 'auto' }} />
             </Link>
           </div>
           <div className="sb-co" style={{ cursor: 'default' }}>

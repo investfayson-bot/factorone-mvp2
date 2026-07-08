@@ -215,7 +215,7 @@ export default function CashflowPage() {
         <div className="kpi" style={{ borderTop: `3px solid ${saldoAtual >= 0 ? '#3D7A6E' : '#B0413E'}` }}>
           <div className="kpi-lbl">Saldo do período
             <div style={{ width: 28, height: 28, borderRadius: 8, background: saldoAtual >= 0 ? '#E9F0ED' : '#F4E4E1', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <i className="fa-solid fa-scale-balanced" style={{ fontSize: 12, color: saldoAtual >= 0 ? '#3D7A6E' : '#B0413E' }} />
+              <i className="fa-solid fa-scale-balanced" style={{ fontSize: 14, color: saldoAtual >= 0 ? '#3D7A6E' : '#B0413E' }} />
             </div>
           </div>
           <div className="kpi-val">{fmtCompact(saldoAtual)}</div>
@@ -224,7 +224,7 @@ export default function CashflowPage() {
         <div className="kpi" style={{ borderTop: '3px solid #3D7A6E' }}>
           <div className="kpi-lbl">Entradas
             <div style={{ width: 28, height: 28, borderRadius: 8, background: '#E9F0ED', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <i className="fa-solid fa-arrow-down-circle" style={{ fontSize: 12, color: '#3D7A6E' }} />
+              <i className="fa-solid fa-arrow-down-circle" style={{ fontSize: 14, color: '#3D7A6E' }} />
             </div>
           </div>
           <div className="kpi-val">{fmtCompact(entradasPeriodo)}</div>
@@ -233,7 +233,7 @@ export default function CashflowPage() {
         <div className="kpi" style={{ borderTop: '3px solid #B0413E' }}>
           <div className="kpi-lbl">Saídas
             <div style={{ width: 28, height: 28, borderRadius: 8, background: '#F4E4E1', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <i className="fa-solid fa-arrow-up-circle" style={{ fontSize: 12, color: '#B0413E' }} />
+              <i className="fa-solid fa-arrow-up-circle" style={{ fontSize: 14, color: '#B0413E' }} />
             </div>
           </div>
           <div className="kpi-val">{fmtCompact(saidasPeriodo)}</div>
@@ -242,7 +242,7 @@ export default function CashflowPage() {
         <div className="kpi" style={{ borderTop: `3px solid ${projecao30 >= 0 ? '#B08A3E' : '#B0413E'}` }}>
           <div className="kpi-lbl">Projeção 30 dias
             <div style={{ width: 28, height: 28, borderRadius: 8, background: projecao30 >= 0 ? '#F3ECDA' : '#F4E4E1', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <i className="fa-solid fa-chart-line" style={{ fontSize: 12, color: projecao30 >= 0 ? '#B08A3E' : '#B0413E' }} />
+              <i className="fa-solid fa-chart-line" style={{ fontSize: 14, color: projecao30 >= 0 ? '#B08A3E' : '#B0413E' }} />
             </div>
           </div>
           <div className="kpi-val">{fmtCompact(projecao30)}</div>
@@ -254,7 +254,7 @@ export default function CashflowPage() {
       <div style={{ display: 'flex', gap: 2, marginBottom: 16, background: '#F1ECE1', borderRadius: 10, padding: 3, width: 'fit-content' }}>
         {TABS.map((tab, i) => (
           <button key={tab} onClick={() => setActiveTab(i)} style={{
-            padding: '6px 16px', fontSize: 11, fontWeight: activeTab === i ? 700 : 500, borderRadius: 8,
+            padding: '6px 16px', fontSize: 13, fontWeight: activeTab === i ? 700 : 500, borderRadius: 8,
             border: 'none', cursor: 'pointer',
             background: activeTab === i ? '#fff' : 'transparent',
             color: activeTab === i ? '#13201D' : '#7B8C88',
@@ -280,16 +280,16 @@ export default function CashflowPage() {
             ) : transacoes.length === 0 ? (
               <div style={{ height: 240, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 12, color: 'var(--gray-400)' }}>
                 <i className="fa-solid fa-money-bill-transfer" style={{ fontSize: 28, color: 'var(--gray-300)' }} />
-                <div style={{ fontSize: 13 }}>Nenhuma transação registrada.</div>
+                <div style={{ fontSize: 15 }}>Nenhuma transação registrada.</div>
                 <button className="btn-action" onClick={() => setModalAberto(true)}>+ Registrar primeira transação</button>
               </div>
             ) : (
               <ResponsiveContainer width="100%" height={240}>
                 <AreaChart data={serieComProjecao}>
                   <CartesianGrid strokeDasharray="3 3" stroke="var(--gray-100)" />
-                  <XAxis dataKey="data" tick={{ fill: 'var(--gray-400)', fontSize: 10 }} tickFormatter={(v: string) => v === 'Proj. 30d' ? 'Proj.' : new Date(v + 'T12:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })} />
-                  <YAxis tick={{ fill: 'var(--gray-400)', fontSize: 10 }} tickFormatter={(v: number) => v >= 1000 ? `R$${(v / 1000).toFixed(0)}k` : `R$${v}`} />
-                  <Tooltip formatter={(value: number) => [fmt(value), '']} labelFormatter={(l: string) => l === 'Proj. 30d' ? 'Projeção 30 dias' : l} contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid var(--gray-100)' }} />
+                  <XAxis dataKey="data" tick={{ fill: 'var(--gray-400)', fontSize: 12 }} tickFormatter={(v: string) => v === 'Proj. 30d' ? 'Proj.' : new Date(v + 'T12:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })} />
+                  <YAxis tick={{ fill: 'var(--gray-400)', fontSize: 12 }} tickFormatter={(v: number) => v >= 1000 ? `R$${(v / 1000).toFixed(0)}k` : `R$${v}`} />
+                  <Tooltip formatter={(value: number) => [fmt(value), '']} labelFormatter={(l: string) => l === 'Proj. 30d' ? 'Projeção 30 dias' : l} contentStyle={{ fontSize: 14, borderRadius: 8, border: '1px solid var(--gray-100)' }} />
                   <Area type="monotone" dataKey="saldo" stroke="var(--teal)" fill="rgba(61,122,110,.12)" name="Saldo" />
                   <Area type="monotone" dataKey="projecao" stroke="var(--gold)" fill="transparent" strokeDasharray="6 3" name="Projeção" />
                 </AreaChart>
@@ -300,18 +300,18 @@ export default function CashflowPage() {
           {/* Filtros + tabela */}
           <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, overflow: 'hidden' }}>
             <div style={{ padding: '12px 16px', borderBottom: '1px solid var(--gray-100)', display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
-              <div style={{ fontSize: 9.5, fontWeight: 700, color: 'var(--gray-400)', letterSpacing: '.08em', textTransform: 'uppercase', fontFamily: "var(--font-sans)", flex: 1 }}>
+              <div style={{ fontSize: 11.5, fontWeight: 700, color: 'var(--gray-400)', letterSpacing: '.08em', textTransform: 'uppercase', fontFamily: "var(--font-sans)", flex: 1 }}>
                 Lançamentos ({filtradas.length})
               </div>
-              <select className="form-input" style={{ width: 'auto', padding: '5px 10px', fontSize: 11 }} value={filtroPeriodo} onChange={e => setFiltroPeriodo(e.target.value as '30' | '90' | '365')}>
+              <select className="form-input" style={{ width: 'auto', padding: '5px 10px', fontSize: 13 }} value={filtroPeriodo} onChange={e => setFiltroPeriodo(e.target.value as '30' | '90' | '365')}>
                 <option value="30">30 dias</option>
                 <option value="90">90 dias</option>
                 <option value="365">12 meses</option>
               </select>
-              <select className="form-input" style={{ width: 'auto', padding: '5px 10px', fontSize: 11 }} value={filtroCategoria} onChange={e => setFiltroCategoria(e.target.value)}>
+              <select className="form-input" style={{ width: 'auto', padding: '5px 10px', fontSize: 13 }} value={filtroCategoria} onChange={e => setFiltroCategoria(e.target.value)}>
                 {categorias.map(c => <option key={c} value={c}>{c === 'todas' ? 'Todas categorias' : c}</option>)}
               </select>
-              <select className="form-input" style={{ width: 'auto', padding: '5px 10px', fontSize: 11 }} value={filtroTipo} onChange={e => setFiltroTipo(e.target.value as 'todos' | 'entrada' | 'saida')}>
+              <select className="form-input" style={{ width: 'auto', padding: '5px 10px', fontSize: 13 }} value={filtroTipo} onChange={e => setFiltroTipo(e.target.value as 'todos' | 'entrada' | 'saida')}>
                 <option value="todos">Todos</option>
                 <option value="entrada">Entradas</option>
                 <option value="saida">Saídas</option>
@@ -362,10 +362,10 @@ export default function CashflowPage() {
           {insightIA && (
             <div style={{ background: 'rgba(61,122,110,.06)', border: '1px solid rgba(61,122,110,.2)', borderRadius: 12, padding: '16px 18px' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
-                <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--teal2)', letterSpacing: '.08em', textTransform: 'uppercase', fontFamily: "var(--font-sans)" }}>FactorOne IA — Análise de Fluxo</div>
+                <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--teal2)', letterSpacing: '.08em', textTransform: 'uppercase', fontFamily: "var(--font-sans)" }}>FactorOne IA — Análise de Fluxo</div>
                 <button onClick={() => setInsightIA('')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--gray-400)', fontSize: 16, lineHeight: 1 }}>×</button>
               </div>
-              <p style={{ fontSize: 13, color: 'var(--navy)', lineHeight: 1.7, whiteSpace: 'pre-line' }}>{insightIA}</p>
+              <p style={{ fontSize: 15, color: 'var(--navy)', lineHeight: 1.7, whiteSpace: 'pre-line' }}>{insightIA}</p>
             </div>
           )}
         </>
@@ -403,8 +403,8 @@ export default function CashflowPage() {
             <div style={{ background: 'rgba(176,65,62,.08)', border: '1px solid rgba(176,65,62,.3)', borderRadius: 10, padding: '12px 16px', marginBottom: 16, display: 'flex', gap: 10, alignItems: 'flex-start' }}>
               <i className="fa-solid fa-triangle-exclamation" style={{ color: 'var(--red)', fontSize: 15, marginTop: 1 }} />
               <div>
-                <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy)' }}>Seu caixa fica negativo na projeção</div>
-                <div style={{ fontSize: 12, color: 'var(--gray-500)', marginTop: 2 }}>
+                <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--navy)' }}>Seu caixa fica negativo na projeção</div>
+                <div style={{ fontSize: 14, color: 'var(--gray-500)', marginTop: 2 }}>
                   {previsao.d7 < 0 ? 'Já em 7 dias' : previsao.d30 < 0 ? 'Entre 8 e 30 dias' : 'Entre 31 e 90 dias'} o saldo previsto vira negativo, mantendo o ritmo atual de entradas e saídas. Vale antecipar recebíveis, renegociar prazo com fornecedor, ou revisar despesas antes disso acontecer.
                 </div>
               </div>
@@ -415,7 +415,7 @@ export default function CashflowPage() {
           <div className="cf-chart-card">
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
               <div className="chart-title" style={{ margin: 0 }}>Projeção de saldo — próximos 90 dias</div>
-              <div style={{ fontSize: 10, color: 'var(--gray-400)' }}>
+              <div style={{ fontSize: 12, color: 'var(--gray-400)' }}>
                 Burn diário médio: {previsao ? fmtCompact(previsao.avgBurnDaily) : '—'} ·
                 Receita diária média: {previsao ? fmtCompact(previsao.avgReceiveDaily) : '—'}
               </div>
@@ -425,8 +425,8 @@ export default function CashflowPage() {
             ) : diasChart.length === 0 ? (
               <div style={{ height: 280, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 8, color: 'var(--gray-400)' }}>
                 <i className="fa-solid fa-chart-line" style={{ fontSize: 26, color: 'var(--gray-300)' }} />
-                <div style={{ fontSize: 13 }}>Sem dados suficientes para projeção.</div>
-                <div style={{ fontSize: 11 }}>Cadastre contas bancárias e transações históricas.</div>
+                <div style={{ fontSize: 15 }}>Sem dados suficientes para projeção.</div>
+                <div style={{ fontSize: 13 }}>Cadastre contas bancárias e transações históricas.</div>
               </div>
             ) : (
               <ResponsiveContainer width="100%" height={280}>
@@ -442,13 +442,13 @@ export default function CashflowPage() {
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="var(--gray-100)" />
-                  <XAxis dataKey="label" tick={{ fill: 'var(--gray-400)', fontSize: 10 }} />
-                  <YAxis tick={{ fill: 'var(--gray-400)', fontSize: 10 }} tickFormatter={(v: number) => v >= 1000 ? `R$${(v / 1000).toFixed(0)}k` : `R$${v}`} />
+                  <XAxis dataKey="label" tick={{ fill: 'var(--gray-400)', fontSize: 12 }} />
+                  <YAxis tick={{ fill: 'var(--gray-400)', fontSize: 12 }} tickFormatter={(v: number) => v >= 1000 ? `R$${(v / 1000).toFixed(0)}k` : `R$${v}`} />
                   <Tooltip
                     formatter={(value: number) => [fmt(value), 'Saldo previsto']}
-                    contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid var(--gray-100)' }}
+                    contentStyle={{ fontSize: 14, borderRadius: 8, border: '1px solid var(--gray-100)' }}
                   />
-                  <ReferenceLine y={0} stroke="var(--red)" strokeDasharray="4 2" strokeWidth={1.5} label={{ value: 'Zero', fill: 'var(--red)', fontSize: 10 }} />
+                  <ReferenceLine y={0} stroke="var(--red)" strokeDasharray="4 2" strokeWidth={1.5} label={{ value: 'Zero', fill: 'var(--red)', fontSize: 12 }} />
                   <Area
                     type="monotone" dataKey="saldo" stroke="var(--teal)"
                     fill="url(#gradPos)" name="Saldo previsto"
@@ -471,13 +471,13 @@ export default function CashflowPage() {
             </div>
           )}
           {previsao && previsao.d7 < 0 && (
-            <div className="alert-bar" style={{ background: 'rgba(176,65,62,.08)', border: '1px solid rgba(176,65,62,.25)', color: 'var(--red)', borderRadius: 10, padding: '10px 14px', fontSize: 12, fontWeight: 600 }}>
+            <div className="alert-bar" style={{ background: 'rgba(176,65,62,.08)', border: '1px solid rgba(176,65,62,.25)', color: 'var(--red)', borderRadius: 10, padding: '10px 14px', fontSize: 14, fontWeight: 600 }}>
               <i className="fa-solid fa-circle-exclamation" style={{ marginRight: 6 }} />Saldo negativo projetado em 7 dias. Ação imediata recomendada.
             </div>
           )}
 
           {/* Metodologia */}
-          <div style={{ background: 'rgba(61,122,110,.04)', border: '1px solid rgba(61,122,110,.12)', borderRadius: 10, padding: '12px 16px', fontSize: 11, color: 'var(--gray-400)', lineHeight: 1.7 }}>
+          <div style={{ background: 'rgba(61,122,110,.04)', border: '1px solid rgba(61,122,110,.12)', borderRadius: 10, padding: '12px 16px', fontSize: 13, color: 'var(--gray-400)', lineHeight: 1.7 }}>
             <strong style={{ color: 'var(--navy)' }}>Como é calculado:</strong> Saldo atual das contas bancárias + contas a receber com vencimento nos próximos 90 dias − contas a pagar nos próximos 90 dias + média diária histórica de entradas e saídas dos últimos 90 dias.
           </div>
         </>
@@ -489,7 +489,7 @@ export default function CashflowPage() {
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, alignItems: 'start' }}>
             {/* Painel esquerdo: adicionar cenários */}
             <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, overflow: 'hidden' }}>
-              <div style={{ padding: '10px 14px', borderBottom: '1px solid var(--gray-100)', fontSize: 11, fontWeight: 700, color: 'var(--navy)', letterSpacing: '.04em', textTransform: 'uppercase', fontFamily: "var(--font-sans)" }}>
+              <div style={{ padding: '10px 14px', borderBottom: '1px solid var(--gray-100)', fontSize: 13, fontWeight: 700, color: 'var(--navy)', letterSpacing: '.04em', textTransform: 'uppercase', fontFamily: "var(--font-sans)" }}>
                 Adicionar cenário hipotético
               </div>
               <div style={{ padding: '14px' }}>
@@ -533,21 +533,21 @@ export default function CashflowPage() {
               {/* Lista de itens adicionados */}
               {simItems.length > 0 && (
                 <div style={{ borderTop: '1px solid var(--gray-100)' }}>
-                  <div style={{ padding: '8px 14px', fontSize: 10, fontWeight: 700, color: 'var(--gray-400)', letterSpacing: '.06em', textTransform: 'uppercase' }}>
+                  <div style={{ padding: '8px 14px', fontSize: 12, fontWeight: 700, color: 'var(--gray-400)', letterSpacing: '.06em', textTransform: 'uppercase' }}>
                     Itens no cenário ({simItems.length})
                   </div>
                   {simItems.map(item => (
                     <div key={item.id} style={{ padding: '8px 14px', borderTop: '1px solid var(--gray-100)', display: 'flex', alignItems: 'center', gap: 8 }}>
-                      <span className={`tag ${item.tipo === 'entrada' ? 'green' : 'red'}`} style={{ fontSize: 9 }}>{item.tipo === 'entrada' ? '+' : '−'}</span>
+                      <span className={`tag ${item.tipo === 'entrada' ? 'green' : 'red'}`} style={{ fontSize: 11 }}>{item.tipo === 'entrada' ? '+' : '−'}</span>
                       <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--navy)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.descricao}</div>
-                        <div style={{ fontSize: 10, color: 'var(--gray-400)' }}>{fmt(item.valor)} · {item.frequencia === 'mensal' ? 'mensal' : `único no dia ${item.diaInicio}`}</div>
+                        <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--navy)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.descricao}</div>
+                        <div style={{ fontSize: 12, color: 'var(--gray-400)' }}>{fmt(item.valor)} · {item.frequencia === 'mensal' ? 'mensal' : `único no dia ${item.diaInicio}`}</div>
                       </div>
                       <button onClick={() => setSimItems(prev => prev.filter(i => i.id !== item.id))} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--gray-400)', fontSize: 16, lineHeight: 1, padding: '0 4px' }}>×</button>
                     </div>
                   ))}
                   <div style={{ padding: '8px 14px', borderTop: '1px solid var(--gray-100)' }}>
-                    <button className="btn-ghost" style={{ fontSize: 11, width: '100%' }} onClick={() => setSimItems([])}>Limpar cenário</button>
+                    <button className="btn-ghost" style={{ fontSize: 13, width: '100%' }} onClick={() => setSimItems([])}>Limpar cenário</button>
                   </div>
                 </div>
               )}
@@ -581,23 +581,23 @@ export default function CashflowPage() {
               <div className="cf-chart-card" style={{ margin: 0 }}>
                 <div className="chart-title">
                   Impacto do cenário — 90 dias
-                  {simItems.length === 0 && <span style={{ fontWeight: 400, color: 'var(--gray-400)', fontSize: 11 }}> (adicione itens para ver o impacto)</span>}
+                  {simItems.length === 0 && <span style={{ fontWeight: 400, color: 'var(--gray-400)', fontSize: 13 }}> (adicione itens para ver o impacto)</span>}
                 </div>
                 {loadingPrevisao ? (
                   <div style={{ height: 220, background: 'var(--gray-100)', borderRadius: 8, animation: 'pulse 1.5s infinite' }} />
                 ) : diasSimulados.length === 0 ? (
-                  <div style={{ height: 220, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gray-400)', fontSize: 13 }}>
+                  <div style={{ height: 220, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gray-400)', fontSize: 15 }}>
                     Sem dados de previsão base
                   </div>
                 ) : (
                   <ResponsiveContainer width="100%" height={220}>
                     <AreaChart data={diasSimulados}>
                       <CartesianGrid strokeDasharray="3 3" stroke="var(--gray-100)" />
-                      <XAxis dataKey="label" tick={{ fill: 'var(--gray-400)', fontSize: 10 }} />
-                      <YAxis tick={{ fill: 'var(--gray-400)', fontSize: 10 }} tickFormatter={(v: number) => v >= 1000 ? `R$${(v / 1000).toFixed(0)}k` : `R$${v}`} />
+                      <XAxis dataKey="label" tick={{ fill: 'var(--gray-400)', fontSize: 12 }} />
+                      <YAxis tick={{ fill: 'var(--gray-400)', fontSize: 12 }} tickFormatter={(v: number) => v >= 1000 ? `R$${(v / 1000).toFixed(0)}k` : `R$${v}`} />
                       <Tooltip
                         formatter={(value: number, name: string) => [fmt(value), name === 'saldo' ? 'Base' : 'Com cenário']}
-                        contentStyle={{ fontSize: 12, borderRadius: 8 }}
+                        contentStyle={{ fontSize: 14, borderRadius: 8 }}
                       />
                       <ReferenceLine y={0} stroke="var(--red)" strokeDasharray="4 2" strokeWidth={1} />
                       <Area type="monotone" dataKey="saldo" stroke="rgba(61,122,110,.4)" fill="rgba(61,122,110,.05)" strokeDasharray="5 3" name="saldo" />
@@ -608,7 +608,7 @@ export default function CashflowPage() {
                   </ResponsiveContainer>
                 )}
                 {simItems.length > 0 && (
-                  <div style={{ display: 'flex', gap: 16, marginTop: 8, fontSize: 11, color: 'var(--gray-400)' }}>
+                  <div style={{ display: 'flex', gap: 16, marginTop: 8, fontSize: 13, color: 'var(--gray-400)' }}>
                     <div><span style={{ display: 'inline-block', width: 24, height: 2, background: 'rgba(61,122,110,.4)', verticalAlign: 'middle', marginRight: 6 }} />Base</div>
                     <div><span style={{ display: 'inline-block', width: 24, height: 2, background: 'var(--navy)', verticalAlign: 'middle', marginRight: 6 }} />Com cenário</div>
                   </div>
@@ -618,7 +618,7 @@ export default function CashflowPage() {
           </div>
 
           {simItems.length === 0 && (
-            <div style={{ background: 'rgba(61,122,110,.04)', border: '1px solid rgba(61,122,110,.15)', borderRadius: 10, padding: '14px 16px', fontSize: 12, color: 'var(--gray-400)', lineHeight: 1.7, textAlign: 'center' }}>
+            <div style={{ background: 'rgba(61,122,110,.04)', border: '1px solid rgba(61,122,110,.15)', borderRadius: 10, padding: '14px 16px', fontSize: 14, color: 'var(--gray-400)', lineHeight: 1.7, textAlign: 'center' }}>
               Adicione cenários hipotéticos (novo contrato, nova despesa, antecipação de recebíveis) e veja instantaneamente o impacto no saldo dos próximos 90 dias.
             </div>
           )}

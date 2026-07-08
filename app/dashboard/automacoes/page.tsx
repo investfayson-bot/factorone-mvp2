@@ -151,7 +151,7 @@ export default function AutomacoesPage() {
           <div className="page-title">Automações</div>
           <div className="page-sub">{ativas} regra{ativas !== 1 ? 's' : ''} ativa{ativas !== 1 ? 's' : ''} · notificações automáticas por evento</div>
         </div>
-        <button className="btn-ghost" style={{ fontSize: 12 }} disabled={rodando} onClick={() => void executarAgora()}>
+        <button className="btn-ghost" style={{ fontSize: 14 }} disabled={rodando} onClick={() => void executarAgora()}>
           {rodando
             ? <><i className="fa-solid fa-spinner fa-spin" style={{ marginRight: 5 }} />Executando…</>
             : <><i className="fa-solid fa-play" style={{ marginRight: 5 }} />Executar agora</>}
@@ -182,7 +182,7 @@ export default function AutomacoesPage() {
       </div>
 
       {/* Info */}
-      <div style={{ background: 'rgba(61,122,110,.04)', border: '1px solid rgba(61,122,110,.15)', borderRadius: 10, padding: '12px 16px', fontSize: 12, color: 'var(--gray-500)', marginBottom: 16, lineHeight: 1.7 }}>
+      <div style={{ background: 'rgba(61,122,110,.04)', border: '1px solid rgba(61,122,110,.15)', borderRadius: 10, padding: '12px 16px', fontSize: 14, color: 'var(--gray-500)', marginBottom: 16, lineHeight: 1.7 }}>
         <i className="fa-solid fa-circle-info" style={{ color: 'var(--teal)', marginRight: 6 }} />
         As automações geram notificações no sino do topo. Clique em <strong>Executar agora</strong> para rodar manualmente, ou configure uma tarefa cron em <code>/api/automacoes/processar</code> com Authorization header.
       </div>
@@ -199,18 +199,18 @@ export default function AutomacoesPage() {
                 <i className={`fa-solid ${info.icon}`} style={{ color: regra.ativa ? info.color : 'var(--gray-400)', fontSize: 16 }} />
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy)' }}>{regra.nome}</div>
-                <div style={{ fontSize: 11, color: 'var(--gray-400)', marginTop: 2 }}>
+                <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--navy)' }}>{regra.nome}</div>
+                <div style={{ fontSize: 13, color: 'var(--gray-400)', marginTop: 2 }}>
                   {info.desc}
                   {info.campos.map(c => {
                     const v = regra.config[c.key]
                     return v != null ? <span key={c.key} style={{ marginLeft: 8, background: 'var(--gray-100)', padding: '1px 6px', borderRadius: 10 }}>{c.label}: {String(v)}</span> : null
                   })}
                 </div>
-                {regra.ultima_exec && <div style={{ fontSize: 10, color: 'var(--gray-400)', marginTop: 3 }}>Última exec: {new Date(regra.ultima_exec).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}</div>}
+                {regra.ultima_exec && <div style={{ fontSize: 12, color: 'var(--gray-400)', marginTop: 3 }}>Última exec: {new Date(regra.ultima_exec).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}</div>}
               </div>
               <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexShrink: 0 }}>
-                <button className="btn-ghost" style={{ fontSize: 11, padding: '4px 10px' }} onClick={() => abrirModal(regra)}>
+                <button className="btn-ghost" style={{ fontSize: 13, padding: '4px 10px' }} onClick={() => abrirModal(regra)}>
                   <i className="fa-solid fa-gear" style={{ marginRight: 4 }} />Config
                 </button>
                 <button
@@ -245,12 +245,12 @@ export default function AutomacoesPage() {
                 <button className="modal-close" onClick={() => setModal(null)}><i className="fa-solid fa-xmark" /></button>
               </div>
               <div style={{ marginBottom: 14 }}>
-                <label style={{ fontSize: 11, fontWeight: 600, color: 'var(--gray-500)', display: 'block', marginBottom: 6 }}>Nome da regra</label>
+                <label style={{ fontSize: 13, fontWeight: 600, color: 'var(--gray-500)', display: 'block', marginBottom: 6 }}>Nome da regra</label>
                 <input className="form-input" value={editNome} onChange={e => setEditNome(e.target.value)} />
               </div>
               {info.campos.map(c => (
                 <div key={c.key} style={{ marginBottom: 14 }}>
-                  <label style={{ fontSize: 11, fontWeight: 600, color: 'var(--gray-500)', display: 'block', marginBottom: 6 }}>{c.label}</label>
+                  <label style={{ fontSize: 13, fontWeight: 600, color: 'var(--gray-500)', display: 'block', marginBottom: 6 }}>{c.label}</label>
                   <input className="form-input" type={c.type} placeholder={c.placeholder} value={editConfig[c.key] ?? String(c.default)} onChange={e => setEditConfig(prev => ({ ...prev, [c.key]: e.target.value }))} />
                 </div>
               ))}

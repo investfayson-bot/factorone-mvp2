@@ -57,7 +57,7 @@ export default function CentralComando({ empresaId }: { empresaId: string }) {
 
   return (
     <div style={{ marginBottom: 22 }}>
-      <div style={{ fontSize: 9.5, fontWeight: 600, color: 'var(--ink-mut)', textTransform: 'uppercase', letterSpacing: '.16em', marginBottom: 12, display: 'flex', alignItems: 'center', gap: 8, fontFamily: 'var(--font-mono)' }}>
+      <div style={{ fontSize: 11.5, fontWeight: 600, color: 'var(--ink-mut)', textTransform: 'uppercase', letterSpacing: '.16em', marginBottom: 12, display: 'flex', alignItems: 'center', gap: 8, fontFamily: 'var(--font-mono)' }}>
         <span style={{ width: 14, height: 1, background: 'var(--sage)' }} />Central de comando
       </div>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 12 }}>
@@ -72,11 +72,11 @@ export default function CentralComando({ empresaId }: { empresaId: string }) {
             <Link key={c.label} href={c.href} style={{ textDecoration: 'none' }}>
               <div className="cmd-card" style={{ background: 'var(--surface)', border: '1px solid var(--line)', borderRadius: 4, padding: '16px', cursor: 'pointer', height: '100%', transition: 'border-color .15s, background .15s' }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
-                  <span style={{ fontSize: 9, fontWeight: 600, color: 'var(--ink-mut)', textTransform: 'uppercase', letterSpacing: '.12em', fontFamily: 'var(--font-mono)' }}>{c.label}</span>
-                  <i className={`fa-solid ${c.icon}`} style={{ fontSize: 11, color: c.cor, opacity: .9 }} />
+                  <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--ink-mut)', textTransform: 'uppercase', letterSpacing: '.12em', fontFamily: 'var(--font-mono)' }}>{c.label}</span>
+                  <i className={`fa-solid ${c.icon}`} style={{ fontSize: 13, color: c.cor, opacity: .9 }} />
                 </div>
                 <div style={{ fontSize: 22, fontWeight: 500, color: c.cor, fontFamily: 'var(--font-display)', letterSpacing: '-.03em', lineHeight: 1, fontVariantNumeric: 'tabular-nums' }}>{c.valor}</div>
-                <div style={{ fontSize: 10, color: 'var(--ink-faint)', marginTop: 6, fontFamily: 'var(--font-mono)', letterSpacing: '.02em' }}>{c.sub}</div>
+                <div style={{ fontSize: 12, color: 'var(--ink-faint)', marginTop: 6, fontFamily: 'var(--font-mono)', letterSpacing: '.02em' }}>{c.sub}</div>
               </div>
             </Link>
           ))}

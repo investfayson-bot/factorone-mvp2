@@ -98,9 +98,9 @@ export default function AICFOPage() {
         </div>
         <button
           onClick={() => void carregarCtx()}
-          style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 14px', borderRadius: 8, border: '0.5px solid #E4DCCC', background: '#fff', color: '#3C4A46', fontSize: 11, fontWeight: 600, cursor: 'pointer' }}
+          style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 14px', borderRadius: 8, border: '0.5px solid #E4DCCC', background: '#fff', color: '#3C4A46', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}
         >
-          <i className="fa-solid fa-arrows-rotate" style={{ fontSize: 11 }} />Atualizar contexto
+          <i className="fa-solid fa-arrows-rotate" style={{ fontSize: 13 }} />Atualizar contexto
         </button>
       </div>
 
@@ -109,7 +109,7 @@ export default function AICFOPage() {
         <div className="kpi" style={{ borderTop: `3px solid ${ctx.saldo > 0 ? '#3D7A6E' : '#B0413E'}` }}>
           <div className="kpi-lbl">Saldo banco
             <div style={{ width: 26, height: 26, borderRadius: 7, background: ctx.saldo > 0 ? '#E9F0ED' : '#F4E4E1', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <i className="fa-solid fa-building-columns" style={{ fontSize: 11, color: ctx.saldo > 0 ? '#3D7A6E' : '#B0413E' }} />
+              <i className="fa-solid fa-building-columns" style={{ fontSize: 13, color: ctx.saldo > 0 ? '#3D7A6E' : '#B0413E' }} />
             </div>
           </div>
           <div className="kpi-val">{fmtBRLCompact(ctx.saldo)}</div>
@@ -118,7 +118,7 @@ export default function AICFOPage() {
         <div className="kpi" style={{ borderTop: '3px solid #3D7A6E' }}>
           <div className="kpi-lbl">Receita mês
             <div style={{ width: 26, height: 26, borderRadius: 7, background: '#E9F0ED', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <i className="fa-solid fa-arrow-trend-up" style={{ fontSize: 11, color: '#3D7A6E' }} />
+              <i className="fa-solid fa-arrow-trend-up" style={{ fontSize: 13, color: '#3D7A6E' }} />
             </div>
           </div>
           <div className="kpi-val">{fmtBRLCompact(ctx.receita)}</div>
@@ -127,7 +127,7 @@ export default function AICFOPage() {
         <div className="kpi" style={{ borderTop: '3px solid #B0413E' }}>
           <div className="kpi-lbl">Despesas mês
             <div style={{ width: 26, height: 26, borderRadius: 7, background: '#F4E4E1', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <i className="fa-solid fa-arrow-trend-down" style={{ fontSize: 11, color: '#B0413E' }} />
+              <i className="fa-solid fa-arrow-trend-down" style={{ fontSize: 13, color: '#B0413E' }} />
             </div>
           </div>
           <div className="kpi-val">{fmtBRLCompact(ctx.despesas)}</div>
@@ -136,7 +136,7 @@ export default function AICFOPage() {
         <div className="kpi" style={{ borderTop: '3px solid #3D7A6E' }}>
           <div className="kpi-lbl">A receber
             <div style={{ width: 26, height: 26, borderRadius: 7, background: '#E9F0ED', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <i className="fa-solid fa-coins" style={{ fontSize: 11, color: '#3D7A6E' }} />
+              <i className="fa-solid fa-coins" style={{ fontSize: 13, color: '#3D7A6E' }} />
             </div>
           </div>
           <div className="kpi-val">{fmtBRLCompact(ctx.aReceber)}</div>
@@ -145,7 +145,7 @@ export default function AICFOPage() {
         <div className="kpi" style={{ borderTop: `3px solid ${ctx.runway != null && ctx.runway < 90 ? '#B08A3E' : '#3D7A6E'}` }}>
           <div className="kpi-lbl">Runway
             <div style={{ width: 26, height: 26, borderRadius: 7, background: ctx.runway != null && ctx.runway < 90 ? '#F3ECDA' : '#E9F0ED', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <i className="fa-solid fa-gauge-high" style={{ fontSize: 11, color: ctx.runway != null && ctx.runway < 90 ? '#B08A3E' : '#3D7A6E' }} />
+              <i className="fa-solid fa-gauge-high" style={{ fontSize: 13, color: ctx.runway != null && ctx.runway < 90 ? '#B08A3E' : '#3D7A6E' }} />
             </div>
           </div>
           <div className="kpi-val">{runwayLabel}</div>
@@ -172,7 +172,7 @@ export default function AICFOPage() {
           {/* Ações rápidas quando chat vazio */}
           {mensagens.length === 0 && (
             <div style={{ padding: '14px 0 6px' }}>
-              <div style={{ fontSize: 10, fontWeight: 700, color: '#7B8C88', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }}>Ações rápidas</div>
+              <div style={{ fontSize: 12, fontWeight: 700, color: '#7B8C88', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }}>Ações rápidas</div>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 }}>
                 {ACOES_RAPIDAS.map(a => (
                   <button
@@ -187,9 +187,9 @@ export default function AICFOPage() {
                     onMouseOut={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = '#E4DCCC'; (e.currentTarget as HTMLButtonElement).style.background = '#fff' }}
                   >
                     <div style={{ width: 28, height: 28, borderRadius: 7, background: '#E9F0ED', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <i className={`fa-solid ${a.icon}`} style={{ color: '#3D7A6E', fontSize: 12 }} />
+                      <i className={`fa-solid ${a.icon}`} style={{ color: '#3D7A6E', fontSize: 14 }} />
                     </div>
-                    <span style={{ fontSize: 11, fontWeight: 600, color: '#13201D', lineHeight: 1.3 }}>{a.label}</span>
+                    <span style={{ fontSize: 13, fontWeight: 600, color: '#13201D', lineHeight: 1.3 }}>{a.label}</span>
                   </button>
                 ))}
               </div>
@@ -202,14 +202,14 @@ export default function AICFOPage() {
               <div key={i} className={`msg ${m.role}`}>
                 <div className={`msg-av ${m.role === 'assistant' ? 'ai' : 'user'}`}>
                   {m.role === 'assistant'
-                    ? <i className="fa-solid fa-robot" style={{ fontSize: 13 }} />
+                    ? <i className="fa-solid fa-robot" style={{ fontSize: 15 }} />
                     : 'VC'
                   }
                 </div>
                 <div className={`msg-bubble ${m.role === 'assistant' ? 'ai' : 'user'}`}>
                   {m.role === 'assistant' && m.structured
                     ? <RespostaIA data={m.structured as never} />
-                    : <span style={{ fontSize: 12, lineHeight: 1.6 }}>{m.content}</span>
+                    : <span style={{ fontSize: 14, lineHeight: 1.6 }}>{m.content}</span>
                   }
                 </div>
               </div>
@@ -217,7 +217,7 @@ export default function AICFOPage() {
             {loading && (
               <div className="msg">
                 <div className="msg-av ai">
-                  <i className="fa-solid fa-robot" style={{ fontSize: 13 }} />
+                  <i className="fa-solid fa-robot" style={{ fontSize: 15 }} />
                 </div>
                 <div className="msg-bubble ai" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                   <div style={{ display: 'flex', gap: 4 }}>
@@ -225,7 +225,7 @@ export default function AICFOPage() {
                       <div key={j} style={{ width: 6, height: 6, borderRadius: '50%', background: '#3D7A6E', animation: `fo-pulse 1s ${j * 0.2}s infinite` }} />
                     ))}
                   </div>
-                  <span style={{ fontSize: 12, color: '#7B8C88' }}>Analisando seus dados…</span>
+                  <span style={{ fontSize: 14, color: '#7B8C88' }}>Analisando seus dados…</span>
                 </div>
               </div>
             )}
@@ -242,7 +242,7 @@ export default function AICFOPage() {
               placeholder="Pergunte ao FactorOne CFO..."
             />
             <button className="ai-send" onClick={() => void enviar()} disabled={!input.trim() || loading}>
-              <i className="fa-solid fa-paper-plane" style={{ fontSize: 13, color: '#fff' }} />
+              <i className="fa-solid fa-paper-plane" style={{ fontSize: 15, color: '#fff' }} />
             </button>
           </div>
         </div>
@@ -272,7 +272,7 @@ export default function AICFOPage() {
                 key={s}
                 className="quick-btn"
                 onClick={() => void enviar(s)}
-                style={{ display: 'block', width: '100%', marginBottom: 6, textAlign: 'left', fontSize: 11, lineHeight: 1.4 }}
+                style={{ display: 'block', width: '100%', marginBottom: 6, textAlign: 'left', fontSize: 13, lineHeight: 1.4 }}
               >
                 {s}
               </button>

@@ -62,7 +62,7 @@ export default function OrcamentoPage() {
           <div className="page-sub">Defina limites por categoria e acompanhe em tempo real</div>
         </div>
         <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-          <input type="month" value={mes} onChange={e => { setMes(e.target.value); carregar(userId, e.target.value) }} className="form-input" style={{ width: 'auto', padding: '6px 10px', fontSize: 12 }} />
+          <input type="month" value={mes} onChange={e => { setMes(e.target.value); carregar(userId, e.target.value) }} className="form-input" style={{ width: 'auto', padding: '6px 10px', fontSize: 14 }} />
           <button onClick={salvarLimites} className="btn-action" disabled={saving}>{saving ? 'Salvando...' : 'Salvar limites'}</button>
         </div>
       </div>
@@ -83,22 +83,22 @@ export default function OrcamentoPage() {
             return (
               <div key={l.categoria}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 6 }}>
-                  <div style={{ flex: 1, fontSize: 13, fontWeight: 600, color: 'var(--navy)' }}>{l.categoria}</div>
-                  <div style={{ fontSize: 12, color: 'var(--gray-400)' }}>
+                  <div style={{ flex: 1, fontSize: 15, fontWeight: 600, color: 'var(--navy)' }}>{l.categoria}</div>
+                  <div style={{ fontSize: 14, color: 'var(--gray-400)' }}>
                     Gasto: <span style={{ fontWeight: 700, color: over ? 'var(--red)' : 'var(--navy)' }}>{formatBRL(l.gasto)}</span>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                    <span style={{ fontSize: 11, color: 'var(--gray-400)' }}>Limite:</span>
+                    <span style={{ fontSize: 13, color: 'var(--gray-400)' }}>Limite:</span>
                     <input
                       type="number"
                       value={editando[l.categoria] ?? ''}
                       onChange={e => setEditando(prev => ({ ...prev, [l.categoria]: e.target.value }))}
                       placeholder="0"
                       className="form-input"
-                      style={{ width: 90, padding: '4px 8px', fontSize: 12 }}
+                      style={{ width: 90, padding: '4px 8px', fontSize: 14 }}
                     />
                   </div>
-                  {!semLimite && <span style={{ fontSize: 11, fontWeight: 700, color: over ? 'var(--red)' : pct > 80 ? 'var(--gold)' : 'var(--teal)', minWidth: 36, textAlign: 'right' }}>{pct.toFixed(0)}%</span>}
+                  {!semLimite && <span style={{ fontSize: 13, fontWeight: 700, color: over ? 'var(--red)' : pct > 80 ? 'var(--gold)' : 'var(--teal)', minWidth: 36, textAlign: 'right' }}>{pct.toFixed(0)}%</span>}
                 </div>
                 {!semLimite && (
                   <div style={{ height: 8, borderRadius: 4, background: 'var(--gray-100)' }}>

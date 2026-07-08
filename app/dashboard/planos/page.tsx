@@ -191,14 +191,14 @@ export default function PlanosPage() {
           ] as { id: TabTipo; label: string; icon: string }[]).map(t => (
             <button key={t.id} onClick={() => setTab(t.id)} style={{
               display: 'flex', alignItems: 'center', gap: 7,
-              fontSize: 12, fontWeight: tab === t.id ? 700 : 500,
+              fontSize: 14, fontWeight: tab === t.id ? 700 : 500,
               padding: '8px 18px', borderRadius: 9, border: 'none', cursor: 'pointer',
               background: tab === t.id ? '#fff' : 'transparent',
               color: tab === t.id ? '#13201D' : '#7B8C88',
               boxShadow: tab === t.id ? '0 1px 4px rgba(0,0,0,0.08)' : 'none',
               transition: 'all 0.15s',
             }}>
-              <i className={`fa-solid ${t.icon}`} style={{ fontSize: 12 }} />
+              <i className={`fa-solid ${t.icon}`} style={{ fontSize: 14 }} />
               {t.label}
             </button>
           ))}
@@ -212,8 +212,8 @@ export default function PlanosPage() {
             <i className="fa-solid fa-people-roof" style={{ fontSize: 18, color: '#6FA595' }} />
           </div>
           <div>
-            <div style={{ fontSize: 13, fontWeight: 700, color: '#fff', marginBottom: 3 }}>Um plano para empresa e família</div>
-            <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.6)', lineHeight: 1.5 }}>
+            <div style={{ fontSize: 15, fontWeight: 700, color: '#fff', marginBottom: 3 }}>Um plano para empresa e família</div>
+            <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.6)', lineHeight: 1.5 }}>
               O titular alterna entre o painel PJ (empresa) e PF (pessoal) no mesmo login. Os membros da família têm acesso separado — cada um vê só suas finanças, nunca os dados da empresa.
             </div>
           </div>
@@ -241,21 +241,21 @@ export default function PlanosPage() {
               position: 'relative',
             }}>
               {p.destaque && (
-                <div style={{ position: 'absolute', top: -1, left: '50%', transform: 'translateX(-50%)', background: '#3D7A6E', color: '#fff', fontSize: 9, fontWeight: 700, padding: '3px 12px', borderRadius: '0 0 8px 8px', letterSpacing: '0.06em', whiteSpace: 'nowrap' }}>
+                <div style={{ position: 'absolute', top: -1, left: '50%', transform: 'translateX(-50%)', background: '#3D7A6E', color: '#fff', fontSize: 11, fontWeight: 700, padding: '3px 12px', borderRadius: '0 0 8px 8px', letterSpacing: '0.06em', whiteSpace: 'nowrap' }}>
                   MAIS POPULAR
                 </div>
               )}
 
-              <span style={{ fontSize: 10, fontWeight: 600, padding: '3px 10px', borderRadius: 20, display: 'inline-block', marginBottom: 10, background: p.badgeBg, color: p.badgeColor, width: 'fit-content' }}>
+              <span style={{ fontSize: 12, fontWeight: 600, padding: '3px 10px', borderRadius: 20, display: 'inline-block', marginBottom: 10, background: p.badgeBg, color: p.badgeColor, width: 'fit-content' }}>
                 {p.badge}
               </span>
 
               <div style={{ fontSize: 14, fontWeight: 700, color: '#13201D', marginBottom: 4 }}>{p.nome}</div>
               <div style={{ fontSize: 26, fontWeight: 700, color: '#13201D', letterSpacing: '-0.03em', lineHeight: 1 }}>{p.preco}</div>
-              <div style={{ fontSize: 11, color: '#7B8C88', marginBottom: 14, marginTop: 3 }}>{p.subPreco}</div>
+              <div style={{ fontSize: 13, color: '#7B8C88', marginBottom: 14, marginTop: 3 }}>{p.subPreco}</div>
 
               {'economia' in p && (p as { economia?: string }).economia && (
-                <div style={{ background: '#E9F0ED', borderRadius: 8, padding: '7px 10px', fontSize: 10, color: '#2B564D', fontWeight: 500, marginBottom: 12, lineHeight: 1.4 }}>
+                <div style={{ background: '#E9F0ED', borderRadius: 8, padding: '7px 10px', fontSize: 12, color: '#2B564D', fontWeight: 500, marginBottom: 12, lineHeight: 1.4 }}>
                   <i className="fa-solid fa-piggy-bank" style={{ marginRight: 5 }} />{(p as { economia?: string }).economia}
                 </div>
               )}
@@ -264,16 +264,16 @@ export default function PlanosPage() {
 
               <div style={{ flex: 1 }}>
                 {p.features.map(f => (
-                  <div key={f} style={{ display: 'flex', alignItems: 'flex-start', gap: 7, padding: '3px 0', fontSize: 11, color: '#3C4A46', lineHeight: 1.4 }}>
-                    <i className="fa-solid fa-check" style={{ fontSize: 11, color: '#3D7A6E', flexShrink: 0, marginTop: 2 }} />{f}
+                  <div key={f} style={{ display: 'flex', alignItems: 'flex-start', gap: 7, padding: '3px 0', fontSize: 13, color: '#3C4A46', lineHeight: 1.4 }}>
+                    <i className="fa-solid fa-check" style={{ fontSize: 13, color: '#3D7A6E', flexShrink: 0, marginTop: 2 }} />{f}
                   </div>
                 ))}
                 {p.nao.length > 0 && (
                   <>
                     <div style={{ height: '0.5px', background: '#E4DCCC', margin: '10px 0 8px' }} />
                     {p.nao.map(f => (
-                      <div key={f} style={{ display: 'flex', alignItems: 'flex-start', gap: 7, padding: '3px 0', fontSize: 11, color: '#A6B0AC', lineHeight: 1.4 }}>
-                        <i className="fa-solid fa-lock" style={{ fontSize: 11, flexShrink: 0, marginTop: 2 }} />{f}
+                      <div key={f} style={{ display: 'flex', alignItems: 'flex-start', gap: 7, padding: '3px 0', fontSize: 13, color: '#A6B0AC', lineHeight: 1.4 }}>
+                        <i className="fa-solid fa-lock" style={{ fontSize: 13, flexShrink: 0, marginTop: 2 }} />{f}
                       </div>
                     ))}
                   </>
@@ -285,7 +285,7 @@ export default function PlanosPage() {
                 disabled={ativo || carregando}
                 style={{
                   marginTop: 16, width: '100%', padding: '10px', borderRadius: 9,
-                  fontSize: 12, fontWeight: 700, cursor: ativo ? 'default' : 'pointer',
+                  fontSize: 14, fontWeight: 700, cursor: ativo ? 'default' : 'pointer',
                   border: 'none',
                   background: ativo ? '#E9F0ED' : p.destaque ? '#13201D' : '#F7F4EE',
                   color: ativo ? '#2B564D' : p.destaque ? '#fff' : '#13201D',
@@ -307,14 +307,14 @@ export default function PlanosPage() {
           </div>
           <div>
             <div style={{ fontSize: 14, fontWeight: 700, color: '#fff', marginBottom: 4 }}>Abra sua Conta PJ</div>
-            <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.6)', lineHeight: 1.5, maxWidth: 480 }}>
+            <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.6)', lineHeight: 1.5, maxWidth: 480 }}>
               Disponível no plano Profissional PJ ou superior. Conta com cartão corporativo, PIX, boleto e gestão de despesas — tudo integrado ao FactorOne.
             </div>
           </div>
         </div>
         <button
           onClick={() => router.push('/dashboard/marketplace')}
-          style={{ background: '#3D7A6E', color: '#fff', border: 'none', borderRadius: 9, padding: '10px 20px', fontSize: 12, fontWeight: 700, cursor: 'pointer', whiteSpace: 'nowrap', flexShrink: 0 }}
+          style={{ background: '#3D7A6E', color: '#fff', border: 'none', borderRadius: 9, padding: '10px 20px', fontSize: 14, fontWeight: 700, cursor: 'pointer', whiteSpace: 'nowrap', flexShrink: 0 }}
         >
           Ver no Marketplace
         </button>
@@ -322,7 +322,7 @@ export default function PlanosPage() {
 
       {/* FAQ */}
       <div style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 14, padding: '18px 20px' }}>
-        <div style={{ fontSize: 13, fontWeight: 700, color: '#13201D', marginBottom: 14 }}>Perguntas frequentes</div>
+        <div style={{ fontSize: 15, fontWeight: 700, color: '#13201D', marginBottom: 14 }}>Perguntas frequentes</div>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px 24px' }}>
           {[
             { q: 'Posso cancelar a qualquer momento?', r: 'Sim. Sem fidelidade ou multa. Cancele quando quiser pelo painel.' },
@@ -331,8 +331,8 @@ export default function PlanosPage() {
             { q: 'A Conta PJ é cobrada à parte?', r: 'Sim. É um produto financeiro do marketplace, ativado no plano Profissional. Sem tarifas mensais — você paga só o que usar.' },
           ].map(item => (
             <div key={item.q}>
-              <div style={{ fontSize: 12, fontWeight: 600, color: '#13201D', marginBottom: 4 }}>{item.q}</div>
-              <div style={{ fontSize: 11, color: '#7B8C88', lineHeight: 1.5 }}>{item.r}</div>
+              <div style={{ fontSize: 14, fontWeight: 600, color: '#13201D', marginBottom: 4 }}>{item.q}</div>
+              <div style={{ fontSize: 13, color: '#7B8C88', lineHeight: 1.5 }}>{item.r}</div>
             </div>
           ))}
         </div>

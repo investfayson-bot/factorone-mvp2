@@ -97,7 +97,7 @@ export default function ObrasPage() {
           <div className="page-title">Obras e Reformas</div>
           <div className="page-sub">Orçamento × pago × desvio. Cada pagamento vira saída no Fluxo de Caixa e na DRE.</div>
         </div>
-        <button className="btn-action" style={{ fontSize: 12 }} onClick={abrirNova}><i className="fa-solid fa-plus" style={{ marginRight: 6 }} />Nova obra</button>
+        <button className="btn-action" style={{ fontSize: 14 }} onClick={abrirNova}><i className="fa-solid fa-plus" style={{ marginRight: 6 }} />Nova obra</button>
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 12, marginBottom: 18 }}>
@@ -109,8 +109,8 @@ export default function ObrasPage() {
         ].map(k => (
           <div key={k.lbl} className="kpi" style={{ padding: '14px 16px' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <span style={{ fontSize: 10, fontWeight: 600, color: 'var(--ink-mut)', textTransform: 'uppercase', letterSpacing: '.08em' }}>{k.lbl}</span>
-              <i className={`fa-solid ${k.ic}`} style={{ fontSize: 12, color: k.cor }} />
+              <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--ink-mut)', textTransform: 'uppercase', letterSpacing: '.08em' }}>{k.lbl}</span>
+              <i className={`fa-solid ${k.ic}`} style={{ fontSize: 14, color: k.cor }} />
             </div>
             <div style={{ fontSize: 20, fontWeight: 700, color: k.cor, marginTop: 8, fontVariantNumeric: 'tabular-nums' }}>{k.val}</div>
           </div>
@@ -121,8 +121,8 @@ export default function ObrasPage() {
         <div className="txs-card" style={{ padding: 44, textAlign: 'center' }}>
           <i className="fa-solid fa-helmet-safety" style={{ fontSize: 28, color: 'var(--sage)', marginBottom: 12 }} />
           <div style={{ fontFamily: 'var(--font-display)', fontSize: 16, fontWeight: 600, color: 'var(--ink)', marginBottom: 6 }}>Controle suas obras e reformas</div>
-          <div style={{ fontSize: 12.5, color: 'var(--ink-mut)', maxWidth: 440, margin: '0 auto 14px' }}>Crie uma obra com o orçamento e registre os pagamentos — o desvio aparece sozinho e cada pagamento entra na DRE.</div>
-          <button className="btn-action" style={{ fontSize: 12 }} onClick={abrirNova}><i className="fa-solid fa-plus" style={{ marginRight: 6 }} />Nova obra</button>
+          <div style={{ fontSize: 14.5, color: 'var(--ink-mut)', maxWidth: 440, margin: '0 auto 14px' }}>Crie uma obra com o orçamento e registre os pagamentos — o desvio aparece sozinho e cada pagamento entra na DRE.</div>
+          <button className="btn-action" style={{ fontSize: 14 }} onClick={abrirNova}><i className="fa-solid fa-plus" style={{ marginRight: 6 }} />Nova obra</button>
         </div>
       ) : obras.map(o => {
         const pago = o.pagamentos.reduce((s, p) => s + Number(p.valor), 0)
@@ -135,19 +135,19 @@ export default function ObrasPage() {
               <div>
                 <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--ink)', display: 'flex', alignItems: 'center', gap: 10 }}>
                   {o.nome}
-                  <span style={{ fontSize: 9.5, fontWeight: 600, padding: '3px 9px', borderRadius: 100, textTransform: 'uppercase', letterSpacing: '.05em', color: st.cor, background: st.bg }}>{st.label}</span>
+                  <span style={{ fontSize: 11.5, fontWeight: 600, padding: '3px 9px', borderRadius: 100, textTransform: 'uppercase', letterSpacing: '.05em', color: st.cor, background: st.bg }}>{st.label}</span>
                 </div>
-                <div style={{ fontSize: 11.5, color: 'var(--ink-mut)', marginTop: 3 }}>{[o.local, o.responsavel].filter(Boolean).join(' · ') || 'Sem detalhes'}{o.previsao ? ` · previsão ${o.previsao.split('-').reverse().join('/')}` : ''}</div>
+                <div style={{ fontSize: 13.5, color: 'var(--ink-mut)', marginTop: 3 }}>{[o.local, o.responsavel].filter(Boolean).join(' · ') || 'Sem detalhes'}{o.previsao ? ` · previsão ${o.previsao.split('-').reverse().join('/')}` : ''}</div>
               </div>
               <div style={{ display: 'flex', gap: 6 }}>
-                <button className="btn-action" style={{ fontSize: 11, padding: '6px 12px' }} disabled={busy} onClick={() => setPagFor(o)}><i className="fa-solid fa-plus" style={{ marginRight: 5 }} />Pagamento</button>
-                <button className="btn-ghost" style={{ fontSize: 11, padding: '6px 10px' }} onClick={() => abrirEdit(o)}><i className="fa-solid fa-pen" /></button>
-                <button className="btn-ghost" style={{ fontSize: 11, padding: '6px 10px', color: '#B0413E', borderColor: '#B0413E' }} onClick={() => excluir(o.id)}><i className="fa-solid fa-trash-can" /></button>
+                <button className="btn-action" style={{ fontSize: 13, padding: '6px 12px' }} disabled={busy} onClick={() => setPagFor(o)}><i className="fa-solid fa-plus" style={{ marginRight: 5 }} />Pagamento</button>
+                <button className="btn-ghost" style={{ fontSize: 13, padding: '6px 10px' }} onClick={() => abrirEdit(o)}><i className="fa-solid fa-pen" /></button>
+                <button className="btn-ghost" style={{ fontSize: 13, padding: '6px 10px', color: '#B0413E', borderColor: '#B0413E' }} onClick={() => excluir(o.id)}><i className="fa-solid fa-trash-can" /></button>
               </div>
             </div>
             <div style={{ display: 'flex', gap: 24, marginBottom: 10, flexWrap: 'wrap' }}>
               {[['Orçamento', formatBRL(o.orcamento), 'var(--ink)'], ['Pago', formatBRL(pago), 'var(--sage-deep)'], ['A pagar', formatBRL(Math.max(0, o.orcamento - pago)), 'var(--gold)'], ['Desvio', `${pago - o.orcamento > 0 ? '+' : ''}${formatBRL(pago - o.orcamento)}`, estourou ? '#B0413E' : 'var(--sage)']].map(([l, v, c]) => (
-                <div key={l}><div style={{ fontSize: 10, color: 'var(--ink-mut)', textTransform: 'uppercase', letterSpacing: '.05em' }}>{l}</div><div style={{ fontSize: 14, fontWeight: 700, color: c as string, fontVariantNumeric: 'tabular-nums' }}>{v}</div></div>
+                <div key={l}><div style={{ fontSize: 12, color: 'var(--ink-mut)', textTransform: 'uppercase', letterSpacing: '.05em' }}>{l}</div><div style={{ fontSize: 14, fontWeight: 700, color: c as string, fontVariantNumeric: 'tabular-nums' }}>{v}</div></div>
               ))}
             </div>
             <div style={{ height: 7, background: 'var(--paper-2)', borderRadius: 4, overflow: 'hidden' }}>
@@ -156,7 +156,7 @@ export default function ObrasPage() {
             {o.pagamentos.length > 0 && (
               <div style={{ marginTop: 12, borderTop: '1px solid var(--line-soft)', paddingTop: 10 }}>
                 {o.pagamentos.slice().reverse().map(p => (
-                  <div key={p.id} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11.5, padding: '4px 0', color: 'var(--ink-soft)' }}>
+                  <div key={p.id} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13.5, padding: '4px 0', color: 'var(--ink-soft)' }}>
                     <span>{p.data.slice(8, 10)}/{p.data.slice(5, 7)} · {p.descricao}</span>
                     <span style={{ fontWeight: 600, color: 'var(--ink)', fontVariantNumeric: 'tabular-nums' }}>{formatBRL(p.valor)}</span>
                   </div>
@@ -204,7 +204,7 @@ export default function ObrasPage() {
               <div className="modal-title">Lançar pagamento</div>
               <button className="modal-close" onClick={() => setPagFor(null)}><i className="fa-solid fa-xmark" /></button>
             </div>
-            <div style={{ fontSize: 12, color: 'var(--ink-mut)', marginBottom: 16 }}>Obra: <b>{pagFor.nome}</b>. Entra como saída na DRE (categoria &quot;Obras e reformas&quot;).</div>
+            <div style={{ fontSize: 14, color: 'var(--ink-mut)', marginBottom: 16 }}>Obra: <b>{pagFor.nome}</b>. Entra como saída na DRE (categoria &quot;Obras e reformas&quot;).</div>
             <div className="form-group"><label className="form-label">Descrição</label><input className="form-input" placeholder="Ex: Material elétrico" value={pag.descricao} onChange={e => setPag(p => ({ ...p, descricao: e.target.value }))} /></div>
             <div className="form-row">
               <div className="form-group"><label className="form-label">Valor (R$)</label><input className="form-input" type="number" step="0.01" value={pag.valor} onChange={e => setPag(p => ({ ...p, valor: e.target.value }))} /></div>

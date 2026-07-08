@@ -32,12 +32,12 @@ function Card({ s, onClick }: { s: Solucao; onClick?: () => void }) {
           <i className={`fa-solid ${s.icon}`} style={{ fontSize: 17, color: s.cor }} />
         </div>
         {s.soon
-          ? <span style={{ fontSize: 9, fontWeight: 700, color: '#7B8C88', background: '#F1ECE1', padding: '3px 9px', borderRadius: 20 }}>EM BREVE</span>
-          : <i className="fa-solid fa-arrow-right" style={{ color: '#C4CFCE', fontSize: 13 }} />}
+          ? <span style={{ fontSize: 11, fontWeight: 700, color: '#7B8C88', background: '#F1ECE1', padding: '3px 9px', borderRadius: 20 }}>EM BREVE</span>
+          : <i className="fa-solid fa-arrow-right" style={{ color: '#C4CFCE', fontSize: 15 }} />}
       </div>
       <div>
         <div style={{ fontSize: 14, fontWeight: 700, color: '#13201D', marginBottom: 3 }}>{s.label}</div>
-        <div style={{ fontSize: 12, color: '#7B8C88', lineHeight: 1.5 }}>{s.desc}</div>
+        <div style={{ fontSize: 14, color: '#7B8C88', lineHeight: 1.5 }}>{s.desc}</div>
       </div>
     </div>
   )
@@ -54,7 +54,7 @@ export default function SolucoesPage() {
           <div className="page-title">Soluções financeiras</div>
           <div className="page-sub">Tudo que sua empresa precisa de banco, num só lugar</div>
         </div>
-        <button className="btn-ghost" style={{ fontSize: 12 }} onClick={() => router.push('/dashboard/conta-pj')}>
+        <button className="btn-ghost" style={{ fontSize: 14 }} onClick={() => router.push('/dashboard/conta-pj')}>
           <i className="fa-solid fa-arrow-left" style={{ marginRight: 6 }} />Banco
         </button>
       </div>
@@ -63,19 +63,19 @@ export default function SolucoesPage() {
       <div style={{ background: 'linear-gradient(135deg, #13201D 0%, #1C2E29 100%)', borderRadius: 16, padding: '22px 26px', marginBottom: 22, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
         <div>
           <div style={{ fontSize: 18, fontWeight: 800, color: '#fff', fontFamily: "var(--font-sans)", letterSpacing: '-.02em' }}>O super-app financeiro da sua empresa</div>
-          <div style={{ fontSize: 13, color: '#6FA595', marginTop: 4 }}>Conta, cartões, crédito, Open Finance e mais — integrados e com IA.</div>
+          <div style={{ fontSize: 15, color: '#6FA595', marginTop: 4 }}>Conta, cartões, crédito, Open Finance e mais — integrados e com IA.</div>
         </div>
-        <Link href="/dashboard/conexoes" style={{ background: '#3D7A6E', color: '#fff', textDecoration: 'none', fontSize: 13, fontWeight: 700, padding: '10px 18px', borderRadius: 9 }}>
+        <Link href="/dashboard/conexoes" style={{ background: '#3D7A6E', color: '#fff', textDecoration: 'none', fontSize: 15, fontWeight: 700, padding: '10px 18px', borderRadius: 9 }}>
           <i className="fa-solid fa-link" style={{ marginRight: 7 }} />Conectar meu banco
         </Link>
       </div>
 
-      <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.04em', marginBottom: 12 }}>Disponível agora</div>
+      <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.04em', marginBottom: 12 }}>Disponível agora</div>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: 12, marginBottom: 26 }}>
         {DISPONIVEIS.map(s => <Card key={s.label} s={s} />)}
       </div>
 
-      <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.04em', marginBottom: 12 }}>Em breve</div>
+      <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.04em', marginBottom: 12 }}>Em breve</div>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: 12 }}>
         {EM_BREVE.map(s => <Card key={s.label} s={s} />)}
       </div>

@@ -112,7 +112,7 @@ export default function IntegracoesPage() {
       {/* Tabs */}
       <div style={{ display: 'flex', gap: 6, marginBottom: 16 }}>
         {([['integracoes', 'Integrações'], ['webhooks', 'Webhooks & Endpoints']] as [Tab, string][]).map(([k, l]) => (
-          <button key={k} className={`btn-action${tab !== k ? ' btn-ghost' : ''}`} style={{ fontSize: 11, padding: '5px 12px' }} onClick={() => setTab(k)}>{l}</button>
+          <button key={k} className={`btn-action${tab !== k ? ' btn-ghost' : ''}`} style={{ fontSize: 13, padding: '5px 12px' }} onClick={() => setTab(k)}>{l}</button>
         ))}
       </div>
 
@@ -143,7 +143,7 @@ export default function IntegracoesPage() {
         const itens = INTEGRACOES.filter(i => i.categoria === cat)
         return (
           <div key={cat} style={{ marginBottom: 20 }}>
-            <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--gray-400)', letterSpacing: '.08em', textTransform: 'uppercase', fontFamily: "var(--font-sans)", marginBottom: 10 }}>
+            <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--gray-400)', letterSpacing: '.08em', textTransform: 'uppercase', fontFamily: "var(--font-sans)", marginBottom: 10 }}>
               {CAT_LABELS[cat] ?? cat}
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 10 }}>
@@ -164,14 +164,14 @@ export default function IntegracoesPage() {
                       </div>
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 3 }}>
-                          <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy)' }}>{item.nome}</div>
+                          <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--navy)' }}>{item.nome}</div>
                           {item.badge && (
-                            <span style={{ fontSize: 8, fontWeight: 700, padding: '1px 6px', borderRadius: 20, background: 'rgba(124,58,237,.12)', color: '#7A6A9E' }}>
+                            <span style={{ fontSize: 11, fontWeight: 700, padding: '1px 6px', borderRadius: 20, background: 'rgba(124,58,237,.12)', color: '#7A6A9E' }}>
                               {item.badge}
                             </span>
                           )}
                         </div>
-                        <div style={{ fontSize: 11, color: 'var(--gray-400)', lineHeight: 1.5 }}>{item.desc}</div>
+                        <div style={{ fontSize: 13, color: 'var(--gray-400)', lineHeight: 1.5 }}>{item.desc}</div>
                       </div>
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -179,16 +179,16 @@ export default function IntegracoesPage() {
                         loading ? (
                           <div style={{ height: 18, width: 80, background: 'var(--gray-100)', borderRadius: 20, animation: 'pulse 1.5s infinite' }} />
                         ) : ativo ? (
-                          <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 10px', borderRadius: 20, background: 'rgba(61,122,110,.1)', color: 'var(--green)', display: 'flex', alignItems: 'center', gap: 4 }}><i className="fa-solid fa-circle-check" style={{ fontSize: 9 }} /> Ativo</span>
+                          <span style={{ fontSize: 12, fontWeight: 700, padding: '2px 10px', borderRadius: 20, background: 'rgba(61,122,110,.1)', color: 'var(--green)', display: 'flex', alignItems: 'center', gap: 4 }}><i className="fa-solid fa-circle-check" style={{ fontSize: 11 }} /> Ativo</span>
                         ) : (
-                          <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 10px', borderRadius: 20, background: 'var(--gray-100)', color: 'var(--gray-400)' }}>Não configurado</span>
+                          <span style={{ fontSize: 12, fontWeight: 700, padding: '2px 10px', borderRadius: 20, background: 'var(--gray-100)', color: 'var(--gray-400)' }}>Não configurado</span>
                         )
                       ) : (
-                        <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 10px', borderRadius: 20, background: 'rgba(176,138,62,.1)', color: 'var(--gold)' }}>Em breve</span>
+                        <span style={{ fontSize: 12, fontWeight: 700, padding: '2px 10px', borderRadius: 20, background: 'rgba(176,138,62,.1)', color: 'var(--gold)' }}>Em breve</span>
                       )}
                       {ativo && (item.id === 'telegram' || item.id === 'whatsapp') && (
                         <button onClick={() => void gerarCodigoVinculo(item.id as 'telegram' | 'whatsapp')} style={{
-                          fontSize: 11, padding: '3px 10px', borderRadius: 6, border: '1px solid var(--gray-100)',
+                          fontSize: 13, padding: '3px 10px', borderRadius: 6, border: '1px solid var(--gray-100)',
                           background: 'transparent', color: 'var(--teal)', cursor: 'pointer', fontWeight: 600,
                         }}>
                           {item.id === 'telegram' ? 'Vincular meu Telegram →' : 'Vincular meu WhatsApp →'}
@@ -196,14 +196,14 @@ export default function IntegracoesPage() {
                       )}
                       {item.id === 'google_donna' ? (
                         <Link href="/dashboard/agentes/donna" style={{
-                          fontSize: 11, padding: '3px 10px', borderRadius: 6, border: '1px solid var(--gray-100)',
+                          fontSize: 13, padding: '3px 10px', borderRadius: 6, border: '1px solid var(--gray-100)',
                           color: 'var(--teal)', fontWeight: 600, textDecoration: 'none',
                         }}>
                           {ativo ? 'Gerenciar →' : 'Conectar →'}
                         </Link>
                       ) : !ativo && (
                         <button onClick={() => acaoConectar(item.id)} style={{
-                          fontSize: 11, padding: '3px 10px', borderRadius: 6, border: '1px solid var(--gray-100)',
+                          fontSize: 13, padding: '3px 10px', borderRadius: 6, border: '1px solid var(--gray-100)',
                           background: 'transparent', color: emBreve ? 'var(--gray-400)' : 'var(--teal)',
                           cursor: 'pointer', fontWeight: 600,
                         }}>
@@ -221,7 +221,7 @@ export default function IntegracoesPage() {
 
       {/* Instrução */}
       {!loading && ativas < total && (
-        <div style={{ background: 'rgba(61,122,110,.04)', border: '1px solid rgba(61,122,110,.15)', borderRadius: 10, padding: '12px 16px', fontSize: 12, color: 'var(--gray-400)', lineHeight: 1.7 }}>
+        <div style={{ background: 'rgba(61,122,110,.04)', border: '1px solid rgba(61,122,110,.15)', borderRadius: 10, padding: '12px 16px', fontSize: 14, color: 'var(--gray-400)', lineHeight: 1.7 }}>
           <strong style={{ color: 'var(--navy)' }}>Como ativar integrações:</strong> Adicione as variáveis de ambiente no painel Vercel → Settings → Environment Variables. Após salvar, dispare um novo deploy para as mudanças entrarem em vigor.
         </div>
       )}
@@ -231,7 +231,7 @@ export default function IntegracoesPage() {
       {/* ── Webhooks & Endpoints ── */}
       {tab === 'webhooks' && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-          <div style={{ fontSize: 12, color: 'var(--gray-500)', marginBottom: 4, lineHeight: 1.7 }}>
+          <div style={{ fontSize: 14, color: 'var(--gray-500)', marginBottom: 4, lineHeight: 1.7 }}>
             Endpoints públicos e webhooks ativos no FactorOne. Copie a URL completa para configurar em sistemas externos.
           </div>
           {WEBHOOKS.map(wh => (
@@ -241,22 +241,22 @@ export default function IntegracoesPage() {
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4, flexWrap: 'wrap' }}>
-                  <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy)' }}>{wh.nome}</span>
-                  <span style={{ fontSize: 9, fontWeight: 700, padding: '1px 6px', borderRadius: 20, background: 'var(--gray-100)', color: 'var(--gray-500)' }}>{wh.modulo}</span>
-                  <span style={{ fontSize: 9, fontWeight: 700, padding: '1px 6px', borderRadius: 20, background: 'rgba(61,122,110,.1)', color: 'var(--teal)' }}>{wh.method}</span>
+                  <span style={{ fontSize: 15, fontWeight: 700, color: 'var(--navy)' }}>{wh.nome}</span>
+                  <span style={{ fontSize: 11, fontWeight: 700, padding: '1px 6px', borderRadius: 20, background: 'var(--gray-100)', color: 'var(--gray-500)' }}>{wh.modulo}</span>
+                  <span style={{ fontSize: 11, fontWeight: 700, padding: '1px 6px', borderRadius: 20, background: 'rgba(61,122,110,.1)', color: 'var(--teal)' }}>{wh.method}</span>
                 </div>
-                <div style={{ fontSize: 11, color: 'var(--gray-400)', marginBottom: 8 }}>{wh.desc}</div>
+                <div style={{ fontSize: 13, color: 'var(--gray-400)', marginBottom: 8 }}>{wh.desc}</div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#f8fafc', borderRadius: 6, padding: '6px 10px' }}>
-                  <code style={{ fontSize: 11, color: 'var(--navy)', flex: 1, wordBreak: 'break-all' }}>{baseUrl}{wh.path}</code>
+                  <code style={{ fontSize: 13, color: 'var(--navy)', flex: 1, wordBreak: 'break-all' }}>{baseUrl}{wh.path}</code>
                   <button
                     className="btn-ghost"
-                    style={{ fontSize: 10, padding: '2px 8px', flexShrink: 0 }}
+                    style={{ fontSize: 12, padding: '2px 8px', flexShrink: 0 }}
                     onClick={() => { void navigator.clipboard.writeText(`${baseUrl}${wh.path}`); toast.success('URL copiada') }}
                   >
                     <i className="fa-regular fa-copy" />
                   </button>
                 </div>
-                <div style={{ fontSize: 10, color: 'var(--gray-400)', marginTop: 6 }}>
+                <div style={{ fontSize: 12, color: 'var(--gray-400)', marginTop: 6 }}>
                   <i className="fa-solid fa-lock" style={{ marginRight: 4 }} />Auth: {wh.auth}
                 </div>
               </div>
@@ -272,7 +272,7 @@ export default function IntegracoesPage() {
             <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--navy)', marginBottom: 8 }}>
               Vincular {vinculoInfo.canal === 'telegram' ? 'Telegram' : 'WhatsApp'}
             </div>
-            <div style={{ fontSize: 12, color: 'var(--gray-400)', lineHeight: 1.6, marginBottom: 16 }}>
+            <div style={{ fontSize: 14, color: 'var(--gray-400)', lineHeight: 1.6, marginBottom: 16 }}>
               {vinculoInfo.canal === 'telegram' ? (
                 <>1. Abra {vinculoInfo.extra ? <b>@{vinculoInfo.extra}</b> : 'o bot do FactorOne'} no Telegram e mande <b>/start</b>.<br />2. Envie o código abaixo pro bot (válido por 10 minutos).</>
               ) : (

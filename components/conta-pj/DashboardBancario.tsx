@@ -89,7 +89,7 @@ export default function DashboardBancario({ empresaId, empresaNome, empresaCnpj,
           <div className="page-sub">FactorOne Bank · {empresaNome}{empresaCnpj ? ` · ${maskCpfCnpj(empresaCnpj)}` : ''}</div>
         </div>
         <div style={{ display: 'flex', gap: 8 }}>
-          <button className="btn-action btn-ghost" style={{ fontSize: 11 }} onClick={toggleHide}>
+          <button className="btn-action btn-ghost" style={{ fontSize: 13 }} onClick={toggleHide}>
             {hide ? '👁 Mostrar saldos' : '🙈 Ocultar saldos'}
           </button>
           <button className="btn-action" onClick={() => setModal('pix')}>+ Nova operação</button>
@@ -124,12 +124,12 @@ export default function DashboardBancario({ empresaId, empresaNome, empresaCnpj,
           { icon: 'fa-chart-line', label: 'Investir', action: () => setModal('investir') },
           { icon: 'fa-list-ul', label: 'Extrato', href: '/dashboard/conta-pj/extrato' },
         ] as { icon: string; label: string; action?: () => void; href?: string }[]).map(b => b.href ? (
-          <Link key={b.label} href={b.href} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5, padding: '10px 8px', borderRadius: 10, border: '1px solid var(--gray-100)', background: '#fff', textDecoration: 'none', color: 'var(--navy)', fontSize: 11, fontWeight: 600, transition: 'all .15s', cursor: 'pointer' }}>
+          <Link key={b.label} href={b.href} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5, padding: '10px 8px', borderRadius: 10, border: '1px solid var(--gray-100)', background: '#fff', textDecoration: 'none', color: 'var(--navy)', fontSize: 13, fontWeight: 600, transition: 'all .15s', cursor: 'pointer' }}>
             <i className={`fa-solid ${b.icon}`} style={{ fontSize: 16, color: 'var(--teal)' }} />
             {b.label}
           </Link>
         ) : (
-          <button key={b.label} onClick={b.action} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5, padding: '10px 8px', borderRadius: 10, border: '1px solid var(--gray-100)', background: '#fff', color: 'var(--navy)', fontSize: 11, fontWeight: 600, cursor: 'pointer', transition: 'all .15s' }}>
+          <button key={b.label} onClick={b.action} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5, padding: '10px 8px', borderRadius: 10, border: '1px solid var(--gray-100)', background: '#fff', color: 'var(--navy)', fontSize: 13, fontWeight: 600, cursor: 'pointer', transition: 'all .15s' }}>
             <i className={`fa-solid ${b.icon}`} style={{ fontSize: 16, color: 'var(--teal)' }} />
             {b.label}
           </button>
@@ -158,10 +158,10 @@ export default function DashboardBancario({ empresaId, empresaNome, empresaCnpj,
         <div className="txs-card">
           <div className="txs-header">
             <div className="txs-title">Últimas movimentações</div>
-            <Link href="/dashboard/conta-pj/extrato" style={{ fontSize: 11, color: 'var(--teal)', textDecoration: 'none' }}>Ver completo →</Link>
+            <Link href="/dashboard/conta-pj/extrato" style={{ fontSize: 13, color: 'var(--teal)', textDecoration: 'none' }}>Ver completo →</Link>
           </div>
           {extrato.length === 0 ? (
-            <div style={{ padding: '32px 16px', textAlign: 'center', color: 'var(--gray-400)', fontSize: 13 }}>Nenhuma movimentação recente.</div>
+            <div style={{ padding: '32px 16px', textAlign: 'center', color: 'var(--gray-400)', fontSize: 15 }}>Nenhuma movimentação recente.</div>
           ) : extrato.map(e => (
             <div key={e.id} className="tx-item">
               <div className="tx-left">
@@ -188,28 +188,28 @@ export default function DashboardBancario({ empresaId, empresaNome, empresaCnpj,
               <span className="dre-l">Rendimento</span>
               <span className="dre-v g">{hide ? '••••' : fmtBRLCompact(rendimentoTotal)}</span>
             </div>
-            <Link href="/dashboard/conta-pj/investimentos" style={{ fontSize: 11, color: 'var(--teal)', textDecoration: 'none', display: 'block', marginTop: 10 }}>Gerenciar aplicações →</Link>
+            <Link href="/dashboard/conta-pj/investimentos" style={{ fontSize: 13, color: 'var(--teal)', textDecoration: 'none', display: 'block', marginTop: 10 }}>Gerenciar aplicações →</Link>
           </div>
 
           {/* Agendadas */}
           <div className="chart-card">
             <div className="chart-title">Transferências agendadas</div>
             {agendadas.length === 0 ? (
-              <div style={{ fontSize: 12, color: 'var(--gray-400)' }}>Nenhuma agendada.</div>
+              <div style={{ fontSize: 14, color: 'var(--gray-400)' }}>Nenhuma agendada.</div>
             ) : agendadas.slice(0, 4).map(t => (
               <div key={t.id} className="dre-row">
-                <span className="dre-l" style={{ fontSize: 11 }}>{t.destinatario_nome}</span>
-                <span className="dre-v" style={{ fontSize: 11 }}>{formatBRL(Number(t.valor || 0))}</span>
+                <span className="dre-l" style={{ fontSize: 13 }}>{t.destinatario_nome}</span>
+                <span className="dre-v" style={{ fontSize: 13 }}>{formatBRL(Number(t.valor || 0))}</span>
               </div>
             ))}
-            <Link href="/dashboard/conta-pj/transferencias" style={{ fontSize: 11, color: 'var(--teal)', textDecoration: 'none', display: 'block', marginTop: 8 }}>Ver todas →</Link>
+            <Link href="/dashboard/conta-pj/transferencias" style={{ fontSize: 13, color: 'var(--teal)', textDecoration: 'none', display: 'block', marginTop: 8 }}>Ver todas →</Link>
           </div>
 
           {/* Cartões */}
           <div className="chart-card">
             <div className="chart-title">Cartões corporativos</div>
-            <div style={{ fontSize: 12, color: 'var(--gray-500)', marginBottom: 10 }}>Limites e extratos dos cartões virtuais.</div>
-            <Link href="/dashboard/cartoes" className="btn-action btn-ghost" style={{ display: 'block', textAlign: 'center', fontSize: 12, textDecoration: 'none' }}>Abrir cartões →</Link>
+            <div style={{ fontSize: 14, color: 'var(--gray-500)', marginBottom: 10 }}>Limites e extratos dos cartões virtuais.</div>
+            <Link href="/dashboard/cartoes" className="btn-action btn-ghost" style={{ display: 'block', textAlign: 'center', fontSize: 14, textDecoration: 'none' }}>Abrir cartões →</Link>
           </div>
         </div>
       </div>

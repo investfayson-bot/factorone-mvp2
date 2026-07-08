@@ -82,14 +82,14 @@ export default function AuthPage() {
           <div style={{ fontFamily: "var(--font-sans)", fontSize: 25, fontWeight: 800, color: '#fff', lineHeight: 1.25, marginBottom: 12 }}>
             Finance OS<br />com Inteligência<br />Artificial
           </div>
-          <div style={{ fontSize: 13, color: 'rgba(255,255,255,.5)', lineHeight: 1.6, marginBottom: 22 }}>
+          <div style={{ fontSize: 15, color: 'rgba(255,255,255,.5)', lineHeight: 1.6, marginBottom: 22 }}>
             Automatizando a gestão financeira das empresas modernas.
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             {FEATURES.map(f => (
               <div key={f} style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
-                <span style={{ color: 'var(--teal)', fontSize: 13, fontWeight: 700, marginTop: 1, flexShrink: 0 }}>✓</span>
-                <span style={{ fontSize: 13, color: 'rgba(255,255,255,.65)', lineHeight: 1.4 }}>{f}</span>
+                <span style={{ color: 'var(--teal)', fontSize: 15, fontWeight: 700, marginTop: 1, flexShrink: 0 }}>✓</span>
+                <span style={{ fontSize: 15, color: 'rgba(255,255,255,.65)', lineHeight: 1.4 }}>{f}</span>
               </div>
             ))}
           </div>
@@ -97,7 +97,7 @@ export default function AuthPage() {
         <div style={{ display: 'flex', justifyContent: 'center', flexShrink: 0 }}>
           <FinanceHero width={250} />
         </div>
-        <div style={{ fontSize: 10, color: 'rgba(255,255,255,.25)', letterSpacing: '.08em', marginTop: 28 }}>
+        <div style={{ fontSize: 12, color: 'rgba(255,255,255,.25)', letterSpacing: '.08em', marginTop: 28 }}>
           FACTORONE · FINANCE OS
         </div>
       </div>
@@ -108,15 +108,15 @@ export default function AuthPage() {
           {escolha ? (
             <div>
               <div style={{ fontFamily: "var(--font-sans)", fontSize: 18, fontWeight: 800, color: 'var(--navy)', marginBottom: 6 }}>Como você quer entrar?</div>
-              <div style={{ fontSize: 12, color: 'var(--gray-400)', marginBottom: 20 }}>Sua conta tem os dois perfis. Escolha por onde começar.</div>
+              <div style={{ fontSize: 14, color: 'var(--gray-400)', marginBottom: 20 }}>Sua conta tem os dois perfis. Escolha por onde começar.</div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                 <button onClick={() => router.push('/dashboard')} style={{ display: 'flex', gap: 12, alignItems: 'center', padding: '16px 18px', borderRadius: 12, border: '2px solid var(--teal)', background: 'rgba(61,122,110,.05)', cursor: 'pointer', textAlign: 'left' }}>
                   <div style={{ width: 42, height: 42, borderRadius: 10, background: 'var(--teal)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><i className="fa-solid fa-building" style={{ color: '#fff', fontSize: 16 }} /></div>
-                  <div><div style={{ fontSize: 14, fontWeight: 700, color: 'var(--navy)' }}>Empresa (PJ)</div><div style={{ fontSize: 11, color: 'var(--gray-400)' }}>DRE, fluxo de caixa, conta PJ, NF-e.</div></div>
+                  <div><div style={{ fontSize: 14, fontWeight: 700, color: 'var(--navy)' }}>Empresa (PJ)</div><div style={{ fontSize: 13, color: 'var(--gray-400)' }}>DRE, fluxo de caixa, conta PJ, NF-e.</div></div>
                 </button>
                 <button onClick={() => router.push('/dashboard-pessoal')} style={{ display: 'flex', gap: 12, alignItems: 'center', padding: '16px 18px', borderRadius: 12, border: '1px solid var(--gray-100)', background: '#fff', cursor: 'pointer', textAlign: 'left' }}>
                   <div style={{ width: 42, height: 42, borderRadius: 10, background: 'var(--gray-100)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><i className="fa-solid fa-user" style={{ color: 'var(--gray-500)', fontSize: 16 }} /></div>
-                  <div><div style={{ fontSize: 14, fontWeight: 700, color: 'var(--navy)' }}>Pessoa Física</div><div style={{ fontSize: 11, color: 'var(--gray-400)' }}>Gastos, metas e orçamento pessoal.</div></div>
+                  <div><div style={{ fontSize: 14, fontWeight: 700, color: 'var(--navy)' }}>Pessoa Física</div><div style={{ fontSize: 13, color: 'var(--gray-400)' }}>Gastos, metas e orçamento pessoal.</div></div>
                 </button>
               </div>
             </div>
@@ -130,7 +130,7 @@ export default function AuthPage() {
                 onClick={() => { setModo(m); setMsg({ text: '', type: '' }) }}
                 style={{
                   flex: 1, padding: '8px 0', borderRadius: 7, border: 'none', cursor: 'pointer',
-                  fontSize: 13, fontWeight: 600, fontFamily: "var(--font-sans)",
+                  fontSize: 15, fontWeight: 600, fontFamily: "var(--font-sans)",
                   background: modo === m ? '#fff' : 'transparent',
                   color: modo === m ? 'var(--navy)' : 'var(--gray-400)',
                   boxShadow: modo === m ? '0 1px 4px rgba(0,0,0,.08)' : 'none',
@@ -171,7 +171,7 @@ export default function AuthPage() {
                 <button
                   type="button"
                   onClick={() => setMostrarSenha(!mostrarSenha)}
-                  style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--gray-400)', fontSize: 12 }}
+                  style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--gray-400)', fontSize: 14 }}
                 >
                   <i className={`fa-solid ${mostrarSenha ? 'fa-eye-slash' : 'fa-eye'}`} />
                 </button>
@@ -180,7 +180,7 @@ export default function AuthPage() {
 
             {msg.text && (
               <div style={{
-                padding: '9px 12px', borderRadius: 8, fontSize: 12, marginBottom: 12,
+                padding: '9px 12px', borderRadius: 8, fontSize: 14, marginBottom: 12,
                 background: msg.type === 'success' ? 'rgba(61,122,110,.08)' : 'rgba(176,65,62,.08)',
                 border: `1px solid ${msg.type === 'success' ? 'rgba(61,122,110,.2)' : 'rgba(176,65,62,.2)'}`,
                 color: msg.type === 'success' ? 'var(--green)' : 'var(--red)',
@@ -193,7 +193,7 @@ export default function AuthPage() {
               type="submit"
               disabled={loading}
               className="btn-action"
-              style={{ width: '100%', padding: '11px 0', fontSize: 13, marginBottom: 10, opacity: loading ? .6 : 1 }}
+              style={{ width: '100%', padding: '11px 0', fontSize: 15, marginBottom: 10, opacity: loading ? .6 : 1 }}
             >
               {loading ? 'Aguarde…' : modo === 'entrar' ? 'Entrar no painel' : 'Criar conta'}
             </button>
@@ -203,12 +203,12 @@ export default function AuthPage() {
             onClick={usarDemo}
             disabled={loading}
             className="btn-action btn-ghost"
-            style={{ width: '100%', padding: '10px 0', fontSize: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}
+            style={{ width: '100%', padding: '10px 0', fontSize: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}
           >
             <i className="fa-solid fa-bolt" /> Usar conta demo
           </button>
 
-          <div style={{ marginTop: 20, paddingTop: 16, borderTop: '0.5px solid #E4DCCC', textAlign: 'center', fontSize: 11, color: '#7B8C88' }}>
+          <div style={{ marginTop: 20, paddingTop: 16, borderTop: '0.5px solid #E4DCCC', textAlign: 'center', fontSize: 13, color: '#7B8C88' }}>
             Ao continuar você concorda com os{' '}
             <span style={{ color: 'var(--teal)', cursor: 'pointer' }}>Termos de Uso</span>
             {' · '}

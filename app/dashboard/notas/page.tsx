@@ -76,7 +76,7 @@ export default function NotasDashboardPage() {
       {/* Tabs */}
       <div style={{ display: 'flex', gap: 6, marginBottom: 14 }}>
         {tabs.map((t) => (
-          <button key={t.id} type="button" className={`btn-action${tab !== t.id ? ' btn-ghost' : ''}`} style={{ fontSize: 11, padding: '5px 12px' }} onClick={() => setTab(t.id)}>
+          <button key={t.id} type="button" className={`btn-action${tab !== t.id ? ' btn-ghost' : ''}`} style={{ fontSize: 13, padding: '5px 12px' }} onClick={() => setTab(t.id)}>
             {t.label}
           </button>
         ))}

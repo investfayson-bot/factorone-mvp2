@@ -156,15 +156,15 @@ export default function GlobalSearch({ empresaId }: { empresaId: string }) {
             placeholder="Buscar transações, clientes, páginas..."
             style={{ flex: 1, border: 'none', outline: 'none', fontSize: 14, color: 'var(--navy)', background: 'transparent' }}
           />
-          {loading && <i className="fa-solid fa-circle-notch fa-spin" style={{ color: 'var(--gray-400)', fontSize: 12 }} />}
-          <kbd style={{ fontSize: 10, color: 'var(--gray-400)', border: '1px solid var(--gray-200)', borderRadius: 4, padding: '1px 5px', fontFamily: 'monospace' }}>ESC</kbd>
+          {loading && <i className="fa-solid fa-circle-notch fa-spin" style={{ color: 'var(--gray-400)', fontSize: 14 }} />}
+          <kbd style={{ fontSize: 12, color: 'var(--gray-400)', border: '1px solid var(--gray-200)', borderRadius: 4, padding: '1px 5px', fontFamily: 'monospace' }}>ESC</kbd>
         </div>
 
         {/* Resultados */}
         <div style={{ maxHeight: 400, overflowY: 'auto', padding: '8px 0' }}>
           {Object.entries(grupos).map(([cat, items]) => (
             <div key={cat}>
-              <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.06em', padding: '6px 16px 2px' }}>
+              <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.06em', padding: '6px 16px 2px' }}>
                 {CATEGORIAS[cat]?.label ?? cat}
               </div>
               {items.map((r, i) => {
@@ -182,20 +182,20 @@ export default function GlobalSearch({ empresaId }: { empresaId: string }) {
                     }}
                   >
                     <div style={{ width: 30, height: 30, borderRadius: 7, background: ativo ? 'rgba(61,122,110,.12)' : 'var(--gray-100)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                      <i className={`fa-solid ${r.icon}`} style={{ color: r.iconColor, fontSize: 12 }} />
+                      <i className={`fa-solid ${r.icon}`} style={{ color: r.iconColor, fontSize: 14 }} />
                     </div>
                     <div style={{ flex: 1, overflow: 'hidden' }}>
-                      <div style={{ fontSize: 13, fontWeight: 500, color: 'var(--navy)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{r.label}</div>
-                      {r.sub && <div style={{ fontSize: 11, color: 'var(--gray-400)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{r.sub}</div>}
+                      <div style={{ fontSize: 15, fontWeight: 500, color: 'var(--navy)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{r.label}</div>
+                      {r.sub && <div style={{ fontSize: 13, color: 'var(--gray-400)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{r.sub}</div>}
                     </div>
-                    <i className="fa-solid fa-arrow-right" style={{ color: 'var(--gray-300)', fontSize: 10, flexShrink: 0 }} />
+                    <i className="fa-solid fa-arrow-right" style={{ color: 'var(--gray-300)', fontSize: 12, flexShrink: 0 }} />
                   </div>
                 )
               })}
             </div>
           ))}
           {query.length >= 2 && !loading && resultados.length === 0 && (
-            <div style={{ textAlign: 'center', padding: '20px 0', color: 'var(--gray-400)', fontSize: 13 }}>
+            <div style={{ textAlign: 'center', padding: '20px 0', color: 'var(--gray-400)', fontSize: 15 }}>
               <i className="fa-solid fa-magnifying-glass" style={{ display: 'block', marginBottom: 6, fontSize: 20 }} />
               Nenhum resultado para "{query}"
             </div>
@@ -206,8 +206,8 @@ export default function GlobalSearch({ empresaId }: { empresaId: string }) {
         <div style={{ borderTop: '1px solid var(--gray-100)', padding: '8px 16px', display: 'flex', gap: 14 }}>
           {[['↑↓', 'navegar'], ['↵', 'abrir'], ['Esc', 'fechar']].map(([key, label]) => (
             <div key={key} style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-              <kbd style={{ fontSize: 10, color: 'var(--gray-500)', border: '1px solid var(--gray-200)', borderRadius: 4, padding: '1px 5px', fontFamily: 'monospace' }}>{key}</kbd>
-              <span style={{ fontSize: 10, color: 'var(--gray-400)' }}>{label}</span>
+              <kbd style={{ fontSize: 12, color: 'var(--gray-500)', border: '1px solid var(--gray-200)', borderRadius: 4, padding: '1px 5px', fontFamily: 'monospace' }}>{key}</kbd>
+              <span style={{ fontSize: 12, color: 'var(--gray-400)' }}>{label}</span>
             </div>
           ))}
         </div>

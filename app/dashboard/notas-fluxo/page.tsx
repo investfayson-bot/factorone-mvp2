@@ -161,24 +161,24 @@ export default function NotasFluxoPage() {
       </div>
 
       {loading ? (
-        <div style={{ padding: 44, textAlign: 'center', color: 'var(--ink-mut)', fontSize: 13 }}>Carregando…</div>
+        <div style={{ padding: 44, textAlign: 'center', color: 'var(--ink-mut)', fontSize: 15 }}>Carregando…</div>
       ) : (
         <div style={{ display: 'grid', gridTemplateColumns: '320px 1fr', gap: 16, alignItems: 'start' }}>
           {/* Bloco de notas */}
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-              <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--ink-mut)', textTransform: 'uppercase', letterSpacing: '.08em' }}>Bloco de notas</div>
-              <button className="btn-ghost" style={{ fontSize: 10.5, padding: '4px 9px' }} onClick={() => void novaNota()}><i className="fa-solid fa-plus" style={{ marginRight: 4 }} />Nota</button>
+              <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--ink-mut)', textTransform: 'uppercase', letterSpacing: '.08em' }}>Bloco de notas</div>
+              <button className="btn-ghost" style={{ fontSize: 12.5, padding: '4px 9px' }} onClick={() => void novaNota()}><i className="fa-solid fa-plus" style={{ marginRight: 4 }} />Nota</button>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8, maxHeight: 620, overflowY: 'auto' }}>
-              {anotacoes.length === 0 && <div style={{ fontSize: 12, color: 'var(--ink-faint)', padding: '20px 4px' }}>Nenhuma nota ainda.</div>}
+              {anotacoes.length === 0 && <div style={{ fontSize: 14, color: 'var(--ink-faint)', padding: '20px 4px' }}>Nenhuma nota ainda.</div>}
               {anotacoes.map(n => (
                 <div key={n.id} style={{ background: n.cor, border: '1px solid var(--line)', borderRadius: 10, padding: '10px 12px', cursor: 'pointer' }} onClick={() => setNotaAtiva(n)}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 6 }}>
-                    <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--ink)' }}>{n.titulo || 'Sem título'}</div>
-                    <button className="btn-ghost" style={{ fontSize: 9, padding: '2px 6px', border: 'none' }} onClick={e => { e.stopPropagation(); void excluirNota(n.id) }}><i className="fa-solid fa-xmark" /></button>
+                    <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--ink)' }}>{n.titulo || 'Sem título'}</div>
+                    <button className="btn-ghost" style={{ fontSize: 11, padding: '2px 6px', border: 'none' }} onClick={e => { e.stopPropagation(); void excluirNota(n.id) }}><i className="fa-solid fa-xmark" /></button>
                   </div>
-                  <div style={{ fontSize: 11, color: 'var(--ink-soft)', marginTop: 4, whiteSpace: 'pre-wrap', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical' }}>{n.conteudo}</div>
+                  <div style={{ fontSize: 13, color: 'var(--ink-soft)', marginTop: 4, whiteSpace: 'pre-wrap', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical' }}>{n.conteudo}</div>
                 </div>
               ))}
             </div>
@@ -187,9 +187,9 @@ export default function NotasFluxoPage() {
           {/* Fluxograma canvas */}
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-              <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--ink-mut)', textTransform: 'uppercase', letterSpacing: '.08em' }}>Fluxograma (canvas)</div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--ink-mut)', textTransform: 'uppercase', letterSpacing: '.08em' }}>Fluxograma (canvas)</div>
               <div style={{ display: 'flex', gap: 6 }}>
-                <button className={`btn-action${!conectando ? ' btn-ghost' : ''}`} style={{ fontSize: 10.5, padding: '4px 10px' }} onClick={() => { setConectando(c => !c); setOrigemConexao(null) }}>
+                <button className={`btn-action${!conectando ? ' btn-ghost' : ''}`} style={{ fontSize: 12.5, padding: '4px 10px' }} onClick={() => { setConectando(c => !c); setOrigemConexao(null) }}>
                   <i className="fa-solid fa-arrow-right-long" style={{ marginRight: 4 }} />{conectando ? (origemConexao ? 'Clique no destino' : 'Clique na origem') : 'Conectar etapas'}
                 </button>
               </div>
@@ -223,16 +223,16 @@ export default function NotasFluxoPage() {
                     position: 'absolute', left: n.x, top: n.y, width: NODE_W, minHeight: NODE_H,
                     background: n.cor, border: `1.5px solid ${origemConexao === n.id ? 'var(--sage)' : noAtivo === n.id ? 'var(--gold)' : 'var(--line)'}`,
                     borderRadius: 10, padding: '10px 12px', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center',
-                    fontSize: 12, fontWeight: 600, color: 'var(--ink)', cursor: conectando ? 'pointer' : 'grab', boxShadow: 'var(--shadow-soft)', userSelect: 'none',
+                    fontSize: 14, fontWeight: 600, color: 'var(--ink)', cursor: conectando ? 'pointer' : 'grab', boxShadow: 'var(--shadow-soft)', userSelect: 'none',
                   }}>
                   {n.texto}
                 </div>
               ))}
               {(!fluxo || fluxo.dados.nodes.length === 0) && (
-                <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--ink-faint)', fontSize: 12 }}>Dê dois cliques no canvas pra criar a primeira etapa.</div>
+                <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--ink-faint)', fontSize: 14 }}>Dê dois cliques no canvas pra criar a primeira etapa.</div>
               )}
             </div>
-            <div style={{ fontSize: 10.5, color: 'var(--ink-faint)', marginTop: 6 }}>Dois cliques no fundo cria uma etapa · arraste pra reposicionar · &quot;Conectar etapas&quot; liga duas caixas com uma seta.</div>
+            <div style={{ fontSize: 12.5, color: 'var(--ink-faint)', marginTop: 6 }}>Dois cliques no fundo cria uma etapa · arraste pra reposicionar · &quot;Conectar etapas&quot; liga duas caixas com uma seta.</div>
           </div>
         </div>
       )}

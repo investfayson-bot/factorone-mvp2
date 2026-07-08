@@ -261,12 +261,12 @@ export default function FornecedoresPage() {
           <div className="page-sub">Gestão de contas a pagar · {fornecedoresAgrupados.length} fornecedores</div>
         </div>
         <div style={{ display: 'flex', gap: 8 }}>
-          <button className="btn-ghost" style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12 }} onClick={() => { setModalLink(true); setLinkGerado(''); setLinkForm({ descricao: '', valor: '', data_vencimento: '', categoria: 'Fornecedores' }) }}>
-            <i className="fa-solid fa-link" style={{ fontSize: 11 }} />
+          <button className="btn-ghost" style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 14 }} onClick={() => { setModalLink(true); setLinkGerado(''); setLinkForm({ descricao: '', valor: '', data_vencimento: '', categoria: 'Fornecedores' }) }}>
+            <i className="fa-solid fa-link" style={{ fontSize: 13 }} />
             Link de cobrança
           </button>
           <button className="btn-ghost" onClick={() => { setModalForn(true) }}>
-            <i className="fa-solid fa-user-plus" style={{ fontSize: 11 }} /> Cadastrar Fornecedor
+            <i className="fa-solid fa-user-plus" style={{ fontSize: 13 }} /> Cadastrar Fornecedor
           </button>
           <button className="btn-action" onClick={() => setModalNova(true)}>+ Nova Conta a Pagar</button>
         </div>
@@ -299,7 +299,7 @@ export default function FornecedoresPage() {
       <div style={{ display: 'flex', gap: 6, marginBottom: 4 }}>
         {([['cadastro', 'Cadastro'], ['fornecedores', 'Por Fornecedor'], ['contas', 'Contas a Pagar'], ['pagar', 'Histórico Pagamentos']] as [string, string][]).map(([k, l]) => (
           <button key={k} onClick={() => setTab(k as typeof tab)} style={{
-            padding: '7px 14px', borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: 'pointer', border: '1px solid',
+            padding: '7px 14px', borderRadius: 8, fontSize: 14, fontWeight: 600, cursor: 'pointer', border: '1px solid',
             background: tab === k ? 'var(--navy)' : '#fff',
             color: tab === k ? '#fff' : 'var(--gray-500)',
             borderColor: tab === k ? 'var(--navy)' : 'var(--gray-100)',
@@ -328,28 +328,28 @@ export default function FornecedoresPage() {
                   <tr key={f.id}>
                     <td>
                       <div style={{ fontWeight: 700 }}>{f.razao_social}</div>
-                      {f.nome_fantasia && <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>{f.nome_fantasia}</div>}
+                      {f.nome_fantasia && <div style={{ fontSize: 13, color: 'var(--gray-400)' }}>{f.nome_fantasia}</div>}
                     </td>
-                    <td style={{ fontFamily: "var(--font-sans)", fontSize: 11 }}>{f.cnpj || '—'}</td>
-                    <td><span className="tag gray" style={{ fontSize: 10 }}>{f.categoria}</span></td>
+                    <td style={{ fontFamily: "var(--font-sans)", fontSize: 13 }}>{f.cnpj || '—'}</td>
+                    <td><span className="tag gray" style={{ fontSize: 12 }}>{f.categoria}</span></td>
                     <td>
-                      <div style={{ fontSize: 12 }}>{f.contato_nome || '—'}</div>
-                      {f.contato_cargo && <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>{f.contato_cargo}</div>}
+                      <div style={{ fontSize: 14 }}>{f.contato_nome || '—'}</div>
+                      {f.contato_cargo && <div style={{ fontSize: 13, color: 'var(--gray-400)' }}>{f.contato_cargo}</div>}
                     </td>
-                    <td style={{ fontSize: 12 }}>{f.cidade ? `${f.cidade}/${f.estado}` : '—'}</td>
+                    <td style={{ fontSize: 14 }}>{f.cidade ? `${f.cidade}/${f.estado}` : '—'}</td>
                     <td>
-                      <div style={{ fontSize: 11 }}>{f.tipo_pagamento_pref?.toUpperCase()}</div>
-                      {f.prazo_pagamento && <div style={{ fontSize: 10, color: 'var(--gray-400)' }}>{f.prazo_pagamento}d prazo</div>}
+                      <div style={{ fontSize: 13 }}>{f.tipo_pagamento_pref?.toUpperCase()}</div>
+                      {f.prazo_pagamento && <div style={{ fontSize: 12, color: 'var(--gray-400)' }}>{f.prazo_pagamento}d prazo</div>}
                     </td>
                     <td>
                       {f.avaliacao ? (
-                        <span style={{ color: 'var(--gold)', fontSize: 13, letterSpacing: -1 }}>
+                        <span style={{ color: 'var(--gold)', fontSize: 15, letterSpacing: -1 }}>
                           {'★'.repeat(f.avaliacao)}{'☆'.repeat(5 - f.avaliacao)}
                         </span>
                       ) : '—'}
                     </td>
                     <td>
-                      <span className={`tag ${f.status === 'ativo' ? 'green' : f.status === 'bloqueado' ? 'red' : 'gray'}`} style={{ fontSize: 10 }}>
+                      <span className={`tag ${f.status === 'ativo' ? 'green' : f.status === 'bloqueado' ? 'red' : 'gray'}`} style={{ fontSize: 12 }}>
                         {f.status}
                       </span>
                     </td>
@@ -384,15 +384,15 @@ export default function FornecedoresPage() {
                 {fornecedoresAgrupados.map(f => (
                   <tr key={f.nome}>
                     <td style={{ fontWeight: 700 }}>{f.nome}</td>
-                    <td style={{ fontFamily: "var(--font-sans)", fontSize: 11, color: 'var(--gray-400)' }}>{f.doc || '—'}</td>
+                    <td style={{ fontFamily: "var(--font-sans)", fontSize: 13, color: 'var(--gray-400)' }}>{f.doc || '—'}</td>
                     <td style={{ textAlign: 'center' }}>{f.qtd}</td>
                     <td style={{ textAlign: 'right', fontFamily: "var(--font-sans)" }}>{formatBRL(f.total)}</td>
                     <td style={{ textAlign: 'right', fontFamily: "var(--font-sans)", fontWeight: 700, color: f.pendente > 0 ? 'var(--red)' : 'var(--navy)' }}>{formatBRL(f.pendente)}</td>
                     <td style={{ textAlign: 'center' }}>
-                      {f.vencidas > 0 ? <span className="tag red">{f.vencidas}</span> : <span style={{ color: 'var(--gray-400)', fontSize: 11 }}>—</span>}
+                      {f.vencidas > 0 ? <span className="tag red">{f.vencidas}</span> : <span style={{ color: 'var(--gray-400)', fontSize: 13 }}>—</span>}
                     </td>
                     <td style={{ textAlign: 'center' }}>
-                      <button className="btn-ghost" style={{ fontSize: 11, padding: '3px 10px' }} onClick={() => { setBusca(f.nome); setTab('contas') }}>
+                      <button className="btn-ghost" style={{ fontSize: 13, padding: '3px 10px' }} onClick={() => { setBusca(f.nome); setTab('contas') }}>
                         Ver contas
                       </button>
                     </td>
@@ -408,17 +408,17 @@ export default function FornecedoresPage() {
       {tab === 'contas' && (
         <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, overflow: 'hidden' }}>
           <div style={{ padding: '10px 14px', borderBottom: '1px solid var(--gray-100)', display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
-            <div style={{ fontSize: 9.5, fontWeight: 700, color: 'var(--gray-400)', letterSpacing: '.08em', textTransform: 'uppercase', fontFamily: "var(--font-sans)", flex: 1 }}>
+            <div style={{ fontSize: 11.5, fontWeight: 700, color: 'var(--gray-400)', letterSpacing: '.08em', textTransform: 'uppercase', fontFamily: "var(--font-sans)", flex: 1 }}>
               Contas ({contasFiltradas.length})
             </div>
-            <select className="form-input" style={{ width: 'auto', padding: '5px 10px', fontSize: 11 }} value={filtroStatus} onChange={e => setFiltroStatus(e.target.value)}>
+            <select className="form-input" style={{ width: 'auto', padding: '5px 10px', fontSize: 13 }} value={filtroStatus} onChange={e => setFiltroStatus(e.target.value)}>
               <option value="todos">Todos status</option>
               <option value="pendente">Pendente</option>
               <option value="vencida">Vencida</option>
               <option value="paga">Paga</option>
               <option value="cancelada">Cancelada</option>
             </select>
-            <input className="form-input" style={{ width: 180, padding: '5px 10px', fontSize: 11 }} placeholder="Buscar fornecedor..." value={busca} onChange={e => setBusca(e.target.value)} />
+            <input className="form-input" style={{ width: 180, padding: '5px 10px', fontSize: 13 }} placeholder="Buscar fornecedor..." value={busca} onChange={e => setBusca(e.target.value)} />
           </div>
           <div className="expenses-table">
             <table>
@@ -440,10 +440,10 @@ export default function FornecedoresPage() {
                 )}
                 {contasFiltradas.map(c => (
                   <tr key={c.id} style={{ opacity: c.status === 'cancelada' ? 0.5 : 1 }}>
-                    <td style={{ fontWeight: 600, fontSize: 12 }}>{c.fornecedor_nome}</td>
-                    <td style={{ fontSize: 12, color: 'var(--gray-500)' }}>{c.descricao}</td>
-                    <td><span className="tag gray" style={{ fontSize: 10 }}>{c.categoria}</span></td>
-                    <td style={{ fontFamily: "var(--font-sans)", fontSize: 11, color: isVencida(c) ? 'var(--red)' : 'inherit' }}>
+                    <td style={{ fontWeight: 600, fontSize: 14 }}>{c.fornecedor_nome}</td>
+                    <td style={{ fontSize: 14, color: 'var(--gray-500)' }}>{c.descricao}</td>
+                    <td><span className="tag gray" style={{ fontSize: 12 }}>{c.categoria}</span></td>
+                    <td style={{ fontFamily: "var(--font-sans)", fontSize: 13, color: isVencida(c) ? 'var(--red)' : 'inherit' }}>
                       {new Date(c.data_vencimento + 'T12:00:00').toLocaleDateString('pt-BR')}
                     </td>
                     <td style={{ textAlign: 'right', fontFamily: "var(--font-sans)", fontWeight: 700 }}>{formatBRL(Number(c.valor || 0))}</td>
@@ -456,12 +456,12 @@ export default function FornecedoresPage() {
                     <td style={{ textAlign: 'center' }}>
                       <div style={{ display: 'flex', justifyContent: 'center', gap: 4 }}>
                         {(c.status === 'pendente' || c.status === 'vencida' || c.status === 'parcialmente_paga') && (
-                          <button className="btn-action" style={{ fontSize: 10, padding: '3px 8px' }} onClick={() => { setModalPagar(c); setValorPagamento(String(Number(c.valor || 0) - Number(c.valor_pago || 0))) }}>
+                          <button className="btn-action" style={{ fontSize: 12, padding: '3px 8px' }} onClick={() => { setModalPagar(c); setValorPagamento(String(Number(c.valor || 0) - Number(c.valor_pago || 0))) }}>
                             Pagar
                           </button>
                         )}
                         {c.status !== 'cancelada' && c.status !== 'paga' && (
-                          <button className="btn-ghost" style={{ fontSize: 10, padding: '3px 8px', color: 'var(--red)', borderColor: 'rgba(176,65,62,.2)' }} onClick={() => void cancelarConta(c.id)}>
+                          <button className="btn-ghost" style={{ fontSize: 12, padding: '3px 8px', color: 'var(--red)', borderColor: 'rgba(176,65,62,.2)' }} onClick={() => void cancelarConta(c.id)}>
                             Cancelar
                           </button>
                         )}
@@ -496,8 +496,8 @@ export default function FornecedoresPage() {
                 {contas.filter(c => c.status === 'paga' || c.status === 'parcialmente_paga').map(c => (
                   <tr key={c.id}>
                     <td style={{ fontWeight: 600 }}>{c.fornecedor_nome}</td>
-                    <td style={{ color: 'var(--gray-500)', fontSize: 12 }}>{c.descricao}</td>
-                    <td style={{ fontFamily: "var(--font-sans)", fontSize: 11 }}>
+                    <td style={{ color: 'var(--gray-500)', fontSize: 14 }}>{c.descricao}</td>
+                    <td style={{ fontFamily: "var(--font-sans)", fontSize: 13 }}>
                       {c.data_pagamento ? new Date(c.data_pagamento + 'T12:00:00').toLocaleDateString('pt-BR') : '—'}
                     </td>
                     <td>{c.tipo_pagamento ? <span className="tag gray">{c.tipo_pagamento.toUpperCase()}</span> : '—'}</td>
@@ -699,25 +699,25 @@ export default function FornecedoresPage() {
             </div>
             {!linkGerado ? (
               <>
-                <p style={{ fontSize: 12, color: 'var(--gray-400)', marginBottom: 16, lineHeight: 1.6 }}>
+                <p style={{ fontSize: 14, color: 'var(--gray-400)', marginBottom: 16, lineHeight: 1.6 }}>
                   Gere um link único e envie para o fornecedor. Ele preenche os dados e a cobrança cai automaticamente no sistema.
                 </p>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                   <div>
-                    <label style={{ fontSize: 11, fontWeight: 600, color: 'var(--gray-500)', marginBottom: 4, display: 'block' }}>Referência / Serviço (opcional)</label>
+                    <label style={{ fontSize: 13, fontWeight: 600, color: 'var(--gray-500)', marginBottom: 4, display: 'block' }}>Referência / Serviço (opcional)</label>
                     <input className="form-input" placeholder="Ex.: Manutenção de equipamentos maio" value={linkForm.descricao} onChange={e => setLinkForm(f => ({ ...f, descricao: e.target.value }))} />
                   </div>
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
                     <div>
-                      <label style={{ fontSize: 11, fontWeight: 600, color: 'var(--gray-500)', marginBottom: 4, display: 'block' }}>Valor sugerido (R$)</label>
+                      <label style={{ fontSize: 13, fontWeight: 600, color: 'var(--gray-500)', marginBottom: 4, display: 'block' }}>Valor sugerido (R$)</label>
                       <input className="form-input" placeholder="0,00" value={linkForm.valor} onChange={e => setLinkForm(f => ({ ...f, valor: e.target.value }))} />
                     </div>
                     <div>
-                      <label style={{ fontSize: 11, fontWeight: 600, color: 'var(--gray-500)', marginBottom: 4, display: 'block' }}>Vencimento sugerido</label>
+                      <label style={{ fontSize: 13, fontWeight: 600, color: 'var(--gray-500)', marginBottom: 4, display: 'block' }}>Vencimento sugerido</label>
                       <input type="date" className="form-input" value={linkForm.data_vencimento} onChange={e => setLinkForm(f => ({ ...f, data_vencimento: e.target.value }))} />
                     </div>
                     <div style={{ gridColumn: '1/-1' }}>
-                      <label style={{ fontSize: 11, fontWeight: 600, color: 'var(--gray-500)', marginBottom: 4, display: 'block' }}>Categoria</label>
+                      <label style={{ fontSize: 13, fontWeight: 600, color: 'var(--gray-500)', marginBottom: 4, display: 'block' }}>Categoria</label>
                       <select className="form-input" value={linkForm.categoria} onChange={e => setLinkForm(f => ({ ...f, categoria: e.target.value }))}>
                         {CATS.map(c => <option key={c} value={c}>{c}</option>)}
                       </select>
@@ -734,10 +734,10 @@ export default function FornecedoresPage() {
             ) : (
               <div>
                 <div style={{ padding: '16px 18px', borderRadius: 12, border: '1px solid var(--teal)', background: 'rgba(61,122,110,0.04)', marginBottom: 16 }}>
-                  <p style={{ fontSize: 11, fontWeight: 700, color: 'var(--teal)', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: 8 }}>
+                  <p style={{ fontSize: 13, fontWeight: 700, color: 'var(--teal)', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: 8 }}>
                     <i className="fa-solid fa-circle-check" style={{ marginRight: 5 }} />Link gerado com sucesso
                   </p>
-                  <p style={{ fontSize: 12, color: 'var(--navy)', wordBreak: 'break-all', fontFamily: "var(--font-sans)", margin: 0 }}>{linkGerado}</p>
+                  <p style={{ fontSize: 14, color: 'var(--navy)', wordBreak: 'break-all', fontFamily: "var(--font-sans)", margin: 0 }}>{linkGerado}</p>
                 </div>
                 <div style={{ display: 'flex', gap: 8 }}>
                   <button className="btn-action" style={{ flex: 1 }} onClick={() => { void navigator.clipboard.writeText(linkGerado).then(() => alert('Link copiado!')) }}>
@@ -745,7 +745,7 @@ export default function FornecedoresPage() {
                   </button>
                   <button className="btn-ghost" onClick={() => setModalLink(false)}>Fechar</button>
                 </div>
-                <p style={{ fontSize: 11, color: 'var(--gray-400)', marginTop: 12 }}>
+                <p style={{ fontSize: 13, color: 'var(--gray-400)', marginTop: 12 }}>
                   <i className="fa-solid fa-clock" style={{ marginRight: 5 }} />Link válido por 30 dias. Após uso único, expira automaticamente.
                 </p>
               </div>
@@ -763,9 +763,9 @@ export default function FornecedoresPage() {
               <button className="modal-close" onClick={() => setModalPagar(null)}>×</button>
             </div>
             <div style={{ marginBottom: 14, padding: '10px 12px', background: 'rgba(61,122,110,.06)', borderRadius: 8, border: '1px solid rgba(61,122,110,.15)' }}>
-              <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--navy)' }}>{modalPagar.fornecedor_nome}</div>
-              <div style={{ fontSize: 11, color: 'var(--gray-400)', marginTop: 2 }}>{modalPagar.descricao}</div>
-              <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--red)', marginTop: 6 }}>
+              <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--navy)' }}>{modalPagar.fornecedor_nome}</div>
+              <div style={{ fontSize: 13, color: 'var(--gray-400)', marginTop: 2 }}>{modalPagar.descricao}</div>
+              <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--red)', marginTop: 6 }}>
                 Saldo: {formatBRL(Number(modalPagar.valor || 0) - Number(modalPagar.valor_pago || 0))}
               </div>
             </div>
@@ -780,8 +780,8 @@ export default function FornecedoresPage() {
               </div>
             </div>
             {modalPagar.chave_pix && (
-              <div style={{ marginBottom: 14, padding: '8px 12px', background: '#fafafa', borderRadius: 8, border: '1px solid var(--gray-100)', fontSize: 12 }}>
-                <div style={{ color: 'var(--gray-400)', marginBottom: 2, fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '.05em' }}>Chave PIX</div>
+              <div style={{ marginBottom: 14, padding: '8px 12px', background: '#fafafa', borderRadius: 8, border: '1px solid var(--gray-100)', fontSize: 14 }}>
+                <div style={{ color: 'var(--gray-400)', marginBottom: 2, fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '.05em' }}>Chave PIX</div>
                 <div style={{ fontFamily: "var(--font-sans)", userSelect: 'all' }}>{modalPagar.chave_pix}</div>
               </div>
             )}

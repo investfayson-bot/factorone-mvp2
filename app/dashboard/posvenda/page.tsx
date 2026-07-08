@@ -108,27 +108,27 @@ export default function PosVendaPage() {
       <div className="txs-card" style={{ padding: '13px 15px', opacity: done ? .7 : 1 }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8, gap: 8 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 9, minWidth: 0 }}>
-            <div style={{ width: 30, height: 30, borderRadius: 8, background: 'var(--sage-tint)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><i className={`fa-solid ${ti.ic}`} style={{ color: ti.cor, fontSize: 13 }} /></div>
+            <div style={{ width: 30, height: 30, borderRadius: 8, background: 'var(--sage-tint)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><i className={`fa-solid ${ti.ic}`} style={{ color: ti.cor, fontSize: 15 }} /></div>
             <div style={{ minWidth: 0 }}>
-              <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--ink)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{t.cliente}{t.valor > 0 && <span style={{ fontWeight: 500, color: 'var(--ink-mut)', fontSize: 11.5 }}> · {formatBRL(t.valor)}</span>}</div>
-              <div style={{ fontSize: 10.5, color: 'var(--ink-mut)' }}>{t.contato || 'sem contato'} · <i className={`fa-${t.canal === 'email' ? 'solid fa-envelope' : 'brands fa-whatsapp'}`} /> {t.canal === 'email' ? 'e-mail' : 'WhatsApp'}</div>
+              <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--ink)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{t.cliente}{t.valor > 0 && <span style={{ fontWeight: 500, color: 'var(--ink-mut)', fontSize: 13.5 }}> · {formatBRL(t.valor)}</span>}</div>
+              <div style={{ fontSize: 12.5, color: 'var(--ink-mut)' }}>{t.contato || 'sem contato'} · <i className={`fa-${t.canal === 'email' ? 'solid fa-envelope' : 'brands fa-whatsapp'}`} /> {t.canal === 'email' ? 'e-mail' : 'WhatsApp'}</div>
             </div>
           </div>
-          <span style={{ fontSize: 10, fontWeight: 700, color: ti.cor, background: 'color-mix(in srgb, currentColor 12%, #fff)', padding: '2px 8px', borderRadius: 100, whiteSpace: 'nowrap' }}>{ti.label} · {dataBR(t.agendado_para)}</span>
+          <span style={{ fontSize: 12, fontWeight: 700, color: ti.cor, background: 'color-mix(in srgb, currentColor 12%, #fff)', padding: '2px 8px', borderRadius: 100, whiteSpace: 'nowrap' }}>{ti.label} · {dataBR(t.agendado_para)}</span>
         </div>
         <textarea defaultValue={t.mensagem} onBlur={e => { if (e.target.value !== t.mensagem) mudar(t.id, { mensagem: e.target.value }) }} disabled={done}
-          style={{ width: '100%', fontSize: 12.5, lineHeight: 1.5, color: 'var(--ink)', border: '1px solid var(--line)', borderRadius: 8, padding: '8px 10px', resize: 'vertical', minHeight: 46, background: done ? 'var(--surface-2)' : '#fff', fontFamily: 'inherit' }} />
+          style={{ width: '100%', fontSize: 14.5, lineHeight: 1.5, color: 'var(--ink)', border: '1px solid var(--line)', borderRadius: 8, padding: '8px 10px', resize: 'vertical', minHeight: 46, background: done ? 'var(--surface-2)' : '#fff', fontFamily: 'inherit' }} />
         {!done && (
           <div style={{ display: 'flex', gap: 6, marginTop: 8, flexWrap: 'wrap' }}>
-            <button className="btn-action" style={{ fontSize: 11.5, padding: '6px 12px' }} onClick={() => enviar(t)}>
+            <button className="btn-action" style={{ fontSize: 13.5, padding: '6px 12px' }} onClick={() => enviar(t)}>
               <i className={`fa-${t.canal === 'email' ? 'solid fa-envelope' : 'brands fa-whatsapp'}`} style={{ marginRight: 5 }} />Enviar
             </button>
-            <button className="btn-ghost" style={{ fontSize: 11.5, padding: '6px 10px' }} onClick={() => mudar(t.id, { status: 'enviado' })}>Marcar feito</button>
-            <button className="btn-ghost" style={{ fontSize: 11.5, padding: '6px 10px' }} onClick={() => mudar(t.id, { status: 'pulado' })}>Pular</button>
-            <button className="btn-ghost" style={{ fontSize: 11.5, padding: '6px 9px', marginLeft: 'auto', color: '#B0413E' }} onClick={() => excluir(t.id)} title="Excluir"><i className="fa-solid fa-trash" /></button>
+            <button className="btn-ghost" style={{ fontSize: 13.5, padding: '6px 10px' }} onClick={() => mudar(t.id, { status: 'enviado' })}>Marcar feito</button>
+            <button className="btn-ghost" style={{ fontSize: 13.5, padding: '6px 10px' }} onClick={() => mudar(t.id, { status: 'pulado' })}>Pular</button>
+            <button className="btn-ghost" style={{ fontSize: 13.5, padding: '6px 9px', marginLeft: 'auto', color: '#B0413E' }} onClick={() => excluir(t.id)} title="Excluir"><i className="fa-solid fa-trash" /></button>
           </div>
         )}
-        {done && <div style={{ fontSize: 11, color: 'var(--ink-mut)', marginTop: 6 }}><i className={`fa-solid ${t.status === 'enviado' ? 'fa-circle-check' : 'fa-circle-minus'}`} style={{ marginRight: 5, color: t.status === 'enviado' ? 'var(--sage)' : 'var(--ink-faint)' }} />{t.status === 'enviado' ? 'Enviado' : 'Pulado'} · <button onClick={() => mudar(t.id, { status: 'pendente' })} style={{ background: 'none', border: 'none', color: 'var(--sage-deep)', cursor: 'pointer', fontSize: 11, padding: 0 }}>reabrir</button></div>}
+        {done && <div style={{ fontSize: 13, color: 'var(--ink-mut)', marginTop: 6 }}><i className={`fa-solid ${t.status === 'enviado' ? 'fa-circle-check' : 'fa-circle-minus'}`} style={{ marginRight: 5, color: t.status === 'enviado' ? 'var(--sage)' : 'var(--ink-faint)' }} />{t.status === 'enviado' ? 'Enviado' : 'Pulado'} · <button onClick={() => mudar(t.id, { status: 'pendente' })} style={{ background: 'none', border: 'none', color: 'var(--sage-deep)', cursor: 'pointer', fontSize: 13, padding: 0 }}>reabrir</button></div>}
       </div>
     )
   }
@@ -137,7 +137,7 @@ export default function PosVendaPage() {
     if (itens.length === 0) return null
     return (
       <div style={{ marginBottom: 18 }}>
-        <div style={{ fontSize: 11, fontWeight: 700, color: cor, textTransform: 'uppercase', letterSpacing: '.05em', marginBottom: 10 }}>{titulo} · {itens.length}</div>
+        <div style={{ fontSize: 13, fontWeight: 700, color: cor, textTransform: 'uppercase', letterSpacing: '.05em', marginBottom: 10 }}>{titulo} · {itens.length}</div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(300px,1fr))', gap: 10 }}>{itens.map(t => <Card key={t.id} t={t} />)}</div>
       </div>
     )
@@ -161,7 +161,7 @@ export default function PosVendaPage() {
           { l: 'Concluídos', v: feitos.filter(f => f.status === 'enviado').length, c: 'var(--sage)' },
         ].map(k => (
           <div key={k.l} className="kpi txs-card" style={{ padding: '13px 16px' }}>
-            <div style={{ fontSize: 10.5, color: 'var(--ink-mut)', textTransform: 'uppercase', letterSpacing: '.05em' }}>{k.l}</div>
+            <div style={{ fontSize: 12.5, color: 'var(--ink-mut)', textTransform: 'uppercase', letterSpacing: '.05em' }}>{k.l}</div>
             <div style={{ fontSize: 24, fontWeight: 800, color: k.c, fontVariantNumeric: 'tabular-nums' }}>{k.v}</div>
           </div>
         ))}
@@ -172,7 +172,7 @@ export default function PosVendaPage() {
           <div className="txs-card" style={{ padding: '44px 30px', textAlign: 'center' }}>
             <div style={{ width: 54, height: 54, borderRadius: '50%', background: 'var(--sage-tint)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 14px' }}><i className="fa-solid fa-heart-pulse" style={{ fontSize: 22, color: 'var(--sage-deep)' }} /></div>
             <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--ink)', marginBottom: 6 }}>Nunca mais esqueça um cliente</div>
-            <div style={{ fontSize: 12.5, color: 'var(--ink-mut)', maxWidth: 380, margin: '0 auto 18px', lineHeight: 1.6 }}>Crie uma régua de pós-venda: o sistema agenda os toques (satisfação, garantia, recompra) e deixa a mensagem pronta pra você enviar no WhatsApp.</div>
+            <div style={{ fontSize: 14.5, color: 'var(--ink-mut)', maxWidth: 380, margin: '0 auto 18px', lineHeight: 1.6 }}>Crie uma régua de pós-venda: o sistema agenda os toques (satisfação, garantia, recompra) e deixa a mensagem pronta pra você enviar no WhatsApp.</div>
             <button className="btn-action" onClick={() => setModal(true)}><i className="fa-solid fa-plus" style={{ marginRight: 6 }} />Criar primeira régua</button>
           </div>
         ) : (
@@ -182,7 +182,7 @@ export default function PosVendaPage() {
             <Secao titulo="Próximos" cor="var(--sage-deep)" itens={proximos} />
             {feitos.length > 0 && (
               <details style={{ marginTop: 8 }}>
-                <summary style={{ cursor: 'pointer', fontSize: 11, fontWeight: 700, color: 'var(--ink-mut)', textTransform: 'uppercase', letterSpacing: '.05em', marginBottom: 10 }}>Concluídos · {feitos.length}</summary>
+                <summary style={{ cursor: 'pointer', fontSize: 13, fontWeight: 700, color: 'var(--ink-mut)', textTransform: 'uppercase', letterSpacing: '.05em', marginBottom: 10 }}>Concluídos · {feitos.length}</summary>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(300px,1fr))', gap: 10, marginTop: 10 }}>{feitos.map(t => <Card key={t.id} t={t} />)}</div>
               </details>
             )}
@@ -193,7 +193,7 @@ export default function PosVendaPage() {
         <div onClick={() => setModal(false)} style={{ position: 'fixed', inset: 0, background: 'rgba(19,32,29,.45)', zIndex: 60, display: 'flex', alignItems: 'flex-start', justifyContent: 'center', padding: '6vh 16px', overflowY: 'auto' }}>
           <div onClick={e => e.stopPropagation()} className="txs-card" style={{ width: '100%', maxWidth: 460, padding: 22 }}>
             <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--ink)', marginBottom: 4 }}>Nova régua de pós-venda</div>
-            <div style={{ fontSize: 12, color: 'var(--ink-mut)', marginBottom: 18 }}>Depois de uma venda ou atendimento, agende os toques do cliente.</div>
+            <div style={{ fontSize: 14, color: 'var(--ink-mut)', marginBottom: 18 }}>Depois de uma venda ou atendimento, agende os toques do cliente.</div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               <div>
                 <label className="form-label">Cliente *</label>
@@ -229,8 +229,8 @@ export default function PosVendaPage() {
                     <button key={r.key} onClick={() => setNovo(p => ({ ...p, regua: r.key }))} style={{ textAlign: 'left', display: 'flex', gap: 10, alignItems: 'center', padding: '9px 12px', borderRadius: 9, cursor: 'pointer', border: `1px solid ${novo.regua === r.key ? 'var(--sage)' : 'var(--line)'}`, background: novo.regua === r.key ? 'var(--sage-tint)' : '#fff' }}>
                       <i className={`fa-solid ${r.ic}`} style={{ color: 'var(--sage-deep)', fontSize: 14, width: 16 }} />
                       <div>
-                        <div style={{ fontSize: 12.5, fontWeight: 700, color: 'var(--ink)' }}>{r.nome} <span style={{ fontWeight: 500, color: 'var(--ink-mut)' }}>· {r.passos.length} toques</span></div>
-                        <div style={{ fontSize: 11, color: 'var(--ink-mut)' }}>{r.desc}</div>
+                        <div style={{ fontSize: 14.5, fontWeight: 700, color: 'var(--ink)' }}>{r.nome} <span style={{ fontWeight: 500, color: 'var(--ink-mut)' }}>· {r.passos.length} toques</span></div>
+                        <div style={{ fontSize: 13, color: 'var(--ink-mut)' }}>{r.desc}</div>
                       </div>
                     </button>
                   ))}

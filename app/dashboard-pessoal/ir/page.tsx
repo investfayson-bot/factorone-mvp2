@@ -106,7 +106,7 @@ export default function IRPage() {
       </div>
 
       {renda === 0 && (
-        <div style={{ background: 'rgba(234,179,8,.08)', border: '1px solid rgba(234,179,8,.3)', borderRadius: 10, padding: '12px 16px', marginBottom: 16, fontSize: 13, color: '#92400e' }}>
+        <div style={{ background: 'rgba(234,179,8,.08)', border: '1px solid rgba(234,179,8,.3)', borderRadius: 10, padding: '12px 16px', marginBottom: 16, fontSize: 15, color: '#92400e' }}>
           Configure sua renda mensal em <strong>Receitas</strong> para calcular o IR corretamente.
         </div>
       )}
@@ -114,14 +114,14 @@ export default function IRPage() {
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
         {/* Deduções */}
         <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: 20 }}>
-          <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy)', marginBottom: 4 }}>Deduções anuais</div>
-          <div style={{ fontSize: 11, color: 'var(--gray-400)', marginBottom: 16 }}>Valores do ano completo</div>
+          <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--navy)', marginBottom: 4 }}>Deduções anuais</div>
+          <div style={{ fontSize: 13, color: 'var(--gray-400)', marginBottom: 16 }}>Valores do ano completo</div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
             <div>
-              <label style={{ fontSize: 11, fontWeight: 600, color: 'var(--gray-500)', display: 'block', marginBottom: 4 }}>Dependentes (quantidade)</label>
+              <label style={{ fontSize: 13, fontWeight: 600, color: 'var(--gray-500)', display: 'block', marginBottom: 4 }}>Dependentes (quantidade)</label>
               <input className="form-input" type="number" min="0" max="20" value={deducoes.dependentes} onChange={e => setDeducoes(d => ({ ...d, dependentes: parseInt(e.target.value) || 0 }))} />
-              <div style={{ fontSize: 10, color: 'var(--gray-400)', marginTop: 2 }}>R$ 189,59/mês por dependente</div>
+              <div style={{ fontSize: 12, color: 'var(--gray-400)', marginTop: 2 }}>R$ 189,59/mês por dependente</div>
             </div>
             {[
               { key: 'saude', label: 'Saúde (plano, consultas, exames)', hint: 'Dedução integral' },
@@ -131,9 +131,9 @@ export default function IRPage() {
               { key: 'outros', label: 'Outras deduções', hint: 'Doações, livro-caixa etc.' },
             ].map(({ key, label, hint }) => (
               <div key={key}>
-                <label style={{ fontSize: 11, fontWeight: 600, color: 'var(--gray-500)', display: 'block', marginBottom: 4 }}>{label}</label>
+                <label style={{ fontSize: 13, fontWeight: 600, color: 'var(--gray-500)', display: 'block', marginBottom: 4 }}>{label}</label>
                 <input className="form-input" type="number" min="0" value={deducoes[key as keyof typeof deducoes]} onChange={e => setDeducoes(d => ({ ...d, [key]: Number(e.target.value) || 0 }))} />
-                <div style={{ fontSize: 10, color: 'var(--gray-400)', marginTop: 2 }}>{hint}</div>
+                <div style={{ fontSize: 12, color: 'var(--gray-400)', marginTop: 2 }}>{hint}</div>
               </div>
             ))}
           </div>
@@ -166,7 +166,7 @@ export default function IRPage() {
 
           {/* Resumo deduções */}
           <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: 16 }}>
-            <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--navy)', marginBottom: 12 }}>Resumo do cálculo</div>
+            <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--navy)', marginBottom: 12 }}>Resumo do cálculo</div>
             {[
               { label: 'Renda bruta mensal', valor: renda, cor: 'var(--teal)' },
               { label: 'Total de deduções/mês', valor: -resultado.deducaoMensal, cor: 'var(--navy)' },
@@ -174,7 +174,7 @@ export default function IRPage() {
               { label: 'IR retido na fonte', valor: -resultado.irMensal, cor: resultado.irMensal > 0 ? 'var(--red)' : 'var(--teal)' },
               { label: 'Renda líquida estimada', valor: renda - resultado.irMensal, cor: 'var(--teal)', bold: true },
             ].map(({ label, valor, cor, bold }) => (
-              <div key={label} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, padding: '6px 0', borderBottom: '1px solid var(--gray-100)', fontWeight: bold ? 700 : 400 }}>
+              <div key={label} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, padding: '6px 0', borderBottom: '1px solid var(--gray-100)', fontWeight: bold ? 700 : 400 }}>
                 <span style={{ color: 'var(--gray-400)' }}>{label}</span>
                 <span style={{ color: cor, fontFamily: "var(--font-sans)" }}>{valor < 0 ? `- ${formatBRL(Math.abs(valor))}` : formatBRL(valor)}</span>
               </div>
@@ -183,8 +183,8 @@ export default function IRPage() {
 
           {/* Tabela IRPF */}
           <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: 16 }}>
-            <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--navy)', marginBottom: 10 }}>Tabela IRPF 2024 (mensal)</div>
-            <table style={{ width: '100%', fontSize: 11, borderCollapse: 'collapse' }}>
+            <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--navy)', marginBottom: 10 }}>Tabela IRPF 2024 (mensal)</div>
+            <table style={{ width: '100%', fontSize: 13, borderCollapse: 'collapse' }}>
               <thead>
                 <tr style={{ color: 'var(--gray-400)' }}>
                   <th style={{ textAlign: 'left', paddingBottom: 6 }}>Base de cálculo</th>
@@ -209,7 +209,7 @@ export default function IRPage() {
                 })}
               </tbody>
             </table>
-            <div style={{ fontSize: 10, color: 'var(--gray-400)', marginTop: 10, lineHeight: 1.6 }}>
+            <div style={{ fontSize: 12, color: 'var(--gray-400)', marginTop: 10, lineHeight: 1.6 }}>
               Estimativa baseada nos dados informados. Consulte um contador para valores definitivos.
               Não considera renda variável, ganho de capital ou outras fontes.
             </div>

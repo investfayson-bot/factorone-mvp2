@@ -40,14 +40,14 @@ export default function ProximosCompromissos({ empresaId }: { empresaId: string 
   return (
     <div style={{ background: 'var(--surface)', border: '1px solid var(--line)', borderRadius: 12, padding: '16px 20px', marginBottom: 16, boxShadow: 'var(--shadow-card)' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
-        <div style={{ fontSize: 10, fontWeight: 600, color: 'var(--ink-mut)', textTransform: 'uppercase', letterSpacing: '.1em' }}>
+        <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--ink-mut)', textTransform: 'uppercase', letterSpacing: '.1em' }}>
           <i className="fa-solid fa-calendar-days" style={{ marginRight: 7, color: 'var(--sage)' }} />Próximos compromissos
         </div>
-        <Link href="/dashboard/crm?tab=agenda" style={{ fontSize: 11, color: 'var(--sage-deep)', fontWeight: 600, textDecoration: 'none' }}>Ver agenda →</Link>
+        <Link href="/dashboard/crm?tab=agenda" style={{ fontSize: 13, color: 'var(--sage-deep)', fontWeight: 600, textDecoration: 'none' }}>Ver agenda →</Link>
       </div>
 
       {itens.length === 0 ? (
-        <div style={{ fontSize: 12.5, color: 'var(--ink-mut)' }}>
+        <div style={{ fontSize: 14.5, color: 'var(--ink-mut)' }}>
           Nenhum compromisso agendado. Marque pelo CRM, ou peça pro assistente no WhatsApp/Telegram: <i>&quot;marca visita com [cliente] amanhã 14h&quot;</i>.
         </div>
       ) : (
@@ -58,17 +58,17 @@ export default function ProximosCompromissos({ empresaId }: { empresaId: string 
               onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
             >
               <div style={{ width: 42, textAlign: 'center', flexShrink: 0 }}>
-                <div style={{ fontSize: 9.5, fontWeight: 700, color: 'var(--ink-mut)', textTransform: 'uppercase' }}>
+                <div style={{ fontSize: 11.5, fontWeight: 700, color: 'var(--ink-mut)', textTransform: 'uppercase' }}>
                   {new Date(a.data + 'T12:00:00').toLocaleDateString('pt-BR', { weekday: 'short' })}
                 </div>
                 <div style={{ fontSize: 17, fontWeight: 800, color: 'var(--ink)', fontVariantNumeric: 'tabular-nums' }}>
                   {new Date(a.data + 'T12:00:00').getDate()}
                 </div>
               </div>
-              <i className={`fa-solid ${TIPO_ICON[a.tipo] || 'fa-circle'}`} style={{ fontSize: 12, color: 'var(--sage-deep)', flexShrink: 0 }} />
+              <i className={`fa-solid ${TIPO_ICON[a.tipo] || 'fa-circle'}`} style={{ fontSize: 14, color: 'var(--sage-deep)', flexShrink: 0 }} />
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontSize: 12.5, fontWeight: 700, color: 'var(--ink)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{a.titulo}</div>
-                <div style={{ fontSize: 11, color: 'var(--ink-mut)' }}>
+                <div style={{ fontSize: 14.5, fontWeight: 700, color: 'var(--ink)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{a.titulo}</div>
+                <div style={{ fontSize: 13, color: 'var(--ink-mut)' }}>
                   {a.hora_inicio ? a.hora_inicio.slice(0, 5) : 'dia todo'}{a.clientes?.nome ? ` · ${a.clientes.nome}` : ''}{a.local ? ` · ${a.local}` : ''}
                 </div>
               </div>

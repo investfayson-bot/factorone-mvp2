@@ -18,7 +18,7 @@ const pct = (v: number, d = 1) => `${v >= 0 ? '' : ''}${v.toFixed(d)}%`
 function Card({ label, value, sub, cor, tip }: { label: string; value: string; sub?: string; cor: string; tip?: string }) {
   return (
     <div className="kpi" style={{ borderTop: `3px solid ${cor}` }} title={tip}>
-      <div className="kpi-lbl">{label}{tip && <i className="fa-solid fa-circle-info" style={{ fontSize: 10, color: '#C4CFCE' }} />}</div>
+      <div className="kpi-lbl">{label}{tip && <i className="fa-solid fa-circle-info" style={{ fontSize: 12, color: '#C4CFCE' }} />}</div>
       <div className="kpi-val" style={{ color: cor === '#E4DCCC' ? '#13201D' : cor }}>{value}</div>
       {sub && <div className="kpi-delta" style={{ color: '#7B8C88' }}>{sub}</div>}
     </div>
@@ -85,7 +85,7 @@ export default function IndicadoresPage() {
   const corLtvCac = ltvCac == null ? '#E4DCCC' : ltvCac >= 3 ? '#3D7A6E' : ltvCac >= 1 ? '#B08A3E' : '#B0413E'
   const corRunway = burn === 0 ? '#3D7A6E' : runwayMeses < 6 ? '#B0413E' : runwayMeses < 12 ? '#B08A3E' : '#3D7A6E'
 
-  if (loading) return <div style={{ padding: 32, color: 'var(--gray-400)', fontSize: 13 }}>Carregando indicadores…</div>
+  if (loading) return <div style={{ padding: 32, color: 'var(--gray-400)', fontSize: 15 }}>Carregando indicadores…</div>
 
   return (
     <>
@@ -112,21 +112,21 @@ export default function IndicadoresPage() {
 
       {/* Taxas de mercado */}
       <div style={{ background: '#13201D', borderRadius: 14, padding: '14px 20px', marginBottom: 18, display: 'flex', gap: 28, flexWrap: 'wrap', alignItems: 'center' }}>
-        <div style={{ fontSize: 11, fontWeight: 700, color: '#6FA595', textTransform: 'uppercase', letterSpacing: '.08em' }}>Taxas de mercado (BACEN)</div>
+        <div style={{ fontSize: 13, fontWeight: 700, color: '#6FA595', textTransform: 'uppercase', letterSpacing: '.08em' }}>Taxas de mercado (BACEN)</div>
         {[
           { l: 'SELIC', v: taxas.selic, s: '% a.a.' },
           { l: 'CDI', v: taxas.cdi, s: '% a.a.' },
           { l: 'IPCA 12m', v: taxas.ipca, s: '%' },
         ].map(t => (
           <div key={t.l}>
-            <div style={{ fontSize: 10, color: 'rgba(255,255,255,.5)' }}>{t.l}</div>
+            <div style={{ fontSize: 12, color: 'rgba(255,255,255,.5)' }}>{t.l}</div>
             <div style={{ fontSize: 18, fontWeight: 800, color: '#fff', fontFamily: "var(--font-sans)" }}>{t.v != null ? `${t.v.toFixed(2)}${t.s === '%' ? '%' : ' ' + t.s}` : '—'}</div>
           </div>
         ))}
       </div>
 
       {/* Unit economics */}
-      <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.04em', margin: '0 0 10px' }}>Unit economics (SaaS)</div>
+      <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.04em', margin: '0 0 10px' }}>Unit economics (SaaS)</div>
       <div className="kpis" style={{ gridTemplateColumns: 'repeat(4,1fr)', marginBottom: 8 }}>
         <Card label="MRR" value={fmtC(mrr)} sub={`ARR ${fmtC(arr)}`} cor="#3D7A6E" tip="Receita recorrente mensal (contratos ativos)" />
         <Card label="Ticket médio (ARPA)" value={fmtC(arpa)} sub={`${clientesAtivos} clientes ativos`} cor="#13201D" tip="MRR ÷ clientes ativos" />
@@ -145,7 +145,7 @@ export default function IndicadoresPage() {
       </div>
 
       {/* Rentabilidade */}
-      <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.04em', margin: '0 0 10px' }}>Rentabilidade</div>
+      <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.04em', margin: '0 0 10px' }}>Rentabilidade</div>
       <div className="kpis" style={{ gridTemplateColumns: 'repeat(4,1fr)', marginBottom: 18 }}>
         <Card label="Margem líquida" value={margemLiq != null ? pct(margemLiq) : '—'} sub={m ? 'último mês' : 'sem DRE'} cor={margemLiq != null && margemLiq >= 0 ? '#3D7A6E' : '#B0413E'} />
         <Card label="EBITDA" value={ebitda != null ? fmtC(ebitda) : '—'} sub="geração operacional" cor="#3D7A6E" />
@@ -154,14 +154,14 @@ export default function IndicadoresPage() {
       </div>
 
       {/* Caixa */}
-      <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.04em', margin: '0 0 10px' }}>Caixa & sobrevivência</div>
+      <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.04em', margin: '0 0 10px' }}>Caixa & sobrevivência</div>
       <div className="kpis" style={{ gridTemplateColumns: 'repeat(3,1fr)', marginBottom: 8 }}>
         <Card label="Saldo em caixa" value={fmtC(saldo)} sub="todas as contas" cor="#13201D" />
         <Card label="Burn mensal" value={burn > 0 ? fmtC(burn) : 'R$ 0'} sub={burn > 0 ? 'queima de caixa/mês' : 'operação lucrativa'} cor={burn > 0 ? '#B0413E' : '#3D7A6E'} tip="Prejuízo líquido mensal (0 se lucrativo)" />
         <Card label="Runway" value={burn === 0 ? '∞' : runwayMeses > 24 ? '24m+' : `${runwayMeses.toFixed(0)}m`} sub={burn === 0 ? 'lucrativo, sem queima' : runwayMeses < 6 ? '⚠ menos de 6 meses' : 'meses de caixa'} cor={corRunway} tip="Saldo ÷ burn mensal" />
       </div>
 
-      <div style={{ fontSize: 11, color: '#A6B0AC', marginTop: 14, lineHeight: 1.6 }}>
+      <div style={{ fontSize: 13, color: '#A6B0AC', marginTop: 14, lineHeight: 1.6 }}>
         <i className="fa-solid fa-circle-info" style={{ color: '#3D7A6E', marginRight: 6 }} />
         LTV/CAC assume vida média editável e margem bruta do DRE. CAC usa gasto de marketing ÷ novos clientes do mês. ROIC é aproximado — para due diligence/M&A, refine com capital investido real. Passe o mouse nos cards para ver as fórmulas.
       </div>

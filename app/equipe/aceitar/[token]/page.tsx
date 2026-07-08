@@ -103,23 +103,23 @@ export default function AceitarConvitePage({ params }: { params: Promise<{ token
         {estado === 'login' && convite && (
           <div style={{ textAlign: 'left' }}>
             <h2 style={{ color: '#0d1b2a', marginBottom: 8, textAlign: 'center' }}>Aceitar convite</h2>
-            <p style={{ color: '#64748b', fontSize: 13, textAlign: 'center', marginBottom: 20 }}>
+            <p style={{ color: '#64748b', fontSize: 15, textAlign: 'center', marginBottom: 20 }}>
               Você foi convidado como <strong>{ROLES[convite.role] ?? convite.role}</strong>. Entre ou crie uma conta para aceitar.
             </p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               <div>
-                <label style={{ fontSize: 12, fontWeight: 600, display: 'block', marginBottom: 4 }}>E-mail</label>
+                <label style={{ fontSize: 14, fontWeight: 600, display: 'block', marginBottom: 4 }}>E-mail</label>
                 <input
-                  style={{ width: '100%', padding: '10px 12px', border: '1px solid #e2e8f0', borderRadius: 8, fontSize: 13, boxSizing: 'border-box' }}
+                  style={{ width: '100%', padding: '10px 12px', border: '1px solid #e2e8f0', borderRadius: 8, fontSize: 15, boxSizing: 'border-box' }}
                   value={loginForm.email}
                   onChange={e => setLoginForm(f => ({ ...f, email: e.target.value }))}
                 />
               </div>
               <div>
-                <label style={{ fontSize: 12, fontWeight: 600, display: 'block', marginBottom: 4 }}>Senha</label>
+                <label style={{ fontSize: 14, fontWeight: 600, display: 'block', marginBottom: 4 }}>Senha</label>
                 <input
                   type="password"
-                  style={{ width: '100%', padding: '10px 12px', border: '1px solid #e2e8f0', borderRadius: 8, fontSize: 13, boxSizing: 'border-box' }}
+                  style={{ width: '100%', padding: '10px 12px', border: '1px solid #e2e8f0', borderRadius: 8, fontSize: 15, boxSizing: 'border-box' }}
                   value={loginForm.senha}
                   onChange={e => setLoginForm(f => ({ ...f, senha: e.target.value }))}
                   placeholder="Crie uma senha ou entre com a existente"

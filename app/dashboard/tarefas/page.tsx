@@ -109,7 +109,7 @@ export default function TarefasPage() {
           <div className="page-title">Scale · Tarefas</div>
           <div className="page-sub">Multi-view (Lista/Board/Gantt/Calendário) · quem faz o quê · prioridades.</div>
         </div>
-        <button className="btn-action" style={{ fontSize: 12 }} onClick={() => { setForm({ ...VAZIO }); setShowModal(true) }}>
+        <button className="btn-action" style={{ fontSize: 14 }} onClick={() => { setForm({ ...VAZIO }); setShowModal(true) }}>
           <i className="fa-solid fa-plus" style={{ marginRight: 6 }} />Tarefa
         </button>
       </div>
@@ -123,7 +123,7 @@ export default function TarefasPage() {
 
       <div style={{ display: 'flex', gap: 6, marginBottom: 16 }}>
         {([['lista', 'Lista'], ['board', 'Board'], ['gantt', 'Gantt'], ['calendario', 'Calendário']] as [View, string][]).map(([k, l]) => (
-          <button key={k} className={`btn-action${view !== k ? ' btn-ghost' : ''}`} style={{ fontSize: 11, padding: '5px 12px' }} onClick={() => setView(k)}>{l}</button>
+          <button key={k} className={`btn-action${view !== k ? ' btn-ghost' : ''}`} style={{ fontSize: 13, padding: '5px 12px' }} onClick={() => setView(k)}>{l}</button>
         ))}
       </div>
 
@@ -131,7 +131,7 @@ export default function TarefasPage() {
         <div className="txs-card" style={{ padding: 44, textAlign: 'center' }}>
           <i className="fa-solid fa-list-check" style={{ fontSize: 28, color: 'var(--sage)', marginBottom: 12 }} />
           <div style={{ fontFamily: 'var(--font-display)', fontSize: 16, fontWeight: 600, color: 'var(--ink)', marginBottom: 6 }}>Nenhuma tarefa ainda</div>
-          <button className="btn-action" style={{ fontSize: 12 }} onClick={() => setShowModal(true)}>Criar a primeira</button>
+          <button className="btn-action" style={{ fontSize: 14 }} onClick={() => setShowModal(true)}>Criar a primeira</button>
         </div>
       )}
 
@@ -142,16 +142,16 @@ export default function TarefasPage() {
             <div key={t.id} style={{ display: 'grid', gridTemplateColumns: '24px 1fr 130px 100px 90px 90px auto', gap: 12, alignItems: 'center', padding: '11px 18px', borderBottom: i < tarefas.length - 1 ? '1px solid var(--line-soft)' : 'none' }}>
               <input type="checkbox" checked={t.status === 'feito'} onChange={() => toggleFeito(t)} style={{ accentColor: 'var(--sage)', width: 15, height: 15, cursor: 'pointer' }} />
               <div style={{ minWidth: 0 }}>
-                <div style={{ fontSize: 12.5, fontWeight: 600, color: t.status === 'feito' ? 'var(--ink-faint)' : 'var(--ink)', textDecoration: t.status === 'feito' ? 'line-through' : 'none' }}>{t.titulo}</div>
-                {t.projeto_id && <div style={{ fontSize: 10, color: corProjeto(t.projeto_id), fontWeight: 600 }}>{nomeProjeto(t.projeto_id)}</div>}
+                <div style={{ fontSize: 14.5, fontWeight: 600, color: t.status === 'feito' ? 'var(--ink-faint)' : 'var(--ink)', textDecoration: t.status === 'feito' ? 'line-through' : 'none' }}>{t.titulo}</div>
+                {t.projeto_id && <div style={{ fontSize: 12, color: corProjeto(t.projeto_id), fontWeight: 600 }}>{nomeProjeto(t.projeto_id)}</div>}
               </div>
-              <div style={{ fontSize: 11.5, color: 'var(--ink-mut)' }}>{t.responsavel || '—'}</div>
-              <span style={{ justifySelf: 'start', fontSize: 9.5, fontWeight: 700, padding: '3px 9px', borderRadius: 100, background: PRIORIDADE_COR[t.prioridade].bg, color: PRIORIDADE_COR[t.prioridade].fg }}>{PRIORIDADE_COR[t.prioridade].label}</span>
-              <div style={{ fontSize: 11.5, color: 'var(--ink-mut)' }}>{dataFmt(t.prazo)}</div>
-              <select value={t.status} onChange={e => void atualizar(t.id, { status: e.target.value as Status })} style={{ fontSize: 9.5, fontWeight: 700, padding: '3px 6px', borderRadius: 100, background: STATUS_COR[t.status].bg, color: STATUS_COR[t.status].fg, border: 'none', cursor: 'pointer' }}>
+              <div style={{ fontSize: 13.5, color: 'var(--ink-mut)' }}>{t.responsavel || '—'}</div>
+              <span style={{ justifySelf: 'start', fontSize: 11.5, fontWeight: 700, padding: '3px 9px', borderRadius: 100, background: PRIORIDADE_COR[t.prioridade].bg, color: PRIORIDADE_COR[t.prioridade].fg }}>{PRIORIDADE_COR[t.prioridade].label}</span>
+              <div style={{ fontSize: 13.5, color: 'var(--ink-mut)' }}>{dataFmt(t.prazo)}</div>
+              <select value={t.status} onChange={e => void atualizar(t.id, { status: e.target.value as Status })} style={{ fontSize: 11.5, fontWeight: 700, padding: '3px 6px', borderRadius: 100, background: STATUS_COR[t.status].bg, color: STATUS_COR[t.status].fg, border: 'none', cursor: 'pointer' }}>
                 {STATUS_COLS.map(s => <option key={s.id} value={s.id}>{s.label}</option>)}
               </select>
-              <button className="btn-ghost" style={{ fontSize: 10, padding: '4px 8px', color: '#B0413E', borderColor: '#B0413E' }} onClick={() => void excluir(t.id)}><i className="fa-solid fa-trash-can" /></button>
+              <button className="btn-ghost" style={{ fontSize: 12, padding: '4px 8px', color: '#B0413E', borderColor: '#B0413E' }} onClick={() => void excluir(t.id)}><i className="fa-solid fa-trash-can" /></button>
             </div>
           ))}
         </div>
@@ -167,19 +167,19 @@ export default function TarefasPage() {
                 onDragOver={e => e.preventDefault()}
                 onDrop={() => { if (dragId) void atualizar(dragId, { status: col.id }); setDragId(null) }}
                 style={{ background: 'var(--surface-2)', borderRadius: 12, padding: 10, minHeight: 120 }}>
-                <div style={{ fontSize: 10.5, fontWeight: 700, color: 'var(--ink-mut)', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: 8, display: 'flex', justifyContent: 'space-between' }}>
+                <div style={{ fontSize: 12.5, fontWeight: 700, color: 'var(--ink-mut)', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: 8, display: 'flex', justifyContent: 'space-between' }}>
                   <span>{col.label}</span><span>{itens.length}</span>
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                   {itens.map(t => (
                     <div key={t.id} draggable onDragStart={() => setDragId(t.id)}
                       style={{ background: 'var(--surface)', border: '1px solid var(--line)', borderRadius: 10, padding: '10px 12px', cursor: 'grab' }}>
-                      <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--ink)', marginBottom: 6 }}>{t.titulo}</div>
+                      <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--ink)', marginBottom: 6 }}>{t.titulo}</div>
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                        <span style={{ fontSize: 9, fontWeight: 700, padding: '2px 7px', borderRadius: 100, background: PRIORIDADE_COR[t.prioridade].bg, color: PRIORIDADE_COR[t.prioridade].fg }}>{PRIORIDADE_COR[t.prioridade].label}</span>
-                        <span style={{ fontSize: 10, color: 'var(--ink-mut)' }}>{t.responsavel || ''}</span>
+                        <span style={{ fontSize: 11, fontWeight: 700, padding: '2px 7px', borderRadius: 100, background: PRIORIDADE_COR[t.prioridade].bg, color: PRIORIDADE_COR[t.prioridade].fg }}>{PRIORIDADE_COR[t.prioridade].label}</span>
+                        <span style={{ fontSize: 12, color: 'var(--ink-mut)' }}>{t.responsavel || ''}</span>
                       </div>
-                      {t.prazo && <div style={{ fontSize: 10, color: 'var(--ink-faint)', marginTop: 4 }}>{dataFmt(t.prazo)}</div>}
+                      {t.prazo && <div style={{ fontSize: 12, color: 'var(--ink-faint)', marginTop: 4 }}>{dataFmt(t.prazo)}</div>}
                     </div>
                   ))}
                 </div>
@@ -239,7 +239,7 @@ export default function TarefasPage() {
 function GanttView({ tarefas, nomeProjeto, corProjeto }: { tarefas: Tarefa[]; nomeProjeto: (id: string | null) => string; corProjeto: (id: string | null) => string }) {
   const hoje = new Date(); hoje.setHours(0, 0, 0, 0)
   const comPrazo = tarefas.filter(t => t.prazo).sort((a, b) => (a.prazo! < b.prazo! ? -1 : 1))
-  if (comPrazo.length === 0) return <div className="txs-card" style={{ padding: 36, textAlign: 'center', color: 'var(--ink-mut)', fontSize: 13 }}>Nenhuma tarefa com prazo definido ainda.</div>
+  if (comPrazo.length === 0) return <div className="txs-card" style={{ padding: 36, textAlign: 'center', color: 'var(--ink-mut)', fontSize: 15 }}>Nenhuma tarefa com prazo definido ainda.</div>
   const datas = comPrazo.map(t => new Date(t.prazo! + 'T12:00:00').getTime())
   const criadas = comPrazo.map(t => new Date(t.created_at).getTime())
   const min = Math.min(hoje.getTime(), ...criadas)
@@ -249,7 +249,7 @@ function GanttView({ tarefas, nomeProjeto, corProjeto }: { tarefas: Tarefa[]; no
 
   return (
     <div className="txs-card" style={{ padding: '16px 18px' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 10, color: 'var(--ink-faint)', marginBottom: 10 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: 'var(--ink-faint)', marginBottom: 10 }}>
         <span>{new Date(min).toLocaleDateString('pt-BR')}</span>
         <span style={{ color: 'var(--sage-deep)', fontWeight: 700 }}>hoje</span>
         <span>{new Date(max).toLocaleDateString('pt-BR')}</span>
@@ -261,7 +261,7 @@ function GanttView({ tarefas, nomeProjeto, corProjeto }: { tarefas: Tarefa[]; no
           const atrasada = fim < hoje.getTime() && t.status !== 'feito'
           return (
             <div key={t.id} style={{ display: 'grid', gridTemplateColumns: '200px 1fr', gap: 12, alignItems: 'center' }}>
-              <div style={{ fontSize: 12, color: 'var(--ink)', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+              <div style={{ fontSize: 14, color: 'var(--ink)', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                 {t.projeto_id && <span style={{ display: 'inline-block', width: 6, height: 6, borderRadius: '50%', background: corProjeto(t.projeto_id), marginRight: 6 }} />}
                 {t.titulo}
               </div>
@@ -298,11 +298,11 @@ function CalendarioView({ tarefas }: { tarefas: Tarefa[] }) {
   return (
     <div className="txs-card" style={{ padding: '16px 18px' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
-        <button className="btn-ghost" style={{ fontSize: 11, padding: '4px 10px' }} onClick={() => setRef(new Date(ano, mes - 1, 1))}><i className="fa-solid fa-chevron-left" /></button>
-        <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--ink)', textTransform: 'capitalize' }}>{ref.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}</div>
-        <button className="btn-ghost" style={{ fontSize: 11, padding: '4px 10px' }} onClick={() => setRef(new Date(ano, mes + 1, 1))}><i className="fa-solid fa-chevron-right" /></button>
+        <button className="btn-ghost" style={{ fontSize: 13, padding: '4px 10px' }} onClick={() => setRef(new Date(ano, mes - 1, 1))}><i className="fa-solid fa-chevron-left" /></button>
+        <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--ink)', textTransform: 'capitalize' }}>{ref.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}</div>
+        <button className="btn-ghost" style={{ fontSize: 13, padding: '4px 10px' }} onClick={() => setRef(new Date(ano, mes + 1, 1))}><i className="fa-solid fa-chevron-right" /></button>
       </div>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 4, fontSize: 10, color: 'var(--ink-faint)', textAlign: 'center', marginBottom: 4 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 4, fontSize: 12, color: 'var(--ink-faint)', textAlign: 'center', marginBottom: 4 }}>
         {['D', 'S', 'T', 'Q', 'Q', 'S', 'S'].map((d, i) => <div key={i}>{d}</div>)}
       </div>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 4 }}>
@@ -311,11 +311,11 @@ function CalendarioView({ tarefas }: { tarefas: Tarefa[] }) {
           const itens = dia !== null ? (porDia.get(dia) ?? []) : []
           return (
             <div key={i} style={{ minHeight: 68, borderRadius: 8, padding: 6, background: isHoje ? 'var(--sage-tint)' : 'var(--surface-2)', border: isHoje ? '1px solid var(--sage)' : '1px solid transparent' }}>
-              {dia !== null && <div style={{ fontSize: 10.5, fontWeight: isHoje ? 700 : 500, color: isHoje ? 'var(--sage-deep)' : 'var(--ink-mut)', marginBottom: 3 }}>{dia}</div>}
+              {dia !== null && <div style={{ fontSize: 12.5, fontWeight: isHoje ? 700 : 500, color: isHoje ? 'var(--sage-deep)' : 'var(--ink-mut)', marginBottom: 3 }}>{dia}</div>}
               {itens.slice(0, 2).map(t => (
-                <div key={t.id} style={{ fontSize: 9, color: 'var(--ink)', background: 'var(--surface)', border: '1px solid var(--line)', borderRadius: 4, padding: '1px 4px', marginBottom: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{t.titulo}</div>
+                <div key={t.id} style={{ fontSize: 11, color: 'var(--ink)', background: 'var(--surface)', border: '1px solid var(--line)', borderRadius: 4, padding: '1px 4px', marginBottom: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{t.titulo}</div>
               ))}
-              {itens.length > 2 && <div style={{ fontSize: 9, color: 'var(--ink-faint)' }}>+{itens.length - 2}</div>}
+              {itens.length > 2 && <div style={{ fontSize: 11, color: 'var(--ink-faint)' }}>+{itens.length - 2}</div>}
             </div>
           )
         })}

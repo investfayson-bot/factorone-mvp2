@@ -93,13 +93,13 @@ function StepIndicator({ step, goTo }: { step: number; goTo: (s: number) => void
                   width: 32, height: 32, borderRadius: '50%', border: 'none', cursor: done ? 'pointer' : 'default',
                   background: done ? 'var(--teal)' : active ? 'var(--navy)' : 'var(--gray-100)',
                   color: done || active ? '#fff' : 'var(--gray-400)',
-                  fontWeight: 700, fontSize: 13, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontWeight: 700, fontSize: 15, display: 'flex', alignItems: 'center', justifyContent: 'center',
                   transition: 'all .2s', flexShrink: 0,
                 }}
               >
-                {done ? <i className="fa-solid fa-check" style={{ fontSize: 12 }} /> : n}
+                {done ? <i className="fa-solid fa-check" style={{ fontSize: 14 }} /> : n}
               </button>
-              <div style={{ fontSize: 10, fontWeight: active ? 700 : 500, color: active ? 'var(--navy)' : done ? 'var(--teal)' : 'var(--gray-400)', marginTop: 6, textAlign: 'center', maxWidth: 80, lineHeight: 1.3 }}>
+              <div style={{ fontSize: 12, fontWeight: active ? 700 : 500, color: active ? 'var(--navy)' : done ? 'var(--teal)' : 'var(--gray-400)', marginTop: 6, textAlign: 'center', maxWidth: 80, lineHeight: 1.3 }}>
                 {label}
               </div>
             </div>
@@ -116,7 +116,7 @@ function StepIndicator({ step, goTo }: { step: number; goTo: (s: number) => void
 function FieldGroup({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div style={{ marginBottom: 16 }}>
-      <label style={{ fontSize: 11, fontWeight: 600, color: 'var(--gray-500)', display: 'block', marginBottom: 6 }}>{label}</label>
+      <label style={{ fontSize: 13, fontWeight: 600, color: 'var(--gray-500)', display: 'block', marginBottom: 6 }}>{label}</label>
       {children}
     </div>
   )
@@ -133,18 +133,18 @@ function FileUploadBox({ label, accept, value, onChange }: { label: string; acce
       {value ? (
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
           <i className="fa-solid fa-circle-check" style={{ color: 'var(--teal)', fontSize: 16 }} />
-          <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--teal)' }}>{value}</span>
+          <span style={{ fontSize: 14, fontWeight: 600, color: 'var(--teal)' }}>{value}</span>
         </div>
       ) : (
         <>
           <i className="fa-solid fa-cloud-arrow-up" style={{ fontSize: 22, color: 'var(--gray-300)', marginBottom: 8 }} />
-          <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--gray-500)', marginBottom: 4 }}>
+          <div style={{ fontSize: 15, fontWeight: 600, color: 'var(--gray-500)', marginBottom: 4 }}>
             <span style={{ color: 'var(--teal)' }}>Clique para enviar</span>
           </div>
-          <div style={{ fontSize: 10, color: 'var(--gray-400)' }}>PDF, PNG ou JPG até 10MB</div>
+          <div style={{ fontSize: 12, color: 'var(--gray-400)' }}>PDF, PNG ou JPG até 10MB</div>
         </>
       )}
-      <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--gray-500)', marginTop: value ? 0 : 6 }}>{label}</div>
+      <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--gray-500)', marginTop: value ? 0 : 6 }}>{label}</div>
     </div>
   )
 }
@@ -247,7 +247,7 @@ export default function ContaPJPage() {
     toast.success('Chave PIX copiada!')
   }
 
-  if (loading) return <div style={{ padding: 32, color: 'var(--gray-400)', fontSize: 13 }}>Carregando…</div>
+  if (loading) return <div style={{ padding: 32, color: 'var(--gray-400)', fontSize: 15 }}>Carregando…</div>
 
   // ─── SUCCESS SCREEN ──────────────────────────────────────────────────────
   if (wSuccess) return (
@@ -258,38 +258,38 @@ export default function ContaPJPage() {
       <div style={{ fontSize: 24, fontWeight: 800, color: 'var(--navy)', fontFamily: "var(--font-sans)", marginBottom: 8 }}>
         Conta PJ criada com sucesso!
       </div>
-      <div style={{ fontSize: 13, color: 'var(--gray-400)', marginBottom: 28 }}>
+      <div style={{ fontSize: 15, color: 'var(--gray-400)', marginBottom: 28 }}>
         Sua conta está pronta para uso. Confira os dados abaixo.
       </div>
       <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 14, padding: 24, marginBottom: 20, textAlign: 'left' }}>
-        <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.04em', marginBottom: 14 }}>Dados da conta</div>
+        <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.04em', marginBottom: 14 }}>Dados da conta</div>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 14 }}>
           <div>
-            <div style={{ fontSize: 10, color: 'var(--gray-400)', marginBottom: 3 }}>Empresa</div>
-            <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy)' }}>{w1.razaoSocial || empresa.nome}</div>
+            <div style={{ fontSize: 12, color: 'var(--gray-400)', marginBottom: 3 }}>Empresa</div>
+            <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--navy)' }}>{w1.razaoSocial || empresa.nome}</div>
           </div>
           <div>
-            <div style={{ fontSize: 10, color: 'var(--gray-400)', marginBottom: 3 }}>Segmento</div>
-            <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--navy)' }}>{w1.segmento || empresa.setor || '—'}</div>
+            <div style={{ fontSize: 12, color: 'var(--gray-400)', marginBottom: 3 }}>Segmento</div>
+            <div style={{ fontSize: 15, fontWeight: 600, color: 'var(--navy)' }}>{w1.segmento || empresa.setor || '—'}</div>
           </div>
           {conta?.agencia && (
             <>
               <div>
-                <div style={{ fontSize: 10, color: 'var(--gray-400)', marginBottom: 3 }}>Agência</div>
+                <div style={{ fontSize: 12, color: 'var(--gray-400)', marginBottom: 3 }}>Agência</div>
                 <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--navy)', fontVariantNumeric: 'tabular-nums' }}>{conta.agencia}</div>
               </div>
               <div>
-                <div style={{ fontSize: 10, color: 'var(--gray-400)', marginBottom: 3 }}>Conta</div>
+                <div style={{ fontSize: 12, color: 'var(--gray-400)', marginBottom: 3 }}>Conta</div>
                 <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--navy)', fontVariantNumeric: 'tabular-nums' }}>{conta.numero_conta}{conta.digito ? `-${conta.digito}` : ''}</div>
               </div>
             </>
           )}
         </div>
         <div style={{ borderTop: '1px solid var(--gray-100)', paddingTop: 14 }}>
-          <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--gray-500)', marginBottom: 10 }}>O que você pode fazer agora:</div>
+          <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--gray-500)', marginBottom: 10 }}>O que você pode fazer agora:</div>
           {['Realizar pagamentos e PIX', 'Conectar via Open Finance', 'Solicitar cartão corporativo', 'Gerir suas finanças'].map(item => (
-            <div key={item} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8, fontSize: 12, color: 'var(--navy)' }}>
-              <i className="fa-solid fa-check" style={{ color: 'var(--teal)', fontSize: 11 }} />
+            <div key={item} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8, fontSize: 14, color: 'var(--navy)' }}>
+              <i className="fa-solid fa-check" style={{ color: 'var(--teal)', fontSize: 13 }} />
               {item}
             </div>
           ))}
@@ -303,7 +303,7 @@ export default function ContaPJPage() {
           <i className="fa-solid fa-link" style={{ marginRight: 8 }} />Explorar funcionalidades
         </Link>
       </div>
-      <div style={{ fontSize: 11, color: 'var(--gray-400)', marginTop: 16 }}>
+      <div style={{ fontSize: 13, color: 'var(--gray-400)', marginTop: 16 }}>
         As funcionalidades serão analisadas e liberadas em até 24h.
       </div>
     </div>
@@ -333,7 +333,7 @@ export default function ContaPJPage() {
       {wStep === 1 && (
         <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 14, padding: '28px 32px' }}>
           <div style={{ fontSize: 15, fontWeight: 800, color: 'var(--navy)', fontFamily: "var(--font-sans)", marginBottom: 4 }}>Informações da empresa</div>
-          <div style={{ fontSize: 12, color: 'var(--gray-400)', marginBottom: 24 }}>Dados básicos para abrir sua conta PJ gratuita.</div>
+          <div style={{ fontSize: 14, color: 'var(--gray-400)', marginBottom: 24 }}>Dados básicos para abrir sua conta PJ gratuita.</div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 20px' }}>
             <FieldGroup label="CNPJ">
               <input className="form-input" placeholder="00.000.000/0001-00" value={w1.cnpj}
@@ -361,7 +361,7 @@ export default function ContaPJPage() {
           </div>
           <div style={{ marginTop: 20, padding: '12px 16px', background: 'rgba(61,122,110,.06)', borderRadius: 8, display: 'flex', gap: 10, alignItems: 'center' }}>
             <i className="fa-solid fa-shield-halved" style={{ color: 'var(--green)', fontSize: 16, flexShrink: 0 }} />
-            <span style={{ fontSize: 11, color: 'var(--gray-500)' }}>Abertura 100% digital e gratuita · Sem mensalidades ou tarifas escondidas</span>
+            <span style={{ fontSize: 13, color: 'var(--gray-500)' }}>Abertura 100% digital e gratuita · Sem mensalidades ou tarifas escondidas</span>
           </div>
         </div>
       )}
@@ -370,7 +370,7 @@ export default function ContaPJPage() {
       {wStep === 2 && (
         <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 14, padding: '28px 32px' }}>
           <div style={{ fontSize: 15, fontWeight: 800, color: 'var(--navy)', fontFamily: "var(--font-sans)", marginBottom: 4 }}>Dados dos responsáveis</div>
-          <div style={{ fontSize: 12, color: 'var(--gray-400)', marginBottom: 24 }}>Informações do sócio ou administrador.</div>
+          <div style={{ fontSize: 14, color: 'var(--gray-400)', marginBottom: 24 }}>Informações do sócio ou administrador.</div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 20px' }}>
             <div style={{ gridColumn: '1 / -1' }}>
               <FieldGroup label="Nome completo">
@@ -404,7 +404,7 @@ export default function ContaPJPage() {
           </div>
           <div style={{ marginTop: 20, padding: '12px 16px', background: 'rgba(61,122,110,.06)', borderRadius: 8, display: 'flex', gap: 10, alignItems: 'center' }}>
             <i className="fa-solid fa-shield-halved" style={{ color: 'var(--green)', fontSize: 16, flexShrink: 0 }} />
-            <span style={{ fontSize: 11, color: 'var(--gray-500)' }}>Precisamos dessas informações para garantir a segurança da sua conta.</span>
+            <span style={{ fontSize: 13, color: 'var(--gray-500)' }}>Precisamos dessas informações para garantir a segurança da sua conta.</span>
           </div>
         </div>
       )}
@@ -413,13 +413,13 @@ export default function ContaPJPage() {
       {wStep === 3 && (
         <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 14, padding: '28px 32px' }}>
           <div style={{ fontSize: 15, fontWeight: 800, color: 'var(--navy)', fontFamily: "var(--font-sans)", marginBottom: 4 }}>Endereço da empresa</div>
-          <div style={{ fontSize: 12, color: 'var(--gray-400)', marginBottom: 24 }}>Confirme o endereço da sua empresa.</div>
+          <div style={{ fontSize: 14, color: 'var(--gray-400)', marginBottom: 24 }}>Confirme o endereço da sua empresa.</div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 20px' }}>
             <FieldGroup label="CEP">
               <div style={{ display: 'flex', gap: 8 }}>
                 <input className="form-input" placeholder="01234-567" value={w3.cep}
                   onChange={e => setW3(p => ({ ...p, cep: e.target.value }))} style={{ flex: 1 }} />
-                <button className="btn-action btn-ghost" style={{ fontSize: 11, padding: '6px 12px', flexShrink: 0 }}
+                <button className="btn-action btn-ghost" style={{ fontSize: 13, padding: '6px 12px', flexShrink: 0 }}
                   onClick={() => void buscarCep(w3.cep)} disabled={cepLoading}>
                   {cepLoading ? '…' : 'Buscar CEP'}
                 </button>
@@ -464,7 +464,7 @@ export default function ContaPJPage() {
           </div>
           <div style={{ marginTop: 20, padding: '12px 16px', background: 'rgba(61,122,110,.06)', borderRadius: 8, display: 'flex', gap: 10, alignItems: 'center' }}>
             <i className="fa-solid fa-shield-halved" style={{ color: 'var(--green)', fontSize: 16, flexShrink: 0 }} />
-            <span style={{ fontSize: 11, color: 'var(--gray-500)' }}>Endereço utilizado para validação e documentos oficiais.</span>
+            <span style={{ fontSize: 13, color: 'var(--gray-500)' }}>Endereço utilizado para validação e documentos oficiais.</span>
           </div>
         </div>
       )}
@@ -473,7 +473,7 @@ export default function ContaPJPage() {
       {wStep === 4 && (
         <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 14, padding: '28px 32px' }}>
           <div style={{ fontSize: 15, fontWeight: 800, color: 'var(--navy)', fontFamily: "var(--font-sans)", marginBottom: 4 }}>Documentos</div>
-          <div style={{ fontSize: 12, color: 'var(--gray-400)', marginBottom: 24 }}>Documentos da empresa e dos sócios.</div>
+          <div style={{ fontSize: 14, color: 'var(--gray-400)', marginBottom: 24 }}>Documentos da empresa e dos sócios.</div>
           <FileUploadBox
             label="Contrato Social ou Estatuto"
             accept=".pdf,.png,.jpg,.jpeg"
@@ -500,7 +500,7 @@ export default function ContaPJPage() {
           </div>
           <div style={{ marginTop: 20, padding: '12px 16px', background: 'rgba(61,122,110,.06)', borderRadius: 8, display: 'flex', gap: 10, alignItems: 'center' }}>
             <i className="fa-solid fa-lock" style={{ color: 'var(--green)', fontSize: 16, flexShrink: 0 }} />
-            <span style={{ fontSize: 11, color: 'var(--gray-500)' }}>Documentos protegidos com segurança e criptografia de ponta.</span>
+            <span style={{ fontSize: 13, color: 'var(--gray-500)' }}>Documentos protegidos com segurança e criptografia de ponta.</span>
           </div>
         </div>
       )}
@@ -513,9 +513,9 @@ export default function ContaPJPage() {
             {/* Dados da empresa */}
             <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 14, padding: '22px 24px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-                <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy)' }}>Dados da empresa</div>
-                <button className="btn-action btn-ghost" style={{ fontSize: 11, padding: '4px 12px' }} onClick={() => setWStep(1)}>
-                  <i className="fa-solid fa-pen" style={{ marginRight: 5, fontSize: 10 }} />Editar
+                <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--navy)' }}>Dados da empresa</div>
+                <button className="btn-action btn-ghost" style={{ fontSize: 13, padding: '4px 12px' }} onClick={() => setWStep(1)}>
+                  <i className="fa-solid fa-pen" style={{ marginRight: 5, fontSize: 12 }} />Editar
                 </button>
               </div>
               {[
@@ -527,17 +527,17 @@ export default function ContaPJPage() {
                 { label: 'Cidade/UF', value: w3.cidade && w3.estado ? `${w3.cidade} - ${w3.estado}` : '—' },
               ].map(row => (
                 <div key={row.label} style={{ display: 'flex', gap: 12, marginBottom: 10 }}>
-                  <div style={{ fontSize: 11, color: 'var(--gray-400)', minWidth: 100 }}>{row.label}</div>
-                  <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--navy)' }}>{row.value || '—'}</div>
+                  <div style={{ fontSize: 13, color: 'var(--gray-400)', minWidth: 100 }}>{row.label}</div>
+                  <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--navy)' }}>{row.value || '—'}</div>
                 </div>
               ))}
             </div>
             {/* Responsável */}
             <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 14, padding: '22px 24px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-                <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy)' }}>Responsável</div>
-                <button className="btn-action btn-ghost" style={{ fontSize: 11, padding: '4px 12px' }} onClick={() => setWStep(2)}>
-                  <i className="fa-solid fa-pen" style={{ marginRight: 5, fontSize: 10 }} />Editar
+                <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--navy)' }}>Responsável</div>
+                <button className="btn-action btn-ghost" style={{ fontSize: 13, padding: '4px 12px' }} onClick={() => setWStep(2)}>
+                  <i className="fa-solid fa-pen" style={{ marginRight: 5, fontSize: 12 }} />Editar
                 </button>
               </div>
               {[
@@ -548,8 +548,8 @@ export default function ContaPJPage() {
                 { label: 'Telefone', value: w2.telefone },
               ].map(row => (
                 <div key={row.label} style={{ display: 'flex', gap: 12, marginBottom: 10 }}>
-                  <div style={{ fontSize: 11, color: 'var(--gray-400)', minWidth: 100 }}>{row.label}</div>
-                  <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--navy)' }}>{row.value || '—'}</div>
+                  <div style={{ fontSize: 13, color: 'var(--gray-400)', minWidth: 100 }}>{row.label}</div>
+                  <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--navy)' }}>{row.value || '—'}</div>
                 </div>
               ))}
             </div>
@@ -557,23 +557,23 @@ export default function ContaPJPage() {
 
           {/* Right: finalizar */}
           <div style={{ background: 'var(--navy)', borderRadius: 14, padding: '28px 24px', color: '#fff', position: 'sticky', top: 20 }}>
-            <div style={{ fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,.5)', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: 14 }}>Revise seus dados antes de finalizar.</div>
-            <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 4 }}>{w1.razaoSocial || 'Empresa'}</div>
-            <div style={{ fontSize: 11, color: 'rgba(255,255,255,.6)', marginBottom: 4 }}>{w1.cnpj || '—'}</div>
-            <div style={{ fontSize: 11, color: 'rgba(255,255,255,.6)', marginBottom: 4 }}>{w1.segmento || '—'}</div>
-            {w3.cidade && <div style={{ fontSize: 11, color: 'rgba(255,255,255,.6)', marginBottom: 16 }}>{w3.cidade}{w3.estado ? ` - ${w3.estado}` : ''}</div>}
+            <div style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,.5)', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: 14 }}>Revise seus dados antes de finalizar.</div>
+            <div style={{ fontSize: 15, fontWeight: 700, marginBottom: 4 }}>{w1.razaoSocial || 'Empresa'}</div>
+            <div style={{ fontSize: 13, color: 'rgba(255,255,255,.6)', marginBottom: 4 }}>{w1.cnpj || '—'}</div>
+            <div style={{ fontSize: 13, color: 'rgba(255,255,255,.6)', marginBottom: 4 }}>{w1.segmento || '—'}</div>
+            {w3.cidade && <div style={{ fontSize: 13, color: 'rgba(255,255,255,.6)', marginBottom: 16 }}>{w3.cidade}{w3.estado ? ` - ${w3.estado}` : ''}</div>}
             <div style={{ borderTop: '1px solid rgba(255,255,255,.12)', paddingTop: 16, marginBottom: 16 }}>
-              <div style={{ fontSize: 11, color: 'rgba(255,255,255,.5)', marginBottom: 4 }}>Responsável</div>
-              <div style={{ fontSize: 12, fontWeight: 600 }}>{w2.nome || '—'}</div>
-              <div style={{ fontSize: 11, color: 'rgba(255,255,255,.5)', marginTop: 2 }}>{w2.cpf || '—'}</div>
-              <div style={{ fontSize: 11, color: 'rgba(255,255,255,.5)', marginTop: 2 }}>{w2.email || '—'}</div>
+              <div style={{ fontSize: 13, color: 'rgba(255,255,255,.5)', marginBottom: 4 }}>Responsável</div>
+              <div style={{ fontSize: 14, fontWeight: 600 }}>{w2.nome || '—'}</div>
+              <div style={{ fontSize: 13, color: 'rgba(255,255,255,.5)', marginTop: 2 }}>{w2.cpf || '—'}</div>
+              <div style={{ fontSize: 13, color: 'rgba(255,255,255,.5)', marginTop: 2 }}>{w2.email || '—'}</div>
             </div>
             <div style={{ display: 'flex', gap: 8, alignItems: 'flex-start', marginBottom: 18 }}>
               <input
                 type="checkbox" id="termos" checked={wTermos} onChange={e => setWTermos(e.target.checked)}
                 style={{ marginTop: 2, accentColor: 'var(--teal)', width: 14, height: 14, flexShrink: 0 }}
               />
-              <label htmlFor="termos" style={{ fontSize: 11, color: 'rgba(255,255,255,.65)', lineHeight: 1.5, cursor: 'pointer' }}>
+              <label htmlFor="termos" style={{ fontSize: 13, color: 'rgba(255,255,255,.65)', lineHeight: 1.5, cursor: 'pointer' }}>
                 Declaro que li e concordo com os <span style={{ color: 'var(--teal)', textDecoration: 'underline', cursor: 'pointer' }}>Termos de Uso</span> e <span style={{ color: 'var(--teal)', textDecoration: 'underline', cursor: 'pointer' }}>Política de Privacidade</span>.
               </label>
             </div>
@@ -585,10 +585,10 @@ export default function ContaPJPage() {
             >
               <i className="fa-solid fa-check" style={{ marginRight: 8 }} />Finalizar cadastro
             </button>
-            <div style={{ marginTop: 12, fontSize: 10, color: 'rgba(255,255,255,.4)', textAlign: 'center', lineHeight: 1.5 }}>
+            <div style={{ marginTop: 12, fontSize: 12, color: 'rgba(255,255,255,.4)', textAlign: 'center', lineHeight: 1.5 }}>
               As funcionalidades serão analisadas e liberadas em até 24h.
             </div>
-            <button className="btn-action btn-ghost" style={{ width: '100%', marginTop: 8, color: 'rgba(255,255,255,.6)', borderColor: 'rgba(255,255,255,.2)', fontSize: 12 }} onClick={() => setWStep(4)}>
+            <button className="btn-action btn-ghost" style={{ width: '100%', marginTop: 8, color: 'rgba(255,255,255,.6)', borderColor: 'rgba(255,255,255,.2)', fontSize: 14 }} onClick={() => setWStep(4)}>
               Voltar
             </button>
           </div>
@@ -625,16 +625,16 @@ export default function ContaPJPage() {
           <div style={{ fontSize: 20, fontWeight: 800, color: 'var(--navy)', fontFamily: "var(--font-sans)" }}>
             Olá, {empresa.nome || userName}! 
           </div>
-          <div style={{ fontSize: 12, color: 'var(--gray-400)', marginTop: 2 }}>
+          <div style={{ fontSize: 14, color: 'var(--gray-400)', marginTop: 2 }}>
             Bem-vindo à sua conta PJ gratuita
-            {conta.agencia && <span style={{ marginLeft: 8, fontVariantNumeric: 'tabular-nums', fontSize: 11, color: 'var(--gray-300)' }}>Ag {conta.agencia} · CC {conta.numero_conta}{conta.digito ? `-${conta.digito}` : ''}</span>}
+            {conta.agencia && <span style={{ marginLeft: 8, fontVariantNumeric: 'tabular-nums', fontSize: 13, color: 'var(--gray-300)' }}>Ag {conta.agencia} · CC {conta.numero_conta}{conta.digito ? `-${conta.digito}` : ''}</span>}
           </div>
         </div>
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-          <button className="btn-action btn-ghost" onClick={copiarPix} style={{ fontSize: 12 }}>
+          <button className="btn-action btn-ghost" onClick={copiarPix} style={{ fontSize: 14 }}>
             PIX copia e cola
           </button>
-          <Link href="/dashboard/conta-pj/transferencias" className="btn-action" style={{ fontSize: 12, textDecoration: 'none' }}>
+          <Link href="/dashboard/conta-pj/transferencias" className="btn-action" style={{ fontSize: 14, textDecoration: 'none' }}>
             ↔️ Nova transferência
           </Link>
         </div>
@@ -671,7 +671,7 @@ export default function ContaPJPage() {
           <div className="kpi-val" style={{ color: 'var(--navy)' }}>
             {hide ? '••••••' : formatBRL(multiConta ? saldoConsolidado : saldo)}
           </div>
-          <button onClick={() => setHide(h => !h)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 10, color: 'var(--gray-400)', padding: 0 }}>
+          <button onClick={() => setHide(h => !h)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 12, color: 'var(--gray-400)', padding: 0 }}>
             <i className={`fa-solid ${hide ? 'fa-eye' : 'fa-eye-slash'}`} style={{ marginRight: 4 }} />{hide ? 'Mostrar' : 'Ocultar'}
           </button>
         </div>
@@ -688,7 +688,7 @@ export default function ContaPJPage() {
         <div className="kpi">
           <div className="kpi-lbl">Cartões corporativos</div>
           <div className="kpi-val" style={{ color: 'var(--navy)' }}>{numCartoes}</div>
-          <Link href="/dashboard/cartoes" style={{ fontSize: 10, color: 'var(--teal)', textDecoration: 'none' }}>Gerenciar cartões →</Link>
+          <Link href="/dashboard/cartoes" style={{ fontSize: 12, color: 'var(--teal)', textDecoration: 'none' }}>Gerenciar cartões →</Link>
         </div>
       </div>
 
@@ -696,8 +696,8 @@ export default function ContaPJPage() {
       {contas.length > 0 && (
         <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: '16px 20px', marginBottom: 20 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
-            <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.04em' }}>Suas contas · {contas.length}</span>
-            <Link href="/dashboard/conta-pj/abrir" style={{ fontSize: 11, color: 'var(--teal)', textDecoration: 'none', fontWeight: 600 }}>+ Abrir / conectar conta</Link>
+            <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.04em' }}>Suas contas · {contas.length}</span>
+            <Link href="/dashboard/conta-pj/abrir" style={{ fontSize: 13, color: 'var(--teal)', textDecoration: 'none', fontWeight: 600 }}>+ Abrir / conectar conta</Link>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: 12 }}>
             {contas.map(c => {
@@ -707,16 +707,16 @@ export default function ContaPJPage() {
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                       <div style={{ width: 30, height: 30, borderRadius: 8, background: 'var(--navy)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                        <i className="fa-solid fa-building-columns" style={{ fontSize: 13, color: '#6FA595' }} />
+                        <i className="fa-solid fa-building-columns" style={{ fontSize: 15, color: '#6FA595' }} />
                       </div>
-                      <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy)' }}>{c.banco_nome ?? 'FactorOne Bank'}</div>
+                      <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--navy)' }}>{c.banco_nome ?? 'FactorOne Bank'}</div>
                     </div>
-                    {c.is_principal && <span style={{ fontSize: 9, fontWeight: 700, color: 'var(--teal)', background: 'rgba(61,122,110,.12)', padding: '2px 7px', borderRadius: 20 }}>PRINCIPAL</span>}
+                    {c.is_principal && <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--teal)', background: 'rgba(61,122,110,.12)', padding: '2px 7px', borderRadius: 20 }}>PRINCIPAL</span>}
                   </div>
                   <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--navy)', fontFamily: "var(--font-sans)", letterSpacing: '-.02em' }}>
                     {hide ? '••••••' : formatBRL(Number(c.saldo_disponivel ?? c.saldo ?? 0))}
                   </div>
-                  <div style={{ fontSize: 10.5, color: 'var(--gray-400)', marginTop: 4, fontVariantNumeric: 'tabular-nums' }}>
+                  <div style={{ fontSize: 12.5, color: 'var(--gray-400)', marginTop: 4, fontVariantNumeric: 'tabular-nums' }}>
                     {c.agencia ? `Ag ${c.agencia} · CC ${c.numero_conta ?? '—'}${c.digito ? `-${c.digito}` : ''}` : (c.tipo === 'conta_pj_factorone' ? 'Conta PJ FactorOne' : 'Conta conectada')}
                   </div>
                 </button>
@@ -728,12 +728,12 @@ export default function ContaPJPage() {
 
       {/* AÇÕES RÁPIDAS */}
       <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: '16px 20px', marginBottom: 20 }}>
-        <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--gray-400)', marginBottom: 14, textTransform: 'uppercase', letterSpacing: '.04em' }}>Ações rápidas</div>
+        <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--gray-400)', marginBottom: 14, textTransform: 'uppercase', letterSpacing: '.04em' }}>Ações rápidas</div>
         <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
           {ACOES.map(a => (
             <Link key={a.label} href={a.href} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, padding: '12px 16px', borderRadius: 10, background: a.bg, border: '1px solid transparent', textDecoration: 'none', minWidth: 72, cursor: 'pointer', transition: 'opacity .15s' }}>
               <span style={{ fontSize: 22 }}><i className={`fa-solid ${a.emoji}`} /></span>
-              <span style={{ fontSize: 11, fontWeight: 700, color: a.color }}>{a.label}</span>
+              <span style={{ fontSize: 13, fontWeight: 700, color: a.color }}>{a.label}</span>
             </Link>
           ))}
         </div>
@@ -744,11 +744,11 @@ export default function ContaPJPage() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
           <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, overflow: 'hidden' }}>
             <div style={{ padding: '14px 20px', borderBottom: '1px solid var(--gray-100)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy)' }}>Movimentações recentes</span>
-              <Link href="/dashboard/conta-pj/extrato" style={{ fontSize: 11, color: 'var(--teal)', textDecoration: 'none' }}>Ver extrato completo →</Link>
+              <span style={{ fontSize: 15, fontWeight: 700, color: 'var(--navy)' }}>Movimentações recentes</span>
+              <Link href="/dashboard/conta-pj/extrato" style={{ fontSize: 13, color: 'var(--teal)', textDecoration: 'none' }}>Ver extrato completo →</Link>
             </div>
             {txsRecentes.length === 0 ? (
-              <div style={{ padding: '32px 20px', textAlign: 'center', color: 'var(--gray-400)', fontSize: 12 }}>Nenhuma movimentação nos últimos 30 dias</div>
+              <div style={{ padding: '32px 20px', textAlign: 'center', color: 'var(--gray-400)', fontSize: 14 }}>Nenhuma movimentação nos últimos 30 dias</div>
             ) : (
               <div>
                 {txsRecentes.map(tx => (
@@ -757,10 +757,10 @@ export default function ContaPJPage() {
                       {txIcon(tx)}
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--navy)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{tx.descricao}</div>
-                      <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>{tx.contraparte_nome ?? ''} · {new Date(tx.data_transacao + 'T12:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' })}</div>
+                      <div style={{ fontSize: 15, fontWeight: 600, color: 'var(--navy)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{tx.descricao}</div>
+                      <div style={{ fontSize: 13, color: 'var(--gray-400)' }}>{tx.contraparte_nome ?? ''} · {new Date(tx.data_transacao + 'T12:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' })}</div>
                     </div>
-                    <div style={{ fontVariantNumeric: 'tabular-nums', fontWeight: 700, fontSize: 13, color: tx.tipo === 'credito' ? 'var(--green)' : 'var(--red)', flexShrink: 0 }}>
+                    <div style={{ fontVariantNumeric: 'tabular-nums', fontWeight: 700, fontSize: 15, color: tx.tipo === 'credito' ? 'var(--green)' : 'var(--red)', flexShrink: 0 }}>
                       {tx.tipo === 'credito' ? '+' : '-'}{formatBRL(Number(tx.valor))}
                     </div>
                   </div>
@@ -771,11 +771,11 @@ export default function ContaPJPage() {
 
           <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: '16px 20px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-              <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy)' }}>Análise financeira</span>
+              <span style={{ fontSize: 15, fontWeight: 700, color: 'var(--navy)' }}>Análise financeira</span>
               <div style={{ display: 'flex', gap: 4 }}>
                 {(['fluxo', 'saldo'] as const).map(t => (
                   <button key={t} onClick={() => setChartTab(t)}
-                    style={{ fontSize: 10, fontWeight: chartTab === t ? 700 : 500, padding: '3px 10px', borderRadius: 6, border: `1px solid ${chartTab === t ? 'var(--teal)' : 'var(--gray-200)'}`, background: chartTab === t ? 'var(--teal)' : '#fff', color: chartTab === t ? '#fff' : 'var(--gray-400)', cursor: 'pointer' }}>
+                    style={{ fontSize: 12, fontWeight: chartTab === t ? 700 : 500, padding: '3px 10px', borderRadius: 6, border: `1px solid ${chartTab === t ? 'var(--teal)' : 'var(--gray-200)'}`, background: chartTab === t ? 'var(--teal)' : '#fff', color: chartTab === t ? '#fff' : 'var(--gray-400)', cursor: 'pointer' }}>
                     {t === 'fluxo' ? 'Fluxo 30d' : 'Saldo 30d'}
                   </button>
                 ))}
@@ -784,22 +784,22 @@ export default function ContaPJPage() {
             {chartTab === 'fluxo' && (
               <>
                 <div style={{ display: 'flex', gap: 16, marginBottom: 10 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, color: 'var(--gray-500)' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, color: 'var(--gray-500)' }}>
                     <div style={{ width: 10, height: 10, borderRadius: 2, background: 'var(--green)' }} /> Entradas
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, color: 'var(--gray-500)' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, color: 'var(--gray-500)' }}>
                     <div style={{ width: 10, height: 10, borderRadius: 2, background: 'var(--red)' }} /> Saídas
                   </div>
                 </div>
                 {chartData.every(d => d.entrada === 0 && d.saida === 0) ? (
-                  <div style={{ height: 130, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gray-300)', fontSize: 12 }}>Sem dados — importe seu extrato</div>
+                  <div style={{ height: 130, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gray-300)', fontSize: 14 }}>Sem dados — importe seu extrato</div>
                 ) : (
                   <ResponsiveContainer width="100%" height={130}>
                     <BarChart data={chartData} barGap={1} barCategoryGap="20%">
                       <CartesianGrid strokeDasharray="3 3" stroke="var(--gray-100)" vertical={false} />
-                      <XAxis dataKey="date" tick={{ fontSize: 9, fill: 'var(--gray-300)' }} axisLine={false} tickLine={false} interval={6} />
-                      <YAxis tick={{ fontSize: 9, fill: 'var(--gray-300)' }} axisLine={false} tickLine={false} tickFormatter={v => formatBRL(v).replace('R$ ', '')} width={48} />
-                      <Tooltip formatter={(v: number, name: string) => [formatBRL(v), name === 'entrada' ? 'Entrada' : 'Saída']} contentStyle={{ fontSize: 11, borderRadius: 8, border: '1px solid var(--gray-100)' }} />
+                      <XAxis dataKey="date" tick={{ fontSize: 11, fill: 'var(--gray-300)' }} axisLine={false} tickLine={false} interval={6} />
+                      <YAxis tick={{ fontSize: 11, fill: 'var(--gray-300)' }} axisLine={false} tickLine={false} tickFormatter={v => formatBRL(v).replace('R$ ', '')} width={48} />
+                      <Tooltip formatter={(v: number, name: string) => [formatBRL(v), name === 'entrada' ? 'Entrada' : 'Saída']} contentStyle={{ fontSize: 13, borderRadius: 8, border: '1px solid var(--gray-100)' }} />
                       <Bar dataKey="entrada" fill="var(--green)" radius={[3, 3, 0, 0]} maxBarSize={10} />
                       <Bar dataKey="saida" fill="var(--red)" radius={[3, 3, 0, 0]} maxBarSize={10} />
                     </BarChart>
@@ -813,7 +813,7 @@ export default function ContaPJPage() {
               return hasBal ? (
                 <>
                   <div style={{ display: 'flex', gap: 16, marginBottom: 10 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, color: 'var(--gray-500)' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, color: 'var(--gray-500)' }}>
                       <div style={{ width: 10, height: 10, borderRadius: 2, background: 'var(--teal)' }} /> Evolução do saldo
                     </div>
                   </div>
@@ -826,15 +826,15 @@ export default function ContaPJPage() {
                         </linearGradient>
                       </defs>
                       <CartesianGrid strokeDasharray="3 3" stroke="var(--gray-100)" vertical={false} />
-                      <XAxis dataKey="date" tick={{ fontSize: 9, fill: 'var(--gray-300)' }} axisLine={false} tickLine={false} interval={6} />
-                      <YAxis tick={{ fontSize: 9, fill: 'var(--gray-300)' }} axisLine={false} tickLine={false} tickFormatter={v => formatBRL(v).replace('R$ ', '')} width={48} />
-                      <Tooltip formatter={(v: number) => [formatBRL(v), 'Saldo']} contentStyle={{ fontSize: 11, borderRadius: 8, border: '1px solid var(--gray-100)' }} />
+                      <XAxis dataKey="date" tick={{ fontSize: 11, fill: 'var(--gray-300)' }} axisLine={false} tickLine={false} interval={6} />
+                      <YAxis tick={{ fontSize: 11, fill: 'var(--gray-300)' }} axisLine={false} tickLine={false} tickFormatter={v => formatBRL(v).replace('R$ ', '')} width={48} />
+                      <Tooltip formatter={(v: number) => [formatBRL(v), 'Saldo']} contentStyle={{ fontSize: 13, borderRadius: 8, border: '1px solid var(--gray-100)' }} />
                       <Area type="monotone" dataKey="saldo" stroke="var(--teal)" strokeWidth={2} fill="url(#gradSaldo)" dot={false} activeDot={{ r: 4 }} />
                     </AreaChart>
                   </ResponsiveContainer>
                 </>
               ) : (
-                <div style={{ height: 130, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gray-300)', fontSize: 12 }}>Sem histórico de transações</div>
+                <div style={{ height: 130, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gray-300)', fontSize: 14 }}>Sem histórico de transações</div>
               )
             })()}
           </div>
@@ -842,30 +842,30 @@ export default function ContaPJPage() {
 
         <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, overflow: 'hidden' }}>
           <div style={{ padding: '14px 20px', borderBottom: '1px solid var(--gray-100)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy)' }}>Extrato rápido</span>
-            <Link href="/dashboard/conta-pj/extrato" style={{ fontSize: 11, color: 'var(--teal)', textDecoration: 'none' }}>Ver extrato →</Link>
+            <span style={{ fontSize: 15, fontWeight: 700, color: 'var(--navy)' }}>Extrato rápido</span>
+            <Link href="/dashboard/conta-pj/extrato" style={{ fontSize: 13, color: 'var(--teal)', textDecoration: 'none' }}>Ver extrato →</Link>
           </div>
           <div style={{ display: 'flex', gap: 4, padding: '10px 16px', borderBottom: '1px solid var(--gray-100)' }}>
             {(['todas', 'entradas', 'saidas'] as const).map(tab => (
               <button key={tab} onClick={() => setExtratoTab(tab)}
                 className={`btn-action${extratoTab !== tab ? ' btn-ghost' : ''}`}
-                style={{ fontSize: 10, padding: '3px 10px', textTransform: 'capitalize' }}>
+                style={{ fontSize: 12, padding: '3px 10px', textTransform: 'capitalize' }}>
                 {tab === 'todas' ? 'Todas' : tab === 'entradas' ? 'Entradas' : 'Saídas'}
               </button>
             ))}
           </div>
           {extratoFiltered.length === 0 ? (
-            <div style={{ padding: '24px 16px', textAlign: 'center', color: 'var(--gray-400)', fontSize: 12 }}>Sem movimentações</div>
+            <div style={{ padding: '24px 16px', textAlign: 'center', color: 'var(--gray-400)', fontSize: 14 }}>Sem movimentações</div>
           ) : (
             <div>
               {extratoFiltered.map(tx => (
                 <div key={tx.id} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '9px 16px', borderBottom: '1px solid var(--gray-50)' }}>
                   <span style={{ fontSize: 14 }}>{txIcon(tx)}</span>
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--navy)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{tx.descricao}</div>
-                    <div style={{ fontSize: 10, color: 'var(--gray-400)' }}>{new Date(tx.data_transacao + 'T12:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' })}</div>
+                    <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--navy)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{tx.descricao}</div>
+                    <div style={{ fontSize: 12, color: 'var(--gray-400)' }}>{new Date(tx.data_transacao + 'T12:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' })}</div>
                   </div>
-                  <span style={{ fontVariantNumeric: 'tabular-nums', fontWeight: 700, fontSize: 12, color: tx.tipo === 'credito' ? 'var(--green)' : 'var(--red)', flexShrink: 0 }}>
+                  <span style={{ fontVariantNumeric: 'tabular-nums', fontWeight: 700, fontSize: 14, color: tx.tipo === 'credito' ? 'var(--green)' : 'var(--red)', flexShrink: 0 }}>
                     {tx.tipo === 'credito' ? '+' : '-'}{formatBRL(Number(tx.valor))}
                   </span>
                 </div>
@@ -877,7 +877,7 @@ export default function ContaPJPage() {
 
       {/* FUNCIONALIDADES */}
       <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: '16px 20px' }}>
-        <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy)', marginBottom: 16 }}>Funcionalidades disponíveis</div>
+        <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--navy)', marginBottom: 16 }}>Funcionalidades disponíveis</div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: 10 }}>
           {FUNCIONALIDADES.map(f => (
             <Link key={f.label} href={f.href} style={{ display: 'flex', gap: 10, alignItems: 'flex-start', padding: '12px 14px', borderRadius: 10, border: '1px solid var(--gray-100)', textDecoration: 'none', background: '#fafafa' }}
@@ -886,8 +886,8 @@ export default function ContaPJPage() {
             >
               <span style={{ fontSize: 20, flexShrink: 0, marginTop: 1 }}><i className={`fa-solid ${f.emoji}`} /></span>
               <div>
-                <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--navy)', marginBottom: 2 }}>{f.label}</div>
-                <div style={{ fontSize: 10, color: 'var(--gray-400)', lineHeight: 1.4 }}>{f.desc}</div>
+                <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--navy)', marginBottom: 2 }}>{f.label}</div>
+                <div style={{ fontSize: 12, color: 'var(--gray-400)', lineHeight: 1.4 }}>{f.desc}</div>
               </div>
             </Link>
           ))}

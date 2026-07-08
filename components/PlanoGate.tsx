@@ -29,18 +29,18 @@ export default function PlanoGate({ children, feature = 'esta funcionalidade' }:
           <div style={{ fontFamily: "var(--font-sans)", fontSize: 18, fontWeight: 800, color: 'var(--navy)', marginBottom: 8 }}>
             Funcionalidade Pro
           </div>
-          <div style={{ fontSize: 13, color: 'var(--gray-400)', lineHeight: 1.7, marginBottom: 24 }}>
+          <div style={{ fontSize: 15, color: 'var(--gray-400)', lineHeight: 1.7, marginBottom: 24 }}>
             <strong style={{ color: 'var(--navy)' }}>{feature}</strong> está disponível a partir do plano Pro. Faça upgrade para desbloquear CRM, Logística, Marketing e muito mais.
           </div>
           <button
             className="btn-action"
-            style={{ width: '100%', padding: '11px 0', fontSize: 13, background: 'linear-gradient(135deg, #7A6A9E, #9F5AF7)', border: 'none' }}
+            style={{ width: '100%', padding: '11px 0', fontSize: 15, background: 'linear-gradient(135deg, #7A6A9E, #9F5AF7)', border: 'none' }}
             onClick={() => router.push('/dashboard/planos')}
           >
             <i className="fa-solid fa-arrow-up" style={{ marginRight: 8 }} />
             Ver planos e preços
           </button>
-          <button className="btn-action btn-ghost" style={{ width: '100%', marginTop: 8, fontSize: 12 }} onClick={() => router.back()}>
+          <button className="btn-action btn-ghost" style={{ width: '100%', marginTop: 8, fontSize: 14 }} onClick={() => router.back()}>
             Voltar
           </button>
         </div>

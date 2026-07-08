@@ -116,7 +116,7 @@ export default function HealthScore({ empresaId }: Props) {
 
   if (error) {
     return (
-      <div style={{ background: 'rgba(176,65,62,.06)', border: '1px solid rgba(176,65,62,.2)', borderRadius: 12, padding: 20, fontSize: 12, color: 'var(--fo-red)' }}>
+      <div style={{ background: 'rgba(176,65,62,.06)', border: '1px solid rgba(176,65,62,.2)', borderRadius: 12, padding: 20, fontSize: 14, color: 'var(--fo-red)' }}>
         <p style={{ fontWeight: 700 }}>Score de saúde</p>
         <p style={{ marginTop: 4 }}>{error}</p>
       </div>
@@ -128,7 +128,7 @@ export default function HealthScore({ empresaId }: Props) {
 
   return (
     <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: 20, height: '100%' }}>
-      <div style={{ fontSize: 9, fontWeight: 700, color: 'var(--gray-400)', letterSpacing: '.08em', textTransform: 'uppercase', fontFamily: "var(--font-sans)", marginBottom: 14 }}>
+      <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--gray-400)', letterSpacing: '.08em', textTransform: 'uppercase', fontFamily: "var(--font-sans)", marginBottom: 14 }}>
         Saúde Financeira
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', paddingBlock: 8 }}>
@@ -147,10 +147,10 @@ export default function HealthScore({ empresaId }: Props) {
           </svg>
           <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
             <span style={{ fontFamily: "var(--font-sans)", fontSize: 30, fontWeight: 800, color: ring.color, lineHeight: 1 }}>{score}</span>
-            <span style={{ fontSize: 9, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.06em', fontFamily: "var(--font-sans)" }}>/ 100</span>
+            <span style={{ fontSize: 11, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.06em', fontFamily: "var(--font-sans)" }}>/ 100</span>
           </div>
         </div>
-        <p style={{ marginTop: 10, fontSize: 12, fontWeight: 700, color: ring.color, fontFamily: "var(--font-sans)", letterSpacing: '.04em' }}>{label}</p>
+        <p style={{ marginTop: 10, fontSize: 14, fontWeight: 700, color: ring.color, fontFamily: "var(--font-sans)", letterSpacing: '.04em' }}>{label}</p>
       </div>
     </div>
   )

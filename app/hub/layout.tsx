@@ -77,7 +77,7 @@ export default function HubLayout({ children }: { children: React.ReactNode }) {
       <aside className="sidebar" style={{ transform: sidebarOpen ? 'translateX(0)' : undefined } as React.CSSProperties}>
         <div className="sb-logo">
           <div className="sb-logo-txt">Factor<span>Hub</span></div>
-          <div style={{ fontSize: 10, color: 'rgba(255,255,255,.4)', marginTop: 2, fontWeight: 500 }}>
+          <div style={{ fontSize: 12, color: 'rgba(255,255,255,.4)', marginTop: 2, fontWeight: 500 }}>
             Hub de operações &amp; IA
           </div>
         </div>
@@ -95,7 +95,7 @@ export default function HubLayout({ children }: { children: React.ReactNode }) {
                   <i className={`fa-solid ${item.icon}`} />
                   <span style={{ flex: 1 }}>{item.label}</span>
                   {item.badge && (
-                    <span style={{ fontSize: 8, fontWeight: 700, padding: '1px 5px', borderRadius: 20, background: item.badgeColor, color: '#fff' }}>
+                    <span style={{ fontSize: 11, fontWeight: 700, padding: '1px 5px', borderRadius: 20, background: item.badgeColor, color: '#fff' }}>
                       {item.badge}
                     </span>
                   )}

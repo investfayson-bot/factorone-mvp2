@@ -68,7 +68,7 @@ export default function ReceitasPage() {
           <div className="page-sub">Salário, freelances e outras entradas</div>
         </div>
         <div style={{ display: 'flex', gap: 8 }}>
-          <input type="month" value={mes} onChange={e => { setMes(e.target.value); carregar(userId, e.target.value) }} className="form-input" style={{ width: 'auto', padding: '6px 10px', fontSize: 12 }} />
+          <input type="month" value={mes} onChange={e => { setMes(e.target.value); carregar(userId, e.target.value) }} className="form-input" style={{ width: 'auto', padding: '6px 10px', fontSize: 14 }} />
           <button onClick={() => setModal(true)} className="btn-action">+ Nova receita</button>
         </div>
       </div>
@@ -76,12 +76,12 @@ export default function ReceitasPage() {
       {/* Renda fixa */}
       <div style={{ background: 'rgba(61,122,110,.06)', border: '1px solid rgba(61,122,110,.2)', borderRadius: 12, padding: 16, marginBottom: 16, display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
         <div style={{ flex: 1 }}>
-          <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--teal)' }}>Renda mensal fixa</div>
-          <div style={{ fontSize: 11, color: 'var(--gray-400)', marginTop: 2 }}>Usada como base do orçamento e pelo AI CFO</div>
+          <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--teal)' }}>Renda mensal fixa</div>
+          <div style={{ fontSize: 13, color: 'var(--gray-400)', marginTop: 2 }}>Usada como base do orçamento e pelo AI CFO</div>
         </div>
         <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-          <input className="form-input" type="number" placeholder="R$ 0,00" value={renda} onChange={e => setRenda(e.target.value)} style={{ width: 140, padding: '6px 10px', fontSize: 13 }} />
-          <button onClick={salvarRenda} className="btn-action" disabled={savingRenda} style={{ padding: '7px 14px', fontSize: 12 }}>{savingRenda ? '...' : 'Salvar'}</button>
+          <input className="form-input" type="number" placeholder="R$ 0,00" value={renda} onChange={e => setRenda(e.target.value)} style={{ width: 140, padding: '6px 10px', fontSize: 15 }} />
+          <button onClick={salvarRenda} className="btn-action" disabled={savingRenda} style={{ padding: '7px 14px', fontSize: 14 }}>{savingRenda ? '...' : 'Salvar'}</button>
         </div>
       </div>
 
@@ -103,7 +103,7 @@ export default function ReceitasPage() {
                 <td style={{ color: 'var(--gray-400)' }}>{r.data_recebimento?.split('-').reverse().join('/')}</td>
                 <td>{r.recorrente ? <span className="tag green">sim</span> : <span className="tag gray">não</span>}</td>
                 <td style={{ fontFamily: "var(--font-sans)", fontWeight: 700, color: 'var(--teal)' }}>{formatBRL(Number(r.valor))}</td>
-                <td><button onClick={() => excluir(r.id)} className="btn-ghost" style={{ fontSize: 10, padding: '3px 8px', color: 'var(--red)' }}>✕</button></td>
+                <td><button onClick={() => excluir(r.id)} className="btn-ghost" style={{ fontSize: 12, padding: '3px 8px', color: 'var(--red)' }}>✕</button></td>
               </tr>
             ))}
           </tbody>
@@ -121,7 +121,7 @@ export default function ReceitasPage() {
                 {CATS.map(c => <option key={c}>{c}</option>)}
               </select>
               <input className="form-input" type="date" value={form.data_recebimento} onChange={e => setForm(f => ({ ...f, data_recebimento: e.target.value }))} />
-              <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, cursor: 'pointer' }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 14, cursor: 'pointer' }}>
                 <input type="checkbox" checked={form.recorrente} onChange={e => setForm(f => ({ ...f, recorrente: e.target.checked }))} />
                 Receita recorrente (todo mês)
               </label>

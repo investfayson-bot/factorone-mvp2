@@ -68,7 +68,7 @@ export default function ExtratoCompletoPage() {
           <div className="page-title">Extrato Bancário</div>
           <div className="page-sub">Banco PJ · histórico de movimentações</div>
         </div>
-        <button className="btn-action btn-ghost" style={{ fontSize: 12 }} onClick={() => void categorizarComIA()} disabled={categorizando} title="Classifica automaticamente as transações sem categoria">
+        <button className="btn-action btn-ghost" style={{ fontSize: 14 }} onClick={() => void categorizarComIA()} disabled={categorizando} title="Classifica automaticamente as transações sem categoria">
           <i className="fa-solid fa-wand-magic-sparkles" style={{ marginRight: 6, color: '#7A6A9E' }} />{categorizando ? 'Categorizando…' : 'Categorizar com IA'}
         </button>
       </div>
@@ -95,21 +95,21 @@ export default function ExtratoCompletoPage() {
       {/* Filtros + tabela */}
       <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, overflow: 'hidden' }}>
         <div style={{ padding: '12px 16px', borderBottom: '1px solid var(--gray-100)', display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
-          <div style={{ fontSize: 9.5, fontWeight: 700, color: 'var(--gray-400)', letterSpacing: '.08em', textTransform: 'uppercase', fontFamily: "var(--font-sans)", flex: 1 }}>
+          <div style={{ fontSize: 11.5, fontWeight: 700, color: 'var(--gray-400)', letterSpacing: '.08em', textTransform: 'uppercase', fontFamily: "var(--font-sans)", flex: 1 }}>
             Lançamentos ({filtered.length})
           </div>
-          <select className="form-input" style={{ width: 'auto', padding: '5px 10px', fontSize: 11 }} value={periodo} onChange={e => setPeriodo(e.target.value)}>
+          <select className="form-input" style={{ width: 'auto', padding: '5px 10px', fontSize: 13 }} value={periodo} onChange={e => setPeriodo(e.target.value)}>
             <option value="1">Hoje</option>
             <option value="7">7 dias</option>
             <option value="15">15 dias</option>
             <option value="30">30 dias</option>
           </select>
-          <select className="form-input" style={{ width: 'auto', padding: '5px 10px', fontSize: 11 }} value={tipo} onChange={e => setTipo(e.target.value)}>
+          <select className="form-input" style={{ width: 'auto', padding: '5px 10px', fontSize: 13 }} value={tipo} onChange={e => setTipo(e.target.value)}>
             <option value="todos">Todos</option>
             <option value="credito">Crédito</option>
             <option value="debito">Débito</option>
           </select>
-          <input className="form-input" style={{ width: 180, padding: '5px 10px', fontSize: 11 }} placeholder="Buscar..." value={busca} onChange={e => setBusca(e.target.value)} />
+          <input className="form-input" style={{ width: 180, padding: '5px 10px', fontSize: 13 }} placeholder="Buscar..." value={busca} onChange={e => setBusca(e.target.value)} />
         </div>
 
         <div className="expenses-table">
@@ -130,10 +130,10 @@ export default function ExtratoCompletoPage() {
                 <tr><td colSpan={7} style={{ textAlign: 'center', color: 'var(--gray-400)', padding: '32px 0' }}>Nenhuma movimentação no período.</td></tr>
               ) : filtered.map(r => (
                 <tr key={r.id}>
-                  <td style={{ fontFamily: "var(--font-sans)", fontSize: 11 }}>{new Date(r.data_transacao).toLocaleString('pt-BR')}</td>
+                  <td style={{ fontFamily: "var(--font-sans)", fontSize: 13 }}>{new Date(r.data_transacao).toLocaleString('pt-BR')}</td>
                   <td style={{ fontWeight: 600 }}>{r.descricao}</td>
                   <td style={{ color: 'var(--gray-500)' }}>{r.contraparte_nome || '—'}</td>
-                  <td>{r.categoria ? <span style={{ fontSize: 10.5, fontWeight: 600, padding: '2px 8px', borderRadius: 20, background: '#F1ECE1', color: '#3C4A46' }}>{r.categoria}</span> : <span style={{ color: '#C4CFCE' }}>—</span>}</td>
+                  <td>{r.categoria ? <span style={{ fontSize: 12.5, fontWeight: 600, padding: '2px 8px', borderRadius: 20, background: '#F1ECE1', color: '#3C4A46' }}>{r.categoria}</span> : <span style={{ color: '#C4CFCE' }}>—</span>}</td>
                   <td style={{ textAlign: 'right', fontWeight: 700, fontFamily: "var(--font-sans)", color: r.tipo === 'credito' ? 'var(--green)' : 'var(--red)' }}>
                     {r.tipo === 'credito' ? '+' : '-'}{formatBRL(Number(r.valor || 0))}
                   </td>

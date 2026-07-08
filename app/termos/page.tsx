@@ -8,10 +8,10 @@ export const metadata = {
 export default function TermosDeUsoPage() {
   return (
     <div style={{ maxWidth: 760, margin: '0 auto', padding: '48px 24px 80px', fontFamily: 'var(--font-sans, Inter, system-ui, sans-serif)', color: '#1C2B2A', lineHeight: 1.7 }}>
-      <Link href="/" style={{ fontSize: 13, fontWeight: 700, color: '#5E8C87', textDecoration: 'none' }}>← FactorOne</Link>
+      <Link href="/" style={{ fontSize: 15, fontWeight: 700, color: '#5E8C87', textDecoration: 'none' }}>← FactorOne</Link>
 
       <h1 style={{ fontSize: 28, fontWeight: 800, marginTop: 20, marginBottom: 6 }}>Termos de Uso</h1>
-      <p style={{ fontSize: 13, color: '#5F6B69', marginBottom: 32 }}>Última atualização: julho de 2026</p>
+      <p style={{ fontSize: 15, color: '#5F6B69', marginBottom: 32 }}>Última atualização: julho de 2026</p>
 
       <p>
         Estes termos regem o uso da plataforma <strong>FactorOne Finance OS</strong>, incluindo o painel web e

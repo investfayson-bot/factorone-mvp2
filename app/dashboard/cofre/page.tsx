@@ -139,7 +139,7 @@ export default function CofrePage() {
 
       <div style={{ display: 'flex', gap: 6, marginBottom: 18 }}>
         {([['senhas', 'Cofre pessoal'], ['chaves', 'Chaves de API']] as [Tab, string][]).map(([k, l]) => (
-          <button key={k} className={`btn-action${tab !== k ? ' btn-ghost' : ''}`} style={{ fontSize: 11, padding: '5px 12px' }} onClick={() => setTab(k)}>{l}</button>
+          <button key={k} className={`btn-action${tab !== k ? ' btn-ghost' : ''}`} style={{ fontSize: 13, padding: '5px 12px' }} onClick={() => setTab(k)}>{l}</button>
         ))}
       </div>
 
@@ -152,12 +152,12 @@ export default function CofrePage() {
             </div>
             <div className="form-group"><label className="form-label">Nota (opcional)</label><input className="form-input" placeholder="Alguma referência que te ajude a lembrar" value={nota} onChange={e => setNota(e.target.value)} /></div>
             <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-              <button className="btn-action" style={{ fontSize: 12 }} disabled={busy} onClick={() => void guardar()}>Guardar no cofre</button>
+              <button className="btn-action" style={{ fontSize: 14 }} disabled={busy} onClick={() => void guardar()}>Guardar no cofre</button>
             </div>
           </div>
 
           {itens.length === 0 ? (
-            <div className="txs-card" style={{ padding: 44, textAlign: 'center', color: 'var(--ink-mut)', fontSize: 13 }}>
+            <div className="txs-card" style={{ padding: 44, textAlign: 'center', color: 'var(--ink-mut)', fontSize: 15 }}>
               Cofre vazio. Guarde sua 1ª senha acima.
             </div>
           ) : (
@@ -165,15 +165,15 @@ export default function CofrePage() {
               {itens.map((it, i) => (
                 <div key={it.id} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr auto', gap: 12, alignItems: 'center', padding: '12px 18px', borderBottom: i < itens.length - 1 ? '1px solid var(--line-soft)' : 'none' }}>
                   <div>
-                    <div style={{ fontSize: 12.5, fontWeight: 600, color: 'var(--ink)' }}>{it.rotulo}</div>
-                    {it.nota && <div style={{ fontSize: 11, color: 'var(--ink-mut)' }}>{it.nota}</div>}
+                    <div style={{ fontSize: 14.5, fontWeight: 600, color: 'var(--ink)' }}>{it.rotulo}</div>
+                    {it.nota && <div style={{ fontSize: 13, color: 'var(--ink-mut)' }}>{it.nota}</div>}
                   </div>
-                  <div style={{ fontSize: 12.5, fontFamily: 'var(--font-mono)', color: revelados[it.id] ? 'var(--ink)' : 'var(--ink-faint)' }}>
+                  <div style={{ fontSize: 14.5, fontFamily: 'var(--font-mono)', color: revelados[it.id] ? 'var(--ink)' : 'var(--ink-faint)' }}>
                     {revelados[it.id] ?? '••••••••••••'}
                   </div>
                   <div style={{ display: 'flex', gap: 6, justifyContent: 'flex-end' }}>
-                    <button className="btn-ghost" style={{ fontSize: 11, padding: '6px 10px' }} onClick={() => void revelar(it.id)}>{revelados[it.id] ? 'Ocultar' : 'Revelar'}</button>
-                    <button className="btn-ghost" style={{ fontSize: 11, padding: '6px 10px', color: '#B0413E', borderColor: '#B0413E' }} onClick={() => void excluir(it.id)}><i className="fa-solid fa-trash-can" /></button>
+                    <button className="btn-ghost" style={{ fontSize: 13, padding: '6px 10px' }} onClick={() => void revelar(it.id)}>{revelados[it.id] ? 'Ocultar' : 'Revelar'}</button>
+                    <button className="btn-ghost" style={{ fontSize: 13, padding: '6px 10px', color: '#B0413E', borderColor: '#B0413E' }} onClick={() => void excluir(it.id)}><i className="fa-solid fa-trash-can" /></button>
                   </div>
                 </div>
               ))}
@@ -184,7 +184,7 @@ export default function CofrePage() {
 
       {tab === 'chaves' && (
         <>
-          <div style={{ fontSize: 12, color: 'var(--ink-mut)', marginBottom: 14, lineHeight: 1.6 }}>
+          <div style={{ fontSize: 14, color: 'var(--ink-mut)', marginBottom: 14, lineHeight: 1.6 }}>
             Cole sua própria chave de API aqui — ela é guardada criptografada e nunca volta pro navegador em texto puro.
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 10 }}>
@@ -194,27 +194,27 @@ export default function CofrePage() {
               return (
                 <div key={p.id} className="txs-card" style={{ padding: '14px 16px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
-                    <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--ink)' }}>{p.nome}</div>
+                    <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--ink)' }}>{p.nome}</div>
                     {salva ? (
-                      <span style={{ fontSize: 9, fontWeight: 700, padding: '2px 8px', borderRadius: 20, background: 'var(--sage-tint)', color: 'var(--sage-deep)' }}>conectado</span>
+                      <span style={{ fontSize: 11, fontWeight: 700, padding: '2px 8px', borderRadius: 20, background: 'var(--sage-tint)', color: 'var(--sage-deep)' }}>conectado</span>
                     ) : (
-                      <span style={{ fontSize: 9, fontWeight: 700, padding: '2px 8px', borderRadius: 20, background: 'var(--line-soft)', color: 'var(--ink-mut)' }}>não conectada</span>
+                      <span style={{ fontSize: 11, fontWeight: 700, padding: '2px 8px', borderRadius: 20, background: 'var(--line-soft)', color: 'var(--ink-mut)' }}>não conectada</span>
                     )}
                   </div>
-                  <div style={{ fontSize: 11, color: 'var(--ink-mut)', marginBottom: 10 }}>{p.desc}</div>
+                  <div style={{ fontSize: 13, color: 'var(--ink-mut)', marginBottom: 10 }}>{p.desc}</div>
                   {salva && !abrindo && (
-                    <div style={{ fontSize: 12, fontFamily: 'var(--font-mono)', color: 'var(--ink-soft)', marginBottom: 10 }}>{salva.mascarado}</div>
+                    <div style={{ fontSize: 14, fontFamily: 'var(--font-mono)', color: 'var(--ink-soft)', marginBottom: 10 }}>{salva.mascarado}</div>
                   )}
                   {abrindo ? (
                     <div style={{ display: 'flex', gap: 6 }}>
-                      <input className="form-input" style={{ fontSize: 11 }} type="password" placeholder="Cole a chave" value={novaChave} onChange={e => setNovaChave(e.target.value)} autoFocus />
-                      <button className="btn-action" style={{ fontSize: 11, padding: '6px 10px', whiteSpace: 'nowrap' }} disabled={busy} onClick={() => void salvarChave(p.id)}>Salvar</button>
+                      <input className="form-input" style={{ fontSize: 13 }} type="password" placeholder="Cole a chave" value={novaChave} onChange={e => setNovaChave(e.target.value)} autoFocus />
+                      <button className="btn-action" style={{ fontSize: 13, padding: '6px 10px', whiteSpace: 'nowrap' }} disabled={busy} onClick={() => void salvarChave(p.id)}>Salvar</button>
                     </div>
                   ) : (
                     <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
-                      <button className="btn-ghost" style={{ fontSize: 11, padding: '5px 10px' }} onClick={() => { setEditando(p.id); setNovaChave('') }}>{salva ? 'Trocar' : 'Conectar'}</button>
-                      {salva && <button className="btn-ghost" style={{ fontSize: 11, padding: '5px 10px', color: '#B0413E', borderColor: '#B0413E' }} onClick={() => void removerChave(p.id)}>Remover</button>}
-                      <a href={p.obterChave} target="_blank" rel="noreferrer" style={{ fontSize: 10.5, color: 'var(--sage-deep)', marginLeft: 'auto' }}>obter chave →</a>
+                      <button className="btn-ghost" style={{ fontSize: 13, padding: '5px 10px' }} onClick={() => { setEditando(p.id); setNovaChave('') }}>{salva ? 'Trocar' : 'Conectar'}</button>
+                      {salva && <button className="btn-ghost" style={{ fontSize: 13, padding: '5px 10px', color: '#B0413E', borderColor: '#B0413E' }} onClick={() => void removerChave(p.id)}>Remover</button>}
+                      <a href={p.obterChave} target="_blank" rel="noreferrer" style={{ fontSize: 12.5, color: 'var(--sage-deep)', marginLeft: 'auto' }}>obter chave →</a>
                     </div>
                   )}
                 </div>

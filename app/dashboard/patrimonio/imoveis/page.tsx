@@ -149,10 +149,10 @@ export default function ImoveisPage() {
           <div className="page-sub">Sua carteira por empreendimento. O aluguel vira receita no Fluxo de Caixa e na DRE.</div>
         </div>
         <div style={{ display: 'flex', gap: 8 }}>
-          <button className="btn-ghost" style={{ fontSize: 12 }} disabled={busy} onClick={() => void lancarTodos()}>
+          <button className="btn-ghost" style={{ fontSize: 14 }} disabled={busy} onClick={() => void lancarTodos()}>
             <i className="fa-solid fa-money-bill-trend-up" style={{ marginRight: 6, color: 'var(--sage)' }} />Lançar aluguéis do mês
           </button>
-          <button className="btn-action" style={{ fontSize: 12 }} onClick={abrirNovo}>
+          <button className="btn-action" style={{ fontSize: 14 }} onClick={abrirNovo}>
             <i className="fa-solid fa-plus" style={{ marginRight: 6 }} />Novo imóvel
           </button>
         </div>
@@ -168,8 +168,8 @@ export default function ImoveisPage() {
         ].map(k => (
           <div key={k.lbl} className="kpi" style={{ padding: '14px 16px' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <span style={{ fontSize: 10, fontWeight: 600, color: 'var(--ink-mut)', textTransform: 'uppercase', letterSpacing: '.08em' }}>{k.lbl}</span>
-              <i className={`fa-solid ${k.ic}`} style={{ fontSize: 12, color: k.cor }} />
+              <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--ink-mut)', textTransform: 'uppercase', letterSpacing: '.08em' }}>{k.lbl}</span>
+              <i className={`fa-solid ${k.ic}`} style={{ fontSize: 14, color: k.cor }} />
             </div>
             <div style={{ fontSize: 21, fontWeight: 700, color: k.cor, marginTop: 8, fontVariantNumeric: 'tabular-nums' }}>{k.val}</div>
           </div>
@@ -180,30 +180,30 @@ export default function ImoveisPage() {
         <div className="txs-card" style={{ padding: 44, textAlign: 'center' }}>
           <i className="fa-solid fa-building" style={{ fontSize: 28, color: 'var(--sage)', marginBottom: 12 }} />
           <div style={{ fontFamily: 'var(--font-display)', fontSize: 16, fontWeight: 600, color: 'var(--ink)', marginBottom: 6 }}>Sua carteira de imóveis começa aqui</div>
-          <div style={{ fontSize: 12.5, color: 'var(--ink-mut)', maxWidth: 420, margin: '0 auto 14px' }}>Cadastre o primeiro imóvel — agrupe por empreendimento e deixe o aluguel alimentar seus números automaticamente.</div>
-          <button className="btn-action" style={{ fontSize: 12 }} onClick={abrirNovo}><i className="fa-solid fa-plus" style={{ marginRight: 6 }} />Novo imóvel</button>
+          <div style={{ fontSize: 14.5, color: 'var(--ink-mut)', maxWidth: 420, margin: '0 auto 14px' }}>Cadastre o primeiro imóvel — agrupe por empreendimento e deixe o aluguel alimentar seus números automaticamente.</div>
+          <button className="btn-action" style={{ fontSize: 14 }} onClick={abrirNovo}><i className="fa-solid fa-plus" style={{ marginRight: 6 }} />Novo imóvel</button>
         </div>
       ) : grupos.map(([emp, lista]) => {
         const sub = lista.filter(i => i.ocupada).reduce((s, i) => s + Number(i.aluguel), 0)
         return (
           <div key={emp} className="txs-card" style={{ marginBottom: 14, overflow: 'hidden' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 18px', background: 'var(--surface-2)', borderBottom: '1px solid var(--line)' }}>
-              <div style={{ fontSize: 12.5, fontWeight: 700, color: 'var(--ink)' }}><i className="fa-solid fa-city" style={{ marginRight: 8, color: 'var(--sage-deep)' }} />{emp}</div>
-              <div style={{ fontSize: 11.5, color: 'var(--ink-mut)' }}>{lista.length} un. · <b style={{ color: 'var(--sage-deep)' }}>{formatBRL(sub)}/mês</b></div>
+              <div style={{ fontSize: 14.5, fontWeight: 700, color: 'var(--ink)' }}><i className="fa-solid fa-city" style={{ marginRight: 8, color: 'var(--sage-deep)' }} />{emp}</div>
+              <div style={{ fontSize: 13.5, color: 'var(--ink-mut)' }}>{lista.length} un. · <b style={{ color: 'var(--sage-deep)' }}>{formatBRL(sub)}/mês</b></div>
             </div>
             {lista.map((im, i) => (
               <div key={im.id} style={{ display: 'grid', gridTemplateColumns: '1fr 130px 120px 150px', gap: 12, alignItems: 'center', padding: '12px 18px', borderBottom: i < lista.length - 1 ? '1px solid var(--line-soft)' : 'none' }}>
                 <div style={{ minWidth: 0 }}>
-                  <div style={{ fontSize: 12.5, fontWeight: 600, color: 'var(--ink)' }}>{im.unidade} <span style={{ fontSize: 10.5, fontWeight: 500, color: 'var(--ink-mut)' }}>· {im.tipo}</span></div>
-                  <div style={{ fontSize: 11, color: 'var(--ink-mut)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{im.locatario || 'Sem locatário'}{im.cidade ? ` · ${im.cidade}` : ''}</div>
+                  <div style={{ fontSize: 14.5, fontWeight: 600, color: 'var(--ink)' }}>{im.unidade} <span style={{ fontSize: 12.5, fontWeight: 500, color: 'var(--ink-mut)' }}>· {im.tipo}</span></div>
+                  <div style={{ fontSize: 13, color: 'var(--ink-mut)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{im.locatario || 'Sem locatário'}{im.cidade ? ` · ${im.cidade}` : ''}</div>
                 </div>
-                <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--ink)', fontVariantNumeric: 'tabular-nums' }}>{formatBRL(im.aluguel)}</div>
-                <span style={{ justifySelf: 'start', fontSize: 9.5, fontWeight: 600, padding: '3px 9px', borderRadius: 100, textTransform: 'uppercase', letterSpacing: '.05em', color: im.ocupada ? 'var(--sage-deep)' : 'var(--gold)', background: im.ocupada ? 'var(--sage-tint)' : 'var(--gold-tint)' }}>{im.ocupada ? 'Ocupada' : 'Vaga'}</span>
+                <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--ink)', fontVariantNumeric: 'tabular-nums' }}>{formatBRL(im.aluguel)}</div>
+                <span style={{ justifySelf: 'start', fontSize: 11.5, fontWeight: 600, padding: '3px 9px', borderRadius: 100, textTransform: 'uppercase', letterSpacing: '.05em', color: im.ocupada ? 'var(--sage-deep)' : 'var(--gold)', background: im.ocupada ? 'var(--sage-tint)' : 'var(--gold-tint)' }}>{im.ocupada ? 'Ocupada' : 'Vaga'}</span>
                 <div style={{ display: 'flex', gap: 6, justifyContent: 'flex-end' }}>
-                  <button className="btn-ghost" title="Lançar aluguel no fluxo" style={{ fontSize: 11, padding: '6px 10px' }} disabled={busy || !im.ocupada} onClick={() => void lancarAluguel(im)}><i className="fa-solid fa-money-bill-trend-up" /></button>
-                  <button className="btn-ghost" title="Reajustar aluguel" style={{ fontSize: 11, padding: '6px 10px' }} onClick={() => { setReajusteFor(im); setReajPct('') }}><i className="fa-solid fa-arrow-trend-up" /></button>
-                  <button className="btn-ghost" title="Editar" style={{ fontSize: 11, padding: '6px 10px' }} onClick={() => abrirEdit(im)}><i className="fa-solid fa-pen" /></button>
-                  <button className="btn-ghost" title="Excluir" style={{ fontSize: 11, padding: '6px 10px', color: '#B0413E', borderColor: '#B0413E' }} onClick={() => excluir(im.id)}><i className="fa-solid fa-trash-can" /></button>
+                  <button className="btn-ghost" title="Lançar aluguel no fluxo" style={{ fontSize: 13, padding: '6px 10px' }} disabled={busy || !im.ocupada} onClick={() => void lancarAluguel(im)}><i className="fa-solid fa-money-bill-trend-up" /></button>
+                  <button className="btn-ghost" title="Reajustar aluguel" style={{ fontSize: 13, padding: '6px 10px' }} onClick={() => { setReajusteFor(im); setReajPct('') }}><i className="fa-solid fa-arrow-trend-up" /></button>
+                  <button className="btn-ghost" title="Editar" style={{ fontSize: 13, padding: '6px 10px' }} onClick={() => abrirEdit(im)}><i className="fa-solid fa-pen" /></button>
+                  <button className="btn-ghost" title="Excluir" style={{ fontSize: 13, padding: '6px 10px', color: '#B0413E', borderColor: '#B0413E' }} onClick={() => excluir(im.id)}><i className="fa-solid fa-trash-can" /></button>
                 </div>
               </div>
             ))}
@@ -211,7 +211,7 @@ export default function ImoveisPage() {
         )
       })}
 
-      <div style={{ fontSize: 11, color: 'var(--ink-faint)', marginTop: 8, lineHeight: 1.6 }}>
+      <div style={{ fontSize: 13, color: 'var(--ink-faint)', marginTop: 8, lineHeight: 1.6 }}>
         <i className="fa-solid fa-circle-info" style={{ color: 'var(--sage)', marginRight: 6 }} />
         &quot;Lançar aluguel&quot; cria uma receita no Fluxo de Caixa e na DRE, já classificada como <b>Receita de aluguel</b>. (v1: imóveis salvos neste navegador; migração pro banco em seguida.)
       </div>
@@ -224,13 +224,13 @@ export default function ImoveisPage() {
               <div className="modal-title">Reajustar aluguel</div>
               <button className="modal-close" onClick={() => setReajusteFor(null)}><i className="fa-solid fa-xmark" /></button>
             </div>
-            <div style={{ fontSize: 12, color: 'var(--ink-mut)', marginBottom: 16 }}>{reajusteFor.unidade} · aluguel atual <b style={{ color: 'var(--ink)' }}>{formatBRL(reajusteFor.aluguel)}</b></div>
+            <div style={{ fontSize: 14, color: 'var(--ink-mut)', marginBottom: 16 }}>{reajusteFor.unidade} · aluguel atual <b style={{ color: 'var(--ink)' }}>{formatBRL(reajusteFor.aluguel)}</b></div>
             <div className="form-group"><label className="form-label">Reajuste (%)</label><input className="form-input" type="number" step="0.01" placeholder="Ex: 4.5 (IGP-M/IPCA)" value={reajPct} onChange={e => setReajPct(e.target.value)} autoFocus /></div>
             {Number(reajPct) ? (
-              <div style={{ fontSize: 12.5, color: 'var(--sage-deep)', fontWeight: 600, marginBottom: 8 }}>Novo aluguel: {formatBRL(Math.round(reajusteFor.aluguel * (1 + Number(reajPct) / 100) * 100) / 100)}</div>
+              <div style={{ fontSize: 14.5, color: 'var(--sage-deep)', fontWeight: 600, marginBottom: 8 }}>Novo aluguel: {formatBRL(Math.round(reajusteFor.aluguel * (1 + Number(reajPct) / 100) * 100) / 100)}</div>
             ) : null}
             {reajusteFor.reajustes && reajusteFor.reajustes.length > 0 && (
-              <div style={{ fontSize: 11, color: 'var(--ink-mut)', marginBottom: 8 }}>Último: {reajusteFor.reajustes[reajusteFor.reajustes.length - 1].data.split('-').reverse().join('/')} · {formatBRL(reajusteFor.reajustes[reajusteFor.reajustes.length - 1].de)} → {formatBRL(reajusteFor.reajustes[reajusteFor.reajustes.length - 1].para)}</div>
+              <div style={{ fontSize: 13, color: 'var(--ink-mut)', marginBottom: 8 }}>Último: {reajusteFor.reajustes[reajusteFor.reajustes.length - 1].data.split('-').reverse().join('/')} · {formatBRL(reajusteFor.reajustes[reajusteFor.reajustes.length - 1].de)} → {formatBRL(reajusteFor.reajustes[reajusteFor.reajustes.length - 1].para)}</div>
             )}
             <div className="modal-actions">
               <button className="btn-ghost" onClick={() => setReajusteFor(null)}>Cancelar</button>
@@ -273,7 +273,7 @@ export default function ImoveisPage() {
               <div className="form-group"><label className="form-label">VGV estimado (R$)</label><input className="form-input" type="number" step="0.01" value={form.vgv || ''} onChange={e => setForm(f => ({ ...f, vgv: Number(e.target.value) }))} /></div>
             </div>
             <div className="form-group">
-              <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12.5, color: 'var(--ink)', cursor: 'pointer' }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 14.5, color: 'var(--ink)', cursor: 'pointer' }}>
                 <input type="checkbox" checked={form.ocupada} onChange={e => setForm(f => ({ ...f, ocupada: e.target.checked }))} style={{ accentColor: 'var(--sage)' }} />
                 Imóvel ocupado (gera receita de aluguel)
               </label>

@@ -15,7 +15,7 @@ type Props = {
 
 const inp: React.CSSProperties = {
   width: '100%', border: '0.5px solid #E4DCCC', borderRadius: 8,
-  padding: '9px 12px', fontSize: 12, color: '#13201D',
+  padding: '9px 12px', fontSize: 14, color: '#13201D',
   background: '#fff', outline: 'none', marginTop: 8,
   fontFamily: "var(--font-sans)",
 }
@@ -92,25 +92,25 @@ export default function BaixaAtivoModal({ open, onClose, onDone, ativo }: Props)
           <button
             onClick={onClose}
             disabled={saving}
-            style={{ borderRadius: 8, border: '0.5px solid #E4DCCC', background: '#fff', color: '#3C4A46', padding: '8px 16px', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}
+            style={{ borderRadius: 8, border: '0.5px solid #E4DCCC', background: '#fff', color: '#3C4A46', padding: '8px 16px', fontSize: 14, fontWeight: 600, cursor: 'pointer' }}
           >
             Cancelar
           </button>
           <button
             onClick={() => void confirmar()}
             disabled={saving}
-            style={{ borderRadius: 8, border: 'none', background: '#B0413E', color: '#fff', padding: '8px 18px', fontSize: 12, fontWeight: 700, cursor: saving ? 'wait' : 'pointer', opacity: saving ? 0.7 : 1 }}
+            style={{ borderRadius: 8, border: 'none', background: '#B0413E', color: '#fff', padding: '8px 18px', fontSize: 14, fontWeight: 700, cursor: saving ? 'wait' : 'pointer', opacity: saving ? 0.7 : 1 }}
           >
             {saving ? 'Confirmando...' : 'Confirmar baixa'}
           </button>
         </>
       }
     >
-      <div style={{ fontSize: 12, color: '#7B8C88', marginBottom: 4 }}>
+      <div style={{ fontSize: 14, color: '#7B8C88', marginBottom: 4 }}>
         Você está dando baixa em <strong style={{ color: '#13201D' }}>{ativo.nome}</strong>. Essa ação atualiza o status do ativo e gera um lançamento financeiro de ganho/perda na alienação.
       </div>
 
-      <label style={{ fontSize: 10, fontWeight: 600, color: '#7B8C88', textTransform: 'uppercase', letterSpacing: '0.07em', display: 'block', marginTop: 14 }}>Motivo</label>
+      <label style={{ fontSize: 12, fontWeight: 600, color: '#7B8C88', textTransform: 'uppercase', letterSpacing: '0.07em', display: 'block', marginTop: 14 }}>Motivo</label>
       <select style={inp} value={motivo} onChange={(e) => setMotivo(e.target.value)}>
         <option value="sucateamento">Sucateamento</option>
         <option value="alienacao">Alienação (venda)</option>
@@ -119,13 +119,13 @@ export default function BaixaAtivoModal({ open, onClose, onDone, ativo }: Props)
         <option value="doacao">Doação</option>
       </select>
 
-      <label style={{ fontSize: 10, fontWeight: 600, color: '#7B8C88', textTransform: 'uppercase', letterSpacing: '0.07em', display: 'block', marginTop: 12 }}>Data da baixa</label>
+      <label style={{ fontSize: 12, fontWeight: 600, color: '#7B8C88', textTransform: 'uppercase', letterSpacing: '0.07em', display: 'block', marginTop: 12 }}>Data da baixa</label>
       <input type="date" style={inp} value={dataBaixa} onChange={(e) => setDataBaixa(e.target.value)} />
 
-      <label style={{ fontSize: 10, fontWeight: 600, color: '#7B8C88', textTransform: 'uppercase', letterSpacing: '0.07em', display: 'block', marginTop: 12 }}>Valor de alienação (se houver)</label>
+      <label style={{ fontSize: 12, fontWeight: 600, color: '#7B8C88', textTransform: 'uppercase', letterSpacing: '0.07em', display: 'block', marginTop: 12 }}>Valor de alienação (se houver)</label>
       <input style={inp} placeholder="R$ 0,00" value={valorMask} onChange={(e) => setValorMask(maskBRLInput(e.target.value))} />
 
-      <label style={{ fontSize: 10, fontWeight: 600, color: '#7B8C88', textTransform: 'uppercase', letterSpacing: '0.07em', display: 'block', marginTop: 12 }}>Observações</label>
+      <label style={{ fontSize: 12, fontWeight: 600, color: '#7B8C88', textTransform: 'uppercase', letterSpacing: '0.07em', display: 'block', marginTop: 12 }}>Observações</label>
       <textarea style={{ ...inp, minHeight: 64, resize: 'vertical' }} placeholder="Detalhes adicionais sobre a baixa..." value={obs} onChange={(e) => setObs(e.target.value)} />
     </Modal>
   )

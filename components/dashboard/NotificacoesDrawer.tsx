@@ -90,11 +90,11 @@ export default function NotificacoesDrawer({ empresaId, open, onClose, onRead }:
         <div style={{ padding: '18px 20px', borderBottom: '1px solid #e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div>
             <div style={{ fontWeight: 700, fontSize: 15, color: 'var(--navy)' }}>Notificações</div>
-            {naoLidas > 0 && <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>{naoLidas} não lida{naoLidas > 1 ? 's' : ''}</div>}
+            {naoLidas > 0 && <div style={{ fontSize: 13, color: 'var(--gray-400)' }}>{naoLidas} não lida{naoLidas > 1 ? 's' : ''}</div>}
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             {naoLidas > 0 && (
-              <button onClick={marcarTodasLidas} style={{ fontSize: 11, color: 'var(--teal)', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 600 }}>
+              <button onClick={marcarTodasLidas} style={{ fontSize: 13, color: 'var(--teal)', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 600 }}>
                 Marcar todas como lidas
               </button>
             )}
@@ -107,7 +107,7 @@ export default function NotificacoesDrawer({ empresaId, open, onClose, onRead }:
           {!loading && notifs.length === 0 && (
             <div style={{ padding: 48, textAlign: 'center', color: 'var(--gray-400)' }}>
               <i className="fa-regular fa-bell" style={{ fontSize: 36, marginBottom: 12, display: 'block' }} />
-              <div style={{ fontSize: 13 }}>Nenhuma notificação ainda</div>
+              <div style={{ fontSize: 15 }}>Nenhuma notificação ainda</div>
             </div>
           )}
           {notifs.map(n => {
@@ -123,12 +123,12 @@ export default function NotificacoesDrawer({ empresaId, open, onClose, onRead }:
                 }}
               >
                 <div style={{ width: 32, height: 32, borderRadius: 8, background: s.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 2 }}>
-                  <i className={`fa-solid ${s.icon}`} style={{ color: s.color, fontSize: 13 }} />
+                  <i className={`fa-solid ${s.icon}`} style={{ color: s.color, fontSize: 15 }} />
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 13, fontWeight: n.lida ? 400 : 600, color: 'var(--navy)', marginBottom: 2 }}>{n.titulo}</div>
-                  {n.mensagem && <div style={{ fontSize: 12, color: 'var(--gray-400)', lineHeight: 1.4 }}>{n.mensagem}</div>}
-                  <div style={{ fontSize: 10, color: 'var(--gray-400)', marginTop: 4 }}>
+                  <div style={{ fontSize: 15, fontWeight: n.lida ? 400 : 600, color: 'var(--navy)', marginBottom: 2 }}>{n.titulo}</div>
+                  {n.mensagem && <div style={{ fontSize: 14, color: 'var(--gray-400)', lineHeight: 1.4 }}>{n.mensagem}</div>}
+                  <div style={{ fontSize: 12, color: 'var(--gray-400)', marginTop: 4 }}>
                     {new Date(n.created_at).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}
                     {n.modulo !== 'sistema' && <span style={{ marginLeft: 6, background: '#f1f5f9', padding: '1px 5px', borderRadius: 10 }}>{n.modulo}</span>}
                   </div>

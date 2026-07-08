@@ -106,7 +106,7 @@ export default function GenericCrud(cfg: CrudConfig) {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 18, gap: 12, flexWrap: 'wrap' }}>
         <div>
           <h1 style={{ fontFamily: "var(--font-sans)", fontSize: 18, fontWeight: 700, color: 'var(--navy)', margin: 0 }}>{cfg.titulo}</h1>
-          <div style={{ fontSize: 12, color: 'var(--gray-500)', marginTop: 3 }}>{cfg.subtitulo}</div>
+          <div style={{ fontSize: 14, color: 'var(--gray-500)', marginTop: 3 }}>{cfg.subtitulo}</div>
         </div>
         <button className="btn-action" style={{ borderRadius: 8, padding: '9px 16px' }} onClick={() => setShowForm(v => !v)}>
           <i className="fa-solid fa-plus" style={{ marginRight: 6 }} />{cfg.addLabel}
@@ -116,7 +116,7 @@ export default function GenericCrud(cfg: CrudConfig) {
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(160px,1fr))', gap: 12, marginBottom: 18 }}>
         {cfg.kpis.map(k => (
           <div key={k.label} style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: '14px 16px' }}>
-            <div style={{ fontSize: 11, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: .4 }}>{k.label}</div>
+            <div style={{ fontSize: 13, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: .4 }}>{k.label}</div>
             <div style={{ fontSize: 20, fontWeight: 800, color: k.color?.(rows) ?? 'var(--navy)', marginTop: 4 }}>{k.value(rows)}</div>
           </div>
         ))}
@@ -154,7 +154,7 @@ export default function GenericCrud(cfg: CrudConfig) {
 
       <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, overflow: 'hidden' }}>
         {loading ? (
-          <div style={{ padding: 30, textAlign: 'center', color: 'var(--gray-400)', fontSize: 13 }}>Carregando…</div>
+          <div style={{ padding: 30, textAlign: 'center', color: 'var(--gray-400)', fontSize: 15 }}>Carregando…</div>
         ) : rows.length === 0 ? (
           <div style={{ padding: 36, textAlign: 'center' }}>
             <EmptyState
@@ -164,9 +164,9 @@ export default function GenericCrud(cfg: CrudConfig) {
             />
           </div>
         ) : (
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 15 }}>
             <thead>
-              <tr style={{ background: 'var(--gray-50,#f9fafb)', color: 'var(--gray-500)', fontSize: 11, textTransform: 'uppercase' }}>
+              <tr style={{ background: 'var(--gray-50,#f9fafb)', color: 'var(--gray-500)', fontSize: 13, textTransform: 'uppercase' }}>
                 {cfg.columns.map(c => <th key={c.key} style={{ ...th, textAlign: c.align ?? 'left' }}>{c.label}</th>)}
                 <th style={th}></th>
               </tr>
@@ -178,14 +178,14 @@ export default function GenericCrud(cfg: CrudConfig) {
                     const v = r[c.key]
                     let content: React.ReactNode
                     if (c.money) content = formatBRL(Number(v ?? 0))
-                    else if (c.tag) content = <span style={{ fontSize: 11, fontWeight: 600, padding: '2px 9px', borderRadius: 20, background: 'var(--gray-100)', color: 'var(--gray-600,#4b5563)' }}>{String(v ?? '—')}</span>
+                    else if (c.tag) content = <span style={{ fontSize: 13, fontWeight: 600, padding: '2px 9px', borderRadius: 20, background: 'var(--gray-100)', color: 'var(--gray-600,#4b5563)' }}>{String(v ?? '—')}</span>
                     else content = (v === null || v === undefined || v === '') ? '—' : String(v)
                     return <td key={c.key} style={{ ...td, textAlign: c.align ?? 'left', fontWeight: i === 0 ? 600 : 400, color: i === 0 ? 'var(--navy)' : c.align === 'right' ? 'var(--navy)' : 'var(--gray-600,#4b5563)' }}>{content}</td>
                   })}
                   <td style={{ ...td, textAlign: 'right', whiteSpace: 'nowrap' }}>
                     {cfg.actions?.(r, { empresaId, reload: carregar })}
                     <button onClick={() => remover(r.id as string)} title="Remover" style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--gray-400)', marginLeft: 8 }}>
-                      <i className="fa-solid fa-trash" style={{ fontSize: 12 }} />
+                      <i className="fa-solid fa-trash" style={{ fontSize: 14 }} />
                     </button>
                   </td>
                 </tr>

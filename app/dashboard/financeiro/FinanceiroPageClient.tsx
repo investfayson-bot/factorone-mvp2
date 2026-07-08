@@ -41,7 +41,7 @@ function StatusTag({ status }: { status: string }) {
   }
   const s = map[status] ?? { bg: '#F1ECE1', color: '#7B8C88', label: status }
   return (
-    <span style={{ fontSize: 10, fontWeight: 600, padding: '2px 8px', borderRadius: 20, background: s.bg, color: s.color, whiteSpace: 'nowrap' }}>
+    <span style={{ fontSize: 12, fontWeight: 600, padding: '2px 8px', borderRadius: 20, background: s.bg, color: s.color, whiteSpace: 'nowrap' }}>
       {s.label}
     </span>
   )
@@ -141,7 +141,7 @@ function FinanceiroInner() {
         <div style={{ display: 'flex', gap: 8 }}>
           <button
             className="btn-ghost"
-            style={{ fontSize: 12 }}
+            style={{ fontSize: 14 }}
             onClick={async () => {
               const { baixarArquivo } = await import('@/lib/download-arquivo')
               const r = await baixarArquivo('/api/financeiro/exportar-pdf', 'financeiro.pdf')
@@ -150,10 +150,10 @@ function FinanceiroInner() {
           >
             <i className="fa-solid fa-file-pdf" style={{ marginRight: 6, color: '#B0413E' }} />PDF
           </button>
-          <button className="btn-ghost" style={{ fontSize: 12 }} onClick={() => setOpenReceber(true)}>
+          <button className="btn-ghost" style={{ fontSize: 14 }} onClick={() => setOpenReceber(true)}>
             <i className="fa-solid fa-arrow-down-circle" style={{ marginRight: 6, color: '#3D7A6E' }} />A receber
           </button>
-          <button className="btn-action" style={{ fontSize: 12 }} onClick={() => setOpenPagar(true)}>
+          <button className="btn-action" style={{ fontSize: 14 }} onClick={() => setOpenPagar(true)}>
             <i className="fa-solid fa-plus" style={{ marginRight: 6 }} />A pagar
           </button>
         </div>
@@ -165,7 +165,7 @@ function FinanceiroInner() {
           <div className="kpi-lbl">
             A Pagar
             <div style={{ width: 28, height: 28, borderRadius: 8, background: '#F4E4E1', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <i className="fa-solid fa-arrow-up-circle" style={{ fontSize: 12, color: '#B0413E' }} />
+              <i className="fa-solid fa-arrow-up-circle" style={{ fontSize: 14, color: '#B0413E' }} />
             </div>
           </div>
           <div className="kpi-val">{formatBRL(kpis.pagarPend)}</div>
@@ -177,7 +177,7 @@ function FinanceiroInner() {
           <div className="kpi-lbl">
             A Receber
             <div style={{ width: 28, height: 28, borderRadius: 8, background: '#E9F0ED', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <i className="fa-solid fa-arrow-down-circle" style={{ fontSize: 12, color: '#3D7A6E' }} />
+              <i className="fa-solid fa-arrow-down-circle" style={{ fontSize: 14, color: '#3D7A6E' }} />
             </div>
           </div>
           <div className="kpi-val">{formatBRL(kpis.receberPend)}</div>
@@ -189,7 +189,7 @@ function FinanceiroInner() {
           <div className="kpi-lbl">
             Saldo projetado
             <div style={{ width: 28, height: 28, borderRadius: 8, background: kpis.saldo >= 0 ? '#E9F0ED' : '#F4E4E1', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <i className="fa-solid fa-scale-balanced" style={{ fontSize: 12, color: kpis.saldo >= 0 ? '#3D7A6E' : '#B0413E' }} />
+              <i className="fa-solid fa-scale-balanced" style={{ fontSize: 14, color: kpis.saldo >= 0 ? '#3D7A6E' : '#B0413E' }} />
             </div>
           </div>
           <div className="kpi-val">{formatBRL(kpis.saldo)}</div>
@@ -201,7 +201,7 @@ function FinanceiroInner() {
           <div className="kpi-lbl">
             Total de lançamentos
             <div style={{ width: 28, height: 28, borderRadius: 8, background: '#F3F0FF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <i className="fa-solid fa-receipt" style={{ fontSize: 12, color: '#7A6A9E' }} />
+              <i className="fa-solid fa-receipt" style={{ fontSize: 14, color: '#7A6A9E' }} />
             </div>
           </div>
           <div className="kpi-val">{pagar.length + receber.length}</div>
@@ -219,12 +219,12 @@ function FinanceiroInner() {
           { key: 'aging', label: 'Aging', icon: 'fa-hourglass-half' },
         ] as { key: typeof tab; label: string; icon: string; count?: number }[]).map(t => (
           <button key={t.key} onClick={() => setTab(t.key)} style={{
-            display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, fontWeight: tab === t.key ? 700 : 500,
+            display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, fontWeight: tab === t.key ? 700 : 500,
             padding: '6px 12px', borderRadius: 8, border: 'none', cursor: 'pointer',
             background: tab === t.key ? '#fff' : 'transparent', color: tab === t.key ? '#13201D' : '#7B8C88', transition: 'all .15s',
           }}>
-            <i className={`fa-solid ${t.icon}`} style={{ fontSize: 10 }} />{t.label}
-            {t.count ? <span style={{ fontSize: 9, fontWeight: 700, background: tab === t.key ? '#E9F0ED' : '#fff', color: '#3D7A6E', padding: '1px 6px', borderRadius: 20 }}>{t.count}</span> : null}
+            <i className={`fa-solid ${t.icon}`} style={{ fontSize: 12 }} />{t.label}
+            {t.count ? <span style={{ fontSize: 11, fontWeight: 700, background: tab === t.key ? '#E9F0ED' : '#fff', color: '#3D7A6E', padding: '1px 6px', borderRadius: 20 }}>{t.count}</span> : null}
           </button>
         ))}
       </div>
@@ -234,18 +234,18 @@ function FinanceiroInner() {
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
           <div style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 12, overflow: 'hidden' }}>
             <div style={{ padding: '12px 16px', borderBottom: '0.5px solid #E4DCCC', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#FBF8F1' }}>
-              <div style={{ fontSize: 12, fontWeight: 700, color: '#13201D', fontFamily: "var(--font-sans)" }}>Próximas a pagar</div>
-              <button onClick={() => setTab('pagar')} style={{ fontSize: 10, color: '#3D7A6E', fontWeight: 600, background: 'none', border: 'none', cursor: 'pointer' }}>Ver todas →</button>
+              <div style={{ fontSize: 14, fontWeight: 700, color: '#13201D', fontFamily: "var(--font-sans)" }}>Próximas a pagar</div>
+              <button onClick={() => setTab('pagar')} style={{ fontSize: 12, color: '#3D7A6E', fontWeight: 600, background: 'none', border: 'none', cursor: 'pointer' }}>Ver todas →</button>
             </div>
             {pagar.filter(c => c.status !== 'paga').slice(0, 5).length === 0 ? (
-              <div style={{ padding: '24px 16px', textAlign: 'center', fontSize: 12, color: '#7B8C88' }}>Nada pendente</div>
+              <div style={{ padding: '24px 16px', textAlign: 'center', fontSize: 14, color: '#7B8C88' }}>Nada pendente</div>
             ) : pagar.filter(c => c.status !== 'paga').slice(0, 5).map((c, i, arr) => (
               <div key={c.id} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 16px', borderBottom: i < arr.length - 1 ? '0.5px solid #EFE9DC' : 'none' }}>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 12, fontWeight: 600, color: '#13201D', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{c.fornecedor_nome || c.descricao}</div>
-                  <div style={{ fontSize: 10, color: '#7B8C88' }}>{fmtDate(c.data_vencimento)}</div>
+                  <div style={{ fontSize: 14, fontWeight: 600, color: '#13201D', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{c.fornecedor_nome || c.descricao}</div>
+                  <div style={{ fontSize: 12, color: '#7B8C88' }}>{fmtDate(c.data_vencimento)}</div>
                 </div>
-                <div style={{ fontSize: 12, fontWeight: 700, color: '#B0413E', fontFamily: "var(--font-sans)" }}>{formatBRL(Number(c.valor || 0))}</div>
+                <div style={{ fontSize: 14, fontWeight: 700, color: '#B0413E', fontFamily: "var(--font-sans)" }}>{formatBRL(Number(c.valor || 0))}</div>
                 <StatusTag status={c.status} />
               </div>
             ))}
@@ -253,18 +253,18 @@ function FinanceiroInner() {
 
           <div style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 12, overflow: 'hidden' }}>
             <div style={{ padding: '12px 16px', borderBottom: '0.5px solid #E4DCCC', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#FBF8F1' }}>
-              <div style={{ fontSize: 12, fontWeight: 700, color: '#13201D', fontFamily: "var(--font-sans)" }}>Próximas a receber</div>
-              <button onClick={() => setTab('receber')} style={{ fontSize: 10, color: '#3D7A6E', fontWeight: 600, background: 'none', border: 'none', cursor: 'pointer' }}>Ver todas →</button>
+              <div style={{ fontSize: 14, fontWeight: 700, color: '#13201D', fontFamily: "var(--font-sans)" }}>Próximas a receber</div>
+              <button onClick={() => setTab('receber')} style={{ fontSize: 12, color: '#3D7A6E', fontWeight: 600, background: 'none', border: 'none', cursor: 'pointer' }}>Ver todas →</button>
             </div>
             {receber.filter(c => c.status !== 'recebida').slice(0, 5).length === 0 ? (
-              <div style={{ padding: '24px 16px', textAlign: 'center', fontSize: 12, color: '#7B8C88' }}>Nada pendente</div>
+              <div style={{ padding: '24px 16px', textAlign: 'center', fontSize: 14, color: '#7B8C88' }}>Nada pendente</div>
             ) : receber.filter(c => c.status !== 'recebida').slice(0, 5).map((c, i, arr) => (
               <div key={c.id} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 16px', borderBottom: i < arr.length - 1 ? '0.5px solid #EFE9DC' : 'none' }}>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 12, fontWeight: 600, color: '#13201D', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{c.cliente_nome || c.descricao}</div>
-                  <div style={{ fontSize: 10, color: '#7B8C88' }}>{fmtDate(c.data_vencimento)}</div>
+                  <div style={{ fontSize: 14, fontWeight: 600, color: '#13201D', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{c.cliente_nome || c.descricao}</div>
+                  <div style={{ fontSize: 12, color: '#7B8C88' }}>{fmtDate(c.data_vencimento)}</div>
                 </div>
-                <div style={{ fontSize: 12, fontWeight: 700, color: '#3D7A6E', fontFamily: "var(--font-sans)" }}>{formatBRL(Number(c.valor || 0))}</div>
+                <div style={{ fontSize: 14, fontWeight: 700, color: '#3D7A6E', fontFamily: "var(--font-sans)" }}>{formatBRL(Number(c.valor || 0))}</div>
                 <StatusTag status={c.status} />
               </div>
             ))}
@@ -275,29 +275,29 @@ function FinanceiroInner() {
       {tab === 'pagar' && (
         <>
           <div style={{ display: 'flex', gap: 8, marginBottom: 12, alignItems: 'center' }}>
-            <select className="form-input" style={{ width: 'auto', padding: '6px 10px', fontSize: 11 }} value={fStatusPagar} onChange={e => setFStatusPagar(e.target.value)}>
+            <select className="form-input" style={{ width: 'auto', padding: '6px 10px', fontSize: 13 }} value={fStatusPagar} onChange={e => setFStatusPagar(e.target.value)}>
               <option value="todas">Todos os status</option>
               <option value="pendente">Pendente</option>
               <option value="vencida">Vencida</option>
               <option value="paga">Paga</option>
             </select>
             <div style={{ flex: 1 }} />
-            <span style={{ fontSize: 11, color: '#7B8C88' }}>{pagar.length} lançamento{pagar.length !== 1 ? 's' : ''}</span>
+            <span style={{ fontSize: 13, color: '#7B8C88' }}>{pagar.length} lançamento{pagar.length !== 1 ? 's' : ''}</span>
           </div>
           <div style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 12, overflow: 'hidden' }}>
             {/* Header tabela */}
             <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.5fr 1fr 100px 110px 90px 100px', padding: '10px 16px', borderBottom: '0.5px solid #E4DCCC', background: '#FBF8F1' }}>
               {['Fornecedor', 'Descrição', 'Categoria', 'Vencimento', 'Valor', 'Status', 'Ação'].map(h => (
-                <div key={h} style={{ fontSize: 10, fontWeight: 600, color: '#7B8C88', textTransform: 'uppercase', letterSpacing: '0.07em' }}>{h}</div>
+                <div key={h} style={{ fontSize: 12, fontWeight: 600, color: '#7B8C88', textTransform: 'uppercase', letterSpacing: '0.07em' }}>{h}</div>
               ))}
             </div>
             {loading ? (
-              <div style={{ padding: '32px 16px', textAlign: 'center', color: '#7B8C88', fontSize: 12 }}>Carregando...</div>
+              <div style={{ padding: '32px 16px', textAlign: 'center', color: '#7B8C88', fontSize: 14 }}>Carregando...</div>
             ) : pagar.length === 0 ? (
               <div style={{ padding: '40px 16px', textAlign: 'center' }}>
                 <i className="fa-solid fa-check-circle" style={{ fontSize: 32, color: '#3D7A6E', marginBottom: 10, display: 'block' }} />
-                <div style={{ fontSize: 13, fontWeight: 600, color: '#13201D', marginBottom: 4 }}>Nenhuma conta a pagar</div>
-                <div style={{ fontSize: 11, color: '#7B8C88' }}>Tudo em dia ou sem lançamentos no período</div>
+                <div style={{ fontSize: 15, fontWeight: 600, color: '#13201D', marginBottom: 4 }}>Nenhuma conta a pagar</div>
+                <div style={{ fontSize: 13, color: '#7B8C88' }}>Tudo em dia ou sem lançamentos no período</div>
               </div>
             ) : pagar.map((c, i) => (
               <div key={c.id} style={{
@@ -305,18 +305,18 @@ function FinanceiroInner() {
                 padding: '11px 16px', borderBottom: i < pagar.length - 1 ? '0.5px solid #EFE9DC' : 'none',
                 alignItems: 'center',
               }}>
-                <div style={{ fontSize: 12, fontWeight: 600, color: '#13201D', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{c.fornecedor_nome || '—'}</div>
-                <div style={{ fontSize: 11, color: '#3C4A46', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{c.descricao}</div>
-                <div style={{ fontSize: 11, color: '#7B8C88' }}>{c.categoria || '—'}</div>
-                <div style={{ fontSize: 11, color: c.status === 'vencida' ? '#B0413E' : '#3C4A46', fontWeight: c.status === 'vencida' ? 700 : 400 }}>{fmtDate(c.data_vencimento)}</div>
-                <div style={{ fontSize: 12, fontWeight: 700, color: '#B0413E', fontFamily: "var(--font-sans)" }}>{formatBRL(Number(c.valor || 0))}</div>
+                <div style={{ fontSize: 14, fontWeight: 600, color: '#13201D', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{c.fornecedor_nome || '—'}</div>
+                <div style={{ fontSize: 13, color: '#3C4A46', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{c.descricao}</div>
+                <div style={{ fontSize: 13, color: '#7B8C88' }}>{c.categoria || '—'}</div>
+                <div style={{ fontSize: 13, color: c.status === 'vencida' ? '#B0413E' : '#3C4A46', fontWeight: c.status === 'vencida' ? 700 : 400 }}>{fmtDate(c.data_vencimento)}</div>
+                <div style={{ fontSize: 14, fontWeight: 700, color: '#B0413E', fontFamily: "var(--font-sans)" }}>{formatBRL(Number(c.valor || 0))}</div>
                 <div><StatusTag status={c.status} /></div>
                 <div>
                   {c.status !== 'paga' && (
                     <button
                       onClick={() => void registrarPagamento(c.id, Number(c.valor || 0) - Number(c.valor_pago || 0))}
                       disabled={actionLoading === c.id}
-                      style={{ fontSize: 10, fontWeight: 700, padding: '4px 10px', borderRadius: 6, border: 'none', background: '#13201D', color: '#fff', cursor: 'pointer', opacity: actionLoading === c.id ? 0.6 : 1 }}
+                      style={{ fontSize: 12, fontWeight: 700, padding: '4px 10px', borderRadius: 6, border: 'none', background: '#13201D', color: '#fff', cursor: 'pointer', opacity: actionLoading === c.id ? 0.6 : 1 }}
                     >
                       {actionLoading === c.id ? '...' : 'Pagar'}
                     </button>
@@ -332,28 +332,28 @@ function FinanceiroInner() {
       {tab === 'receber' && (
         <>
           <div style={{ display: 'flex', gap: 8, marginBottom: 12, alignItems: 'center' }}>
-            <select className="form-input" style={{ width: 'auto', padding: '6px 10px', fontSize: 11 }} value={fStatusReceber} onChange={e => setFStatusReceber(e.target.value)}>
+            <select className="form-input" style={{ width: 'auto', padding: '6px 10px', fontSize: 13 }} value={fStatusReceber} onChange={e => setFStatusReceber(e.target.value)}>
               <option value="todas">Todos os status</option>
               <option value="pendente">Pendente</option>
               <option value="vencida">Vencida</option>
               <option value="recebida">Recebida</option>
             </select>
             <div style={{ flex: 1 }} />
-            <span style={{ fontSize: 11, color: '#7B8C88' }}>{receber.length} lançamento{receber.length !== 1 ? 's' : ''}</span>
+            <span style={{ fontSize: 13, color: '#7B8C88' }}>{receber.length} lançamento{receber.length !== 1 ? 's' : ''}</span>
           </div>
           <div style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 12, overflow: 'hidden' }}>
             <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.5fr 100px 80px 110px 90px 130px', padding: '10px 16px', borderBottom: '0.5px solid #E4DCCC', background: '#FBF8F1' }}>
               {['Cliente', 'Descrição', 'Vencimento', 'Atraso', 'Valor', 'Status', 'Ações'].map(h => (
-                <div key={h} style={{ fontSize: 10, fontWeight: 600, color: '#7B8C88', textTransform: 'uppercase', letterSpacing: '0.07em' }}>{h}</div>
+                <div key={h} style={{ fontSize: 12, fontWeight: 600, color: '#7B8C88', textTransform: 'uppercase', letterSpacing: '0.07em' }}>{h}</div>
               ))}
             </div>
             {loading ? (
-              <div style={{ padding: '32px 16px', textAlign: 'center', color: '#7B8C88', fontSize: 12 }}>Carregando...</div>
+              <div style={{ padding: '32px 16px', textAlign: 'center', color: '#7B8C88', fontSize: 14 }}>Carregando...</div>
             ) : receber.length === 0 ? (
               <div style={{ padding: '40px 16px', textAlign: 'center' }}>
                 <i className="fa-solid fa-inbox" style={{ fontSize: 32, color: '#3D7A6E', marginBottom: 10, display: 'block' }} />
-                <div style={{ fontSize: 13, fontWeight: 600, color: '#13201D', marginBottom: 4 }}>Nenhuma conta a receber</div>
-                <div style={{ fontSize: 11, color: '#7B8C88' }}>Sem lançamentos no período selecionado</div>
+                <div style={{ fontSize: 15, fontWeight: 600, color: '#13201D', marginBottom: 4 }}>Nenhuma conta a receber</div>
+                <div style={{ fontSize: 13, color: '#7B8C88' }}>Sem lançamentos no período selecionado</div>
               </div>
             ) : receber.map((c, i) => (
               <div key={c.id} style={{
@@ -361,20 +361,20 @@ function FinanceiroInner() {
                 padding: '11px 16px', borderBottom: i < receber.length - 1 ? '0.5px solid #EFE9DC' : 'none',
                 alignItems: 'center',
               }}>
-                <div style={{ fontSize: 12, fontWeight: 600, color: '#13201D', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{c.cliente_nome || '—'}</div>
-                <div style={{ fontSize: 11, color: '#3C4A46', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{c.descricao}</div>
-                <div style={{ fontSize: 11, color: '#3C4A46' }}>{fmtDate(c.data_vencimento)}</div>
-                <div style={{ fontSize: 11, fontWeight: c.dias_atraso > 0 ? 700 : 400, color: c.dias_atraso > 0 ? '#B0413E' : '#7B8C88' }}>
+                <div style={{ fontSize: 14, fontWeight: 600, color: '#13201D', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{c.cliente_nome || '—'}</div>
+                <div style={{ fontSize: 13, color: '#3C4A46', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{c.descricao}</div>
+                <div style={{ fontSize: 13, color: '#3C4A46' }}>{fmtDate(c.data_vencimento)}</div>
+                <div style={{ fontSize: 13, fontWeight: c.dias_atraso > 0 ? 700 : 400, color: c.dias_atraso > 0 ? '#B0413E' : '#7B8C88' }}>
                   {c.dias_atraso > 0 ? `${c.dias_atraso}d` : '—'}
                 </div>
-                <div style={{ fontSize: 12, fontWeight: 700, color: '#3D7A6E', fontFamily: "var(--font-sans)" }}>{formatBRL(Number(c.valor || 0))}</div>
+                <div style={{ fontSize: 14, fontWeight: 700, color: '#3D7A6E', fontFamily: "var(--font-sans)" }}>{formatBRL(Number(c.valor || 0))}</div>
                 <div><StatusTag status={c.status} /></div>
                 <div style={{ display: 'flex', gap: 5 }}>
                   {c.status !== 'recebida' && (
                     <button
                       onClick={() => void registrarRecebimento(c.id, Number(c.valor || 0) - Number(c.valor_recebido || 0), c.status === 'vencida')}
                       disabled={actionLoading === c.id}
-                      style={{ fontSize: 10, fontWeight: 700, padding: '4px 9px', borderRadius: 6, border: 'none', background: '#3D7A6E', color: '#fff', cursor: 'pointer', opacity: actionLoading === c.id ? 0.6 : 1 }}
+                      style={{ fontSize: 12, fontWeight: 700, padding: '4px 9px', borderRadius: 6, border: 'none', background: '#3D7A6E', color: '#fff', cursor: 'pointer', opacity: actionLoading === c.id ? 0.6 : 1 }}
                     >
                       {actionLoading === c.id ? '...' : 'Receber'}
                     </button>
@@ -382,7 +382,7 @@ function FinanceiroInner() {
                   <button
                     onClick={() => void enviarCobranca(c.id)}
                     disabled={actionLoading === c.id}
-                    style={{ fontSize: 10, fontWeight: 600, padding: '4px 9px', borderRadius: 6, border: '0.5px solid #E4DCCC', background: '#fff', color: '#3C4A46', cursor: 'pointer' }}
+                    style={{ fontSize: 12, fontWeight: 600, padding: '4px 9px', borderRadius: 6, border: '0.5px solid #E4DCCC', background: '#fff', color: '#3C4A46', cursor: 'pointer' }}
                   >
                     Cobrar
                   </button>
@@ -404,7 +404,7 @@ function FinanceiroInner() {
 
 export default function FinanceiroPageClient() {
   return (
-    <Suspense fallback={<div style={{ padding: 32, color: '#7B8C88', fontSize: 13 }}>Carregando…</div>}>
+    <Suspense fallback={<div style={{ padding: 32, color: '#7B8C88', fontSize: 15 }}>Carregando…</div>}>
       <FinanceiroInner />
     </Suspense>
   )

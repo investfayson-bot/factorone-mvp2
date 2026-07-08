@@ -227,7 +227,7 @@ export default function ReembolsosPage() {
       rejeitado: ['rgba(176,65,62,.08)', 'var(--red)'],
     }
     const [bg, color] = map[s] ?? ['#f1f5f9', '#64748b']
-    return <span style={{ fontSize: 10, padding: '2px 8px', borderRadius: 20, background: bg, color, fontWeight: 600 }}>{s.charAt(0).toUpperCase() + s.slice(1)}</span>
+    return <span style={{ fontSize: 12, padding: '2px 8px', borderRadius: 20, background: bg, color, fontWeight: 600 }}>{s.charAt(0).toUpperCase() + s.slice(1)}</span>
   }
 
   return (
@@ -276,14 +276,14 @@ export default function ReembolsosPage() {
       {/* Tabs */}
       <div style={{ display: 'flex', gap: 6, marginBottom: 12 }}>
         {([['pendentes', `Pendentes (${nPendentes})`], ['aprovados', `Aprovados (${nAprovados})`], ['pagar', `A pagar (${nAprovados})`], ['todos', 'Todos']] as [Tab, string][]).map(([k, l]) => (
-          <button key={k} className={`btn-action${tab !== k ? ' btn-ghost' : ''}`} style={{ fontSize: 11, padding: '5px 12px' }} onClick={() => setTab(k)}>{l}</button>
+          <button key={k} className={`btn-action${tab !== k ? ' btn-ghost' : ''}`} style={{ fontSize: 13, padding: '5px 12px' }} onClick={() => setTab(k)}>{l}</button>
         ))}
       </div>
 
       <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: 16 }}>
-        {loading && <div style={{ padding: '24px 0', textAlign: 'center', color: 'var(--gray-400)', fontSize: 13 }}>Carregando...</div>}
+        {loading && <div style={{ padding: '24px 0', textAlign: 'center', color: 'var(--gray-400)', fontSize: 15 }}>Carregando...</div>}
         {!loading && rowsFiltrados.length === 0 && (
-          <div style={{ padding: '40px 0', textAlign: 'center', color: 'var(--gray-400)', fontSize: 13 }}>
+          <div style={{ padding: '40px 0', textAlign: 'center', color: 'var(--gray-400)', fontSize: 15 }}>
             <i className="fa-solid fa-inbox" style={{ fontSize: 28, marginBottom: 10, display: 'block' }} />
             Nenhum reembolso nesta categoria
           </div>
@@ -293,14 +293,14 @@ export default function ReembolsosPage() {
           const initials = (item.solicitante_nome || 'U').split(' ').map(p => p[0]).slice(0, 2).join('').toUpperCase()
           return (
             <div key={item.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '11px 0', borderBottom: idx < rowsFiltrados.length - 1 ? '1px solid var(--gray-100)' : 'none', opacity: bloqueado ? 0.5 : 1 }}>
-              <div style={{ width: 34, height: 34, borderRadius: 8, background: 'var(--gray-100)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 800, color: 'var(--gray-500)', flexShrink: 0 }}>
+              <div style={{ width: 34, height: 34, borderRadius: 8, background: 'var(--gray-100)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 800, color: 'var(--gray-500)', flexShrink: 0 }}>
                 {initials}
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontSize: 12.5, fontWeight: 600, color: 'var(--navy)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                <div style={{ fontSize: 14.5, fontWeight: 600, color: 'var(--navy)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                   {item.solicitante_nome ? `${item.solicitante_nome} — ` : ''}{item.descricao}
                 </div>
-                <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>
+                <div style={{ fontSize: 13, color: 'var(--gray-400)' }}>
                   {item.categoria}{item.data_despesa ? ` · ${new Date(item.data_despesa + 'T12:00:00').toLocaleDateString('pt-BR')}` : ''}
                 </div>
               </div>
@@ -310,22 +310,22 @@ export default function ReembolsosPage() {
               </div>
               <div style={{ display: 'flex', gap: 5, alignItems: 'center', flexShrink: 0 }}>
                 {item.comprovante_url && (
-                  <button onClick={() => void abrirComprovante(item.comprovante_url!)} title="Ver comprovante" style={{ background: 'rgba(61,122,110,.1)', color: 'var(--teal)', border: '1px solid rgba(61,122,110,.2)', borderRadius: 7, padding: '4px 8px', fontSize: 10.5, cursor: 'pointer' }}>
+                  <button onClick={() => void abrirComprovante(item.comprovante_url!)} title="Ver comprovante" style={{ background: 'rgba(61,122,110,.1)', color: 'var(--teal)', border: '1px solid rgba(61,122,110,.2)', borderRadius: 7, padding: '4px 8px', fontSize: 12.5, cursor: 'pointer' }}>
                     <i className="fa-solid fa-paperclip" />
                   </button>
                 )}
                 {item.status === 'pendente' && (
                   <>
-                    <button disabled={bloqueado} onClick={() => void aprovar(item.id)} style={{ background: 'rgba(61,122,110,.1)', color: 'var(--green)', border: '1px solid rgba(61,122,110,.25)', borderRadius: 7, padding: '4px 10px', fontSize: 11, fontWeight: 600, cursor: 'pointer' }}>
+                    <button disabled={bloqueado} onClick={() => void aprovar(item.id)} style={{ background: 'rgba(61,122,110,.1)', color: 'var(--green)', border: '1px solid rgba(61,122,110,.25)', borderRadius: 7, padding: '4px 10px', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
                       <i className="fa-solid fa-check" style={{ marginRight: 4 }} />Aprovar
                     </button>
-                    <button disabled={bloqueado} onClick={() => abrirMotivo(item.id, item.descricao)} style={{ background: 'rgba(176,65,62,.08)', color: 'var(--red)', border: '1px solid rgba(176,65,62,.2)', borderRadius: 7, padding: '4px 8px', fontSize: 11, cursor: 'pointer' }}>
+                    <button disabled={bloqueado} onClick={() => abrirMotivo(item.id, item.descricao)} style={{ background: 'rgba(176,65,62,.08)', color: 'var(--red)', border: '1px solid rgba(176,65,62,.2)', borderRadius: 7, padding: '4px 8px', fontSize: 13, cursor: 'pointer' }}>
                       <i className="fa-solid fa-xmark" />
                     </button>
                   </>
                 )}
                 {item.status === 'aprovado' && (
-                  <button disabled={bloqueado} onClick={() => void marcarPago(item)} style={{ background: 'rgba(61,122,110,.1)', color: 'var(--green)', border: '1px solid rgba(61,122,110,.2)', borderRadius: 7, padding: '4px 10px', fontSize: 11, fontWeight: 600, cursor: 'pointer' }}>
+                  <button disabled={bloqueado} onClick={() => void marcarPago(item)} style={{ background: 'rgba(61,122,110,.1)', color: 'var(--green)', border: '1px solid rgba(61,122,110,.2)', borderRadius: 7, padding: '4px 10px', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
                     <i className="fa-solid fa-money-bill" style={{ marginRight: 4 }} />Pagar
                   </button>
                 )}
@@ -343,9 +343,9 @@ export default function ReembolsosPage() {
               <h3 className="modal-title">Rejeitar reembolso</h3>
               <button className="modal-close" onClick={() => setModalMotivo(null)}><i className="fa-solid fa-xmark" /></button>
             </div>
-            <p style={{ fontSize: 13, color: 'var(--gray-500)', marginBottom: 14 }}><strong>{modalMotivo.descricao}</strong></p>
-            <label style={{ fontSize: 11, fontWeight: 600, color: 'var(--gray-500)', display: 'block', marginBottom: 6 }}>Motivo da rejeição</label>
-            <textarea style={{ width: '100%', border: '1px solid var(--gray-100)', borderRadius: 8, padding: '8px 12px', fontSize: 13, minHeight: 80, resize: 'vertical', boxSizing: 'border-box' }} placeholder="Descreva o motivo (opcional)" value={motivo} onChange={e => setMotivo(e.target.value)} />
+            <p style={{ fontSize: 15, color: 'var(--gray-500)', marginBottom: 14 }}><strong>{modalMotivo.descricao}</strong></p>
+            <label style={{ fontSize: 13, fontWeight: 600, color: 'var(--gray-500)', display: 'block', marginBottom: 6 }}>Motivo da rejeição</label>
+            <textarea style={{ width: '100%', border: '1px solid var(--gray-100)', borderRadius: 8, padding: '8px 12px', fontSize: 15, minHeight: 80, resize: 'vertical', boxSizing: 'border-box' }} placeholder="Descreva o motivo (opcional)" value={motivo} onChange={e => setMotivo(e.target.value)} />
             <div className="modal-actions" style={{ marginTop: 16 }}>
               <button className="btn-ghost" onClick={() => setModalMotivo(null)}>Cancelar</button>
               <button className="btn-action" style={{ background: 'var(--red)', border: 'none' }} onClick={() => void confirmarRejeicao()}>
@@ -391,7 +391,7 @@ export default function ReembolsosPage() {
                     onClick={() => setForm(f => ({ ...f, categoria: c.label }))}
                     style={{
                       display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5,
-                      padding: '9px 6px', borderRadius: 9, cursor: 'pointer', fontSize: 10, fontWeight: 600,
+                      padding: '9px 6px', borderRadius: 9, cursor: 'pointer', fontSize: 12, fontWeight: 600,
                       border: form.categoria === c.label ? '2px solid var(--teal)' : '1px solid var(--gray-100)',
                       background: form.categoria === c.label ? 'rgba(61,122,110,0.08)' : '#fafafa',
                       color: form.categoria === c.label ? 'var(--teal)' : 'var(--gray-500)',
@@ -416,10 +416,10 @@ export default function ReembolsosPage() {
               >
                 <i className={`fa-solid ${arquivo ? 'fa-paperclip' : 'fa-cloud-arrow-up'}`} style={{ fontSize: 16, color: arquivo ? 'var(--green)' : 'var(--gray-400)' }} />
                 <div>
-                  <div style={{ fontSize: 12, fontWeight: 600, color: arquivo ? 'var(--green)' : 'var(--navy)' }}>
+                  <div style={{ fontSize: 14, fontWeight: 600, color: arquivo ? 'var(--green)' : 'var(--navy)' }}>
                     {arquivo ? arquivo.name : 'Anexar recibo ou nota fiscal'}
                   </div>
-                  <div style={{ fontSize: 10.5, color: 'var(--gray-400)' }}>
+                  <div style={{ fontSize: 12.5, color: 'var(--gray-400)' }}>
                     {arquivo ? `${(arquivo.size / 1024).toFixed(0)} KB` : 'JPG, PNG ou PDF · max 10 MB'}
                   </div>
                 </div>

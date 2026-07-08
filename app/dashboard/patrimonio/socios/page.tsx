@@ -81,17 +81,17 @@ export default function SociosPage() {
           <div className="page-title">Distribuição por sócio</div>
           <div className="page-sub">Rateie o lucro pelas cotas. Cada repasse vira saída no Fluxo de Caixa e na DRE.</div>
         </div>
-        <button className="btn-ghost" style={{ fontSize: 12 }} onClick={addSocio}><i className="fa-solid fa-user-plus" style={{ marginRight: 6 }} />Novo sócio</button>
+        <button className="btn-ghost" style={{ fontSize: 14 }} onClick={addSocio}><i className="fa-solid fa-user-plus" style={{ marginRight: 6 }} />Novo sócio</button>
       </div>
 
       {/* Base */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 18 }}>
         <div className="kpi" style={{ padding: '14px 16px' }}>
-          <div style={{ fontSize: 10, fontWeight: 600, color: 'var(--ink-mut)', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: 8 }}>Resultado do período (entrou − saiu)</div>
+          <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--ink-mut)', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: 8 }}>Resultado do período (entrou − saiu)</div>
           <div style={{ fontSize: 21, fontWeight: 700, color: resultado >= 0 ? 'var(--sage)' : '#B0413E', fontVariantNumeric: 'tabular-nums' }}>{formatBRL(resultado)}</div>
         </div>
         <div className="kpi" style={{ padding: '14px 16px' }}>
-          <label style={{ fontSize: 10, fontWeight: 600, color: 'var(--ink-mut)', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: 8, display: 'block' }}>Base a distribuir (R$)</label>
+          <label style={{ fontSize: 12, fontWeight: 600, color: 'var(--ink-mut)', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: 8, display: 'block' }}>Base a distribuir (R$)</label>
           <input className="form-input" type="number" step="0.01" value={base} onChange={e => setBase(e.target.value)} style={{ fontSize: 18, fontWeight: 700, padding: '6px 10px' }} />
         </div>
       </div>
@@ -99,23 +99,23 @@ export default function SociosPage() {
       {/* Sócios */}
       <div className="txs-card" style={{ marginBottom: 14 }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '11px 18px', borderBottom: '1px solid var(--line)', background: 'var(--surface-2)' }}>
-          <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--ink-mut)', textTransform: 'uppercase', letterSpacing: '.06em' }}>Sócios & cotas</span>
+          <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--ink-mut)', textTransform: 'uppercase', letterSpacing: '.06em' }}>Sócios & cotas</span>
           <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-            <button className="btn-ghost" style={{ fontSize: 11, padding: '5px 10px' }} onClick={dividirIgual}>Dividir igual</button>
-            <span style={{ fontSize: 12, fontWeight: 700, color: Math.abs(somaCotas - 100) < 0.5 ? 'var(--sage-deep)' : 'var(--gold)' }}>Σ {somaCotas}%</span>
+            <button className="btn-ghost" style={{ fontSize: 13, padding: '5px 10px' }} onClick={dividirIgual}>Dividir igual</button>
+            <span style={{ fontSize: 14, fontWeight: 700, color: Math.abs(somaCotas - 100) < 0.5 ? 'var(--sage-deep)' : 'var(--gold)' }}>Σ {somaCotas}%</span>
           </div>
         </div>
         {socios.length === 0 ? (
-          <div style={{ padding: 32, textAlign: 'center', color: 'var(--ink-mut)', fontSize: 13 }}>Adicione os sócios e suas cotas.</div>
+          <div style={{ padding: 32, textAlign: 'center', color: 'var(--ink-mut)', fontSize: 15 }}>Adicione os sócios e suas cotas.</div>
         ) : socios.map((s, i) => (
           <div key={s.id} style={{ display: 'grid', gridTemplateColumns: '1fr 110px 150px 44px', gap: 12, alignItems: 'center', padding: '10px 18px', borderBottom: i < socios.length - 1 ? '1px solid var(--line-soft)' : 'none' }}>
-            <input className="form-input" placeholder="Nome do sócio" value={s.nome} onChange={e => setSocio(s.id, 'nome', e.target.value)} style={{ fontSize: 12.5 }} />
+            <input className="form-input" placeholder="Nome do sócio" value={s.nome} onChange={e => setSocio(s.id, 'nome', e.target.value)} style={{ fontSize: 14.5 }} />
             <div style={{ position: 'relative' }}>
-              <input className="form-input" type="number" step="0.01" value={s.cota || ''} onChange={e => setSocio(s.id, 'cota', e.target.value)} style={{ fontSize: 12.5, paddingRight: 24 }} />
-              <span style={{ position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)', fontSize: 12, color: 'var(--ink-mut)' }}>%</span>
+              <input className="form-input" type="number" step="0.01" value={s.cota || ''} onChange={e => setSocio(s.id, 'cota', e.target.value)} style={{ fontSize: 14.5, paddingRight: 24 }} />
+              <span style={{ position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)', fontSize: 14, color: 'var(--ink-mut)' }}>%</span>
             </div>
-            <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--sage-deep)', textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>{formatBRL(baseNum * (Number(s.cota) / 100))}</div>
-            <button className="btn-ghost" style={{ fontSize: 11, padding: '6px 8px', color: '#B0413E', borderColor: '#B0413E' }} onClick={() => remover(s.id)}><i className="fa-solid fa-trash-can" /></button>
+            <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--sage-deep)', textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>{formatBRL(baseNum * (Number(s.cota) / 100))}</div>
+            <button className="btn-ghost" style={{ fontSize: 13, padding: '6px 8px', color: '#B0413E', borderColor: '#B0413E' }} onClick={() => remover(s.id)}><i className="fa-solid fa-trash-can" /></button>
           </div>
         ))}
       </div>
@@ -126,7 +126,7 @@ export default function SociosPage() {
         </button>
       </div>
 
-      <div style={{ fontSize: 11, color: 'var(--ink-faint)', marginTop: 12, lineHeight: 1.6 }}>
+      <div style={{ fontSize: 13, color: 'var(--ink-faint)', marginTop: 12, lineHeight: 1.6 }}>
         <i className="fa-solid fa-circle-info" style={{ color: 'var(--sage)', marginRight: 6 }} />
         A base já vem do seu resultado real (entrou − saiu). Ao registrar, cada repasse entra como saída na DRE (categoria &quot;Distribuição a sócios&quot;).
       </div>

@@ -58,7 +58,7 @@ export default function GerarSitePage() {
           <div className="page-title">Gere seu site</div>
           <div className="page-sub">5 passos e seu site está no ar — já com formulário que captura cliente.</div>
         </div>
-        <Link href="/dashboard/marketing/central" className="btn-ghost" style={{ fontSize: 12, textDecoration: 'none' }}>Voltar</Link>
+        <Link href="/dashboard/marketing/central" className="btn-ghost" style={{ fontSize: 14, textDecoration: 'none' }}>Voltar</Link>
       </div>
 
       {step < 6 && (
@@ -70,12 +70,12 @@ export default function GerarSitePage() {
       <div className="txs-card" style={{ padding: '24px' }}>
         {step === 1 && (<>
           <div style={{ fontFamily: 'var(--font-display)', fontSize: 19, fontWeight: 700, marginBottom: 6 }}>Qual o ramo do seu negócio?</div>
-          <div style={{ fontSize: 13, color: 'var(--ink-mut)', marginBottom: 18 }}>A gente ajusta o site pro seu segmento.</div>
+          <div style={{ fontSize: 15, color: 'var(--ink-mut)', marginBottom: 18 }}>A gente ajusta o site pro seu segmento.</div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(120px,1fr))', gap: 10 }}>
             {RAMOS.map(r => { const on = f.ramo === r.nome; return (
               <button key={r.nome} onClick={() => setF(s => ({ ...s, ramo: r.nome }))} style={{ padding: '16px 8px', borderRadius: 12, cursor: 'pointer', border: `1px solid ${on ? 'var(--sage)' : 'var(--line)'}`, background: on ? 'var(--sage-tint)' : 'var(--surface)', textAlign: 'center' }}>
                 <i className={`fa-solid ${r.icon}`} style={{ fontSize: 20, color: on ? 'var(--sage-deep)' : 'var(--ink-mut)', display: 'block', marginBottom: 8 }} />
-                <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--ink)' }}>{r.nome}</span>
+                <span style={{ fontSize: 14, fontWeight: 600, color: 'var(--ink)' }}>{r.nome}</span>
               </button>
             ) })}
           </div>
@@ -83,19 +83,19 @@ export default function GerarSitePage() {
 
         {step === 2 && (<>
           <div style={{ fontFamily: 'var(--font-display)', fontSize: 19, fontWeight: 700, marginBottom: 6 }}>Nome e frase de impacto</div>
-          <div style={{ fontSize: 13, color: 'var(--ink-mut)', marginBottom: 18 }}>É o que o cliente vê primeiro.</div>
+          <div style={{ fontSize: 15, color: 'var(--ink-mut)', marginBottom: 18 }}>É o que o cliente vê primeiro.</div>
           <div className="form-group"><label className="form-label">Nome do negócio</label><input className="form-input" value={f.nome} onChange={e => setF(s => ({ ...s, nome: e.target.value }))} placeholder="Ex: Padaria do João" autoFocus /></div>
           <div className="form-group"><label className="form-label">Slogan / frase</label><input className="form-input" value={f.slogan} onChange={e => setF(s => ({ ...s, slogan: e.target.value }))} placeholder="Ex: O melhor pão da cidade, todo dia fresquinho." /></div>
         </>)}
 
         {step === 3 && (<>
           <div style={{ fontFamily: 'var(--font-display)', fontSize: 19, fontWeight: 700, marginBottom: 6 }}>Escolha o estilo</div>
-          <div style={{ fontSize: 13, color: 'var(--ink-mut)', marginBottom: 18 }}>3 modelos — mude quando quiser.</div>
+          <div style={{ fontSize: 15, color: 'var(--ink-mut)', marginBottom: 18 }}>3 modelos — mude quando quiser.</div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 10, marginBottom: 20 }}>
             {TEMPLATES.map(t => { const on = f.template === t.id; return (
               <button key={t.id} onClick={() => setF(s => ({ ...s, template: t.id }))} style={{ padding: 0, borderRadius: 12, overflow: 'hidden', cursor: 'pointer', border: `2px solid ${on ? 'var(--sage)' : 'var(--line)'}`, background: 'var(--surface)' }}>
-                <div style={{ height: 66, background: t.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', color: t.fg, fontWeight: 800, fontSize: 13 }}>Aa</div>
-                <div style={{ padding: '8px 6px' }}><div style={{ fontSize: 12, fontWeight: 700, color: 'var(--ink)' }}>{t.nome}</div><div style={{ fontSize: 10, color: 'var(--ink-mut)' }}>{t.desc}</div></div>
+                <div style={{ height: 66, background: t.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', color: t.fg, fontWeight: 800, fontSize: 15 }}>Aa</div>
+                <div style={{ padding: '8px 6px' }}><div style={{ fontSize: 14, fontWeight: 700, color: 'var(--ink)' }}>{t.nome}</div><div style={{ fontSize: 12, color: 'var(--ink-mut)' }}>{t.desc}</div></div>
               </button>
             ) })}
           </div>
@@ -107,21 +107,21 @@ export default function GerarSitePage() {
 
         {step === 4 && (<>
           <div style={{ fontFamily: 'var(--font-display)', fontSize: 19, fontWeight: 700, marginBottom: 6 }}>Sobre e serviços</div>
-          <div style={{ fontSize: 13, color: 'var(--ink-mut)', marginBottom: 18 }}>Conte o que você faz.</div>
+          <div style={{ fontSize: 15, color: 'var(--ink-mut)', marginBottom: 18 }}>Conte o que você faz.</div>
           <div className="form-group"><label className="form-label">Sobre o negócio</label><textarea className="form-input" rows={3} value={f.sobre} onChange={e => setF(s => ({ ...s, sobre: e.target.value }))} placeholder="Uma breve descrição…" style={{ resize: 'vertical' }} /></div>
           <label className="form-label">Serviços / produtos</label>
           <div style={{ display: 'flex', gap: 8, marginBottom: 10 }}>
             <input className="form-input" value={novoServ} onChange={e => setNovoServ(e.target.value)} onKeyDown={e => { if (e.key === 'Enter' && novoServ.trim()) { setF(s => ({ ...s, servicos: [...s.servicos, novoServ.trim()] })); setNovoServ('') } }} placeholder="Ex: Entrega em domicílio" />
-            <button className="btn-ghost" style={{ fontSize: 12, flexShrink: 0 }} onClick={() => { if (novoServ.trim()) { setF(s => ({ ...s, servicos: [...s.servicos, novoServ.trim()] })); setNovoServ('') } }}>Adicionar</button>
+            <button className="btn-ghost" style={{ fontSize: 14, flexShrink: 0 }} onClick={() => { if (novoServ.trim()) { setF(s => ({ ...s, servicos: [...s.servicos, novoServ.trim()] })); setNovoServ('') } }}>Adicionar</button>
           </div>
           <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-            {f.servicos.map((sv, i) => <span key={i} style={{ fontSize: 12, background: 'var(--sage-tint)', color: 'var(--sage-deep)', padding: '5px 10px', borderRadius: 100, display: 'inline-flex', gap: 6, alignItems: 'center' }}>{sv}<i className="fa-solid fa-xmark" style={{ cursor: 'pointer' }} onClick={() => setF(s => ({ ...s, servicos: s.servicos.filter((_, j) => j !== i) }))} /></span>)}
+            {f.servicos.map((sv, i) => <span key={i} style={{ fontSize: 14, background: 'var(--sage-tint)', color: 'var(--sage-deep)', padding: '5px 10px', borderRadius: 100, display: 'inline-flex', gap: 6, alignItems: 'center' }}>{sv}<i className="fa-solid fa-xmark" style={{ cursor: 'pointer' }} onClick={() => setF(s => ({ ...s, servicos: s.servicos.filter((_, j) => j !== i) }))} /></span>)}
           </div>
         </>)}
 
         {step === 5 && (<>
           <div style={{ fontFamily: 'var(--font-display)', fontSize: 19, fontWeight: 700, marginBottom: 6 }}>Contato</div>
-          <div style={{ fontSize: 13, color: 'var(--ink-mut)', marginBottom: 18 }}>Como o cliente fala com você.</div>
+          <div style={{ fontSize: 15, color: 'var(--ink-mut)', marginBottom: 18 }}>Como o cliente fala com você.</div>
           <div className="form-group"><label className="form-label">WhatsApp</label><input className="form-input" value={f.whatsapp} onChange={e => setF(s => ({ ...s, whatsapp: e.target.value }))} placeholder="(11) 99999-9999" /></div>
           <div className="form-row">
             <div className="form-group"><label className="form-label">E-mail</label><input className="form-input" value={f.email} onChange={e => setF(s => ({ ...s, email: e.target.value }))} /></div>
@@ -133,13 +133,13 @@ export default function GerarSitePage() {
           <div style={{ textAlign: 'center', padding: '10px 0' }}>
             <div style={{ width: 64, height: 64, borderRadius: '50%', background: 'var(--sage)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}><i className="fa-solid fa-check" style={{ color: '#fff', fontSize: 28 }} /></div>
             <div style={{ fontFamily: 'var(--font-display)', fontSize: 22, fontWeight: 700 }}>Seu site está no ar! 🎉</div>
-            <div style={{ fontSize: 13, color: 'var(--ink-mut)', margin: '8px 0 18px' }}>Compartilhe o link. Todo formulário preenchido vira lead na sua Captação.</div>
+            <div style={{ fontSize: 15, color: 'var(--ink-mut)', margin: '8px 0 18px' }}>Compartilhe o link. Todo formulário preenchido vira lead na sua Captação.</div>
             <div style={{ display: 'flex', gap: 8, alignItems: 'center', maxWidth: 480, margin: '0 auto', flexWrap: 'wrap' }}>
-              <code style={{ flex: 1, minWidth: 200, fontSize: 12, background: 'var(--surface-2)', border: '1px solid var(--line)', borderRadius: 8, padding: '10px 12px', whiteSpace: 'nowrap', overflow: 'auto' }}>{url}</code>
-              <button className="btn-action" style={{ fontSize: 12 }} onClick={() => { void navigator.clipboard.writeText(url); toast.success('Link copiado') }}>Copiar</button>
-              <a href={url} target="_blank" rel="noreferrer" className="btn-ghost" style={{ fontSize: 12, textDecoration: 'none' }}>Abrir</a>
+              <code style={{ flex: 1, minWidth: 200, fontSize: 14, background: 'var(--surface-2)', border: '1px solid var(--line)', borderRadius: 8, padding: '10px 12px', whiteSpace: 'nowrap', overflow: 'auto' }}>{url}</code>
+              <button className="btn-action" style={{ fontSize: 14 }} onClick={() => { void navigator.clipboard.writeText(url); toast.success('Link copiado') }}>Copiar</button>
+              <a href={url} target="_blank" rel="noreferrer" className="btn-ghost" style={{ fontSize: 14, textDecoration: 'none' }}>Abrir</a>
             </div>
-            <button className="btn-ghost" style={{ fontSize: 12, marginTop: 16 }} onClick={() => setStep(1)}>Editar o site</button>
+            <button className="btn-ghost" style={{ fontSize: 14, marginTop: 16 }} onClick={() => setStep(1)}>Editar o site</button>
           </div>
         )}
 

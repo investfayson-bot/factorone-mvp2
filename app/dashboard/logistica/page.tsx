@@ -377,7 +377,7 @@ export default function LogisticaPage() {
         <div className="kpi" style={{ borderTop: '3px solid #3D7A6E' }}>
           <div className="kpi-lbl">Receita Fretes
             <div style={{ width: 26, height: 26, borderRadius: 7, background: '#E9F0ED', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <i className="fa-solid fa-truck" style={{ fontSize: 11, color: '#3D7A6E' }} />
+              <i className="fa-solid fa-truck" style={{ fontSize: 13, color: '#3D7A6E' }} />
             </div>
           </div>
           <div className="kpi-val">{fmt(receitaFrete)}</div>
@@ -386,7 +386,7 @@ export default function LogisticaPage() {
         <div className="kpi" style={{ borderTop: '3px solid #3D6E8E' }}>
           <div className="kpi-lbl">Em Trânsito
             <div style={{ width: 26, height: 26, borderRadius: 7, background: '#E6F1FB', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <i className="fa-solid fa-location-dot" style={{ fontSize: 11, color: '#3D6E8E' }} />
+              <i className="fa-solid fa-location-dot" style={{ fontSize: 13, color: '#3D6E8E' }} />
             </div>
           </div>
           <div className="kpi-val" style={{ color: '#3D6E8E' }}>{rotasAtivas}</div>
@@ -395,7 +395,7 @@ export default function LogisticaPage() {
         <div className="kpi" style={{ borderTop: '3px solid #13201D' }}>
           <div className="kpi-lbl">Km Rodados
             <div style={{ width: 26, height: 26, borderRadius: 7, background: '#F1ECE1', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <i className="fa-solid fa-road" style={{ fontSize: 11, color: '#13201D' }} />
+              <i className="fa-solid fa-road" style={{ fontSize: 13, color: '#13201D' }} />
             </div>
           </div>
           <div className="kpi-val">{fmtNum(kmTotal, 0)} km</div>
@@ -404,7 +404,7 @@ export default function LogisticaPage() {
         <div className="kpi" style={{ borderTop: `3px solid ${pneusAlerta > 0 ? '#B0413E' : '#3D7A6E'}` }}>
           <div className="kpi-lbl">Pneus Alerta
             <div style={{ width: 26, height: 26, borderRadius: 7, background: pneusAlerta > 0 ? '#F4E4E1' : '#E9F0ED', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <i className="fa-solid fa-circle-exclamation" style={{ fontSize: 11, color: pneusAlerta > 0 ? '#B0413E' : '#3D7A6E' }} />
+              <i className="fa-solid fa-circle-exclamation" style={{ fontSize: 13, color: pneusAlerta > 0 ? '#B0413E' : '#3D7A6E' }} />
             </div>
           </div>
           <div className="kpi-val" style={{ color: pneusAlerta > 0 ? '#B0413E' : '#3D7A6E' }}>{pneusAlerta}</div>
@@ -413,7 +413,7 @@ export default function LogisticaPage() {
         <div className="kpi" style={{ borderTop: '3px solid #B08A3E' }}>
           <div className="kpi-lbl">Manutenção/mês
             <div style={{ width: 26, height: 26, borderRadius: 7, background: '#F3ECDA', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <i className="fa-solid fa-wrench" style={{ fontSize: 11, color: '#B08A3E' }} />
+              <i className="fa-solid fa-wrench" style={{ fontSize: 13, color: '#B08A3E' }} />
             </div>
           </div>
           <div className="kpi-val">{fmt(custoManutMes)}</div>
@@ -426,12 +426,12 @@ export default function LogisticaPage() {
         {TABS.map(t => (
           <button key={t.key} onClick={() => setTab(t.key as typeof tab)} style={{
             display: 'flex', alignItems: 'center', gap: 6,
-            padding: '6px 13px', borderRadius: 8, fontSize: 11,
+            padding: '6px 13px', borderRadius: 8, fontSize: 13,
             fontWeight: tab === t.key ? 700 : 500, border: 'none', cursor: 'pointer',
             background: tab === t.key ? '#fff' : 'transparent',
             color: tab === t.key ? '#13201D' : '#7B8C88', transition: 'all .15s',
           }}>
-            <i className={`fa-solid ${t.icon || 'fa-circle'}`} style={{ fontSize: 10 }} />{t.label}
+            <i className={`fa-solid ${t.icon || 'fa-circle'}`} style={{ fontSize: 12 }} />{t.label}
           </button>
         ))}
       </div>
@@ -450,7 +450,7 @@ export default function LogisticaPage() {
                 const pct = totalFretes ? Math.round(count / totalFretes * 100) : 0
                 return (
                   <div key={s} style={{ marginBottom: 12 }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, marginBottom: 4 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, marginBottom: 4 }}>
                       <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                         <span style={{ width: 8, height: 8, borderRadius: '50%', background: STATUS_COLOR[s], display: 'inline-block' }} />
                         {STATUS_LABEL[s]}
@@ -469,15 +469,15 @@ export default function LogisticaPage() {
             <div style={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: 10, padding: 20 }}>
               <div style={{ fontWeight: 600, fontSize: 14, marginBottom: 16 }}>Top Rotas por Receita</div>
               {rotas.sort((a, b) => (b.valor_frete ?? 0) - (a.valor_frete ?? 0)).slice(0, 5).map(r => (
-                <div key={r.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 0', borderBottom: '1px solid #f1f5f9', fontSize: 13 }}>
+                <div key={r.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 0', borderBottom: '1px solid #f1f5f9', fontSize: 15 }}>
                   <div>
                     <div style={{ fontWeight: 600 }}>{r.origem} → {r.destino}</div>
-                    <div style={{ fontSize: 11, color: '#7B8C88' }}>{r.motorista ?? 'Motorista não definido'}</div>
+                    <div style={{ fontSize: 13, color: '#7B8C88' }}>{r.motorista ?? 'Motorista não definido'}</div>
                   </div>
                   <div style={{ fontWeight: 700, color: '#3D7A6E' }}>{fmt(r.valor_frete)}</div>
                 </div>
               ))}
-              {rotas.length === 0 && <div style={{ color: '#7B8C88', fontSize: 13 }}>Nenhuma rota cadastrada</div>}
+              {rotas.length === 0 && <div style={{ color: '#7B8C88', fontSize: 15 }}>Nenhuma rota cadastrada</div>}
             </div>
 
             {/* Pneus críticos */}
@@ -488,7 +488,7 @@ export default function LogisticaPage() {
                 const alerta = pct >= 90
                 return (
                   <div key={p.id} style={{ marginBottom: 10 }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, marginBottom: 3 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, marginBottom: 3 }}>
                       <span>{p.veiculo_nome} — Pos. {p.posicao}</span>
                       <span style={{ fontWeight: 600, color: alerta ? '#B0413E' : 'inherit' }}>{pct}%</span>
                     </div>
@@ -498,7 +498,7 @@ export default function LogisticaPage() {
                   </div>
                 )
               })}
-              {pneus.length === 0 && <div style={{ color: '#7B8C88', fontSize: 13 }}>Nenhum pneu cadastrado</div>}
+              {pneus.length === 0 && <div style={{ color: '#7B8C88', fontSize: 15 }}>Nenhum pneu cadastrado</div>}
             </div>
 
             {/* Checklists recentes */}
@@ -508,18 +508,18 @@ export default function LogisticaPage() {
                 const total = CHECKLIST_ITENS.length
                 const ok = Object.values(c.itens).filter(Boolean).length
                 return (
-                  <div key={c.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 0', borderBottom: '1px solid #f1f5f9', fontSize: 13 }}>
+                  <div key={c.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 0', borderBottom: '1px solid #f1f5f9', fontSize: 15 }}>
                     <div>
                       <div style={{ fontWeight: 600 }}>{c.veiculo_nome}</div>
-                      <div style={{ fontSize: 11, color: '#7B8C88' }}>{c.data} — {c.motorista}</div>
+                      <div style={{ fontSize: 13, color: '#7B8C88' }}>{c.data} — {c.motorista}</div>
                     </div>
-                    <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 12, background: c.status === 'aprovado' ? '#E9F0ED' : '#fee2e2', color: c.status === 'aprovado' ? '#3D7A6E' : '#B0413E', fontWeight: 600 }}>
+                    <span style={{ fontSize: 13, padding: '2px 8px', borderRadius: 12, background: c.status === 'aprovado' ? '#E9F0ED' : '#fee2e2', color: c.status === 'aprovado' ? '#3D7A6E' : '#B0413E', fontWeight: 600 }}>
                       {ok}/{total}
                     </span>
                   </div>
                 )
               })}
-              {checklists.length === 0 && <div style={{ color: '#7B8C88', fontSize: 13 }}>Nenhum checklist realizado</div>}
+              {checklists.length === 0 && <div style={{ color: '#7B8C88', fontSize: 15 }}>Nenhum checklist realizado</div>}
             </div>
           </div>
         )}
@@ -544,44 +544,44 @@ export default function LogisticaPage() {
                 <tbody>
                   {rotas.map(r => (
                     <tr key={r.id}>
-                      <td style={{ fontFamily: 'var(--font-mono)', fontSize: 12 }}>{r.codigo ?? '—'}</td>
+                      <td style={{ fontFamily: 'var(--font-mono)', fontSize: 14 }}>{r.codigo ?? '—'}</td>
                       <td>
                         <div style={{ fontWeight: 600 }}>{r.origem} → {r.destino}</div>
-                        {r.distancia_km && <div style={{ fontSize: 11, color: '#7B8C88' }}>{fmtNum(r.distancia_km, 0)} km</div>}
+                        {r.distancia_km && <div style={{ fontSize: 13, color: '#7B8C88' }}>{fmtNum(r.distancia_km, 0)} km</div>}
                       </td>
                       <td>{r.motorista ?? '—'}</td>
                       <td>
                         <div>{r.carga ?? '—'}</div>
-                        {r.peso_kg && <div style={{ fontSize: 11, color: '#7B8C88' }}>{fmtNum(r.peso_kg, 0)} kg</div>}
+                        {r.peso_kg && <div style={{ fontSize: 13, color: '#7B8C88' }}>{fmtNum(r.peso_kg, 0)} kg</div>}
                       </td>
                       <td style={{ fontWeight: 700, color: '#3D7A6E', fontFamily: 'var(--font-mono)' }}>{fmt(r.valor_frete)}</td>
                       <td>
-                        <span style={{ fontSize: 11, padding: '3px 8px', borderRadius: 12, background: STATUS_BG[r.status], color: STATUS_COLOR[r.status], fontWeight: 600 }}>
+                        <span style={{ fontSize: 13, padding: '3px 8px', borderRadius: 12, background: STATUS_BG[r.status], color: STATUS_COLOR[r.status], fontWeight: 600 }}>
                           {STATUS_LABEL[r.status]}
                         </span>
                       </td>
-                      <td style={{ fontSize: 12 }}>{r.data_saida ? new Date(r.data_saida).toLocaleDateString('pt-BR') : '—'}</td>
+                      <td style={{ fontSize: 14 }}>{r.data_saida ? new Date(r.data_saida).toLocaleDateString('pt-BR') : '—'}</td>
                       <td>
                         {r.lat_atual && r.lng_atual ? (
                           <a href={`https://www.google.com/maps?q=${r.lat_atual},${r.lng_atual}`} target="_blank" rel="noopener noreferrer"
-                            style={{ fontSize: 11, color: '#3D7A6E', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}>
+                            style={{ fontSize: 13, color: '#3D7A6E', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}>
                             <i className="fa-solid fa-location-dot" /> Ver
                           </a>
-                        ) : <span style={{ fontSize: 11, color: '#7B8C88' }}>—</span>}
+                        ) : <span style={{ fontSize: 13, color: '#7B8C88' }}>—</span>}
                       </td>
                       <td>
                         <div style={{ display: 'flex', gap: 5 }}>
                           {r.status === 'agendada' && (
-                            <button className="btn-action" style={{ fontSize: 10, padding: '3px 10px' }} onClick={() => atualizarStatus(r.id, 'em_transito')}>
+                            <button className="btn-action" style={{ fontSize: 12, padding: '3px 10px' }} onClick={() => atualizarStatus(r.id, 'em_transito')}>
                               <i className="fa-solid fa-play" style={{ marginRight: 4 }} />Iniciar
                             </button>
                           )}
                           {r.status === 'em_transito' && (
-                            <button className="btn-action" style={{ fontSize: 10, padding: '3px 10px', background: '#3D7A6E', border: 'none' }} onClick={() => atualizarStatus(r.id, 'entregue')}>
+                            <button className="btn-action" style={{ fontSize: 12, padding: '3px 10px', background: '#3D7A6E', border: 'none' }} onClick={() => atualizarStatus(r.id, 'entregue')}>
                               <i className="fa-solid fa-check" style={{ marginRight: 4 }} />Entregar
                             </button>
                           )}
-                          <button className="btn-action btn-ghost" style={{ fontSize: 10, padding: '3px 8px' }} onClick={() => abrirEditarRota(r)}>
+                          <button className="btn-action btn-ghost" style={{ fontSize: 12, padding: '3px 8px' }} onClick={() => abrirEditarRota(r)}>
                             <i className="fa-solid fa-pen" />
                           </button>
                         </div>
@@ -597,7 +597,7 @@ export default function LogisticaPage() {
         {/* ── PNEUS ── */}
         {!loading && tab === 'pneus' && (
           <div>
-            <div style={{ marginBottom: 12, fontSize: 13, color: '#7B8C88' }}>
+            <div style={{ marginBottom: 12, fontSize: 15, color: '#7B8C88' }}>
               <i className="fa-solid fa-circle-info" style={{ marginRight: 6 }} />
               Monitore o km rodado de cada pneu por posição. Troque quando atingir o limite.
             </div>
@@ -619,22 +619,22 @@ export default function LogisticaPage() {
                     return (
                       <tr key={p.id} style={{ background: alerta ? '#fff5f5' : undefined }}>
                         <td style={{ fontWeight: 600 }}>{p.veiculo_nome}</td>
-                        <td><span style={{ fontFamily: 'var(--font-mono)', background: '#f1f5f9', padding: '2px 6px', borderRadius: 4, fontSize: 12 }}>{p.posicao}</span></td>
+                        <td><span style={{ fontFamily: 'var(--font-mono)', background: '#f1f5f9', padding: '2px 6px', borderRadius: 4, fontSize: 14 }}>{p.posicao}</span></td>
                         <td>{p.marca} {p.modelo}</td>
-                        <td style={{ fontFamily: 'var(--font-mono)', fontSize: 12 }}>{p.dot ?? '—'}</td>
-                        <td style={{ fontFamily: 'var(--font-mono)', fontSize: 12 }}>{fmtNum(p.km_instalado, 0)}</td>
-                        <td style={{ fontFamily: 'var(--font-mono)', fontSize: 12, fontWeight: 600 }}>{fmtNum(p.km_rodado, 0)}</td>
-                        <td style={{ fontFamily: 'var(--font-mono)', fontSize: 12 }}>{fmtNum(p.km_limite, 0)}</td>
+                        <td style={{ fontFamily: 'var(--font-mono)', fontSize: 14 }}>{p.dot ?? '—'}</td>
+                        <td style={{ fontFamily: 'var(--font-mono)', fontSize: 14 }}>{fmtNum(p.km_instalado, 0)}</td>
+                        <td style={{ fontFamily: 'var(--font-mono)', fontSize: 14, fontWeight: 600 }}>{fmtNum(p.km_rodado, 0)}</td>
+                        <td style={{ fontFamily: 'var(--font-mono)', fontSize: 14 }}>{fmtNum(p.km_limite, 0)}</td>
                         <td>
                           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                             <div style={{ width: 60, height: 6, background: '#e2e8f0', borderRadius: 3, overflow: 'hidden' }}>
                               <div style={{ height: '100%', width: `${pct}%`, background: alerta ? '#B0413E' : '#3D7A6E', borderRadius: 3 }} />
                             </div>
-                            <span style={{ fontSize: 11, fontWeight: 600, color: alerta ? '#B0413E' : 'inherit' }}>{pct}%</span>
+                            <span style={{ fontSize: 13, fontWeight: 600, color: alerta ? '#B0413E' : 'inherit' }}>{pct}%</span>
                           </div>
                         </td>
                         <td>
-                          <span style={{ fontSize: 11, padding: '3px 8px', borderRadius: 12, background: alerta ? '#fee2e2' : '#E9F0ED', color: alerta ? '#B0413E' : PNEU_STATUS_COLOR[p.status], fontWeight: 600 }}>
+                          <span style={{ fontSize: 13, padding: '3px 8px', borderRadius: 12, background: alerta ? '#fee2e2' : '#E9F0ED', color: alerta ? '#B0413E' : PNEU_STATUS_COLOR[p.status], fontWeight: 600 }}>
                             {alerta ? 'Trocar' : p.status}
                           </span>
                         </td>
@@ -654,8 +654,8 @@ export default function LogisticaPage() {
             {proximasManut.length > 0 && (
               <div style={{ background: '#fffbeb', border: '1px solid rgba(176,138,62,.3)', borderRadius: 10, padding: '10px 16px', marginBottom: 14, display: 'flex', alignItems: 'center', gap: 10 }}>
                 <i className="fa-solid fa-triangle-exclamation" style={{ color: '#B08A3E' }} />
-                <span style={{ fontSize: 13, fontWeight: 600 }}>{proximasManut.length} manutenção{proximasManut.length > 1 ? 'ões' : ''} agendada{proximasManut.length > 1 ? 's' : ''} nos próximos 30 dias</span>
-                <span style={{ fontSize: 12, color: '#7B8C88', marginLeft: 4 }}>
+                <span style={{ fontSize: 15, fontWeight: 600 }}>{proximasManut.length} manutenção{proximasManut.length > 1 ? 'ões' : ''} agendada{proximasManut.length > 1 ? 's' : ''} nos próximos 30 dias</span>
+                <span style={{ fontSize: 14, color: '#7B8C88', marginLeft: 4 }}>
                   {proximasManut.map(m => m.veiculo_nome).join(', ')}
                 </span>
               </div>
@@ -674,18 +674,18 @@ export default function LogisticaPage() {
                 <tbody>
                   {manutencoes.map(m => (
                     <tr key={m.id}>
-                      <td style={{ fontSize: 12 }}>{new Date(m.data + 'T12:00:00').toLocaleDateString('pt-BR')}</td>
+                      <td style={{ fontSize: 14 }}>{new Date(m.data + 'T12:00:00').toLocaleDateString('pt-BR')}</td>
                       <td style={{ fontWeight: 600 }}>{m.veiculo_nome}</td>
                       <td>
-                        <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 12, background: m.tipo === 'preventiva' ? '#E9F0ED' : m.tipo === 'corretiva' ? '#fee2e2' : '#E4EDEF', color: m.tipo === 'preventiva' ? '#3D7A6E' : m.tipo === 'corretiva' ? '#B0413E' : '#3D7A6E', fontWeight: 600 }}>
+                        <span style={{ fontSize: 13, padding: '2px 8px', borderRadius: 12, background: m.tipo === 'preventiva' ? '#E9F0ED' : m.tipo === 'corretiva' ? '#fee2e2' : '#E4EDEF', color: m.tipo === 'preventiva' ? '#3D7A6E' : m.tipo === 'corretiva' ? '#B0413E' : '#3D7A6E', fontWeight: 600 }}>
                           {m.tipo}
                         </span>
                       </td>
-                      <td style={{ fontSize: 12 }}>{m.descricao ?? '—'}</td>
-                      <td style={{ fontFamily: 'var(--font-mono)', fontSize: 12 }}>{m.km_ou_horas ? fmtNum(m.km_ou_horas, 0) : '—'}</td>
-                      <td style={{ fontSize: 12 }}>{m.oficina ?? '—'}</td>
+                      <td style={{ fontSize: 14 }}>{m.descricao ?? '—'}</td>
+                      <td style={{ fontFamily: 'var(--font-mono)', fontSize: 14 }}>{m.km_ou_horas ? fmtNum(m.km_ou_horas, 0) : '—'}</td>
+                      <td style={{ fontSize: 14 }}>{m.oficina ?? '—'}</td>
                       <td style={{ fontWeight: 700, color: '#B0413E', fontFamily: 'var(--font-mono)' }}>{fmt(m.valor)}</td>
-                      <td style={{ fontSize: 12, color: m.proxima_data && m.proxima_data <= new Date(Date.now() + 7 * 86400000).toISOString().slice(0, 10) ? '#B0413E' : 'inherit' }}>
+                      <td style={{ fontSize: 14, color: m.proxima_data && m.proxima_data <= new Date(Date.now() + 7 * 86400000).toISOString().slice(0, 10) ? '#B0413E' : 'inherit' }}>
                         {m.proxima_data ? new Date(m.proxima_data + 'T12:00:00').toLocaleDateString('pt-BR') : '—'}
                       </td>
                     </tr>
@@ -714,7 +714,7 @@ export default function LogisticaPage() {
                     const total = Object.keys(c.itens).length || CHECKLIST_ITENS.length
                     return (
                       <tr key={c.id}>
-                        <td style={{ fontSize: 12 }}>{new Date(c.data).toLocaleDateString('pt-BR')}</td>
+                        <td style={{ fontSize: 14 }}>{new Date(c.data).toLocaleDateString('pt-BR')}</td>
                         <td style={{ fontWeight: 600 }}>{c.veiculo_nome}</td>
                         <td>{c.motorista ?? '—'}</td>
                         <td>
@@ -722,16 +722,16 @@ export default function LogisticaPage() {
                             <div style={{ width: 60, height: 6, background: '#e2e8f0', borderRadius: 3, overflow: 'hidden' }}>
                               <div style={{ height: '100%', width: `${total ? Math.round(okCount / total * 100) : 0}%`, background: '#3D7A6E', borderRadius: 3 }} />
                             </div>
-                            <span style={{ fontSize: 12 }}>{okCount}/{total}</span>
+                            <span style={{ fontSize: 14 }}>{okCount}/{total}</span>
                           </div>
                         </td>
                         <td>
-                          <span style={{ fontSize: 11, padding: '3px 8px', borderRadius: 12, background: c.status === 'aprovado' ? '#E9F0ED' : '#fee2e2', color: c.status === 'aprovado' ? '#3D7A6E' : '#B0413E', fontWeight: 600 }}>
+                          <span style={{ fontSize: 13, padding: '3px 8px', borderRadius: 12, background: c.status === 'aprovado' ? '#E9F0ED' : '#fee2e2', color: c.status === 'aprovado' ? '#3D7A6E' : '#B0413E', fontWeight: 600 }}>
                             {c.status === 'aprovado' ? 'Aprovado' : 'Reprovado'}
                           </span>
                         </td>
                         <td>
-                          <div style={{ fontSize: 11, color: '#7B8C88' }}>
+                          <div style={{ fontSize: 13, color: '#7B8C88' }}>
                             {Object.entries(c.itens).filter(([, v]) => !v).map(([k]) => k).join(', ') || '—'}
                           </div>
                         </td>
@@ -762,10 +762,10 @@ export default function LogisticaPage() {
               >
                 <i className="fa-solid fa-file-image" style={{ fontSize: 24, color: '#3D7A6E' }} />
                 <div>
-                  <div style={{ fontWeight: 600, color: '#3D7A6E', fontSize: 13 }}>
+                  <div style={{ fontWeight: 600, color: '#3D7A6E', fontSize: 15 }}>
                     {ocrLoading ? 'Lendo romaneio com IA...' : ocrResult ? 'Romaneio lido! Campos preenchidos.' : 'OCR Romaneio — clique para enviar imagem'}
                   </div>
-                  <div style={{ fontSize: 11, color: '#7B8C88' }}>JPG, PNG ou PDF — FactorOne IA extrai origem, destino, carga e valor</div>
+                  <div style={{ fontSize: 13, color: '#7B8C88' }}>JPG, PNG ou PDF — FactorOne IA extrai origem, destino, carga e valor</div>
                 </div>
                 {ocrLoading && <i className="fa-solid fa-spinner fa-spin" style={{ color: '#3D7A6E', marginLeft: 'auto' }} />}
                 {ocrResult && <i className="fa-solid fa-circle-check" style={{ color: '#3D7A6E', marginLeft: 'auto', fontSize: 20 }} />}
@@ -775,38 +775,38 @@ export default function LogisticaPage() {
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
               <div>
-                <label style={{ fontSize: 12, fontWeight: 600, display: 'block', marginBottom: 4 }}>Código</label>
+                <label style={{ fontSize: 14, fontWeight: 600, display: 'block', marginBottom: 4 }}>Código</label>
                 <input className="form-input" value={rotaForm.codigo} onChange={e => setRotaForm(f => ({ ...f, codigo: e.target.value }))} placeholder="ROT-001" />
               </div>
               <div>
-                <label style={{ fontSize: 12, fontWeight: 600, display: 'block', marginBottom: 4 }}>Veículo</label>
+                <label style={{ fontSize: 14, fontWeight: 600, display: 'block', marginBottom: 4 }}>Veículo</label>
                 <select className="form-input" value={rotaForm.veiculo_id} onChange={e => setRotaForm(f => ({ ...f, veiculo_id: e.target.value }))}>
                   <option value="">Selecionar veículo</option>
                   {ativos.map(a => <option key={a.id} value={a.id}>{a.nome}</option>)}
                 </select>
               </div>
               <div>
-                <label style={{ fontSize: 12, fontWeight: 600, display: 'block', marginBottom: 4 }}>Origem *</label>
+                <label style={{ fontSize: 14, fontWeight: 600, display: 'block', marginBottom: 4 }}>Origem *</label>
                 <input className="form-input" value={rotaForm.origem} onChange={e => setRotaForm(f => ({ ...f, origem: e.target.value }))} placeholder="Cidade, Estado" />
               </div>
               <div>
-                <label style={{ fontSize: 12, fontWeight: 600, display: 'block', marginBottom: 4 }}>Destino *</label>
+                <label style={{ fontSize: 14, fontWeight: 600, display: 'block', marginBottom: 4 }}>Destino *</label>
                 <input className="form-input" value={rotaForm.destino} onChange={e => setRotaForm(f => ({ ...f, destino: e.target.value }))} placeholder="Cidade, Estado" />
               </div>
               <div>
-                <label style={{ fontSize: 12, fontWeight: 600, display: 'block', marginBottom: 4 }}>Distância (km)</label>
+                <label style={{ fontSize: 14, fontWeight: 600, display: 'block', marginBottom: 4 }}>Distância (km)</label>
                 <input className="form-input" type="number" value={rotaForm.distancia_km} onChange={e => setRotaForm(f => ({ ...f, distancia_km: e.target.value }))} placeholder="0" />
               </div>
               <div>
-                <label style={{ fontSize: 12, fontWeight: 600, display: 'block', marginBottom: 4 }}>Tempo Est. (min)</label>
+                <label style={{ fontSize: 14, fontWeight: 600, display: 'block', marginBottom: 4 }}>Tempo Est. (min)</label>
                 <input className="form-input" type="number" value={rotaForm.tempo_estimado} onChange={e => setRotaForm(f => ({ ...f, tempo_estimado: e.target.value }))} placeholder="0" />
               </div>
               <div>
-                <label style={{ fontSize: 12, fontWeight: 600, display: 'block', marginBottom: 4 }}>Motorista</label>
+                <label style={{ fontSize: 14, fontWeight: 600, display: 'block', marginBottom: 4 }}>Motorista</label>
                 <input className="form-input" value={rotaForm.motorista} onChange={e => setRotaForm(f => ({ ...f, motorista: e.target.value }))} placeholder="Nome do motorista" />
               </div>
               <div>
-                <label style={{ fontSize: 12, fontWeight: 600, display: 'block', marginBottom: 4 }}>Status</label>
+                <label style={{ fontSize: 14, fontWeight: 600, display: 'block', marginBottom: 4 }}>Status</label>
                 <select className="form-input" value={rotaForm.status} onChange={e => setRotaForm(f => ({ ...f, status: e.target.value }))}>
                   <option value="agendada">Agendada</option>
                   <option value="em_transito">Em Trânsito</option>
@@ -816,23 +816,23 @@ export default function LogisticaPage() {
                 </select>
               </div>
               <div>
-                <label style={{ fontSize: 12, fontWeight: 600, display: 'block', marginBottom: 4 }}>Carga</label>
+                <label style={{ fontSize: 14, fontWeight: 600, display: 'block', marginBottom: 4 }}>Carga</label>
                 <input className="form-input" value={rotaForm.carga} onChange={e => setRotaForm(f => ({ ...f, carga: e.target.value }))} placeholder="Descrição da carga" />
               </div>
               <div>
-                <label style={{ fontSize: 12, fontWeight: 600, display: 'block', marginBottom: 4 }}>Peso (kg)</label>
+                <label style={{ fontSize: 14, fontWeight: 600, display: 'block', marginBottom: 4 }}>Peso (kg)</label>
                 <input className="form-input" type="number" value={rotaForm.peso_kg} onChange={e => setRotaForm(f => ({ ...f, peso_kg: e.target.value }))} placeholder="0" />
               </div>
               <div>
-                <label style={{ fontSize: 12, fontWeight: 600, display: 'block', marginBottom: 4 }}>Valor do Frete (R$)</label>
+                <label style={{ fontSize: 14, fontWeight: 600, display: 'block', marginBottom: 4 }}>Valor do Frete (R$)</label>
                 <input className="form-input" value={rotaForm.valor_frete} onChange={e => setRotaForm(f => ({ ...f, valor_frete: e.target.value }))} placeholder="0,00" />
               </div>
               <div>
-                <label style={{ fontSize: 12, fontWeight: 600, display: 'block', marginBottom: 4 }}>Data de Saída</label>
+                <label style={{ fontSize: 14, fontWeight: 600, display: 'block', marginBottom: 4 }}>Data de Saída</label>
                 <input className="form-input" type="datetime-local" value={rotaForm.data_saida} onChange={e => setRotaForm(f => ({ ...f, data_saida: e.target.value }))} />
               </div>
               <div style={{ gridColumn: '1 / -1' }}>
-                <label style={{ fontSize: 12, fontWeight: 600, display: 'block', marginBottom: 4 }}>Notas</label>
+                <label style={{ fontSize: 14, fontWeight: 600, display: 'block', marginBottom: 4 }}>Notas</label>
                 <textarea className="form-input" rows={2} value={rotaForm.notas} onChange={e => setRotaForm(f => ({ ...f, notas: e.target.value }))} placeholder="Observações..." style={{ resize: 'vertical' }} />
               </div>
             </div>
@@ -857,49 +857,49 @@ export default function LogisticaPage() {
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
               <div style={{ gridColumn: '1 / -1' }}>
-                <label style={{ fontSize: 12, fontWeight: 600, display: 'block', marginBottom: 4 }}>Veículo *</label>
+                <label style={{ fontSize: 14, fontWeight: 600, display: 'block', marginBottom: 4 }}>Veículo *</label>
                 <select className="form-input" value={pneuForm.veiculo_id} onChange={e => setPneuForm(f => ({ ...f, veiculo_id: e.target.value }))}>
                   <option value="">Selecionar veículo</option>
                   {ativos.map(a => <option key={a.id} value={a.id}>{a.nome}</option>)}
                 </select>
               </div>
               <div>
-                <label style={{ fontSize: 12, fontWeight: 600, display: 'block', marginBottom: 4 }}>Posição *</label>
+                <label style={{ fontSize: 14, fontWeight: 600, display: 'block', marginBottom: 4 }}>Posição *</label>
                 <select className="form-input" value={pneuForm.posicao} onChange={e => setPneuForm(f => ({ ...f, posicao: e.target.value }))}>
                   <option value="">Selecionar posição</option>
                   {['DD', 'DE', 'TD', 'TE', 'TDE', 'TDD', 'Estepe'].map(p => <option key={p} value={p}>{p}</option>)}
                 </select>
               </div>
               <div>
-                <label style={{ fontSize: 12, fontWeight: 600, display: 'block', marginBottom: 4 }}>Marca</label>
+                <label style={{ fontSize: 14, fontWeight: 600, display: 'block', marginBottom: 4 }}>Marca</label>
                 <input className="form-input" value={pneuForm.marca} onChange={e => setPneuForm(f => ({ ...f, marca: e.target.value }))} placeholder="Bridgestone, Michelin..." />
               </div>
               <div>
-                <label style={{ fontSize: 12, fontWeight: 600, display: 'block', marginBottom: 4 }}>Modelo</label>
+                <label style={{ fontSize: 14, fontWeight: 600, display: 'block', marginBottom: 4 }}>Modelo</label>
                 <input className="form-input" value={pneuForm.modelo} onChange={e => setPneuForm(f => ({ ...f, modelo: e.target.value }))} placeholder="275/80R22.5" />
               </div>
               <div>
-                <label style={{ fontSize: 12, fontWeight: 600, display: 'block', marginBottom: 4 }}>DOT</label>
+                <label style={{ fontSize: 14, fontWeight: 600, display: 'block', marginBottom: 4 }}>DOT</label>
                 <input className="form-input" value={pneuForm.dot} onChange={e => setPneuForm(f => ({ ...f, dot: e.target.value }))} placeholder="2023" />
               </div>
               <div>
-                <label style={{ fontSize: 12, fontWeight: 600, display: 'block', marginBottom: 4 }}>Km Instalado</label>
+                <label style={{ fontSize: 14, fontWeight: 600, display: 'block', marginBottom: 4 }}>Km Instalado</label>
                 <input className="form-input" type="number" value={pneuForm.km_instalado} onChange={e => setPneuForm(f => ({ ...f, km_instalado: e.target.value }))} />
               </div>
               <div>
-                <label style={{ fontSize: 12, fontWeight: 600, display: 'block', marginBottom: 4 }}>Km Rodado</label>
+                <label style={{ fontSize: 14, fontWeight: 600, display: 'block', marginBottom: 4 }}>Km Rodado</label>
                 <input className="form-input" type="number" value={pneuForm.km_rodado} onChange={e => setPneuForm(f => ({ ...f, km_rodado: e.target.value }))} />
               </div>
               <div>
-                <label style={{ fontSize: 12, fontWeight: 600, display: 'block', marginBottom: 4 }}>Limite (km)</label>
+                <label style={{ fontSize: 14, fontWeight: 600, display: 'block', marginBottom: 4 }}>Limite (km)</label>
                 <input className="form-input" type="number" value={pneuForm.km_limite} onChange={e => setPneuForm(f => ({ ...f, km_limite: e.target.value }))} />
               </div>
               <div>
-                <label style={{ fontSize: 12, fontWeight: 600, display: 'block', marginBottom: 4 }}>Data Instalação</label>
+                <label style={{ fontSize: 14, fontWeight: 600, display: 'block', marginBottom: 4 }}>Data Instalação</label>
                 <input className="form-input" type="date" value={pneuForm.data_instalacao} onChange={e => setPneuForm(f => ({ ...f, data_instalacao: e.target.value }))} />
               </div>
               <div>
-                <label style={{ fontSize: 12, fontWeight: 600, display: 'block', marginBottom: 4 }}>Status</label>
+                <label style={{ fontSize: 14, fontWeight: 600, display: 'block', marginBottom: 4 }}>Status</label>
                 <select className="form-input" value={pneuForm.status} onChange={e => setPneuForm(f => ({ ...f, status: e.target.value }))}>
                   <option value="ativo">Ativo</option>
                   <option value="desgastado">Desgastado</option>
@@ -928,22 +928,22 @@ export default function LogisticaPage() {
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 16 }}>
               <div>
-                <label style={{ fontSize: 12, fontWeight: 600, display: 'block', marginBottom: 4 }}>Veículo *</label>
+                <label style={{ fontSize: 14, fontWeight: 600, display: 'block', marginBottom: 4 }}>Veículo *</label>
                 <select className="form-input" value={ckForm.veiculo_id} onChange={e => setCkForm(f => ({ ...f, veiculo_id: e.target.value }))}>
                   <option value="">Selecionar</option>
                   {ativos.map(a => <option key={a.id} value={a.id}>{a.nome}</option>)}
                 </select>
               </div>
               <div>
-                <label style={{ fontSize: 12, fontWeight: 600, display: 'block', marginBottom: 4 }}>Data</label>
+                <label style={{ fontSize: 14, fontWeight: 600, display: 'block', marginBottom: 4 }}>Data</label>
                 <input className="form-input" type="date" value={ckForm.data} onChange={e => setCkForm(f => ({ ...f, data: e.target.value }))} />
               </div>
               <div>
-                <label style={{ fontSize: 12, fontWeight: 600, display: 'block', marginBottom: 4 }}>Motorista</label>
+                <label style={{ fontSize: 14, fontWeight: 600, display: 'block', marginBottom: 4 }}>Motorista</label>
                 <input className="form-input" value={ckForm.motorista} onChange={e => setCkForm(f => ({ ...f, motorista: e.target.value }))} placeholder="Nome" />
               </div>
               <div>
-                <label style={{ fontSize: 12, fontWeight: 600, display: 'block', marginBottom: 4 }}>Rota</label>
+                <label style={{ fontSize: 14, fontWeight: 600, display: 'block', marginBottom: 4 }}>Rota</label>
                 <select className="form-input" value={ckForm.rota_id} onChange={e => setCkForm(f => ({ ...f, rota_id: e.target.value }))}>
                   <option value="">Selecionar rota</option>
                   {rotas.filter(r => r.status !== 'entregue').map(r => <option key={r.id} value={r.id}>{r.origem} → {r.destino}</option>)}
@@ -951,10 +951,10 @@ export default function LogisticaPage() {
               </div>
             </div>
             <div style={{ borderTop: '1px solid #e2e8f0', paddingTop: 12 }}>
-              <div style={{ fontWeight: 600, fontSize: 12, marginBottom: 10 }}>Itens de Verificação</div>
+              <div style={{ fontWeight: 600, fontSize: 14, marginBottom: 10 }}>Itens de Verificação</div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
                 {CHECKLIST_ITENS.map(item => (
-                  <label key={item} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, cursor: 'pointer' }}>
+                  <label key={item} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 15, cursor: 'pointer' }}>
                     <input
                       type="checkbox"
                       checked={!!ckForm.itens[item]}
@@ -984,14 +984,14 @@ export default function LogisticaPage() {
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
               <div style={{ gridColumn: '1 / -1' }}>
-                <label style={{ fontSize: 12, fontWeight: 600, display: 'block', marginBottom: 4 }}>Veículo *</label>
+                <label style={{ fontSize: 14, fontWeight: 600, display: 'block', marginBottom: 4 }}>Veículo *</label>
                 <select className="form-input" value={manuForm.ativo_id} onChange={e => setManuForm(f => ({ ...f, ativo_id: e.target.value }))}>
                   <option value="">Selecionar veículo</option>
                   {ativos.map(a => <option key={a.id} value={a.id}>{a.nome}</option>)}
                 </select>
               </div>
               <div>
-                <label style={{ fontSize: 12, fontWeight: 600, display: 'block', marginBottom: 4 }}>Tipo</label>
+                <label style={{ fontSize: 14, fontWeight: 600, display: 'block', marginBottom: 4 }}>Tipo</label>
                 <select className="form-input" value={manuForm.tipo} onChange={e => setManuForm(f => ({ ...f, tipo: e.target.value }))}>
                   <option value="preventiva">Preventiva</option>
                   <option value="corretiva">Corretiva</option>
@@ -1003,31 +1003,31 @@ export default function LogisticaPage() {
                 </select>
               </div>
               <div>
-                <label style={{ fontSize: 12, fontWeight: 600, display: 'block', marginBottom: 4 }}>Data *</label>
+                <label style={{ fontSize: 14, fontWeight: 600, display: 'block', marginBottom: 4 }}>Data *</label>
                 <input className="form-input" type="date" value={manuForm.data} onChange={e => setManuForm(f => ({ ...f, data: e.target.value }))} />
               </div>
               <div style={{ gridColumn: '1 / -1' }}>
-                <label style={{ fontSize: 12, fontWeight: 600, display: 'block', marginBottom: 4 }}>Descrição</label>
+                <label style={{ fontSize: 14, fontWeight: 600, display: 'block', marginBottom: 4 }}>Descrição</label>
                 <input className="form-input" value={manuForm.descricao} onChange={e => setManuForm(f => ({ ...f, descricao: e.target.value }))} placeholder="Troca de óleo, revisão 50.000km..." />
               </div>
               <div>
-                <label style={{ fontSize: 12, fontWeight: 600, display: 'block', marginBottom: 4 }}>Km / Horas</label>
+                <label style={{ fontSize: 14, fontWeight: 600, display: 'block', marginBottom: 4 }}>Km / Horas</label>
                 <input className="form-input" type="number" value={manuForm.km_ou_horas} onChange={e => setManuForm(f => ({ ...f, km_ou_horas: e.target.value }))} placeholder="0" />
               </div>
               <div>
-                <label style={{ fontSize: 12, fontWeight: 600, display: 'block', marginBottom: 4 }}>Custo (R$) *</label>
+                <label style={{ fontSize: 14, fontWeight: 600, display: 'block', marginBottom: 4 }}>Custo (R$) *</label>
                 <input className="form-input" value={manuForm.valor} onChange={e => setManuForm(f => ({ ...f, valor: e.target.value }))} placeholder="0,00" />
               </div>
               <div>
-                <label style={{ fontSize: 12, fontWeight: 600, display: 'block', marginBottom: 4 }}>Oficina</label>
+                <label style={{ fontSize: 14, fontWeight: 600, display: 'block', marginBottom: 4 }}>Oficina</label>
                 <input className="form-input" value={manuForm.oficina} onChange={e => setManuForm(f => ({ ...f, oficina: e.target.value }))} placeholder="Nome da oficina" />
               </div>
               <div>
-                <label style={{ fontSize: 12, fontWeight: 600, display: 'block', marginBottom: 4 }}>Próxima Manutenção</label>
+                <label style={{ fontSize: 14, fontWeight: 600, display: 'block', marginBottom: 4 }}>Próxima Manutenção</label>
                 <input className="form-input" type="date" value={manuForm.proxima_data} onChange={e => setManuForm(f => ({ ...f, proxima_data: e.target.value }))} />
               </div>
               <div>
-                <label style={{ fontSize: 12, fontWeight: 600, display: 'block', marginBottom: 4 }}>Próximos Km/Horas</label>
+                <label style={{ fontSize: 14, fontWeight: 600, display: 'block', marginBottom: 4 }}>Próximos Km/Horas</label>
                 <input className="form-input" type="number" value={manuForm.proximos_km_horas} onChange={e => setManuForm(f => ({ ...f, proximos_km_horas: e.target.value }))} placeholder="0" />
               </div>
             </div>

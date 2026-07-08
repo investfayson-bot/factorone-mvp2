@@ -69,14 +69,14 @@ export default function AgentesPage() {
           return (
             <Link key={ag.id} href={ag.href} className="txs-card" style={{ padding: '16px 18px', display: 'block', textDecoration: 'none' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
-                <div style={{ width: 36, height: 36, borderRadius: 10, background: `${ag.cor}1E`, color: ag.cor, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 800 }}>{ag.inicial}</div>
+                <div style={{ width: 36, height: 36, borderRadius: 10, background: `${ag.cor}1E`, color: ag.cor, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, fontWeight: 800 }}>{ag.inicial}</div>
                 <div style={{ minWidth: 0 }}>
-                  <div style={{ fontSize: 13.5, fontWeight: 700, color: 'var(--ink)' }}>{ag.nome}</div>
-                  <div style={{ fontSize: 10.5, color: 'var(--ink-mut)' }}>{ag.modulo}</div>
+                  <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--ink)' }}>{ag.nome}</div>
+                  <div style={{ fontSize: 12.5, color: 'var(--ink-mut)' }}>{ag.modulo}</div>
                 </div>
               </div>
-              <div style={{ fontSize: 11.5, color: 'var(--ink-soft)', marginBottom: 10, lineHeight: 1.5 }}>{ag.papel}</div>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: 10.5, color: 'var(--ink-mut)' }}>
+              <div style={{ fontSize: 13.5, color: 'var(--ink-soft)', marginBottom: 10, lineHeight: 1.5 }}>{ag.papel}</div>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: 12.5, color: 'var(--ink-mut)' }}>
                 <span>{stats ? `${stats.count} ação${stats.count === 1 ? '' : 'ões'}` : 'sem ações ainda'}</span>
                 <span>{stats?.ultima ? tempoRelativo(stats.ultima.created_at) : ''}</span>
               </div>
@@ -85,11 +85,11 @@ export default function AgentesPage() {
         })}
       </div>
 
-      <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--ink-mut)', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: 10 }}>Atividade recente</div>
+      <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--ink-mut)', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: 10 }}>Atividade recente</div>
       {loading ? (
-        <div style={{ padding: 30, textAlign: 'center', color: 'var(--ink-mut)', fontSize: 13 }}>Carregando…</div>
+        <div style={{ padding: 30, textAlign: 'center', color: 'var(--ink-mut)', fontSize: 15 }}>Carregando…</div>
       ) : acoes.length === 0 ? (
-        <div className="txs-card" style={{ padding: 36, textAlign: 'center', color: 'var(--ink-mut)', fontSize: 13 }}>
+        <div className="txs-card" style={{ padding: 36, textAlign: 'center', color: 'var(--ink-mut)', fontSize: 15 }}>
           Nada registrado ainda. Use o Assistente ou classifique transações com IA — as ações aparecem aqui.
         </div>
       ) : (
@@ -98,12 +98,12 @@ export default function AgentesPage() {
             const ag = AGENTES_DASHBOARD.find(x => x.id === a.agente_id)
             return (
               <div key={a.id} style={{ display: 'flex', gap: 12, alignItems: 'flex-start', padding: '11px 18px', borderBottom: i < Math.min(acoes.length, 40) - 1 ? '1px solid var(--line-soft)' : 'none' }}>
-                <div style={{ width: 26, height: 26, borderRadius: 8, background: `${ag?.cor ?? '#7B8C88'}1E`, color: ag?.cor ?? 'var(--ink-mut)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 9.5, fontWeight: 800, flexShrink: 0, marginTop: 1 }}>{ag?.inicial ?? '??'}</div>
+                <div style={{ width: 26, height: 26, borderRadius: 8, background: `${ag?.cor ?? '#7B8C88'}1E`, color: ag?.cor ?? 'var(--ink-mut)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11.5, fontWeight: 800, flexShrink: 0, marginTop: 1 }}>{ag?.inicial ?? '??'}</div>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 12, color: 'var(--ink)' }}><b>{a.agente_nome}</b> {a.acao}</div>
-                  {a.detalhe && <div style={{ fontSize: 11, color: 'var(--ink-mut)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{a.detalhe}</div>}
+                  <div style={{ fontSize: 14, color: 'var(--ink)' }}><b>{a.agente_nome}</b> {a.acao}</div>
+                  {a.detalhe && <div style={{ fontSize: 13, color: 'var(--ink-mut)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{a.detalhe}</div>}
                 </div>
-                <div style={{ fontSize: 10.5, color: 'var(--ink-faint)', flexShrink: 0 }}>{tempoRelativo(a.created_at)}</div>
+                <div style={{ fontSize: 12.5, color: 'var(--ink-faint)', flexShrink: 0 }}>{tempoRelativo(a.created_at)}</div>
               </div>
             )
           })}

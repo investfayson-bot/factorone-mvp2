@@ -184,7 +184,7 @@ export default function ConexoesPage() {
     <div style={{ maxWidth: 880, margin: '0 auto' }}>
       <div style={{ marginBottom: 20 }}>
         <h1 style={{ fontSize: 20, fontWeight: 700, color: 'var(--navy)', margin: 0 }}>Integrações bancárias</h1>
-        <p style={{ fontSize: 13, color: 'var(--gray-400)', marginTop: 4 }}>
+        <p style={{ fontSize: 15, color: 'var(--gray-400)', marginTop: 4 }}>
           Em breve: novas integrações para conectar seus bancos e importar saldos, transações e faturas automaticamente.
         </p>
       </div>
@@ -193,7 +193,7 @@ export default function ConexoesPage() {
         <button onClick={conectar} disabled={loading} className="btn-action" style={{ borderRadius: 8, padding: '10px 18px' }}>
           {loading ? 'Conectando…' : '+ Conectar banco'}
         </button>
-        <label style={{ fontSize: 12, color: 'var(--gray-500)' }}>
+        <label style={{ fontSize: 14, color: 'var(--gray-500)' }}>
           Período:{' '}
           <select value={periodoDias} onChange={e => setPeriodoDias(Number(e.target.value))} className="form-input" style={{ padding: '6px 10px', borderRadius: 8 }}>
             {PERIODOS.map(p => <option key={p.dias} value={p.dias}>{p.label}</option>)}
@@ -206,9 +206,9 @@ export default function ConexoesPage() {
         )}
       </div>
 
-      {okSync && <div style={{ marginTop: 16, padding: 12, borderRadius: 8, background: 'rgba(61,122,110,.1)', color: '#3D7A6E', fontSize: 13 }}>{okSync}</div>}
-      {status && <div style={{ marginTop: 16, padding: 12, borderRadius: 8, background: '#EFF6F5', color: 'var(--navy)', fontSize: 13 }}>{status}</div>}
-      {erro && <div style={{ marginTop: 16, padding: 12, borderRadius: 8, background: '#F4E4E1', color: '#B0413E', fontSize: 13 }}>{erro}</div>}
+      {okSync && <div style={{ marginTop: 16, padding: 12, borderRadius: 8, background: 'rgba(61,122,110,.1)', color: '#3D7A6E', fontSize: 15 }}>{okSync}</div>}
+      {status && <div style={{ marginTop: 16, padding: 12, borderRadius: 8, background: '#EFF6F5', color: 'var(--navy)', fontSize: 15 }}>{status}</div>}
+      {erro && <div style={{ marginTop: 16, padding: 12, borderRadius: 8, background: '#F4E4E1', color: '#B0413E', fontSize: 15 }}>{erro}</div>}
 
       <div id="belvo" style={{ marginTop: 16 }} />
 
@@ -216,7 +216,7 @@ export default function ConexoesPage() {
         <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: '32px 20px', marginTop: 16, textAlign: 'center' }}>
           <ConnectBank width={240} />
           <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--navy)', marginTop: 8 }}>Novas integrações em breve</div>
-          <div style={{ fontSize: 12, color: 'var(--gray-400)', marginTop: 4 }}>Estamos preparando conexões automáticas com o seu banco. Muito em breve por aqui.</div>
+          <div style={{ fontSize: 14, color: 'var(--gray-400)', marginTop: 4 }}>Estamos preparando conexões automáticas com o seu banco. Muito em breve por aqui.</div>
         </div>
       )}
 
@@ -229,13 +229,13 @@ export default function ConexoesPage() {
               return (
                 <div key={c.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 10, padding: '12px 16px' }}>
                   <div>
-                    <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--navy)' }}>{c.nome || c.categoria || 'Conta'}</div>
-                    <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>{[c.instituicao, c.numero, c.tipo].filter(Boolean).join(' · ') || '—'}</div>
+                    <div style={{ fontSize: 15, fontWeight: 600, color: 'var(--navy)' }}>{c.nome || c.categoria || 'Conta'}</div>
+                    <div style={{ fontSize: 13, color: 'var(--gray-400)' }}>{[c.instituicao, c.numero, c.tipo].filter(Boolean).join(' · ') || '—'}</div>
                   </div>
                   <div style={{ textAlign: 'right' }}>
                     <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--navy)' }}>{fmtBRL(c.saldo, c.moeda)}</div>
                     {isCard && c.limite_credito != null && (
-                      <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>Limite: {fmtBRL(c.limite_credito, c.moeda)}</div>
+                      <div style={{ fontSize: 13, color: 'var(--gray-400)' }}>Limite: {fmtBRL(c.limite_credito, c.moeda)}</div>
                     )}
                   </div>
                 </div>
@@ -252,14 +252,14 @@ export default function ConexoesPage() {
             {faturas.map(f => (
               <div key={f.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 10, padding: '12px 16px' }}>
                 <div>
-                  <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--navy)' }}>{f.nome || 'Fatura'}</div>
-                  <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>
+                  <div style={{ fontSize: 15, fontWeight: 600, color: 'var(--navy)' }}>{f.nome || 'Fatura'}</div>
+                  <div style={{ fontSize: 13, color: 'var(--gray-400)' }}>
                     {[f.vencimento && `vence ${f.vencimento}`, f.status].filter(Boolean).join(' · ') || '—'}
                   </div>
                 </div>
                 <div style={{ textAlign: 'right' }}>
                   <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--navy)' }}>{fmtBRL(f.total, f.moeda)}</div>
-                  {f.minimo != null && <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>mín. {fmtBRL(f.minimo, f.moeda)}</div>}
+                  {f.minimo != null && <div style={{ fontSize: 13, color: 'var(--gray-400)' }}>mín. {fmtBRL(f.minimo, f.moeda)}</div>}
                 </div>
               </div>
             ))}
@@ -278,12 +278,12 @@ export default function ConexoesPage() {
               return (
                 <div key={t.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 16px', borderBottom: '1px solid var(--gray-50, #f3f4f6)' }}>
                   <div style={{ minWidth: 0 }}>
-                    <div style={{ fontSize: 13, color: 'var(--navy)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    <div style={{ fontSize: 15, color: 'var(--navy)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                       {t.descricao || t.estabelecimento || '—'}
                     </div>
-                    <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>{[t.data, t.categoria, t.conta].filter(Boolean).join(' · ')}</div>
+                    <div style={{ fontSize: 13, color: 'var(--gray-400)' }}>{[t.data, t.categoria, t.conta].filter(Boolean).join(' · ')}</div>
                   </div>
-                  <div style={{ fontSize: 13, fontWeight: 700, color: outflow ? '#B0413E' : '#3D7A6E', whiteSpace: 'nowrap', marginLeft: 12 }}>
+                  <div style={{ fontSize: 15, fontWeight: 700, color: outflow ? '#B0413E' : '#3D7A6E', whiteSpace: 'nowrap', marginLeft: 12 }}>
                     {fmtBRL(t.valor, t.moeda)}
                   </div>
                 </div>
@@ -298,7 +298,7 @@ export default function ConexoesPage() {
           <h2 style={{ fontSize: 14, fontWeight: 700, color: 'var(--navy)', marginBottom: 10 }}>Bancos conectados</h2>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
             {links.map(l => (
-              <div key={l.id} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: 'var(--gray-500)', background: 'var(--gray-50, #f9fafb)', borderRadius: 8, padding: '8px 12px' }}>
+              <div key={l.id} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: 'var(--gray-500)', background: 'var(--gray-50, #f9fafb)', borderRadius: 8, padding: '8px 12px' }}>
                 <span>{l.institution || l.link_id}</span>
                 <span>{new Date(l.created_at).toLocaleDateString('pt-BR')}</span>
               </div>

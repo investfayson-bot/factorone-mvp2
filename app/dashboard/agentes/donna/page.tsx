@@ -223,19 +223,19 @@ export default function DonnaPage() {
 
       {/* Widget embed pra qualquer site externo */}
       <div className="txs-card" style={{ padding: '14px 18px', marginBottom: 18 }}>
-        <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--ink)', marginBottom: 4 }}>Widget pra outros sites</div>
+        <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--ink)', marginBottom: 4 }}>Widget pra outros sites</div>
         {!site ? (
-          <div style={{ fontSize: 12, color: 'var(--ink-mut)' }}>
+          <div style={{ fontSize: 14, color: 'var(--ink-mut)' }}>
             Você ainda não tem um site no FactorOne — crie um em <a href="/dashboard/marketing/site" style={{ color: 'var(--sage-deep)', fontWeight: 600 }}>Marketing → Gere seu site</a> pra liberar o link/slug que o widget usa.
           </div>
         ) : (
           <>
-            <div style={{ fontSize: 11.5, color: 'var(--ink-mut)', marginBottom: 8 }}>Cole esse código antes do <code>&lt;/body&gt;</code> de qualquer site seu (Wordpress, domínio próprio, o que for) — a bolha de chat aparece conectada às suas regras, CRM e agenda.</div>
+            <div style={{ fontSize: 13.5, color: 'var(--ink-mut)', marginBottom: 8 }}>Cole esse código antes do <code>&lt;/body&gt;</code> de qualquer site seu (Wordpress, domínio próprio, o que for) — a bolha de chat aparece conectada às suas regras, CRM e agenda.</div>
             <div style={{ display: 'flex', gap: 8, alignItems: 'flex-start' }}>
-              <code style={{ flex: 1, fontSize: 11, background: 'var(--surface-2)', border: '1px solid var(--line)', borderRadius: 8, padding: '10px 12px', overflowX: 'auto', whiteSpace: 'pre', fontFamily: 'var(--font-mono)' }}>
+              <code style={{ flex: 1, fontSize: 13, background: 'var(--surface-2)', border: '1px solid var(--line)', borderRadius: 8, padding: '10px 12px', overflowX: 'auto', whiteSpace: 'pre', fontFamily: 'var(--font-mono)' }}>
                 {`<script src="${typeof window !== 'undefined' ? window.location.origin : ''}/donna-embed.js" data-slug="${site.slug}" data-cor="${site.cor}" data-nome="${site.nome}" defer></script>`}
               </code>
-              <button className="btn-action" style={{ fontSize: 11, flexShrink: 0 }} onClick={() => {
+              <button className="btn-action" style={{ fontSize: 13, flexShrink: 0 }} onClick={() => {
                 const snippet = `<script src="${window.location.origin}/donna-embed.js" data-slug="${site.slug}" data-cor="${site.cor}" data-nome="${site.nome}" defer></script>`
                 void navigator.clipboard.writeText(snippet); toast.success('Código copiado')
               }}>Copiar</button>
@@ -251,20 +251,20 @@ export default function DonnaPage() {
             <i className="fa-brands fa-google" style={{ color: '#DB4437', fontSize: 15 }} />
           </div>
           <div>
-            <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--ink)' }}>Google (Gmail)</div>
-            <div style={{ fontSize: 11, color: 'var(--ink-mut)' }}>{loading ? '—' : googleEmail ? `Conectado · ${googleEmail}` : 'Não conectado'}</div>
+            <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--ink)' }}>Google (Gmail)</div>
+            <div style={{ fontSize: 13, color: 'var(--ink-mut)' }}>{loading ? '—' : googleEmail ? `Conectado · ${googleEmail}` : 'Não conectado'}</div>
           </div>
         </div>
         <div style={{ display: 'flex', gap: 8 }}>
-          {googleEmail && <button className="btn-ghost" style={{ fontSize: 11 }} disabled={conectando} onClick={() => void verificarAgora()}>Verificar agora</button>}
-          <button className="btn-action" style={{ fontSize: 11 }} disabled={conectando} onClick={() => void conectarGoogle()}>{googleEmail ? 'Trocar conta' : 'Conectar com Google'}</button>
-          {googleEmail && <button className="btn-ghost" style={{ fontSize: 11, color: '#B0413E', borderColor: '#B0413E' }} onClick={() => void desconectarGoogle()}>Remover</button>}
+          {googleEmail && <button className="btn-ghost" style={{ fontSize: 13 }} disabled={conectando} onClick={() => void verificarAgora()}>Verificar agora</button>}
+          <button className="btn-action" style={{ fontSize: 13 }} disabled={conectando} onClick={() => void conectarGoogle()}>{googleEmail ? 'Trocar conta' : 'Conectar com Google'}</button>
+          {googleEmail && <button className="btn-ghost" style={{ fontSize: 13, color: '#B0413E', borderColor: '#B0413E' }} onClick={() => void desconectarGoogle()}>Remover</button>}
         </div>
       </div>
 
       <div style={{ display: 'flex', gap: 6, marginBottom: 16 }}>
         {([['emails', 'E-mails'], ['atendimento', 'Atendimento'], ['regras', 'Regras']] as [typeof tab, string][]).map(([k, l]) => (
-          <button key={k} className={`btn-action${tab !== k ? ' btn-ghost' : ''}`} style={{ fontSize: 11, padding: '5px 12px' }} onClick={() => setTab(k)}>{l}</button>
+          <button key={k} className={`btn-action${tab !== k ? ' btn-ghost' : ''}`} style={{ fontSize: 13, padding: '5px 12px' }} onClick={() => setTab(k)}>{l}</button>
         ))}
       </div>
 
@@ -272,16 +272,16 @@ export default function DonnaPage() {
       {tab === 'emails' && (
         <>
           {emails.length === 0 ? (
-            <div className="txs-card" style={{ padding: 36, textAlign: 'center', color: 'var(--ink-mut)', fontSize: 13 }}>Nenhum rascunho aguardando aprovação.</div>
+            <div className="txs-card" style={{ padding: 36, textAlign: 'center', color: 'var(--ink-mut)', fontSize: 15 }}>Nenhum rascunho aguardando aprovação.</div>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 16 }}>
               {emails.map(e => (
                 <div key={e.id} className="txs-card" style={{ padding: '14px 16px' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
-                    <div style={{ fontSize: 12.5, fontWeight: 700, color: 'var(--ink)' }}>{e.assunto || '(sem assunto)'}</div>
-                    <div style={{ fontSize: 10.5, color: 'var(--ink-faint)' }}>{new Date(e.created_at).toLocaleString('pt-BR')}</div>
+                    <div style={{ fontSize: 14.5, fontWeight: 700, color: 'var(--ink)' }}>{e.assunto || '(sem assunto)'}</div>
+                    <div style={{ fontSize: 12.5, color: 'var(--ink-faint)' }}>{new Date(e.created_at).toLocaleString('pt-BR')}</div>
                   </div>
-                  <div style={{ fontSize: 11, color: 'var(--ink-mut)', marginBottom: 8 }}>De: {e.remetente}</div>
+                  <div style={{ fontSize: 13, color: 'var(--ink-mut)', marginBottom: 8 }}>De: {e.remetente}</div>
                   <textarea
                     className="form-input"
                     style={{ minHeight: 90, resize: 'vertical', marginBottom: 8 }}
@@ -289,18 +289,18 @@ export default function DonnaPage() {
                     onChange={ev => setEdicaoEmail(prev => ({ ...prev, [e.id]: ev.target.value }))}
                   />
                   <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
-                    <button className="btn-ghost" style={{ fontSize: 11, color: '#B0413E', borderColor: '#B0413E' }} onClick={() => void descartarEmail(e.id)}>Descartar</button>
-                    <button className="btn-action" style={{ fontSize: 11 }} onClick={() => void aprovarEmail(e.id)}>Aprovar e enviar</button>
+                    <button className="btn-ghost" style={{ fontSize: 13, color: '#B0413E', borderColor: '#B0413E' }} onClick={() => void descartarEmail(e.id)}>Descartar</button>
+                    <button className="btn-action" style={{ fontSize: 13 }} onClick={() => void aprovarEmail(e.id)}>Aprovar e enviar</button>
                   </div>
                 </div>
               ))}
             </div>
           )}
-          <button className="btn-ghost" style={{ fontSize: 11 }} onClick={() => setMostrarHistorico(v => !v)}>{mostrarHistorico ? 'Ocultar histórico' : 'Ver histórico'}</button>
+          <button className="btn-ghost" style={{ fontSize: 13 }} onClick={() => setMostrarHistorico(v => !v)}>{mostrarHistorico ? 'Ocultar histórico' : 'Ver histórico'}</button>
           {mostrarHistorico && (
             <div className="txs-card" style={{ marginTop: 10 }}>
               {historico.filter(e => e.status !== 'pendente_aprovacao').slice(0, 30).map((e, i, arr) => (
-                <div key={e.id} style={{ display: 'flex', justifyContent: 'space-between', padding: '9px 16px', borderBottom: i < arr.length - 1 ? '1px solid var(--line-soft)' : 'none', fontSize: 11.5 }}>
+                <div key={e.id} style={{ display: 'flex', justifyContent: 'space-between', padding: '9px 16px', borderBottom: i < arr.length - 1 ? '1px solid var(--line-soft)' : 'none', fontSize: 13.5 }}>
                   <span style={{ color: 'var(--ink)' }}>{e.assunto || '(sem assunto)'} <span style={{ color: 'var(--ink-mut)' }}>· {e.remetente}</span></span>
                   <span style={{ color: 'var(--ink-faint)', textTransform: 'capitalize' }}>{e.status}</span>
                 </div>
@@ -315,30 +315,30 @@ export default function DonnaPage() {
         <div style={{ display: 'grid', gridTemplateColumns: '280px 1fr', gap: 14 }}>
           <div className="txs-card" style={{ maxHeight: 560, overflowY: 'auto' }}>
             {conversasOrdenadas.length === 0 ? (
-              <div style={{ padding: 30, textAlign: 'center', color: 'var(--ink-mut)', fontSize: 12.5 }}>Nenhuma conversa ainda.</div>
+              <div style={{ padding: 30, textAlign: 'center', color: 'var(--ink-mut)', fontSize: 14.5 }}>Nenhuma conversa ainda.</div>
             ) : conversasOrdenadas.map((c, i) => (
               <div key={c.id} onClick={() => void abrirConversa(c)} style={{
                 padding: '11px 14px', cursor: 'pointer', borderBottom: i < conversasOrdenadas.length - 1 ? '1px solid var(--line-soft)' : 'none',
                 background: conversaAtiva?.id === c.id ? 'var(--sage-tint)' : 'transparent',
               }}>
-                <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--ink)' }}>{c.visitante_nome || 'Visitante'}</div>
+                <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--ink)' }}>{c.visitante_nome || 'Visitante'}</div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 3 }}>
-                  <span style={{ fontSize: 9.5, fontWeight: 700, padding: '1px 7px', borderRadius: 100, background: c.status === 'aguardando_humano' ? 'var(--brick-tint)' : c.status === 'encerrada' ? 'var(--line-soft)' : 'var(--sage-tint)', color: c.status === 'aguardando_humano' ? 'var(--brick)' : c.status === 'encerrada' ? 'var(--ink-mut)' : 'var(--sage-deep)' }}>
+                  <span style={{ fontSize: 11.5, fontWeight: 700, padding: '1px 7px', borderRadius: 100, background: c.status === 'aguardando_humano' ? 'var(--brick-tint)' : c.status === 'encerrada' ? 'var(--line-soft)' : 'var(--sage-tint)', color: c.status === 'aguardando_humano' ? 'var(--brick)' : c.status === 'encerrada' ? 'var(--ink-mut)' : 'var(--sage-deep)' }}>
                     {c.status === 'aguardando_humano' ? 'aguardando você' : c.status === 'encerrada' ? 'encerrada' : 'aberta'}
                   </span>
-                  <span style={{ fontSize: 10, color: 'var(--ink-faint)' }}>{new Date(c.updated_at).toLocaleDateString('pt-BR')}</span>
+                  <span style={{ fontSize: 12, color: 'var(--ink-faint)' }}>{new Date(c.updated_at).toLocaleDateString('pt-BR')}</span>
                 </div>
               </div>
             ))}
           </div>
           <div className="txs-card" style={{ padding: 16, minHeight: 400 }}>
             {!conversaAtiva ? (
-              <div style={{ textAlign: 'center', color: 'var(--ink-mut)', fontSize: 12.5, marginTop: 60 }}>Selecione uma conversa.</div>
+              <div style={{ textAlign: 'center', color: 'var(--ink-mut)', fontSize: 14.5, marginTop: 60 }}>Selecione uma conversa.</div>
             ) : (
               <>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 12 }}>
-                  <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--ink)' }}>{conversaAtiva.visitante_nome || 'Visitante'}</div>
-                  <button className="btn-ghost" style={{ fontSize: 10.5 }} onClick={() => void encerrarConversa()}>Encerrar conversa</button>
+                  <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--ink)' }}>{conversaAtiva.visitante_nome || 'Visitante'}</div>
+                  <button className="btn-ghost" style={{ fontSize: 12.5 }} onClick={() => void encerrarConversa()}>Encerrar conversa</button>
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 8, maxHeight: 340, overflowY: 'auto', marginBottom: 12 }}>
                   {mensagens.map(m => (
@@ -346,14 +346,14 @@ export default function DonnaPage() {
                       alignSelf: m.autor === 'visitante' ? 'flex-start' : 'flex-end',
                       background: m.pendente_aprovacao ? 'var(--gold-tint)' : m.autor === 'visitante' ? 'var(--surface-2)' : 'var(--sage-tint)',
                       border: m.pendente_aprovacao ? '1px dashed var(--gold)' : 'none',
-                      borderRadius: 10, padding: '8px 12px', fontSize: 12.5, maxWidth: '80%',
+                      borderRadius: 10, padding: '8px 12px', fontSize: 14.5, maxWidth: '80%',
                     }}>
-                      <div style={{ fontSize: 9.5, color: 'var(--ink-mut)', marginBottom: 3, textTransform: 'uppercase', letterSpacing: '.05em' }}>{m.autor}{m.pendente_aprovacao ? ' · aguardando aprovação' : ''}</div>
+                      <div style={{ fontSize: 11.5, color: 'var(--ink-mut)', marginBottom: 3, textTransform: 'uppercase', letterSpacing: '.05em' }}>{m.autor}{m.pendente_aprovacao ? ' · aguardando aprovação' : ''}</div>
                       <div>{m.texto}</div>
                       {m.pendente_aprovacao && (
                         <div style={{ display: 'flex', gap: 6, marginTop: 8 }}>
-                          <button className="btn-action" style={{ fontSize: 10, padding: '3px 9px' }} onClick={() => void aprovarMensagem(m.id)}>Aprovar</button>
-                          <button className="btn-ghost" style={{ fontSize: 10, padding: '3px 9px' }} onClick={() => void descartarMensagem(m.id)}>Descartar</button>
+                          <button className="btn-action" style={{ fontSize: 12, padding: '3px 9px' }} onClick={() => void aprovarMensagem(m.id)}>Aprovar</button>
+                          <button className="btn-ghost" style={{ fontSize: 12, padding: '3px 9px' }} onClick={() => void descartarMensagem(m.id)}>Descartar</button>
                         </div>
                       )}
                     </div>
@@ -361,7 +361,7 @@ export default function DonnaPage() {
                 </div>
                 <div style={{ display: 'flex', gap: 8 }}>
                   <input className="form-input" placeholder="Responder manualmente…" value={respostaManual} onChange={e => setRespostaManual(e.target.value)} onKeyDown={e => { if (e.key === 'Enter') void responderManual() }} />
-                  <button className="btn-action" style={{ fontSize: 11 }} onClick={() => void responderManual()}>Enviar</button>
+                  <button className="btn-action" style={{ fontSize: 13 }} onClick={() => void responderManual()}>Enviar</button>
                 </div>
               </>
             )}
@@ -373,23 +373,23 @@ export default function DonnaPage() {
       {tab === 'regras' && (
         <>
           <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 10 }}>
-            <button className="btn-action" style={{ fontSize: 12 }} onClick={() => { setRegraForm({ ...VAZIO_REGRA }); setShowRegraModal(true) }}><i className="fa-solid fa-plus" style={{ marginRight: 6 }} />Nova regra</button>
+            <button className="btn-action" style={{ fontSize: 14 }} onClick={() => { setRegraForm({ ...VAZIO_REGRA }); setShowRegraModal(true) }}><i className="fa-solid fa-plus" style={{ marginRight: 6 }} />Nova regra</button>
           </div>
           {regras.length === 0 ? (
-            <div className="txs-card" style={{ padding: 36, textAlign: 'center', color: 'var(--ink-mut)', fontSize: 13 }}>
+            <div className="txs-card" style={{ padding: 36, textAlign: 'center', color: 'var(--ink-mut)', fontSize: 15 }}>
               Sem regras ainda — por padrão a Donna sempre pede aprovação antes de agir.
             </div>
           ) : (
             <div className="txs-card">
               {regras.map((r, i) => (
                 <div key={r.id} style={{ display: 'grid', gridTemplateColumns: '90px 1fr 110px auto auto', gap: 12, alignItems: 'center', padding: '11px 16px', borderBottom: i < regras.length - 1 ? '1px solid var(--line-soft)' : 'none' }}>
-                  <span style={{ fontSize: 9.5, fontWeight: 700, padding: '3px 9px', borderRadius: 100, background: 'var(--line-soft)', color: 'var(--ink-soft)', justifySelf: 'start' }}>{CANAL_LABEL[r.canal]}</span>
-                  <div style={{ fontSize: 12, color: 'var(--ink)' }}>{r.nome && <b>{r.nome}: </b>}{r.criterio}</div>
-                  <span style={{ fontSize: 9.5, fontWeight: 700, padding: '3px 9px', borderRadius: 100, justifySelf: 'start', background: r.autonomia === 'automatico' ? 'var(--sage-tint)' : 'var(--gold-tint)', color: r.autonomia === 'automatico' ? 'var(--sage-deep)' : 'var(--gold)' }}>
+                  <span style={{ fontSize: 11.5, fontWeight: 700, padding: '3px 9px', borderRadius: 100, background: 'var(--line-soft)', color: 'var(--ink-soft)', justifySelf: 'start' }}>{CANAL_LABEL[r.canal]}</span>
+                  <div style={{ fontSize: 14, color: 'var(--ink)' }}>{r.nome && <b>{r.nome}: </b>}{r.criterio}</div>
+                  <span style={{ fontSize: 11.5, fontWeight: 700, padding: '3px 9px', borderRadius: 100, justifySelf: 'start', background: r.autonomia === 'automatico' ? 'var(--sage-tint)' : 'var(--gold-tint)', color: r.autonomia === 'automatico' ? 'var(--sage-deep)' : 'var(--gold)' }}>
                     {r.autonomia === 'automatico' ? 'Automático' : 'Rascunho'}
                   </span>
-                  <button className={`btn-action${!r.ativa ? ' btn-ghost' : ''}`} style={{ fontSize: 10, padding: '4px 10px' }} onClick={() => void alternarRegra(r)}>{r.ativa ? 'Ativa' : 'Inativa'}</button>
-                  <button className="btn-ghost" style={{ fontSize: 10, padding: '4px 8px', color: '#B0413E', borderColor: '#B0413E' }} onClick={() => void excluirRegra(r.id)}><i className="fa-solid fa-trash-can" /></button>
+                  <button className={`btn-action${!r.ativa ? ' btn-ghost' : ''}`} style={{ fontSize: 12, padding: '4px 10px' }} onClick={() => void alternarRegra(r)}>{r.ativa ? 'Ativa' : 'Inativa'}</button>
+                  <button className="btn-ghost" style={{ fontSize: 12, padding: '4px 8px', color: '#B0413E', borderColor: '#B0413E' }} onClick={() => void excluirRegra(r.id)}><i className="fa-solid fa-trash-can" /></button>
                 </div>
               ))}
             </div>
@@ -424,7 +424,7 @@ export default function DonnaPage() {
             <div className="form-group">
               <label className="form-label">Palavras-chave</label>
               <input className="form-input" placeholder="Ex: preço, orçamento, valor" value={regraForm.criterio} onChange={e => setRegraForm(f => ({ ...f, criterio: e.target.value }))} />
-              <div style={{ fontSize: 10.5, color: 'var(--ink-faint)', marginTop: 4 }}>Separe por vírgula. Basta uma delas aparecer na mensagem/e-mail pra regra valer.</div>
+              <div style={{ fontSize: 12.5, color: 'var(--ink-faint)', marginTop: 4 }}>Separe por vírgula. Basta uma delas aparecer na mensagem/e-mail pra regra valer.</div>
             </div>
             <div className="modal-actions">
               <button className="btn-ghost" onClick={() => setShowRegraModal(false)}>Cancelar</button>

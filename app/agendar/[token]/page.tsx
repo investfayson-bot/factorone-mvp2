@@ -74,7 +74,7 @@ export default function AgendarPage() {
       <div style={{ width: '100%', maxWidth: 620, background: 'var(--surface)', border: '1px solid var(--line)', borderRadius: 16, boxShadow: 'var(--shadow-card)', overflow: 'hidden' }}>
         <div style={{ background: 'var(--sidebar-bg, #16352E)', padding: '20px 28px', color: '#fff' }}>
           <div style={{ fontFamily: 'var(--font-display)', fontSize: 18, fontWeight: 700 }}>Factor<span style={{ color: '#6EE7B7' }}>One</span></div>
-          {cfg && <div style={{ fontSize: 13, color: 'rgba(255,255,255,.7)', marginTop: 2 }}>{cfg.titulo} · {cfg.duracao} min</div>}
+          {cfg && <div style={{ fontSize: 15, color: 'rgba(255,255,255,.7)', marginTop: 2 }}>{cfg.titulo} · {cfg.duracao} min</div>}
         </div>
 
         <div style={{ padding: '24px 28px' }}>
@@ -84,29 +84,29 @@ export default function AgendarPage() {
             <div style={{ textAlign: 'center', padding: '30px 0' }}>
               <div style={{ width: 60, height: 60, borderRadius: '50%', background: 'var(--sage)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}><i className="fa-solid fa-check" style={{ color: '#fff', fontSize: 26 }} /></div>
               <div style={{ fontFamily: 'var(--font-display)', fontSize: 20, fontWeight: 700 }}>Agendado! 🎉</div>
-              <div style={{ fontSize: 13.5, color: 'var(--ink-mut)', marginTop: 8 }}>{fmtDia(dia).semana}, {fmtDia(dia).dia} de {fmtDia(dia).mes} às {hora}. Você vai receber a confirmação.</div>
+              <div style={{ fontSize: 15, color: 'var(--ink-mut)', marginTop: 8 }}>{fmtDia(dia).semana}, {fmtDia(dia).dia} de {fmtDia(dia).mes} às {hora}. Você vai receber a confirmação.</div>
             </div>
           ) : !cfg ? (
             <div style={{ textAlign: 'center', padding: '30px 0', color: 'var(--ink-mut)' }}><i className="fa-solid fa-circle-notch fa-spin" style={{ fontSize: 22 }} /></div>
           ) : (
             <>
-              <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--ink-mut)', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: 10 }}>1. Escolha o dia</div>
+              <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--ink-mut)', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: 10 }}>1. Escolha o dia</div>
               <div style={{ display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 6, marginBottom: 18 }}>
                 {dias.map(d => { const f = fmtDia(d); const sel = d === dia; return (
                   <button key={d} onClick={() => { setDia(d); setHora('') }} style={{ flexShrink: 0, width: 62, padding: '10px 0', borderRadius: 10, cursor: 'pointer', border: `1px solid ${sel ? 'var(--sage)' : 'var(--line)'}`, background: sel ? 'var(--sage-tint)' : 'var(--surface)', textAlign: 'center' }}>
-                    <div style={{ fontSize: 10, color: 'var(--ink-mut)', textTransform: 'uppercase' }}>{f.semana}</div>
+                    <div style={{ fontSize: 12, color: 'var(--ink-mut)', textTransform: 'uppercase' }}>{f.semana}</div>
                     <div style={{ fontSize: 18, fontWeight: 700, color: sel ? 'var(--sage-deep)' : 'var(--ink)' }}>{f.dia}</div>
-                    <div style={{ fontSize: 10, color: 'var(--ink-mut)' }}>{f.mes}</div>
+                    <div style={{ fontSize: 12, color: 'var(--ink-mut)' }}>{f.mes}</div>
                   </button>
                 ) })}
               </div>
 
               {dia && (
                 <>
-                  <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--ink-mut)', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: 10 }}>2. Escolha o horário</div>
-                  {slots.length === 0 ? <div style={{ fontSize: 13, color: 'var(--ink-mut)', marginBottom: 18 }}>Sem horários nesse dia. Tente outro.</div> : (
+                  <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--ink-mut)', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: 10 }}>2. Escolha o horário</div>
+                  {slots.length === 0 ? <div style={{ fontSize: 15, color: 'var(--ink-mut)', marginBottom: 18 }}>Sem horários nesse dia. Tente outro.</div> : (
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(80px,1fr))', gap: 8, marginBottom: 18 }}>
-                      {slots.map(h => <button key={h} onClick={() => setHora(h)} style={{ padding: '10px 0', borderRadius: 8, cursor: 'pointer', fontSize: 13, fontWeight: 600, border: `1px solid ${h === hora ? 'var(--sage)' : 'var(--line)'}`, background: h === hora ? 'var(--sage)' : 'var(--surface)', color: h === hora ? '#fff' : 'var(--ink)' }}>{h}</button>)}
+                      {slots.map(h => <button key={h} onClick={() => setHora(h)} style={{ padding: '10px 0', borderRadius: 8, cursor: 'pointer', fontSize: 15, fontWeight: 600, border: `1px solid ${h === hora ? 'var(--sage)' : 'var(--line)'}`, background: h === hora ? 'var(--sage)' : 'var(--surface)', color: h === hora ? '#fff' : 'var(--ink)' }}>{h}</button>)}
                     </div>
                   )}
                 </>
@@ -114,7 +114,7 @@ export default function AgendarPage() {
 
               {dia && hora && (
                 <>
-                  <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--ink-mut)', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: 10 }}>3. Seus dados</div>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--ink-mut)', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: 10 }}>3. Seus dados</div>
                   <div className="form-group"><label className="form-label">Nome</label><input className="form-input" value={form.nome} onChange={e => setForm(f => ({ ...f, nome: e.target.value }))} /></div>
                   <div className="form-row">
                     <div className="form-group"><label className="form-label">E-mail</label><input className="form-input" type="email" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} /></div>

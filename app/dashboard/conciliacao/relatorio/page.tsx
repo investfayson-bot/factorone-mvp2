@@ -96,11 +96,11 @@ export default function RelatorioConciliacaoPage() {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 18, gap: 12, flexWrap: 'wrap' }}>
         <div>
           <h1 style={{ fontFamily: "var(--font-sans)", fontSize: 18, fontWeight: 700, color: 'var(--navy)', margin: 0 }}>Relatório de Conciliação</h1>
-          <div style={{ fontSize: 12, color: 'var(--gray-500)', marginTop: 3 }}>Status de conciliação do extrato bancário por período.</div>
+          <div style={{ fontSize: 14, color: 'var(--gray-500)', marginTop: 3 }}>Status de conciliação do extrato bancário por período.</div>
         </div>
         <div style={{ display: 'flex', gap: 8, alignItems: 'flex-end', flexWrap: 'wrap' }}>
-          <label style={{ fontSize: 11, color: 'var(--gray-500)' }}>De<br /><input type="date" className="form-input" value={de} onChange={e => setDe(e.target.value)} style={{ padding: '6px 8px' }} /></label>
-          <label style={{ fontSize: 11, color: 'var(--gray-500)' }}>Até<br /><input type="date" className="form-input" value={ate} onChange={e => setAte(e.target.value)} style={{ padding: '6px 8px' }} /></label>
+          <label style={{ fontSize: 13, color: 'var(--gray-500)' }}>De<br /><input type="date" className="form-input" value={de} onChange={e => setDe(e.target.value)} style={{ padding: '6px 8px' }} /></label>
+          <label style={{ fontSize: 13, color: 'var(--gray-500)' }}>Até<br /><input type="date" className="form-input" value={ate} onChange={e => setAte(e.target.value)} style={{ padding: '6px 8px' }} /></label>
           <button className="btn-action btn-ghost" style={{ borderRadius: 8 }} onClick={exportarCSV} disabled={!r.total}>Exportar CSV</button>
         </div>
       </div>
@@ -108,7 +108,7 @@ export default function RelatorioConciliacaoPage() {
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(160px,1fr))', gap: 12, marginBottom: 16 }}>
         {kpis.map(k => (
           <div key={k.label} style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: '14px 16px' }}>
-            <div style={{ fontSize: 11, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: .4 }}>{k.label}</div>
+            <div style={{ fontSize: 13, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: .4 }}>{k.label}</div>
             <div style={{ fontSize: 22, fontWeight: 800, color: k.cor, marginTop: 4 }}>{k.valor}</div>
           </div>
         ))}
@@ -116,7 +116,7 @@ export default function RelatorioConciliacaoPage() {
 
       {/* barra de progresso */}
       <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: 16, marginBottom: 16 }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, marginBottom: 6 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, marginBottom: 6 }}>
           <span style={{ color: 'var(--gray-500)' }}>Conciliado: {formatBRL(r.credConc + r.debConc)} ({r.conc})</span>
           <span style={{ color: 'var(--gray-500)' }}>Pendente: {formatBRL(r.credPend + r.debPend)} ({r.pend})</span>
         </div>
@@ -128,12 +128,12 @@ export default function RelatorioConciliacaoPage() {
       <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 16 }}>
         {/* por mês */}
         <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: 16 }}>
-          <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--navy)', marginBottom: 10 }}>Por mês</div>
-          {loading ? <div style={{ color: 'var(--gray-400)', fontSize: 13 }}>Carregando…</div> : r.porMes.length === 0 ? (
-            <div style={{ color: 'var(--gray-400)', fontSize: 13 }}>Sem lançamentos no período.</div>
+          <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--navy)', marginBottom: 10 }}>Por mês</div>
+          {loading ? <div style={{ color: 'var(--gray-400)', fontSize: 15 }}>Carregando…</div> : r.porMes.length === 0 ? (
+            <div style={{ color: 'var(--gray-400)', fontSize: 15 }}>Sem lançamentos no período.</div>
           ) : (
-            <table style={{ width: '100%', fontSize: 12, borderCollapse: 'collapse' }}>
-              <thead><tr style={{ color: 'var(--gray-400)', fontSize: 11 }}>
+            <table style={{ width: '100%', fontSize: 14, borderCollapse: 'collapse' }}>
+              <thead><tr style={{ color: 'var(--gray-400)', fontSize: 13 }}>
                 <th style={{ textAlign: 'left', padding: '6px 4px' }}>Mês</th>
                 <th style={{ textAlign: 'right', padding: '6px 4px' }}>Conc/Total</th>
                 <th style={{ textAlign: 'right', padding: '6px 4px' }}>%</th>
@@ -158,14 +158,14 @@ export default function RelatorioConciliacaoPage() {
 
         {/* por origem */}
         <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: 16 }}>
-          <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--navy)', marginBottom: 10 }}>Por origem</div>
+          <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--navy)', marginBottom: 10 }}>Por origem</div>
           {r.porOrigem.length === 0 ? (
-            <div style={{ color: 'var(--gray-400)', fontSize: 13 }}>—</div>
+            <div style={{ color: 'var(--gray-400)', fontSize: 15 }}>—</div>
           ) : r.porOrigem.map(([o, g]) => {
             const pct = g.total ? (g.conc / g.total) * 100 : 0
             return (
               <div key={o} style={{ marginBottom: 10 }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, marginBottom: 3 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, marginBottom: 3 }}>
                   <span style={{ color: 'var(--navy)', fontWeight: 600 }}>{ORIGEM_LABEL[o] ?? o}</span>
                   <span style={{ color: 'var(--gray-400)' }}>{g.conc}/{g.total}</span>
                 </div>

@@ -74,7 +74,7 @@ export default function UsoPage() {
           { label: 'Chamadas', value: totais.chamadas.toLocaleString('pt-BR'), icon: 'fa-bolt' },
         ].map((k) => (
           <div key={k.label} style={{ ...card, padding: '14px 18px' }}>
-            <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: 6 }}>{k.label}</div>
+            <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: 6 }}>{k.label}</div>
             <div style={{ fontSize: 22, fontWeight: 800, color: 'var(--navy)', fontFamily: "var(--font-sans)" }}>{k.value}</div>
           </div>
         ))}
@@ -82,23 +82,23 @@ export default function UsoPage() {
 
       {/* Por agente */}
       <div style={{ ...card, overflow: 'hidden' }}>
-        <div style={{ padding: '12px 16px', borderBottom: '1px solid var(--gray-100)', fontSize: 12, fontWeight: 700, color: 'var(--navy)' }}>
+        <div style={{ padding: '12px 16px', borderBottom: '1px solid var(--gray-100)', fontSize: 14, fontWeight: 700, color: 'var(--navy)' }}>
           Consumo por Agente
         </div>
         {loading ? (
-          <div style={{ padding: '30px 16px', textAlign: 'center', color: 'var(--gray-400)', fontSize: 12 }}>Carregando…</div>
+          <div style={{ padding: '30px 16px', textAlign: 'center', color: 'var(--gray-400)', fontSize: 14 }}>Carregando…</div>
         ) : stats.length === 0 ? (
-          <div style={{ padding: '30px 16px', textAlign: 'center', color: 'var(--gray-400)', fontSize: 12 }}>
+          <div style={{ padding: '30px 16px', textAlign: 'center', color: 'var(--gray-400)', fontSize: 14 }}>
             <i className="fa-solid fa-chart-bar" style={{ fontSize: 24, marginBottom: 8, display: 'block' }} />
             Nenhuma conversa registrada ainda.
           </div>
         ) : (
           <div style={{ overflowX: 'auto' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12 }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 14 }}>
               <thead>
                 <tr style={{ background: 'var(--gray-50,#f8f9fa)' }}>
                   {['Agente', 'Chamadas', 'Prompt tokens', 'Completion tokens', 'Total tokens', 'Custo (USD)'].map((h) => (
-                    <th key={h} style={{ padding: '8px 12px', textAlign: 'left', fontSize: 10, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', fontFamily: "var(--font-sans)", borderBottom: '1px solid var(--gray-100)', whiteSpace: 'nowrap' }}>{h}</th>
+                    <th key={h} style={{ padding: '8px 12px', textAlign: 'left', fontSize: 12, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', fontFamily: "var(--font-sans)", borderBottom: '1px solid var(--gray-100)', whiteSpace: 'nowrap' }}>{h}</th>
                   ))}
                 </tr>
               </thead>
@@ -109,10 +109,10 @@ export default function UsoPage() {
                     <tr key={s.agente_id} style={{ borderTop: '1px solid var(--gray-100)' }}>
                       <td style={{ padding: '10px 12px' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                          <div style={{ width: 28, height: 28, borderRadius: 6, background: agente.cor, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 9, fontWeight: 800, flexShrink: 0 }}>{agente.inicial}</div>
+                          <div style={{ width: 28, height: 28, borderRadius: 6, background: agente.cor, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 800, flexShrink: 0 }}>{agente.inicial}</div>
                           <div>
                             <div style={{ fontWeight: 600, color: 'var(--navy)' }}>{agente.nome}</div>
-                            <div style={{ fontSize: 10, color: 'var(--gray-400)' }}>{agente.especialidade}</div>
+                            <div style={{ fontSize: 12, color: 'var(--gray-400)' }}>{agente.especialidade}</div>
                           </div>
                         </div>
                       </td>
@@ -132,15 +132,15 @@ export default function UsoPage() {
 
       {/* Histórico recente */}
       <div style={{ ...card, overflow: 'hidden' }}>
-        <div style={{ padding: '12px 16px', borderBottom: '1px solid var(--gray-100)', fontSize: 12, fontWeight: 700, color: 'var(--navy)' }}>
+        <div style={{ padding: '12px 16px', borderBottom: '1px solid var(--gray-100)', fontSize: 14, fontWeight: 700, color: 'var(--navy)' }}>
           Histórico recente (últimas 50 chamadas)
         </div>
         <div style={{ overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12 }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 14 }}>
             <thead>
               <tr style={{ background: 'var(--gray-50,#f8f9fa)' }}>
                 {['Data', 'Agente', 'Modelo', 'Tokens', 'Custo (USD)'].map((h) => (
-                  <th key={h} style={{ padding: '8px 12px', textAlign: 'left', fontSize: 10, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', fontFamily: "var(--font-sans)", borderBottom: '1px solid var(--gray-100)', whiteSpace: 'nowrap' }}>{h}</th>
+                  <th key={h} style={{ padding: '8px 12px', textAlign: 'left', fontSize: 12, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', fontFamily: "var(--font-sans)", borderBottom: '1px solid var(--gray-100)', whiteSpace: 'nowrap' }}>{h}</th>
                 ))}
               </tr>
             </thead>
@@ -153,7 +153,7 @@ export default function UsoPage() {
                     <td style={{ padding: '8px 12px' }}>
                       {agente ? (
                         <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-                          <span style={{ width: 20, height: 20, borderRadius: 4, background: agente.cor, color: '#fff', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: 8, fontWeight: 800 }}>{agente.inicial}</span>
+                          <span style={{ width: 20, height: 20, borderRadius: 4, background: agente.cor, color: '#fff', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 800 }}>{agente.inicial}</span>
                           {agente.nome}
                         </span>
                       ) : r.agente_id}

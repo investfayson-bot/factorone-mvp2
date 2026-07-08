@@ -98,10 +98,10 @@ export default function AberturaContaWizard() {
 
   const inp: React.CSSProperties = {
     width: '100%', border: '1px solid var(--gray-100)', borderRadius: 8,
-    padding: '10px 14px', fontSize: 13, color: 'var(--navy)',
+    padding: '10px 14px', fontSize: 15, color: 'var(--navy)',
     background: '#fff', boxSizing: 'border-box', outline: 'none',
   }
-  const lbl: React.CSSProperties = { fontSize: 11, fontWeight: 600, color: 'var(--gray-500)', marginBottom: 4, display: 'block' }
+  const lbl: React.CSSProperties = { fontSize: 13, fontWeight: 600, color: 'var(--gray-500)', marginBottom: 4, display: 'block' }
 
   if (enviado) {
     return (
@@ -113,7 +113,7 @@ export default function AberturaContaWizard() {
         <p style={{ fontSize: 14, color: 'var(--gray-500)', maxWidth: 380, lineHeight: 1.6 }}>
           Sua conta PJ está em análise. Em até 1 dia útil você receberá a confirmação por e-mail e poderá acessar o dashboard bancário completo.
         </p>
-        <p style={{ fontSize: 12, color: 'var(--gray-400)', marginTop: 8 }}>Plano selecionado: <strong>{PLANOS.find(p => p.id === plano)?.nome}</strong></p>
+        <p style={{ fontSize: 14, color: 'var(--gray-400)', marginTop: 8 }}>Plano selecionado: <strong>{PLANOS.find(p => p.id === plano)?.nome}</strong></p>
       </div>
     )
   }
@@ -126,29 +126,29 @@ export default function AberturaContaWizard() {
           <div style={{ fontFamily: "var(--font-sans)", fontSize: 22, fontWeight: 800, color: '#fff', letterSpacing: '-0.02em' }}>
             Factor<span style={{ color: 'var(--teal)' }}>One</span> Bank
           </div>
-          <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', marginTop: 4 }}>Conta PJ para PMEs e Startups</div>
+          <div style={{ fontSize: 14, color: 'rgba(255,255,255,0.5)', marginTop: 4 }}>Conta PJ para PMEs e Startups</div>
         </div>
 
         <div style={{ flex: 1 }}>
-          <p style={{ fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: 16 }}>Por que FactorOne</p>
+          <p style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: 16 }}>Por que FactorOne</p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
             {FEATURES_SIDEBAR.map(f => (
               <div key={f.icon} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                 <div style={{ width: 32, height: 32, borderRadius: 8, background: 'rgba(255,255,255,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  <i className={`fa-solid ${f.icon}`} style={{ fontSize: 13, color: 'var(--teal)' }} />
+                  <i className={`fa-solid ${f.icon}`} style={{ fontSize: 15, color: 'var(--teal)' }} />
                 </div>
-                <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.8)', lineHeight: 1.4 }}>{f.label}</span>
+                <span style={{ fontSize: 14, color: 'rgba(255,255,255,0.8)', lineHeight: 1.4 }}>{f.label}</span>
               </div>
             ))}
           </div>
         </div>
 
         <div style={{ marginTop: 32, padding: '12px 14px', borderRadius: 10, background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.08)' }}>
-          <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.4)', marginBottom: 4 }}>Progresso</p>
+          <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)', marginBottom: 4 }}>Progresso</p>
           <div style={{ height: 4, background: 'rgba(255,255,255,0.1)', borderRadius: 4 }}>
             <div style={{ height: 4, borderRadius: 4, background: 'var(--teal)', width: `${progresso}%`, transition: 'width .3s' }} />
           </div>
-          <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.6)', marginTop: 6 }}>Etapa {etapa} de 4</p>
+          <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.6)', marginTop: 6 }}>Etapa {etapa} de 4</p>
         </div>
       </div>
 
@@ -165,13 +165,13 @@ export default function AberturaContaWizard() {
             <div key={s.n} style={{ display: 'flex', alignItems: 'center', flex: idx < 3 ? 1 : 'none' }}>
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
                 <div style={{
-                  width: 30, height: 30, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 700,
+                  width: 30, height: 30, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, fontWeight: 700,
                   background: etapa > s.n ? 'var(--green)' : etapa === s.n ? 'var(--teal)' : 'var(--gray-100)',
                   color: etapa >= s.n ? '#fff' : 'var(--gray-400)',
                 }}>
-                  {etapa > s.n ? <i className="fa-solid fa-check" style={{ fontSize: 11 }} /> : s.n}
+                  {etapa > s.n ? <i className="fa-solid fa-check" style={{ fontSize: 13 }} /> : s.n}
                 </div>
-                <span style={{ fontSize: 10, fontWeight: 600, color: etapa >= s.n ? 'var(--navy)' : 'var(--gray-400)', whiteSpace: 'nowrap' }}>{s.label}</span>
+                <span style={{ fontSize: 12, fontWeight: 600, color: etapa >= s.n ? 'var(--navy)' : 'var(--gray-400)', whiteSpace: 'nowrap' }}>{s.label}</span>
               </div>
               {idx < 3 && <div style={{ flex: 1, height: 1, background: etapa > s.n ? 'var(--teal)' : 'var(--gray-100)', margin: '0 6px', marginBottom: 14 }} />}
             </div>
@@ -182,7 +182,7 @@ export default function AberturaContaWizard() {
         {etapa === 1 && (
           <div style={{ flex: 1 }}>
             <h3 style={{ fontFamily: "var(--font-sans)", fontSize: 18, fontWeight: 700, color: 'var(--navy)', marginBottom: 6 }}>Dados da empresa</h3>
-            <p style={{ fontSize: 12, color: 'var(--gray-400)', marginBottom: 24 }}>Usados para abrir sua conta e emitir documentos.</p>
+            <p style={{ fontSize: 14, color: 'var(--gray-400)', marginBottom: 24 }}>Usados para abrir sua conta e emitir documentos.</p>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
               <div style={{ gridColumn: '1/-1' }}>
                 <label style={lbl}>Razão Social *</label>
@@ -208,11 +208,11 @@ export default function AberturaContaWizard() {
         {etapa === 2 && (
           <div style={{ flex: 1 }}>
             <h3 style={{ fontFamily: "var(--font-sans)", fontSize: 18, fontWeight: 700, color: 'var(--navy)', marginBottom: 6 }}>Quadro societário</h3>
-            <p style={{ fontSize: 12, color: 'var(--gray-400)', marginBottom: 24 }}>Informe todos os sócios com participação ≥ 25% (PEPs e compliance).</p>
+            <p style={{ fontSize: 14, color: 'var(--gray-400)', marginBottom: 24 }}>Informe todos os sócios com participação ≥ 25% (PEPs e compliance).</p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               {socios.map((s, i) => (
                 <div key={i} style={{ padding: '14px 16px', border: '1px solid var(--gray-100)', borderRadius: 10, background: '#fafafa' }}>
-                  <p style={{ fontSize: 11, fontWeight: 700, color: 'var(--gray-500)', marginBottom: 10 }}>Sócio {i + 1}</p>
+                  <p style={{ fontSize: 13, fontWeight: 700, color: 'var(--gray-500)', marginBottom: 10 }}>Sócio {i + 1}</p>
                   <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 100px', gap: 10 }}>
                     <div>
                       <label style={lbl}>Nome completo</label>
@@ -230,8 +230,8 @@ export default function AberturaContaWizard() {
                 </div>
               ))}
               <button type="button" onClick={() => setSocios([...socios, { nome: '', cpf: '', participacao: 0 }])}
-                style={{ alignSelf: 'flex-start', padding: '6px 14px', borderRadius: 8, border: '1px dashed var(--teal)', background: 'rgba(61,122,110,0.04)', color: 'var(--teal)', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
-                <i className="fa-solid fa-plus" style={{ marginRight: 5, fontSize: 10 }} />Adicionar sócio
+                style={{ alignSelf: 'flex-start', padding: '6px 14px', borderRadius: 8, border: '1px dashed var(--teal)', background: 'rgba(61,122,110,0.04)', color: 'var(--teal)', fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
+                <i className="fa-solid fa-plus" style={{ marginRight: 5, fontSize: 12 }} />Adicionar sócio
               </button>
             </div>
           </div>
@@ -241,7 +241,7 @@ export default function AberturaContaWizard() {
         {etapa === 3 && (
           <div style={{ flex: 1 }}>
             <h3 style={{ fontFamily: "var(--font-sans)", fontSize: 18, fontWeight: 700, color: 'var(--navy)', marginBottom: 6 }}>Documentos</h3>
-            <p style={{ fontSize: 12, color: 'var(--gray-400)', marginBottom: 24 }}>Faça upload dos documentos para análise KYB.</p>
+            <p style={{ fontSize: 14, color: 'var(--gray-400)', marginBottom: 24 }}>Faça upload dos documentos para análise KYB.</p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               {DOCS.map(doc => (
                 <label key={doc.id} style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '12px 16px', border: documentos[doc.id] ? '1px solid var(--teal)' : '1px solid var(--gray-100)', borderRadius: 10, background: documentos[doc.id] ? 'rgba(61,122,110,0.04)' : '#fafafa', cursor: 'pointer' }}>
@@ -249,8 +249,8 @@ export default function AberturaContaWizard() {
                     <i className={`fa-solid ${documentos[doc.id] ? 'fa-circle-check' : doc.icon}`} style={{ fontSize: 14, color: documentos[doc.id] ? 'var(--teal)' : 'var(--gray-400)' }} />
                   </div>
                   <div style={{ flex: 1 }}>
-                    <p style={{ fontSize: 12, fontWeight: 600, color: 'var(--navy)', margin: 0 }}>{doc.label}</p>
-                    <p style={{ fontSize: 11, color: 'var(--gray-400)', margin: '2px 0 0' }}>{documentos[doc.id] || 'Clique para selecionar'}</p>
+                    <p style={{ fontSize: 14, fontWeight: 600, color: 'var(--navy)', margin: 0 }}>{doc.label}</p>
+                    <p style={{ fontSize: 13, color: 'var(--gray-400)', margin: '2px 0 0' }}>{documentos[doc.id] || 'Clique para selecionar'}</p>
                   </div>
                   <input type="file" style={{ display: 'none' }} onChange={e => setDocumentos({ ...documentos, [doc.id]: e.target.files?.[0]?.name || '' })} />
                 </label>
@@ -263,7 +263,7 @@ export default function AberturaContaWizard() {
         {etapa === 4 && (
           <div style={{ flex: 1 }}>
             <h3 style={{ fontFamily: "var(--font-sans)", fontSize: 18, fontWeight: 700, color: 'var(--navy)', marginBottom: 6 }}>Escolha seu plano</h3>
-            <p style={{ fontSize: 12, color: 'var(--gray-400)', marginBottom: 20 }}>Você pode mudar de plano a qualquer momento.</p>
+            <p style={{ fontSize: 14, color: 'var(--gray-400)', marginBottom: 20 }}>Você pode mudar de plano a qualquer momento.</p>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10, marginBottom: 20 }}>
               {PLANOS.map(p => (
                 <button key={p.id} type="button" onClick={() => setPlano(p.id)} style={{
@@ -272,14 +272,14 @@ export default function AberturaContaWizard() {
                   padding: 14, textAlign: 'left', cursor: 'pointer', position: 'relative',
                 }}>
                   {p.destaque && (
-                    <div style={{ position: 'absolute', top: -8, right: 10, background: 'var(--teal)', color: '#fff', fontSize: 9, fontWeight: 800, padding: '2px 8px', borderRadius: 20, textTransform: 'uppercase' }}>Recomendado</div>
+                    <div style={{ position: 'absolute', top: -8, right: 10, background: 'var(--teal)', color: '#fff', fontSize: 11, fontWeight: 800, padding: '2px 8px', borderRadius: 20, textTransform: 'uppercase' }}>Recomendado</div>
                   )}
-                  <p style={{ fontSize: 13, fontWeight: 700, color: p.cor === 'var(--teal)' ? 'var(--teal)' : p.cor === '#7A6A9E' ? '#7A6A9E' : 'var(--navy)', margin: '0 0 2px' }}>{p.nome}</p>
-                  <p style={{ fontSize: 11, color: 'var(--gray-500)', margin: '0 0 10px', fontWeight: 600 }}>{p.preco}</p>
+                  <p style={{ fontSize: 15, fontWeight: 700, color: p.cor === 'var(--teal)' ? 'var(--teal)' : p.cor === '#7A6A9E' ? '#7A6A9E' : 'var(--navy)', margin: '0 0 2px' }}>{p.nome}</p>
+                  <p style={{ fontSize: 13, color: 'var(--gray-500)', margin: '0 0 10px', fontWeight: 600 }}>{p.preco}</p>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                     {p.features.map(f => (
-                      <div key={f} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 10, color: 'var(--gray-500)' }}>
-                        <i className="fa-solid fa-check" style={{ color: 'var(--teal)', fontSize: 9 }} />
+                      <div key={f} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: 'var(--gray-500)' }}>
+                        <i className="fa-solid fa-check" style={{ color: 'var(--teal)', fontSize: 11 }} />
                         {f}
                       </div>
                     ))}
@@ -287,7 +287,7 @@ export default function AberturaContaWizard() {
                 </button>
               ))}
             </div>
-            <label style={{ display: 'flex', alignItems: 'flex-start', gap: 10, padding: '12px 14px', border: '1px solid var(--gray-100)', borderRadius: 10, cursor: 'pointer', fontSize: 12, color: 'var(--gray-500)', lineHeight: 1.5 }}>
+            <label style={{ display: 'flex', alignItems: 'flex-start', gap: 10, padding: '12px 14px', border: '1px solid var(--gray-100)', borderRadius: 10, cursor: 'pointer', fontSize: 14, color: 'var(--gray-500)', lineHeight: 1.5 }}>
               <input type="checkbox" checked={aceite} onChange={e => setAceite(e.target.checked)} style={{ marginTop: 2, flexShrink: 0 }} />
               Declaro que os dados informados são verdadeiros e aceito os <a href="#" style={{ color: 'var(--teal)' }}>termos de abertura de conta PJ</a>.
             </label>
@@ -297,23 +297,23 @@ export default function AberturaContaWizard() {
         {/* Footer nav */}
         <div style={{ marginTop: 24, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <button type="button" onClick={() => setEtapa(Math.max(1, etapa - 1))} disabled={etapa === 1}
-            style={{ padding: '9px 18px', borderRadius: 8, border: '1px solid var(--gray-100)', background: '#fff', color: 'var(--gray-500)', fontSize: 12, fontWeight: 600, cursor: etapa === 1 ? 'not-allowed' : 'pointer', opacity: etapa === 1 ? 0.4 : 1 }}>
-            <i className="fa-solid fa-arrow-left" style={{ marginRight: 6, fontSize: 11 }} />Anterior
+            style={{ padding: '9px 18px', borderRadius: 8, border: '1px solid var(--gray-100)', background: '#fff', color: 'var(--gray-500)', fontSize: 14, fontWeight: 600, cursor: etapa === 1 ? 'not-allowed' : 'pointer', opacity: etapa === 1 ? 0.4 : 1 }}>
+            <i className="fa-solid fa-arrow-left" style={{ marginRight: 6, fontSize: 13 }} />Anterior
           </button>
           <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-            {msg && <span style={{ fontSize: 11, color: msg.includes('salvo') ? 'var(--teal)' : 'var(--red)' }}>{msg}</span>}
+            {msg && <span style={{ fontSize: 13, color: msg.includes('salvo') ? 'var(--teal)' : 'var(--red)' }}>{msg}</span>}
             <button type="button" disabled={saving} onClick={() => void salvarProgresso()}
-              style={{ padding: '9px 18px', borderRadius: 8, border: '1px solid var(--gray-100)', background: '#fff', color: 'var(--navy)', fontSize: 12, fontWeight: 600, cursor: 'pointer', opacity: saving ? 0.6 : 1 }}>
+              style={{ padding: '9px 18px', borderRadius: 8, border: '1px solid var(--gray-100)', background: '#fff', color: 'var(--navy)', fontSize: 14, fontWeight: 600, cursor: 'pointer', opacity: saving ? 0.6 : 1 }}>
               Salvar
             </button>
             {etapa < 4 ? (
               <button type="button" onClick={() => setEtapa(etapa + 1)}
-                style={{ padding: '9px 20px', borderRadius: 8, border: 'none', background: 'var(--navy)', color: '#fff', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>
-                Continuar<i className="fa-solid fa-arrow-right" style={{ marginLeft: 6, fontSize: 11 }} />
+                style={{ padding: '9px 20px', borderRadius: 8, border: 'none', background: 'var(--navy)', color: '#fff', fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>
+                Continuar<i className="fa-solid fa-arrow-right" style={{ marginLeft: 6, fontSize: 13 }} />
               </button>
             ) : (
               <button type="button" disabled={saving || !aceite} onClick={() => void concluirSolicitacao()}
-                style={{ padding: '9px 20px', borderRadius: 8, border: 'none', background: aceite ? 'var(--teal)' : 'var(--gray-100)', color: aceite ? '#fff' : 'var(--gray-400)', fontSize: 12, fontWeight: 700, cursor: aceite ? 'pointer' : 'not-allowed', opacity: saving ? 0.7 : 1 }}>
+                style={{ padding: '9px 20px', borderRadius: 8, border: 'none', background: aceite ? 'var(--teal)' : 'var(--gray-100)', color: aceite ? '#fff' : 'var(--gray-400)', fontSize: 14, fontWeight: 700, cursor: aceite ? 'pointer' : 'not-allowed', opacity: saving ? 0.7 : 1 }}>
                 {saving ? 'Enviando…' : 'Abrir conta'}
               </button>
             )}

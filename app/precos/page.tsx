@@ -117,12 +117,12 @@ export default function PrecosPage() {
         <Link href="/" style={{ textDecoration: 'none' }}>
           <div style={{ fontSize: 20, fontWeight: 800, color: '#fff', fontFamily: "var(--font-sans)", letterSpacing: '-0.03em' }}>
             Factor<span style={{ color: '#6FA595' }}>One</span>
-            <span style={{ fontSize: 11, fontWeight: 400, color: 'rgba(255,255,255,0.4)', letterSpacing: '0.06em', marginLeft: 8 }}>FINANCE OS</span>
+            <span style={{ fontSize: 13, fontWeight: 400, color: 'rgba(255,255,255,0.4)', letterSpacing: '0.06em', marginLeft: 8 }}>FINANCE OS</span>
           </div>
         </Link>
         <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-          <Link href="/auth" style={{ textDecoration: 'none', fontSize: 12, color: 'rgba(255,255,255,0.6)', fontWeight: 500 }}>Entrar</Link>
-          <Link href="/auth" style={{ textDecoration: 'none', fontSize: 12, fontWeight: 700, background: '#3D7A6E', color: '#fff', padding: '7px 16px', borderRadius: 8 }}>
+          <Link href="/auth" style={{ textDecoration: 'none', fontSize: 14, color: 'rgba(255,255,255,0.6)', fontWeight: 500 }}>Entrar</Link>
+          <Link href="/auth" style={{ textDecoration: 'none', fontSize: 14, fontWeight: 700, background: '#3D7A6E', color: '#fff', padding: '7px 16px', borderRadius: 8 }}>
             Começar grátis
           </Link>
         </div>
@@ -158,7 +158,7 @@ export default function PrecosPage() {
               { id: 'familia' as const, label: 'Família & Empresa', icon: 'fa-people-roof' },
             ]).map(t => (
               <button key={t.id} onClick={() => setTab(t.id)} style={{
-                display: 'flex', alignItems: 'center', gap: 7, fontSize: 12,
+                display: 'flex', alignItems: 'center', gap: 7, fontSize: 14,
                 fontWeight: tab === t.id ? 700 : 500, padding: '8px 16px',
                 borderRadius: 9, border: 'none', cursor: 'pointer',
                 background: tab === t.id ? '#fff' : 'transparent',
@@ -166,7 +166,7 @@ export default function PrecosPage() {
                 boxShadow: tab === t.id ? '0 1px 4px rgba(0,0,0,0.08)' : 'none',
                 transition: 'all 0.15s',
               }}>
-                <i className={`fa-solid ${t.icon}`} style={{ fontSize: 12 }} />
+                <i className={`fa-solid ${t.icon}`} style={{ fontSize: 14 }} />
                 {t.label}
               </button>
             ))}
@@ -179,7 +179,7 @@ export default function PrecosPage() {
             <div style={{ width: 40, height: 40, borderRadius: 10, background: 'rgba(61,122,110,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
               <i className="fa-solid fa-people-roof" style={{ fontSize: 18, color: '#6FA595' }} />
             </div>
-            <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.65)', lineHeight: 1.6 }}>
+            <div style={{ fontSize: 14, color: 'rgba(255,255,255,0.65)', lineHeight: 1.6 }}>
               <strong style={{ color: '#fff' }}>Um plano para empresa e família.</strong> O titular alterna entre painel PJ e PF no mesmo login. Membros da família têm acesso separado — cada um vê só as próprias finanças.
             </div>
           </div>
@@ -200,19 +200,19 @@ export default function PrecosPage() {
                 position: 'relative',
               }}>
                 {p.destaque && (
-                  <div style={{ position: 'absolute', top: -1, left: '50%', transform: 'translateX(-50%)', background: '#3D7A6E', color: '#fff', fontSize: 9, fontWeight: 700, padding: '3px 14px', borderRadius: '0 0 8px 8px', letterSpacing: '0.06em', whiteSpace: 'nowrap' }}>
+                  <div style={{ position: 'absolute', top: -1, left: '50%', transform: 'translateX(-50%)', background: '#3D7A6E', color: '#fff', fontSize: 11, fontWeight: 700, padding: '3px 14px', borderRadius: '0 0 8px 8px', letterSpacing: '0.06em', whiteSpace: 'nowrap' }}>
                     MAIS POPULAR
                   </div>
                 )}
-                <span style={{ fontSize: 10, fontWeight: 700, padding: '3px 10px', borderRadius: 20, display: 'inline-block', marginBottom: 12, background: p.badgeBg, color: p.badgeColor, width: 'fit-content' }}>
+                <span style={{ fontSize: 12, fontWeight: 700, padding: '3px 10px', borderRadius: 20, display: 'inline-block', marginBottom: 12, background: p.badgeBg, color: p.badgeColor, width: 'fit-content' }}>
                   {p.badge}
                 </span>
                 <div style={{ fontSize: 15, fontWeight: 700, color: '#13201D', marginBottom: 4, fontFamily: "var(--font-sans)" }}>{p.nome}</div>
                 <div style={{ fontSize: 28, fontWeight: 800, color: '#13201D', letterSpacing: '-0.04em', lineHeight: 1, fontFamily: "var(--font-sans)" }}>{p.preco}</div>
-                <div style={{ fontSize: 11, color: '#7B8C88', marginBottom: 14, marginTop: 3 }}>{p.subPreco}</div>
+                <div style={{ fontSize: 13, color: '#7B8C88', marginBottom: 14, marginTop: 3 }}>{p.subPreco}</div>
 
                 {'economia' in p && p.economia && (
-                  <div style={{ background: '#E9F0ED', borderRadius: 8, padding: '7px 10px', fontSize: 10, color: '#2B564D', fontWeight: 600, marginBottom: 12, lineHeight: 1.4 }}>
+                  <div style={{ background: '#E9F0ED', borderRadius: 8, padding: '7px 10px', fontSize: 12, color: '#2B564D', fontWeight: 600, marginBottom: 12, lineHeight: 1.4 }}>
                     <i className="fa-solid fa-piggy-bank" style={{ marginRight: 5 }} />{p.economia}
                   </div>
                 )}
@@ -221,16 +221,16 @@ export default function PrecosPage() {
 
                 <div style={{ flex: 1 }}>
                   {p.features.map(f => (
-                    <div key={f} style={{ display: 'flex', alignItems: 'flex-start', gap: 7, padding: '3px 0', fontSize: 12, color: '#3C4A46', lineHeight: 1.4 }}>
-                      <i className="fa-solid fa-check" style={{ fontSize: 11, color: '#3D7A6E', flexShrink: 0, marginTop: 2 }} />{f}
+                    <div key={f} style={{ display: 'flex', alignItems: 'flex-start', gap: 7, padding: '3px 0', fontSize: 14, color: '#3C4A46', lineHeight: 1.4 }}>
+                      <i className="fa-solid fa-check" style={{ fontSize: 13, color: '#3D7A6E', flexShrink: 0, marginTop: 2 }} />{f}
                     </div>
                   ))}
                   {p.nao.length > 0 && (
                     <>
                       <div style={{ height: '0.5px', background: '#E4DCCC', margin: '10px 0 8px' }} />
                       {p.nao.map(f => (
-                        <div key={f} style={{ display: 'flex', alignItems: 'flex-start', gap: 7, padding: '3px 0', fontSize: 11, color: '#A6B0AC', lineHeight: 1.4 }}>
-                          <i className="fa-solid fa-lock" style={{ fontSize: 11, flexShrink: 0, marginTop: 2 }} />{f}
+                        <div key={f} style={{ display: 'flex', alignItems: 'flex-start', gap: 7, padding: '3px 0', fontSize: 13, color: '#A6B0AC', lineHeight: 1.4 }}>
+                          <i className="fa-solid fa-lock" style={{ fontSize: 13, flexShrink: 0, marginTop: 2 }} />{f}
                         </div>
                       ))}
                     </>
@@ -242,7 +242,7 @@ export default function PrecosPage() {
                   disabled={!!isLoading}
                   style={{
                     marginTop: 16, width: '100%', padding: '11px', borderRadius: 10,
-                    fontSize: 13, fontWeight: 700, cursor: isLoading ? 'wait' : 'pointer',
+                    fontSize: 15, fontWeight: 700, cursor: isLoading ? 'wait' : 'pointer',
                     border: 'none', transition: 'all 0.15s',
                     background: p.destaque ? '#13201D' : '#F7F4EE',
                     color: p.destaque ? '#fff' : '#13201D',
@@ -274,8 +274,8 @@ export default function PrecosPage() {
                   <i className={`fa-solid ${item.icon}`} style={{ fontSize: 14, color: '#3D7A6E' }} />
                 </div>
                 <div>
-                  <div style={{ fontSize: 12, fontWeight: 700, color: '#13201D', marginBottom: 3 }}>{item.title}</div>
-                  <div style={{ fontSize: 11, color: '#7B8C88', lineHeight: 1.5 }}>{item.desc}</div>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: '#13201D', marginBottom: 3 }}>{item.title}</div>
+                  <div style={{ fontSize: 13, color: '#7B8C88', lineHeight: 1.5 }}>{item.desc}</div>
                 </div>
               </div>
             ))}
@@ -288,8 +288,8 @@ export default function PrecosPage() {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: 16 }}>
             {FAQ.map(item => (
               <div key={item.q} style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 12, padding: '16px 18px' }}>
-                <div style={{ fontSize: 13, fontWeight: 700, color: '#13201D', marginBottom: 6 }}>{item.q}</div>
-                <div style={{ fontSize: 12, color: '#7B8C88', lineHeight: 1.6 }}>{item.r}</div>
+                <div style={{ fontSize: 15, fontWeight: 700, color: '#13201D', marginBottom: 6 }}>{item.q}</div>
+                <div style={{ fontSize: 14, color: '#7B8C88', lineHeight: 1.6 }}>{item.r}</div>
               </div>
             ))}
           </div>
@@ -317,10 +317,10 @@ export default function PrecosPage() {
           </div>
           <div style={{ display: 'flex', gap: 20 }}>
             {[['Entrar', '/auth'], ['Dashboard', '/dashboard'], ['Contato', 'mailto:contato@factorone.app']].map(([label, href]) => (
-              <Link key={label} href={href} style={{ fontSize: 12, color: 'rgba(255,255,255,0.45)', textDecoration: 'none' }}>{label}</Link>
+              <Link key={label} href={href} style={{ fontSize: 14, color: 'rgba(255,255,255,0.45)', textDecoration: 'none' }}>{label}</Link>
             ))}
           </div>
-          <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)' }}>© 2026 FactorOne Finance OS</div>
+          <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.3)' }}>© 2026 FactorOne Finance OS</div>
         </div>
       </footer>
     </div>

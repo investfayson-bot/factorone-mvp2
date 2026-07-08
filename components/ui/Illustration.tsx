@@ -99,7 +99,7 @@ export function EmptyState({ width = 132, label, title, hint, cta }: {
   const heading = title ?? label
   const btnStyle: React.CSSProperties = {
     display: 'inline-flex', alignItems: 'center', gap: 8, padding: '9px 18px', borderRadius: 4,
-    fontSize: 12.5, fontWeight: 600, cursor: 'pointer', textDecoration: 'none',
+    fontSize: 14.5, fontWeight: 600, cursor: 'pointer', textDecoration: 'none',
     fontFamily: 'var(--font-sans)', border: '1px solid var(--ink)', background: 'var(--ink)', color: 'var(--paper)',
   }
   return (
@@ -115,7 +115,7 @@ export function EmptyState({ width = 132, label, title, hint, cta }: {
         <path d="M150 104v16M142 112h16" stroke="#fff" strokeWidth="3" strokeLinecap="round" />
       </svg>
       {heading && <div style={{ fontFamily: 'var(--font-display)', fontSize: 17, fontWeight: 500, color: 'var(--ink)', letterSpacing: '-.02em' }}>{heading}</div>}
-      {hint && <div style={{ fontSize: 12.5, color: 'var(--ink-mut)', maxWidth: 360, lineHeight: 1.55 }}>{hint}</div>}
+      {hint && <div style={{ fontSize: 14.5, color: 'var(--ink-mut)', maxWidth: 360, lineHeight: 1.55 }}>{hint}</div>}
       {cta && (cta.href
         ? <Link href={cta.href} style={btnStyle}>{cta.icon && <i className={`fa-solid ${cta.icon}`} />}{cta.label}</Link>
         : <button onClick={cta.onClick} style={btnStyle}>{cta.icon && <i className={`fa-solid ${cta.icon}`} />}{cta.label}</button>

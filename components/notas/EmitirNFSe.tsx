@@ -15,7 +15,7 @@ const LC116_COMUM = [
 const ISS_OPTS = [2, 3, 4, 5]
 
 const card: React.CSSProperties = { background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: 16, marginBottom: 14 }
-const sectionTitle: React.CSSProperties = { fontSize: 12, fontWeight: 700, color: 'var(--navy)', marginBottom: 12 }
+const sectionTitle: React.CSSProperties = { fontSize: 14, fontWeight: 700, color: 'var(--navy)', marginBottom: 12 }
 
 export default function EmitirNFSe() {
   const [loading, setLoading] = useState(false)
@@ -85,7 +85,7 @@ export default function EmitirNFSe() {
         <div style={sectionTitle}>Serviço</div>
         <textarea className="form-input" placeholder="Descrição do serviço" value={servico.descricao} onChange={(e) => setServico({ ...servico, descricao: e.target.value })} style={{ minHeight: 80, resize: 'vertical', marginBottom: 8 }} />
         <div style={{ marginBottom: 8 }}>
-          <div style={{ fontSize: 11, color: 'var(--gray-400)', marginBottom: 6 }}>🔍 LC116 (busca)</div>
+          <div style={{ fontSize: 13, color: 'var(--gray-400)', marginBottom: 6 }}>🔍 LC116 (busca)</div>
           <input className="form-input" placeholder="Filtrar código ou descrição" value={buscaLc} onChange={(e) => setBuscaLc(e.target.value)} style={{ marginBottom: 6 }} />
           <select className="form-input" value={servico.codigoServicoMunicipal} onChange={(e) => setServico({ ...servico, codigoServicoMunicipal: e.target.value })}>
             {lcFiltrados.map((x) => <option key={x.cod} value={x.cod}>{x.cod} — {x.desc}</option>)}
@@ -93,17 +93,17 @@ export default function EmitirNFSe() {
         </div>
         <input type="number" min={0} step={0.01} className="form-input" placeholder="Valor do serviço" value={servico.valor || ''} onChange={(e) => setServico({ ...servico, valor: Number(e.target.value) })} style={{ marginBottom: 10 }} />
         <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', marginBottom: 10 }}>
-          <label style={{ fontSize: 12, display: 'flex', alignItems: 'center', gap: 8, color: 'var(--navy)' }}>
+          <label style={{ fontSize: 14, display: 'flex', alignItems: 'center', gap: 8, color: 'var(--navy)' }}>
             ISS %
             <select className="form-input" style={{ width: 'auto' }} value={servico.issAliquota} onChange={(e) => setServico({ ...servico, issAliquota: Number(e.target.value) })}>
               {ISS_OPTS.map((i) => <option key={i} value={i}>{i}%</option>)}
             </select>
           </label>
-          <label style={{ fontSize: 12, display: 'flex', alignItems: 'center', gap: 6, color: 'var(--navy)' }}>
+          <label style={{ fontSize: 14, display: 'flex', alignItems: 'center', gap: 6, color: 'var(--navy)' }}>
             <input type="checkbox" checked={servico.irRetido} onChange={(e) => setServico({ ...servico, irRetido: e.target.checked })} />
             IR retido (1,5%)
           </label>
-          <label style={{ fontSize: 12, display: 'flex', alignItems: 'center', gap: 6, color: 'var(--navy)' }}>
+          <label style={{ fontSize: 14, display: 'flex', alignItems: 'center', gap: 6, color: 'var(--navy)' }}>
             <input type="checkbox" checked={servico.pisCofinsRetido} onChange={(e) => setServico({ ...servico, pisCofinsRetido: e.target.checked })} />
             PIS/COFINS (est. 4,65%)
           </label>
@@ -122,16 +122,16 @@ export default function EmitirNFSe() {
 
       {/* Preview + emit */}
       <div style={{ background: 'var(--navy)', borderRadius: 12, padding: 18, marginBottom: 14 }}>
-        <div style={{ fontSize: 9.5, color: 'rgba(255,255,255,.5)', textTransform: 'uppercase', fontFamily: "var(--font-sans)", marginBottom: 4 }}>Valor líquido (após retenções)</div>
+        <div style={{ fontSize: 11.5, color: 'rgba(255,255,255,.5)', textTransform: 'uppercase', fontFamily: "var(--font-sans)", marginBottom: 4 }}>Valor líquido (após retenções)</div>
         <div style={{ fontSize: 22, fontWeight: 800, color: '#fff', marginBottom: 4 }}>{preview.liquido.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</div>
-        <div style={{ fontSize: 11, color: 'rgba(255,255,255,.5)', marginBottom: 14 }}>ISS {preview.iss.toFixed(2)} | IR {preview.ir.toFixed(2)} | PIS/COFINS {preview.pc.toFixed(2)}</div>
+        <div style={{ fontSize: 13, color: 'rgba(255,255,255,.5)', marginBottom: 14 }}>ISS {preview.iss.toFixed(2)} | IR {preview.ir.toFixed(2)} | PIS/COFINS {preview.pc.toFixed(2)}</div>
         <button type="button" disabled={loading} onClick={emitir} className="btn-action" style={{ opacity: loading ? .6 : 1 }}>
           {loading ? 'Emitindo...' : 'Emitir NFS-e'}
         </button>
       </div>
 
       {msg && (
-        <div style={{ borderRadius: 8, padding: '10px 14px', fontSize: 12, background: msg.type === 'ok' ? 'rgba(61,122,110,.1)' : 'rgba(176,65,62,.1)', color: msg.type === 'ok' ? 'var(--green)' : 'var(--red)', border: `1px solid ${msg.type === 'ok' ? 'rgba(61,122,110,.25)' : 'rgba(176,65,62,.2)'}` }}>
+        <div style={{ borderRadius: 8, padding: '10px 14px', fontSize: 14, background: msg.type === 'ok' ? 'rgba(61,122,110,.1)' : 'rgba(176,65,62,.1)', color: msg.type === 'ok' ? 'var(--green)' : 'var(--red)', border: `1px solid ${msg.type === 'ok' ? 'rgba(61,122,110,.25)' : 'rgba(176,65,62,.2)'}` }}>
           {msg.text}
         </div>
       )}

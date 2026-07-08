@@ -117,7 +117,7 @@ export default function AprovacoesPage() {
   const aprovadas = historico.filter(h => h.status === 'aprovado').length
   const rejeitadas = historico.filter(h => h.status === 'rejeitado').length
 
-  const inp: React.CSSProperties = { width: '100%', border: '1px solid var(--gray-100)', borderRadius: 8, padding: '8px 12px', fontSize: 13, color: 'var(--navy)', background: '#fff', boxSizing: 'border-box', outline: 'none' }
+  const inp: React.CSSProperties = { width: '100%', border: '1px solid var(--gray-100)', borderRadius: 8, padding: '8px 12px', fontSize: 15, color: 'var(--navy)', background: '#fff', boxSizing: 'border-box', outline: 'none' }
 
   return (
     <>
@@ -128,7 +128,7 @@ export default function AprovacoesPage() {
         </div>
         <div style={{ display: 'flex', gap: 8 }}>
           {pendentes.length > 0 && (
-            <button className="btn-ghost" style={{ fontSize: 12 }} onClick={() => void aprovarLote()}>
+            <button className="btn-ghost" style={{ fontSize: 14 }} onClick={() => void aprovarLote()}>
               <i className="fa-solid fa-check-double" style={{ marginRight: 5 }} />Aprovar Nível 1 + Auto
             </button>
           )}
@@ -167,8 +167,8 @@ export default function AprovacoesPage() {
           { label: 'Nível 2', desc: 'Acima de R$ 5.000 → CFO obrigatório', color: '#7A6A9E', bg: 'rgba(124,58,237,.04)', border: 'rgba(124,58,237,.2)' },
         ].map(p => (
           <div key={p.label} style={{ background: p.bg, border: `1px solid ${p.border}`, borderRadius: 12, padding: 14 }}>
-            <div style={{ fontSize: 11, fontWeight: 700, color: p.color, marginBottom: 4 }}>{p.label}</div>
-            <div style={{ fontSize: 12, color: 'var(--gray-500)' }}>{p.desc}</div>
+            <div style={{ fontSize: 13, fontWeight: 700, color: p.color, marginBottom: 4 }}>{p.label}</div>
+            <div style={{ fontSize: 14, color: 'var(--gray-500)' }}>{p.desc}</div>
           </div>
         ))}
       </div>
@@ -176,16 +176,16 @@ export default function AprovacoesPage() {
       {/* Tabs */}
       <div style={{ display: 'flex', gap: 6, marginBottom: 12 }}>
         {([['pendentes', 'Pendentes'], ['historico', 'Histórico']] as [Tab, string][]).map(([k, l]) => (
-          <button key={k} className={`btn-action${tab !== k ? ' btn-ghost' : ''}`} style={{ fontSize: 11, padding: '5px 12px' }} onClick={() => setTab(k)}>{l}</button>
+          <button key={k} className={`btn-action${tab !== k ? ' btn-ghost' : ''}`} style={{ fontSize: 13, padding: '5px 12px' }} onClick={() => setTab(k)}>{l}</button>
         ))}
       </div>
 
       {/* Lista pendentes */}
       {tab === 'pendentes' && (
         <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: 16 }}>
-          {loading && <div style={{ padding: '32px 0', textAlign: 'center', fontSize: 12, color: 'var(--gray-400)' }}>Carregando...</div>}
+          {loading && <div style={{ padding: '32px 0', textAlign: 'center', fontSize: 14, color: 'var(--gray-400)' }}>Carregando...</div>}
           {!loading && pendentes.length === 0 && (
-            <div style={{ padding: '40px 0', textAlign: 'center', color: 'var(--gray-400)', fontSize: 13 }}>
+            <div style={{ padding: '40px 0', textAlign: 'center', color: 'var(--gray-400)', fontSize: 15 }}>
               <i className="fa-solid fa-circle-check" style={{ fontSize: 32, marginBottom: 12, display: 'block', color: 'var(--green)' }} />
               Nenhuma despesa pendente de aprovação
             </div>
@@ -195,30 +195,30 @@ export default function AprovacoesPage() {
             const bloqueado = atualizando === item.id
             return (
               <div key={item.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 0', borderBottom: idx < pendentes.length - 1 ? '1px solid var(--gray-100)' : 'none', opacity: bloqueado ? 0.5 : 1, transition: 'opacity .2s' }}>
-                <div style={{ width: 36, height: 36, borderRadius: 9, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, background: n.bg, color: n.color, fontWeight: 700 }}>
+                <div style={{ width: 36, height: 36, borderRadius: 9, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, background: n.bg, color: n.color, fontWeight: 700 }}>
                   {n.label === 'Auto' ? 'A' : n.label.replace('Nível ', 'N')}
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--navy)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{item.descricao}</div>
-                  <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>
+                  <div style={{ fontSize: 15, fontWeight: 600, color: 'var(--navy)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{item.descricao}</div>
+                  <div style={{ fontSize: 13, color: 'var(--gray-400)' }}>
                     {item.categoria}{item.responsavel_nome ? ` · ${item.responsavel_nome}` : ''}{item.data_despesa ? ` · ${new Date(item.data_despesa + 'T12:00:00').toLocaleDateString('pt-BR')}` : ''}
                   </div>
-                  {item.observacao && <div style={{ fontSize: 11, color: 'var(--gray-400)', fontStyle: 'italic', marginTop: 2 }}>{item.observacao}</div>}
+                  {item.observacao && <div style={{ fontSize: 13, color: 'var(--gray-400)', fontStyle: 'italic', marginTop: 2 }}>{item.observacao}</div>}
                   {item.comprovante_url && (
-                    <a href={item.comprovante_url} target="_blank" rel="noreferrer" style={{ fontSize: 10, color: 'var(--teal)', textDecoration: 'none' }}>
+                    <a href={item.comprovante_url} target="_blank" rel="noreferrer" style={{ fontSize: 12, color: 'var(--teal)', textDecoration: 'none' }}>
                       <i className="fa-solid fa-paperclip" style={{ marginRight: 3 }} />Comprovante
                     </a>
                   )}
                 </div>
                 <div style={{ textAlign: 'right', marginRight: 8 }}>
                   <div style={{ fontWeight: 700, fontFamily: "var(--font-sans)", fontSize: 14, color: 'var(--navy)' }}>{formatBRL(Number(item.valor))}</div>
-                  <span style={{ fontSize: 10, padding: '2px 8px', borderRadius: 20, background: n.bg, color: n.color, fontWeight: 600 }}>{n.label}</span>
+                  <span style={{ fontSize: 12, padding: '2px 8px', borderRadius: 20, background: n.bg, color: n.color, fontWeight: 600 }}>{n.label}</span>
                 </div>
                 <div style={{ display: 'flex', gap: 5, flexShrink: 0 }}>
-                  <button onClick={() => void aprovar(item.id)} disabled={bloqueado} style={{ background: 'rgba(61,122,110,.1)', color: 'var(--green)', border: '1px solid rgba(61,122,110,.25)', borderRadius: 7, padding: '5px 12px', fontSize: 11, fontWeight: 600, cursor: 'pointer' }}>
+                  <button onClick={() => void aprovar(item.id)} disabled={bloqueado} style={{ background: 'rgba(61,122,110,.1)', color: 'var(--green)', border: '1px solid rgba(61,122,110,.25)', borderRadius: 7, padding: '5px 12px', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
                     <i className="fa-solid fa-check" style={{ marginRight: 4 }} />Aprovar
                   </button>
-                  <button onClick={() => abrirMotivo(item.id, item.descricao)} disabled={bloqueado} style={{ background: 'rgba(176,65,62,.08)', color: 'var(--red)', border: '1px solid rgba(176,65,62,.2)', borderRadius: 7, padding: '5px 10px', fontSize: 11, cursor: 'pointer' }}>
+                  <button onClick={() => abrirMotivo(item.id, item.descricao)} disabled={bloqueado} style={{ background: 'rgba(176,65,62,.08)', color: 'var(--red)', border: '1px solid rgba(176,65,62,.2)', borderRadius: 7, padding: '5px 10px', fontSize: 13, cursor: 'pointer' }}>
                     <i className="fa-solid fa-xmark" />
                   </button>
                 </div>
@@ -248,17 +248,17 @@ export default function AprovacoesPage() {
                 {historico.map(h => (
                   <tr key={h.id}>
                     <td>
-                      <div style={{ fontWeight: 600, fontSize: 12 }}>{h.descricao}</div>
-                      <div style={{ fontSize: 10, color: 'var(--gray-400)' }}>{h.categoria}</div>
+                      <div style={{ fontWeight: 600, fontSize: 14 }}>{h.descricao}</div>
+                      <div style={{ fontSize: 12, color: 'var(--gray-400)' }}>{h.categoria}</div>
                     </td>
-                    <td style={{ fontSize: 12, color: 'var(--gray-500)' }}>{h.responsavel_nome || '—'}</td>
-                    <td style={{ textAlign: 'right', fontFamily: "var(--font-sans)", fontWeight: 700, fontSize: 12 }}>{formatBRL(Number(h.valor))}</td>
+                    <td style={{ fontSize: 14, color: 'var(--gray-500)' }}>{h.responsavel_nome || '—'}</td>
+                    <td style={{ textAlign: 'right', fontFamily: "var(--font-sans)", fontWeight: 700, fontSize: 14 }}>{formatBRL(Number(h.valor))}</td>
                     <td style={{ textAlign: 'center' }}>
-                      <span style={{ fontSize: 10, fontWeight: 700, padding: '3px 8px', borderRadius: 20, background: h.status === 'aprovado' ? 'rgba(61,122,110,.1)' : 'rgba(176,65,62,.1)', color: h.status === 'aprovado' ? 'var(--green)' : 'var(--red)' }}>
+                      <span style={{ fontSize: 12, fontWeight: 700, padding: '3px 8px', borderRadius: 20, background: h.status === 'aprovado' ? 'rgba(61,122,110,.1)' : 'rgba(176,65,62,.1)', color: h.status === 'aprovado' ? 'var(--green)' : 'var(--red)' }}>
                         {h.status === 'aprovado' ? 'Aprovado' : 'Rejeitado'}
                       </span>
                     </td>
-                    <td style={{ fontSize: 11, color: 'var(--gray-400)' }}>
+                    <td style={{ fontSize: 13, color: 'var(--gray-400)' }}>
                       {h.rejeitado_motivo ? <span title={h.rejeitado_motivo} style={{ color: 'var(--red)' }}>{h.rejeitado_motivo.slice(0, 40)}{h.rejeitado_motivo.length > 40 ? '…' : ''}</span>
                         : h.aprovado_em ? new Date(h.aprovado_em).toLocaleDateString('pt-BR') : '—'}
                     </td>
@@ -278,10 +278,10 @@ export default function AprovacoesPage() {
               <h3 className="modal-title">Rejeitar despesa</h3>
               <button className="modal-close" onClick={() => setModalMotivo(null)}><i className="fa-solid fa-xmark" /></button>
             </div>
-            <p style={{ fontSize: 13, color: 'var(--gray-500)', marginBottom: 14 }}>
+            <p style={{ fontSize: 15, color: 'var(--gray-500)', marginBottom: 14 }}>
               <strong>{modalMotivo.descricao}</strong>
             </p>
-            <label style={{ fontSize: 11, fontWeight: 600, color: 'var(--gray-500)', display: 'block', marginBottom: 6 }}>Motivo da rejeição</label>
+            <label style={{ fontSize: 13, fontWeight: 600, color: 'var(--gray-500)', display: 'block', marginBottom: 6 }}>Motivo da rejeição</label>
             <textarea style={{ ...inp, minHeight: 80, resize: 'vertical' }} placeholder="Descreva o motivo (opcional)" value={motivo} onChange={e => setMotivo(e.target.value)} />
             <div className="modal-actions" style={{ marginTop: 16 }}>
               <button className="btn-ghost" onClick={() => setModalMotivo(null)}>Cancelar</button>

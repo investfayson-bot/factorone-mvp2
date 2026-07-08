@@ -54,7 +54,7 @@ function statusTag(status: string) {
 
 const menuItemStyle: React.CSSProperties = {
   display: 'block', width: '100%', padding: '8px 12px', textAlign: 'left',
-  fontSize: 12, background: 'none', border: 'none', cursor: 'pointer', color: '#13201D',
+  fontSize: 14, background: 'none', border: 'none', cursor: 'pointer', color: '#13201D',
 }
 
 function lastDayOfMonth(y: number, m: number): string {
@@ -421,7 +421,7 @@ export default function DespesasPage() {
         <div className="kpi" style={{ borderTop: '3px solid #B0413E' }}>
           <div className="kpi-lbl">Total do mês
             <div style={{ width: 28, height: 28, borderRadius: 8, background: '#F4E4E1', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <i className="fa-solid fa-receipt" style={{ fontSize: 12, color: '#B0413E' }} />
+              <i className="fa-solid fa-receipt" style={{ fontSize: 14, color: '#B0413E' }} />
             </div>
           </div>
           <div className="kpi-val">{formatBRL(kpis.totalMes)}</div>
@@ -430,7 +430,7 @@ export default function DespesasPage() {
         <div className="kpi" style={{ borderTop: '3px solid #B08A3E' }}>
           <div className="kpi-lbl">A aprovar
             <div style={{ width: 28, height: 28, borderRadius: 8, background: '#F3ECDA', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <i className="fa-solid fa-clock" style={{ fontSize: 12, color: '#B08A3E' }} />
+              <i className="fa-solid fa-clock" style={{ fontSize: 14, color: '#B08A3E' }} />
             </div>
           </div>
           <div className="kpi-val">{formatBRL(kpis.aAprovar)}</div>
@@ -439,7 +439,7 @@ export default function DespesasPage() {
         <div className="kpi" style={{ borderTop: '3px solid #3D7A6E' }}>
           <div className="kpi-lbl">A pagar
             <div style={{ width: 28, height: 28, borderRadius: 8, background: '#E9F0ED', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <i className="fa-solid fa-check-circle" style={{ fontSize: 12, color: '#3D7A6E' }} />
+              <i className="fa-solid fa-check-circle" style={{ fontSize: 14, color: '#3D7A6E' }} />
             </div>
           </div>
           <div className="kpi-val">{formatBRL(kpis.aPagar)}</div>
@@ -448,7 +448,7 @@ export default function DespesasPage() {
         <div className="kpi" style={{ borderTop: `3px solid ${kpis.economia >= 0 ? '#3D7A6E' : '#B0413E'}` }}>
           <div className="kpi-lbl">Vs mês anterior
             <div style={{ width: 28, height: 28, borderRadius: 8, background: kpis.economia >= 0 ? '#E9F0ED' : '#F4E4E1', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <i className={`fa-solid ${kpis.economia >= 0 ? 'fa-arrow-trend-down' : 'fa-arrow-trend-up'}`} style={{ fontSize: 12, color: kpis.economia >= 0 ? '#3D7A6E' : '#B0413E' }} />
+              <i className={`fa-solid ${kpis.economia >= 0 ? 'fa-arrow-trend-down' : 'fa-arrow-trend-up'}`} style={{ fontSize: 14, color: kpis.economia >= 0 ? '#3D7A6E' : '#B0413E' }} />
             </div>
           </div>
           <div className="kpi-val">{kpis.economia >= 0 ? '+' : ''}{kpis.economia.toFixed(1)}%</div>
@@ -460,17 +460,17 @@ export default function DespesasPage() {
       <div className="cf-chart-card" style={{ marginBottom: 14 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
           <div className="chart-title" style={{ marginBottom: 0 }}>Categorização de Gastos</div>
-          <div style={{ fontSize: 10, color: '#7B8C88', fontFamily: "var(--font-sans)" }}>
+          <div style={{ fontSize: 12, color: '#7B8C88', fontFamily: "var(--font-sans)" }}>
             {categorizacao.pendentesN} pendentes · IA 94% automático
           </div>
         </div>
         {categorizacao.items.length === 0 ? (
-          <p style={{ fontSize: 12, color: '#7B8C88', textAlign: 'center', padding: '16px 0' }}>Sem despesas no mês para exibir distribuição.</p>
+          <p style={{ fontSize: 14, color: '#7B8C88', textAlign: 'center', padding: '16px 0' }}>Sem despesas no mês para exibir distribuição.</p>
         ) : (
           <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 8 }}>
             {categorizacao.items.map(it => (
               <li key={it.nome}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, marginBottom: 4 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, marginBottom: 4 }}>
                   <span style={{ fontWeight: 600, color: '#13201D' }}>{it.nome}</span>
                   <span style={{ fontFamily: "var(--font-sans)", color: '#7B8C88' }}>{formatBRL(it.valor)} · {it.pct.toFixed(1)}%</span>
                 </div>
@@ -485,23 +485,23 @@ export default function DespesasPage() {
 
       {/* Filtros */}
       <div style={{ display: 'flex', gap: 8, marginBottom: 10, flexWrap: 'wrap', alignItems: 'center' }}>
-        <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Buscar…" className="form-input" style={{ width: 200, padding: '6px 10px', fontSize: 12 }} />
-        <select value={filtroStatus} onChange={e => setFiltroStatus(e.target.value)} className="form-input" style={{ width: 'auto', padding: '6px 10px', fontSize: 12 }}>
+        <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Buscar…" className="form-input" style={{ width: 200, padding: '6px 10px', fontSize: 14 }} />
+        <select value={filtroStatus} onChange={e => setFiltroStatus(e.target.value)} className="form-input" style={{ width: 'auto', padding: '6px 10px', fontSize: 14 }}>
           <option value="">Status (todos)</option>
           {STATUS_ORDER.map(s => <option key={s} value={s}>{STATUS_LABEL[s]}</option>)}
         </select>
-        <select value={filtroCategoria} onChange={e => setFiltroCategoria(e.target.value)} className="form-input" style={{ width: 'auto', padding: '6px 10px', fontSize: 12 }}>
+        <select value={filtroCategoria} onChange={e => setFiltroCategoria(e.target.value)} className="form-input" style={{ width: 'auto', padding: '6px 10px', fontSize: 14 }}>
           <option value="">Categoria</option>
           {categorias.map(c => <option key={c} value={c}>{c}</option>)}
         </select>
-        <select value={filtroCentro} onChange={e => setFiltroCentro(e.target.value)} className="form-input" style={{ width: 'auto', padding: '6px 10px', fontSize: 12 }}>
+        <select value={filtroCentro} onChange={e => setFiltroCentro(e.target.value)} className="form-input" style={{ width: 'auto', padding: '6px 10px', fontSize: 14 }}>
           <option value="">Centro de custo</option>
           {centros.map(c => <option key={c.id} value={c.id}>{c.nome}</option>)}
         </select>
-        <select value={mes} onChange={e => setMes(Number(e.target.value))} className="form-input" style={{ width: 'auto', padding: '6px 10px', fontSize: 12 }}>
+        <select value={mes} onChange={e => setMes(Number(e.target.value))} className="form-input" style={{ width: 'auto', padding: '6px 10px', fontSize: 14 }}>
           {Array.from({ length: 12 }, (_, i) => i + 1).map(m => <option key={m} value={m}>{new Date(2000, m - 1).toLocaleString('pt-BR', { month: 'short' })}</option>)}
         </select>
-        <select value={ano} onChange={e => setAno(Number(e.target.value))} className="form-input" style={{ width: 'auto', padding: '6px 10px', fontSize: 12 }}>
+        <select value={ano} onChange={e => setAno(Number(e.target.value))} className="form-input" style={{ width: 'auto', padding: '6px 10px', fontSize: 14 }}>
           {[ano - 1, ano, ano + 1].map(y => <option key={y} value={y}>{y}</option>)}
         </select>
       </div>
@@ -509,18 +509,18 @@ export default function DespesasPage() {
       {/* Tabs */}
       <div style={{ display: 'flex', gap: 6, marginBottom: 10 }}>
         {([['todas', 'Todas'], ['pendente', 'Pendente'], ['aprovadas', 'Aprovadas'], ['pagas', 'Pagas']] as const).map(([k, label]) => (
-          <button key={k} className={`btn-action${tab !== k ? ' btn-ghost' : ''}`} style={{ fontSize: 11, padding: '5px 12px' }} onClick={() => setTab(k)}>{label}</button>
+          <button key={k} className={`btn-action${tab !== k ? ' btn-ghost' : ''}`} style={{ fontSize: 13, padding: '5px 12px' }} onClick={() => setTab(k)}>{label}</button>
         ))}
       </div>
 
       {/* Lote */}
       {selected.size > 0 && (
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'rgba(61,122,110,.08)', border: '1px solid rgba(61,122,110,.2)', borderRadius: 10, padding: '8px 14px', fontSize: 12, marginBottom: 10 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'rgba(61,122,110,.08)', border: '1px solid rgba(61,122,110,.2)', borderRadius: 10, padding: '8px 14px', fontSize: 14, marginBottom: 10 }}>
           <span style={{ fontWeight: 600, color: '#3D7A6E' }}>{selected.size} selecionada(s)</span>
-          <button className="btn-action btn-ghost" style={{ fontSize: 11, padding: '4px 10px' }} onClick={() => void aprovarLote()}>Aprovar</button>
-          <button className="btn-action btn-ghost" style={{ fontSize: 11, padding: '4px 10px' }} onClick={() => void marcarPagoLote()}>Pagar</button>
-          <button className="btn-action btn-ghost" style={{ fontSize: 11, padding: '4px 10px' }} onClick={() => exportarCsv(rows.filter(r => selected.has(r.id)))}>Exportar</button>
-          <button style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 11, color: '#7B8C88' }} onClick={() => setSelected(new Set())}>Limpar</button>
+          <button className="btn-action btn-ghost" style={{ fontSize: 13, padding: '4px 10px' }} onClick={() => void aprovarLote()}>Aprovar</button>
+          <button className="btn-action btn-ghost" style={{ fontSize: 13, padding: '4px 10px' }} onClick={() => void marcarPagoLote()}>Pagar</button>
+          <button className="btn-action btn-ghost" style={{ fontSize: 13, padding: '4px 10px' }} onClick={() => exportarCsv(rows.filter(r => selected.has(r.id)))}>Exportar</button>
+          <button style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 13, color: '#7B8C88' }} onClick={() => setSelected(new Set())}>Limpar</button>
         </div>
       )}
 
@@ -544,7 +544,7 @@ export default function DespesasPage() {
                 <td><input type="checkbox" checked={selected.has(r.id)} onChange={() => toggleOne(r.id)} /></td>
                 <td style={{ fontWeight: 600 }}>
                   {r.descricao}
-                  {r.recorrente && <span style={{ fontSize: 10, color: '#7B8C88', marginLeft: 6 }}>(recorrente)</span>}
+                  {r.recorrente && <span style={{ fontSize: 12, color: '#7B8C88', marginLeft: 6 }}>(recorrente)</span>}
                 </td>
                 <td>{r.responsavel_nome || '—'}</td>
                 <td>{r.categoria}</td>
@@ -603,7 +603,7 @@ export default function DespesasPage() {
           </>
         }
       >
-            <p style={{ fontSize: 12, color: '#7B8C88', marginBottom: 12 }}>Informe o motivo (visível no histórico).</p>
+            <p style={{ fontSize: 14, color: '#7B8C88', marginBottom: 12 }}>Informe o motivo (visível no histórico).</p>
             <textarea value={motivoRejeicao} onChange={e => setMotivoRejeicao(e.target.value)} rows={3} className="form-input" style={{ resize: 'vertical', height: 80 }} placeholder="Motivo da rejeição" />
       </Modal>
     </>

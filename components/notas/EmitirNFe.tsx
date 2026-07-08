@@ -32,7 +32,7 @@ const produtoVazio = (): Produto => ({
 })
 
 const card: React.CSSProperties = { background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: 16, marginBottom: 14 }
-const sectionTitle: React.CSSProperties = { fontSize: 12, fontWeight: 700, color: 'var(--navy)', marginBottom: 12 }
+const sectionTitle: React.CSSProperties = { fontSize: 14, fontWeight: 700, color: 'var(--navy)', marginBottom: 12 }
 
 export default function EmitirNFe() {
   const [loading, setLoading] = useState(false)
@@ -113,7 +113,7 @@ export default function EmitirNFe() {
       <div style={card}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
           <div style={sectionTitle}>Produtos</div>
-          <button type="button" onClick={() => setProdutos((p) => [...p, produtoVazio()])} className="btn-action" style={{ fontSize: 10, padding: '3px 10px' }}>+ Adicionar</button>
+          <button type="button" onClick={() => setProdutos((p) => [...p, produtoVazio()])} className="btn-action" style={{ fontSize: 12, padding: '3px 10px' }}>+ Adicionar</button>
         </div>
         {produtos.map((p, idx) => (
           <div key={p.id} style={{ border: '1px solid var(--gray-100)', borderRadius: 8, padding: 12, marginBottom: 8, position: 'relative' }}>
@@ -135,7 +135,7 @@ export default function EmitirNFe() {
                 {ICMS.map((i) => <option key={i} value={i}>ICMS {i}%</option>)}
               </select>
             </div>
-            <div style={{ fontSize: 10, color: 'var(--gray-400)', marginTop: 6 }}>Item {idx + 1}: {(p.quantidade * p.valorUnitario).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</div>
+            <div style={{ fontSize: 12, color: 'var(--gray-400)', marginTop: 6 }}>Item {idx + 1}: {(p.quantidade * p.valorUnitario).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</div>
           </div>
         ))}
       </div>
@@ -160,9 +160,9 @@ export default function EmitirNFe() {
       {/* Preview + emit */}
       <div style={{ background: 'var(--navy)', borderRadius: 12, padding: 18, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, marginBottom: 14 }}>
         <div>
-          <div style={{ fontSize: 9.5, color: 'rgba(255,255,255,.5)', textTransform: 'uppercase', fontFamily: "var(--font-sans)", marginBottom: 4 }}>Preview</div>
+          <div style={{ fontSize: 11.5, color: 'rgba(255,255,255,.5)', textTransform: 'uppercase', fontFamily: "var(--font-sans)", marginBottom: 4 }}>Preview</div>
           <div style={{ fontSize: 16, fontWeight: 700, color: '#fff' }}>Total: {totais.total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</div>
-          <div style={{ fontSize: 11, color: 'rgba(255,255,255,.6)' }}>ICMS estimado: {totais.icms.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</div>
+          <div style={{ fontSize: 13, color: 'rgba(255,255,255,.6)' }}>ICMS estimado: {totais.icms.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</div>
         </div>
         <button type="button" disabled={loading} onClick={emitir} className="btn-action" style={{ opacity: loading ? .6 : 1, flexShrink: 0 }}>
           {loading ? 'Emitindo...' : 'Emitir NF-e'}
@@ -170,7 +170,7 @@ export default function EmitirNFe() {
       </div>
 
       {msg && (
-        <div style={{ borderRadius: 8, padding: '10px 14px', fontSize: 12, background: msg.type === 'ok' ? 'rgba(61,122,110,.1)' : 'rgba(176,65,62,.1)', color: msg.type === 'ok' ? 'var(--green)' : 'var(--red)', border: `1px solid ${msg.type === 'ok' ? 'rgba(61,122,110,.25)' : 'rgba(176,65,62,.2)'}` }}>
+        <div style={{ borderRadius: 8, padding: '10px 14px', fontSize: 14, background: msg.type === 'ok' ? 'rgba(61,122,110,.1)' : 'rgba(176,65,62,.1)', color: msg.type === 'ok' ? 'var(--green)' : 'var(--red)', border: `1px solid ${msg.type === 'ok' ? 'rgba(61,122,110,.25)' : 'rgba(176,65,62,.2)'}` }}>
           {msg.text}
         </div>
       )}

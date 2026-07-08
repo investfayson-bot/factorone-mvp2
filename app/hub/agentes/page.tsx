@@ -50,7 +50,7 @@ export default function AgentesPage() {
     <div style={{ display: 'grid', gridTemplateColumns: '260px 1fr', gap: 16, height: '100%', minHeight: 0 }}>
       {/* Lista de agentes */}
       <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: 10, overflowY: 'auto' }}>
-        <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.06em', padding: '6px 8px' }}>
+        <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.06em', padding: '6px 8px' }}>
           Squad FactorOne AI
         </div>
         {AGENTES.map((a) => {
@@ -66,12 +66,12 @@ export default function AgentesPage() {
                 background: sel ? `${a.cor}10` : 'transparent',
               }}
             >
-              <div style={{ width: 32, height: 32, borderRadius: 8, flexShrink: 0, background: a.cor, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 800 }}>
+              <div style={{ width: 32, height: 32, borderRadius: 8, flexShrink: 0, background: a.cor, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 800 }}>
                 {a.inicial}
               </div>
               <div style={{ minWidth: 0 }}>
-                <div style={{ fontSize: 12.5, fontWeight: 600, color: 'var(--navy)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{a.nome}</div>
-                <div style={{ fontSize: 10.5, color: 'var(--gray-400)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{a.especialidade}</div>
+                <div style={{ fontSize: 14.5, fontWeight: 600, color: 'var(--navy)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{a.nome}</div>
+                <div style={{ fontSize: 12.5, color: 'var(--gray-400)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{a.especialidade}</div>
               </div>
             </button>
           )
@@ -81,12 +81,12 @@ export default function AgentesPage() {
       {/* Chat */}
       <div style={{ display: 'flex', flexDirection: 'column', background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, minHeight: 0 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px', borderBottom: '1px solid var(--gray-100)' }}>
-          <div style={{ width: 38, height: 38, borderRadius: 9, background: ativo.cor, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 800 }}>{ativo.inicial}</div>
+          <div style={{ width: 38, height: 38, borderRadius: 9, background: ativo.cor, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 15, fontWeight: 800 }}>{ativo.inicial}</div>
           <div>
             <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--navy)' }}>{ativo.nome}</div>
-            <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>{ativo.especialidade}</div>
+            <div style={{ fontSize: 13, color: 'var(--gray-400)' }}>{ativo.especialidade}</div>
           </div>
-          <div style={{ marginLeft: 'auto', fontSize: 9, fontWeight: 700, padding: '3px 8px', borderRadius: 20, background: 'rgba(124,58,237,.1)', color: '#7A6A9E' }}>FactorOne AI</div>
+          <div style={{ marginLeft: 'auto', fontSize: 11, fontWeight: 700, padding: '3px 8px', borderRadius: 20, background: 'rgba(124,58,237,.1)', color: '#7A6A9E' }}>FactorOne AI</div>
         </div>
 
         <div ref={scrollRef} style={{ flex: 1, overflowY: 'auto', padding: 16, display: 'flex', flexDirection: 'column', gap: 12, minHeight: 0 }}>
@@ -94,10 +94,10 @@ export default function AgentesPage() {
             <div style={{ margin: 'auto', textAlign: 'center', maxWidth: 420 }}>
               <div style={{ width: 56, height: 56, borderRadius: 14, background: ativo.cor, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, fontWeight: 800, margin: '0 auto 14px' }}>{ativo.inicial}</div>
               <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--navy)', marginBottom: 4 }}>Converse com {ativo.nome}</div>
-              <div style={{ fontSize: 12, color: 'var(--gray-400)', marginBottom: 16 }}>{ativo.especialidade}</div>
+              <div style={{ fontSize: 14, color: 'var(--gray-400)', marginBottom: 16 }}>{ativo.especialidade}</div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                 {ativo.sugestoes.map((s) => (
-                  <button key={s} onClick={() => void enviar(s)} style={{ fontSize: 12, color: 'var(--navy)', background: '#fafafa', border: '1px solid var(--gray-100)', borderRadius: 9, padding: '9px 12px', cursor: 'pointer', textAlign: 'left' }}>
+                  <button key={s} onClick={() => void enviar(s)} style={{ fontSize: 14, color: 'var(--navy)', background: '#fafafa', border: '1px solid var(--gray-100)', borderRadius: 9, padding: '9px 12px', cursor: 'pointer', textAlign: 'left' }}>
                     {s}
                   </button>
                 ))}
@@ -107,7 +107,7 @@ export default function AgentesPage() {
           {mensagens.map((m, i) => (
             <div key={i} style={{ display: 'flex', justifyContent: m.role === 'user' ? 'flex-end' : 'flex-start' }}>
               <div style={{
-                maxWidth: '80%', padding: '10px 14px', borderRadius: 12, fontSize: 13, lineHeight: 1.6, whiteSpace: 'pre-wrap',
+                maxWidth: '80%', padding: '10px 14px', borderRadius: 12, fontSize: 15, lineHeight: 1.6, whiteSpace: 'pre-wrap',
                 background: m.role === 'user' ? ativo.cor : '#f4f5f7',
                 color: m.role === 'user' ? '#fff' : 'var(--navy)',
               }}>
@@ -117,7 +117,7 @@ export default function AgentesPage() {
           ))}
           {loading && (
             <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
-              <div style={{ padding: '10px 14px', borderRadius: 12, fontSize: 13, background: '#f4f5f7', color: 'var(--gray-400)' }}>Pensando…</div>
+              <div style={{ padding: '10px 14px', borderRadius: 12, fontSize: 15, background: '#f4f5f7', color: 'var(--gray-400)' }}>Pensando…</div>
             </div>
           )}
         </div>

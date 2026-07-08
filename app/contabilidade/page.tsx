@@ -156,7 +156,7 @@ export default function ContabilidadePage() {
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'rgba(61,122,110,.08)', border: '1px solid rgba(61,122,110,.25)', borderRadius: 20, padding: '5px 12px' }}>
           <div className="live-dot" style={{ width: 6, height: 6 }} />
-          <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--teal)', letterSpacing: '.04em' }}>Tempo Real</span>
+          <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--teal)', letterSpacing: '.04em' }}>Tempo Real</span>
         </div>
       </div>
 
@@ -191,7 +191,7 @@ export default function ContabilidadePage() {
             type="button"
             onClick={() => setTab(id as typeof tab)}
             style={{
-              padding: '7px 14px', borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: 'pointer', border: '1px solid',
+              padding: '7px 14px', borderRadius: 8, fontSize: 14, fontWeight: 600, cursor: 'pointer', border: '1px solid',
               background: tab === id ? 'var(--navy)' : '#fff',
               color: tab === id ? '#fff' : 'var(--gray-500)',
               borderColor: tab === id ? 'var(--navy)' : 'var(--gray-100)',
@@ -204,12 +204,12 @@ export default function ContabilidadePage() {
 
       {tab === 'visao' && (
         <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: 20 }}>
-          <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy)', marginBottom: 16 }}>Fluxo contábil</div>
+          <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--navy)', marginBottom: 16 }}>Fluxo contábil</div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12 }}>
             {[['fa-camera', 'Foto'], ['fa-brain', 'IA Extrai'], ['fa-chart-column', 'DRE Atualizado'], ['fa-user', 'Contador Valida']].map(([icon, title]) => (
               <div key={title} style={{ background: 'rgba(61,122,110,.04)', border: '1px solid var(--gray-100)', borderRadius: 10, padding: '14px 12px' }}>
                 <div style={{ fontSize: 20, marginBottom: 8 }}>{icon}</div>
-                <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--navy)' }}>{title}</div>
+                <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--navy)' }}>{title}</div>
               </div>
             ))}
           </div>
@@ -218,8 +218,8 @@ export default function ContabilidadePage() {
 
       {tab === 'recibos' && (
         <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: 20 }}>
-          <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy)', marginBottom: 14 }}>Captura de recibos</div>
-          <label style={{ display: 'flex', minHeight: 120, cursor: 'pointer', alignItems: 'center', justifyContent: 'center', borderRadius: 10, border: '2px dashed var(--gray-100)', background: '#fafafa', fontSize: 13, color: 'var(--gray-400)' }}>
+          <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--navy)', marginBottom: 14 }}>Captura de recibos</div>
+          <label style={{ display: 'flex', minHeight: 120, cursor: 'pointer', alignItems: 'center', justifyContent: 'center', borderRadius: 10, border: '2px dashed var(--gray-100)', background: '#fafafa', fontSize: 15, color: 'var(--gray-400)' }}>
             <span>Arraste ou selecione imagem/PDF</span>
             <input
               type="file"
@@ -239,7 +239,7 @@ export default function ContabilidadePage() {
           </div>
           <div style={{ marginTop: 14, display: 'flex', flexDirection: 'column', gap: 8 }}>
             {recibos.map((r) => (
-              <div key={r.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, border: '1px solid var(--gray-100)', borderRadius: 8, padding: '8px 12px', fontSize: 12 }}>
+              <div key={r.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, border: '1px solid var(--gray-100)', borderRadius: 8, padding: '8px 12px', fontSize: 14 }}>
                 <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontWeight: 600 }}>{r.fornecedor_extraido || 'Recibo'}</span>
                 <span style={{ color: 'var(--gray-400)' }}>{r.categoria_sugerida || '—'}</span>
                 <span style={{ fontFamily: "var(--font-sans)", fontWeight: 700 }}>{r.valor_extraido ? fmtBRLCompact(Number(r.valor_extraido)) : '—'}</span>
@@ -251,14 +251,14 @@ export default function ContabilidadePage() {
       )}
 
       {tab === 'lancamentos' && (
-        <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: '20px 16px', fontSize: 13, color: 'var(--gray-400)' }}>
+        <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: '20px 16px', fontSize: 15, color: 'var(--gray-400)' }}>
           Tabela de lançamentos contábeis será conectada ao livro razão na próxima etapa.
         </div>
       )}
 
       {tab === 'contador' && (
         <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: 20 }}>
-          <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy)', marginBottom: 14 }}>Convidar contador</div>
+          <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--navy)', marginBottom: 14 }}>Convidar contador</div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 8, marginBottom: 10 }}>
             <input className="form-input" placeholder="Nome" value={formCont.nome} onChange={(e) => setFormCont((f) => ({ ...f, nome: e.target.value }))} />
             <input className="form-input" placeholder="Email" value={formCont.email} onChange={(e) => setFormCont((f) => ({ ...f, email: e.target.value }))} />
@@ -272,7 +272,7 @@ export default function ContabilidadePage() {
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             {contadores.map((c) => (
-              <div key={c.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, border: '1px solid var(--gray-100)', borderRadius: 8, padding: '10px 12px', fontSize: 12 }}>
+              <div key={c.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, border: '1px solid var(--gray-100)', borderRadius: 8, padding: '10px 12px', fontSize: 14 }}>
                 <span style={{ fontWeight: 700, color: 'var(--navy)' }}>{c.nome}</span>
                 <span style={{ color: 'var(--gray-400)' }}>{c.email}</span>
                 <span className="tag gray">{c.status}</span>
@@ -283,7 +283,7 @@ export default function ContabilidadePage() {
       )}
 
       {tab === 'exportacoes' && (
-        <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: '20px 16px', fontSize: 13, color: 'var(--gray-400)' }}>
+        <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: '20px 16px', fontSize: 15, color: 'var(--gray-400)' }}>
           Exportações contábeis (SPED/ECD/ECF) prontas para integração em próximo bloco.
         </div>
       )}
@@ -292,14 +292,14 @@ export default function ContabilidadePage() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
           <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
             <div>
-              <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy)' }}>Simples Nacional — DAS Estimado</div>
-              <div style={{ fontSize: 11, color: 'var(--gray-400)', marginTop: 2 }}>Baseado nas transações registradas · tabelas 2024</div>
+              <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--navy)' }}>Simples Nacional — DAS Estimado</div>
+              <div style={{ fontSize: 13, color: 'var(--gray-400)', marginTop: 2 }}>Baseado nas transações registradas · tabelas 2024</div>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <span style={{ fontSize: 11, color: 'var(--gray-400)' }}>Anexo</span>
+              <span style={{ fontSize: 13, color: 'var(--gray-400)' }}>Anexo</span>
               <select
                 className="form-input"
-                style={{ width: 'auto', padding: '5px 10px', fontSize: 11 }}
+                style={{ width: 'auto', padding: '5px 10px', fontSize: 13 }}
                 value={dasAnexo}
                 onChange={e => { const v = e.target.value as AnexoSimples; setDasAnexo(v); setDas(null) }}
               >
@@ -313,7 +313,7 @@ export default function ContabilidadePage() {
                 loading={dasLoading}
                 onClick={() => { setDas(null); void carregarDAS(dasAnexo) }}
                 className="btn-ghost"
-                style={{ padding: '5px 12px', fontSize: 11 }}
+                style={{ padding: '5px 12px', fontSize: 13 }}
               >
                 Recalcular
               </LoadingButton>
@@ -351,16 +351,16 @@ export default function ContabilidadePage() {
 
               {das.alertas.length > 0 && (
                 <div style={{ background: 'rgba(234,179,8,.06)', border: '1px solid rgba(234,179,8,.3)', borderRadius: 12, padding: '14px 16px' }}>
-                  <div style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '.06em', color: 'var(--gold)', marginBottom: 8 }}>Alertas fiscais</div>
+                  <div style={{ fontSize: 13, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '.06em', color: 'var(--gold)', marginBottom: 8 }}>Alertas fiscais</div>
                   {das.alertas.map((a, i) => (
-                    <div key={i} style={{ fontSize: 13, color: '#92400e', marginBottom: 4 }}>{a}</div>
+                    <div key={i} style={{ fontSize: 15, color: '#92400e', marginBottom: 4 }}>{a}</div>
                   ))}
                 </div>
               )}
 
               <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: '18px 16px' }}>
-                <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy)', marginBottom: 12 }}>Composição da alíquota</div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 8, fontSize: 12 }}>
+                <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--navy)', marginBottom: 12 }}>Composição da alíquota</div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 8, fontSize: 14 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--gray-400)' }}>
                     <span>Receita bruta mensal</span>
                     <span style={{ fontWeight: 700, color: 'var(--navy)' }}>{formatBRL(das.receitaMes)}</span>
@@ -378,7 +378,7 @@ export default function ContabilidadePage() {
                     <span style={{ color: 'var(--red)' }}>{formatBRL(das.valorDAS)}</span>
                   </div>
                 </div>
-                <div style={{ marginTop: 14, fontSize: 11, color: 'var(--gray-400)', lineHeight: 1.6 }}>
+                <div style={{ marginTop: 14, fontSize: 13, color: 'var(--gray-400)', lineHeight: 1.6 }}>
                   Estimativa baseada nas transações registradas. Valores definitivos devem ser gerados pelo PGDAS-D no portal do Simples Nacional.
                 </div>
               </div>

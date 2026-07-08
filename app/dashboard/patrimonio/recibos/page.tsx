@@ -90,7 +90,7 @@ export default function RecibosPage() {
           <div className="page-title">Recibos de Locação</div>
           <div className="page-sub">Emita o recibo com o detalhe. Ao marcar como pago, o líquido entra no Fluxo/DRE.</div>
         </div>
-        <button className="btn-action" style={{ fontSize: 12 }} onClick={abrirNovo}><i className="fa-solid fa-plus" style={{ marginRight: 6 }} />Novo recibo</button>
+        <button className="btn-action" style={{ fontSize: 14 }} onClick={abrirNovo}><i className="fa-solid fa-plus" style={{ marginRight: 6 }} />Novo recibo</button>
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 12, marginBottom: 18 }}>
@@ -101,8 +101,8 @@ export default function RecibosPage() {
         ].map(k => (
           <div key={k.lbl} className="kpi" style={{ padding: '14px 16px' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <span style={{ fontSize: 10, fontWeight: 600, color: 'var(--ink-mut)', textTransform: 'uppercase', letterSpacing: '.08em' }}>{k.lbl}</span>
-              <i className={`fa-solid ${k.ic}`} style={{ fontSize: 12, color: k.cor }} />
+              <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--ink-mut)', textTransform: 'uppercase', letterSpacing: '.08em' }}>{k.lbl}</span>
+              <i className={`fa-solid ${k.ic}`} style={{ fontSize: 14, color: k.cor }} />
             </div>
             <div style={{ fontSize: 21, fontWeight: 700, color: k.cor, marginTop: 8, fontVariantNumeric: 'tabular-nums' }}>{k.val}</div>
           </div>
@@ -113,28 +113,28 @@ export default function RecibosPage() {
         <div className="txs-card" style={{ padding: 44, textAlign: 'center' }}>
           <i className="fa-solid fa-receipt" style={{ fontSize: 28, color: 'var(--sage)', marginBottom: 12 }} />
           <div style={{ fontFamily: 'var(--font-display)', fontSize: 16, fontWeight: 600, color: 'var(--ink)', marginBottom: 6 }}>Emita seu primeiro recibo</div>
-          <div style={{ fontSize: 12.5, color: 'var(--ink-mut)', maxWidth: 440, margin: '0 auto 14px' }}>Puxe os dados de um imóvel, detalhe os valores e receba — o líquido cai na DRE.</div>
-          <button className="btn-action" style={{ fontSize: 12 }} onClick={abrirNovo}><i className="fa-solid fa-plus" style={{ marginRight: 6 }} />Novo recibo</button>
+          <div style={{ fontSize: 14.5, color: 'var(--ink-mut)', maxWidth: 440, margin: '0 auto 14px' }}>Puxe os dados de um imóvel, detalhe os valores e receba — o líquido cai na DRE.</div>
+          <button className="btn-action" style={{ fontSize: 14 }} onClick={abrirNovo}><i className="fa-solid fa-plus" style={{ marginRight: 6 }} />Novo recibo</button>
         </div>
       ) : (
         <div className="txs-card">
-          <div style={{ display: 'grid', gridTemplateColumns: '48px 1fr 90px 120px 110px 130px', gap: 12, padding: '11px 18px', borderBottom: '1px solid var(--line)', background: 'var(--surface-2)', fontSize: 10, fontWeight: 600, color: 'var(--ink-mut)', textTransform: 'uppercase', letterSpacing: '.06em' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '48px 1fr 90px 120px 110px 130px', gap: 12, padding: '11px 18px', borderBottom: '1px solid var(--line)', background: 'var(--surface-2)', fontSize: 12, fontWeight: 600, color: 'var(--ink-mut)', textTransform: 'uppercase', letterSpacing: '.06em' }}>
             <span>Nº</span><span>Locatário / imóvel</span><span>Período</span><span style={{ textAlign: 'right' }}>Líquido</span><span>Status</span><span />
           </div>
           {recibos.map((r, i) => (
             <div key={r.id} style={{ display: 'grid', gridTemplateColumns: '48px 1fr 90px 120px 110px 130px', gap: 12, alignItems: 'center', padding: '12px 18px', borderBottom: i < recibos.length - 1 ? '1px solid var(--line-soft)' : 'none' }}>
-              <span style={{ fontSize: 12, color: 'var(--ink-mut)', fontFamily: 'var(--font-mono)' }}>#{r.numero || i + 1}</span>
+              <span style={{ fontSize: 14, color: 'var(--ink-mut)', fontFamily: 'var(--font-mono)' }}>#{r.numero || i + 1}</span>
               <div style={{ minWidth: 0 }}>
-                <div style={{ fontSize: 12.5, fontWeight: 600, color: 'var(--ink)' }}>{r.locatario}</div>
-                <div style={{ fontSize: 11, color: 'var(--ink-mut)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{r.endereco || '—'}</div>
+                <div style={{ fontSize: 14.5, fontWeight: 600, color: 'var(--ink)' }}>{r.locatario}</div>
+                <div style={{ fontSize: 13, color: 'var(--ink-mut)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{r.endereco || '—'}</div>
               </div>
-              <span style={{ fontSize: 12, color: 'var(--ink-soft)' }}>{r.periodo}</span>
-              <span style={{ textAlign: 'right', fontSize: 13, fontWeight: 700, color: 'var(--ink)', fontVariantNumeric: 'tabular-nums' }}>{formatBRL(liquido(r))}</span>
-              <span style={{ justifySelf: 'start', fontSize: 9.5, fontWeight: 600, padding: '3px 9px', borderRadius: 100, textTransform: 'uppercase', letterSpacing: '.05em', color: r.pagamento ? 'var(--sage-deep)' : 'var(--gold)', background: r.pagamento ? 'var(--sage-tint)' : 'var(--gold-tint)' }}>{r.pagamento ? 'Pago' : 'Pendente'}</span>
+              <span style={{ fontSize: 14, color: 'var(--ink-soft)' }}>{r.periodo}</span>
+              <span style={{ textAlign: 'right', fontSize: 15, fontWeight: 700, color: 'var(--ink)', fontVariantNumeric: 'tabular-nums' }}>{formatBRL(liquido(r))}</span>
+              <span style={{ justifySelf: 'start', fontSize: 11.5, fontWeight: 600, padding: '3px 9px', borderRadius: 100, textTransform: 'uppercase', letterSpacing: '.05em', color: r.pagamento ? 'var(--sage-deep)' : 'var(--gold)', background: r.pagamento ? 'var(--sage-tint)' : 'var(--gold-tint)' }}>{r.pagamento ? 'Pago' : 'Pendente'}</span>
               <div style={{ display: 'flex', gap: 6, justifyContent: 'flex-end' }}>
-                {!r.pagamento && <button className="btn-action" title="Marcar pago (lança no fluxo)" style={{ fontSize: 11, padding: '6px 10px' }} disabled={busy} onClick={() => void marcarPago(r)}><i className="fa-solid fa-check" /></button>}
-                <button className="btn-ghost" title="Editar" style={{ fontSize: 11, padding: '6px 10px' }} onClick={() => abrirEdit(r)}><i className="fa-solid fa-pen" /></button>
-                <button className="btn-ghost" title="Excluir" style={{ fontSize: 11, padding: '6px 10px', color: '#B0413E', borderColor: '#B0413E' }} onClick={() => excluir(r.id)}><i className="fa-solid fa-trash-can" /></button>
+                {!r.pagamento && <button className="btn-action" title="Marcar pago (lança no fluxo)" style={{ fontSize: 13, padding: '6px 10px' }} disabled={busy} onClick={() => void marcarPago(r)}><i className="fa-solid fa-check" /></button>}
+                <button className="btn-ghost" title="Editar" style={{ fontSize: 13, padding: '6px 10px' }} onClick={() => abrirEdit(r)}><i className="fa-solid fa-pen" /></button>
+                <button className="btn-ghost" title="Excluir" style={{ fontSize: 13, padding: '6px 10px', color: '#B0413E', borderColor: '#B0413E' }} onClick={() => excluir(r.id)}><i className="fa-solid fa-trash-can" /></button>
               </div>
             </div>
           ))}
@@ -177,7 +177,7 @@ export default function RecibosPage() {
             </div>
             <div className="form-group"><label className="form-label">Vencimento</label><input className="form-input" type="date" value={form.vencimento} onChange={e => setForm(f => ({ ...f, vencimento: e.target.value }))} /></div>
             <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 14px', background: 'var(--surface-2)', borderRadius: 8, marginBottom: 4 }}>
-              <span style={{ fontSize: 12, color: 'var(--ink-mut)' }}>Bruto {formatBRL(bruto(form))} − comissão − desconto</span>
+              <span style={{ fontSize: 14, color: 'var(--ink-mut)' }}>Bruto {formatBRL(bruto(form))} − comissão − desconto</span>
               <span style={{ fontSize: 15, fontWeight: 700, color: 'var(--sage-deep)' }}>Líquido {formatBRL(liquido(form))}</span>
             </div>
             <div className="modal-actions">

@@ -57,12 +57,12 @@ export function RespostaIA({ data, pergunta = '' }: { data: RespostaData; pergun
           display: 'inline-flex', alignItems: 'center', gap: 5,
           padding: '5px 12px', borderRadius: 7, border: 'none',
           background: disabled ? '#A6B0AC' : bg, color: '#fff',
-          fontSize: 11, fontWeight: 700, cursor: disabled ? 'not-allowed' : 'pointer',
+          fontSize: 13, fontWeight: 700, cursor: disabled ? 'not-allowed' : 'pointer',
           fontFamily: "var(--font-sans)", opacity: disabled ? 0.7 : 1,
           transition: 'opacity 0.15s',
         }}
       >
-        {icon && <i className={`fa-solid ${icon}`} style={{ fontSize: 10 }} />}
+        {icon && <i className={`fa-solid ${icon}`} style={{ fontSize: 12 }} />}
         {label}
       </button>
     )
@@ -74,25 +74,25 @@ export function RespostaIA({ data, pergunta = '' }: { data: RespostaData; pergun
         {!fechar && (
           <button
             onClick={() => setExpandido(true)}
-            style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '5px 12px', borderRadius: 7, border: '0.5px solid #E4DCCC', background: '#fff', color: '#13201D', fontSize: 11, fontWeight: 700, cursor: 'pointer', fontFamily: "var(--font-sans)" }}
+            style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '5px 12px', borderRadius: 7, border: '0.5px solid #E4DCCC', background: '#fff', color: '#13201D', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: "var(--font-sans)" }}
           >
-            <i className="fa-solid fa-expand" style={{ fontSize: 10 }} />Tela cheia
+            <i className="fa-solid fa-expand" style={{ fontSize: 12 }} />Tela cheia
           </button>
         )}
         <BotaoAcao label={exportandoExcel ? 'Gerando...' : 'Excel'} onClick={handleExportExcel} bg="#2B564D" disabled={exportandoExcel} icon="fa-file-excel" />
         <BotaoAcao label={exportandoPdf ? 'Gerando...' : 'PDF'} onClick={() => void handleExportPDF()} bg="#B0413E" disabled={exportandoPdf} icon="fa-file-pdf" />
-        <a href={wppUrl} target="_blank" rel="noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '5px 12px', borderRadius: 7, border: 'none', background: '#25D366', color: '#fff', fontSize: 11, fontWeight: 700, textDecoration: 'none', fontFamily: "var(--font-sans)" }}>
-          <i className="fa-brands fa-whatsapp" style={{ fontSize: 12 }} />WhatsApp
+        <a href={wppUrl} target="_blank" rel="noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '5px 12px', borderRadius: 7, border: 'none', background: '#25D366', color: '#fff', fontSize: 13, fontWeight: 700, textDecoration: 'none', fontFamily: "var(--font-sans)" }}>
+          <i className="fa-brands fa-whatsapp" style={{ fontSize: 14 }} />WhatsApp
         </a>
-        <a href={mailUrl} style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '5px 12px', borderRadius: 7, border: 'none', background: '#3D6E8E', color: '#fff', fontSize: 11, fontWeight: 700, textDecoration: 'none', fontFamily: "var(--font-sans)" }}>
-          <i className="fa-solid fa-envelope" style={{ fontSize: 10 }} />Email
+        <a href={mailUrl} style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '5px 12px', borderRadius: 7, border: 'none', background: '#3D6E8E', color: '#fff', fontSize: 13, fontWeight: 700, textDecoration: 'none', fontFamily: "var(--font-sans)" }}>
+          <i className="fa-solid fa-envelope" style={{ fontSize: 12 }} />Email
         </a>
         {fechar && (
           <button
             onClick={() => setExpandido(false)}
-            style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '5px 12px', borderRadius: 7, border: '0.5px solid #E4DCCC', background: '#fff', color: '#7B8C88', fontSize: 11, fontWeight: 700, cursor: 'pointer', fontFamily: "var(--font-sans)" }}
+            style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '5px 12px', borderRadius: 7, border: '0.5px solid #E4DCCC', background: '#fff', color: '#7B8C88', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: "var(--font-sans)" }}
           >
-            <i className="fa-solid fa-compress" style={{ fontSize: 10 }} />Fechar
+            <i className="fa-solid fa-compress" style={{ fontSize: 12 }} />Fechar
           </button>
         )}
       </div>
@@ -124,10 +124,10 @@ export function RespostaIA({ data, pergunta = '' }: { data: RespostaData; pergun
     if (!data.alertas?.length) return null
     return (
       <div style={{ background: '#F3ECDA', border: '0.5px solid #F59E0B', borderRadius: 10, padding: grande ? '12px 16px' : '8px 12px', marginBottom: 10 }}>
-        {grande && <div style={{ fontSize: 10, fontWeight: 700, color: '#B08A3E', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 8 }}>Alertas</div>}
+        {grande && <div style={{ fontSize: 12, fontWeight: 700, color: '#B08A3E', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 8 }}>Alertas</div>}
         {data.alertas.map((a, i) => (
           <div key={i} style={{ display: 'flex', gap: 7, alignItems: 'flex-start', marginBottom: i < data.alertas.length - 1 ? 5 : 0 }}>
-            <span style={{ color: '#B08A3E', fontSize: 11, flexShrink: 0, marginTop: 1 }}>•</span>
+            <span style={{ color: '#B08A3E', fontSize: 13, flexShrink: 0, marginTop: 1 }}>•</span>
             <span style={{ fontSize: grande ? 12 : 11, color: '#B08A3E', lineHeight: 1.5 }}>{a}</span>
           </div>
         ))}
@@ -148,7 +148,7 @@ export function RespostaIA({ data, pergunta = '' }: { data: RespostaData; pergun
               </div>
               <div>
                 <div style={{ fontSize: 15, fontWeight: 700, color: '#fff', fontFamily: "var(--font-sans)" }}>FactorOne CFO — Análise Completa</div>
-                <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.5)', marginTop: 2 }}>{data.resumo?.slice(0, 80)}{(data.resumo?.length ?? 0) > 80 ? '…' : ''}</div>
+                <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', marginTop: 2 }}>{data.resumo?.slice(0, 80)}{(data.resumo?.length ?? 0) > 80 ? '…' : ''}</div>
               </div>
             </div>
             <BarraAcoes fechar />
@@ -159,13 +159,13 @@ export function RespostaIA({ data, pergunta = '' }: { data: RespostaData; pergun
             {/* Status banner */}
             <div style={{ background: st.bg, border: `0.5px solid ${st.border}`, borderRadius: 12, padding: '12px 16px', marginBottom: 20, display: 'flex', alignItems: 'flex-start', gap: 10 }}>
               <div style={{ width: 28, height: 28, borderRadius: 8, background: st.border, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                <span style={{ fontSize: 13, fontWeight: 800, color: '#fff' }}>{st.icon}</span>
+                <span style={{ fontSize: 15, fontWeight: 800, color: '#fff' }}>{st.icon}</span>
               </div>
               <div>
-                <div style={{ fontSize: 11, fontWeight: 700, color: st.color, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 3 }}>
+                <div style={{ fontSize: 13, fontWeight: 700, color: st.color, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 3 }}>
                   Status: {data.status?.toUpperCase()}
                 </div>
-                <div style={{ fontSize: 13, color: '#13201D', lineHeight: 1.5 }}>{data.resumo}</div>
+                <div style={{ fontSize: 15, color: '#13201D', lineHeight: 1.5 }}>{data.resumo}</div>
               </div>
             </div>
 
@@ -174,8 +174,8 @@ export function RespostaIA({ data, pergunta = '' }: { data: RespostaData; pergun
 
             {data.proxima_pergunta && (
               <div style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 12, padding: '14px 16px' }}>
-                <div style={{ fontSize: 10, fontWeight: 700, color: '#7B8C88', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 6 }}>Próxima análise sugerida</div>
-                <div style={{ fontSize: 13, color: '#13201D', lineHeight: 1.6 }}>{data.proxima_pergunta}</div>
+                <div style={{ fontSize: 12, fontWeight: 700, color: '#7B8C88', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 6 }}>Próxima análise sugerida</div>
+                <div style={{ fontSize: 15, color: '#13201D', lineHeight: 1.6 }}>{data.proxima_pergunta}</div>
               </div>
             )}
           </div>
@@ -186,9 +186,9 @@ export function RespostaIA({ data, pergunta = '' }: { data: RespostaData; pergun
       <div style={{ display: 'flex', flexDirection: 'column', gap: 8, width: '100%' }}>
         {/* Status pill */}
         <div style={{ display: 'inline-flex', alignItems: 'center', gap: 7, background: st.bg, border: `0.5px solid ${st.border}`, borderRadius: 8, padding: '6px 12px', alignSelf: 'flex-start' }}>
-          <span style={{ fontSize: 11, fontWeight: 700, color: st.color }}>{st.icon} {data.status?.toUpperCase()}</span>
-          <span style={{ fontSize: 11, color: st.color, opacity: 0.8 }}>·</span>
-          <span style={{ fontSize: 11, color: st.color }}>{data.resumo?.slice(0, 60)}{(data.resumo?.length ?? 0) > 60 ? '…' : ''}</span>
+          <span style={{ fontSize: 13, fontWeight: 700, color: st.color }}>{st.icon} {data.status?.toUpperCase()}</span>
+          <span style={{ fontSize: 13, color: st.color, opacity: 0.8 }}>·</span>
+          <span style={{ fontSize: 13, color: st.color }}>{data.resumo?.slice(0, 60)}{(data.resumo?.length ?? 0) > 60 ? '…' : ''}</span>
         </div>
 
         <Cards />
@@ -196,8 +196,8 @@ export function RespostaIA({ data, pergunta = '' }: { data: RespostaData; pergun
         <BarraAcoes />
 
         {data.proxima_pergunta && (
-          <div style={{ fontSize: 11, color: '#7B8C88', fontStyle: 'italic', paddingLeft: 4 }}>
-            <i className="fa-solid fa-circle-arrow-right" style={{ marginRight: 5, color: '#3D7A6E', fontSize: 10 }} />
+          <div style={{ fontSize: 13, color: '#7B8C88', fontStyle: 'italic', paddingLeft: 4 }}>
+            <i className="fa-solid fa-circle-arrow-right" style={{ marginRight: 5, color: '#3D7A6E', fontSize: 12 }} />
             {data.proxima_pergunta}
           </div>
         )}

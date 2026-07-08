@@ -23,14 +23,14 @@ function CartaoVisual({ nome, numero, pausar }: { nome: string; numero: string; 
     <div style={{ width: '100%', maxWidth: 320, aspectRatio: '1.586', borderRadius: 18, padding: 22, position: 'relative', overflow: 'hidden', background: 'linear-gradient(135deg, #1C2E29 0%, #13201D 55%, #0F1918 100%)', boxShadow: '0 20px 44px rgba(0,0,0,.45)', opacity: pausar ? 0.5 : 1 }}>
       <div style={{ position: 'absolute', top: -40, right: -30, width: 160, height: 160, borderRadius: '50%', background: 'rgba(126,189,184,.12)' }} />
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-        <div style={{ fontSize: 15, fontWeight: 800, color: '#fff', letterSpacing: '-.02em' }}>Factor<span style={{ color: '#6FA595' }}>One</span> <span style={{ fontSize: 9, fontWeight: 600, color: 'rgba(255,255,255,.5)' }}>BANK</span></div>
-        <i className="fa-solid fa-wifi" style={{ color: 'rgba(255,255,255,.5)', transform: 'rotate(90deg)', fontSize: 13 }} />
+        <div style={{ fontSize: 15, fontWeight: 800, color: '#fff', letterSpacing: '-.02em' }}>Factor<span style={{ color: '#6FA595' }}>One</span> <span style={{ fontSize: 11, fontWeight: 600, color: 'rgba(255,255,255,.5)' }}>BANK</span></div>
+        <i className="fa-solid fa-wifi" style={{ color: 'rgba(255,255,255,.5)', transform: 'rotate(90deg)', fontSize: 15 }} />
       </div>
       <div style={{ width: 40, height: 30, borderRadius: 6, background: 'linear-gradient(135deg,#D9B54A,#B08A3E)', marginTop: 18 }} />
       <div style={{ marginTop: 16, fontSize: 16, letterSpacing: '.16em', color: 'rgba(255,255,255,.92)', fontFamily: "var(--font-mono)" }}>{numero}</div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginTop: 12 }}>
-        <div style={{ fontSize: 11.5, fontWeight: 600, color: 'rgba(255,255,255,.85)', textTransform: 'uppercase', letterSpacing: '.04em', maxWidth: 190, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{nome || 'SUA EMPRESA'}</div>
-        <div style={{ fontSize: 11, fontWeight: 700, color: '#fff', fontStyle: 'italic' }}>VISA</div>
+        <div style={{ fontSize: 13.5, fontWeight: 600, color: 'rgba(255,255,255,.85)', textTransform: 'uppercase', letterSpacing: '.04em', maxWidth: 190, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{nome || 'SUA EMPRESA'}</div>
+        <div style={{ fontSize: 13, fontWeight: 700, color: '#fff', fontStyle: 'italic' }}>VISA</div>
       </div>
     </div>
   )
@@ -83,12 +83,12 @@ export default function AbrirContaPage() {
           <i className="fa-solid fa-check" style={{ fontSize: 28, color: '#fff' }} />
         </div>
         <div style={{ fontSize: 25, fontWeight: 800, color: '#13201D', letterSpacing: '-.03em' }}>Sua Conta PJ está pronta! 🎉</div>
-        <div style={{ fontSize: 13.5, color: '#7B8C88', marginTop: 6, marginBottom: 22 }}>Bem-vindo ao FactorOne Bank. Sua conta e seu cartão já estão ativos.</div>
+        <div style={{ fontSize: 15, color: '#7B8C88', marginTop: 6, marginBottom: 22 }}>Bem-vindo ao FactorOne Bank. Sua conta e seu cartão já estão ativos.</div>
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 22 }}><CartaoVisual nome={form.razao} numero={numeroMasc} /></div>
         <div style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 14, padding: '18px 22px', textAlign: 'left', marginBottom: 20 }}>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 14 }}>
             {[['Banco', 'FactorOne · 399'], ['Agência', pronto.agencia], ['Conta', `${pronto.conta}-${pronto.digito}`]].map(([l, v]) => (
-              <div key={l}><div style={{ fontSize: 10, color: '#7B8C88', textTransform: 'uppercase', letterSpacing: '.05em', marginBottom: 3 }}>{l}</div><div style={{ fontSize: 14, fontWeight: 700, color: '#13201D', fontFamily: "var(--font-sans)" }}>{v}</div></div>
+              <div key={l}><div style={{ fontSize: 12, color: '#7B8C88', textTransform: 'uppercase', letterSpacing: '.05em', marginBottom: 3 }}>{l}</div><div style={{ fontSize: 14, fontWeight: 700, color: '#13201D', fontFamily: "var(--font-sans)" }}>{v}</div></div>
             ))}
           </div>
         </div>
@@ -105,24 +105,24 @@ export default function AbrirContaPage() {
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px', background: 'var(--gold-tint)', border: '1px solid var(--gold)', borderRadius: 12, marginBottom: 14, flexWrap: 'wrap' }}>
         <i className="fa-solid fa-clock" style={{ color: 'var(--gold)' }} />
         <div style={{ flex: 1, minWidth: 200 }}>
-          <div style={{ fontSize: 12.5, fontWeight: 700, color: '#13201D' }}>Abrir Conta PJ FactorOne — <span style={{ color: 'var(--gold)' }}>em breve</span></div>
-          <div style={{ fontSize: 11.5, color: '#7B8C88' }}>Por enquanto, conecte o banco que você já tem (Open Finance) e gerencie cartões e transações aqui.</div>
+          <div style={{ fontSize: 14.5, fontWeight: 700, color: '#13201D' }}>Abrir Conta PJ FactorOne — <span style={{ color: 'var(--gold)' }}>em breve</span></div>
+          <div style={{ fontSize: 13.5, color: '#7B8C88' }}>Por enquanto, conecte o banco que você já tem (Open Finance) e gerencie cartões e transações aqui.</div>
         </div>
-        <button className="btn-action" style={{ fontSize: 12 }} onClick={() => router.push('/dashboard/conexoes')}>
+        <button className="btn-action" style={{ fontSize: 14 }} onClick={() => router.push('/dashboard/conexoes')}>
           <i className="fa-solid fa-link" style={{ marginRight: 6 }} />Conectar meu banco
         </button>
       </div>
     <div style={{ display: 'grid', gridTemplateColumns: '380px 1fr', gap: 0, background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 18, overflow: 'hidden', minHeight: 520 }}>
       {/* Painel esquerdo — foto premium (banco digital) */}
       <div style={{ position: 'relative', padding: '32px 30px', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', minHeight: 540, backgroundImage: 'linear-gradient(180deg, rgba(28,43,42,.20) 0%, rgba(28,43,42,.55) 52%, rgba(15,25,24,.96) 100%), url(/banco-hero.jpg)', backgroundSize: 'cover', backgroundPosition: 'center top' }}>
-        <div style={{ position: 'absolute', top: 28, left: 30, fontSize: 18, fontWeight: 800, color: '#fff', letterSpacing: '-.03em' }}>Factor<span style={{ color: '#6FA595' }}>One</span> <span style={{ fontSize: 11, fontWeight: 600, color: 'rgba(255,255,255,.6)' }}>BANK</span></div>
+        <div style={{ position: 'absolute', top: 28, left: 30, fontSize: 18, fontWeight: 800, color: '#fff', letterSpacing: '-.03em' }}>Factor<span style={{ color: '#6FA595' }}>One</span> <span style={{ fontSize: 13, fontWeight: 600, color: 'rgba(255,255,255,.6)' }}>BANK</span></div>
         <div style={{ fontSize: 23, fontWeight: 800, color: '#fff', letterSpacing: '-.03em', lineHeight: 1.15 }}>Sua conta PJ que<br />trabalha por você</div>
-        <div style={{ fontSize: 12.5, color: 'rgba(255,255,255,.72)', margin: '6px 0 18px' }}>Abra em minutos · sem tarifas · cartão na hora</div>
+        <div style={{ fontSize: 14.5, color: 'rgba(255,255,255,.72)', margin: '6px 0 18px' }}>Abra em minutos · sem tarifas · cartão na hora</div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 9 }}>
           {[['fa-bolt', 'PIX ilimitado e grátis'], ['fa-credit-card', 'Cartão virtual na hora'], ['fa-percent', 'Rendimento no CDI'], ['fa-shield-halved', 'Regulado e seguro']].map(([i, t]) => (
             <div key={t} style={{ display: 'flex', alignItems: 'center', gap: 11 }}>
-              <div style={{ width: 28, height: 28, borderRadius: 8, background: 'rgba(126,189,184,.20)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><i className={`fa-solid ${i}`} style={{ fontSize: 11, color: '#6FA595' }} /></div>
-              <span style={{ fontSize: 12.5, color: 'rgba(255,255,255,.9)' }}>{t}</span>
+              <div style={{ width: 28, height: 28, borderRadius: 8, background: 'rgba(126,189,184,.20)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><i className={`fa-solid ${i}`} style={{ fontSize: 13, color: '#6FA595' }} /></div>
+              <span style={{ fontSize: 14.5, color: 'rgba(255,255,255,.9)' }}>{t}</span>
             </div>
           ))}
         </div>
@@ -135,7 +135,7 @@ export default function AbrirContaPage() {
           {STEPS.map((s, i) => (
             <div key={s} style={{ flex: 1 }}>
               <div style={{ height: 4, borderRadius: 99, background: i <= step ? '#3D7A6E' : '#E4DCCC', transition: 'background .2s' }} />
-              <div style={{ fontSize: 10.5, fontWeight: i === step ? 700 : 500, color: i === step ? '#13201D' : '#A6B0AC', marginTop: 6 }}>{s}</div>
+              <div style={{ fontSize: 12.5, fontWeight: i === step ? 700 : 500, color: i === step ? '#13201D' : '#A6B0AC', marginTop: 6 }}>{s}</div>
             </div>
           ))}
         </div>
@@ -171,8 +171,8 @@ export default function AbrirContaPage() {
               <div style={{ fontSize: 18, fontWeight: 800, color: '#13201D', letterSpacing: '-.02em' }}>Crie sua senha</div>
               <Field label="Senha *"><input className="form-input" type="password" placeholder="Mínimo 6 caracteres" value={form.senha} onChange={e => set('senha', e.target.value)} /></Field>
               <Field label="Confirmar senha *"><input className="form-input" type="password" placeholder="Repita a senha" value={form.senha2} onChange={e => set('senha2', e.target.value)} /></Field>
-              {form.senha2 && form.senha !== form.senha2 && <div style={{ fontSize: 11.5, color: '#B0413E' }}>As senhas não conferem</div>}
-              <div style={{ background: '#E9F0ED', borderRadius: 10, padding: '11px 14px', fontSize: 11.5, color: '#2B564D', lineHeight: 1.5 }}>
+              {form.senha2 && form.senha !== form.senha2 && <div style={{ fontSize: 13.5, color: '#B0413E' }}>As senhas não conferem</div>}
+              <div style={{ background: '#E9F0ED', borderRadius: 10, padding: '11px 14px', fontSize: 13.5, color: '#2B564D', lineHeight: 1.5 }}>
                 <i className="fa-solid fa-circle-check" style={{ marginRight: 6 }} />No FactorOne Bank sua conta é aberta na hora — sem espera.
               </div>
             </div>
@@ -198,7 +198,7 @@ export default function AbrirContaPage() {
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div>
-      <label style={{ fontSize: 10.5, fontWeight: 600, color: '#7B8C88', display: 'block', marginBottom: 5, textTransform: 'uppercase', letterSpacing: '.06em' }}>{label}</label>
+      <label style={{ fontSize: 12.5, fontWeight: 600, color: '#7B8C88', display: 'block', marginBottom: 5, textTransform: 'uppercase', letterSpacing: '.06em' }}>{label}</label>
       {children}
     </div>
   )

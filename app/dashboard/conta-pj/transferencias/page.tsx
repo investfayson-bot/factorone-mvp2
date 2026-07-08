@@ -88,10 +88,10 @@ export default function TransferenciasPage() {
           <div className="page-sub">Envie PIX, TED e DOC · agende e acompanhe</div>
         </div>
         <div style={{ display: 'flex', gap: 8 }}>
-          <Link href="/dashboard/conta-pj" className="btn-ghost" style={{ fontSize: 12, textDecoration: 'none' }}>
+          <Link href="/dashboard/conta-pj" className="btn-ghost" style={{ fontSize: 14, textDecoration: 'none' }}>
             <i className="fa-solid fa-arrow-left" style={{ marginRight: 6 }} />Banco
           </Link>
-          <button className="btn-action" style={{ fontSize: 12 }} onClick={() => setModal(true)}>
+          <button className="btn-action" style={{ fontSize: 14 }} onClick={() => setModal(true)}>
             <i className="fa-solid fa-bolt" style={{ marginRight: 6 }} />Nova transferência
           </button>
         </div>
@@ -118,9 +118,9 @@ export default function TransferenciasPage() {
 
       {/* Lista */}
       <div style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 14, overflow: 'hidden' }}>
-        <div style={{ padding: '12px 16px', borderBottom: '0.5px solid #E4DCCC', background: '#FBF8F1', fontSize: 12, fontWeight: 700, color: '#13201D' }}>Histórico de transferências</div>
+        <div style={{ padding: '12px 16px', borderBottom: '0.5px solid #E4DCCC', background: '#FBF8F1', fontSize: 14, fontWeight: 700, color: '#13201D' }}>Histórico de transferências</div>
         {rows.length === 0 ? (
-          <div style={{ padding: '40px 16px', textAlign: 'center', color: '#7B8C88', fontSize: 12 }}>
+          <div style={{ padding: '40px 16px', textAlign: 'center', color: '#7B8C88', fontSize: 14 }}>
             <i className="fa-solid fa-paper-plane" style={{ fontSize: 26, color: '#D1D9D8', display: 'block', marginBottom: 10 }} />
             Nenhuma transferência ainda. Clique em <strong>Nova transferência</strong> para começar.
           </div>
@@ -132,13 +132,13 @@ export default function TransferenciasPage() {
                 <i className={`fa-solid ${TIPOS.find(t => t.v === r.tipo)?.icon ?? 'fa-bolt'}`} style={{ fontSize: 14, color: '#3D7A6E' }} />
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontSize: 13, fontWeight: 600, color: '#13201D' }}>{r.destinatario_nome}</div>
-                <div style={{ fontSize: 10.5, color: '#7B8C88' }}>{r.tipo.toUpperCase()} · {r.data_agendada}{r.chave_pix ? ` · ${r.chave_pix}` : ''}</div>
+                <div style={{ fontSize: 15, fontWeight: 600, color: '#13201D' }}>{r.destinatario_nome}</div>
+                <div style={{ fontSize: 12.5, color: '#7B8C88' }}>{r.tipo.toUpperCase()} · {r.data_agendada}{r.chave_pix ? ` · ${r.chave_pix}` : ''}</div>
               </div>
-              <div style={{ fontSize: 13, fontWeight: 700, color: '#13201D', fontFamily: "var(--font-sans)" }}>{formatBRL(Number(r.valor || 0))}</div>
-              <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 9px', borderRadius: 20, background: sc.bg, color: sc.c }}>{r.status}</span>
+              <div style={{ fontSize: 15, fontWeight: 700, color: '#13201D', fontFamily: "var(--font-sans)" }}>{formatBRL(Number(r.valor || 0))}</div>
+              <span style={{ fontSize: 12, fontWeight: 700, padding: '2px 9px', borderRadius: 20, background: sc.bg, color: sc.c }}>{r.status}</span>
               {r.status === 'agendado' && (
-                <button onClick={() => void cancelar(r.id)} style={{ fontSize: 11, color: '#B0413E', background: 'none', border: '0.5px solid #E4DCCC', borderRadius: 7, padding: '4px 10px', cursor: 'pointer', fontWeight: 600 }}>Cancelar</button>
+                <button onClick={() => void cancelar(r.id)} style={{ fontSize: 13, color: '#B0413E', background: 'none', border: '0.5px solid #E4DCCC', borderRadius: 7, padding: '4px 10px', cursor: 'pointer', fontWeight: 600 }}>Cancelar</button>
               )}
             </div>
           )
@@ -150,7 +150,7 @@ export default function TransferenciasPage() {
         <div className="modal-bg" onClick={e => e.target === e.currentTarget && setModal(false)}>
           <div className="modal-box">
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 18 }}>
-              <div><h3 className="modal-title">Nova transferência</h3><div style={{ fontSize: 11, color: '#7B8C88' }}>PIX, TED ou DOC</div></div>
+              <div><h3 className="modal-title">Nova transferência</h3><div style={{ fontSize: 13, color: '#7B8C88' }}>PIX, TED ou DOC</div></div>
               <button className="modal-close" onClick={() => setModal(false)}><i className="fa-solid fa-xmark" /></button>
             </div>
 
@@ -162,35 +162,35 @@ export default function TransferenciasPage() {
                   border: form.tipo === t.v ? '1px solid #3D7A6E' : '0.5px solid #E4DCCC', background: form.tipo === t.v ? '#E9F0ED' : '#fff',
                 }}>
                   <i className={`fa-solid ${t.icon}`} style={{ fontSize: 15, color: form.tipo === t.v ? '#2B564D' : '#7B8C88' }} />
-                  <span style={{ fontSize: 12, fontWeight: 700, color: form.tipo === t.v ? '#2B564D' : '#3C4A46' }}>{t.label}</span>
-                  <span style={{ fontSize: 9, color: '#7B8C88' }}>{t.desc}</span>
+                  <span style={{ fontSize: 14, fontWeight: 700, color: form.tipo === t.v ? '#2B564D' : '#3C4A46' }}>{t.label}</span>
+                  <span style={{ fontSize: 11, color: '#7B8C88' }}>{t.desc}</span>
                 </button>
               ))}
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               <div>
-                <label style={{ fontSize: 10, fontWeight: 600, color: '#7B8C88', display: 'block', marginBottom: 5, textTransform: 'uppercase', letterSpacing: '.07em' }}>Destinatário *</label>
+                <label style={{ fontSize: 12, fontWeight: 600, color: '#7B8C88', display: 'block', marginBottom: 5, textTransform: 'uppercase', letterSpacing: '.07em' }}>Destinatário *</label>
                 <input className="form-input" placeholder="Nome do favorecido" value={form.destinatario_nome} onChange={e => setForm(p => ({ ...p, destinatario_nome: e.target.value }))} />
               </div>
 
               {form.tipo === 'pix' ? (
                 <div>
-                  <label style={{ fontSize: 10, fontWeight: 600, color: '#7B8C88', display: 'block', marginBottom: 5, textTransform: 'uppercase', letterSpacing: '.07em' }}>Chave PIX *</label>
+                  <label style={{ fontSize: 12, fontWeight: 600, color: '#7B8C88', display: 'block', marginBottom: 5, textTransform: 'uppercase', letterSpacing: '.07em' }}>Chave PIX *</label>
                   <input className="form-input" placeholder="CPF/CNPJ, e-mail, telefone ou aleatória" value={form.chave_pix} onChange={e => setForm(p => ({ ...p, chave_pix: e.target.value }))} />
                 </div>
               ) : (
                 <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr 1fr', gap: 10 }}>
                   <div>
-                    <label style={{ fontSize: 10, fontWeight: 600, color: '#7B8C88', display: 'block', marginBottom: 5, textTransform: 'uppercase', letterSpacing: '.07em' }}>Banco *</label>
+                    <label style={{ fontSize: 12, fontWeight: 600, color: '#7B8C88', display: 'block', marginBottom: 5, textTransform: 'uppercase', letterSpacing: '.07em' }}>Banco *</label>
                     <input className="form-input" placeholder="Ex: Itaú" value={form.destinatario_banco} onChange={e => setForm(p => ({ ...p, destinatario_banco: e.target.value }))} />
                   </div>
                   <div>
-                    <label style={{ fontSize: 10, fontWeight: 600, color: '#7B8C88', display: 'block', marginBottom: 5, textTransform: 'uppercase', letterSpacing: '.07em' }}>Agência</label>
+                    <label style={{ fontSize: 12, fontWeight: 600, color: '#7B8C88', display: 'block', marginBottom: 5, textTransform: 'uppercase', letterSpacing: '.07em' }}>Agência</label>
                     <input className="form-input" placeholder="0000" value={form.destinatario_agencia} onChange={e => setForm(p => ({ ...p, destinatario_agencia: e.target.value }))} />
                   </div>
                   <div>
-                    <label style={{ fontSize: 10, fontWeight: 600, color: '#7B8C88', display: 'block', marginBottom: 5, textTransform: 'uppercase', letterSpacing: '.07em' }}>Conta *</label>
+                    <label style={{ fontSize: 12, fontWeight: 600, color: '#7B8C88', display: 'block', marginBottom: 5, textTransform: 'uppercase', letterSpacing: '.07em' }}>Conta *</label>
                     <input className="form-input" placeholder="00000-0" value={form.destinatario_conta} onChange={e => setForm(p => ({ ...p, destinatario_conta: e.target.value }))} />
                   </div>
                 </div>
@@ -198,23 +198,23 @@ export default function TransferenciasPage() {
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
                 <div>
-                  <label style={{ fontSize: 10, fontWeight: 600, color: '#7B8C88', display: 'block', marginBottom: 5, textTransform: 'uppercase', letterSpacing: '.07em' }}>Valor (R$) *</label>
+                  <label style={{ fontSize: 12, fontWeight: 600, color: '#7B8C88', display: 'block', marginBottom: 5, textTransform: 'uppercase', letterSpacing: '.07em' }}>Valor (R$) *</label>
                   <input className="form-input" type="number" placeholder="0,00" value={form.valor} onChange={e => setForm(p => ({ ...p, valor: e.target.value }))} />
                 </div>
                 <div>
-                  <label style={{ fontSize: 10, fontWeight: 600, color: '#7B8C88', display: 'block', marginBottom: 5, textTransform: 'uppercase', letterSpacing: '.07em' }}>Data</label>
+                  <label style={{ fontSize: 12, fontWeight: 600, color: '#7B8C88', display: 'block', marginBottom: 5, textTransform: 'uppercase', letterSpacing: '.07em' }}>Data</label>
                   <input className="form-input" type="date" value={form.data_agendada} onChange={e => setForm(p => ({ ...p, data_agendada: e.target.value }))} />
                 </div>
               </div>
               <div>
-                <label style={{ fontSize: 10, fontWeight: 600, color: '#7B8C88', display: 'block', marginBottom: 5, textTransform: 'uppercase', letterSpacing: '.07em' }}>Descrição</label>
+                <label style={{ fontSize: 12, fontWeight: 600, color: '#7B8C88', display: 'block', marginBottom: 5, textTransform: 'uppercase', letterSpacing: '.07em' }}>Descrição</label>
                 <input className="form-input" placeholder="Ex: Pagamento fornecedor" value={form.descricao} onChange={e => setForm(p => ({ ...p, descricao: e.target.value }))} />
               </div>
             </div>
 
             <div style={{ display: 'flex', gap: 10, marginTop: 20, justifyContent: 'flex-end' }}>
-              <button onClick={() => setModal(false)} style={{ padding: '8px 16px', borderRadius: 8, border: '0.5px solid #E4DCCC', background: 'transparent', color: '#7B8C88', fontSize: 12, cursor: 'pointer' }}>Cancelar</button>
-              <button className="btn-action" onClick={() => void salvar()} disabled={saving} style={{ fontSize: 12, padding: '8px 20px' }}>{saving ? 'Enviando…' : 'Confirmar transferência'}</button>
+              <button onClick={() => setModal(false)} style={{ padding: '8px 16px', borderRadius: 8, border: '0.5px solid #E4DCCC', background: 'transparent', color: '#7B8C88', fontSize: 14, cursor: 'pointer' }}>Cancelar</button>
+              <button className="btn-action" onClick={() => void salvar()} disabled={saving} style={{ fontSize: 14, padding: '8px 20px' }}>{saving ? 'Enviando…' : 'Confirmar transferência'}</button>
             </div>
           </div>
         </div>

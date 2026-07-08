@@ -53,7 +53,7 @@ export default function AICFOPessoalPage() {
         <div style={{ width: 40, height: 40, borderRadius: 10, background: 'rgba(255,255,255,.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20 }}></div>
         <div>
           <div style={{ fontSize: 14, fontWeight: 700, color: '#fff' }}>AI CFO Pessoal</div>
-          <div style={{ fontSize: 11, color: 'rgba(255,255,255,.6)' }}>Seu consultor financeiro pessoal — pergunte qualquer coisa sobre seu dinheiro</div>
+          <div style={{ fontSize: 13, color: 'rgba(255,255,255,.6)' }}>Seu consultor financeiro pessoal — pergunte qualquer coisa sobre seu dinheiro</div>
         </div>
       </div>
 
@@ -61,10 +61,10 @@ export default function AICFOPessoalPage() {
       <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 12, paddingBottom: 8 }}>
         {msgs.length === 0 && (
           <div>
-            <div style={{ fontSize: 13, color: 'var(--gray-400)', marginBottom: 12, textAlign: 'center' }}>Olá! Como posso ajudar com suas finanças hoje?</div>
+            <div style={{ fontSize: 15, color: 'var(--gray-400)', marginBottom: 12, textAlign: 'center' }}>Olá! Como posso ajudar com suas finanças hoje?</div>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, justifyContent: 'center' }}>
               {SUGESTOES.map(s => (
-                <button key={s} onClick={() => enviar(s)} style={{ fontSize: 11, padding: '6px 12px', borderRadius: 20, border: '1px solid var(--gray-100)', background: '#fff', color: 'var(--gray-500)', cursor: 'pointer', fontWeight: 500 }}>
+                <button key={s} onClick={() => enviar(s)} style={{ fontSize: 13, padding: '6px 12px', borderRadius: 20, border: '1px solid var(--gray-100)', background: '#fff', color: 'var(--gray-500)', cursor: 'pointer', fontWeight: 500 }}>
                   {s}
                 </button>
               ))}
@@ -79,7 +79,7 @@ export default function AICFOPessoalPage() {
               background: m.role === 'user' ? 'var(--navy)' : '#fff',
               color: m.role === 'user' ? '#fff' : 'var(--navy)',
               border: m.role === 'assistant' ? '1px solid var(--gray-100)' : 'none',
-              fontSize: 13, lineHeight: 1.6, whiteSpace: 'pre-wrap',
+              fontSize: 15, lineHeight: 1.6, whiteSpace: 'pre-wrap',
             }}>
               {m.content}
             </div>
@@ -88,7 +88,7 @@ export default function AICFOPessoalPage() {
 
         {loading && (
           <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
-            <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: '16px 16px 16px 4px', padding: '12px 16px', fontSize: 13, color: 'var(--gray-400)' }}>
+            <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: '16px 16px 16px 4px', padding: '12px 16px', fontSize: 15, color: 'var(--gray-400)' }}>
               <span style={{ animation: 'pulse 1s infinite' }}>Analisando seus dados...</span>
             </div>
           </div>

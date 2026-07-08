@@ -31,7 +31,7 @@ export default function FormPage() {
             <div style={{ textAlign: 'center', padding: '24px 0' }}>
               <div style={{ width: 56, height: 56, borderRadius: '50%', background: 'var(--sage)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 14px' }}><i className="fa-solid fa-check" style={{ color: '#fff', fontSize: 24 }} /></div>
               <div style={{ fontFamily: 'var(--font-display)', fontSize: 18, fontWeight: 700 }}>Recebido! ✅</div>
-              <div style={{ fontSize: 13, color: 'var(--ink-mut)', marginTop: 6 }}>Obrigado. Em breve entramos em contato.</div>
+              <div style={{ fontSize: 15, color: 'var(--ink-mut)', marginTop: 6 }}>Obrigado. Em breve entramos em contato.</div>
             </div>
           ) : (
             <form onSubmit={enviar}>
@@ -39,11 +39,11 @@ export default function FormPage() {
               <div className="form-group"><label className="form-label">E-mail</label><input className="form-input" type="email" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} /></div>
               <div className="form-group"><label className="form-label">Telefone / WhatsApp</label><input className="form-input" value={form.telefone} onChange={e => setForm(f => ({ ...f, telefone: e.target.value }))} /></div>
               <div className="form-group"><label className="form-label">Mensagem</label><textarea className="form-input" rows={3} value={form.mensagem} onChange={e => setForm(f => ({ ...f, mensagem: e.target.value }))} style={{ resize: 'vertical' }} /></div>
-              {erro && <div style={{ fontSize: 12, color: 'var(--brick)', marginBottom: 10 }}>{erro}</div>}
+              {erro && <div style={{ fontSize: 14, color: 'var(--brick)', marginBottom: 10 }}>{erro}</div>}
               <button className="btn-action" style={{ width: '100%', padding: '12px 0', fontSize: 14 }} disabled={enviando || !form.nome.trim()}>{enviando ? 'Enviando…' : 'Enviar'}</button>
             </form>
           )}
-          <div style={{ fontSize: 10, color: 'var(--ink-faint)', textAlign: 'center', marginTop: 16 }}>powered by Factor<span style={{ color: 'var(--sage)' }}>One</span></div>
+          <div style={{ fontSize: 12, color: 'var(--ink-faint)', textAlign: 'center', marginTop: 16 }}>powered by Factor<span style={{ color: 'var(--sage)' }}>One</span></div>
         </div>
       </div>
     </div>

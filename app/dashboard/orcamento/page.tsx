@@ -137,7 +137,7 @@ export default function OrcamentoPage() {
         <div className="kpi" style={{ borderTop: '3px solid #3D7A6E' }}>
           <div className="kpi-lbl">Total previsto
             <div style={{ width: 28, height: 28, borderRadius: 8, background: '#E9F0ED', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <i className="fa-solid fa-chart-pie" style={{ fontSize: 12, color: '#3D7A6E' }} />
+              <i className="fa-solid fa-chart-pie" style={{ fontSize: 14, color: '#3D7A6E' }} />
             </div>
           </div>
           <div className="kpi-val">{formatBRL(resumo.totalPrevisto)}</div>
@@ -146,7 +146,7 @@ export default function OrcamentoPage() {
         <div className="kpi" style={{ borderTop: '3px solid #3D6E8E' }}>
           <div className="kpi-lbl">Total realizado
             <div style={{ width: 28, height: 28, borderRadius: 8, background: '#E6F1FB', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <i className="fa-solid fa-check-circle" style={{ fontSize: 12, color: '#3D6E8E' }} />
+              <i className="fa-solid fa-check-circle" style={{ fontSize: 14, color: '#3D6E8E' }} />
             </div>
           </div>
           <div className="kpi-val">{formatBRL(resumo.totalRealizado)}</div>
@@ -155,7 +155,7 @@ export default function OrcamentoPage() {
         <div className="kpi" style={{ borderTop: `3px solid ${resumo.percentualConsumido > 90 ? '#B0413E' : resumo.percentualConsumido > 70 ? '#B08A3E' : '#3D7A6E'}` }}>
           <div className="kpi-lbl">% Consumido
             <div style={{ width: 28, height: 28, borderRadius: 8, background: resumo.percentualConsumido > 90 ? '#F4E4E1' : resumo.percentualConsumido > 70 ? '#F3ECDA' : '#E9F0ED', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <i className="fa-solid fa-gauge-high" style={{ fontSize: 12, color: resumo.percentualConsumido > 90 ? '#B0413E' : resumo.percentualConsumido > 70 ? '#B08A3E' : '#3D7A6E' }} />
+              <i className="fa-solid fa-gauge-high" style={{ fontSize: 14, color: resumo.percentualConsumido > 90 ? '#B0413E' : resumo.percentualConsumido > 70 ? '#B08A3E' : '#3D7A6E' }} />
             </div>
           </div>
           <div className="kpi-val">{resumo.percentualConsumido.toFixed(1)}%</div>
@@ -164,7 +164,7 @@ export default function OrcamentoPage() {
         <div className="kpi" style={{ borderTop: `3px solid ${alertasAtivos > 0 ? '#B08A3E' : '#3D7A6E'}` }}>
           <div className="kpi-lbl">Alertas ativos
             <div style={{ width: 28, height: 28, borderRadius: 8, background: alertasAtivos > 0 ? '#F3ECDA' : '#E9F0ED', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <i className="fa-solid fa-bell" style={{ fontSize: 12, color: alertasAtivos > 0 ? '#B08A3E' : '#3D7A6E' }} />
+              <i className="fa-solid fa-bell" style={{ fontSize: 14, color: alertasAtivos > 0 ? '#B08A3E' : '#3D7A6E' }} />
             </div>
           </div>
           <div className="kpi-val">{alertasAtivos}</div>
@@ -179,7 +179,7 @@ export default function OrcamentoPage() {
             key={k}
             onClick={() => setTab(k as typeof tab)}
             style={{
-              padding: '6px 13px', borderRadius: 8, fontSize: 11, fontWeight: tab === k ? 700 : 500,
+              padding: '6px 13px', borderRadius: 8, fontSize: 13, fontWeight: tab === k ? 700 : 500,
               cursor: 'pointer', border: 'none',
               background: tab === k ? '#fff' : 'transparent',
               color: tab === k ? '#13201D' : '#7B8C88',
@@ -195,8 +195,8 @@ export default function OrcamentoPage() {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 12 }}>
           {porCategoria.slice(0, 6).map((c) => (
             <div key={c.categoria} style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 12, padding: 16 }}>
-              <div style={{ fontWeight: 700, fontSize: 13, color: '#13201D', marginBottom: 4 }}>{c.categoria}</div>
-              <div style={{ fontSize: 12, color: '#7B8C88', marginBottom: 8 }}>
+              <div style={{ fontWeight: 700, fontSize: 15, color: '#13201D', marginBottom: 4 }}>{c.categoria}</div>
+              <div style={{ fontSize: 14, color: '#7B8C88', marginBottom: 8 }}>
                 {formatBRL(c.realizado)} / {formatBRL(c.previsto)} · {c.pct.toFixed(1)}%
               </div>
               <div style={{ height: 6, borderRadius: 4, background: '#F1ECE1' }}>
@@ -230,7 +230,7 @@ export default function OrcamentoPage() {
                     <td style={{ textAlign: 'right', fontFamily: "var(--font-sans)", color: c.previsto - c.realizado < 0 ? 'var(--red)' : 'var(--teal)', fontWeight: 700 }}>{formatBRL(c.previsto - c.realizado)}</td>
                     <td style={{ textAlign: 'right', color: progressColor(c.pct), fontWeight: 700 }}>{c.pct.toFixed(1)}%</td>
                     <td style={{ textAlign: 'center' }}>
-                      <button className="btn-ghost" style={{ padding: '4px 10px', fontSize: 11 }} onClick={() => { const l = linhas.find((x) => x.categoria === c.categoria); if (l) setEditLinha(l) }}>Editar</button>
+                      <button className="btn-ghost" style={{ padding: '4px 10px', fontSize: 13 }} onClick={() => { const l = linhas.find((x) => x.categoria === c.categoria); if (l) setEditLinha(l) }}>Editar</button>
                     </td>
                   </tr>
                 ))}
@@ -241,7 +241,7 @@ export default function OrcamentoPage() {
       )}
 
       {tab === 'centro' && (
-        <div style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 12, padding: '20px 16px', fontSize: 13, color: '#7B8C88' }}>
+        <div style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 12, padding: '20px 16px', fontSize: 15, color: '#7B8C88' }}>
           Visão por centro de custo usa os mesmos dados de linhas com <code>centro_custo_id</code>.
         </div>
       )}
@@ -280,7 +280,7 @@ export default function OrcamentoPage() {
       {tab === 'alertas' && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           {alertas.length === 0 && (
-            <div style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 12, padding: '32px 16px', textAlign: 'center', color: '#7B8C88', fontSize: 13 }}>
+            <div style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 12, padding: '32px 16px', textAlign: 'center', color: '#7B8C88', fontSize: 15 }}>
               Nenhum alerta ativo.
             </div>
           )}
@@ -288,16 +288,16 @@ export default function OrcamentoPage() {
             <div key={a.id} style={{ background: '#fff', border: `0.5px solid ${a.lido ? '#E4DCCC' : '#F59E0B'}`, borderRadius: 12, padding: '14px 16px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
                 <span className={`tag ${a.lido ? 'gray' : 'green'}`}>{a.tipo}</span>
-                <span style={{ fontSize: 12, color: '#7B8C88' }}>{a.percentual_consumido?.toFixed(1)}% consumido</span>
+                <span style={{ fontSize: 14, color: '#7B8C88' }}>{a.percentual_consumido?.toFixed(1)}% consumido</span>
               </div>
-              <div style={{ fontSize: 12, color: '#7B8C88', marginBottom: 8 }}>
+              <div style={{ fontSize: 14, color: '#7B8C88', marginBottom: 8 }}>
                 Previsto: {formatBRL(Number(a.valor_previsto || 0))} · Realizado: {formatBRL(Number(a.valor_realizado || 0))}
               </div>
               <div style={{ display: 'flex', gap: 8 }}>
                 {!a.lido && (
-                  <button className="btn-ghost" style={{ padding: '4px 10px', fontSize: 11 }} onClick={() => void marcarAlertaLido(a.id)}>Marcar como lido</button>
+                  <button className="btn-ghost" style={{ padding: '4px 10px', fontSize: 13 }} onClick={() => void marcarAlertaLido(a.id)}>Marcar como lido</button>
                 )}
-                <button className="btn-ghost" style={{ padding: '4px 10px', fontSize: 11 }} onClick={() => { const l = linhas.find((x) => x.id === a.orcamento_linha_id); if (l) setSupLinha(l) }}>Solicitar suplementação</button>
+                <button className="btn-ghost" style={{ padding: '4px 10px', fontSize: 13 }} onClick={() => { const l = linhas.find((x) => x.id === a.orcamento_linha_id); if (l) setSupLinha(l) }}>Solicitar suplementação</button>
               </div>
             </div>
           ))}
@@ -307,7 +307,7 @@ export default function OrcamentoPage() {
       {tab === 'suplementacoes' && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           {suplementacoes.length === 0 && (
-            <div style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 12, padding: '32px 16px', textAlign: 'center', color: '#7B8C88', fontSize: 13 }}>
+            <div style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 12, padding: '32px 16px', textAlign: 'center', color: '#7B8C88', fontSize: 15 }}>
               Nenhuma suplementação registrada.
             </div>
           )}
@@ -317,11 +317,11 @@ export default function OrcamentoPage() {
                 <span style={{ fontSize: 14, fontWeight: 700, color: '#13201D', fontFamily: "var(--font-sans)" }}>{formatBRL(Number(s.valor_solicitado || 0))}</span>
                 <span className={`tag ${s.status === 'aprovado' ? 'green' : s.status === 'rejeitado' ? 'red' : 'gray'}`}>{s.status}</span>
               </div>
-              <div style={{ fontSize: 12, color: '#7B8C88', marginBottom: s.status === 'pendente' ? 10 : 0 }}>{s.justificativa}</div>
+              <div style={{ fontSize: 14, color: '#7B8C88', marginBottom: s.status === 'pendente' ? 10 : 0 }}>{s.justificativa}</div>
               {s.status === 'pendente' && (
                 <div style={{ display: 'flex', gap: 8 }}>
-                  <button className="btn-action" style={{ padding: '4px 12px', fontSize: 11 }} onClick={() => void decidirSuplementacao(s.id, 'aprovado')}>Aprovar</button>
-                  <button className="btn-ghost" style={{ padding: '4px 12px', fontSize: 11 }} onClick={() => void decidirSuplementacao(s.id, 'rejeitado')}>Rejeitar</button>
+                  <button className="btn-action" style={{ padding: '4px 12px', fontSize: 13 }} onClick={() => void decidirSuplementacao(s.id, 'aprovado')}>Aprovar</button>
+                  <button className="btn-ghost" style={{ padding: '4px 12px', fontSize: 13 }} onClick={() => void decidirSuplementacao(s.id, 'rejeitado')}>Rejeitar</button>
                 </div>
               )}
             </div>

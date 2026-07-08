@@ -138,8 +138,8 @@ export default function AnomalyAlerts({ empresaId, onAlertClick }: Props) {
                 onClick={() => onAlertClick?.(a.id)}
                 style={{ textAlign: 'left', width: '100%', background: 'none', border: 'none', padding: 0, cursor: onAlertClick ? 'pointer' : 'default' }}
               >
-                <p style={{ fontWeight: 600, fontSize: 13, color: t.color, margin: 0 }}>{a.title}</p>
-                <p style={{ fontSize: 12, color: t.color, opacity: 0.85, margin: '2px 0 0' }}>{a.detail}</p>
+                <p style={{ fontWeight: 600, fontSize: 15, color: t.color, margin: 0 }}>{a.title}</p>
+                <p style={{ fontSize: 14, color: t.color, opacity: 0.85, margin: '2px 0 0' }}>{a.detail}</p>
               </button>
             </div>
             <button
@@ -148,7 +148,7 @@ export default function AnomalyAlerts({ empresaId, onAlertClick }: Props) {
               style={{ background: 'none', border: 'none', cursor: 'pointer', color: t.color, opacity: 0.6, padding: 2, flexShrink: 0 }}
               aria-label="Dispensar alerta"
             >
-              <i className="fa-solid fa-xmark" style={{ fontSize: 13 }} />
+              <i className="fa-solid fa-xmark" style={{ fontSize: 15 }} />
             </button>
           </div>
         )

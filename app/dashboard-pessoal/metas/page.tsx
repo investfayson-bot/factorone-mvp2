@@ -81,7 +81,7 @@ export default function MetasPage() {
         <div style={{ background: '#fff', border: '2px dashed var(--gray-100)', borderRadius: 16, padding: 48, textAlign: 'center' }}>
           <i className="fa-solid fa-bullseye" style={{ fontSize: 32, color: "var(--gray-300)", marginBottom: 12, display: "block" }} />
           <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--navy)', marginBottom: 8 }}>Nenhuma meta ainda</div>
-          <div style={{ fontSize: 13, color: 'var(--gray-400)', marginBottom: 20 }}>Crie sua primeira meta — reserva de emergência, viagem, carro...</div>
+          <div style={{ fontSize: 15, color: 'var(--gray-400)', marginBottom: 20 }}>Crie sua primeira meta — reserva de emergência, viagem, carro...</div>
           <button onClick={() => setModal(true)} className="btn-action">Criar primeira meta</button>
         </div>
       ) : (
@@ -96,19 +96,19 @@ export default function MetasPage() {
                   <div>
                     <div style={{ fontSize: 24, marginBottom: 4 }}>{m.icone}</div>
                     <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--navy)' }}>{m.nome}</div>
-                    {m.descricao && <div style={{ fontSize: 11, color: 'var(--gray-400)', marginTop: 2 }}>{m.descricao}</div>}
+                    {m.descricao && <div style={{ fontSize: 13, color: 'var(--gray-400)', marginTop: 2 }}>{m.descricao}</div>}
                   </div>
                   <span className={`tag ${concluida ? 'green' : 'gray'}`}>{concluida ? '✓ Concluída' : m.categoria}</span>
                 </div>
 
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, marginBottom: 6 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, marginBottom: 6 }}>
                   <span style={{ color: 'var(--gray-400)' }}>Progresso</span>
                   <span style={{ fontWeight: 700, color: concluida ? 'var(--teal)' : 'var(--navy)' }}>{formatBRL(m.valor_atual)} / {formatBRL(m.valor_meta)}</span>
                 </div>
                 <div style={{ height: 10, borderRadius: 5, background: 'var(--gray-100)', marginBottom: 10 }}>
                   <div style={{ height: '100%', borderRadius: 5, background: concluida ? 'var(--teal)' : 'var(--green)', width: `${pct}%`, transition: 'width .4s' }} />
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: 'var(--gray-400)', marginBottom: 12 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, color: 'var(--gray-400)', marginBottom: 12 }}>
                   <span>{pct.toFixed(0)}% atingido</span>
                   {dias !== null && <span style={{ color: dias < 30 ? 'var(--red)' : 'var(--gray-400)' }}>{dias > 0 ? `${dias} dias` : 'Prazo vencido'}</span>}
                 </div>
@@ -116,18 +116,18 @@ export default function MetasPage() {
                 {!concluida && (
                   aportando === m.id ? (
                     <div style={{ display: 'flex', gap: 6 }}>
-                      <input autoFocus className="form-input" type="number" placeholder="Valor aporte" value={aporte} onChange={e => setAporte(e.target.value)} style={{ flex: 1, padding: '5px 8px', fontSize: 12 }} />
-                      <button onClick={() => salvarAporte(m.id)} className="btn-action" style={{ padding: '5px 10px', fontSize: 11 }}>✓</button>
-                      <button onClick={() => setAportando(null)} className="btn-ghost" style={{ padding: '5px 8px', fontSize: 11 }}>✕</button>
+                      <input autoFocus className="form-input" type="number" placeholder="Valor aporte" value={aporte} onChange={e => setAporte(e.target.value)} style={{ flex: 1, padding: '5px 8px', fontSize: 14 }} />
+                      <button onClick={() => salvarAporte(m.id)} className="btn-action" style={{ padding: '5px 10px', fontSize: 13 }}>✓</button>
+                      <button onClick={() => setAportando(null)} className="btn-ghost" style={{ padding: '5px 8px', fontSize: 13 }}>✕</button>
                     </div>
                   ) : (
                     <div style={{ display: 'flex', gap: 6 }}>
-                      <button onClick={() => setAportando(m.id)} className="btn-action" style={{ flex: 1, fontSize: 11 }}>+ Aportar</button>
-                      <button onClick={() => excluir(m.id)} className="btn-ghost" style={{ fontSize: 11, color: 'var(--red)' }}>Excluir</button>
+                      <button onClick={() => setAportando(m.id)} className="btn-action" style={{ flex: 1, fontSize: 13 }}>+ Aportar</button>
+                      <button onClick={() => excluir(m.id)} className="btn-ghost" style={{ fontSize: 13, color: 'var(--red)' }}>Excluir</button>
                     </div>
                   )
                 )}
-                {concluida && <div style={{ fontSize: 12, color: 'var(--teal)', fontWeight: 700, textAlign: 'center', padding: '6px 0' }}>Meta alcançada!</div>}
+                {concluida && <div style={{ fontSize: 14, color: 'var(--teal)', fontWeight: 700, textAlign: 'center', padding: '6px 0' }}>Meta alcançada!</div>}
               </div>
             )
           })}

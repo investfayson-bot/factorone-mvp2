@@ -41,12 +41,12 @@ export default function SitePublico() {
       {/* Nav */}
       <nav style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 28px', position: 'sticky', top: 0, background: 'rgba(255,255,255,.9)', backdropFilter: 'blur(8px)', zIndex: 10, borderBottom: '1px solid #eef2f0' }}>
         <div style={{ fontSize: 19, fontWeight: 800, color: cor }}>{site.nome}</div>
-        <a href="#contato" style={{ ...btn, padding: '9px 18px', fontSize: 13 }}>Fale com a gente</a>
+        <a href="#contato" style={{ ...btn, padding: '9px 18px', fontSize: 15 }}>Fale com a gente</a>
       </nav>
 
       {/* Hero */}
       <section style={{ background: heroBg, color: heroText, padding: '90px 28px', textAlign: 'center' }}>
-        {site.ramo && <div style={{ display: 'inline-block', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '.1em', color: dark || site.template === 'elegante' ? 'rgba(255,255,255,.7)' : cor, marginBottom: 16 }}>{site.ramo}</div>}
+        {site.ramo && <div style={{ display: 'inline-block', fontSize: 14, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '.1em', color: dark || site.template === 'elegante' ? 'rgba(255,255,255,.7)' : cor, marginBottom: 16 }}>{site.ramo}</div>}
         <h1 style={{ fontSize: 46, fontWeight: 900, margin: '0 0 16px', letterSpacing: '-.02em', lineHeight: 1.05 }}>{site.nome}</h1>
         {site.slogan && <p style={{ fontSize: 19, maxWidth: 560, margin: '0 auto 28px', opacity: .82, lineHeight: 1.5 }}>{site.slogan}</p>}
         <a href="#contato" style={btn}>Solicitar orçamento</a>
@@ -94,14 +94,14 @@ export default function SitePublico() {
             <button type="submit" disabled={enviando || !form.nome.trim()} style={{ ...btn, width: '100%', opacity: enviando ? .6 : 1 }}>{enviando ? 'Enviando…' : 'Enviar'}</button>
           </form>
         )}
-        <div style={{ display: 'flex', gap: 18, justifyContent: 'center', marginTop: 22, flexWrap: 'wrap', fontSize: 13, color: '#475569' }}>
+        <div style={{ display: 'flex', gap: 18, justifyContent: 'center', marginTop: 22, flexWrap: 'wrap', fontSize: 15, color: '#475569' }}>
           {site.whatsapp && <a href={`https://wa.me/${site.whatsapp.replace(/\D/g, '')}`} target="_blank" rel="noreferrer" style={{ color: cor, textDecoration: 'none', fontWeight: 600 }}><i className="fa-brands fa-whatsapp" style={{ marginRight: 5 }} />{site.whatsapp}</a>}
           {site.telefone && <span><i className="fa-solid fa-phone" style={{ marginRight: 5 }} />{site.telefone}</span>}
           {site.email && <span><i className="fa-solid fa-envelope" style={{ marginRight: 5 }} />{site.email}</span>}
         </div>
       </section>
 
-      <footer style={{ padding: '24px', textAlign: 'center', borderTop: '1px solid #eef2f0', fontSize: 12, color: '#94a3b8' }}>
+      <footer style={{ padding: '24px', textAlign: 'center', borderTop: '1px solid #eef2f0', fontSize: 14, color: '#94a3b8' }}>
         © {new Date().getFullYear()} {site.nome} · feito com Factor<span style={{ color: cor }}>One</span>
       </footer>
 

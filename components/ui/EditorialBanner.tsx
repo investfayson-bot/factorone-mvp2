@@ -43,7 +43,7 @@ function CTAButton({ cta, onInk = false }: { cta: CTA; onInk?: boolean }) {
   const ghostFg = onInk ? 'var(--paper)' : 'var(--ink)'
   const base: React.CSSProperties = {
     display: 'inline-flex', alignItems: 'center', gap: 8, padding: '11px 20px',
-    borderRadius: 4, fontSize: 13, fontWeight: 600, cursor: 'pointer', textDecoration: 'none',
+    borderRadius: 4, fontSize: 15, fontWeight: 600, cursor: 'pointer', textDecoration: 'none',
     fontFamily: 'var(--font-sans)', transition: 'all .15s', border: '1px solid',
     borderColor: solid ? solidBg : ghostBorder,
     background: solid ? solidBg : 'transparent',
@@ -56,7 +56,7 @@ function CTAButton({ cta, onInk = false }: { cta: CTA; onInk?: boolean }) {
 
 function Eyebrow({ children }: { children: React.ReactNode }) {
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 10, fontWeight: 600, letterSpacing: '.16em', textTransform: 'uppercase', fontFamily: 'var(--font-mono)', color: 'var(--sage)' }}>
+    <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, fontWeight: 600, letterSpacing: '.16em', textTransform: 'uppercase', fontFamily: 'var(--font-mono)', color: 'var(--sage)' }}>
       <span style={{ width: 16, height: 1, background: 'currentColor' }} />{children}
     </div>
   )
@@ -73,7 +73,7 @@ export default function EditorialBanner({
   const Content = (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 16, justifyContent: 'center', padding: variant === 'strip' ? '28px 32px' : '44px 48px', maxWidth: variant === 'full' ? 620 : undefined }}>
       {badge && (
-        <span style={{ alignSelf: 'flex-start', fontSize: 9.5, fontWeight: 600, letterSpacing: '.14em', textTransform: 'uppercase', fontFamily: 'var(--font-mono)', color: onInk ? 'var(--paper)' : 'var(--sage-deep)', background: onInk ? 'rgba(247,244,238,.14)' : 'var(--sage-tint)', padding: '4px 11px', borderRadius: 100 }}>{badge}</span>
+        <span style={{ alignSelf: 'flex-start', fontSize: 11.5, fontWeight: 600, letterSpacing: '.14em', textTransform: 'uppercase', fontFamily: 'var(--font-mono)', color: onInk ? 'var(--paper)' : 'var(--sage-deep)', background: onInk ? 'rgba(247,244,238,.14)' : 'var(--sage-tint)', padding: '4px 11px', borderRadius: 100 }}>{badge}</span>
       )}
       {eyebrow && <Eyebrow>{eyebrow}</Eyebrow>}
       <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: variant === 'strip' ? 26 : 34, lineHeight: 1.06, letterSpacing: '-.03em', color: ink, margin: 0 }}>{title}</h2>
@@ -83,7 +83,7 @@ export default function EditorialBanner({
           {stats.map(s => (
             <div key={s.label}>
               <div style={{ fontFamily: 'var(--font-display)', fontSize: 24, fontWeight: 500, letterSpacing: '-.03em', color: ink, lineHeight: 1 }}>{s.valor}</div>
-              <div style={{ fontSize: 10, fontFamily: 'var(--font-mono)', letterSpacing: '.08em', textTransform: 'uppercase', color: onInk ? 'rgba(247,244,238,.55)' : 'var(--ink-mut)', marginTop: 5 }}>{s.label}</div>
+              <div style={{ fontSize: 12, fontFamily: 'var(--font-mono)', letterSpacing: '.08em', textTransform: 'uppercase', color: onInk ? 'rgba(247,244,238,.55)' : 'var(--ink-mut)', marginTop: 5 }}>{s.label}</div>
             </div>
           ))}
         </div>

@@ -98,14 +98,14 @@ export default function Conciliacao() {
     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
       <div style={card}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
-          <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--navy)' }}>Extrato (não conciliados)</div>
+          <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--navy)' }}>Extrato (não conciliados)</div>
           <div style={{ display: 'flex', gap: 6 }}>
-            <Link href="/dashboard/conciliacao/relatorio" className="btn-action btn-ghost" style={{ fontSize: 10, padding: '3px 10px' }}><i className="fa-solid fa-chart-column" style={{ marginRight: 4 }} />Relatório</Link>
+            <Link href="/dashboard/conciliacao/relatorio" className="btn-action btn-ghost" style={{ fontSize: 12, padding: '3px 10px' }}><i className="fa-solid fa-chart-column" style={{ marginRight: 4 }} />Relatório</Link>
             {extratos.length > 0 && (
-              <button className="btn-action btn-ghost" style={{ fontSize: 10, padding: '3px 10px' }} onClick={() => void lancarLote()}>+ Lançar todos</button>
+              <button className="btn-action btn-ghost" style={{ fontSize: 12, padding: '3px 10px' }} onClick={() => void lancarLote()}>+ Lançar todos</button>
             )}
             {extratos[0]?.conta_id && (
-              <button className="btn-action" style={{ fontSize: 10, padding: '3px 10px' }} onClick={() => void conciliarAutomatico(extratos[0].conta_id)}>✨ Auto-conciliar</button>
+              <button className="btn-action" style={{ fontSize: 12, padding: '3px 10px' }} onClick={() => void conciliarAutomatico(extratos[0].conta_id)}>✨ Auto-conciliar</button>
             )}
           </div>
         </div>
@@ -116,19 +116,19 @@ export default function Conciliacao() {
               onClick={() => setSelectedExtrato(e)}
               style={{ width: '100%', borderRadius: 8, border: selectedExtrato?.id === e.id ? '1.5px solid var(--teal)' : '1px solid var(--gray-100)', background: selectedExtrato?.id === e.id ? 'rgba(61,122,110,.07)' : '#fff', padding: '8px 10px', textAlign: 'left', cursor: 'pointer' }}
             >
-              <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>{new Date(e.data_transacao).toLocaleDateString('pt-BR')} · {e.descricao}</div>
-              <div style={{ fontSize: 12, fontWeight: 600, color: e.tipo === 'credito' ? 'var(--green)' : 'var(--red)' }}>{formatBRL(Number(e.valor || 0))}</div>
+              <div style={{ fontSize: 13, color: 'var(--gray-400)' }}>{new Date(e.data_transacao).toLocaleDateString('pt-BR')} · {e.descricao}</div>
+              <div style={{ fontSize: 14, fontWeight: 600, color: e.tipo === 'credito' ? 'var(--green)' : 'var(--red)' }}>{formatBRL(Number(e.valor || 0))}</div>
             </button>
           ))}
-          {extratos.length === 0 && <div style={{ fontSize: 12, color: 'var(--gray-400)', textAlign: 'center', padding: 16 }}>Nenhum extrato pendente.</div>}
+          {extratos.length === 0 && <div style={{ fontSize: 14, color: 'var(--gray-400)', textAlign: 'center', padding: 16 }}>Nenhum extrato pendente.</div>}
         </div>
       </div>
 
       <div style={card}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
-          <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--navy)' }}>Lançamentos internos pendentes</div>
+          <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--navy)' }}>Lançamentos internos pendentes</div>
           {selectedExtrato && (
-            <button className="btn-action" style={{ fontSize: 10, padding: '3px 10px' }} onClick={() => void lancarNoCaixa(selectedExtrato)}>
+            <button className="btn-action" style={{ fontSize: 12, padding: '3px 10px' }} onClick={() => void lancarNoCaixa(selectedExtrato)}>
               + Lançar no caixa
             </button>
           )}
@@ -136,12 +136,12 @@ export default function Conciliacao() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
           {(selectedExtrato ? destaque : pendentes).map((p) => (
             <div key={p.id} style={{ borderRadius: 8, border: selectedExtrato ? '1px solid var(--gold)' : '1px solid var(--gray-100)', background: selectedExtrato ? 'rgba(176,138,62,.06)' : '#fff', padding: '8px 10px' }}>
-              <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>{p.nome} · {p.data}</div>
-              <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--navy)' }}>{formatBRL(p.valor)} <span style={{ color: 'var(--gray-400)', fontWeight: 400 }}>({p.tipo})</span></div>
+              <div style={{ fontSize: 13, color: 'var(--gray-400)' }}>{p.nome} · {p.data}</div>
+              <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--navy)' }}>{formatBRL(p.valor)} <span style={{ color: 'var(--gray-400)', fontWeight: 400 }}>({p.tipo})</span></div>
             </div>
           ))}
           {(selectedExtrato ? destaque : pendentes).length === 0 && (
-            <div style={{ fontSize: 12, color: 'var(--gray-400)', textAlign: 'center', padding: 16 }}>
+            <div style={{ fontSize: 14, color: 'var(--gray-400)', textAlign: 'center', padding: 16 }}>
               {selectedExtrato ? 'Nenhum match encontrado.' : 'Nenhum lançamento pendente.'}
             </div>
           )}
@@ -149,23 +149,23 @@ export default function Conciliacao() {
       </div>
 
       <div style={{ ...card, gridColumn: 'span 2' }}>
-        <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--navy)', marginBottom: 10 }}>Estatísticas de conciliação</div>
+        <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--navy)', marginBottom: 10 }}>Estatísticas de conciliação</div>
         <div style={{ display: 'flex', gap: 24 }}>
           <div>
-            <div style={{ fontSize: 10, color: 'var(--gray-400)', textTransform: 'uppercase', fontFamily: "var(--font-sans)" }}>% Conciliado</div>
+            <div style={{ fontSize: 12, color: 'var(--gray-400)', textTransform: 'uppercase', fontFamily: "var(--font-sans)" }}>% Conciliado</div>
             <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--green)' }}>{stats?.percentual?.toFixed(1) || '0'}%</div>
           </div>
           <div>
-            <div style={{ fontSize: 10, color: 'var(--gray-400)', textTransform: 'uppercase', fontFamily: "var(--font-sans)" }}>Conciliados</div>
+            <div style={{ fontSize: 12, color: 'var(--gray-400)', textTransform: 'uppercase', fontFamily: "var(--font-sans)" }}>Conciliados</div>
             <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--navy)' }}>{stats?.conciliados || 0}</div>
           </div>
           <div>
-            <div style={{ fontSize: 10, color: 'var(--gray-400)', textTransform: 'uppercase', fontFamily: "var(--font-sans)" }}>Não conciliados</div>
+            <div style={{ fontSize: 12, color: 'var(--gray-400)', textTransform: 'uppercase', fontFamily: "var(--font-sans)" }}>Não conciliados</div>
             <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--gold)' }}>{stats?.nao_conciliados || 0}</div>
           </div>
           {sugestoes.length > 0 && (
             <div>
-              <div style={{ fontSize: 10, color: 'var(--gray-400)', textTransform: 'uppercase', fontFamily: "var(--font-sans)" }}>Sugestões fuzzy</div>
+              <div style={{ fontSize: 12, color: 'var(--gray-400)', textTransform: 'uppercase', fontFamily: "var(--font-sans)" }}>Sugestões fuzzy</div>
               <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--teal)' }}>{sugestoes.length}</div>
             </div>
           )}

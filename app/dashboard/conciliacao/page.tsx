@@ -199,7 +199,7 @@ export default function ConciliacaoPage() {
           <div className="page-sub">Matching automático · transações vs lançamentos</div>
         </div>
         <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-          <select className="form-input" style={{ width: 'auto', padding: '6px 12px', fontSize: 12 }} value={mes} onChange={e => setMes(e.target.value)}>
+          <select className="form-input" style={{ width: 'auto', padding: '6px 12px', fontSize: 14 }} value={mes} onChange={e => setMes(e.target.value)}>
             {mesesDisponiveis.map(m => {
               const [y, mo] = m.split('-')
               return <option key={m} value={m}>{new Date(Number(y), Number(mo) - 1, 1).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}</option>
@@ -235,18 +235,18 @@ export default function ConciliacaoPage() {
 
       {/* Alertas de sem lançamento */}
       {(semLancamento.length > 0 || semEntrada.length > 0) && !loading && (
-        <div style={{ background: '#F3ECDA', border: '0.5px solid #F59E0B', borderRadius: 12, padding: '12px 16px', fontSize: 12, color: '#13201D', lineHeight: 1.7 }}>
+        <div style={{ background: '#F3ECDA', border: '0.5px solid #F59E0B', borderRadius: 12, padding: '12px 16px', fontSize: 14, color: '#13201D', lineHeight: 1.7 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
             <i className="fa-solid fa-triangle-exclamation" style={{ color: '#B08A3E' }} />
             <strong>{semLancamento.length + semEntrada.length} lançamento(s)</strong> no sistema sem transação bancária correspondente
           </div>
           {semLancamento.slice(0, 3).map(p => (
-            <div key={p.id} style={{ fontSize: 11, color: '#7B8C88', paddingLeft: 20 }}>
+            <div key={p.id} style={{ fontSize: 13, color: '#7B8C88', paddingLeft: 20 }}>
               · {p.descricao} — {fmt(p.valor)} (venc. {new Date(p.data_vencimento + 'T12:00:00').toLocaleDateString('pt-BR')})
             </div>
           ))}
           {semEntrada.slice(0, 2).map(r => (
-            <div key={r.id} style={{ fontSize: 11, color: '#7B8C88', paddingLeft: 20 }}>
+            <div key={r.id} style={{ fontSize: 13, color: '#7B8C88', paddingLeft: 20 }}>
               · {r.descricao} — {fmt(r.valor)} (venc. {new Date(r.data_vencimento + 'T12:00:00').toLocaleDateString('pt-BR')})
             </div>
           ))}
@@ -256,7 +256,7 @@ export default function ConciliacaoPage() {
       {/* Barra progresso */}
       {!loading && items.length > 0 && (
         <div style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 12, padding: '12px 16px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: '#7B8C88', marginBottom: 8 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, color: '#7B8C88', marginBottom: 8 }}>
             <span style={{ fontWeight: 600, color: '#13201D' }}>Progresso da conciliação</span>
             <span>{conciliadas} de {items.length} transações · {Math.round((conciliadas / items.length) * 100)}%</span>
           </div>
@@ -267,9 +267,9 @@ export default function ConciliacaoPage() {
             </div>
           </div>
           <div style={{ display: 'flex', gap: 16, marginTop: 8 }}>
-            <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 10, color: '#7B8C88' }}><span style={{ width: 8, height: 8, borderRadius: 2, background: '#3D7A6E', display: 'inline-block' }} />Conciliados</span>
-            <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 10, color: '#7B8C88' }}><span style={{ width: 8, height: 8, borderRadius: 2, background: '#B0413E', display: 'inline-block' }} />Divergências</span>
-            <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 10, color: '#7B8C88' }}><span style={{ width: 8, height: 8, borderRadius: 2, background: '#F1ECE1', border: '0.5px solid #D1D9D8', display: 'inline-block' }} />Pendentes</span>
+            <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 12, color: '#7B8C88' }}><span style={{ width: 8, height: 8, borderRadius: 2, background: '#3D7A6E', display: 'inline-block' }} />Conciliados</span>
+            <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 12, color: '#7B8C88' }}><span style={{ width: 8, height: 8, borderRadius: 2, background: '#B0413E', display: 'inline-block' }} />Divergências</span>
+            <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 12, color: '#7B8C88' }}><span style={{ width: 8, height: 8, borderRadius: 2, background: '#F1ECE1', border: '0.5px solid #D1D9D8', display: 'inline-block' }} />Pendentes</span>
           </div>
         </div>
       )}
@@ -277,12 +277,12 @@ export default function ConciliacaoPage() {
       {/* Tabela principal */}
       <div style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 12, overflow: 'hidden' }}>
         <div style={{ padding: '12px 16px', borderBottom: '0.5px solid #E4DCCC', display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
-          <div style={{ fontSize: 12, fontWeight: 600, color: '#13201D', fontFamily: "var(--font-sans)", flex: 1 }}>
+          <div style={{ fontSize: 14, fontWeight: 600, color: '#13201D', fontFamily: "var(--font-sans)", flex: 1 }}>
             Transações ({filtrados.length})
           </div>
           {(['todos', 'conciliado', 'pendente', 'divergencia'] as const).map(s => (
             <button key={s} onClick={() => setFiltroStatus(s)} style={{
-              fontSize: 11, padding: '4px 12px', borderRadius: 20, border: '0.5px solid',
+              fontSize: 13, padding: '4px 12px', borderRadius: 20, border: '0.5px solid',
               borderColor: filtroStatus === s ? '#13201D' : '#E4DCCC',
               background: filtroStatus === s ? '#13201D' : 'transparent',
               color: filtroStatus === s ? '#fff' : '#7B8C88',
@@ -313,19 +313,19 @@ export default function ConciliacaoPage() {
                   ))}</tr>
                 ))
               ) : filtrados.length === 0 ? (
-                <tr><td colSpan={6} style={{ textAlign: 'center', color: 'var(--gray-400)', padding: '40px 0', fontSize: 13 }}>
+                <tr><td colSpan={6} style={{ textAlign: 'center', color: 'var(--gray-400)', padding: '40px 0', fontSize: 15 }}>
                   {items.length === 0 ? 'Nenhuma transação neste período. Registre transações no Cash Flow.' : 'Nenhum item com este filtro.'}
                 </td></tr>
               ) : filtrados.map(item => (
                 <tr key={item.id}>
-                  <td style={{ fontFamily: "var(--font-sans)", fontSize: 11, color: 'var(--gray-400)' }}>
+                  <td style={{ fontFamily: "var(--font-sans)", fontSize: 13, color: 'var(--gray-400)' }}>
                     {new Date(item.data + 'T12:00:00').toLocaleDateString('pt-BR')}
                   </td>
-                  <td style={{ fontWeight: 600, fontSize: 12 }}>{item.descBanco}</td>
-                  <td style={{ fontSize: 11, color: item.descSistema === '—' ? 'var(--gray-400)' : 'var(--navy)' }}>
+                  <td style={{ fontWeight: 600, fontSize: 14 }}>{item.descBanco}</td>
+                  <td style={{ fontSize: 13, color: item.descSistema === '—' ? 'var(--gray-400)' : 'var(--navy)' }}>
                     {item.descSistema}
                     {item.diffPct > 0 && item.diffPct <= 15 && (
-                      <span style={{ marginLeft: 6, fontSize: 9, color: 'var(--gold)', fontWeight: 700 }}>Δ{item.diffPct}%</span>
+                      <span style={{ marginLeft: 6, fontSize: 11, color: 'var(--gold)', fontWeight: 700 }}>Δ{item.diffPct}%</span>
                     )}
                   </td>
                   <td style={{ textAlign: 'right', fontFamily: "var(--font-sans)", fontWeight: 700, color: item.tipo === 'entrada' ? 'var(--green)' : 'var(--red)' }}>
@@ -339,12 +339,12 @@ export default function ConciliacaoPage() {
                   <td style={{ textAlign: 'right' }}>
                     <div style={{ display: 'flex', gap: 6, justifyContent: 'flex-end' }}>
                       {item.status !== 'conciliado' && (
-                        <button onClick={() => setModalTxId(item.id)} className="btn-action btn-ghost" style={{ fontSize: 11, padding: '2px 8px' }}>
+                        <button onClick={() => setModalTxId(item.id)} className="btn-action btn-ghost" style={{ fontSize: 13, padding: '2px 8px' }}>
                           Vincular
                         </button>
                       )}
                       {manual[item.id] && (
-                        <button onClick={() => desconciliar(item.id)} className="btn-action btn-ghost" style={{ fontSize: 11, padding: '2px 8px', color: 'var(--red)', borderColor: 'rgba(176,65,62,.3)' }}>
+                        <button onClick={() => desconciliar(item.id)} className="btn-action btn-ghost" style={{ fontSize: 13, padding: '2px 8px', color: 'var(--red)', borderColor: 'rgba(176,65,62,.3)' }}>
                           Remover
                         </button>
                       )}
@@ -365,17 +365,17 @@ export default function ConciliacaoPage() {
               Vincular manualmente
               <button className="modal-close" onClick={() => setModalTxId(null)}>×</button>
             </div>
-            <div style={{ background: 'var(--cream)', borderRadius: 8, padding: '10px 14px', marginBottom: 14, fontSize: 12 }}>
+            <div style={{ background: 'var(--cream)', borderRadius: 8, padding: '10px 14px', marginBottom: 14, fontSize: 14 }}>
               <div style={{ fontWeight: 700, color: 'var(--navy)' }}>{txModal.descricao}</div>
-              <div style={{ color: 'var(--gray-400)', fontSize: 11, marginTop: 2 }}>
+              <div style={{ color: 'var(--gray-400)', fontSize: 13, marginTop: 2 }}>
                 {new Date(txModal.data + 'T12:00:00').toLocaleDateString('pt-BR')} · {fmt(txModal.valor)}
               </div>
             </div>
-            <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: 8 }}>
+            <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: 8 }}>
               {txModal.tipo === 'saida' ? 'Contas a pagar disponíveis' : 'Contas a receber disponíveis'}
             </div>
             {opcoes.length === 0 ? (
-              <div style={{ textAlign: 'center', color: 'var(--gray-400)', padding: '20px 0', fontSize: 13 }}>
+              <div style={{ textAlign: 'center', color: 'var(--gray-400)', padding: '20px 0', fontSize: 15 }}>
                 Nenhum lançamento disponível para vincular neste período.
               </div>
             ) : (
@@ -390,15 +390,15 @@ export default function ConciliacaoPage() {
                       onMouseLeave={e => (e.currentTarget.style.borderColor = 'var(--gray-100)')}
                     >
                       <div>
-                        <div style={{ fontSize: 12, fontWeight: 600 }}>{op.descricao}</div>
-                        <div style={{ fontSize: 10, color: 'var(--gray-400)', marginTop: 2 }}>
+                        <div style={{ fontSize: 14, fontWeight: 600 }}>{op.descricao}</div>
+                        <div style={{ fontSize: 12, color: 'var(--gray-400)', marginTop: 2 }}>
                           Venc. {new Date(op.data_vencimento + 'T12:00:00').toLocaleDateString('pt-BR')} · {fmt(op.valor)}
                         </div>
                       </div>
                       <div style={{ textAlign: 'right' }}>
-                        {diff < 0.01 && <span className="tag green" style={{ fontSize: 9 }}>✓ exato</span>}
-                        {diff >= 0.01 && diff <= 0.1 && <span className="tag gray" style={{ fontSize: 9 }}>Δ{Math.round(diff * 100)}%</span>}
-                        {diff > 0.1 && <span className="tag red" style={{ fontSize: 9 }}>Δ{Math.round(diff * 100)}%</span>}
+                        {diff < 0.01 && <span className="tag green" style={{ fontSize: 11 }}>✓ exato</span>}
+                        {diff >= 0.01 && diff <= 0.1 && <span className="tag gray" style={{ fontSize: 11 }}>Δ{Math.round(diff * 100)}%</span>}
+                        {diff > 0.1 && <span className="tag red" style={{ fontSize: 11 }}>Δ{Math.round(diff * 100)}%</span>}
                       </div>
                     </div>
                   )

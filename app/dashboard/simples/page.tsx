@@ -154,7 +154,7 @@ export default function SimplesPage() {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 18, gap: 12, flexWrap: 'wrap' }}>
         <div>
           <h1 style={{ fontFamily: "var(--font-sans)", fontSize: 18, fontWeight: 700, color: 'var(--navy)', margin: 0 }}>Simples Nacional — Estimador de DAS</h1>
-          <div style={{ fontSize: 12, color: 'var(--gray-500)', marginTop: 3 }}>Calcule a alíquota efetiva e o imposto do mês (tabelas 2024).</div>
+          <div style={{ fontSize: 14, color: 'var(--gray-500)', marginTop: 3 }}>Calcule a alíquota efetiva e o imposto do mês (tabelas 2024).</div>
         </div>
         <button onClick={estimarFaturamento} className="btn-action btn-ghost" disabled={estimando} style={{ borderRadius: 8 }}>
           {estimando ? 'Estimando…' : 'Estimar RBT12 do faturamento'}
@@ -191,24 +191,24 @@ export default function SimplesPage() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
             <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: '14px 16px' }}>
-              <div style={{ fontSize: 11, color: 'var(--gray-400)', textTransform: 'uppercase' }}>DAS do mês</div>
+              <div style={{ fontSize: 13, color: 'var(--gray-400)', textTransform: 'uppercase' }}>DAS do mês</div>
               <div style={{ fontSize: 22, fontWeight: 800, color: 'var(--red)', marginTop: 4 }}>{formatBRL(r.das)}</div>
             </div>
             <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: '14px 16px' }}>
-              <div style={{ fontSize: 11, color: 'var(--gray-400)', textTransform: 'uppercase' }}>Alíquota efetiva</div>
+              <div style={{ fontSize: 13, color: 'var(--gray-400)', textTransform: 'uppercase' }}>Alíquota efetiva</div>
               <div style={{ fontSize: 22, fontWeight: 800, color: 'var(--navy)', marginTop: 4 }}>{(r.aliqEfetiva * 100).toFixed(2)}%</div>
             </div>
           </div>
 
           <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: 16 }}>
-            <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--navy)', marginBottom: 10 }}>Resumo</div>
+            <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--navy)', marginBottom: 10 }}>Resumo</div>
             {[
               { label: 'Alíquota nominal da faixa', valor: `${(r.faixa.aliquota * 100).toFixed(2)}%` },
               { label: 'Parcela a deduzir', valor: formatBRL(r.faixa.pd) },
               { label: 'RBT12', valor: formatBRL(Number(rbt12) || 0) },
               { label: 'Receita do mês', valor: formatBRL(Number(receitaMes) || 0) },
             ].map(x => (
-              <div key={x.label} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, padding: '6px 0', borderBottom: '1px solid var(--gray-100)' }}>
+              <div key={x.label} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, padding: '6px 0', borderBottom: '1px solid var(--gray-100)' }}>
                 <span style={{ color: 'var(--gray-400)' }}>{x.label}</span>
                 <span style={{ color: 'var(--navy)', fontFamily: "var(--font-sans)" }}>{x.valor}</span>
               </div>
@@ -216,7 +216,7 @@ export default function SimplesPage() {
           </div>
 
           {r.acimaLimite && (
-            <div style={{ background: 'rgba(176,65,62,.08)', border: '1px solid rgba(176,65,62,.3)', borderRadius: 10, padding: '10px 14px', fontSize: 12, color: '#B0413E' }}>
+            <div style={{ background: 'rgba(176,65,62,.08)', border: '1px solid rgba(176,65,62,.3)', borderRadius: 10, padding: '10px 14px', fontSize: 14, color: '#B0413E' }}>
               RBT12 acima de R$ 4.800.000 — fora do limite do Simples Nacional. Considere Lucro Presumido/Real.
             </div>
           )}
@@ -225,10 +225,10 @@ export default function SimplesPage() {
 
       {/* Tabela do anexo */}
       <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: 16, marginTop: 16 }}>
-        <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--navy)', marginBottom: 10 }}>{ANEXOS[anexo].nome} — faixas</div>
-        <table style={{ width: '100%', fontSize: 12, borderCollapse: 'collapse' }}>
+        <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--navy)', marginBottom: 10 }}>{ANEXOS[anexo].nome} — faixas</div>
+        <table style={{ width: '100%', fontSize: 14, borderCollapse: 'collapse' }}>
           <thead>
-            <tr style={{ color: 'var(--gray-400)', fontSize: 11 }}>
+            <tr style={{ color: 'var(--gray-400)', fontSize: 13 }}>
               <th style={{ textAlign: 'left', padding: '6px 4px' }}>RBT12 até</th>
               <th style={{ textAlign: 'right', padding: '6px 4px' }}>Alíquota</th>
               <th style={{ textAlign: 'right', padding: '6px 4px' }}>Parcela a deduzir</th>
@@ -247,7 +247,7 @@ export default function SimplesPage() {
             })}
           </tbody>
         </table>
-        <div style={{ fontSize: 10, color: 'var(--gray-400)', marginTop: 10, lineHeight: 1.6 }}>
+        <div style={{ fontSize: 12, color: 'var(--gray-400)', marginTop: 10, lineHeight: 1.6 }}>
           Estimativa simplificada. Não considera Fator R (Anexo III × V), sublimites estaduais, ICMS/ISS por fora, nem retenções. Consulte seu contador para o valor oficial.
         </div>
       </div>

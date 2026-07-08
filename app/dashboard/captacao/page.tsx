@@ -95,8 +95,8 @@ export default function CaptacaoPage() {
         ].map(k => (
           <div key={k.lbl} className="kpi" style={{ padding: '14px 16px' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <span style={{ fontSize: 10, fontWeight: 600, color: 'var(--ink-mut)', textTransform: 'uppercase', letterSpacing: '.08em' }}>{k.lbl}</span>
-              <i className={`fa-solid ${k.ic}`} style={{ fontSize: 12, color: k.cor }} />
+              <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--ink-mut)', textTransform: 'uppercase', letterSpacing: '.08em' }}>{k.lbl}</span>
+              <i className={`fa-solid ${k.ic}`} style={{ fontSize: 14, color: k.cor }} />
             </div>
             <div style={{ fontSize: 20, fontWeight: 700, color: k.cor, marginTop: 8, fontVariantNumeric: 'tabular-nums' }}>{k.val}</div>
           </div>
@@ -105,24 +105,24 @@ export default function CaptacaoPage() {
 
       {/* Webhook — plugue sua solução */}
       <div className="txs-card" style={{ padding: '18px 20px', marginBottom: 16 }}>
-        <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--ink)', marginBottom: 6 }}><i className="fa-solid fa-plug" style={{ color: 'var(--sage)', marginRight: 8 }} />Plugue sua solução</div>
-        <div style={{ fontSize: 12, color: 'var(--ink-mut)', marginBottom: 12 }}>Cole esta URL no Zapier/Make, no seu formulário ou em qualquer ferramenta. Todo lead cai aqui, já normalizado — não importa a origem.</div>
+        <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--ink)', marginBottom: 6 }}><i className="fa-solid fa-plug" style={{ color: 'var(--sage)', marginRight: 8 }} />Plugue sua solução</div>
+        <div style={{ fontSize: 14, color: 'var(--ink-mut)', marginBottom: 12 }}>Cole esta URL no Zapier/Make, no seu formulário ou em qualquer ferramenta. Todo lead cai aqui, já normalizado — não importa a origem.</div>
         {webhookUrl ? (
           <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-            <code style={{ flex: 1, fontSize: 12, background: 'var(--surface-2)', border: '1px solid var(--line)', borderRadius: 8, padding: '10px 12px', overflow: 'auto', whiteSpace: 'nowrap', fontFamily: 'var(--font-mono)' }}>{webhookUrl}</code>
-            <button className="btn-action" style={{ fontSize: 12 }} onClick={() => { void navigator.clipboard.writeText(webhookUrl); toast.success('URL copiada') }}><i className="fa-solid fa-copy" style={{ marginRight: 6 }} />Copiar</button>
+            <code style={{ flex: 1, fontSize: 14, background: 'var(--surface-2)', border: '1px solid var(--line)', borderRadius: 8, padding: '10px 12px', overflow: 'auto', whiteSpace: 'nowrap', fontFamily: 'var(--font-mono)' }}>{webhookUrl}</code>
+            <button className="btn-action" style={{ fontSize: 14 }} onClick={() => { void navigator.clipboard.writeText(webhookUrl); toast.success('URL copiada') }}><i className="fa-solid fa-copy" style={{ marginRight: 6 }} />Copiar</button>
           </div>
         ) : (
-          <div style={{ fontSize: 12, color: 'var(--gold)' }}>Gerando token… se não aparecer, rode a migração <code>inbound_tokens</code> (SQL abaixo no chat).</div>
+          <div style={{ fontSize: 14, color: 'var(--gold)' }}>Gerando token… se não aparecer, rode a migração <code>inbound_tokens</code> (SQL abaixo no chat).</div>
         )}
-        <div style={{ fontSize: 10.5, color: 'var(--ink-faint)', marginTop: 10 }}>Aceita campos comuns: nome/name, email, telefone/phone/whatsapp, origem/source. Envie via POST (JSON).</div>
+        <div style={{ fontSize: 12.5, color: 'var(--ink-faint)', marginTop: 10 }}>Aceita campos comuns: nome/name, email, telefone/phone/whatsapp, origem/source. Envie via POST (JSON).</div>
         {formUrl && (
           <div style={{ marginTop: 14, paddingTop: 14, borderTop: '1px solid var(--line-soft)' }}>
-            <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--ink)', marginBottom: 8 }}><i className="fa-solid fa-window-maximize" style={{ color: 'var(--sage)', marginRight: 8 }} />Formulário pronto (não precisa nem ter site)</div>
+            <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--ink)', marginBottom: 8 }}><i className="fa-solid fa-window-maximize" style={{ color: 'var(--sage)', marginRight: 8 }} />Formulário pronto (não precisa nem ter site)</div>
             <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-              <a href={formUrl} target="_blank" rel="noreferrer" className="btn-ghost" style={{ fontSize: 12, textDecoration: 'none' }}><i className="fa-solid fa-arrow-up-right-from-square" style={{ marginRight: 6 }} />Abrir formulário</a>
-              <button className="btn-ghost" style={{ fontSize: 12 }} onClick={() => { void navigator.clipboard.writeText(formUrl); toast.success('Link do formulário copiado') }}><i className="fa-solid fa-link" style={{ marginRight: 6 }} />Copiar link</button>
-              <button className="btn-ghost" style={{ fontSize: 12 }} onClick={() => { void navigator.clipboard.writeText(embedCode); toast.success('Código de incorporação copiado') }}><i className="fa-solid fa-code" style={{ marginRight: 6 }} />Copiar embed</button>
+              <a href={formUrl} target="_blank" rel="noreferrer" className="btn-ghost" style={{ fontSize: 14, textDecoration: 'none' }}><i className="fa-solid fa-arrow-up-right-from-square" style={{ marginRight: 6 }} />Abrir formulário</a>
+              <button className="btn-ghost" style={{ fontSize: 14 }} onClick={() => { void navigator.clipboard.writeText(formUrl); toast.success('Link do formulário copiado') }}><i className="fa-solid fa-link" style={{ marginRight: 6 }} />Copiar link</button>
+              <button className="btn-ghost" style={{ fontSize: 14 }} onClick={() => { void navigator.clipboard.writeText(embedCode); toast.success('Código de incorporação copiado') }}><i className="fa-solid fa-code" style={{ marginRight: 6 }} />Copiar embed</button>
             </div>
           </div>
         )}
@@ -134,17 +134,17 @@ export default function CaptacaoPage() {
           <div key={c.nome} className="int-card" style={{ opacity: c.ativo ? 1 : .7 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
               <i className={`fa-brands ${c.icon} fa-solid`} style={{ fontSize: 16, color: c.cor }} />
-              <span style={{ fontSize: 12.5, fontWeight: 700, color: 'var(--ink)' }}>{c.nome}</span>
+              <span style={{ fontSize: 14.5, fontWeight: 700, color: 'var(--ink)' }}>{c.nome}</span>
             </div>
-            <div style={{ fontSize: 11, color: 'var(--ink-mut)', marginBottom: 8, lineHeight: 1.4 }}>{c.nota}</div>
+            <div style={{ fontSize: 13, color: 'var(--ink-mut)', marginBottom: 8, lineHeight: 1.4 }}>{c.nota}</div>
             {c.ativo ? (
-              <span style={{ fontSize: 9.5, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '.06em', color: 'var(--sage)' }}><i className="fa-solid fa-circle" style={{ fontSize: 6, marginRight: 5 }} />Ativo</span>
+              <span style={{ fontSize: 11.5, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '.06em', color: 'var(--sage)' }}><i className="fa-solid fa-circle" style={{ fontSize: 6, marginRight: 5 }} />Ativo</span>
             ) : c.sistema && configurados.includes(c.sistema) ? (
-              <span style={{ fontSize: 9.5, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '.06em', color: 'var(--sage-deep)' }}><i className="fa-solid fa-circle-check" style={{ marginRight: 5 }} />Conectado</span>
+              <span style={{ fontSize: 11.5, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '.06em', color: 'var(--sage-deep)' }}><i className="fa-solid fa-circle-check" style={{ marginRight: 5 }} />Conectado</span>
             ) : c.sistema ? (
-              <button className="btn-ghost" style={{ fontSize: 11, padding: '5px 12px' }} onClick={() => { setPlugFor(c); setApiKey('') }}><i className="fa-solid fa-key" style={{ marginRight: 6 }} />Conectar</button>
+              <button className="btn-ghost" style={{ fontSize: 13, padding: '5px 12px' }} onClick={() => { setPlugFor(c); setApiKey('') }}><i className="fa-solid fa-key" style={{ marginRight: 6 }} />Conectar</button>
             ) : (
-              <span style={{ fontSize: 9.5, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '.06em', color: 'var(--ink-mut)' }}>Em breve</span>
+              <span style={{ fontSize: 11.5, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '.06em', color: 'var(--ink-mut)' }}>Em breve</span>
             )}
           </div>
         ))}
@@ -152,28 +152,28 @@ export default function CaptacaoPage() {
 
       {/* Leads */}
       <div className="txs-card">
-        <div style={{ padding: '12px 18px', borderBottom: '1px solid var(--line)', fontSize: 12, fontWeight: 700, color: 'var(--ink)' }}>Leads captados</div>
+        <div style={{ padding: '12px 18px', borderBottom: '1px solid var(--line)', fontSize: 14, fontWeight: 700, color: 'var(--ink)' }}>Leads captados</div>
         {leads.length === 0 ? (
-          <div style={{ padding: 40, textAlign: 'center', color: 'var(--ink-mut)', fontSize: 13 }}>
+          <div style={{ padding: 40, textAlign: 'center', color: 'var(--ink-mut)', fontSize: 15 }}>
             <i className="fa-solid fa-inbox" style={{ fontSize: 24, color: 'var(--sage)', display: 'block', marginBottom: 10 }} />
             Nenhum lead ainda. Cole a URL do webhook numa ferramenta e mande um teste — ele aparece aqui na hora.
           </div>
         ) : leads.map((l, i) => (
           <div key={l.id} style={{ display: 'grid', gridTemplateColumns: '1fr 160px 110px 140px', gap: 12, alignItems: 'center', padding: '11px 18px', borderBottom: i < leads.length - 1 ? '1px solid var(--line-soft)' : 'none' }}>
             <div style={{ minWidth: 0 }}>
-              <div style={{ fontSize: 12.5, fontWeight: 600, color: 'var(--ink)' }}>{l.nome || 'Lead'}</div>
-              <div style={{ fontSize: 11, color: 'var(--ink-mut)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{[l.email, l.telefone].filter(Boolean).join(' · ') || '—'}</div>
+              <div style={{ fontSize: 14.5, fontWeight: 600, color: 'var(--ink)' }}>{l.nome || 'Lead'}</div>
+              <div style={{ fontSize: 13, color: 'var(--ink-mut)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{[l.email, l.telefone].filter(Boolean).join(' · ') || '—'}</div>
             </div>
-            <span style={{ fontSize: 11, color: 'var(--ink-soft)' }}><i className="fa-solid fa-tag" style={{ marginRight: 5, fontSize: 9, color: 'var(--ink-mut)' }} />{l.origem || 'Webhook'}</span>
-            <span style={{ justifySelf: 'start', fontSize: 9.5, fontWeight: 600, padding: '3px 9px', borderRadius: 100, textTransform: 'uppercase', letterSpacing: '.05em', color: l.status === 'convertido' ? 'var(--sage-deep)' : 'var(--gold)', background: l.status === 'convertido' ? 'var(--sage-tint)' : 'var(--gold-tint)' }}>{l.status}</span>
+            <span style={{ fontSize: 13, color: 'var(--ink-soft)' }}><i className="fa-solid fa-tag" style={{ marginRight: 5, fontSize: 11, color: 'var(--ink-mut)' }} />{l.origem || 'Webhook'}</span>
+            <span style={{ justifySelf: 'start', fontSize: 11.5, fontWeight: 600, padding: '3px 9px', borderRadius: 100, textTransform: 'uppercase', letterSpacing: '.05em', color: l.status === 'convertido' ? 'var(--sage-deep)' : 'var(--gold)', background: l.status === 'convertido' ? 'var(--sage-tint)' : 'var(--gold-tint)' }}>{l.status}</span>
             <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-              {l.status !== 'convertido' && <button className="btn-action" style={{ fontSize: 11, padding: '6px 12px' }} onClick={() => void converter(l)}><i className="fa-solid fa-arrow-right" style={{ marginRight: 5 }} />Virar oportunidade</button>}
+              {l.status !== 'convertido' && <button className="btn-action" style={{ fontSize: 13, padding: '6px 12px' }} onClick={() => void converter(l)}><i className="fa-solid fa-arrow-right" style={{ marginRight: 5 }} />Virar oportunidade</button>}
             </div>
           </div>
         ))}
       </div>
 
-      <div style={{ fontSize: 11, color: 'var(--ink-faint)', marginTop: 12, lineHeight: 1.6 }}>
+      <div style={{ fontSize: 13, color: 'var(--ink-faint)', marginTop: 12, lineHeight: 1.6 }}>
         <i className="fa-solid fa-circle-info" style={{ color: 'var(--sage)', marginRight: 6 }} />
         Modelo único (canônico): não importa a ferramenta, o lead entra igual. &quot;Virar oportunidade&quot; joga no CRM → pipeline → ao fechar, vira receita na DRE. O funil inteiro num lugar só.
       </div>
@@ -186,9 +186,9 @@ export default function CaptacaoPage() {
               <div className="modal-title">Conectar {plugFor.nome}</div>
               <button className="modal-close" onClick={() => setPlugFor(null)}><i className="fa-solid fa-xmark" /></button>
             </div>
-            <div style={{ fontSize: 12, color: 'var(--ink-mut)', marginBottom: 16 }}>Cole a chave/token da ferramenta. Fica guardada com segurança na sua conta.{plugFor.ajudaChave ? ` ${plugFor.ajudaChave}` : ''}</div>
+            <div style={{ fontSize: 14, color: 'var(--ink-mut)', marginBottom: 16 }}>Cole a chave/token da ferramenta. Fica guardada com segurança na sua conta.{plugFor.ajudaChave ? ` ${plugFor.ajudaChave}` : ''}</div>
             <div className="form-group"><label className="form-label">Chave / Token de API</label><input className="form-input" type="password" value={apiKey} onChange={e => setApiKey(e.target.value)} placeholder="cole aqui" autoFocus /></div>
-            <div style={{ fontSize: 10.5, color: 'var(--ink-faint)', marginBottom: 4 }}>A sincronização automática do lead entra em breve — a chave já fica plugada e pronta.</div>
+            <div style={{ fontSize: 12.5, color: 'var(--ink-faint)', marginBottom: 4 }}>A sincronização automática do lead entra em breve — a chave já fica plugada e pronta.</div>
             <div className="modal-actions">
               <button className="btn-ghost" onClick={() => setPlugFor(null)}>Cancelar</button>
               <button className="btn-action" disabled={salvandoKey} onClick={() => void plugarChave()}>{salvandoKey ? 'Salvando…' : 'Conectar'}</button>

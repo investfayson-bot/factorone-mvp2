@@ -127,7 +127,7 @@ export default function NotificationBell() {
       >
         <i className="fa-solid fa-bell" style={{ fontSize: 14, color: naoLidas > 0 ? '#B08A3E' : '#7B8C88' }} />
         {naoLidas > 0 && (
-          <div style={{ position: 'absolute', top: 4, right: 4, width: 14, height: 14, borderRadius: '50%', background: '#B0413E', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 8, fontWeight: 700, color: '#fff', border: '2px solid #fff' }}>
+          <div style={{ position: 'absolute', top: 4, right: 4, width: 14, height: 14, borderRadius: '50%', background: '#B0413E', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 700, color: '#fff', border: '2px solid #fff' }}>
             {naoLidas > 9 ? '9+' : naoLidas}
           </div>
         )}
@@ -136,16 +136,16 @@ export default function NotificationBell() {
       {open && (
         <div style={{ position: 'absolute', top: 42, right: 0, width: 320, background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 14, boxShadow: '0 8px 32px rgba(0,0,0,0.12)', zIndex: 9999, overflow: 'hidden' }}>
           <div style={{ padding: '12px 16px', borderBottom: '0.5px solid #E4DCCC', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <div style={{ fontSize: 13, fontWeight: 700, color: '#13201D', fontFamily: "var(--font-sans)" }}>Notificações</div>
+            <div style={{ fontSize: 15, fontWeight: 700, color: '#13201D', fontFamily: "var(--font-sans)" }}>Notificações</div>
             {naoLidas > 0 && (
-              <button onClick={marcarTodas} style={{ fontSize: 10, color: '#3D7A6E', fontWeight: 600, background: 'none', border: 'none', cursor: 'pointer' }}>
+              <button onClick={marcarTodas} style={{ fontSize: 12, color: '#3D7A6E', fontWeight: 600, background: 'none', border: 'none', cursor: 'pointer' }}>
                 Marcar todas como lidas
               </button>
             )}
           </div>
 
           {notifs.length === 0 ? (
-            <div style={{ padding: '32px 16px', textAlign: 'center', color: '#7B8C88', fontSize: 12 }}>
+            <div style={{ padding: '32px 16px', textAlign: 'center', color: '#7B8C88', fontSize: 14 }}>
               <i className="fa-solid fa-check-circle" style={{ fontSize: 24, color: '#3D7A6E', marginBottom: 8, display: 'block' }} />
               Tudo em dia! Sem alertas.
             </div>
@@ -161,11 +161,11 @@ export default function NotificationBell() {
                       onMouseLeave={e => (e.currentTarget.style.background = isLida ? '#fff' : '#FAFCFB')}
                     >
                       <div style={{ width: 32, height: 32, borderRadius: 8, background: ic.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                        <i className={`fa-solid ${ic.icon}`} style={{ fontSize: 13, color: ic.color }} />
+                        <i className={`fa-solid ${ic.icon}`} style={{ fontSize: 15, color: ic.color }} />
                       </div>
                       <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ fontSize: 12, fontWeight: isLida ? 500 : 700, color: '#13201D', marginBottom: 2 }}>{n.titulo}</div>
-                        <div style={{ fontSize: 11, color: '#7B8C88', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{n.mensagem}</div>
+                        <div style={{ fontSize: 14, fontWeight: isLida ? 500 : 700, color: '#13201D', marginBottom: 2 }}>{n.titulo}</div>
+                        <div style={{ fontSize: 13, color: '#7B8C88', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{n.mensagem}</div>
                       </div>
                       {!isLida && <div style={{ width: 7, height: 7, borderRadius: '50%', background: '#3D7A6E', flexShrink: 0, marginTop: 6 }} />}
                     </div>

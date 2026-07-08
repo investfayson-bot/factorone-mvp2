@@ -68,7 +68,7 @@ export default function PrefeiturasPage() {
           <div className="page-sub">Todas as prefeituras do Brasil · emissão de nota de serviço por município</div>
         </div>
         {ufSel && (
-          <button className="btn-ghost" style={{ fontSize: 12 }} onClick={() => setUfSel(null)}>
+          <button className="btn-ghost" style={{ fontSize: 14 }} onClick={() => setUfSel(null)}>
             <i className="fa-solid fa-arrow-left" style={{ marginRight: 6 }} />Estados
           </button>
         )}
@@ -91,13 +91,13 @@ export default function PrefeiturasPage() {
       {/* Status da conexão */}
       <div style={{ background: status.configurado ? 'rgba(61,122,110,.08)' : 'rgba(176,138,62,.08)', border: `1px solid ${status.configurado ? 'rgba(61,122,110,.25)' : 'rgba(176,138,62,.25)'}`, borderRadius: 12, padding: '12px 16px', marginBottom: 18, display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
         <i className={`fa-solid ${status.configurado ? 'fa-circle-check' : 'fa-plug'}`} style={{ color: status.configurado ? '#3D7A6E' : '#B08A3E' }} />
-        <span style={{ fontSize: 12.5, color: '#13201D', fontWeight: 600 }}>
+        <span style={{ fontSize: 14.5, color: '#13201D', fontWeight: 600 }}>
           {status.configurado
             ? `Emissão de NFS-e ativa via ${status.provider?.toUpperCase()} — todas as prefeituras cobertas.`
             : 'Emissão de NFS-e não conectada.'}
         </span>
         {!status.configurado && (
-          <span style={{ fontSize: 11.5, color: '#7B8C88', marginLeft: 'auto' }}>
+          <span style={{ fontSize: 13.5, color: '#7B8C88', marginLeft: 'auto' }}>
             Conecte um agregador (NFE.IO / PlugNotas) que já integra todos os municípios.
           </span>
         )}
@@ -105,17 +105,17 @@ export default function PrefeiturasPage() {
 
       {!ufSel ? (
         <>
-          <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.04em', marginBottom: 10 }}>Escolha o estado</div>
+          <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.04em', marginBottom: 10 }}>Escolha o estado</div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: 10 }}>
             {ESTADOS.map(e => (
               <button key={e.uf} onClick={() => void abrirEstado(e.uf)} style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 12, padding: '14px 16px', textAlign: 'left', cursor: 'pointer', transition: 'box-shadow .15s' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                   <div style={{ width: 38, height: 38, borderRadius: 9, background: '#13201D', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                    <span style={{ fontSize: 13, fontWeight: 800, color: '#6FA595', fontFamily: "var(--font-sans)" }}>{e.uf}</span>
+                    <span style={{ fontSize: 15, fontWeight: 800, color: '#6FA595', fontFamily: "var(--font-sans)" }}>{e.uf}</span>
                   </div>
                   <div>
-                    <div style={{ fontSize: 13, fontWeight: 700, color: '#13201D' }}>{e.nome}</div>
-                    <div style={{ fontSize: 10.5, color: '#7B8C88' }}>{e.regiao}</div>
+                    <div style={{ fontSize: 15, fontWeight: 700, color: '#13201D' }}>{e.nome}</div>
+                    <div style={{ fontSize: 12.5, color: '#7B8C88' }}>{e.regiao}</div>
                   </div>
                 </div>
               </button>
@@ -126,30 +126,30 @@ export default function PrefeiturasPage() {
         <>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12, flexWrap: 'wrap' }}>
             <div style={{ fontSize: 14, fontWeight: 800, color: '#13201D' }}>{ESTADOS.find(e => e.uf === ufSel)?.nome} ({ufSel})</div>
-            <span style={{ fontSize: 12, color: '#7B8C88' }}>{carregando ? 'carregando…' : `${municipios.length} municípios`}</span>
-            <input className="form-input" style={{ width: 220, padding: '6px 10px', fontSize: 12, marginLeft: 'auto' }} placeholder="Buscar município…" value={busca} onChange={e => setBusca(e.target.value)} />
-            <button className="btn-ghost" style={{ fontSize: 12 }} onClick={exportarCsv} disabled={municipios.length === 0}>
+            <span style={{ fontSize: 14, color: '#7B8C88' }}>{carregando ? 'carregando…' : `${municipios.length} municípios`}</span>
+            <input className="form-input" style={{ width: 220, padding: '6px 10px', fontSize: 14, marginLeft: 'auto' }} placeholder="Buscar município…" value={busca} onChange={e => setBusca(e.target.value)} />
+            <button className="btn-ghost" style={{ fontSize: 14 }} onClick={exportarCsv} disabled={municipios.length === 0}>
               <i className="fa-solid fa-file-csv" style={{ marginRight: 6 }} />Baixar CSV
             </button>
           </div>
 
           <div style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 14, overflow: 'hidden' }}>
             {carregando ? (
-              <div style={{ padding: '40px', textAlign: 'center', color: '#7B8C88', fontSize: 12 }}>
+              <div style={{ padding: '40px', textAlign: 'center', color: '#7B8C88', fontSize: 14 }}>
                 <i className="fa-solid fa-circle-notch fa-spin" style={{ fontSize: 20, color: '#3D7A6E' }} />
               </div>
             ) : filtrados.length === 0 ? (
-              <div style={{ padding: '40px', textAlign: 'center', color: '#7B8C88', fontSize: 12 }}>Nenhum município encontrado.</div>
+              <div style={{ padding: '40px', textAlign: 'center', color: '#7B8C88', fontSize: 14 }}>Nenhum município encontrado.</div>
             ) : filtrados.map((m, i) => (
               <div key={m.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 16px', borderBottom: i < filtrados.length - 1 ? '0.5px solid #EFE9DC' : 'none' }}>
                 <div style={{ width: 30, height: 30, borderRadius: 8, background: '#F1ECE1', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  <i className="fa-solid fa-landmark" style={{ fontSize: 12, color: '#3D7A6E' }} />
+                  <i className="fa-solid fa-landmark" style={{ fontSize: 14, color: '#3D7A6E' }} />
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 13, fontWeight: 600, color: '#13201D' }}>{m.nome}</div>
-                  <div style={{ fontSize: 10, color: '#A6B0AC', fontVariantNumeric: 'tabular-nums' }}>IBGE {m.id}</div>
+                  <div style={{ fontSize: 15, fontWeight: 600, color: '#13201D' }}>{m.nome}</div>
+                  <div style={{ fontSize: 12, color: '#A6B0AC', fontVariantNumeric: 'tabular-nums' }}>IBGE {m.id}</div>
                 </div>
-                <button onClick={() => emitir(m)} style={{ fontSize: 11, fontWeight: 700, padding: '5px 12px', borderRadius: 8, border: 'none', background: status.configurado ? '#13201D' : '#F1ECE1', color: status.configurado ? '#fff' : '#7B8C88', cursor: 'pointer' }}>
+                <button onClick={() => emitir(m)} style={{ fontSize: 13, fontWeight: 700, padding: '5px 12px', borderRadius: 8, border: 'none', background: status.configurado ? '#13201D' : '#F1ECE1', color: status.configurado ? '#fff' : '#7B8C88', cursor: 'pointer' }}>
                   <i className="fa-solid fa-file-invoice" style={{ marginRight: 5 }} />Emitir NFS-e
                 </button>
               </div>
@@ -158,7 +158,7 @@ export default function PrefeiturasPage() {
         </>
       )}
 
-      <div style={{ fontSize: 11, color: '#A6B0AC', marginTop: 14, lineHeight: 1.6 }}>
+      <div style={{ fontSize: 13, color: '#A6B0AC', marginTop: 14, lineHeight: 1.6 }}>
         <i className="fa-solid fa-circle-info" style={{ color: '#3D7A6E', marginRight: 6 }} />
         Lista de municípios via IBGE (oficial). A emissão de NFS-e usa um agregador (NFE.IO / PlugNotas) que já conecta todas as prefeituras — configure a chave para ativar.
       </div>

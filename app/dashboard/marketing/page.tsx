@@ -146,8 +146,8 @@ export default function MarketingPage() {
     return conteudos.filter(c => c.data_pub && c.data_pub >= ini && c.data_pub <= fim).sort((a, b) => (a.data_pub || '').localeCompare(b.data_pub || ''))
   }, [conteudos, calMes])
 
-  const inp: React.CSSProperties = { width: '100%', border: '1px solid var(--gray-100)', borderRadius: 8, padding: '8px 12px', fontSize: 13, color: 'var(--navy)', background: '#fff', boxSizing: 'border-box', outline: 'none' }
-  const lbl: React.CSSProperties = { fontSize: 11, fontWeight: 600, color: 'var(--gray-500)', marginBottom: 4, display: 'block' }
+  const inp: React.CSSProperties = { width: '100%', border: '1px solid var(--gray-100)', borderRadius: 8, padding: '8px 12px', fontSize: 15, color: 'var(--navy)', background: '#fff', boxSizing: 'border-box', outline: 'none' }
+  const lbl: React.CSSProperties = { fontSize: 13, fontWeight: 600, color: 'var(--gray-500)', marginBottom: 4, display: 'block' }
 
   if (loading) return <div style={{ padding: 32, color: 'var(--gray-400)' }}>Carregando Marketing…</div>
 
@@ -159,8 +159,8 @@ export default function MarketingPage() {
           <div className="page-sub">{kpis.campanhasAtivas} campanhas ativas · {kpis.leads} leads · ROAS {kpis.roas.toFixed(2)}x</div>
         </div>
         <div style={{ display: 'flex', gap: 8 }}>
-          <button className="btn-action btn-ghost" style={{ fontSize: 12 }} onClick={() => setShowCont(true)}>
-            <i className="fa-solid fa-pen-to-square" style={{ marginRight: 5, fontSize: 11 }} />Conteúdo
+          <button className="btn-action btn-ghost" style={{ fontSize: 14 }} onClick={() => setShowCont(true)}>
+            <i className="fa-solid fa-pen-to-square" style={{ marginRight: 5, fontSize: 13 }} />Conteúdo
           </button>
           <button className="btn-action" onClick={() => setShowCamp(true)}>+ Nova campanha</button>
         </div>
@@ -189,9 +189,9 @@ export default function MarketingPage() {
           { lbl: 'ROAS', val: `${kpis.roas.toFixed(1)}x`, cor: kpis.roas >= 3 ? 'var(--sage)' : 'var(--gold)', ic: 'fa-arrow-trend-up', href: '/dashboard/relatorios' },
         ] as const).map((s, i, arr) => (
           <Link key={s.lbl} href={s.href} style={{ flex: 1, textDecoration: 'none', padding: '14px 18px', borderRight: i < arr.length - 1 ? '1px solid var(--line-soft)' : 'none', display: 'flex', flexDirection: 'column', gap: 5, position: 'relative' }}>
-            <span style={{ fontSize: 10, fontWeight: 600, color: 'var(--ink-mut)', textTransform: 'uppercase', letterSpacing: '.08em' }}><i className={`fa-solid ${s.ic}`} style={{ marginRight: 6, color: s.cor }} />{s.lbl}</span>
+            <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--ink-mut)', textTransform: 'uppercase', letterSpacing: '.08em' }}><i className={`fa-solid ${s.ic}`} style={{ marginRight: 6, color: s.cor }} />{s.lbl}</span>
             <span style={{ fontSize: 19, fontWeight: 700, color: s.cor, fontVariantNumeric: 'tabular-nums' }}>{s.val}</span>
-            {i < arr.length - 1 && <i className="fa-solid fa-chevron-right" style={{ position: 'absolute', right: -8, top: '50%', transform: 'translateY(-50%)', fontSize: 12, color: 'var(--ink-faint)', background: 'var(--surface)', padding: '2px 0', zIndex: 1 }} />}
+            {i < arr.length - 1 && <i className="fa-solid fa-chevron-right" style={{ position: 'absolute', right: -8, top: '50%', transform: 'translateY(-50%)', fontSize: 14, color: 'var(--ink-faint)', background: 'var(--surface)', padding: '2px 0', zIndex: 1 }} />}
           </Link>
         ))}
       </div>
@@ -222,7 +222,7 @@ export default function MarketingPage() {
           { l: 'Conv. Rate', v: `${cvr}%` },
         ].map(m => (
           <div key={m.l} style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 10, padding: '12px 14px' }}>
-            <p style={{ fontSize: 10, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.06em', margin: '0 0 4px' }}>{m.l}</p>
+            <p style={{ fontSize: 12, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.06em', margin: '0 0 4px' }}>{m.l}</p>
             <p style={{ fontSize: 18, fontWeight: 800, color: 'var(--navy)', fontVariantNumeric: 'tabular-nums', margin: 0 }}>{m.v}</p>
           </div>
         ))}
@@ -231,7 +231,7 @@ export default function MarketingPage() {
       {/* Tabs */}
       <div style={{ display: 'flex', gap: 6, marginBottom: 16 }}>
         {([['dashboard','Visão Geral'],['campanhas','Campanhas'],['funil','Funil de Leads'],['conteudo','Calendário'],['leads','Leads'],['integracoes','Integrações']] as [string,string][]).map(([k,l]) => (
-          <button key={k} onClick={() => setTab(k as typeof tab)} style={{ padding: '7px 14px', borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: 'pointer', border: '1px solid', background: tab === k ? 'var(--navy)' : '#fff', color: tab === k ? '#fff' : 'var(--gray-500)', borderColor: tab === k ? 'var(--navy)' : 'var(--gray-100)' }}>{l}</button>
+          <button key={k} onClick={() => setTab(k as typeof tab)} style={{ padding: '7px 14px', borderRadius: 8, fontSize: 14, fontWeight: 600, cursor: 'pointer', border: '1px solid', background: tab === k ? 'var(--navy)' : '#fff', color: tab === k ? '#fff' : 'var(--gray-500)', borderColor: tab === k ? 'var(--navy)' : 'var(--gray-100)' }}>{l}</button>
         ))}
       </div>
 
@@ -240,8 +240,8 @@ export default function MarketingPage() {
         <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 14 }}>
           {/* Campanhas ativas */}
           <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: 16 }}>
-            <p style={{ fontSize: 12, fontWeight: 700, color: 'var(--navy)', marginBottom: 12 }}>Campanhas ativas</p>
-            {campanhas.filter(c => c.status === 'ativa').length === 0 && <p style={{ color: 'var(--gray-400)', fontSize: 12 }}>Nenhuma campanha ativa.</p>}
+            <p style={{ fontSize: 14, fontWeight: 700, color: 'var(--navy)', marginBottom: 12 }}>Campanhas ativas</p>
+            {campanhas.filter(c => c.status === 'ativa').length === 0 && <p style={{ color: 'var(--gray-400)', fontSize: 14 }}>Nenhuma campanha ativa.</p>}
             {campanhas.filter(c => c.status === 'ativa').map(c => {
               const pct = c.orcamento ? Math.min(100, (Number(c.gasto) / Number(c.orcamento)) * 100) : 0
               const t = TIPO_CAMP[c.tipo]
@@ -250,16 +250,16 @@ export default function MarketingPage() {
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                       <i className={`fa-brands ${t.icon}`} style={{ color: t.color, fontSize: 14 }} />
-                      <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--navy)' }}>{c.nome}</span>
+                      <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--navy)' }}>{c.nome}</span>
                     </div>
-                    <span style={{ fontSize: 11, fontFamily: "var(--font-sans)", color: 'var(--gray-500)' }}>{formatBRL(Number(c.gasto))} / {c.orcamento ? formatBRL(Number(c.orcamento)) : '∞'}</span>
+                    <span style={{ fontSize: 13, fontFamily: "var(--font-sans)", color: 'var(--gray-500)' }}>{formatBRL(Number(c.gasto))} / {c.orcamento ? formatBRL(Number(c.orcamento)) : '∞'}</span>
                   </div>
                   <div style={{ height: 5, background: 'var(--gray-100)', borderRadius: 3 }}>
                     <div style={{ height: 5, borderRadius: 3, width: `${pct}%`, background: pct > 90 ? 'var(--red)' : pct > 70 ? 'var(--gold)' : 'var(--teal)', transition: 'width .3s' }} />
                   </div>
                   <div style={{ display: 'flex', gap: 16, marginTop: 4 }}>
                     {[['Impressões', c.impressoes.toLocaleString('pt-BR')], ['Cliques', c.cliques.toLocaleString('pt-BR')], ['Conv.', c.conversoes], ['Receita', formatBRL(Number(c.receita_gerada))]].map(([k, v]) => (
-                      <span key={String(k)} style={{ fontSize: 10, color: 'var(--gray-400)' }}>{k}: <strong style={{ color: 'var(--navy)' }}>{String(v)}</strong></span>
+                      <span key={String(k)} style={{ fontSize: 12, color: 'var(--gray-400)' }}>{k}: <strong style={{ color: 'var(--navy)' }}>{String(v)}</strong></span>
                     ))}
                   </div>
                 </div>
@@ -268,10 +268,10 @@ export default function MarketingPage() {
           </div>
           {/* Funil resumido */}
           <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: 16 }}>
-            <p style={{ fontSize: 12, fontWeight: 700, color: 'var(--navy)', marginBottom: 12 }}>Funil de leads</p>
+            <p style={{ fontSize: 14, fontWeight: 700, color: 'var(--navy)', marginBottom: 12 }}>Funil de leads</p>
             {funilLeads.map((f, i) => (
               <div key={f.s} style={{ marginBottom: 8 }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, marginBottom: 3 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, marginBottom: 3 }}>
                   <span style={{ color: 'var(--gray-500)', textTransform: 'capitalize' }}>{f.s}</span>
                   <span style={{ fontWeight: 700, color: 'var(--navy)' }}>{f.n}</span>
                 </div>
@@ -297,14 +297,14 @@ export default function MarketingPage() {
                   const t = TIPO_CAMP[c.tipo]
                   return (
                     <tr key={c.id}>
-                      <td style={{ fontWeight: 700, fontSize: 12 }}>{c.nome}</td>
-                      <td><span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 11 }}><i className={`fa-brands ${t.icon}`} style={{ color: t.color }} />{t.label}</span></td>
-                      <td><span className="tag gray" style={{ fontSize: 9, textTransform: 'uppercase' }}>{c.status}</span></td>
-                      <td style={{ textAlign: 'right', fontFamily: "var(--font-sans)", fontSize: 12 }}>{c.orcamento ? formatBRL(Number(c.orcamento)) : '—'}</td>
-                      <td style={{ textAlign: 'right', fontFamily: "var(--font-sans)", fontSize: 12, color: 'var(--red)' }}>{formatBRL(Number(c.gasto))}</td>
-                      <td style={{ textAlign: 'right', fontFamily: "var(--font-sans)", fontSize: 12, color: 'var(--green)' }}>{formatBRL(Number(c.receita_gerada))}</td>
-                      <td style={{ textAlign: 'center', fontWeight: 700, fontSize: 12, color: Number(roas) >= 3 ? 'var(--green)' : Number(roas) >= 1 ? 'var(--gold)' : 'var(--red)' }}>{roas}x</td>
-                      <td style={{ textAlign: 'center', fontSize: 12 }}>{c.conversoes}</td>
+                      <td style={{ fontWeight: 700, fontSize: 14 }}>{c.nome}</td>
+                      <td><span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 13 }}><i className={`fa-brands ${t.icon}`} style={{ color: t.color }} />{t.label}</span></td>
+                      <td><span className="tag gray" style={{ fontSize: 11, textTransform: 'uppercase' }}>{c.status}</span></td>
+                      <td style={{ textAlign: 'right', fontFamily: "var(--font-sans)", fontSize: 14 }}>{c.orcamento ? formatBRL(Number(c.orcamento)) : '—'}</td>
+                      <td style={{ textAlign: 'right', fontFamily: "var(--font-sans)", fontSize: 14, color: 'var(--red)' }}>{formatBRL(Number(c.gasto))}</td>
+                      <td style={{ textAlign: 'right', fontFamily: "var(--font-sans)", fontSize: 14, color: 'var(--green)' }}>{formatBRL(Number(c.receita_gerada))}</td>
+                      <td style={{ textAlign: 'center', fontWeight: 700, fontSize: 14, color: Number(roas) >= 3 ? 'var(--green)' : Number(roas) >= 1 ? 'var(--gold)' : 'var(--red)' }}>{roas}x</td>
+                      <td style={{ textAlign: 'center', fontSize: 14 }}>{c.conversoes}</td>
                     </tr>
                   )
                 })}
@@ -320,7 +320,7 @@ export default function MarketingPage() {
           <div>
             {funilLeads.map((f, i) => (
               <div key={f.s} style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 10, padding: '14px 16px', marginBottom: 8, borderLeft: `4px solid ${['#7A6A9E','var(--teal)','var(--gold)','var(--green)','var(--red)'][i]}` }}>
-                <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '.06em', color: 'var(--gray-400)', margin: '0 0 2px' }}>{f.s}</p>
+                <p style={{ fontSize: 13, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '.06em', color: 'var(--gray-400)', margin: '0 0 2px' }}>{f.s}</p>
                 <p style={{ fontSize: 24, fontWeight: 800, fontFamily: 'var(--font-mono)', color: 'var(--navy)', margin: 0 }}>{f.n}</p>
                 <div style={{ height: 4, background: 'var(--gray-100)', borderRadius: 2, marginTop: 8 }}>
                   <div style={{ height: 4, width: `${f.pct}%`, background: ['#7A6A9E','var(--teal)','var(--gold)','var(--green)','var(--red)'][i], borderRadius: 2 }} />
@@ -336,11 +336,11 @@ export default function MarketingPage() {
                   {leads.length === 0 && <tr><td colSpan={5} style={{ textAlign: 'center', padding: '32px 0', color: 'var(--gray-400)' }}>Nenhum lead.</td></tr>}
                   {leads.slice(0, 30).map(l => (
                     <tr key={l.id}>
-                      <td style={{ fontWeight: 600, fontSize: 12 }}>{l.nome || 'Anônimo'}</td>
-                      <td style={{ fontSize: 11, color: 'var(--gray-400)' }}>{l.email || '—'}</td>
-                      <td><span className="tag gray" style={{ fontSize: 9 }}>{l.origem || '—'}</span></td>
-                      <td><span className="tag gray" style={{ fontSize: 9, textTransform: 'capitalize' }}>{l.status}</span></td>
-                      <td style={{ fontFamily: "var(--font-sans)", fontSize: 11 }}>{new Date(l.created_at).toLocaleDateString('pt-BR')}</td>
+                      <td style={{ fontWeight: 600, fontSize: 14 }}>{l.nome || 'Anônimo'}</td>
+                      <td style={{ fontSize: 13, color: 'var(--gray-400)' }}>{l.email || '—'}</td>
+                      <td><span className="tag gray" style={{ fontSize: 11 }}>{l.origem || '—'}</span></td>
+                      <td><span className="tag gray" style={{ fontSize: 11, textTransform: 'capitalize' }}>{l.status}</span></td>
+                      <td style={{ fontFamily: "var(--font-sans)", fontSize: 13 }}>{new Date(l.created_at).toLocaleDateString('pt-BR')}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -354,23 +354,23 @@ export default function MarketingPage() {
       {tab === 'conteudo' && (
         <>
           <div style={{ display: 'flex', gap: 8, marginBottom: 12, alignItems: 'center' }}>
-            <button onClick={() => { const d = new Date(calMes + '-01'); d.setMonth(d.getMonth() - 1); setCalMes(d.toISOString().slice(0, 7)) }} className="btn-action btn-ghost" style={{ fontSize: 12, padding: '5px 10px' }}>‹</button>
-            <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy)', minWidth: 140, textAlign: 'center' }}>{new Date(calMes + '-01').toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}</span>
-            <button onClick={() => { const d = new Date(calMes + '-01'); d.setMonth(d.getMonth() + 1); setCalMes(d.toISOString().slice(0, 7)) }} className="btn-action btn-ghost" style={{ fontSize: 12, padding: '5px 10px' }}>›</button>
+            <button onClick={() => { const d = new Date(calMes + '-01'); d.setMonth(d.getMonth() - 1); setCalMes(d.toISOString().slice(0, 7)) }} className="btn-action btn-ghost" style={{ fontSize: 14, padding: '5px 10px' }}>‹</button>
+            <span style={{ fontSize: 15, fontWeight: 700, color: 'var(--navy)', minWidth: 140, textAlign: 'center' }}>{new Date(calMes + '-01').toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}</span>
+            <button onClick={() => { const d = new Date(calMes + '-01'); d.setMonth(d.getMonth() + 1); setCalMes(d.toISOString().slice(0, 7)) }} className="btn-action btn-ghost" style={{ fontSize: 14, padding: '5px 10px' }}>›</button>
           </div>
-          {contCalMes.length === 0 && <div style={{ textAlign: 'center', padding: '40px 0', color: 'var(--gray-400)', fontSize: 13 }}>Nenhum conteúdo agendado. <button onClick={() => setShowCont(true)} style={{ color: 'var(--teal)', background: 'none', border: 'none', cursor: 'pointer', fontSize: 13 }}>Planejar →</button></div>}
+          {contCalMes.length === 0 && <div style={{ textAlign: 'center', padding: '40px 0', color: 'var(--gray-400)', fontSize: 15 }}>Nenhum conteúdo agendado. <button onClick={() => setShowCont(true)} style={{ color: 'var(--teal)', background: 'none', border: 'none', cursor: 'pointer', fontSize: 15 }}>Planejar →</button></div>}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 10 }}>
             {contCalMes.map(c => {
               const st = STATUS_CONT[c.status] || STATUS_CONT.ideia
               return (
                 <div key={c.id} style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 10, padding: '12px 14px', borderLeft: `4px solid ${st.color}` }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
-                    <span style={{ fontSize: 9, fontWeight: 700, padding: '2px 7px', borderRadius: 20, background: st.bg, color: st.color }}>{st.label}</span>
-                    <span style={{ fontSize: 10, color: 'var(--gray-400)', fontFamily: "var(--font-sans)" }}>{c.data_pub ? new Date(c.data_pub + 'T12:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' }) : '—'}</span>
+                    <span style={{ fontSize: 11, fontWeight: 700, padding: '2px 7px', borderRadius: 20, background: st.bg, color: st.color }}>{st.label}</span>
+                    <span style={{ fontSize: 12, color: 'var(--gray-400)', fontFamily: "var(--font-sans)" }}>{c.data_pub ? new Date(c.data_pub + 'T12:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' }) : '—'}</span>
                   </div>
-                  <p style={{ fontSize: 12, fontWeight: 700, color: 'var(--navy)', margin: '0 0 3px' }}>{c.titulo}</p>
-                  <p style={{ fontSize: 10, color: 'var(--gray-400)', margin: 0 }}>{c.tipo.replace(/_/g, ' ')} {c.canal ? `· ${c.canal}` : ''}</p>
-                  {c.responsavel && <p style={{ fontSize: 10, color: 'var(--teal)', margin: '4px 0 0' }}>{c.responsavel}</p>}
+                  <p style={{ fontSize: 14, fontWeight: 700, color: 'var(--navy)', margin: '0 0 3px' }}>{c.titulo}</p>
+                  <p style={{ fontSize: 12, color: 'var(--gray-400)', margin: 0 }}>{c.tipo.replace(/_/g, ' ')} {c.canal ? `· ${c.canal}` : ''}</p>
+                  {c.responsavel && <p style={{ fontSize: 12, color: 'var(--teal)', margin: '4px 0 0' }}>{c.responsavel}</p>}
                 </div>
               )
             })}
@@ -388,12 +388,12 @@ export default function MarketingPage() {
                 {leads.length === 0 && <tr><td colSpan={6} style={{ textAlign: 'center', padding: '32px 0', color: 'var(--gray-400)' }}>Nenhum lead cadastrado.</td></tr>}
                 {leads.map(l => (
                   <tr key={l.id}>
-                    <td style={{ fontWeight: 600, fontSize: 12 }}>{l.nome || 'Anônimo'}</td>
-                    <td style={{ fontSize: 11, color: 'var(--gray-400)' }}>{l.email || '—'}</td>
-                    <td style={{ fontSize: 11 }}>{l.telefone || '—'}</td>
-                    <td><span className="tag gray" style={{ fontSize: 9 }}>{l.origem || '—'}</span></td>
-                    <td><span className="tag gray" style={{ fontSize: 9, textTransform: 'capitalize' }}>{l.status}</span></td>
-                    <td style={{ fontFamily: "var(--font-sans)", fontSize: 11 }}>{new Date(l.created_at).toLocaleDateString('pt-BR')}</td>
+                    <td style={{ fontWeight: 600, fontSize: 14 }}>{l.nome || 'Anônimo'}</td>
+                    <td style={{ fontSize: 13, color: 'var(--gray-400)' }}>{l.email || '—'}</td>
+                    <td style={{ fontSize: 13 }}>{l.telefone || '—'}</td>
+                    <td><span className="tag gray" style={{ fontSize: 11 }}>{l.origem || '—'}</span></td>
+                    <td><span className="tag gray" style={{ fontSize: 11, textTransform: 'capitalize' }}>{l.status}</span></td>
+                    <td style={{ fontFamily: "var(--font-sans)", fontSize: 13 }}>{new Date(l.created_at).toLocaleDateString('pt-BR')}</td>
                   </tr>
                 ))}
               </tbody>
@@ -405,7 +405,7 @@ export default function MarketingPage() {
       {/* Tab Integrações */}
       {tab === 'integracoes' && (
         <div>
-          <div style={{ fontSize: 13, color: 'var(--gray-400)', marginBottom: 20 }}>
+          <div style={{ fontSize: 15, color: 'var(--gray-400)', marginBottom: 20 }}>
             Configure as integrações de marketing. As IDs ficam salvas para uso nas campanhas e relatórios.
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
@@ -417,12 +417,12 @@ export default function MarketingPage() {
                 </div>
                 <div>
                   <div style={{ fontWeight: 700, fontSize: 14 }}>Google Analytics 4</div>
-                  <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>Rastreamento de visitantes e conversões</div>
+                  <div style={{ fontSize: 13, color: 'var(--gray-400)' }}>Rastreamento de visitantes e conversões</div>
                 </div>
               </div>
-              <label style={{ fontSize: 11, fontWeight: 600, display: 'block', marginBottom: 4 }}>Measurement ID (GA4)</label>
-              <input className="form-input" value={integForm.ga4_id} onChange={e => setIntegForm(f => ({ ...f, ga4_id: e.target.value }))} placeholder="G-XXXXXXXXXX" style={{ fontFamily: 'var(--font-mono)', fontSize: 12 }} />
-              <div style={{ fontSize: 11, color: 'var(--gray-400)', marginTop: 6 }}>
+              <label style={{ fontSize: 13, fontWeight: 600, display: 'block', marginBottom: 4 }}>Measurement ID (GA4)</label>
+              <input className="form-input" value={integForm.ga4_id} onChange={e => setIntegForm(f => ({ ...f, ga4_id: e.target.value }))} placeholder="G-XXXXXXXXXX" style={{ fontFamily: 'var(--font-mono)', fontSize: 14 }} />
+              <div style={{ fontSize: 13, color: 'var(--gray-400)', marginTop: 6 }}>
                 Encontre em: <strong>GA4 → Admin → Data Streams → seu stream → Measurement ID</strong>
               </div>
             </div>
@@ -435,14 +435,14 @@ export default function MarketingPage() {
                 </div>
                 <div>
                   <div style={{ fontWeight: 700, fontSize: 14 }}>Meta Ads (Facebook/Instagram)</div>
-                  <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>Pixel de conversão e campanhas pagas</div>
+                  <div style={{ fontSize: 13, color: 'var(--gray-400)' }}>Pixel de conversão e campanhas pagas</div>
                 </div>
               </div>
-              <label style={{ fontSize: 11, fontWeight: 600, display: 'block', marginBottom: 4 }}>Pixel ID</label>
-              <input className="form-input" value={integForm.meta_pixel_id} onChange={e => setIntegForm(f => ({ ...f, meta_pixel_id: e.target.value }))} placeholder="000000000000000" style={{ fontFamily: 'var(--font-mono)', fontSize: 12, marginBottom: 8 }} />
-              <label style={{ fontSize: 11, fontWeight: 600, display: 'block', marginBottom: 4 }}>Business Account ID</label>
-              <input className="form-input" value={integForm.meta_business_id} onChange={e => setIntegForm(f => ({ ...f, meta_business_id: e.target.value }))} placeholder="000000000000000" style={{ fontFamily: 'var(--font-mono)', fontSize: 12 }} />
-              <div style={{ fontSize: 11, color: 'var(--gray-400)', marginTop: 6 }}>
+              <label style={{ fontSize: 13, fontWeight: 600, display: 'block', marginBottom: 4 }}>Pixel ID</label>
+              <input className="form-input" value={integForm.meta_pixel_id} onChange={e => setIntegForm(f => ({ ...f, meta_pixel_id: e.target.value }))} placeholder="000000000000000" style={{ fontFamily: 'var(--font-mono)', fontSize: 14, marginBottom: 8 }} />
+              <label style={{ fontSize: 13, fontWeight: 600, display: 'block', marginBottom: 4 }}>Business Account ID</label>
+              <input className="form-input" value={integForm.meta_business_id} onChange={e => setIntegForm(f => ({ ...f, meta_business_id: e.target.value }))} placeholder="000000000000000" style={{ fontFamily: 'var(--font-mono)', fontSize: 14 }} />
+              <div style={{ fontSize: 13, color: 'var(--gray-400)', marginTop: 6 }}>
                 Encontre em: <strong>Meta Business Suite → Configurações → Pixel de Dados</strong>
               </div>
             </div>
@@ -455,12 +455,12 @@ export default function MarketingPage() {
                 </div>
                 <div>
                   <div style={{ fontWeight: 700, fontSize: 14 }}>Google Ads</div>
-                  <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>Search, Display e YouTube</div>
+                  <div style={{ fontSize: 13, color: 'var(--gray-400)' }}>Search, Display e YouTube</div>
                 </div>
               </div>
-              <label style={{ fontSize: 11, fontWeight: 600, display: 'block', marginBottom: 4 }}>Customer ID</label>
-              <input className="form-input" value={integForm.google_ads_id} onChange={e => setIntegForm(f => ({ ...f, google_ads_id: e.target.value }))} placeholder="000-000-0000" style={{ fontFamily: 'var(--font-mono)', fontSize: 12 }} />
-              <div style={{ fontSize: 11, color: 'var(--gray-400)', marginTop: 6 }}>
+              <label style={{ fontSize: 13, fontWeight: 600, display: 'block', marginBottom: 4 }}>Customer ID</label>
+              <input className="form-input" value={integForm.google_ads_id} onChange={e => setIntegForm(f => ({ ...f, google_ads_id: e.target.value }))} placeholder="000-000-0000" style={{ fontFamily: 'var(--font-mono)', fontSize: 14 }} />
+              <div style={{ fontSize: 13, color: 'var(--gray-400)', marginTop: 6 }}>
                 Encontre em: <strong>Google Ads → Ferramentas → Configurações da conta → ID do cliente</strong>
               </div>
             </div>
@@ -473,19 +473,19 @@ export default function MarketingPage() {
                 </div>
                 <div>
                   <div style={{ fontWeight: 700, fontSize: 14 }}>UTM Padrão & Webhook</div>
-                  <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>Rastreamento de links e notificações</div>
+                  <div style={{ fontSize: 13, color: 'var(--gray-400)' }}>Rastreamento de links e notificações</div>
                 </div>
               </div>
-              <label style={{ fontSize: 11, fontWeight: 600, display: 'block', marginBottom: 4 }}>UTM Source padrão</label>
-              <input className="form-input" value={integForm.utm_source} onChange={e => setIntegForm(f => ({ ...f, utm_source: e.target.value }))} placeholder="factorone" style={{ fontSize: 12, marginBottom: 8 }} />
-              <label style={{ fontSize: 11, fontWeight: 600, display: 'block', marginBottom: 4 }}>Webhook URL (leads → seu CRM)</label>
-              <input className="form-input" value={integForm.webhook_url} onChange={e => setIntegForm(f => ({ ...f, webhook_url: e.target.value }))} placeholder="https://seu-crm.com/webhook/leads" style={{ fontSize: 12 }} />
+              <label style={{ fontSize: 13, fontWeight: 600, display: 'block', marginBottom: 4 }}>UTM Source padrão</label>
+              <input className="form-input" value={integForm.utm_source} onChange={e => setIntegForm(f => ({ ...f, utm_source: e.target.value }))} placeholder="factorone" style={{ fontSize: 14, marginBottom: 8 }} />
+              <label style={{ fontSize: 13, fontWeight: 600, display: 'block', marginBottom: 4 }}>Webhook URL (leads → seu CRM)</label>
+              <input className="form-input" value={integForm.webhook_url} onChange={e => setIntegForm(f => ({ ...f, webhook_url: e.target.value }))} placeholder="https://seu-crm.com/webhook/leads" style={{ fontSize: 14 }} />
             </div>
 
             {/* GPS Webhook instructions */}
             <div style={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: 12, padding: 20, gridColumn: '1 / -1' }}>
               <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 12 }}>Como funciona a integração de dados</div>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16, fontSize: 12 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16, fontSize: 14 }}>
                 {[
                   { icon: 'fa-arrow-right-arrow-left', title: 'Campanhas → Financeiro', desc: 'O campo "Gasto" de cada campanha alimenta automaticamente o dashboard financeiro como custo de marketing.' },
                   { icon: 'fa-funnel-dollar', title: 'Leads → Clientes', desc: 'Leads com status "Convertido" ficam vinculados ao cadastro de Clientes, fechando o funil.' },
@@ -493,7 +493,7 @@ export default function MarketingPage() {
                 ].map(c => (
                   <div key={c.title} style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
                     <div style={{ width: 32, height: 32, borderRadius: 8, background: '#f8fafc', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                      <i className={`fa-solid ${c.icon}`} style={{ color: 'var(--teal)', fontSize: 13 }} />
+                      <i className={`fa-solid ${c.icon}`} style={{ color: 'var(--teal)', fontSize: 15 }} />
                     </div>
                     <div>
                       <div style={{ fontWeight: 600, marginBottom: 4 }}>{c.title}</div>
@@ -506,7 +506,7 @@ export default function MarketingPage() {
           </div>
 
           <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 20, gap: 10, alignItems: 'center' }}>
-            {integSaved && <span style={{ fontSize: 12, color: 'var(--green)' }}><i className="fa-solid fa-circle-check" /> Configurações salvas!</span>}
+            {integSaved && <span style={{ fontSize: 14, color: 'var(--green)' }}><i className="fa-solid fa-circle-check" /> Configurações salvas!</span>}
             <button className="btn-action" disabled={integSaving} onClick={() => {
               setIntegSaving(true)
               setTimeout(() => { setIntegSaving(false); setIntegSaved(true); setTimeout(() => setIntegSaved(false), 3000) }, 800)

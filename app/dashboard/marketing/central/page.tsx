@@ -28,14 +28,14 @@ function ConnectCard({ nome, desc, icon, cor, dark, on }: { nome: string; desc: 
           <i className={`fa-brands ${icon}`} style={{ fontSize: 18, color: dark ? '#13201D' : '#fff' }} />
         </div>
         <div>
-          <div style={{ fontSize: 13.5, fontWeight: 700, color: '#13201D' }}>{nome}</div>
-          <div style={{ fontSize: 11, color: '#7B8C88' }}>{desc}</div>
+          <div style={{ fontSize: 15, fontWeight: 700, color: '#13201D' }}>{nome}</div>
+          <div style={{ fontSize: 13, color: '#7B8C88' }}>{desc}</div>
         </div>
       </div>
       <button
         onClick={() => on ? undefined : toast('Conexão via OAuth entra quando a chave da API estiver configurada.', { icon: '🔌' })}
         disabled={on}
-        style={{ fontSize: 12, fontWeight: 700, padding: '8px', borderRadius: 9, border: 'none', cursor: on ? 'default' : 'pointer', background: on ? '#E9F0ED' : '#13201D', color: on ? '#2B564D' : '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7 }}
+        style={{ fontSize: 14, fontWeight: 700, padding: '8px', borderRadius: 9, border: 'none', cursor: on ? 'default' : 'pointer', background: on ? '#E9F0ED' : '#13201D', color: on ? '#2B564D' : '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7 }}
       >
         {on ? (<><i className="fa-solid fa-circle-check" />Conectado</>) : (<><i className="fa-solid fa-link" />Conectar</>)}
       </button>
@@ -54,7 +54,7 @@ export default function MarketingCentralPage() {
           <div className="page-title">Marketing</div>
           <div className="page-sub">Anúncios · ecommerce · sites — tudo integrado às suas finanças</div>
         </div>
-        <Link href="/dashboard/marketing" className="btn-ghost" style={{ fontSize: 12, textDecoration: 'none' }}>
+        <Link href="/dashboard/marketing" className="btn-ghost" style={{ fontSize: 14, textDecoration: 'none' }}>
           <i className="fa-solid fa-bullhorn" style={{ marginRight: 6 }} />Campanhas
         </Link>
       </div>
@@ -70,8 +70,8 @@ export default function MarketingCentralPage() {
             <div className="txs-card" style={{ padding: '20px', height: '100%', display: 'flex', flexDirection: 'column', gap: 8, border: a.destaque ? '1px solid var(--sage)' : undefined, boxShadow: 'var(--shadow-card)' }}>
               <div style={{ width: 42, height: 42, borderRadius: 11, background: 'var(--sage-tint)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><i className={`fa-solid ${a.ic}`} style={{ fontSize: 17, color: 'var(--sage-deep)' }} /></div>
               <div style={{ fontFamily: 'var(--font-display)', fontSize: 15, fontWeight: 700, color: 'var(--ink)' }}>{a.t}</div>
-              <div style={{ fontSize: 12, color: 'var(--ink-mut)', lineHeight: 1.5, flex: 1 }}>{a.d}</div>
-              <span style={{ fontSize: 12.5, fontWeight: 700, color: 'var(--sage-deep)' }}>{a.cta} →</span>
+              <div style={{ fontSize: 14, color: 'var(--ink-mut)', lineHeight: 1.5, flex: 1 }}>{a.d}</div>
+              <span style={{ fontSize: 14.5, fontWeight: 700, color: 'var(--sage-deep)' }}>{a.cta} →</span>
             </div>
           </Link>
         ))}
@@ -79,14 +79,14 @@ export default function MarketingCentralPage() {
 
       {/* Conexões — secundário (não na frente) */}
       <details>
-        <summary style={{ cursor: 'pointer', fontSize: 12, fontWeight: 700, color: 'var(--ink-mut)', textTransform: 'uppercase', letterSpacing: '.04em', marginBottom: 12, listStyle: 'none' }}>
-          <i className="fa-solid fa-chevron-right" style={{ fontSize: 10, marginRight: 8 }} />Conexões · anúncios & ecommerce (opcional)
+        <summary style={{ cursor: 'pointer', fontSize: 14, fontWeight: 700, color: 'var(--ink-mut)', textTransform: 'uppercase', letterSpacing: '.04em', marginBottom: 12, listStyle: 'none' }}>
+          <i className="fa-solid fa-chevron-right" style={{ fontSize: 12, marginRight: 8 }} />Conexões · anúncios & ecommerce (opcional)
         </summary>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 12, marginBottom: 20 }}>
           {ADS.map(a => <ConnectCard key={a.key} nome={a.nome} desc={a.desc} icon={a.icon} cor={a.cor} on={!!st?.ads[a.key]} />)}
           {ECOM.map(e => <ConnectCard key={e.key} nome={e.nome} desc={e.desc} icon={e.icon} cor={e.cor} dark={'dark' in e ? e.dark : false} on={!!st?.ecommerce[e.key]} />)}
         </div>
-        <div style={{ fontSize: 11, color: 'var(--ink-faint)', lineHeight: 1.6 }}>Conectam via OAuth do provedor quando a chave de API estiver configurada — ou plugue tudo pelo webhook da Captação.</div>
+        <div style={{ fontSize: 13, color: 'var(--ink-faint)', lineHeight: 1.6 }}>Conectam via OAuth do provedor quando a chave de API estiver configurada — ou plugue tudo pelo webhook da Captação.</div>
       </details>
     </>
   )

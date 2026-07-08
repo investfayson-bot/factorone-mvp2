@@ -205,12 +205,12 @@ export default function NovaDespesaModal({
 
   const inp: React.CSSProperties = {
     width: '100%', border: '0.5px solid #E4DCCC', borderRadius: 8,
-    padding: '9px 12px', fontSize: 12, color: '#13201D',
+    padding: '9px 12px', fontSize: 14, color: '#13201D',
     background: '#fff', boxSizing: 'border-box', outline: 'none',
     fontFamily: "var(--font-sans)",
   }
   const lbl: React.CSSProperties = {
-    fontSize: 10, fontWeight: 600, color: '#7B8C88', marginBottom: 5,
+    fontSize: 12, fontWeight: 600, color: '#7B8C88', marginBottom: 5,
     display: 'block', textTransform: 'uppercase', letterSpacing: '0.07em',
   }
 
@@ -222,12 +222,12 @@ export default function NovaDespesaModal({
             <h3 className="modal-title" style={{ fontFamily: "var(--font-sans)", fontSize: 16 }}>
               {edit ? 'Editar despesa' : 'Nova despesa'}
             </h3>
-            <div style={{ fontSize: 11, color: '#7B8C88', marginTop: 2 }}>
+            <div style={{ fontSize: 13, color: '#7B8C88', marginTop: 2 }}>
               {edit ? 'Atualize os dados abaixo' : 'Preencha ou escaneie o comprovante'}
             </div>
           </div>
           <button className="modal-close" onClick={onClose} style={{ width: 32, height: 32, borderRadius: 8, border: '0.5px solid #E4DCCC', background: '#FBF8F1', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
-            <i className="fa-solid fa-xmark" style={{ fontSize: 13, color: '#7B8C88' }} />
+            <i className="fa-solid fa-xmark" style={{ fontSize: 15, color: '#7B8C88' }} />
           </button>
         </div>
 
@@ -248,8 +248,8 @@ export default function NovaDespesaModal({
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                 <i className="fa-solid fa-file-image" style={{ fontSize: 20, color: '#3D7A6E' }} />
                 <div style={{ textAlign: 'left' }}>
-                  <p style={{ fontWeight: 600, fontSize: 12, color: '#13201D', margin: 0 }}>{file.name}</p>
-                  <p style={{ fontSize: 10, color: '#7B8C88', margin: 0 }}>{(file.size / 1024).toFixed(0)} KB</p>
+                  <p style={{ fontWeight: 600, fontSize: 14, color: '#13201D', margin: 0 }}>{file.name}</p>
+                  <p style={{ fontSize: 12, color: '#7B8C88', margin: 0 }}>{(file.size / 1024).toFixed(0)} KB</p>
                 </div>
               </div>
               <button
@@ -258,7 +258,7 @@ export default function NovaDespesaModal({
                 disabled={ocrLoading}
                 style={{
                   display: 'flex', alignItems: 'center', gap: 6, padding: '7px 14px',
-                  borderRadius: 8, border: 'none', cursor: 'pointer', fontWeight: 700, fontSize: 11,
+                  borderRadius: 8, border: 'none', cursor: 'pointer', fontWeight: 700, fontSize: 13,
                   background: '#13201D', color: '#fff', opacity: ocrLoading ? 0.7 : 1,
                 }}
               >
@@ -269,23 +269,23 @@ export default function NovaDespesaModal({
           ) : (
             <>
               <i className="fa-solid fa-camera" style={{ fontSize: 24, color: '#C4CFCE', marginBottom: 6 }} />
-              <p style={{ fontWeight: 600, fontSize: 12, color: '#3C4A46', margin: '0 0 2px' }}>Escanear comprovante ou NF</p>
-              <p style={{ fontSize: 10, color: '#7B8C88', margin: 0 }}>Clique para upload · FactorOne AI preenche automaticamente</p>
+              <p style={{ fontWeight: 600, fontSize: 14, color: '#3C4A46', margin: '0 0 2px' }}>Escanear comprovante ou NF</p>
+              <p style={{ fontSize: 12, color: '#7B8C88', margin: 0 }}>Clique para upload · FactorOne AI preenche automaticamente</p>
             </>
           )}
         </div>
 
         {/* Sugestão de categoria por IA */}
         {sugestaoCategoria && (
-          <div style={{ margin: '0 0 16px', padding: '10px 14px', borderRadius: 10, background: '#f0fdf4', border: '1px solid #86efac', fontSize: 12 }}>
+          <div style={{ margin: '0 0 16px', padding: '10px 14px', borderRadius: 10, background: '#f0fdf4', border: '1px solid #86efac', fontSize: 14 }}>
             <span style={{ color: '#166534' }}>FactorOne IA sugeriu categoria: </span>
             <strong style={{ color: '#14532d' }}>{sugestaoCategoria}</strong>
             <button type="button" onClick={() => { setForm(f => ({ ...f, categoria: sugestaoCategoria })); setSugestaoCategoria(null) }}
-              style={{ marginLeft: 10, color: '#15803d', fontWeight: 700, background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline', fontSize: 12 }}>
+              style={{ marginLeft: 10, color: '#15803d', fontWeight: 700, background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline', fontSize: 14 }}>
               Aplicar
             </button>
             <button type="button" onClick={() => setSugestaoCategoria(null)}
-              style={{ marginLeft: 6, color: '#6b7280', background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline', fontSize: 12 }}>
+              style={{ marginLeft: 6, color: '#6b7280', background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline', fontSize: 14 }}>
               Ignorar
             </button>
           </div>
@@ -298,7 +298,7 @@ export default function NovaDespesaModal({
             <input style={inp} placeholder="Ex.: Assinatura software" value={form.descricao}
               onChange={(e) => setForm({ ...form, descricao: e.target.value })} />
             <button type="button" onClick={() => setForm(f => ({ ...f, categoria: sugerirCategoria(f.descricao) }))}
-              style={{ marginTop: 4, fontSize: 11, color: 'var(--teal)', fontWeight: 600, background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
+              style={{ marginTop: 4, fontSize: 13, color: 'var(--teal)', fontWeight: 600, background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
               Sugerir categoria pela descrição
             </button>
           </div>
@@ -308,7 +308,7 @@ export default function NovaDespesaModal({
             <label style={lbl}>Valor *</label>
             <input style={inp} placeholder="0,00" inputMode="decimal" value={valorMask}
               onChange={(e) => setValorMask(maskBRLInput(e.target.value))} />
-            {valorMask && <p style={{ fontSize: 11, color: 'var(--gray-400)', marginTop: 2 }}>{formatBRL(parseBRLInput(valorMask))}</p>}
+            {valorMask && <p style={{ fontSize: 13, color: 'var(--gray-400)', marginTop: 2 }}>{formatBRL(parseBRLInput(valorMask))}</p>}
           </div>
 
           {/* Categoria + Centro */}
@@ -339,7 +339,7 @@ export default function NovaDespesaModal({
                 onChange={(e) => setNovoCentro(e.target.value)} />
             </div>
             <button type="button" disabled={!centroDisponivel} onClick={() => void criarCentroRapido()}
-              style={{ padding: '8px 14px', borderRadius: 8, border: 'none', background: 'var(--navy)', color: '#fff', fontSize: 12, fontWeight: 600, cursor: 'pointer', opacity: centroDisponivel ? 1 : 0.5, whiteSpace: 'nowrap' }}>
+              style={{ padding: '8px 14px', borderRadius: 8, border: 'none', background: 'var(--navy)', color: '#fff', fontSize: 14, fontWeight: 600, cursor: 'pointer', opacity: centroDisponivel ? 1 : 0.5, whiteSpace: 'nowrap' }}>
               + Criar
             </button>
           </div>
@@ -381,7 +381,7 @@ export default function NovaDespesaModal({
 
           {/* Recorrente */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, color: 'var(--navy)', cursor: 'pointer' }}>
+            <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 15, color: 'var(--navy)', cursor: 'pointer' }}>
               <input type="checkbox" checked={form.recorrente} onChange={(e) => setForm({ ...form, recorrente: e.target.checked })} />
               Despesa recorrente
             </label>
@@ -394,7 +394,7 @@ export default function NovaDespesaModal({
 
           {/* Comprovante existente */}
           {edit?.comprovante_url && !file && (
-            <p style={{ fontSize: 11, color: 'var(--gray-400)', margin: 0 }}>
+            <p style={{ fontSize: 13, color: 'var(--gray-400)', margin: 0 }}>
               Comprovante atual mantido. Para substituir, clique na zona de upload acima.
             </p>
           )}

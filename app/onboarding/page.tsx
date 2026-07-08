@@ -138,12 +138,12 @@ export default function OnboardingPage() {
             Factor<span style={{ color: 'var(--teal)' }}>One</span>
           </div>
           {empresa.nome && (
-            <div style={{ fontSize: 11, color: 'rgba(255,255,255,.5)', marginTop: 4, fontWeight: 500 }}>
+            <div style={{ fontSize: 13, color: 'rgba(255,255,255,.5)', marginTop: 4, fontWeight: 500 }}>
               {empresa.nome}
             </div>
           )}
           {userName && (
-            <div style={{ fontSize: 11, color: 'rgba(255,255,255,.5)', marginBottom: 36 }}>{userName}</div>
+            <div style={{ fontSize: 13, color: 'rgba(255,255,255,.5)', marginBottom: 36 }}>{userName}</div>
           )}
 
           {/* Steps */}
@@ -156,19 +156,19 @@ export default function OnboardingPage() {
                   <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                     <div style={{
                       width: 28, height: 28, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      fontSize: 11, fontWeight: 700, flexShrink: 0, zIndex: 1,
+                      fontSize: 13, fontWeight: 700, flexShrink: 0, zIndex: 1,
                       background: done ? 'var(--teal)' : active ? '#fff' : 'rgba(255,255,255,.1)',
                       color: done ? '#fff' : active ? 'var(--navy)' : 'rgba(255,255,255,.4)',
                       border: active ? '2px solid rgba(255,255,255,.3)' : 'none',
                     }}>
-                      {done ? <i className="fa-solid fa-check" style={{ fontSize: 10 }} /> : i + 1}
+                      {done ? <i className="fa-solid fa-check" style={{ fontSize: 12 }} /> : i + 1}
                     </div>
                     {i < PJ_STEPS.length - 1 && (
                       <div style={{ width: 2, height: 32, background: done ? 'var(--teal)' : 'rgba(255,255,255,.1)', margin: '2px 0' }} />
                     )}
                   </div>
                   <div style={{ paddingTop: 4, paddingBottom: i < PJ_STEPS.length - 1 ? 30 : 0 }}>
-                    <div style={{ fontSize: 12, fontWeight: active ? 700 : 500, color: active ? '#fff' : done ? 'rgba(255,255,255,.7)' : 'rgba(255,255,255,.35)' }}>
+                    <div style={{ fontSize: 14, fontWeight: active ? 700 : 500, color: active ? '#fff' : done ? 'rgba(255,255,255,.7)' : 'rgba(255,255,255,.35)' }}>
                       {s.label}
                     </div>
                   </div>
@@ -177,7 +177,7 @@ export default function OnboardingPage() {
             })}
           </nav>
 
-          <div style={{ marginTop: 'auto', fontSize: 10, color: 'rgba(255,255,255,.2)', lineHeight: 1.6 }}>
+          <div style={{ marginTop: 'auto', fontSize: 12, color: 'rgba(255,255,255,.2)', lineHeight: 1.6 }}>
             © 2026 FactorOne<br />Termos · Privacidade
           </div>
         </aside>
@@ -196,13 +196,13 @@ export default function OnboardingPage() {
             </div>
 
             {/* Logo */}
-            <div style={{ fontFamily: "var(--font-sans)", fontSize: 13, fontWeight: 600, color: 'var(--gray-400)', letterSpacing: '.06em', textTransform: 'uppercase', marginBottom: 8 }}>
+            <div style={{ fontFamily: "var(--font-sans)", fontSize: 15, fontWeight: 600, color: 'var(--gray-400)', letterSpacing: '.06em', textTransform: 'uppercase', marginBottom: 8 }}>
               Finance OS
             </div>
             <div style={{ fontFamily: "var(--font-sans)", fontSize: 28, fontWeight: 800, color: 'var(--navy)', letterSpacing: '-.03em', marginBottom: 6 }}>
               {userName ? `Bem-vindo, ${userName.split(' ')[0]}!` : 'Bem-vindo ao FactorOne'}
             </div>
-            <div style={{ fontSize: 13, color: 'var(--gray-400)', lineHeight: 1.7, marginBottom: 32, maxWidth: 420 }}>
+            <div style={{ fontSize: 15, color: 'var(--gray-400)', lineHeight: 1.7, marginBottom: 32, maxWidth: 420 }}>
               Este é o primeiro passo para simplificar a gestão financeira da sua empresa ou vida pessoal.
             </div>
 
@@ -218,8 +218,8 @@ export default function OnboardingPage() {
                     <i className={`fa-solid ${v.icon}`} style={{ color: v.color, fontSize: 15 }} />
                   </div>
                   <div>
-                    <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--navy)', marginBottom: 1 }}>{v.title}</div>
-                    <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>{v.desc}</div>
+                    <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--navy)', marginBottom: 1 }}>{v.title}</div>
+                    <div style={{ fontSize: 13, color: 'var(--gray-400)' }}>{v.desc}</div>
                   </div>
                 </div>
               ))}
@@ -236,7 +236,7 @@ export default function OnboardingPage() {
           <div style={{ width: '100%', maxWidth: 600 }}>
             <div style={{ marginBottom: 28 }}>
               <div style={{ fontSize: 22, fontFamily: "var(--font-sans)", fontWeight: 800, color: 'var(--navy)', marginBottom: 6 }}>Como você vai usar o FactorOne?</div>
-              <div style={{ fontSize: 13, color: 'var(--gray-400)' }}>Escolha o modo principal. Você pode usar os dois.</div>
+              <div style={{ fontSize: 15, color: 'var(--gray-400)' }}>Escolha o modo principal. Você pode usar os dois.</div>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
               {/* PJ */}
@@ -249,11 +249,11 @@ export default function OnboardingPage() {
                   <i className="fa-solid fa-building" style={{ color: '#fff', fontSize: 18 }} />
                 </div>
                 <div style={{ fontFamily: "var(--font-sans)", fontSize: 16, fontWeight: 700, color: 'var(--navy)', marginBottom: 4 }}>Empresarial (PJ)</div>
-                <div style={{ fontSize: 12, color: 'var(--gray-400)', lineHeight: 1.6, marginBottom: 16 }}>PMEs, startups e agências que precisam de gestão financeira completa.</div>
+                <div style={{ fontSize: 14, color: 'var(--gray-400)', lineHeight: 1.6, marginBottom: 16 }}>PMEs, startups e agências que precisam de gestão financeira completa.</div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                   {['DRE & Fluxo de Caixa', 'AI CFO + Relatórios', 'NF-e, DAS, Contador'].map(f => (
-                    <div key={f} style={{ display: 'flex', gap: 8, fontSize: 11, color: 'var(--gray-500)', alignItems: 'center' }}>
-                      <i className="fa-solid fa-circle-check" style={{ color: 'var(--teal)', fontSize: 11 }} /> {f}
+                    <div key={f} style={{ display: 'flex', gap: 8, fontSize: 13, color: 'var(--gray-500)', alignItems: 'center' }}>
+                      <i className="fa-solid fa-circle-check" style={{ color: 'var(--teal)', fontSize: 13 }} /> {f}
                     </div>
                   ))}
                 </div>
@@ -268,17 +268,17 @@ export default function OnboardingPage() {
                   <i className="fa-solid fa-user" style={{ color: 'var(--gray-500)', fontSize: 18 }} />
                 </div>
                 <div style={{ fontFamily: "var(--font-sans)", fontSize: 16, fontWeight: 700, color: 'var(--navy)', marginBottom: 4 }}>Pessoa Física</div>
-                <div style={{ fontSize: 12, color: 'var(--gray-400)', lineHeight: 1.6, marginBottom: 16 }}>Organização financeira pessoal, metas e controle de gastos.</div>
+                <div style={{ fontSize: 14, color: 'var(--gray-400)', lineHeight: 1.6, marginBottom: 16 }}>Organização financeira pessoal, metas e controle de gastos.</div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                   {['Controle de gastos & metas', 'IRPF & investimentos', 'Orçamento mensal'].map(f => (
-                    <div key={f} style={{ display: 'flex', gap: 8, fontSize: 11, color: 'var(--gray-500)', alignItems: 'center' }}>
+                    <div key={f} style={{ display: 'flex', gap: 8, fontSize: 13, color: 'var(--gray-500)', alignItems: 'center' }}>
                       <i className="fa-solid fa-circle" style={{ color: 'var(--gray-300)', fontSize: 5 }} /> {f}
                     </div>
                   ))}
                 </div>
               </button>
             </div>
-            <button className="btn-action btn-ghost" style={{ marginTop: 16, fontSize: 12 }} onClick={() => setScreen('splash')}>
+            <button className="btn-action btn-ghost" style={{ marginTop: 16, fontSize: 14 }} onClick={() => setScreen('splash')}>
               <i className="fa-solid fa-arrow-left" style={{ marginRight: 6 }} /> Voltar
             </button>
           </div>
@@ -289,7 +289,7 @@ export default function OnboardingPage() {
           <div style={{ width: '100%', maxWidth: 520 }}>
             <div style={{ marginBottom: 24 }}>
               <div style={{ fontSize: 22, fontFamily: "var(--font-sans)", fontWeight: 800, color: 'var(--navy)', marginBottom: 6 }}>Como chama sua empresa?</div>
-              <div style={{ fontSize: 13, color: 'var(--gray-400)' }}>Um campo e pronto — CNPJ, setor e o resto você completa depois, dentro do sistema.</div>
+              <div style={{ fontSize: 15, color: 'var(--gray-400)' }}>Um campo e pronto — CNPJ, setor e o resto você completa depois, dentro do sistema.</div>
             </div>
 
             <div style={{ background: '#fff', borderRadius: 12, padding: '24px', border: '1px solid var(--gray-100)' }}>
@@ -313,7 +313,7 @@ export default function OnboardingPage() {
           <div style={{ width: '100%', maxWidth: 640 }}>
             <div style={{ marginBottom: 24 }}>
               <div style={{ fontSize: 22, fontFamily: 'var(--font-sans)', fontWeight: 800, color: 'var(--navy)', marginBottom: 6 }}>O que você faz?</div>
-              <div style={{ fontSize: 13, color: 'var(--gray-400)' }}>Vou montar seu painel com as ferramentas certas. O resto fica no Marketplace — você liga quando quiser.</div>
+              <div style={{ fontSize: 15, color: 'var(--gray-400)' }}>Vou montar seu painel com as ferramentas certas. O resto fica no Marketplace — você liga quando quiser.</div>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
               {SEGMENTOS.map(s => (
@@ -323,18 +323,18 @@ export default function OnboardingPage() {
                     <i className={`fa-solid ${s.icon}`} style={{ color: s.cor, fontSize: 17 }} />
                   </div>
                   <div style={{ fontFamily: 'var(--font-sans)', fontSize: 15, fontWeight: 700, color: 'var(--navy)' }}>{s.titulo}</div>
-                  <div style={{ fontSize: 11.5, color: 'var(--gray-400)', lineHeight: 1.5, marginBottom: 6 }}>{s.desc}</div>
+                  <div style={{ fontSize: 13.5, color: 'var(--gray-400)', lineHeight: 1.5, marginBottom: 6 }}>{s.desc}</div>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5, marginTop: 'auto' }}>
-                    {s.inclui.map(f => <span key={f} style={{ fontSize: 10, fontWeight: 600, color: 'var(--teal)', background: 'rgba(61,122,110,.1)', padding: '2px 7px', borderRadius: 100 }}>{f}</span>)}
+                    {s.inclui.map(f => <span key={f} style={{ fontSize: 12, fontWeight: 600, color: 'var(--teal)', background: 'rgba(61,122,110,.1)', padding: '2px 7px', borderRadius: 100 }}>{f}</span>)}
                   </div>
                 </button>
               ))}
             </div>
             <div style={{ display: 'flex', gap: 10, marginTop: 16, alignItems: 'center' }}>
-              <button className="btn-action btn-ghost" style={{ fontSize: 12 }} onClick={() => setScreen('empresa')}>
+              <button className="btn-action btn-ghost" style={{ fontSize: 14 }} onClick={() => setScreen('empresa')}>
                 <i className="fa-solid fa-arrow-left" style={{ marginRight: 6 }} /> Voltar
               </button>
-              <button className="btn-action btn-ghost" style={{ fontSize: 12 }} onClick={() => void escolherSegmento('completo')} disabled={loading}>
+              <button className="btn-action btn-ghost" style={{ fontSize: 14 }} onClick={() => void escolherSegmento('completo')} disabled={loading}>
                 Pular — decido depois
               </button>
             </div>
@@ -348,7 +348,7 @@ export default function OnboardingPage() {
               <div style={{ fontFamily: 'var(--font-sans)', fontSize: 24, fontWeight: 800, color: 'var(--navy)', letterSpacing: '-.02em', marginBottom: 6 }}>
                 {empresa.nome ? `${empresa.nome} criada! ` : 'Quase lá! '}Conecte seu banco.
               </div>
-              <div style={{ fontSize: 13.5, color: 'var(--gray-500)', lineHeight: 1.65 }}>
+              <div style={{ fontSize: 15, color: 'var(--gray-500)', lineHeight: 1.65 }}>
                 Traga saldo e extrato por Open Finance. A IA já começa a <b>classificar suas compras</b> e montar a contabilidade — sem você digitar nada.
               </div>
             </div>
@@ -371,8 +371,8 @@ export default function OnboardingPage() {
                     <i className={`fa-solid ${b.icon}`} style={{ color: 'var(--teal)', fontSize: 14 }} />
                   </div>
                   <div>
-                    <div style={{ fontSize: 12.5, fontWeight: 700, color: 'var(--navy)' }}>{b.title}</div>
-                    <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>{b.desc}</div>
+                    <div style={{ fontSize: 14.5, fontWeight: 700, color: 'var(--navy)' }}>{b.title}</div>
+                    <div style={{ fontSize: 13, color: 'var(--gray-400)' }}>{b.desc}</div>
                   </div>
                 </div>
               ))}
@@ -381,7 +381,7 @@ export default function OnboardingPage() {
             <button className="btn-action" style={{ width: '100%', padding: '13px 0', fontSize: 14, marginBottom: 8 }} onClick={() => router.push('/dashboard/conexoes')}>
               <i className="fa-solid fa-link" style={{ marginRight: 8 }} />Conectar meu banco
             </button>
-            <button className="btn-action btn-ghost" style={{ width: '100%', padding: '11px 0', fontSize: 13 }} onClick={() => router.push('/dashboard')}>
+            <button className="btn-action btn-ghost" style={{ width: '100%', padding: '11px 0', fontSize: 15 }} onClick={() => router.push('/dashboard')}>
               Agora não — ir pro painel
             </button>
           </div>

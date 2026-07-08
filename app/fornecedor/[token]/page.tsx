@@ -71,7 +71,7 @@ export default function FornecedorPortalPage({ params }: { params: Promise<{ tok
     background: '#fff', boxSizing: 'border-box', outline: 'none',
     fontFamily: "var(--font-sans)",
   }
-  const lbl: React.CSSProperties = { fontSize: 12, fontWeight: 600, color: '#64748b', marginBottom: 5, display: 'block' }
+  const lbl: React.CSSProperties = { fontSize: 14, fontWeight: 600, color: '#64748b', marginBottom: 5, display: 'block' }
 
   return (
     <div style={{ minHeight: '100vh', background: '#f8fafc', fontFamily: "var(--font-sans)" }}>
@@ -81,7 +81,7 @@ export default function FornecedorPortalPage({ params }: { params: Promise<{ tok
           Factor<span style={{ color: 'var(--teal)' }}>One</span>
         </div>
         <div style={{ width: 1, height: 20, background: 'rgba(255,255,255,0.15)' }} />
-        <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)' }}>Portal do Fornecedor</div>
+        <div style={{ fontSize: 14, color: 'rgba(255,255,255,0.5)' }}>Portal do Fornecedor</div>
       </div>
 
       <div style={{ maxWidth: 560, margin: '0 auto', padding: '40px 20px' }}>
@@ -102,7 +102,7 @@ export default function FornecedorPortalPage({ params }: { params: Promise<{ tok
             <p style={{ color: '#64748b', fontSize: 14, lineHeight: 1.6 }}>
               Seus dados foram recebidos por <strong>{info?.empresa_nome}</strong> e entrarão no sistema de contas a pagar.
             </p>
-            <p style={{ color: '#94a3b8', fontSize: 12, marginTop: 12 }}>Você pode fechar esta janela.</p>
+            <p style={{ color: '#94a3b8', fontSize: 14, marginTop: 12 }}>Você pode fechar esta janela.</p>
           </div>
         ) : !info ? (
           <div style={{ textAlign: 'center', padding: 60, color: '#94a3b8', fontSize: 14 }}>Carregando…</div>
@@ -110,13 +110,13 @@ export default function FornecedorPortalPage({ params }: { params: Promise<{ tok
           <>
             {/* Card intro */}
             <div style={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: 16, padding: 28, marginBottom: 20, boxShadow: '0 1px 4px rgba(0,0,0,.06)' }}>
-              <p style={{ fontSize: 11, fontWeight: 700, color: 'var(--teal)', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: 6 }}>Convite de {info.empresa_nome}</p>
+              <p style={{ fontSize: 13, fontWeight: 700, color: 'var(--teal)', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: 6 }}>Convite de {info.empresa_nome}</p>
               <h1 style={{ fontSize: 20, fontWeight: 800, color: '#0f172a', margin: '0 0 8px', fontFamily: "var(--font-sans)" }}>Envie sua fatura</h1>
-              <p style={{ fontSize: 13, color: '#64748b', lineHeight: 1.6, margin: 0 }}>
+              <p style={{ fontSize: 15, color: '#64748b', lineHeight: 1.6, margin: 0 }}>
                 Preencha os dados abaixo. Sua fatura será cadastrada automaticamente no sistema financeiro de <strong>{info.empresa_nome}</strong>.
               </p>
               {info.descricao && (
-                <div style={{ marginTop: 12, padding: '8px 12px', background: '#f8fafc', borderRadius: 8, border: '1px solid #e2e8f0', fontSize: 12, color: '#475569' }}>
+                <div style={{ marginTop: 12, padding: '8px 12px', background: '#f8fafc', borderRadius: 8, border: '1px solid #e2e8f0', fontSize: 14, color: '#475569' }}>
                   <strong>Referência:</strong> {info.descricao}
                 </div>
               )}
@@ -187,7 +187,7 @@ export default function FornecedorPortalPage({ params }: { params: Promise<{ tok
                   {sending ? 'Enviando…' : 'Enviar fatura para ' + info.empresa_nome}
                 </button>
 
-                <p style={{ fontSize: 11, color: '#94a3b8', textAlign: 'center', margin: 0 }}>
+                <p style={{ fontSize: 13, color: '#94a3b8', textAlign: 'center', margin: 0 }}>
                   Seus dados são enviados com segurança via criptografia TLS e armazenados apenas para fins de pagamento.
                 </p>
               </div>

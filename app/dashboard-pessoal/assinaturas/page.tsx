@@ -89,10 +89,10 @@ export default function AssinaturasPage() {
 
       {/* Populares */}
       <div style={{ background: 'rgba(61,122,110,.04)', border: '1px solid rgba(61,122,110,.2)', borderRadius: 12, padding: 16, marginBottom: 8 }}>
-        <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--teal)', marginBottom: 10 }}>Adicionar rapidamente</div>
+        <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--teal)', marginBottom: 10 }}>Adicionar rapidamente</div>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
           {POPULARES.map(p => (
-            <button key={p.nome} onClick={() => adicionarPopular(p)} className="btn-ghost" style={{ fontSize: 11, padding: '5px 10px' }}>
+            <button key={p.nome} onClick={() => adicionarPopular(p)} className="btn-ghost" style={{ fontSize: 13, padding: '5px 10px' }}>
               {p.nome} · {formatBRL(p.valor)}
             </button>
           ))}
@@ -101,7 +101,7 @@ export default function AssinaturasPage() {
 
       {ativas.length > 0 && (
         <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, overflow: 'hidden', marginBottom: 12 }}>
-          <div style={{ padding: '12px 16px', borderBottom: '1px solid var(--gray-100)', fontSize: 12, fontWeight: 700, color: 'var(--navy)' }}>Ativas</div>
+          <div style={{ padding: '12px 16px', borderBottom: '1px solid var(--gray-100)', fontSize: 14, fontWeight: 700, color: 'var(--navy)' }}>Ativas</div>
           <table className="expenses-table">
             <thead><tr><th>Serviço</th><th>Categoria</th><th>Ciclo</th><th>Vence dia</th><th>Valor</th><th></th></tr></thead>
             <tbody>
@@ -109,12 +109,12 @@ export default function AssinaturasPage() {
                 <tr key={a.id}>
                   <td style={{ fontWeight: 600 }}>{a.nome}</td>
                   <td><span className="tag gray">{a.categoria}</span></td>
-                  <td style={{ color: 'var(--gray-400)', fontSize: 11 }}>{a.ciclo}</td>
+                  <td style={{ color: 'var(--gray-400)', fontSize: 13 }}>{a.ciclo}</td>
                   <td style={{ color: 'var(--gray-400)' }}>dia {a.dia_vencimento}</td>
                   <td style={{ fontFamily: "var(--font-sans)", fontWeight: 700, color: 'var(--red)' }}>{formatBRL(Number(a.valor))}</td>
                   <td style={{ display: 'flex', gap: 6 }}>
-                    <button onClick={() => toggleAtiva(a.id, a.ativa)} className="btn-ghost" style={{ fontSize: 10, padding: '3px 8px' }}>Pausar</button>
-                    <button onClick={() => excluir(a.id)} className="btn-ghost" style={{ fontSize: 10, padding: '3px 8px', color: 'var(--red)' }}>✕</button>
+                    <button onClick={() => toggleAtiva(a.id, a.ativa)} className="btn-ghost" style={{ fontSize: 12, padding: '3px 8px' }}>Pausar</button>
+                    <button onClick={() => excluir(a.id)} className="btn-ghost" style={{ fontSize: 12, padding: '3px 8px', color: 'var(--red)' }}>✕</button>
                   </td>
                 </tr>
               ))}
@@ -125,7 +125,7 @@ export default function AssinaturasPage() {
 
       {inativas.length > 0 && (
         <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, overflow: 'hidden' }}>
-          <div style={{ padding: '12px 16px', borderBottom: '1px solid var(--gray-100)', fontSize: 12, fontWeight: 700, color: 'var(--gray-400)' }}>Pausadas</div>
+          <div style={{ padding: '12px 16px', borderBottom: '1px solid var(--gray-100)', fontSize: 14, fontWeight: 700, color: 'var(--gray-400)' }}>Pausadas</div>
           <table className="expenses-table">
             <thead><tr><th>Serviço</th><th>Categoria</th><th>Valor</th><th></th></tr></thead>
             <tbody>
@@ -135,8 +135,8 @@ export default function AssinaturasPage() {
                   <td><span className="tag gray">{a.categoria}</span></td>
                   <td style={{ fontFamily: "var(--font-sans)" }}>{formatBRL(Number(a.valor))}</td>
                   <td style={{ display: 'flex', gap: 6 }}>
-                    <button onClick={() => toggleAtiva(a.id, a.ativa)} className="btn-ghost" style={{ fontSize: 10, padding: '3px 8px' }}>Reativar</button>
-                    <button onClick={() => excluir(a.id)} className="btn-ghost" style={{ fontSize: 10, padding: '3px 8px', color: 'var(--red)' }}>✕</button>
+                    <button onClick={() => toggleAtiva(a.id, a.ativa)} className="btn-ghost" style={{ fontSize: 12, padding: '3px 8px' }}>Reativar</button>
+                    <button onClick={() => excluir(a.id)} className="btn-ghost" style={{ fontSize: 12, padding: '3px 8px', color: 'var(--red)' }}>✕</button>
                   </td>
                 </tr>
               ))}

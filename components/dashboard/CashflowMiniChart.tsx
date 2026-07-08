@@ -77,8 +77,8 @@ export default function CashflowMiniChart({ empresaId }: Props) {
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={chartData}>
               <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-              <XAxis dataKey="data" tick={{ fontSize: 10, fill: '#64748b' }} />
-              <YAxis tick={{ fontSize: 10, fill: '#64748b' }} />
+              <XAxis dataKey="data" tick={{ fontSize: 12, fill: '#64748b' }} />
+              <YAxis tick={{ fontSize: 12, fill: '#64748b' }} />
               <Tooltip
                 formatter={(v: number) =>
                   new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v)

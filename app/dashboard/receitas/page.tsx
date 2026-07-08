@@ -167,10 +167,10 @@ export default function ReceitasPage() {
 
   const inp: React.CSSProperties = {
     width: '100%', border: '1px solid var(--gray-100)', borderRadius: 8,
-    padding: '8px 12px', fontSize: 13, color: 'var(--navy)',
+    padding: '8px 12px', fontSize: 15, color: 'var(--navy)',
     background: '#fff', boxSizing: 'border-box', outline: 'none',
   }
-  const lbl: React.CSSProperties = { fontSize: 11, fontWeight: 600, color: 'var(--gray-500)', marginBottom: 4, display: 'block' }
+  const lbl: React.CSSProperties = { fontSize: 13, fontWeight: 600, color: 'var(--gray-500)', marginBottom: 4, display: 'block' }
 
   if (loading) return <div style={{ padding: 32, color: 'var(--gray-400)' }}>Carregando…</div>
 
@@ -183,7 +183,7 @@ export default function ReceitasPage() {
         </div>
         <div style={{ display: 'flex', gap: 8 }}>
           <button className="btn-action btn-ghost" style={{ display: 'flex', alignItems: 'center', gap: 6 }} onClick={() => { abrirForm(); setTimeout(() => xmlRef.current?.click(), 200) }}>
-            <i className="fa-solid fa-file-code" style={{ fontSize: 12 }} />
+            <i className="fa-solid fa-file-code" style={{ fontSize: 14 }} />
             Importar XML NF-e
           </button>
           <button className="btn-action" onClick={() => abrirForm()}>+ Nova receita</button>
@@ -194,7 +194,7 @@ export default function ReceitasPage() {
       <div style={{ display: 'flex', gap: 6, marginBottom: 12 }}>
         {mesesNav.map(m => (
           <button key={m} onClick={() => setMes(m)} style={{
-            padding: '5px 12px', borderRadius: 8, fontSize: 11, fontWeight: 600, cursor: 'pointer', border: '1px solid',
+            padding: '5px 12px', borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: 'pointer', border: '1px solid',
             background: mes === m ? 'var(--navy)' : '#fff', color: mes === m ? '#fff' : 'var(--gray-500)',
             borderColor: mes === m ? 'var(--navy)' : 'var(--gray-100)',
           }}>{m.slice(0, 7)}</button>
@@ -228,16 +228,16 @@ export default function ReceitasPage() {
       {/* Por categoria */}
       {porCategoria.length > 0 && (
         <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: 16, marginBottom: 16 }}>
-          <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--navy)', marginBottom: 10 }}>Por categoria</div>
+          <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--navy)', marginBottom: 10 }}>Por categoria</div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
             {porCategoria.map(([cat, val]) => (
               <div key={cat} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                <div style={{ fontSize: 12, width: 120, color: 'var(--gray-500)' }}>{cat}</div>
+                <div style={{ fontSize: 14, width: 120, color: 'var(--gray-500)' }}>{cat}</div>
                 <div style={{ flex: 1, height: 6, background: 'var(--gray-100)', borderRadius: 3 }}>
                   <div style={{ height: 6, borderRadius: 3, width: `${Math.min((val / totalMes) * 100, 100)}%`, background: 'var(--green)', transition: 'width .3s' }} />
                 </div>
-                <div style={{ fontSize: 12, fontWeight: 700, fontFamily: "var(--font-sans)", minWidth: 90, textAlign: 'right' }}>{formatBRL(val)}</div>
-                <div style={{ fontSize: 11, color: 'var(--gray-400)', minWidth: 36, textAlign: 'right' }}>{totalMes > 0 ? ((val / totalMes) * 100).toFixed(0) : 0}%</div>
+                <div style={{ fontSize: 14, fontWeight: 700, fontFamily: "var(--font-sans)", minWidth: 90, textAlign: 'right' }}>{formatBRL(val)}</div>
+                <div style={{ fontSize: 13, color: 'var(--gray-400)', minWidth: 36, textAlign: 'right' }}>{totalMes > 0 ? ((val / totalMes) * 100).toFixed(0) : 0}%</div>
               </div>
             ))}
           </div>
@@ -278,9 +278,9 @@ export default function ReceitasPage() {
             <tbody>
               {filtradas.length === 0 && (
                 <tr>
-                  <td colSpan={8} style={{ textAlign: 'center', color: 'var(--gray-400)', padding: '40px 0', fontSize: 13 }}>
+                  <td colSpan={8} style={{ textAlign: 'center', color: 'var(--gray-400)', padding: '40px 0', fontSize: 15 }}>
                     Nenhuma receita em {mesLabel(mes)}.{' '}
-                    <button onClick={() => abrirForm()} style={{ color: 'var(--teal)', background: 'none', border: 'none', cursor: 'pointer', fontSize: 13 }}>
+                    <button onClick={() => abrirForm()} style={{ color: 'var(--teal)', background: 'none', border: 'none', cursor: 'pointer', fontSize: 15 }}>
                       Adicionar →
                     </button>
                   </td>
@@ -288,17 +288,17 @@ export default function ReceitasPage() {
               )}
               {filtradas.map(r => (
                 <tr key={r.id} style={{ opacity: r.status === 'cancelada' ? 0.5 : 1 }}>
-                  <td style={{ fontFamily: "var(--font-sans)", fontSize: 11 }}>
+                  <td style={{ fontFamily: "var(--font-sans)", fontSize: 13 }}>
                     {new Date(r.data + 'T12:00:00').toLocaleDateString('pt-BR')}
                   </td>
                   <td>
-                    <div style={{ fontWeight: 600, fontSize: 12 }}>{r.descricao}</div>
-                    {r.nota_fiscal && <div style={{ fontSize: 10, color: 'var(--teal)' }}>{r.nota_fiscal}</div>}
+                    <div style={{ fontWeight: 600, fontSize: 14 }}>{r.descricao}</div>
+                    {r.nota_fiscal && <div style={{ fontSize: 12, color: 'var(--teal)' }}>{r.nota_fiscal}</div>}
                   </td>
-                  <td><span className="tag gray" style={{ fontSize: 9 }}>{r.categoria}</span></td>
-                  <td style={{ fontSize: 12, color: 'var(--gray-500)' }}>{r.cliente || '—'}</td>
-                  <td style={{ fontSize: 11, color: 'var(--gray-400)' }}>{TIPOS[r.tipo]}</td>
-                  <td style={{ textAlign: 'right', fontFamily: "var(--font-sans)", color: 'var(--green)', fontWeight: 700, fontSize: 13 }}>
+                  <td><span className="tag gray" style={{ fontSize: 11 }}>{r.categoria}</span></td>
+                  <td style={{ fontSize: 14, color: 'var(--gray-500)' }}>{r.cliente || '—'}</td>
+                  <td style={{ fontSize: 13, color: 'var(--gray-400)' }}>{TIPOS[r.tipo]}</td>
+                  <td style={{ textAlign: 'right', fontFamily: "var(--font-sans)", color: 'var(--green)', fontWeight: 700, fontSize: 15 }}>
                     +{formatBRL(Number(r.valor))}
                   </td>
                   <td style={{ textAlign: 'center' }}>
@@ -306,7 +306,7 @@ export default function ReceitasPage() {
                       value={r.status}
                       onChange={e => void alterarStatus(r.id, e.target.value)}
                       style={{
-                        fontSize: 9, fontWeight: 700, padding: '2px 6px', borderRadius: 20, border: '1px solid',
+                        fontSize: 11, fontWeight: 700, padding: '2px 6px', borderRadius: 20, border: '1px solid',
                         background: r.status === 'confirmada' ? 'rgba(61,122,110,.1)' : r.status === 'prevista' ? 'var(--gray-100)' : 'rgba(239,68,68,.1)',
                         color: r.status === 'confirmada' ? 'var(--green)' : r.status === 'prevista' ? 'var(--gray-500)' : 'var(--red)',
                         borderColor: r.status === 'confirmada' ? 'rgba(61,122,110,.2)' : r.status === 'prevista' ? 'var(--gray-200)' : 'rgba(239,68,68,.2)',
@@ -320,8 +320,8 @@ export default function ReceitasPage() {
                   </td>
                   <td style={{ textAlign: 'center' }}>
                     <div style={{ display: 'flex', justifyContent: 'center', gap: 4 }}>
-                      <button className="btn-ghost" style={{ padding: '3px 8px', fontSize: 10 }} onClick={() => abrirForm(r)}>Editar</button>
-                      <button className="btn-ghost" style={{ padding: '3px 8px', fontSize: 10, color: 'var(--red)' }} onClick={() => void excluir(r.id)}>✕</button>
+                      <button className="btn-ghost" style={{ padding: '3px 8px', fontSize: 12 }} onClick={() => abrirForm(r)}>Editar</button>
+                      <button className="btn-ghost" style={{ padding: '3px 8px', fontSize: 12, color: 'var(--red)' }} onClick={() => void excluir(r.id)}>✕</button>
                     </div>
                   </td>
                 </tr>
@@ -357,21 +357,21 @@ export default function ReceitasPage() {
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                     <i className="fa-solid fa-file-code" style={{ fontSize: 22, color: 'var(--green)' }} />
                     <div style={{ textAlign: 'left' }}>
-                      <p style={{ fontWeight: 600, fontSize: 13, color: 'var(--navy)', margin: 0 }}>{xmlFile.name}</p>
-                      <p style={{ fontSize: 11, color: 'var(--gray-400)', margin: 0 }}>
+                      <p style={{ fontWeight: 600, fontSize: 15, color: 'var(--navy)', margin: 0 }}>{xmlFile.name}</p>
+                      <p style={{ fontSize: 13, color: 'var(--gray-400)', margin: 0 }}>
                         {nfeResult ? `${nfeResult.tipo === 'nfse' ? 'NFS-e' : 'NF-e'} · ${nfeResult.emitente}` : 'Clique para outro arquivo'}
                       </p>
                     </div>
                   </div>
                   {!nfeResult && (
                     <button type="button" onClick={e => { e.stopPropagation(); void importarNFe() }} disabled={xmlLoading}
-                      style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '7px 14px', borderRadius: 8, border: 'none', cursor: 'pointer', fontWeight: 700, fontSize: 12, background: 'var(--green)', color: '#fff', opacity: xmlLoading ? 0.7 : 1 }}>
+                      style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '7px 14px', borderRadius: 8, border: 'none', cursor: 'pointer', fontWeight: 700, fontSize: 14, background: 'var(--green)', color: '#fff', opacity: xmlLoading ? 0.7 : 1 }}>
                       <i className="fa-solid fa-wand-magic-sparkles" />
                       {xmlLoading ? 'Lendo…' : 'Processar NF-e'}
                     </button>
                   )}
                   {nfeResult && (
-                    <span style={{ display: 'flex', alignItems: 'center', gap: 5, color: 'var(--green)', fontSize: 12, fontWeight: 700 }}>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: 5, color: 'var(--green)', fontSize: 14, fontWeight: 700 }}>
                       <i className="fa-solid fa-circle-check" /> Dados preenchidos
                     </span>
                   )}
@@ -379,8 +379,8 @@ export default function ReceitasPage() {
               ) : (
                 <>
                   <i className="fa-solid fa-file-import" style={{ fontSize: 28, color: 'var(--gray-400)', marginBottom: 8 }} />
-                  <p style={{ fontWeight: 600, fontSize: 13, color: 'var(--navy)', margin: '0 0 2px' }}>Importar XML de NF-e ou NFS-e</p>
-                  <p style={{ fontSize: 11, color: 'var(--gray-400)', margin: 0 }}>Clique para selecionar · preenche automaticamente emitente, valor e data</p>
+                  <p style={{ fontWeight: 600, fontSize: 15, color: 'var(--navy)', margin: '0 0 2px' }}>Importar XML de NF-e ou NFS-e</p>
+                  <p style={{ fontSize: 13, color: 'var(--gray-400)', margin: 0 }}>Clique para selecionar · preenche automaticamente emitente, valor e data</p>
                 </>
               )}
             </div>
@@ -388,11 +388,11 @@ export default function ReceitasPage() {
             {/* Dados extraídos */}
             {nfeResult && (
               <div style={{ margin: '0 0 16px', padding: '12px 14px', borderRadius: 10, background: '#f0fdf4', border: '1px solid #86efac' }}>
-                <p style={{ fontSize: 10, fontWeight: 700, color: '#166534', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: 6 }}>
+                <p style={{ fontSize: 12, fontWeight: 700, color: '#166534', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: 6 }}>
                   <i className="fa-solid fa-circle-check" style={{ marginRight: 4 }} />
                   {nfeResult.tipo === 'nfse' ? 'NFS-e' : 'NF-e'} processada
                 </p>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3px 12px', fontSize: 12 }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3px 12px', fontSize: 14 }}>
                   {[['Emitente', nfeResult.emitente], ['CNPJ', nfeResult.cnpj || '—'], ['Valor', formatBRL(nfeResult.valor)], ['Data', nfeResult.data], ['Número', nfeResult.numero_nf || '—']].map(([k, v]) => (
                     <div key={k} style={{ display: 'flex', gap: 6 }}>
                       <span style={{ color: '#166534', minWidth: 60 }}>{k}:</span>

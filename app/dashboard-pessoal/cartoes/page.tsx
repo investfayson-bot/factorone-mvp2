@@ -90,11 +90,11 @@ export default function CartoesPage() {
               onClick={() => selecionarCartao(c.id)}
               style={{ width: 220, height: 130, borderRadius: 16, background: c.cor, padding: 16, cursor: 'pointer', border: `3px solid ${selecionado === c.id ? '#fff' : 'transparent'}`, boxShadow: selecionado === c.id ? `0 0 0 2px ${c.cor}` : '0 2px 8px rgba(0,0,0,.15)', transition: 'all .2s', position: 'relative' }}
             >
-              <div style={{ fontSize: 11, color: 'rgba(255,255,255,.7)', marginBottom: 8 }}>{c.bandeira}</div>
-              <div style={{ fontSize: 13, fontWeight: 700, color: '#fff', marginBottom: 4 }}>{c.nome}</div>
-              <div style={{ fontSize: 11, color: 'rgba(255,255,255,.7)' }}>Limite: {c.limite > 0 ? formatBRL(c.limite) : 'sem limite'}</div>
-              <div style={{ fontSize: 10, color: 'rgba(255,255,255,.6)', marginTop: 4 }}>Fecha dia {c.dia_fechamento} · Vence dia {c.dia_vencimento}</div>
-              <button onClick={e => { e.stopPropagation(); excluirCartao(c.id) }} style={{ position: 'absolute', top: 8, right: 8, background: 'rgba(255,255,255,.2)', border: 'none', borderRadius: 4, color: '#fff', fontSize: 10, cursor: 'pointer', padding: '2px 6px' }}>✕</button>
+              <div style={{ fontSize: 13, color: 'rgba(255,255,255,.7)', marginBottom: 8 }}>{c.bandeira}</div>
+              <div style={{ fontSize: 15, fontWeight: 700, color: '#fff', marginBottom: 4 }}>{c.nome}</div>
+              <div style={{ fontSize: 13, color: 'rgba(255,255,255,.7)' }}>Limite: {c.limite > 0 ? formatBRL(c.limite) : 'sem limite'}</div>
+              <div style={{ fontSize: 12, color: 'rgba(255,255,255,.6)', marginTop: 4 }}>Fecha dia {c.dia_fechamento} · Vence dia {c.dia_vencimento}</div>
+              <button onClick={e => { e.stopPropagation(); excluirCartao(c.id) }} style={{ position: 'absolute', top: 8, right: 8, background: 'rgba(255,255,255,.2)', border: 'none', borderRadius: 4, color: '#fff', fontSize: 12, cursor: 'pointer', padding: '2px 6px' }}>✕</button>
             </div>
           ))}
         </div>
@@ -110,8 +110,8 @@ export default function CartoesPage() {
           </div>
 
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-            <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy)' }}>Lançamentos — {cartaoAtual.nome}</div>
-            <input type="month" value={mes} onChange={e => { setMes(e.target.value); carregarGastos(userId, selecionado!, e.target.value) }} className="form-input" style={{ width: 'auto', padding: '5px 10px', fontSize: 12 }} />
+            <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--navy)' }}>Lançamentos — {cartaoAtual.nome}</div>
+            <input type="month" value={mes} onChange={e => { setMes(e.target.value); carregarGastos(userId, selecionado!, e.target.value) }} className="form-input" style={{ width: 'auto', padding: '5px 10px', fontSize: 14 }} />
           </div>
 
           <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, overflow: 'hidden' }}>
@@ -124,7 +124,7 @@ export default function CartoesPage() {
                     <td style={{ fontWeight: 600 }}>{g.descricao}</td>
                     <td><span className="tag gray">{g.categoria}</span></td>
                     <td style={{ color: 'var(--gray-400)' }}>{g.data_despesa?.split('-').reverse().join('/')}</td>
-                    <td style={{ color: 'var(--gray-400)', fontSize: 11 }}>{g.parcela_atual ? `${g.parcela_atual}/${g.total_parcelas}x` : '—'}</td>
+                    <td style={{ color: 'var(--gray-400)', fontSize: 13 }}>{g.parcela_atual ? `${g.parcela_atual}/${g.total_parcelas}x` : '—'}</td>
                     <td style={{ fontFamily: "var(--font-sans)", fontWeight: 700 }}>{formatBRL(Number(g.valor))}</td>
                   </tr>
                 ))}
@@ -151,7 +151,7 @@ export default function CartoesPage() {
                 <input className="form-input" placeholder="Dia vencimento" type="number" min="1" max="31" value={form.dia_vencimento} onChange={e => setForm(f => ({ ...f, dia_vencimento: e.target.value }))} />
               </div>
               <div>
-                <div style={{ fontSize: 11, color: 'var(--gray-400)', marginBottom: 6 }}>Cor do cartão</div>
+                <div style={{ fontSize: 13, color: 'var(--gray-400)', marginBottom: 6 }}>Cor do cartão</div>
                 <div style={{ display: 'flex', gap: 8 }}>
                   {CORES.map(c => (
                     <div key={c} onClick={() => setForm(f => ({ ...f, cor: c }))} style={{ width: 28, height: 28, borderRadius: 6, background: c, cursor: 'pointer', border: `3px solid ${form.cor === c ? '#000' : 'transparent'}` }} />

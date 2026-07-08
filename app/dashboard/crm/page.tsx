@@ -191,8 +191,8 @@ function CRMInner() {
     return semanas
   }, [agendaMes])
 
-  const inp: React.CSSProperties = { width: '100%', border: '0.5px solid #E4DCCC', borderRadius: 8, padding: '8px 12px', fontSize: 13, color: '#13201D', background: '#fff', boxSizing: 'border-box', outline: 'none' }
-  const lbl: React.CSSProperties = { fontSize: 11, fontWeight: 600, color: '#7B8C88', marginBottom: 4, display: 'block' }
+  const inp: React.CSSProperties = { width: '100%', border: '0.5px solid #E4DCCC', borderRadius: 8, padding: '8px 12px', fontSize: 15, color: '#13201D', background: '#fff', boxSizing: 'border-box', outline: 'none' }
+  const lbl: React.CSSProperties = { fontSize: 13, fontWeight: 600, color: '#7B8C88', marginBottom: 4, display: 'block' }
 
   if (loading) return <div style={{ padding: 32, color: '#7B8C88' }}>Carregando CRM…</div>
 
@@ -204,10 +204,10 @@ function CRMInner() {
           <div className="page-sub">{kpis.abertas} oportunidades abertas · {kpis.pendentes} atividades pendentes</div>
         </div>
         <div style={{ display: 'flex', gap: 8 }}>
-          <button className="btn-action btn-ghost" onClick={() => setShowAtv(true)} style={{ fontSize: 12 }}>
-            <i className="fa-solid fa-calendar-plus" style={{ marginRight: 5, fontSize: 11 }} />Agendar
+          <button className="btn-action btn-ghost" onClick={() => setShowAtv(true)} style={{ fontSize: 14 }}>
+            <i className="fa-solid fa-calendar-plus" style={{ marginRight: 5, fontSize: 13 }} />Agendar
           </button>
-          <button className="btn-action btn-ghost" style={{ fontSize: 12 }} onClick={async () => {
+          <button className="btn-action btn-ghost" style={{ fontSize: 14 }} onClick={async () => {
             setShowInsight(true)
             setInsightText('')
             setInsightLoading(true)
@@ -222,7 +222,7 @@ function CRMInner() {
             } catch { setInsightText('Erro ao gerar análise.') }
             finally { setInsightLoading(false) }
           }}>
-            <i className="fa-solid fa-robot" style={{ marginRight: 5, fontSize: 11 }} />IA Pipeline
+            <i className="fa-solid fa-robot" style={{ marginRight: 5, fontSize: 13 }} />IA Pipeline
           </button>
           <button className="btn-action" onClick={() => setShowOp(true)}>+ Nova oportunidade</button>
         </div>
@@ -238,7 +238,7 @@ function CRMInner() {
           <div key={k.l} className="kpi" style={{ borderTop: `3px solid ${k.c}` }}>
             <div className="kpi-lbl">{k.l}
               <div style={{ width: 26, height: 26, borderRadius: 7, background: k.bg, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <i className={`fa-solid ${k.icon}`} style={{ fontSize: 11, color: k.c }} />
+                <i className={`fa-solid ${k.icon}`} style={{ fontSize: 13, color: k.c }} />
               </div>
             </div>
             <div className="kpi-val" style={{ color: k.c }}>{k.v}</div>
@@ -252,12 +252,12 @@ function CRMInner() {
         {([['pipeline','Pipeline','fa-columns'], ['agenda','Agenda','fa-calendar'], ['atividades','Atividades','fa-list-check'], ['automacoes','Automações','fa-robot']] as [string,string,string][]).map(([k,l,ico]) => (
           <button key={k} onClick={() => setTab(k as typeof tab)} style={{
             display: 'flex', alignItems: 'center', gap: 6,
-            padding: '6px 13px', borderRadius: 8, fontSize: 11,
+            padding: '6px 13px', borderRadius: 8, fontSize: 13,
             fontWeight: tab === k ? 700 : 500, border: 'none', cursor: 'pointer',
             background: tab === k ? '#fff' : 'transparent',
             color: tab === k ? '#13201D' : '#7B8C88', transition: 'all .15s',
           }}>
-            <i className={`fa-solid ${ico}`} style={{ fontSize: 10 }} />{l}
+            <i className={`fa-solid ${ico}`} style={{ fontSize: 12 }} />{l}
           </button>
         ))}
       </div>
@@ -268,16 +268,16 @@ function CRMInner() {
           {pipeline.map(col => (
             <div key={col.id} style={{ minWidth: 180 }}>
               <div style={{ padding: '8px 10px', background: col.bg, borderRadius: '10px 10px 0 0', border: `1px solid ${col.color}20`, borderBottom: `2px solid ${col.color}` }}>
-                <p style={{ fontSize: 10, fontWeight: 800, color: col.color, textTransform: 'uppercase', letterSpacing: '.07em', margin: '0 0 2px' }}>{col.label}</p>
-                <p style={{ fontSize: 11, fontWeight: 700, color: '#13201D', margin: 0, fontFamily: "var(--font-sans)" }}>{formatBRL(col.total)}</p>
+                <p style={{ fontSize: 12, fontWeight: 800, color: col.color, textTransform: 'uppercase', letterSpacing: '.07em', margin: '0 0 2px' }}>{col.label}</p>
+                <p style={{ fontSize: 13, fontWeight: 700, color: '#13201D', margin: 0, fontFamily: "var(--font-sans)" }}>{formatBRL(col.total)}</p>
               </div>
               <div style={{ background: '#fafafa', border: `1px solid ${col.color}20`, borderTop: 'none', borderRadius: '0 0 10px 10px', minHeight: 200, padding: 8, display: 'flex', flexDirection: 'column', gap: 6 }}>
                 {col.ops.map(op => (
                   <div key={op.id} style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 8, padding: '10px 10px 8px' }}>
-                    <p style={{ fontWeight: 700, fontSize: 11, color: '#13201D', margin: '0 0 3px', lineHeight: 1.3 }}>{op.titulo}</p>
-                    {op.clientes && <p style={{ fontSize: 10, color: '#3D7A6E', margin: '0 0 3px' }}>{op.clientes.nome}</p>}
-                    {op.valor && <p style={{ fontSize: 11, fontWeight: 700, color: '#3D7A6E', fontFamily: "var(--font-sans)", margin: '0 0 6px' }}>{formatBRL(Number(op.valor))}</p>}
-                    <select value={op.etapa} onChange={e => void moverEtapa(op.id, e.target.value)} style={{ fontSize: 9, padding: '2px 4px', borderRadius: 5, border: '0.5px solid #E4DCCC', color: '#7B8C88', width: '100%' }}>
+                    <p style={{ fontWeight: 700, fontSize: 13, color: '#13201D', margin: '0 0 3px', lineHeight: 1.3 }}>{op.titulo}</p>
+                    {op.clientes && <p style={{ fontSize: 12, color: '#3D7A6E', margin: '0 0 3px' }}>{op.clientes.nome}</p>}
+                    {op.valor && <p style={{ fontSize: 13, fontWeight: 700, color: '#3D7A6E', fontFamily: "var(--font-sans)", margin: '0 0 6px' }}>{formatBRL(Number(op.valor))}</p>}
+                    <select value={op.etapa} onChange={e => void moverEtapa(op.id, e.target.value)} style={{ fontSize: 11, padding: '2px 4px', borderRadius: 5, border: '0.5px solid #E4DCCC', color: '#7B8C88', width: '100%' }}>
                       {ETAPAS.map(e => <option key={e.id} value={e.id}>{e.label}</option>)}
                     </select>
                   </div>
@@ -293,17 +293,17 @@ function CRMInner() {
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 300px', gap: 16, alignItems: 'start' }}>
           <div>
             <div style={{ display: 'flex', gap: 8, marginBottom: 12, alignItems: 'center' }}>
-              <button onClick={() => { const d = new Date(agendaMes + '-01'); d.setMonth(d.getMonth() - 1); setAgendaMes(d.toISOString().slice(0, 7)) }} className="btn-action btn-ghost" style={{ fontSize: 12, padding: '5px 10px' }}>‹</button>
-              <span style={{ fontSize: 13, fontWeight: 700, color: '#13201D', minWidth: 140, textAlign: 'center' }}>
+              <button onClick={() => { const d = new Date(agendaMes + '-01'); d.setMonth(d.getMonth() - 1); setAgendaMes(d.toISOString().slice(0, 7)) }} className="btn-action btn-ghost" style={{ fontSize: 14, padding: '5px 10px' }}>‹</button>
+              <span style={{ fontSize: 15, fontWeight: 700, color: '#13201D', minWidth: 140, textAlign: 'center' }}>
                 {new Date(agendaMes + '-01').toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}
               </span>
-              <button onClick={() => { const d = new Date(agendaMes + '-01'); d.setMonth(d.getMonth() + 1); setAgendaMes(d.toISOString().slice(0, 7)) }} className="btn-action btn-ghost" style={{ fontSize: 12, padding: '5px 10px' }}>›</button>
-              <button onClick={() => { const hoje = new Date(); setAgendaMes(hoje.toISOString().slice(0, 7)); setDiaSelecionado(hoje.toISOString().slice(0, 10)) }} className="btn-action btn-ghost" style={{ fontSize: 11, padding: '5px 10px', marginLeft: 4 }}>Hoje</button>
+              <button onClick={() => { const d = new Date(agendaMes + '-01'); d.setMonth(d.getMonth() + 1); setAgendaMes(d.toISOString().slice(0, 7)) }} className="btn-action btn-ghost" style={{ fontSize: 14, padding: '5px 10px' }}>›</button>
+              <button onClick={() => { const hoje = new Date(); setAgendaMes(hoje.toISOString().slice(0, 7)); setDiaSelecionado(hoje.toISOString().slice(0, 10)) }} className="btn-action btn-ghost" style={{ fontSize: 13, padding: '5px 10px', marginLeft: 4 }}>Hoje</button>
             </div>
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7,1fr)', gap: 4, marginBottom: 4 }}>
               {['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'].map(d => (
-                <div key={d} style={{ textAlign: 'center', fontSize: 10, fontWeight: 700, color: '#7B8C88', textTransform: 'uppercase', letterSpacing: '.04em', padding: '2px 0' }}>{d}</div>
+                <div key={d} style={{ textAlign: 'center', fontSize: 12, fontWeight: 700, color: '#7B8C88', textTransform: 'uppercase', letterSpacing: '.04em', padding: '2px 0' }}>{d}</div>
               ))}
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7,1fr)', gap: 4 }}>
@@ -319,17 +319,17 @@ function CRMInner() {
                     opacity: cel.foraDoMes ? 0.5 : 1,
                     display: 'flex', flexDirection: 'column', gap: 3, transition: 'border-color .15s',
                   }}>
-                    <span style={{ fontSize: 11, fontWeight: isHoje ? 800 : 600, color: isHoje ? '#3D7A6E' : '#13201D' }}>{cel.dia}</span>
+                    <span style={{ fontSize: 13, fontWeight: isHoje ? 800 : 600, color: isHoje ? '#3D7A6E' : '#13201D' }}>{cel.dia}</span>
                     {evs.slice(0, 2).map(a => (
                       <div key={a.id} title={a.titulo} style={{
-                        fontSize: 9, padding: '2px 5px', borderRadius: 5, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                        fontSize: 11, padding: '2px 5px', borderRadius: 5, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
                         background: a.status === 'cancelada' ? '#F4E4E1' : a.status === 'realizada' ? '#E9F0ED' : '#FBF3E4',
                         color: a.status === 'cancelada' ? '#B0413E' : '#13201D',
                       }}>
                         {a.hora_inicio ? `${a.hora_inicio.slice(0, 5)} ` : ''}{a.titulo}
                       </div>
                     ))}
-                    {evs.length > 2 && <span style={{ fontSize: 9, color: '#7B8C88', fontWeight: 600 }}>+{evs.length - 2} mais</span>}
+                    {evs.length > 2 && <span style={{ fontSize: 11, color: '#7B8C88', fontWeight: 600 }}>+{evs.length - 2} mais</span>}
                   </div>
                 )
               })}
@@ -339,29 +339,29 @@ function CRMInner() {
           {/* Painel do dia selecionado */}
           <div style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 12, padding: 14, position: 'sticky', top: 12 }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
-              <span style={{ fontSize: 12, fontWeight: 700, color: '#13201D' }}>
+              <span style={{ fontSize: 14, fontWeight: 700, color: '#13201D' }}>
                 {new Date(diaSelecionado + 'T12:00:00').toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'long' })}
               </span>
-              <button onClick={() => { setFormAtv(f => ({ ...f, data: diaSelecionado })); setShowAtv(true) }} title="Agendar nesse dia" style={{ width: 24, height: 24, borderRadius: 6, border: 'none', background: '#E9F0ED', color: '#3D7A6E', cursor: 'pointer', fontSize: 11 }}>
+              <button onClick={() => { setFormAtv(f => ({ ...f, data: diaSelecionado })); setShowAtv(true) }} title="Agendar nesse dia" style={{ width: 24, height: 24, borderRadius: 6, border: 'none', background: '#E9F0ED', color: '#3D7A6E', cursor: 'pointer', fontSize: 13 }}>
                 <i className="fa-solid fa-plus" />
               </button>
             </div>
             {(atividadesPorDia[diaSelecionado] || []).length === 0 && (
-              <div style={{ textAlign: 'center', padding: '24px 0', color: '#7B8C88', fontSize: 12 }}>
+              <div style={{ textAlign: 'center', padding: '24px 0', color: '#7B8C88', fontSize: 14 }}>
                 Nenhum compromisso.<br />
-                <button onClick={() => { setFormAtv(f => ({ ...f, data: diaSelecionado })); setShowAtv(true) }} style={{ color: '#3D7A6E', background: 'none', border: 'none', cursor: 'pointer', fontSize: 12, marginTop: 4 }}>Agendar →</button>
+                <button onClick={() => { setFormAtv(f => ({ ...f, data: diaSelecionado })); setShowAtv(true) }} style={{ color: '#3D7A6E', background: 'none', border: 'none', cursor: 'pointer', fontSize: 14, marginTop: 4 }}>Agendar →</button>
               </div>
             )}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               {(atividadesPorDia[diaSelecionado] || []).map(a => (
                 <div key={a.id} style={{ padding: '10px 10px', borderRadius: 9, background: '#fafafa', border: '0.5px solid #E4DCCC' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: 2 }}>
-                    <i className={`fa-solid ${TIPO_ICON[a.tipo] || 'fa-circle'}`} style={{ fontSize: 11, color: '#3D7A6E' }} />
-                    <p style={{ fontSize: 12, fontWeight: 700, color: '#13201D', margin: 0 }}>{a.titulo}</p>
+                    <i className={`fa-solid ${TIPO_ICON[a.tipo] || 'fa-circle'}`} style={{ fontSize: 13, color: '#3D7A6E' }} />
+                    <p style={{ fontSize: 14, fontWeight: 700, color: '#13201D', margin: 0 }}>{a.titulo}</p>
                   </div>
-                  {a.hora_inicio && <p style={{ fontSize: 10.5, color: '#7B8C88', margin: '1px 0' }}>{a.hora_inicio.slice(0, 5)}{a.hora_fim ? ` – ${a.hora_fim.slice(0, 5)}` : ''}{a.local ? ` · ${a.local}` : ''}</p>}
-                  {a.clientes && <p style={{ fontSize: 10.5, color: '#3D7A6E', margin: '2px 0 0' }}>{a.clientes.nome}</p>}
-                  <select value={a.status} onChange={e => void marcarAtividade(a.id, e.target.value)} style={{ fontSize: 9, padding: '2px 6px', borderRadius: 6, border: '0.5px solid #E4DCCC', color: a.status === 'realizada' ? '#3D7A6E' : '#7B8C88', marginTop: 6 }}>
+                  {a.hora_inicio && <p style={{ fontSize: 12.5, color: '#7B8C88', margin: '1px 0' }}>{a.hora_inicio.slice(0, 5)}{a.hora_fim ? ` – ${a.hora_fim.slice(0, 5)}` : ''}{a.local ? ` · ${a.local}` : ''}</p>}
+                  {a.clientes && <p style={{ fontSize: 12.5, color: '#3D7A6E', margin: '2px 0 0' }}>{a.clientes.nome}</p>}
+                  <select value={a.status} onChange={e => void marcarAtividade(a.id, e.target.value)} style={{ fontSize: 11, padding: '2px 6px', borderRadius: 6, border: '0.5px solid #E4DCCC', color: a.status === 'realizada' ? '#3D7A6E' : '#7B8C88', marginTop: 6 }}>
                     <option value="pendente">Pendente</option>
                     <option value="realizada">Realizada</option>
                     <option value="cancelada">Cancelada</option>
@@ -392,18 +392,18 @@ function CRMInner() {
                 {atividades.length === 0 && <tr><td colSpan={6} style={{ textAlign: 'center', padding: '32px 0', color: '#7B8C88' }}>Nenhuma atividade.</td></tr>}
                 {atividades.slice(0, 50).map(a => (
                   <tr key={a.id} style={{ opacity: a.status === 'cancelada' ? 0.5 : 1 }}>
-                    <td style={{ fontFamily: "var(--font-sans)", fontSize: 11 }}>{new Date(a.data + 'T12:00:00').toLocaleDateString('pt-BR')}</td>
+                    <td style={{ fontFamily: "var(--font-sans)", fontSize: 13 }}>{new Date(a.data + 'T12:00:00').toLocaleDateString('pt-BR')}</td>
                     <td>
-                      <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 11 }}>
-                        <i className={`fa-solid ${TIPO_ICON[a.tipo] || 'fa-circle'}`} style={{ color: '#3D7A6E', fontSize: 10 }} />
+                      <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 13 }}>
+                        <i className={`fa-solid ${TIPO_ICON[a.tipo] || 'fa-circle'}`} style={{ color: '#3D7A6E', fontSize: 12 }} />
                         {TIPO_ATI.find(t => t.v === a.tipo)?.l || a.tipo}
                       </span>
                     </td>
-                    <td style={{ fontWeight: 600, fontSize: 12 }}>{a.titulo}</td>
-                    <td style={{ fontSize: 11, color: '#3D7A6E' }}>{a.clientes?.nome || '—'}</td>
-                    <td style={{ fontSize: 11, color: '#7B8C88' }}>{a.responsavel_nome || '—'}</td>
+                    <td style={{ fontWeight: 600, fontSize: 14 }}>{a.titulo}</td>
+                    <td style={{ fontSize: 13, color: '#3D7A6E' }}>{a.clientes?.nome || '—'}</td>
+                    <td style={{ fontSize: 13, color: '#7B8C88' }}>{a.responsavel_nome || '—'}</td>
                     <td style={{ textAlign: 'center' }}>
-                      <select value={a.status} onChange={e => void marcarAtividade(a.id, e.target.value)} style={{ fontSize: 9, padding: '2px 6px', borderRadius: 20, border: '1px solid', background: a.status === 'realizada' ? 'rgba(61,122,110,.1)' : a.status === 'cancelada' ? 'rgba(176,65,62,.1)' : '#E4DCCC', color: a.status === 'realizada' ? '#3D7A6E' : a.status === 'cancelada' ? '#B0413E' : '#7B8C88', borderColor: 'transparent', cursor: 'pointer' }}>
+                      <select value={a.status} onChange={e => void marcarAtividade(a.id, e.target.value)} style={{ fontSize: 11, padding: '2px 6px', borderRadius: 20, border: '1px solid', background: a.status === 'realizada' ? 'rgba(61,122,110,.1)' : a.status === 'cancelada' ? 'rgba(176,65,62,.1)' : '#E4DCCC', color: a.status === 'realizada' ? '#3D7A6E' : a.status === 'cancelada' ? '#B0413E' : '#7B8C88', borderColor: 'transparent', cursor: 'pointer' }}>
                         <option value="pendente">Pendente</option>
                         <option value="realizada">Realizada</option>
                         <option value="cancelada">Cancelada</option>
@@ -454,7 +454,7 @@ function CRMInner() {
             {/* Tipo seletor */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 6, marginBottom: 16 }}>
               {TIPO_ATI.map(t => (
-                <button key={t.v} type="button" onClick={() => setFormAtv(f => ({ ...f, tipo: t.v }))} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, padding: '8px 4px', borderRadius: 8, border: formAtv.tipo === t.v ? '2px solid #3D7A6E' : '0.5px solid #E4DCCC', background: formAtv.tipo === t.v ? 'rgba(61,122,110,.06)' : '#fafafa', cursor: 'pointer', fontSize: 10, fontWeight: 600, color: formAtv.tipo === t.v ? '#3D7A6E' : '#7B8C88' }}>
+                <button key={t.v} type="button" onClick={() => setFormAtv(f => ({ ...f, tipo: t.v }))} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, padding: '8px 4px', borderRadius: 8, border: formAtv.tipo === t.v ? '2px solid #3D7A6E' : '0.5px solid #E4DCCC', background: formAtv.tipo === t.v ? 'rgba(61,122,110,.06)' : '#fafafa', cursor: 'pointer', fontSize: 12, fontWeight: 600, color: formAtv.tipo === t.v ? '#3D7A6E' : '#7B8C88' }}>
                   <i className={`fa-solid ${t.i}`} style={{ fontSize: 15 }} />{t.l}
                 </button>
               ))}
@@ -481,8 +481,8 @@ function CRMInner() {
           <div style={{ background: '#E9F0ED', border: '0.5px solid #3D7A6E', borderRadius: 12, padding: '12px 16px', display: 'flex', gap: 10, alignItems: 'flex-start' }}>
             <i className="fa-solid fa-robot" style={{ fontSize: 16, color: '#3D7A6E', marginTop: 1 }} />
             <div>
-              <div style={{ fontSize: 12, fontWeight: 700, color: '#13201D', marginBottom: 3 }}>Automações de follow-up com FactorOne AI</div>
-              <div style={{ fontSize: 11, color: '#7B8C88', lineHeight: 1.6 }}>Configure gatilhos automáticos para follow-up de oportunidades, lembretes de atividades e alertas de pipeline estagnado.</div>
+              <div style={{ fontSize: 14, fontWeight: 700, color: '#13201D', marginBottom: 3 }}>Automações de follow-up com FactorOne AI</div>
+              <div style={{ fontSize: 13, color: '#7B8C88', lineHeight: 1.6 }}>Configure gatilhos automáticos para follow-up de oportunidades, lembretes de atividades e alertas de pipeline estagnado.</div>
             </div>
           </div>
 
@@ -500,31 +500,31 @@ function CRMInner() {
               </div>
               <div style={{ flex: 1 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 4 }}>
-                  <div style={{ fontSize: 13, fontWeight: 700, color: '#13201D' }}>{auto.titulo}</div>
-                  <span style={{ fontSize: 9, fontWeight: 700, padding: '2px 8px', borderRadius: 20, background: auto.ativo ? '#E9F0ED' : '#F1ECE1', color: auto.ativo ? '#2B564D' : '#7B8C88' }}>
+                  <div style={{ fontSize: 15, fontWeight: 700, color: '#13201D' }}>{auto.titulo}</div>
+                  <span style={{ fontSize: 11, fontWeight: 700, padding: '2px 8px', borderRadius: 20, background: auto.ativo ? '#E9F0ED' : '#F1ECE1', color: auto.ativo ? '#2B564D' : '#7B8C88' }}>
                     {auto.ativo ? '● ATIVO' : '○ INATIVO'}
                   </span>
                 </div>
-                <div style={{ fontSize: 11, color: '#7B8C88', marginBottom: 8, lineHeight: 1.5 }}>{auto.desc}</div>
+                <div style={{ fontSize: 13, color: '#7B8C88', marginBottom: 8, lineHeight: 1.5 }}>{auto.desc}</div>
                 <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                  <span style={{ fontSize: 10, padding: '3px 9px', borderRadius: 20, background: '#F3ECDA', color: '#B08A3E', fontWeight: 600 }}>
-                    <i className="fa-solid fa-bolt" style={{ marginRight: 4, fontSize: 9 }} />{auto.gatilho}
+                  <span style={{ fontSize: 12, padding: '3px 9px', borderRadius: 20, background: '#F3ECDA', color: '#B08A3E', fontWeight: 600 }}>
+                    <i className="fa-solid fa-bolt" style={{ marginRight: 4, fontSize: 11 }} />{auto.gatilho}
                   </span>
-                  <span style={{ fontSize: 10, padding: '3px 9px', borderRadius: 20, background: '#E9F0ED', color: '#2B564D', fontWeight: 600 }}>
-                    <i className="fa-solid fa-arrow-right" style={{ marginRight: 4, fontSize: 9 }} />{auto.acao}
+                  <span style={{ fontSize: 12, padding: '3px 9px', borderRadius: 20, background: '#E9F0ED', color: '#2B564D', fontWeight: 600 }}>
+                    <i className="fa-solid fa-arrow-right" style={{ marginRight: 4, fontSize: 11 }} />{auto.acao}
                   </span>
                 </div>
               </div>
               <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
-                <button style={{ fontSize: 11, padding: '5px 12px', borderRadius: 7, border: '0.5px solid #E4DCCC', background: '#fff', color: '#7B8C88', cursor: 'pointer', fontWeight: 600 }}>Editar</button>
-                <button style={{ fontSize: 11, padding: '5px 12px', borderRadius: 7, border: 'none', background: auto.ativo ? '#F4E4E1' : '#E9F0ED', color: auto.ativo ? '#B0413E' : '#2B564D', cursor: 'pointer', fontWeight: 700 }}>
+                <button style={{ fontSize: 13, padding: '5px 12px', borderRadius: 7, border: '0.5px solid #E4DCCC', background: '#fff', color: '#7B8C88', cursor: 'pointer', fontWeight: 600 }}>Editar</button>
+                <button style={{ fontSize: 13, padding: '5px 12px', borderRadius: 7, border: 'none', background: auto.ativo ? '#F4E4E1' : '#E9F0ED', color: auto.ativo ? '#B0413E' : '#2B564D', cursor: 'pointer', fontWeight: 700 }}>
                   {auto.ativo ? 'Pausar' : 'Ativar'}
                 </button>
               </div>
             </div>
           ))}
 
-          <button style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '12px 16px', borderRadius: 12, border: '1.5px dashed #D1D9D8', background: '#FBF8F1', color: '#7B8C88', cursor: 'pointer', fontSize: 12, fontWeight: 600, width: '100%', justifyContent: 'center' }}>
+          <button style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '12px 16px', borderRadius: 12, border: '1.5px dashed #D1D9D8', background: '#FBF8F1', color: '#7B8C88', cursor: 'pointer', fontSize: 14, fontWeight: 600, width: '100%', justifyContent: 'center' }}>
             <i className="fa-solid fa-plus" />Nova automação
           </button>
         </div>
@@ -545,7 +545,7 @@ function CRMInner() {
                 Analisando pipeline com FactorOne IA...
               </div>
             ) : (
-              <div style={{ fontSize: 13, lineHeight: 1.7, color: '#13201D', whiteSpace: 'pre-wrap' }}>
+              <div style={{ fontSize: 15, lineHeight: 1.7, color: '#13201D', whiteSpace: 'pre-wrap' }}>
                 {insightText}
               </div>
             )}
@@ -561,7 +561,7 @@ function CRMInner() {
 
 export default function CRMPage() {
   return (
-    <Suspense fallback={<div style={{ padding: 32, color: '#7B8C88', fontSize: 13 }}>Carregando…</div>}>
+    <Suspense fallback={<div style={{ padding: 32, color: '#7B8C88', fontSize: 15 }}>Carregando…</div>}>
       <CRMInner />
     </Suspense>
   )

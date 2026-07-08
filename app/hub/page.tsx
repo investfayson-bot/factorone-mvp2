@@ -67,7 +67,7 @@ export default function HubHomePage() {
                 <i className={`fa-solid ${k.icon}`} style={{ fontSize: 14, color: k.cor }} />
               </div>
               <div style={{ fontSize: 22, fontWeight: 800, color: 'var(--navy)', fontFamily: "var(--font-sans)" }}>{k.value}</div>
-              <div style={{ fontSize: 11, color: 'var(--gray-400)', fontWeight: 600 }}>{k.label}</div>
+              <div style={{ fontSize: 13, color: 'var(--gray-400)', fontWeight: 600 }}>{k.label}</div>
             </div>
           </Link>
         ))}
@@ -77,17 +77,17 @@ export default function HubHomePage() {
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
         {/* Squad */}
         <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: 16 }}>
-          <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--navy)', marginBottom: 14 }}>
+          <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--navy)', marginBottom: 14 }}>
             Squad FactorOne AI
-            <Link href="/hub/agentes" style={{ float: 'right', fontSize: 11, color: 'var(--teal)', textDecoration: 'none', fontWeight: 600 }}>Abrir chat</Link>
+            <Link href="/hub/agentes" style={{ float: 'right', fontSize: 13, color: 'var(--teal)', textDecoration: 'none', fontWeight: 600 }}>Abrir chat</Link>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             {AGENTES.map((a) => (
               <Link key={a.id} href="/hub/agentes" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 10 }}>
-                <div style={{ width: 30, height: 30, borderRadius: 7, background: a.cor, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, fontWeight: 800, flexShrink: 0 }}>{a.inicial}</div>
+                <div style={{ width: 30, height: 30, borderRadius: 7, background: a.cor, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 800, flexShrink: 0 }}>{a.inicial}</div>
                 <div>
-                  <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--navy)' }}>{a.nome}</div>
-                  <div style={{ fontSize: 10.5, color: 'var(--gray-400)' }}>{a.especialidade}</div>
+                  <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--navy)' }}>{a.nome}</div>
+                  <div style={{ fontSize: 12.5, color: 'var(--gray-400)' }}>{a.especialidade}</div>
                 </div>
               </Link>
             ))}
@@ -96,21 +96,21 @@ export default function HubHomePage() {
 
         {/* Uso de tokens */}
         <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: 16 }}>
-          <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--navy)', marginBottom: 14 }}>
+          <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--navy)', marginBottom: 14 }}>
             Consumo por Agente
-            <Link href="/hub/uso" style={{ float: 'right', fontSize: 11, color: 'var(--teal)', textDecoration: 'none', fontWeight: 600 }}>Ver detalhes</Link>
+            <Link href="/hub/uso" style={{ float: 'right', fontSize: 13, color: 'var(--teal)', textDecoration: 'none', fontWeight: 600 }}>Ver detalhes</Link>
           </div>
           {uso.length === 0 ? (
-            <div style={{ fontSize: 12, color: 'var(--gray-400)', padding: '20px 0', textAlign: 'center' }}>Nenhuma conversa ainda. Converse com um agente para ver o consumo.</div>
+            <div style={{ fontSize: 14, color: 'var(--gray-400)', padding: '20px 0', textAlign: 'center' }}>Nenhuma conversa ainda. Converse com um agente para ver o consumo.</div>
           ) : uso.map((row) => {
             const agente = AGENTES.find((a) => a.id === row.agente_id)
             if (!agente) return null
             return (
               <div key={row.agente_id} style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
-                <div style={{ width: 28, height: 28, borderRadius: 6, background: agente.cor, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 9, fontWeight: 800, flexShrink: 0 }}>{agente.inicial}</div>
+                <div style={{ width: 28, height: 28, borderRadius: 6, background: agente.cor, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 800, flexShrink: 0 }}>{agente.inicial}</div>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--navy)' }}>{agente.nome}</div>
-                  <div style={{ fontSize: 10.5, color: 'var(--gray-400)', fontFamily: "var(--font-sans)" }}>
+                  <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--navy)' }}>{agente.nome}</div>
+                  <div style={{ fontSize: 12.5, color: 'var(--gray-400)', fontFamily: "var(--font-sans)" }}>
                     {row.total_tokens.toLocaleString('pt-BR')} tokens · ${Number(row.custo_usd).toFixed(4)}
                   </div>
                 </div>

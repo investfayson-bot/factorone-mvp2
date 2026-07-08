@@ -301,7 +301,7 @@ export default function DashboardPage() {
               { key: 'ano', label: 'Ano' },
             ] as { key: typeof periodo; label: string }[]).map(p => (
               <button key={p.key} onClick={() => setPeriodo(p.key)} style={{
-                fontSize: 11, fontWeight: periodo === p.key ? 700 : 500,
+                fontSize: 13, fontWeight: periodo === p.key ? 700 : 500,
                 padding: '5px 12px', borderRadius: 6, border: 'none', cursor: 'pointer',
                 background: periodo === p.key ? '#fff' : 'transparent',
                 color: periodo === p.key ? '#13201D' : '#7B8C88',
@@ -314,10 +314,10 @@ export default function DashboardPage() {
           <div style={{ position: 'relative' }}>
             <button
               onClick={() => setShowExportMenu(m => !m)}
-              style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 14px', borderRadius: 8, border: '0.5px solid #E4DCCC', background: '#fff', color: '#3C4A46', fontSize: 11, fontWeight: 600, cursor: 'pointer' }}
+              style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 14px', borderRadius: 8, border: '0.5px solid #E4DCCC', background: '#fff', color: '#3C4A46', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}
             >
-              <i className="fa-solid fa-file-export" style={{ fontSize: 11 }} />Exportar
-              <i className="fa-solid fa-chevron-down" style={{ fontSize: 8, color: '#A6B0AC' }} />
+              <i className="fa-solid fa-file-export" style={{ fontSize: 13 }} />Exportar
+              <i className="fa-solid fa-chevron-down" style={{ fontSize: 11, color: '#A6B0AC' }} />
             </button>
             {showExportMenu && (
               <div style={{ position: 'absolute', top: 38, right: 0, background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 10, boxShadow: '0 8px 24px rgba(0,0,0,0.1)', zIndex: 100, minWidth: 180, overflow: 'hidden' }}>
@@ -331,11 +331,11 @@ export default function DashboardPage() {
                     const { baixarArquivo } = await import('@/lib/download-arquivo')
                     const r = await baixarArquivo(item.url, `${item.label.toLowerCase().replace(/ /g, '_')}.pdf`)
                     if ('erro' in r) { const { default: toast } = await import('react-hot-toast'); toast.error(r.erro) }
-                  }} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '9px 14px', width: '100%', border: 'none', background: 'transparent', cursor: 'pointer', fontSize: 12, color: '#13201D', textAlign: 'left', borderBottom: '0.5px solid #EFE9DC' }}
+                  }} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '9px 14px', width: '100%', border: 'none', background: 'transparent', cursor: 'pointer', fontSize: 14, color: '#13201D', textAlign: 'left', borderBottom: '0.5px solid #EFE9DC' }}
                     onMouseOver={e => (e.currentTarget.style.background = '#FBF8F1')}
                     onMouseOut={e => (e.currentTarget.style.background = 'transparent')}
                   >
-                    <i className={`fa-solid ${item.icon}`} style={{ color: item.color, fontSize: 12, width: 14 }} />
+                    <i className={`fa-solid ${item.icon}`} style={{ color: item.color, fontSize: 14, width: 14 }} />
                     {item.label}
                   </button>
                 ))}
@@ -345,8 +345,8 @@ export default function DashboardPage() {
 
           {/* Link AI */}
           <Link href="/dashboard/aicfo" style={{ textDecoration: 'none' }}>
-            <button style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 14px', borderRadius: 8, border: 'none', background: '#13201D', color: '#6FA595', fontSize: 11, fontWeight: 700, cursor: 'pointer' }}>
-              <i className="fa-solid fa-robot" style={{ fontSize: 11 }} />FactorOne AI
+            <button style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 14px', borderRadius: 8, border: 'none', background: '#13201D', color: '#6FA595', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
+              <i className="fa-solid fa-robot" style={{ fontSize: 13 }} />FactorOne AI
             </button>
           </Link>
         </div>
@@ -357,7 +357,7 @@ export default function DashboardPage() {
 
       {/* Atalhos (estilo QuickBooks Shortcuts) */}
       <div style={{ background: 'var(--surface)', border: '1px solid var(--line)', borderRadius: 12, padding: '16px 20px', marginBottom: 16, boxShadow: 'var(--shadow-card)' }}>
-        <div style={{ fontSize: 10, fontWeight: 600, color: 'var(--ink-mut)', textTransform: 'uppercase', letterSpacing: '.1em', marginBottom: 14 }}>Atalhos</div>
+        <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--ink-mut)', textTransform: 'uppercase', letterSpacing: '.1em', marginBottom: 14 }}>Atalhos</div>
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
           {[
             { icon: 'fa-layer-group', label: 'Classificar', href: '/dashboard/classificar' },
@@ -373,7 +373,7 @@ export default function DashboardPage() {
               <div style={{ width: 48, height: 48, borderRadius: '50%', border: '1.5px solid var(--sage)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <i className={`fa-solid ${a.icon}`} style={{ fontSize: 17, color: 'var(--sage-deep)' }} />
               </div>
-              <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--ink-soft)', textAlign: 'center', lineHeight: 1.3 }}>{a.label}</span>
+              <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--ink-soft)', textAlign: 'center', lineHeight: 1.3 }}>{a.label}</span>
             </Link>
           ))}
         </div>
@@ -393,10 +393,10 @@ export default function DashboardPage() {
               <i className="fa-solid fa-robot" style={{ color: '#fff', fontSize: 14 }} />
             </div>
             <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--sage-deep)', textTransform: 'uppercase', letterSpacing: '.1em', marginBottom: 3 }}>Insight da IA</div>
-              <div style={{ fontSize: 13, color: 'var(--ink)', lineHeight: 1.5 }}>{insight}</div>
+              <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--sage-deep)', textTransform: 'uppercase', letterSpacing: '.1em', marginBottom: 3 }}>Insight da IA</div>
+              <div style={{ fontSize: 15, color: 'var(--ink)', lineHeight: 1.5 }}>{insight}</div>
             </div>
-            <span style={{ fontSize: 12, color: 'var(--sage-deep)', fontWeight: 600, flexShrink: 0 }}>ver análise →</span>
+            <span style={{ fontSize: 14, color: 'var(--sage-deep)', fontWeight: 600, flexShrink: 0 }}>ver análise →</span>
           </div>
         </Link>
       )}
@@ -406,22 +406,22 @@ export default function DashboardPage() {
         <Link href="/dashboard/conta-pj" style={{ textDecoration: 'none' }}>
           <div style={{ background: 'var(--surface)', border: '1px solid var(--line)', borderRadius: 12, padding: '16px 20px', boxShadow: 'var(--shadow-card)', height: '100%' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-              <span style={{ fontSize: 10, fontWeight: 600, color: 'var(--ink-mut)', textTransform: 'uppercase', letterSpacing: '.1em' }}>Contas bancárias</span>
-              <i className="fa-solid fa-building-columns" style={{ color: 'var(--sage)', fontSize: 13 }} />
+              <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--ink-mut)', textTransform: 'uppercase', letterSpacing: '.1em' }}>Contas bancárias</span>
+              <i className="fa-solid fa-building-columns" style={{ color: 'var(--sage)', fontSize: 15 }} />
             </div>
-            <div style={{ fontSize: 11, color: 'var(--ink-mut)', marginBottom: 2 }}>Saldo total</div>
+            <div style={{ fontSize: 13, color: 'var(--ink-mut)', marginBottom: 2 }}>Saldo total</div>
             <div style={{ fontSize: 26, fontWeight: 700, color: 'var(--navy)', fontVariantNumeric: 'tabular-nums' }}>{fmtBRL(pendencias.saldoBanco)}</div>
           </div>
         </Link>
         <Link href="/dashboard/classificar" style={{ textDecoration: 'none' }}>
           <div style={{ background: 'var(--surface)', border: '1px solid var(--line)', borderRadius: 12, padding: '16px 20px', boxShadow: 'var(--shadow-card)', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ fontSize: 10, fontWeight: 600, color: 'var(--ink-mut)', textTransform: 'uppercase', letterSpacing: '.1em' }}>A classificar</span>
-              <i className="fa-solid fa-layer-group" style={{ color: aRevisar > 0 ? '#B0413E' : 'var(--sage)', fontSize: 13 }} />
+              <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--ink-mut)', textTransform: 'uppercase', letterSpacing: '.1em' }}>A classificar</span>
+              <i className="fa-solid fa-layer-group" style={{ color: aRevisar > 0 ? '#B0413E' : 'var(--sage)', fontSize: 15 }} />
             </div>
             <div>
               <div style={{ fontSize: 26, fontWeight: 700, color: aRevisar > 0 ? '#B0413E' : 'var(--sage)', fontVariantNumeric: 'tabular-nums' }}>{aRevisar}</div>
-              <div style={{ fontSize: 11.5, color: 'var(--sage-deep)', fontWeight: 600 }}>{aRevisar > 0 ? 'transações a revisar →' : 'tudo classificado ✓'}</div>
+              <div style={{ fontSize: 13.5, color: 'var(--sage-deep)', fontWeight: 600 }}>{aRevisar > 0 ? 'transações a revisar →' : 'tudo classificado ✓'}</div>
             </div>
           </div>
         </Link>
@@ -434,7 +434,7 @@ export default function DashboardPage() {
           <div className="kpi-lbl">
             Receita Mensal
             <div style={{ width: 28, height: 28, borderRadius: 8, background: '#E9F0ED', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <i className="fa-solid fa-arrow-trend-up" style={{ fontSize: 12, color: '#3D7A6E' }} />
+              <i className="fa-solid fa-arrow-trend-up" style={{ fontSize: 14, color: '#3D7A6E' }} />
             </div>
           </div>
           <div className="kpi-val">{fmtBRLCompact(kpiAtual.receita)}</div>
@@ -447,7 +447,7 @@ export default function DashboardPage() {
           <div className="kpi-lbl">
             Lucro Líquido
             <div style={{ width: 28, height: 28, borderRadius: 8, background: dreMes.liquido >= 0 ? '#E9F0ED' : '#F4E4E1', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <i className="fa-solid fa-chart-line" style={{ fontSize: 12, color: dreMes.liquido >= 0 ? '#3D7A6E' : '#B0413E' }} />
+              <i className="fa-solid fa-chart-line" style={{ fontSize: 14, color: dreMes.liquido >= 0 ? '#3D7A6E' : '#B0413E' }} />
             </div>
           </div>
           <div className="kpi-val">{fmtBRLCompact(dreMes.liquido)}</div>
@@ -461,7 +461,7 @@ export default function DashboardPage() {
           <div className="kpi-lbl">
             Fluxo 30 dias
             <div style={{ width: 28, height: 28, borderRadius: 8, background: fluxo30 >= 0 ? '#E9F0ED' : '#F3ECDA', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <i className="fa-solid fa-water" style={{ fontSize: 12, color: fluxo30 >= 0 ? '#3D7A6E' : '#B08A3E' }} />
+              <i className="fa-solid fa-water" style={{ fontSize: 14, color: fluxo30 >= 0 ? '#3D7A6E' : '#B08A3E' }} />
             </div>
           </div>
           <div className="kpi-val">{fmtBRLCompact(fluxo30)}</div>
@@ -472,7 +472,7 @@ export default function DashboardPage() {
           <div className="kpi-lbl">
             Runway
             <div style={{ width: 28, height: 28, borderRadius: 8, background: runway != null && runway < 90 ? '#F3ECDA' : '#E9F0ED', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <i className="fa-solid fa-gauge-high" style={{ fontSize: 12, color: runway != null && runway < 90 ? '#B08A3E' : '#3D7A6E' }} />
+              <i className="fa-solid fa-gauge-high" style={{ fontSize: 14, color: runway != null && runway < 90 ? '#B08A3E' : '#3D7A6E' }} />
             </div>
           </div>
           <div className="kpi-val">{runway != null ? `${runway > 30 ? Math.round(runway / 30) + ' meses' : runway + ' dias'}` : '—'}</div>
@@ -488,36 +488,36 @@ export default function DashboardPage() {
           {pendencias.aprovacoes > 0 && (
             <Link href="/dashboard/aprovacoes" style={{ textDecoration: 'none', flex: 1, minWidth: 180 }}>
               <div style={{ background: 'rgba(176,138,62,.06)', border: '1px solid rgba(176,138,62,.25)', borderRadius: 12, padding: '12px 16px', cursor: 'pointer' }}>
-                <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--gold)', letterSpacing: '.08em', textTransform: 'uppercase', marginBottom: 4 }}>Aprovações pendentes</div>
+                <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--gold)', letterSpacing: '.08em', textTransform: 'uppercase', marginBottom: 4 }}>Aprovações pendentes</div>
                 <div style={{ fontSize: 22, fontWeight: 800, color: 'var(--navy)' }}>{pendencias.aprovacoes}</div>
-                <div style={{ fontSize: 11, color: 'var(--gray-400)', marginTop: 2 }}>despesas aguardando → aprovar</div>
+                <div style={{ fontSize: 13, color: 'var(--gray-400)', marginTop: 2 }}>despesas aguardando → aprovar</div>
               </div>
             </Link>
           )}
           {pendencias.reembolsos > 0 && (
             <Link href="/dashboard/reembolsos" style={{ textDecoration: 'none', flex: 1, minWidth: 180 }}>
               <div style={{ background: 'rgba(61,122,110,.06)', border: '1px solid rgba(61,122,110,.25)', borderRadius: 12, padding: '12px 16px', cursor: 'pointer' }}>
-                <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--teal2)', letterSpacing: '.08em', textTransform: 'uppercase', marginBottom: 4 }}>Reembolsos pendentes</div>
+                <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--teal2)', letterSpacing: '.08em', textTransform: 'uppercase', marginBottom: 4 }}>Reembolsos pendentes</div>
                 <div style={{ fontSize: 22, fontWeight: 800, color: 'var(--navy)' }}>{pendencias.reembolsos}</div>
-                <div style={{ fontSize: 11, color: 'var(--gray-400)', marginTop: 2 }}>{fmtBRLCompact(pendencias.valorReembolsos)} a aprovar</div>
+                <div style={{ fontSize: 13, color: 'var(--gray-400)', marginTop: 2 }}>{fmtBRLCompact(pendencias.valorReembolsos)} a aprovar</div>
               </div>
             </Link>
           )}
           {pendencias.dasDias !== null && pendencias.dasDias <= 10 && (
             <Link href="/contabilidade" style={{ textDecoration: 'none', flex: 1, minWidth: 180 }}>
               <div style={{ background: pendencias.dasDias <= 3 ? 'rgba(176,65,62,.06)' : 'rgba(176,138,62,.06)', border: `1px solid ${pendencias.dasDias <= 3 ? 'rgba(176,65,62,.25)' : 'rgba(176,138,62,.25)'}`, borderRadius: 12, padding: '12px 16px', cursor: 'pointer' }}>
-                <div style={{ fontSize: 10, fontWeight: 700, color: pendencias.dasDias <= 3 ? 'var(--red)' : 'var(--gold)', letterSpacing: '.08em', textTransform: 'uppercase', marginBottom: 4 }}>DAS vence em {pendencias.dasDias}d</div>
+                <div style={{ fontSize: 12, fontWeight: 700, color: pendencias.dasDias <= 3 ? 'var(--red)' : 'var(--gold)', letterSpacing: '.08em', textTransform: 'uppercase', marginBottom: 4 }}>DAS vence em {pendencias.dasDias}d</div>
                 <div style={{ fontSize: 22, fontWeight: 800, color: 'var(--navy)' }}>{pendencias.dasValor ? fmtBRLCompact(pendencias.dasValor) : '—'}</div>
-                <div style={{ fontSize: 11, color: 'var(--gray-400)', marginTop: 2 }}>Simples Nacional · ver detalhes</div>
+                <div style={{ fontSize: 13, color: 'var(--gray-400)', marginTop: 2 }}>Simples Nacional · ver detalhes</div>
               </div>
             </Link>
           )}
           {pendencias.saldoBanco > 0 && (
             <Link href="/dashboard/cashflow" style={{ textDecoration: 'none', flex: 1, minWidth: 180 }}>
               <div style={{ background: 'rgba(61,122,110,.06)', border: '1px solid rgba(61,122,110,.2)', borderRadius: 12, padding: '12px 16px', cursor: 'pointer' }}>
-                <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--green)', letterSpacing: '.08em', textTransform: 'uppercase', marginBottom: 4 }}>Saldo bancário</div>
+                <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--green)', letterSpacing: '.08em', textTransform: 'uppercase', marginBottom: 4 }}>Saldo bancário</div>
                 <div style={{ fontSize: 22, fontWeight: 800, color: 'var(--navy)' }}>{fmtBRLCompact(pendencias.saldoBanco)}</div>
-                <div style={{ fontSize: 11, color: 'var(--gray-400)', marginTop: 2 }}>conta principal</div>
+                <div style={{ fontSize: 13, color: 'var(--gray-400)', marginTop: 2 }}>conta principal</div>
               </div>
             </Link>
           )}
@@ -532,22 +532,22 @@ export default function DashboardPage() {
               <i className="fa-solid fa-landmark" style={{ color: '#fff', fontSize: 15 }} />
             </div>
             <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--gray-400)', letterSpacing: '.08em', textTransform: 'uppercase', marginBottom: 3 }}>Patrimônio & Ativos</div>
+              <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--gray-400)', letterSpacing: '.08em', textTransform: 'uppercase', marginBottom: 3 }}>Patrimônio & Ativos</div>
               <div style={{ display: 'flex', gap: 20, flexWrap: 'wrap', alignItems: 'center' }}>
-                <div style={{ fontSize: 12 }}><span style={{ color: 'var(--gray-400)' }}>Total: </span><span style={{ fontWeight: 700 }}>{patWidget.total} ativos</span></div>
-                <div style={{ fontSize: 12 }}><span style={{ color: 'var(--gray-400)' }}>Contábil: </span><span style={{ fontWeight: 700, color: 'var(--teal)' }}>{fmtBRLCompact(patWidget.valorContabil)}</span></div>
-                <div style={{ fontSize: 12 }}><span style={{ color: 'var(--gray-400)' }}>Deprec./mês: </span><span style={{ fontWeight: 700, color: 'var(--red)' }}>{fmtBRLCompact(patWidget.depMes)}</span></div>
-                {patWidget.frota > 0 && <div style={{ fontSize: 12 }}><i className="fa-solid fa-truck" style={{ color: 'var(--gray-400)', marginRight: 4, fontSize: 10 }} /><span style={{ fontWeight: 700 }}>{patWidget.frota}</span></div>}
-                {patWidget.maquinas > 0 && <div style={{ fontSize: 12 }}><i className="fa-solid fa-gear" style={{ color: 'var(--gray-400)', marginRight: 4, fontSize: 10 }} /><span style={{ fontWeight: 700 }}>{patWidget.maquinas}</span></div>}
-                {patWidget.imoveis > 0 && <div style={{ fontSize: 12 }}><i className="fa-solid fa-building" style={{ color: 'var(--gray-400)', marginRight: 4, fontSize: 10 }} /><span style={{ fontWeight: 700 }}>{patWidget.imoveis}</span></div>}
+                <div style={{ fontSize: 14 }}><span style={{ color: 'var(--gray-400)' }}>Total: </span><span style={{ fontWeight: 700 }}>{patWidget.total} ativos</span></div>
+                <div style={{ fontSize: 14 }}><span style={{ color: 'var(--gray-400)' }}>Contábil: </span><span style={{ fontWeight: 700, color: 'var(--teal)' }}>{fmtBRLCompact(patWidget.valorContabil)}</span></div>
+                <div style={{ fontSize: 14 }}><span style={{ color: 'var(--gray-400)' }}>Deprec./mês: </span><span style={{ fontWeight: 700, color: 'var(--red)' }}>{fmtBRLCompact(patWidget.depMes)}</span></div>
+                {patWidget.frota > 0 && <div style={{ fontSize: 14 }}><i className="fa-solid fa-truck" style={{ color: 'var(--gray-400)', marginRight: 4, fontSize: 12 }} /><span style={{ fontWeight: 700 }}>{patWidget.frota}</span></div>}
+                {patWidget.maquinas > 0 && <div style={{ fontSize: 14 }}><i className="fa-solid fa-gear" style={{ color: 'var(--gray-400)', marginRight: 4, fontSize: 12 }} /><span style={{ fontWeight: 700 }}>{patWidget.maquinas}</span></div>}
+                {patWidget.imoveis > 0 && <div style={{ fontSize: 14 }}><i className="fa-solid fa-building" style={{ color: 'var(--gray-400)', marginRight: 4, fontSize: 12 }} /><span style={{ fontWeight: 700 }}>{patWidget.imoveis}</span></div>}
               </div>
             </div>
             {patWidget.alertas > 0 && (
-              <div style={{ background: 'rgba(239,68,68,.1)', color: 'var(--red)', borderRadius: 8, padding: '4px 10px', fontSize: 11, fontWeight: 700, flexShrink: 0 }}>
+              <div style={{ background: 'rgba(239,68,68,.1)', color: 'var(--red)', borderRadius: 8, padding: '4px 10px', fontSize: 13, fontWeight: 700, flexShrink: 0 }}>
                 <i className="fa-solid fa-triangle-exclamation" style={{ marginRight: 4 }} />{patWidget.alertas} alerta{patWidget.alertas > 1 ? 's' : ''}
               </div>
             )}
-            <div style={{ color: 'var(--teal)', fontSize: 13, fontWeight: 600, flexShrink: 0 }}>→</div>
+            <div style={{ color: 'var(--teal)', fontSize: 15, fontWeight: 600, flexShrink: 0 }}>→</div>
           </div>
         </Link>
       )}
@@ -561,14 +561,14 @@ export default function DashboardPage() {
             </div>
             <div style={{ flex: 1, display: 'flex', gap: 28, flexWrap: 'wrap', alignItems: 'center' }}>
               <div>
-                <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.07em' }}>Clientes</div>
+                <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.07em' }}>Clientes</div>
                 <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--navy)' }}>{clientesWidget.total}</div>
               </div>
-              <div><div style={{ fontSize: 10, color: 'var(--gray-400)' }}>Ativos</div><div style={{ fontWeight: 700, color: 'var(--green)' }}>{clientesWidget.ativos}</div></div>
-              <div><div style={{ fontSize: 10, color: 'var(--gray-400)' }}>Prospects</div><div style={{ fontWeight: 700, color: 'var(--gold)' }}>{clientesWidget.prospects}</div></div>
-              <div><div style={{ fontSize: 10, color: 'var(--gray-400)' }}>MRR Contratos</div><div style={{ fontWeight: 700, color: 'var(--teal)', fontFamily: "var(--font-sans)" }}>{fmtBRLCompact(clientesWidget.mrr)}</div></div>
+              <div><div style={{ fontSize: 12, color: 'var(--gray-400)' }}>Ativos</div><div style={{ fontWeight: 700, color: 'var(--green)' }}>{clientesWidget.ativos}</div></div>
+              <div><div style={{ fontSize: 12, color: 'var(--gray-400)' }}>Prospects</div><div style={{ fontWeight: 700, color: 'var(--gold)' }}>{clientesWidget.prospects}</div></div>
+              <div><div style={{ fontSize: 12, color: 'var(--gray-400)' }}>MRR Contratos</div><div style={{ fontWeight: 700, color: 'var(--teal)', fontFamily: "var(--font-sans)" }}>{fmtBRLCompact(clientesWidget.mrr)}</div></div>
             </div>
-            <div style={{ color: 'var(--teal)', fontSize: 13, fontWeight: 600 }}>→</div>
+            <div style={{ color: 'var(--teal)', fontSize: 15, fontWeight: 600 }}>→</div>
           </div>
         </Link>
       )}
@@ -582,26 +582,26 @@ export default function DashboardPage() {
               <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: '14px 16px', cursor: 'pointer', height: '100%' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
                   <div style={{ width: 28, height: 28, borderRadius: 8, background: '#ECE7F2', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <i className="fa-solid fa-handshake" style={{ color: '#7A6A9E', fontSize: 12 }} />
+                    <i className="fa-solid fa-handshake" style={{ color: '#7A6A9E', fontSize: 14 }} />
                   </div>
-                  <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.07em' }}>CRM</div>
-                  <span style={{ fontSize: 9, fontWeight: 700, padding: '1px 5px', borderRadius: 10, background: '#ECE7F2', color: '#7A6A9E', marginLeft: 'auto' }}>PLUS</span>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.07em' }}>CRM</div>
+                  <span style={{ fontSize: 11, fontWeight: 700, padding: '1px 5px', borderRadius: 10, background: '#ECE7F2', color: '#7A6A9E', marginLeft: 'auto' }}>PLUS</span>
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
                   <div>
-                    <div style={{ fontSize: 10, color: 'var(--gray-400)', marginBottom: 2 }}>Pipeline</div>
+                    <div style={{ fontSize: 12, color: 'var(--gray-400)', marginBottom: 2 }}>Pipeline</div>
                     <div style={{ fontSize: 16, fontWeight: 800, color: 'var(--navy)', fontFamily: "var(--font-sans)" }}>{fmtBRLCompact(crmWidget.pipeline)}</div>
                   </div>
                   <div>
-                    <div style={{ fontSize: 10, color: 'var(--gray-400)', marginBottom: 2 }}>Ganho</div>
+                    <div style={{ fontSize: 12, color: 'var(--gray-400)', marginBottom: 2 }}>Ganho</div>
                     <div style={{ fontSize: 16, fontWeight: 800, color: 'var(--green)', fontFamily: "var(--font-sans)" }}>{fmtBRLCompact(crmWidget.ganhaMes)}</div>
                   </div>
                   <div>
-                    <div style={{ fontSize: 10, color: 'var(--gray-400)', marginBottom: 2 }}>Oportunidades</div>
+                    <div style={{ fontSize: 12, color: 'var(--gray-400)', marginBottom: 2 }}>Oportunidades</div>
                     <div style={{ fontSize: 14, fontWeight: 700 }}>{crmWidget.abertas} abertas</div>
                   </div>
                   <div>
-                    <div style={{ fontSize: 10, color: 'var(--gray-400)', marginBottom: 2 }}>Atividades</div>
+                    <div style={{ fontSize: 12, color: 'var(--gray-400)', marginBottom: 2 }}>Atividades</div>
                     <div style={{ fontSize: 14, fontWeight: 700, color: crmWidget.ativPendentes > 0 ? 'var(--gold)' : 'var(--navy)' }}>
                       {crmWidget.ativPendentes} pend.
                     </div>
@@ -617,32 +617,32 @@ export default function DashboardPage() {
               <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: '14px 16px', cursor: 'pointer', height: '100%' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
                   <div style={{ width: 28, height: 28, borderRadius: 8, background: '#fef3c7', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <i className="fa-solid fa-bullhorn" style={{ color: 'var(--gold)', fontSize: 12 }} />
+                    <i className="fa-solid fa-bullhorn" style={{ color: 'var(--gold)', fontSize: 14 }} />
                   </div>
-                  <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.07em' }}>Marketing</div>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.07em' }}>Marketing</div>
                   {mktWidget.campanhasAtivas > 0 && (
-                    <span style={{ fontSize: 9, fontWeight: 700, padding: '1px 6px', borderRadius: 10, background: '#E9F0ED', color: 'var(--green)', marginLeft: 'auto' }}>
+                    <span style={{ fontSize: 11, fontWeight: 700, padding: '1px 6px', borderRadius: 10, background: '#E9F0ED', color: 'var(--green)', marginLeft: 'auto' }}>
                       {mktWidget.campanhasAtivas} ativa{mktWidget.campanhasAtivas > 1 ? 's' : ''}
                     </span>
                   )}
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
                   <div>
-                    <div style={{ fontSize: 10, color: 'var(--gray-400)', marginBottom: 2 }}>Investido</div>
+                    <div style={{ fontSize: 12, color: 'var(--gray-400)', marginBottom: 2 }}>Investido</div>
                     <div style={{ fontSize: 16, fontWeight: 800, color: 'var(--red)', fontFamily: "var(--font-sans)" }}>{fmtBRLCompact(mktWidget.gasto)}</div>
                   </div>
                   <div>
-                    <div style={{ fontSize: 10, color: 'var(--gray-400)', marginBottom: 2 }}>Receita</div>
+                    <div style={{ fontSize: 12, color: 'var(--gray-400)', marginBottom: 2 }}>Receita</div>
                     <div style={{ fontSize: 16, fontWeight: 800, color: 'var(--green)', fontFamily: "var(--font-sans)" }}>{fmtBRLCompact(mktWidget.receita)}</div>
                   </div>
                   <div>
-                    <div style={{ fontSize: 10, color: 'var(--gray-400)', marginBottom: 2 }}>ROAS</div>
+                    <div style={{ fontSize: 12, color: 'var(--gray-400)', marginBottom: 2 }}>ROAS</div>
                     <div style={{ fontSize: 14, fontWeight: 700, color: mktWidget.roas >= 3 ? 'var(--green)' : mktWidget.roas >= 1 ? 'var(--gold)' : 'var(--red)' }}>
                       {mktWidget.roas > 0 ? mktWidget.roas.toFixed(1) + 'x' : '—'}
                     </div>
                   </div>
                   <div>
-                    <div style={{ fontSize: 10, color: 'var(--gray-400)', marginBottom: 2 }}>Leads</div>
+                    <div style={{ fontSize: 12, color: 'var(--gray-400)', marginBottom: 2 }}>Leads</div>
                     <div style={{ fontSize: 14, fontWeight: 700 }}>{mktWidget.leads}</div>
                   </div>
                 </div>
@@ -656,32 +656,32 @@ export default function DashboardPage() {
               <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: '14px 16px', cursor: 'pointer', height: '100%' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
                   <div style={{ width: 28, height: 28, borderRadius: 8, background: '#E4EDEF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <i className="fa-solid fa-truck-fast" style={{ color: 'var(--teal)', fontSize: 12 }} />
+                    <i className="fa-solid fa-truck-fast" style={{ color: 'var(--teal)', fontSize: 14 }} />
                   </div>
-                  <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.07em' }}>Logística</div>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.07em' }}>Logística</div>
                   {logWidget.rotasAtivas > 0 && (
-                    <span style={{ fontSize: 9, fontWeight: 700, padding: '1px 6px', borderRadius: 10, background: '#E4EDEF', color: 'var(--teal)', marginLeft: 'auto' }}>
+                    <span style={{ fontSize: 11, fontWeight: 700, padding: '1px 6px', borderRadius: 10, background: '#E4EDEF', color: 'var(--teal)', marginLeft: 'auto' }}>
                       {logWidget.rotasAtivas} em trânsito
                     </span>
                   )}
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
                   <div>
-                    <div style={{ fontSize: 10, color: 'var(--gray-400)', marginBottom: 2 }}>Rec. Frete</div>
+                    <div style={{ fontSize: 12, color: 'var(--gray-400)', marginBottom: 2 }}>Rec. Frete</div>
                     <div style={{ fontSize: 16, fontWeight: 800, color: 'var(--teal)', fontFamily: "var(--font-sans)" }}>{fmtBRLCompact(logWidget.receitaFrete)}</div>
                   </div>
                   <div>
-                    <div style={{ fontSize: 10, color: 'var(--gray-400)', marginBottom: 2 }}>Entregues/mês</div>
+                    <div style={{ fontSize: 12, color: 'var(--gray-400)', marginBottom: 2 }}>Entregues/mês</div>
                     <div style={{ fontSize: 16, fontWeight: 800, color: 'var(--green)', fontFamily: "var(--font-sans)" }}>{logWidget.entreguesMes}</div>
                   </div>
                   <div>
-                    <div style={{ fontSize: 10, color: 'var(--gray-400)', marginBottom: 2 }}>Em trânsito</div>
+                    <div style={{ fontSize: 12, color: 'var(--gray-400)', marginBottom: 2 }}>Em trânsito</div>
                     <div style={{ fontSize: 14, fontWeight: 700 }}>{logWidget.rotasAtivas}</div>
                   </div>
                   <div>
-                    <div style={{ fontSize: 10, color: 'var(--gray-400)', marginBottom: 2 }}>Pneus alerta</div>
+                    <div style={{ fontSize: 12, color: 'var(--gray-400)', marginBottom: 2 }}>Pneus alerta</div>
                     <div style={{ fontSize: 14, fontWeight: 700, color: logWidget.pneusAlerta > 0 ? 'var(--red)' : 'var(--gray-400)' }}>
-                      {logWidget.pneusAlerta > 0 ? logWidget.pneusAlerta : '—'}{logWidget.pneusAlerta > 0 && <i className="fa-solid fa-triangle-exclamation" style={{ marginLeft: 4, fontSize: 10 }} />}
+                      {logWidget.pneusAlerta > 0 ? logWidget.pneusAlerta : '—'}{logWidget.pneusAlerta > 0 && <i className="fa-solid fa-triangle-exclamation" style={{ marginLeft: 4, fontSize: 12 }} />}
                     </div>
                   </div>
                 </div>
@@ -696,15 +696,15 @@ export default function DashboardPage() {
         <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: '14px 18px', marginBottom: 16 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 16, cursor: 'pointer' }} onClick={() => setScoreExpanded(v => !v)}>
             <div style={{ flex: 1 }}>
-              <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--gray-400)', letterSpacing: '.08em', textTransform: 'uppercase', fontFamily: "var(--font-sans)", marginBottom: 4 }}>
+              <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--gray-400)', letterSpacing: '.08em', textTransform: 'uppercase', fontFamily: "var(--font-sans)", marginBottom: 4 }}>
                 Score Financeiro FactorOne
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                 <div style={{ fontSize: 28, fontWeight: 800, color: score.total >= 700 ? 'var(--green)' : score.total >= 500 ? 'var(--gold)' : 'var(--red)', fontFamily: "var(--font-sans)" }}>
                   {score.total}
                 </div>
-                <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>/ 1000</div>
-                <div style={{ fontSize: 13, fontWeight: 700, padding: '2px 10px', borderRadius: 20, background: score.total >= 700 ? 'rgba(61,122,110,.12)' : score.total >= 500 ? 'rgba(176,138,62,.12)' : 'rgba(176,65,62,.12)', color: score.total >= 700 ? 'var(--green)' : score.total >= 500 ? 'var(--gold)' : 'var(--red)' }}>
+                <div style={{ fontSize: 13, color: 'var(--gray-400)' }}>/ 1000</div>
+                <div style={{ fontSize: 15, fontWeight: 700, padding: '2px 10px', borderRadius: 20, background: score.total >= 700 ? 'rgba(61,122,110,.12)' : score.total >= 500 ? 'rgba(176,138,62,.12)' : 'rgba(176,65,62,.12)', color: score.total >= 700 ? 'var(--green)' : score.total >= 500 ? 'var(--gold)' : 'var(--red)' }}>
                   {score.grade}
                 </div>
                 {/* Mini bar */}
@@ -713,7 +713,7 @@ export default function DashboardPage() {
                 </div>
               </div>
             </div>
-            <div style={{ fontSize: 11, color: 'var(--teal)', fontWeight: 600 }}>
+            <div style={{ fontSize: 13, color: 'var(--teal)', fontWeight: 600 }}>
               {scoreExpanded ? '▲ ocultar' : '▼ ver detalhes'}
             </div>
           </div>
@@ -722,7 +722,7 @@ export default function DashboardPage() {
             <div style={{ marginTop: 14, paddingTop: 14, borderTop: '1px solid var(--gray-100)', display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 10 }}>
               {score.componentes.map(c => (
                 <div key={c.nome} style={{ textAlign: 'center' }}>
-                  <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: 6 }}>{c.nome}</div>
+                  <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: 6 }}>{c.nome}</div>
                   <div style={{ position: 'relative', width: 52, height: 52, margin: '0 auto 6px' }}>
                     <svg viewBox="0 0 36 36" style={{ transform: 'rotate(-90deg)', width: 52, height: 52 }}>
                       <circle cx="18" cy="18" r="15.9155" fill="none" stroke="var(--gray-100)" strokeWidth="3" />
@@ -730,10 +730,10 @@ export default function DashboardPage() {
                         stroke={c.pontos >= 160 ? 'var(--green)' : c.pontos >= 100 ? 'var(--gold)' : 'var(--red)'}
                         strokeWidth="3" strokeDasharray={`${(c.pontos / c.max) * 100} 100`} strokeLinecap="round" />
                     </svg>
-                    <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 800, color: 'var(--navy)', fontFamily: "var(--font-sans)" }}>{c.pontos}</div>
+                    <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 800, color: 'var(--navy)', fontFamily: "var(--font-sans)" }}>{c.pontos}</div>
                   </div>
-                  <div style={{ fontSize: 11, color: 'var(--navy)', fontWeight: 600, marginBottom: 2 }}>{c.descricao}</div>
-                  <div style={{ fontSize: 10, color: c.detalhe === 'Atenção' || c.detalhe === 'Queda' || c.detalhe === 'Baixo' || c.detalhe === 'Negativa' ? 'var(--red)' : 'var(--gray-400)' }}>
+                  <div style={{ fontSize: 13, color: 'var(--navy)', fontWeight: 600, marginBottom: 2 }}>{c.descricao}</div>
+                  <div style={{ fontSize: 12, color: c.detalhe === 'Atenção' || c.detalhe === 'Queda' || c.detalhe === 'Baixo' || c.detalhe === 'Negativa' ? 'var(--red)' : 'var(--gray-400)' }}>
                     {c.detalhe}
                   </div>
                 </div>
@@ -749,11 +749,11 @@ export default function DashboardPage() {
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
             <div>
               <div className="chart-title">Entradas vs Saídas</div>
-              <div style={{ fontSize: 10, color: '#7B8C88', marginTop: 2 }}>Últimos 6 meses</div>
+              <div style={{ fontSize: 12, color: '#7B8C88', marginTop: 2 }}>Últimos 6 meses</div>
             </div>
             <div style={{ display: 'flex', gap: 12 }}>
-              <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 10, color: '#3C4A46' }}><span style={{ width: 8, height: 8, borderRadius: 2, background: '#3D7A6E', display: 'inline-block' }} />Entradas</span>
-              <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 10, color: '#3C4A46' }}><span style={{ width: 8, height: 8, borderRadius: 2, background: '#B0413E', display: 'inline-block' }} />Saídas</span>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 12, color: '#3C4A46' }}><span style={{ width: 8, height: 8, borderRadius: 2, background: '#3D7A6E', display: 'inline-block' }} />Entradas</span>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 12, color: '#3C4A46' }}><span style={{ width: 8, height: 8, borderRadius: 2, background: '#B0413E', display: 'inline-block' }} />Saídas</span>
             </div>
           </div>
           <DashboardErrorBoundary title="Gráfico">
@@ -764,9 +764,9 @@ export default function DashboardPage() {
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
             <div>
               <div className="chart-title">Receita vs Despesas</div>
-              <div style={{ fontSize: 10, color: '#7B8C88', marginTop: 2 }}>Atual vs mês anterior</div>
+              <div style={{ fontSize: 12, color: '#7B8C88', marginTop: 2 }}>Atual vs mês anterior</div>
             </div>
-            <Link href="/dashboard/relatorios" style={{ fontSize: 10, color: '#3D7A6E', textDecoration: 'none', fontWeight: 600 }}>DRE →</Link>
+            <Link href="/dashboard/relatorios" style={{ fontSize: 12, color: '#3D7A6E', textDecoration: 'none', fontWeight: 600 }}>DRE →</Link>
           </div>
           {(() => {
             const dreChartData = [
@@ -778,12 +778,12 @@ export default function DashboardPage() {
             return (
               <ResponsiveContainer width="100%" height={160}>
                 <BarChart data={dreChartData} barGap={4} barCategoryGap="30%" margin={{ top: 4, right: 4, bottom: 0, left: 0 }}>
-                  <XAxis dataKey="name" tick={{ fontSize: 10, fill: '#7B8C88' }} axisLine={false} tickLine={false} />
-                  <YAxis tick={{ fontSize: 9, fill: '#A6B0AC' }} axisLine={false} tickLine={false} tickFormatter={v => fmtBRLCompact(v)} width={52} />
+                  <XAxis dataKey="name" tick={{ fontSize: 12, fill: '#7B8C88' }} axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fontSize: 11, fill: '#A6B0AC' }} axisLine={false} tickLine={false} tickFormatter={v => fmtBRLCompact(v)} width={52} />
                   <Tooltip
                     formatter={(v: number, name: string) => [fmtBRLCompact(v), name === 'atual' ? 'Mês atual' : 'Mês anterior']}
-                    contentStyle={{ fontSize: 11, borderRadius: 10, border: '0.5px solid #E4DCCC', background: '#fff', boxShadow: '0 4px 16px rgba(0,0,0,0.08)' }}
-                    labelStyle={{ fontWeight: 700, color: '#13201D', fontSize: 11 }}
+                    contentStyle={{ fontSize: 13, borderRadius: 10, border: '0.5px solid #E4DCCC', background: '#fff', boxShadow: '0 4px 16px rgba(0,0,0,0.08)' }}
+                    labelStyle={{ fontWeight: 700, color: '#13201D', fontSize: 13 }}
                   />
                   <Bar dataKey="anterior" fill="#F1ECE1" radius={[4, 4, 0, 0]} maxBarSize={18} />
                   <Bar dataKey="atual" radius={[4, 4, 0, 0]} maxBarSize={18}>
@@ -794,8 +794,8 @@ export default function DashboardPage() {
             )
           })()}
           <div style={{ display: 'flex', gap: 16, marginTop: 10 }}>
-            <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 10, color: '#7B8C88' }}><span style={{ width: 8, height: 8, borderRadius: 2, background: '#F1ECE1', border: '0.5px solid #E4DCCC', display: 'inline-block' }} />Mês anterior</span>
-            <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 10, color: '#7B8C88' }}><span style={{ width: 8, height: 8, borderRadius: 2, background: '#3D7A6E', display: 'inline-block' }} />Mês atual</span>
+            <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 12, color: '#7B8C88' }}><span style={{ width: 8, height: 8, borderRadius: 2, background: '#F1ECE1', border: '0.5px solid #E4DCCC', display: 'inline-block' }} />Mês anterior</span>
+            <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 12, color: '#7B8C88' }}><span style={{ width: 8, height: 8, borderRadius: 2, background: '#3D7A6E', display: 'inline-block' }} />Mês atual</span>
           </div>
         </div>
       </div>
@@ -806,15 +806,15 @@ export default function DashboardPage() {
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
             <div>
               <div className="chart-title">Tendência 12 meses</div>
-              <div style={{ fontSize: 10, color: '#7B8C88', marginTop: 2 }}>Receita vs Despesas</div>
+              <div style={{ fontSize: 12, color: '#7B8C88', marginTop: 2 }}>Receita vs Despesas</div>
             </div>
             <div style={{ display: 'flex', gap: 12 }}>
-              <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 10, color: '#3C4A46' }}><span style={{ width: 8, height: 8, borderRadius: 2, background: '#3D7A6E', display: 'inline-block' }} />Receita</span>
-              <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 10, color: '#3C4A46' }}><span style={{ width: 8, height: 8, borderRadius: 2, background: '#B0413E', display: 'inline-block' }} />Despesas</span>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 12, color: '#3C4A46' }}><span style={{ width: 8, height: 8, borderRadius: 2, background: '#3D7A6E', display: 'inline-block' }} />Receita</span>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 12, color: '#3C4A46' }}><span style={{ width: 8, height: 8, borderRadius: 2, background: '#B0413E', display: 'inline-block' }} />Despesas</span>
             </div>
           </div>
           {trend12.every(d => d.receita === 0 && d.despesas === 0) ? (
-            <div style={{ height: 140, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#A6B0AC', fontSize: 12 }}>Sem dados no período.</div>
+            <div style={{ height: 140, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#A6B0AC', fontSize: 14 }}>Sem dados no período.</div>
           ) : (
             <ResponsiveContainer width="100%" height={140}>
               <AreaChart data={trend12} margin={{ top: 4, right: 4, bottom: 0, left: 0 }}>
@@ -829,12 +829,12 @@ export default function DashboardPage() {
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="#EFE9DC" vertical={false} />
-                <XAxis dataKey="mes" tick={{ fontSize: 9, fill: '#7B8C88' }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fontSize: 9, fill: '#A6B0AC' }} axisLine={false} tickLine={false} tickFormatter={v => fmtBRLCompact(v)} width={52} />
+                <XAxis dataKey="mes" tick={{ fontSize: 11, fill: '#7B8C88' }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fontSize: 11, fill: '#A6B0AC' }} axisLine={false} tickLine={false} tickFormatter={v => fmtBRLCompact(v)} width={52} />
                 <Tooltip
                   formatter={(v: number, name: string) => [fmtBRLCompact(v), name === 'receita' ? 'Receita' : 'Despesas']}
-                  contentStyle={{ fontSize: 11, borderRadius: 10, border: '0.5px solid #E4DCCC', background: '#fff', boxShadow: '0 4px 16px rgba(0,0,0,0.08)' }}
-                  labelStyle={{ fontWeight: 700, color: '#13201D', fontSize: 11 }}
+                  contentStyle={{ fontSize: 13, borderRadius: 10, border: '0.5px solid #E4DCCC', background: '#fff', boxShadow: '0 4px 16px rgba(0,0,0,0.08)' }}
+                  labelStyle={{ fontWeight: 700, color: '#13201D', fontSize: 13 }}
                 />
                 <Area type="monotone" dataKey="receita" stroke="#3D7A6E" strokeWidth={2} fill="url(#gradR12)" dot={false} activeDot={{ r: 4, fill: '#3D7A6E', stroke: '#fff', strokeWidth: 2 }} />
                 <Area type="monotone" dataKey="despesas" stroke="#B0413E" strokeWidth={2} fill="url(#gradD12)" dot={false} activeDot={{ r: 4, fill: '#B0413E', stroke: '#fff', strokeWidth: 2 }} />
@@ -847,12 +847,12 @@ export default function DashboardPage() {
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
             <div>
               <div className="chart-title">Top categorias</div>
-              <div style={{ fontSize: 10, color: '#7B8C88', marginTop: 2 }}>Despesas do mês</div>
+              <div style={{ fontSize: 12, color: '#7B8C88', marginTop: 2 }}>Despesas do mês</div>
             </div>
-            <Link href="/dashboard/despesas" style={{ fontSize: 10, color: '#3D7A6E', textDecoration: 'none', fontWeight: 600 }}>Ver →</Link>
+            <Link href="/dashboard/despesas" style={{ fontSize: 12, color: '#3D7A6E', textDecoration: 'none', fontWeight: 600 }}>Ver →</Link>
           </div>
           {topCats.length === 0 ? (
-            <div style={{ height: 140, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#A6B0AC', fontSize: 12 }}>Sem despesas categorizadas.</div>
+            <div style={{ height: 140, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#A6B0AC', fontSize: 14 }}>Sem despesas categorizadas.</div>
           ) : (
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <ResponsiveContainer width="55%" height={150}>
@@ -862,13 +862,13 @@ export default function DashboardPage() {
                   </Pie>
                   <Tooltip
                     formatter={(v: number) => [fmtBRLCompact(v), 'Despesa']}
-                    contentStyle={{ fontSize: 11, borderRadius: 12, border: '1px solid #E4DCCC', background: '#fff', boxShadow: '0 8px 24px rgba(19,32,29,0.10)' }}
+                    contentStyle={{ fontSize: 13, borderRadius: 12, border: '1px solid #E4DCCC', background: '#fff', boxShadow: '0 8px 24px rgba(19,32,29,0.10)' }}
                   />
                 </PieChart>
               </ResponsiveContainer>
               <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 7, minWidth: 0 }}>
                 {topCats.map((c, i) => (
-                  <div key={c.cat} style={{ display: 'flex', alignItems: 'center', gap: 7, fontSize: 11 }}>
+                  <div key={c.cat} style={{ display: 'flex', alignItems: 'center', gap: 7, fontSize: 13 }}>
                     <span style={{ width: 9, height: 9, borderRadius: 3, background: PIE_COLORS[i % PIE_COLORS.length], flexShrink: 0 }} />
                     <span style={{ color: '#3C4A46', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{c.cat}</span>
                     <span style={{ color: '#13201D', fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>{fmtBRLCompact(c.val)}</span>
@@ -885,28 +885,28 @@ export default function DashboardPage() {
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12, flexWrap: 'wrap', gap: 8 }}>
           <div>
             <div className="chart-title">Resultado consolidado — 12 meses</div>
-            <div style={{ fontSize: 10, color: '#7B8C88', marginTop: 2 }}>Receita e despesas (barras) + lucro líquido (linha)</div>
+            <div style={{ fontSize: 12, color: '#7B8C88', marginTop: 2 }}>Receita e despesas (barras) + lucro líquido (linha)</div>
           </div>
-          <Link href="/dashboard/relatorios" style={{ fontSize: 10, color: '#3D7A6E', textDecoration: 'none', fontWeight: 600 }}>Ver DRE completo →</Link>
+          <Link href="/dashboard/relatorios" style={{ fontSize: 12, color: '#3D7A6E', textDecoration: 'none', fontWeight: 600 }}>Ver DRE completo →</Link>
         </div>
         {(() => {
           const dataComp = trend12.map(d => ({ ...d, lucro: Number(d.receita) - Number(d.despesas) }))
           if (dataComp.every(d => d.receita === 0 && d.despesas === 0)) {
-            return <div style={{ height: 240, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#A6B0AC', fontSize: 12 }}>Sem dados no período.</div>
+            return <div style={{ height: 240, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#A6B0AC', fontSize: 14 }}>Sem dados no período.</div>
           }
           return (
             <ResponsiveContainer width="100%" height={260}>
               <ComposedChart data={dataComp} margin={{ top: 8, right: 8, bottom: 0, left: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#EFE9DC" vertical={false} />
-                <XAxis dataKey="mes" tick={{ fontSize: 10, fill: '#7B8C88' }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fontSize: 9, fill: '#A6B0AC' }} axisLine={false} tickLine={false} tickFormatter={v => fmtBRLCompact(v)} width={54} />
+                <XAxis dataKey="mes" tick={{ fontSize: 12, fill: '#7B8C88' }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fontSize: 11, fill: '#A6B0AC' }} axisLine={false} tickLine={false} tickFormatter={v => fmtBRLCompact(v)} width={54} />
                 <Tooltip
                   formatter={(v: number, name: string) => [fmtBRLCompact(v), name === 'receita' ? 'Receita' : name === 'despesas' ? 'Despesas' : 'Lucro']}
-                  contentStyle={{ fontSize: 11, borderRadius: 10, border: '0.5px solid #E4DCCC', background: '#fff', boxShadow: '0 4px 16px rgba(0,0,0,0.08)' }}
-                  labelStyle={{ fontWeight: 700, color: '#13201D', fontSize: 11 }}
+                  contentStyle={{ fontSize: 13, borderRadius: 10, border: '0.5px solid #E4DCCC', background: '#fff', boxShadow: '0 4px 16px rgba(0,0,0,0.08)' }}
+                  labelStyle={{ fontWeight: 700, color: '#13201D', fontSize: 13 }}
                   cursor={{ fill: 'rgba(61,122,110,0.05)' }}
                 />
-                <Legend wrapperStyle={{ fontSize: 10 }} iconType="circle" iconSize={8} formatter={(value) => <span style={{ color: '#3C4A46' }}>{value === 'receita' ? 'Receita' : value === 'despesas' ? 'Despesas' : 'Lucro'}</span>} />
+                <Legend wrapperStyle={{ fontSize: 12 }} iconType="circle" iconSize={8} formatter={(value) => <span style={{ color: '#3C4A46' }}>{value === 'receita' ? 'Receita' : value === 'despesas' ? 'Despesas' : 'Lucro'}</span>} />
                 <Bar dataKey="receita" fill="#3D7A6E" radius={[3, 3, 0, 0]} maxBarSize={18} />
                 <Bar dataKey="despesas" fill="#B0413E" radius={[3, 3, 0, 0]} maxBarSize={18} fillOpacity={0.85} />
                 <Line type="monotone" dataKey="lucro" stroke="#13201D" strokeWidth={2.5} dot={{ r: 3, fill: '#13201D' }} activeDot={{ r: 5, fill: '#B08A3E', stroke: '#fff', strokeWidth: 2 }} />
@@ -920,12 +920,12 @@ export default function DashboardPage() {
       <div className="txs-card">
         <div className="txs-header">
           <div className="txs-title">Últimas transações</div>
-          <Link href="/dashboard/cashflow" style={{ fontSize: 11, color: 'var(--teal)', textDecoration: 'none' }}>Ver todas →</Link>
+          <Link href="/dashboard/cashflow" style={{ fontSize: 13, color: 'var(--teal)', textDecoration: 'none' }}>Ver todas →</Link>
         </div>
         {transacoes.length === 0 ? (
-          <div style={{ padding: '32px 16px', textAlign: 'center', color: 'var(--gray-400)', fontSize: 13 }}>
+          <div style={{ padding: '32px 16px', textAlign: 'center', color: 'var(--gray-400)', fontSize: 15 }}>
             Nenhuma transação este mês.{' '}
-            <button onClick={() => router.push('/dashboard/cashflow')} style={{ color: 'var(--teal)', background: 'none', border: 'none', cursor: 'pointer', fontSize: 13 }}>
+            <button onClick={() => router.push('/dashboard/cashflow')} style={{ color: 'var(--teal)', background: 'none', border: 'none', cursor: 'pointer', fontSize: 15 }}>
               Adicionar →
             </button>
           </div>
@@ -947,7 +947,7 @@ export default function DashboardPage() {
       {/* Atalhos rápidos + AI insight */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 14 }}>
         <div style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 12, padding: '14px 16px' }}>
-          <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--navy)', marginBottom: 12, fontFamily: "var(--font-sans)" }}>Atalhos rápidos</div>
+          <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--navy)', marginBottom: 12, fontFamily: "var(--font-sans)" }}>Atalhos rápidos</div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
             {[
               { href: '/dashboard/despesas', icon: 'fa-file-invoice', label: 'Nova despesa', bg: '#E9F0ED', color: 'var(--teal)' },
@@ -960,9 +960,9 @@ export default function DashboardPage() {
               <Link key={item.href} href={item.href} style={{ textDecoration: 'none' }}>
                 <div style={{ padding: '8px 10px', background: '#FBF8F1', borderRadius: 8, border: '0.5px solid #E4DCCC', display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', transition: 'background 0.15s' }}>
                   <div style={{ width: 26, height: 26, borderRadius: 6, background: item.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                    <i className={`fa-solid ${item.icon}`} style={{ fontSize: 11, color: item.color }} />
+                    <i className={`fa-solid ${item.icon}`} style={{ fontSize: 13, color: item.color }} />
                   </div>
-                  <span style={{ fontSize: 11, color: '#3C4A46', fontWeight: 500 }}>{item.label}</span>
+                  <span style={{ fontSize: 13, color: '#3C4A46', fontWeight: 500 }}>{item.label}</span>
                 </div>
               </Link>
             ))}
@@ -973,21 +973,21 @@ export default function DashboardPage() {
           <div style={{ background: 'var(--navy)', borderRadius: 12, padding: '14px 16px', height: '100%', display: 'flex', flexDirection: 'column', gap: 10, cursor: 'pointer' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <div style={{ width: 30, height: 30, borderRadius: 8, background: 'rgba(61,122,110,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <i className="fa-solid fa-robot" style={{ fontSize: 13, color: '#6FA595' }} />
+                <i className="fa-solid fa-robot" style={{ fontSize: 15, color: '#6FA595' }} />
               </div>
               <div>
-                <div style={{ fontSize: 12, fontWeight: 600, color: '#fff', fontFamily: "var(--font-sans)" }}>FactorOne AI</div>
-                <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.45)' }}>CFO digital · análise em tempo real</div>
+                <div style={{ fontSize: 14, fontWeight: 600, color: '#fff', fontFamily: "var(--font-sans)" }}>FactorOne AI</div>
+                <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.45)' }}>CFO digital · análise em tempo real</div>
               </div>
             </div>
-            <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.65)', lineHeight: 1.6, flex: 1 }}>
+            <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.65)', lineHeight: 1.6, flex: 1 }}>
               {dreMes.liquido < 0
                 ? `Resultado líquido negativo em ${fmtBRLCompact(Math.abs(dreMes.liquido))} este mês. Recomendo revisar as principais categorias de despesa.`
                 : `Receita ${fmtBRLCompact(kpiAtual.receita)} com margem líquida de ${dreMes.receitaBruta > 0 ? ((dreMes.liquido / dreMes.receitaBruta) * 100).toFixed(1) : '0'}%. ${runway != null && runway < 6 ? `Atenção: runway de ${runway} meses.` : 'Saúde financeira dentro do esperado.'}`
               }
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 11, color: '#6FA595', fontWeight: 600 }}>
-              <i className="fa-solid fa-arrow-right" style={{ fontSize: 10 }} /> Analisar com IA
+            <div style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 13, color: '#6FA595', fontWeight: 600 }}>
+              <i className="fa-solid fa-arrow-right" style={{ fontSize: 12 }} /> Analisar com IA
             </div>
           </div>
         </Link>
@@ -1013,8 +1013,8 @@ export default function DashboardPage() {
               { l: 'Valor', v: `${selectedTx.tipo === 'entrada' ? '+' : '-'}${fmtBRL(Number(selectedTx.valor || 0))}` },
             ].map(({ l, v }) => (
               <div key={l} className="form-group" style={{ display: 'flex', justifyContent: 'space-between', background: 'var(--cream)', borderRadius: 8, padding: '8px 12px' }}>
-                <span style={{ color: 'var(--gray-500)', fontSize: 12 }}>{l}</span>
-                <span style={{ fontWeight: 600, color: 'var(--navy)', fontSize: 12 }}>{v}</span>
+                <span style={{ color: 'var(--gray-500)', fontSize: 14 }}>{l}</span>
+                <span style={{ fontWeight: 600, color: 'var(--navy)', fontSize: 14 }}>{v}</span>
               </div>
             ))}
       </Modal>

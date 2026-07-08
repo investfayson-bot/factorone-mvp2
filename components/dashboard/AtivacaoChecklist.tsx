@@ -49,13 +49,13 @@ export default function AtivacaoChecklist({ empresaId }: { empresaId: string }) 
     <div style={{ background: 'var(--surface)', border: '1px solid var(--sage)', borderRadius: 12, padding: '16px 20px', marginBottom: 16, boxShadow: 'var(--shadow-card)' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
         <div>
-          <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--ink)', display: 'flex', alignItems: 'center', gap: 8 }}>
+          <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--ink)', display: 'flex', alignItems: 'center', gap: 8 }}>
             <i className="fa-solid fa-rocket" style={{ color: 'var(--sage)' }} />Comece por aqui
-            <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--sage-deep)', background: 'var(--sage-tint)', padding: '2px 9px', borderRadius: 100 }}>{feitos}/{passos.length}</span>
+            <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--sage-deep)', background: 'var(--sage-tint)', padding: '2px 9px', borderRadius: 100 }}>{feitos}/{passos.length}</span>
           </div>
-          <div style={{ fontSize: 11.5, color: 'var(--ink-mut)', marginTop: 3 }}>Alguns passos e o FactorOne já está trabalhando pra você.</div>
+          <div style={{ fontSize: 13.5, color: 'var(--ink-mut)', marginTop: 3 }}>Alguns passos e o FactorOne já está trabalhando pra você.</div>
         </div>
-        <button onClick={() => { localStorage.setItem(`fo_ativacao_${empresaId}`, 'off'); setDismissed(true) }} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--ink-mut)', fontSize: 12 }} title="Dispensar">Dispensar ✕</button>
+        <button onClick={() => { localStorage.setItem(`fo_ativacao_${empresaId}`, 'off'); setDismissed(true) }} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--ink-mut)', fontSize: 14 }} title="Dispensar">Dispensar ✕</button>
       </div>
       <div style={{ height: 6, background: 'var(--paper-2)', borderRadius: 3, overflow: 'hidden', marginBottom: 14 }}>
         <div style={{ height: '100%', width: `${pct}%`, background: 'var(--sage)', borderRadius: 3, transition: 'width .3s' }} />
@@ -64,11 +64,11 @@ export default function AtivacaoChecklist({ empresaId }: { empresaId: string }) 
         {passos.map(p => (
           <Link key={p.id} href={p.href} style={{ textDecoration: 'none', display: 'flex', gap: 10, alignItems: 'center', padding: '10px 12px', borderRadius: 10, border: '1px solid var(--line-soft)', background: p.done ? 'var(--sage-tint)' : 'var(--surface-2)', opacity: p.done ? .85 : 1 }}>
             <div style={{ width: 30, height: 30, borderRadius: '50%', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: p.done ? 'var(--sage)' : 'var(--surface)', border: p.done ? 'none' : '1px solid var(--line)', color: p.done ? '#fff' : 'var(--sage-deep)' }}>
-              <i className={`fa-solid ${p.done ? 'fa-check' : p.icon}`} style={{ fontSize: 12 }} />
+              <i className={`fa-solid ${p.done ? 'fa-check' : p.icon}`} style={{ fontSize: 14 }} />
             </div>
             <div style={{ minWidth: 0 }}>
-              <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--ink)', textDecoration: p.done ? 'line-through' : 'none' }}>{p.label}</div>
-              <div style={{ fontSize: 10.5, color: 'var(--ink-mut)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p.desc}</div>
+              <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--ink)', textDecoration: p.done ? 'line-through' : 'none' }}>{p.label}</div>
+              <div style={{ fontSize: 12.5, color: 'var(--ink-mut)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p.desc}</div>
             </div>
           </Link>
         ))}

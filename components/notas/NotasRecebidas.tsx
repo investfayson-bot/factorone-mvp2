@@ -98,7 +98,7 @@ export default function NotasRecebidas() {
 
   return (
     <div>
-      <div style={{ fontSize: 12, color: 'var(--gray-400)', marginBottom: 14 }}>
+      <div style={{ fontSize: 14, color: 'var(--gray-400)', marginBottom: 14 }}>
         <strong style={{ color: 'var(--navy)' }}>Recebidas</strong> — upload, OCR, câmera ou texto para leitura inteligente.
       </div>
 
@@ -106,16 +106,16 @@ export default function NotasRecebidas() {
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 10, marginBottom: 14 }}>
         <button type="button" onClick={() => fileRef.current?.click()} style={{ ...card, margin: 0, cursor: 'pointer', textAlign: 'left' }}>
           <div style={{ fontSize: 18, marginBottom: 8, color: 'var(--teal)' }}><i className="fa-solid fa-file-lines" /></div>
-          <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--navy)' }}>Arquivo</div>
-          <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>XML, PDF ou imagem</div>
+          <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--navy)' }}>Arquivo</div>
+          <div style={{ fontSize: 13, color: 'var(--gray-400)' }}>XML, PDF ou imagem</div>
         </button>
         <button type="button" onClick={() => camRef.current?.click()} style={{ ...card, margin: 0, cursor: 'pointer', textAlign: 'left' }}>
           <div style={{ fontSize: 18, marginBottom: 8, color: 'var(--teal)' }}><i className="fa-solid fa-camera" /></div>
-          <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--navy)' }}>Câmera / Foto</div>
-          <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>Capture a NF</div>
+          <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--navy)' }}>Câmera / Foto</div>
+          <div style={{ fontSize: 13, color: 'var(--gray-400)' }}>Capture a NF</div>
         </button>
         <div style={{ ...card, margin: 0 }}>
-          <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--navy)', marginBottom: 8 }}>Colar texto</div>
+          <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--navy)', marginBottom: 8 }}>Colar texto</div>
           <textarea
             value={texto}
             onChange={(e) => { setTexto(e.target.value); setPreview(e.target.value.slice(0, 200)); setImagemPreview('') }}
@@ -131,14 +131,14 @@ export default function NotasRecebidas() {
 
       {/* Preview + analyze */}
       <div style={card}>
-        <div style={{ fontSize: 11, color: 'var(--gray-400)', marginBottom: 10 }}>
+        <div style={{ fontSize: 13, color: 'var(--gray-400)', marginBottom: 10 }}>
           Encaminhar para: <span style={{ color: 'var(--navy)', fontWeight: 600 }}>nf@factorone.com.br</span>
         </div>
         {imagemPreview ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img src={imagemPreview} alt="preview" style={{ maxHeight: 200, borderRadius: 8, border: '1px solid var(--gray-100)', marginBottom: 12 }} />
         ) : (
-          <div style={{ fontSize: 11, color: 'var(--gray-400)', marginBottom: 12 }}>{preview || 'Sem preview ainda'}</div>
+          <div style={{ fontSize: 13, color: 'var(--gray-400)', marginBottom: 12 }}>{preview || 'Sem preview ainda'}</div>
         )}
         <button type="button" onClick={analisar} disabled={loading || !texto} className="btn-action" style={{ opacity: loading || !texto ? .5 : 1 }}>
           {loading ? 'Analisando...' : 'Analisar Nota Fiscal'}
@@ -148,7 +148,7 @@ export default function NotasRecebidas() {
       {/* Result */}
       {resultado && (
         <div style={card}>
-          <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--navy)', marginBottom: 12 }}>Resultado da análise</div>
+          <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--navy)', marginBottom: 12 }}>Resultado da análise</div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 10, marginBottom: 12 }}>
             {[
               { label: 'Número NF', val: resultado.numero || '-' },
@@ -157,8 +157,8 @@ export default function NotasRecebidas() {
               { label: 'Valor', val: `R$ ${(resultado.valor_total || 0).toLocaleString('pt-BR')}` },
             ].map(({ label, val }) => (
               <div key={label}>
-                <div style={{ fontSize: 10, color: 'var(--gray-400)', textTransform: 'uppercase', fontFamily: "var(--font-sans)" }}>{label}</div>
-                <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--navy)' }}>{val}</div>
+                <div style={{ fontSize: 12, color: 'var(--gray-400)', textTransform: 'uppercase', fontFamily: "var(--font-sans)" }}>{label}</div>
+                <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--navy)' }}>{val}</div>
               </div>
             ))}
           </div>
@@ -176,11 +176,11 @@ export default function NotasRecebidas() {
 
       {/* List */}
       <div style={card}>
-        <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--navy)', marginBottom: 12 }}>Notas cadastradas</div>
+        <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--navy)', marginBottom: 12 }}>Notas cadastradas</div>
         <div className="expenses-table">
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12 }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 14 }}>
             <thead>
-              <tr style={{ color: 'var(--gray-400)', fontSize: 10, textTransform: 'uppercase', fontFamily: "var(--font-sans)" }}>
+              <tr style={{ color: 'var(--gray-400)', fontSize: 12, textTransform: 'uppercase', fontFamily: "var(--font-sans)" }}>
                 <th style={{ textAlign: 'left', padding: '6px 0', fontWeight: 600 }}>Data</th>
                 <th style={{ textAlign: 'left', padding: '6px 0', fontWeight: 600 }}>Emitente</th>
                 <th style={{ textAlign: 'left', padding: '6px 0', fontWeight: 600 }}>Valor</th>
@@ -202,7 +202,7 @@ export default function NotasRecebidas() {
                 )
               })}
               {notas.length === 0 && (
-                <tr><td colSpan={4} style={{ padding: '20px 0', textAlign: 'center', color: 'var(--gray-400)', fontSize: 12 }}>Nenhuma nota cadastrada.</td></tr>
+                <tr><td colSpan={4} style={{ padding: '20px 0', textAlign: 'center', color: 'var(--gray-400)', fontSize: 14 }}>Nenhuma nota cadastrada.</td></tr>
               )}
             </tbody>
           </table>

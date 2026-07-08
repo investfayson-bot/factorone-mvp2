@@ -49,7 +49,7 @@ export default function OpenFinancePage() {
             <i className="fa-solid fa-plug" style={{ fontSize: 28, color: "var(--gray-300)", display: "block" }} />
             <div style={{ flex: 1 }}>
               <div style={{ fontSize: 15, fontWeight: 700, color: '#fff', marginBottom: 6 }}>Open Finance via Pluggy</div>
-              <div style={{ fontSize: 13, color: 'rgba(255,255,255,.7)', lineHeight: 1.6, marginBottom: 16 }}>
+              <div style={{ fontSize: 15, color: 'rgba(255,255,255,.7)', lineHeight: 1.6, marginBottom: 16 }}>
                 Para conectar seus bancos automaticamente, configure a chave da API Pluggy no Vercel.
                 O Pluggy é o agregador Open Finance mais completo do Brasil — suporta +200 instituições.
               </div>
@@ -60,7 +60,7 @@ export default function OpenFinancePage() {
                   '3. No Vercel: Settings → Environment Variables',
                   '4. Adicione: PLUGGY_CLIENT_ID e PLUGGY_CLIENT_SECRET',
                 ].map(step => (
-                  <div key={step} style={{ fontSize: 12, color: 'rgba(255,255,255,.8)', display: 'flex', gap: 8 }}>
+                  <div key={step} style={{ fontSize: 14, color: 'rgba(255,255,255,.8)', display: 'flex', gap: 8 }}>
                     <span style={{ color: 'var(--teal)', fontWeight: 700 }}>→</span> {step}
                   </div>
                 ))}
@@ -69,7 +69,7 @@ export default function OpenFinancePage() {
           </div>
         </div>
       ) : (
-        <div style={{ background: 'rgba(61,122,110,.08)', border: '1px solid rgba(61,122,110,.3)', borderRadius: 10, padding: '12px 16px', marginBottom: 16, fontSize: 13, color: 'var(--teal)', fontWeight: 600 }}>
+        <div style={{ background: 'rgba(61,122,110,.08)', border: '1px solid rgba(61,122,110,.3)', borderRadius: 10, padding: '12px 16px', marginBottom: 16, fontSize: 15, color: 'var(--teal)', fontWeight: 600 }}>
           ✓ Pluggy configurado — você pode conectar seus bancos abaixo
         </div>
       )}
@@ -77,9 +77,9 @@ export default function OpenFinancePage() {
       {/* Conexões ativas */}
       {conexoes.length > 0 && (
         <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: 20, marginBottom: 16 }}>
-          <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy)', marginBottom: 12 }}>Bancos conectados</div>
+          <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--navy)', marginBottom: 12 }}>Bancos conectados</div>
           {conexoes.map(c => (
-            <div key={c.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 0', borderBottom: '1px solid var(--gray-100)', fontSize: 12 }}>
+            <div key={c.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 0', borderBottom: '1px solid var(--gray-100)', fontSize: 14 }}>
               <span style={{ fontWeight: 600 }}>{c.banco}</span>
               <span className={`tag ${c.status === 'ativo' ? 'green' : 'gray'}`}>{c.status}</span>
               <span style={{ color: 'var(--gray-400)' }}>{c.ultimo_sync ? `Sync: ${new Date(c.ultimo_sync).toLocaleDateString('pt-BR')}` : 'Nunca sincronizado'}</span>
@@ -90,20 +90,20 @@ export default function OpenFinancePage() {
 
       {/* Bancos disponíveis */}
       <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: 20 }}>
-        <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy)', marginBottom: 4 }}>Instituições disponíveis</div>
-        <div style={{ fontSize: 11, color: 'var(--gray-400)', marginBottom: 16 }}>+200 bancos e fintechs via Open Finance Brasil</div>
+        <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--navy)', marginBottom: 4 }}>Instituições disponíveis</div>
+        <div style={{ fontSize: 13, color: 'var(--gray-400)', marginBottom: 16 }}>+200 bancos e fintechs via Open Finance Brasil</div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(200px,1fr))', gap: 10 }}>
           {BANCOS_SUPORTADOS.map(b => (
             <div key={b.nome} style={{ border: '1px solid var(--gray-100)', borderRadius: 10, padding: '12px 14px', display: 'flex', alignItems: 'center', gap: 10 }}>
               <span style={{ fontSize: 22 }}><i className={`fa-solid ${b.icon}`} /></span>
               <div>
-                <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--navy)' }}>{b.nome}</div>
-                <div style={{ fontSize: 10, color: 'var(--gray-400)' }}>{b.desc}</div>
+                <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--navy)' }}>{b.nome}</div>
+                <div style={{ fontSize: 12, color: 'var(--gray-400)' }}>{b.desc}</div>
               </div>
               {temPluggyKey ? (
-                <button className="btn-ghost" style={{ marginLeft: 'auto', fontSize: 10, padding: '3px 8px' }}>Conectar</button>
+                <button className="btn-ghost" style={{ marginLeft: 'auto', fontSize: 12, padding: '3px 8px' }}>Conectar</button>
               ) : (
-                <span style={{ marginLeft: 'auto', fontSize: 9, color: 'var(--gray-400)', fontWeight: 600 }}>API KEY</span>
+                <span style={{ marginLeft: 'auto', fontSize: 11, color: 'var(--gray-400)', fontWeight: 600 }}>API KEY</span>
               )}
             </div>
           ))}
@@ -113,14 +113,14 @@ export default function OpenFinancePage() {
       {/* Score Serasa */}
       <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: 20, marginTop: 16 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
-          <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy)' }}>Score de Crédito Serasa</div>
-          <span style={{ fontSize: 9, fontWeight: 700, padding: '2px 8px', borderRadius: 20, background: '#7A6A9E', color: '#fff' }}>EM BREVE</span>
+          <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--navy)' }}>Score de Crédito Serasa</div>
+          <span style={{ fontSize: 11, fontWeight: 700, padding: '2px 8px', borderRadius: 20, background: '#7A6A9E', color: '#fff' }}>EM BREVE</span>
         </div>
-        <div style={{ fontSize: 12, color: 'var(--gray-400)', marginBottom: 16 }}>Consulte seu score sem sair do FactorOne — integração via Serasa Experian API</div>
+        <div style={{ fontSize: 14, color: 'var(--gray-400)', marginBottom: 16 }}>Consulte seu score sem sair do FactorOne — integração via Serasa Experian API</div>
         <div style={{ display: 'flex', gap: 32, alignItems: 'center' }}>
           <div style={{ textAlign: 'center' }}>
             <div style={{ width: 80, height: 80, borderRadius: '50%', border: '6px solid var(--gray-100)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22, fontWeight: 800, color: 'var(--gray-400)' }}>?</div>
-            <div style={{ fontSize: 10, color: 'var(--gray-400)', marginTop: 6 }}>Seu score</div>
+            <div style={{ fontSize: 12, color: 'var(--gray-400)', marginTop: 6 }}>Seu score</div>
           </div>
           <div style={{ flex: 1 }}>
             {[
@@ -132,13 +132,13 @@ export default function OpenFinancePage() {
             ].map(s => (
               <div key={s.range} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
                 <div style={{ width: 8, height: 8, borderRadius: '50%', background: s.cor }} />
-                <span style={{ fontSize: 11, color: 'var(--gray-400)' }}>{s.range}</span>
-                <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--navy)' }}>{s.label}</span>
+                <span style={{ fontSize: 13, color: 'var(--gray-400)' }}>{s.range}</span>
+                <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--navy)' }}>{s.label}</span>
               </div>
             ))}
           </div>
         </div>
-        <div style={{ marginTop: 14, fontSize: 11, color: 'var(--gray-400)' }}>
+        <div style={{ marginTop: 14, fontSize: 13, color: 'var(--gray-400)' }}>
           Configure <code style={{ background: 'var(--gray-100)', padding: '1px 4px', borderRadius: 4 }}>SERASA_API_KEY</code> no Vercel para ativar.
         </div>
       </div>

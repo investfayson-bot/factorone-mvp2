@@ -38,30 +38,30 @@ function FontCard({ name, stack, rec, nota }: { name: string; stack: string; rec
           <span style={{ fontSize: 18, fontWeight: 700, color: '#fff', letterSpacing: '-0.02em' }}>
             Factor<span style={{ color: '#6FA595' }}>One</span>
           </span>
-          <span style={{ fontSize: 11, color: 'rgba(255,255,255,.5)' }}>{name}</span>
+          <span style={{ fontSize: 13, color: 'rgba(255,255,255,.5)' }}>{name}</span>
         </div>
-        {rec && <span style={{ fontSize: 10, fontWeight: 700, color: '#2B564D', background: '#E9F0ED', padding: '3px 10px', borderRadius: 20 }}>RECOMENDADA</span>}
+        {rec && <span style={{ fontSize: 12, fontWeight: 700, color: '#2B564D', background: '#E9F0ED', padding: '3px 10px', borderRadius: 20 }}>RECOMENDADA</span>}
       </div>
 
       <div style={{ padding: 20 }}>
-        <div style={{ fontSize: 11, fontWeight: 600, color: '#7B8C88', letterSpacing: '.06em', textTransform: 'uppercase', marginBottom: 12 }}>Visão geral · Julho 2026</div>
+        <div style={{ fontSize: 13, fontWeight: 600, color: '#7B8C88', letterSpacing: '.06em', textTransform: 'uppercase', marginBottom: 12 }}>Visão geral · Julho 2026</div>
 
         {/* KPIs */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10, marginBottom: 18 }}>
           {KPIS.map(k => (
             <div key={k.lbl} style={{ border: '0.5px solid #E4DCCC', borderRadius: 12, padding: '12px 14px' }}>
-              <div style={{ fontSize: 10, fontWeight: 600, color: '#7B8C88', textTransform: 'uppercase', letterSpacing: '.05em', marginBottom: 8 }}>{k.lbl}</div>
+              <div style={{ fontSize: 12, fontWeight: 600, color: '#7B8C88', textTransform: 'uppercase', letterSpacing: '.05em', marginBottom: 8 }}>{k.lbl}</div>
               <div style={{ fontSize: 22, fontWeight: 700, color: '#13201D', letterSpacing: '-0.02em', lineHeight: 1, fontVariantNumeric: 'tabular-nums' }}>{k.val}</div>
-              <div style={{ fontSize: 11, fontWeight: 500, color: k.up ? '#3D7A6E' : '#B0413E', marginTop: 6 }}>{k.sub}</div>
+              <div style={{ fontSize: 13, fontWeight: 500, color: k.up ? '#3D7A6E' : '#B0413E', marginTop: 6 }}>{k.sub}</div>
             </div>
           ))}
         </div>
 
         {/* Tabela DRE */}
         <div style={{ border: '0.5px solid #E4DCCC', borderRadius: 12, overflow: 'hidden', marginBottom: 16 }}>
-          <div style={{ padding: '10px 14px', background: '#FBF8F1', borderBottom: '0.5px solid #E4DCCC', fontSize: 12, fontWeight: 700, color: '#13201D' }}>DRE — resumo</div>
+          <div style={{ padding: '10px 14px', background: '#FBF8F1', borderBottom: '0.5px solid #E4DCCC', fontSize: 14, fontWeight: 700, color: '#13201D' }}>DRE — resumo</div>
           {DRE.map((row, i) => (
-            <div key={row[0]} style={{ display: 'flex', justifyContent: 'space-between', padding: '9px 14px', borderBottom: i < DRE.length - 1 ? '0.5px solid #EFE9DC' : 'none', fontSize: 13 }}>
+            <div key={row[0]} style={{ display: 'flex', justifyContent: 'space-between', padding: '9px 14px', borderBottom: i < DRE.length - 1 ? '0.5px solid #EFE9DC' : 'none', fontSize: 15 }}>
               <span style={{ color: '#374151' }}>{row[0]}</span>
               <span style={{ fontWeight: 700, color: '#13201D', fontVariantNumeric: 'tabular-nums' }}>{row[1]}</span>
             </div>
@@ -69,7 +69,7 @@ function FontCard({ name, stack, rec, nota }: { name: string; stack: string; rec
         </div>
 
         {/* Texto corrido + pesos */}
-        <p style={{ fontSize: 13, lineHeight: 1.6, color: '#374151', margin: '0 0 12px' }}>
+        <p style={{ fontSize: 15, lineHeight: 1.6, color: '#374151', margin: '0 0 12px' }}>
           O FactorOne é o sistema operacional financeiro da sua empresa. Acompanhe fluxo de caixa, DRE, conciliação bancária e emissão de notas — tudo em tempo real, com clareza.
         </p>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 14, alignItems: 'baseline' }}>
@@ -83,7 +83,7 @@ function FontCard({ name, stack, rec, nota }: { name: string; stack: string; rec
           0123456789 · R$ 1.234.567,89 · +12,5% · -3,8%
         </div>
 
-        <div style={{ marginTop: 16, paddingTop: 14, borderTop: '0.5px solid #EFE9DC', fontSize: 12, color: '#7B8C88', fontFamily: "var(--font-sans)" }}>
+        <div style={{ marginTop: 16, paddingTop: 14, borderTop: '0.5px solid #EFE9DC', fontSize: 14, color: '#7B8C88', fontFamily: "var(--font-sans)" }}>
           {nota}
           <div style={{ marginTop: 6, color: '#13201D', fontWeight: 600 }}>→ Para escolher esta, me diga: <span style={{ color: '#3D7A6E' }}>&quot;quero {name}&quot;</span></div>
         </div>

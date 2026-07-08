@@ -131,8 +131,8 @@ export default function ClientesPage() {
     return statuses.map(s => ({ status: s, items: filtrados.filter(c => c.status === s) })).filter(g => g.items.length > 0 || g.status === 'prospect')
   }, [filtrados])
 
-  const inp: React.CSSProperties = { width: '100%', border: '0.5px solid #E4DCCC', borderRadius: 8, padding: '8px 12px', fontSize: 13, color: '#13201D', background: '#fff', boxSizing: 'border-box', outline: 'none' }
-  const lbl: React.CSSProperties = { fontSize: 11, fontWeight: 600, color: '#7B8C88', marginBottom: 4, display: 'block' }
+  const inp: React.CSSProperties = { width: '100%', border: '0.5px solid #E4DCCC', borderRadius: 8, padding: '8px 12px', fontSize: 15, color: '#13201D', background: '#fff', boxSizing: 'border-box', outline: 'none' }
+  const lbl: React.CSSProperties = { fontSize: 13, fontWeight: 600, color: '#7B8C88', marginBottom: 4, display: 'block' }
 
   if (loading) return <div style={{ padding: 32, color: '#7B8C88' }}>Carregando…</div>
 
@@ -186,14 +186,14 @@ export default function ClientesPage() {
           {['prospect','ativo','inativo','churned'].map(st => (
             <div key={st} style={{ background: '#fafafa', border: '0.5px solid #E4DCCC', borderRadius: 12, padding: 12 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-                <span style={{ fontSize: 11, fontWeight: 700, color: STATUS_COLOR[st], textTransform: 'uppercase', letterSpacing: '.06em' }}>{STATUS_LABEL[st]}</span>
-                <span style={{ fontSize: 11, background: STATUS_BG[st], color: STATUS_COLOR[st], padding: '2px 7px', borderRadius: 20, fontWeight: 700 }}>{filtrados.filter(c => c.status === st).length}</span>
+                <span style={{ fontSize: 13, fontWeight: 700, color: STATUS_COLOR[st], textTransform: 'uppercase', letterSpacing: '.06em' }}>{STATUS_LABEL[st]}</span>
+                <span style={{ fontSize: 13, background: STATUS_BG[st], color: STATUS_COLOR[st], padding: '2px 7px', borderRadius: 20, fontWeight: 700 }}>{filtrados.filter(c => c.status === st).length}</span>
               </div>
               {filtrados.filter(c => c.status === st).map(c => (
                 <div key={c.id} onClick={() => { setDetalhe(c); void carregarContatos(c.id) }} style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 8, padding: '10px 12px', marginBottom: 8, cursor: 'pointer' }}>
-                  <p style={{ fontWeight: 700, fontSize: 12, color: '#13201D', margin: '0 0 2px' }}>{c.nome}</p>
-                  {c.segmento && <p style={{ fontSize: 10, color: '#7B8C88', margin: 0 }}>{c.segmento}</p>}
-                  {c.valor_contrato && <p style={{ fontSize: 11, color: '#3D7A6E', fontWeight: 700, margin: '4px 0 0' }}>{formatBRL(Number(c.valor_contrato))}</p>}
+                  <p style={{ fontWeight: 700, fontSize: 14, color: '#13201D', margin: '0 0 2px' }}>{c.nome}</p>
+                  {c.segmento && <p style={{ fontSize: 12, color: '#7B8C88', margin: 0 }}>{c.segmento}</p>}
+                  {c.valor_contrato && <p style={{ fontSize: 13, color: '#3D7A6E', fontWeight: 700, margin: '4px 0 0' }}>{formatBRL(Number(c.valor_contrato))}</p>}
                 </div>
               ))}
             </div>
@@ -219,33 +219,33 @@ export default function ClientesPage() {
               </thead>
               <tbody>
                 {filtrados.length === 0 && (
-                  <tr><td colSpan={7} style={{ textAlign: 'center', padding: '40px 0', color: '#7B8C88', fontSize: 13 }}>
-                    Nenhum cliente. <button onClick={() => abrirForm()} style={{ color: '#3D7A6E', background: 'none', border: 'none', cursor: 'pointer', fontSize: 13 }}>Adicionar →</button>
+                  <tr><td colSpan={7} style={{ textAlign: 'center', padding: '40px 0', color: '#7B8C88', fontSize: 15 }}>
+                    Nenhum cliente. <button onClick={() => abrirForm()} style={{ color: '#3D7A6E', background: 'none', border: 'none', cursor: 'pointer', fontSize: 15 }}>Adicionar →</button>
                   </td></tr>
                 )}
                 {filtrados.map(c => (
                   <tr key={c.id}>
                     <td>
-                      <div style={{ fontWeight: 700, fontSize: 12 }}>{c.nome}</div>
-                      {c.email && <div style={{ fontSize: 10, color: '#7B8C88' }}>{c.email}</div>}
+                      <div style={{ fontWeight: 700, fontSize: 14 }}>{c.nome}</div>
+                      {c.email && <div style={{ fontSize: 12, color: '#7B8C88' }}>{c.email}</div>}
                     </td>
-                    <td style={{ fontFamily: "var(--font-sans)", fontSize: 11, color: '#7B8C88' }}>{c.cnpj_cpf || '—'}</td>
-                    <td><span className="tag gray" style={{ fontSize: 9 }}>{c.segmento || '—'}</span></td>
-                    <td style={{ fontSize: 12 }}>{c.telefone || c.whatsapp || '—'}</td>
-                    <td style={{ textAlign: 'right', fontFamily: "var(--font-sans)", color: '#3D7A6E', fontWeight: 700, fontSize: 12 }}>
+                    <td style={{ fontFamily: "var(--font-sans)", fontSize: 13, color: '#7B8C88' }}>{c.cnpj_cpf || '—'}</td>
+                    <td><span className="tag gray" style={{ fontSize: 11 }}>{c.segmento || '—'}</span></td>
+                    <td style={{ fontSize: 14 }}>{c.telefone || c.whatsapp || '—'}</td>
+                    <td style={{ textAlign: 'right', fontFamily: "var(--font-sans)", color: '#3D7A6E', fontWeight: 700, fontSize: 14 }}>
                       {c.valor_contrato ? formatBRL(Number(c.valor_contrato)) : '—'}
                     </td>
                     <td style={{ textAlign: 'center' }}>
-                      <span style={{ fontSize: 9, fontWeight: 700, padding: '3px 8px', borderRadius: 20, background: STATUS_BG[c.status], color: STATUS_COLOR[c.status] }}>
+                      <span style={{ fontSize: 11, fontWeight: 700, padding: '3px 8px', borderRadius: 20, background: STATUS_BG[c.status], color: STATUS_COLOR[c.status] }}>
                         {STATUS_LABEL[c.status]}
                       </span>
                     </td>
                     <td style={{ textAlign: 'center' }}>
                       <div style={{ display: 'flex', gap: 4, justifyContent: 'center' }}>
-                        <button className="btn-ghost" style={{ fontSize: 10, padding: '3px 8px' }} onClick={() => { setDetalhe(c); void carregarContatos(c.id) }}>Ver</button>
-                        <button className="btn-ghost" style={{ fontSize: 10, padding: '3px 8px' }} onClick={() => abrirForm(c)}>Editar</button>
-                        <button className="btn-ghost" style={{ fontSize: 10, padding: '3px 8px', color: '#3D7A6E' }} onClick={() => void gerarPortal(c.id)} title="Portal do cliente"><i className="fa-solid fa-link" /></button>
-                        <button className="btn-ghost" style={{ fontSize: 10, padding: '3px 8px', color: '#B0413E' }} onClick={() => void excluir(c.id)}><i className="fa-solid fa-trash" style={{ fontSize: 9 }} /></button>
+                        <button className="btn-ghost" style={{ fontSize: 12, padding: '3px 8px' }} onClick={() => { setDetalhe(c); void carregarContatos(c.id) }}>Ver</button>
+                        <button className="btn-ghost" style={{ fontSize: 12, padding: '3px 8px' }} onClick={() => abrirForm(c)}>Editar</button>
+                        <button className="btn-ghost" style={{ fontSize: 12, padding: '3px 8px', color: '#3D7A6E' }} onClick={() => void gerarPortal(c.id)} title="Portal do cliente"><i className="fa-solid fa-link" /></button>
+                        <button className="btn-ghost" style={{ fontSize: 12, padding: '3px 8px', color: '#B0413E' }} onClick={() => void excluir(c.id)}><i className="fa-solid fa-trash" style={{ fontSize: 11 }} /></button>
                       </div>
                     </td>
                   </tr>
@@ -364,30 +364,30 @@ export default function ClientesPage() {
               </div>
             ) : portalUrl ? (
               <>
-                <p style={{ fontSize: 13, color: '#7B8C88', marginBottom: 16 }}>
+                <p style={{ fontSize: 15, color: '#7B8C88', marginBottom: 16 }}>
                   Compartilhe este link com o cliente. Ele terá acesso somente leitura às faturas, entregas e contratos. O link expira em 90 dias.
                 </p>
                 <div style={{ display: 'flex', gap: 8, alignItems: 'center', background: '#f8fafc', border: '0.5px solid #E4DCCC', borderRadius: 8, padding: '10px 14px', marginBottom: 16 }}>
-                  <span style={{ flex: 1, fontSize: 12, fontVariantNumeric: 'tabular-nums', color: '#13201D', wordBreak: 'break-all' }}>{portalUrl}</span>
+                  <span style={{ flex: 1, fontSize: 14, fontVariantNumeric: 'tabular-nums', color: '#13201D', wordBreak: 'break-all' }}>{portalUrl}</span>
                   <button
                     className="btn-ghost"
-                    style={{ fontSize: 11, flexShrink: 0 }}
+                    style={{ fontSize: 13, flexShrink: 0 }}
                     onClick={() => { void navigator.clipboard.writeText(portalUrl); setPortalCopiado(true) }}
                   >
                     {portalCopiado ? <><i className="fa-solid fa-check" style={{ marginRight: 4, color: '#3D7A6E' }} />Copiado</> : <><i className="fa-regular fa-copy" style={{ marginRight: 4 }} />Copiar</>}
                   </button>
                 </div>
                 <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
-                  <a href={portalUrl} target="_blank" rel="noreferrer" className="btn-ghost" style={{ fontSize: 12, textDecoration: 'none' }}>
+                  <a href={portalUrl} target="_blank" rel="noreferrer" className="btn-ghost" style={{ fontSize: 14, textDecoration: 'none' }}>
                     <i className="fa-solid fa-arrow-up-right-from-square" style={{ marginRight: 5 }} />Abrir portal
                   </a>
-                  <button className="btn-ghost" style={{ fontSize: 12 }} onClick={() => void gerarPortal(portalClienteId)}>
+                  <button className="btn-ghost" style={{ fontSize: 14 }} onClick={() => void gerarPortal(portalClienteId)}>
                     <i className="fa-solid fa-rotate" style={{ marginRight: 5 }} />Novo link
                   </button>
                 </div>
               </>
             ) : (
-              <p style={{ textAlign: 'center', color: '#B0413E', fontSize: 13 }}>Erro ao gerar link. Tente novamente.</p>
+              <p style={{ textAlign: 'center', color: '#B0413E', fontSize: 15 }}>Erro ao gerar link. Tente novamente.</p>
             )}
           </div>
         </div>
@@ -400,10 +400,10 @@ export default function ClientesPage() {
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
               <div>
                 <h3 style={{ fontSize: 18, fontWeight: 800, color: '#13201D', fontFamily: "var(--font-sans)", margin: 0 }}>{detalhe.nome}</h3>
-                <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 8px', borderRadius: 20, background: STATUS_BG[detalhe.status], color: STATUS_COLOR[detalhe.status] }}>{STATUS_LABEL[detalhe.status]}</span>
+                <span style={{ fontSize: 12, fontWeight: 700, padding: '2px 8px', borderRadius: 20, background: STATUS_BG[detalhe.status], color: STATUS_COLOR[detalhe.status] }}>{STATUS_LABEL[detalhe.status]}</span>
               </div>
               <div style={{ display: 'flex', gap: 8 }}>
-                <button className="btn-ghost" style={{ fontSize: 11 }} onClick={() => { setDetalhe(null); abrirForm(detalhe) }}>Editar</button>
+                <button className="btn-ghost" style={{ fontSize: 13 }} onClick={() => { setDetalhe(null); abrirForm(detalhe) }}>Editar</button>
                 <button className="modal-close" onClick={() => setDetalhe(null)}><i className="fa-solid fa-xmark" /></button>
               </div>
             </div>
@@ -415,37 +415,37 @@ export default function ClientesPage() {
                 ['Cidade', detalhe.cidade ? `${detalhe.cidade}/${detalhe.estado}` : null],
               ].filter(([, v]) => v).map(([k, v]) => (
                 <div key={String(k)}>
-                  <span style={{ fontSize: 10, fontWeight: 700, color: '#7B8C88', textTransform: 'uppercase', letterSpacing: '.06em' }}>{k}</span>
-                  <p style={{ fontSize: 13, color: '#13201D', margin: '2px 0 0', fontWeight: 500 }}>{String(v)}</p>
+                  <span style={{ fontSize: 12, fontWeight: 700, color: '#7B8C88', textTransform: 'uppercase', letterSpacing: '.06em' }}>{k}</span>
+                  <p style={{ fontSize: 15, color: '#13201D', margin: '2px 0 0', fontWeight: 500 }}>{String(v)}</p>
                 </div>
               ))}
             </div>
             {detalhe.notas && (
-              <div style={{ padding: '10px 14px', background: '#fafafa', borderRadius: 8, border: '0.5px solid #E4DCCC', fontSize: 12, color: '#7B8C88', marginBottom: 16 }}>
+              <div style={{ padding: '10px 14px', background: '#fafafa', borderRadius: 8, border: '0.5px solid #E4DCCC', fontSize: 14, color: '#7B8C88', marginBottom: 16 }}>
                 {detalhe.notas}
               </div>
             )}
 
             {/* Contatos */}
             <div style={{ borderTop: '0.5px solid #E4DCCC', paddingTop: 16 }}>
-              <p style={{ fontSize: 12, fontWeight: 700, color: '#13201D', marginBottom: 10 }}>Contatos</p>
+              <p style={{ fontSize: 14, fontWeight: 700, color: '#13201D', marginBottom: 10 }}>Contatos</p>
               {contatos.map(c => (
                 <div key={c.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 0', borderBottom: '0.5px solid #E4DCCC' }}>
-                  <div style={{ width: 32, height: 32, borderRadius: '50%', background: '#F1ECE1', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, fontSize: 13, fontWeight: 700, color: '#13201D' }}>
+                  <div style={{ width: 32, height: 32, borderRadius: '50%', background: '#F1ECE1', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, fontSize: 15, fontWeight: 700, color: '#13201D' }}>
                     {c.nome[0].toUpperCase()}
                   </div>
                   <div style={{ flex: 1 }}>
-                    <p style={{ fontSize: 12, fontWeight: 600, color: '#13201D', margin: 0 }}>{c.nome} {c.principal && <span style={{ fontSize: 9, color: '#3D7A6E', fontWeight: 700 }}>● Principal</span>}</p>
-                    <p style={{ fontSize: 11, color: '#7B8C88', margin: 0 }}>{[c.cargo, c.email, c.telefone].filter(Boolean).join(' · ')}</p>
+                    <p style={{ fontSize: 14, fontWeight: 600, color: '#13201D', margin: 0 }}>{c.nome} {c.principal && <span style={{ fontSize: 11, color: '#3D7A6E', fontWeight: 700 }}>● Principal</span>}</p>
+                    <p style={{ fontSize: 13, color: '#7B8C88', margin: 0 }}>{[c.cargo, c.email, c.telefone].filter(Boolean).join(' · ')}</p>
                   </div>
                 </div>
               ))}
               <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: 8, marginTop: 12 }}>
-                <input style={{ border: '0.5px solid #E4DCCC', borderRadius: 7, padding: '6px 10px', fontSize: 12 }} placeholder="Nome do contato" value={novoContato.nome} onChange={e => setNovoContato(f => ({ ...f, nome: e.target.value }))} />
-                <input style={{ border: '0.5px solid #E4DCCC', borderRadius: 7, padding: '6px 10px', fontSize: 12 }} placeholder="Cargo" value={novoContato.cargo} onChange={e => setNovoContato(f => ({ ...f, cargo: e.target.value }))} />
-                <input style={{ border: '0.5px solid #E4DCCC', borderRadius: 7, padding: '6px 10px', fontSize: 12 }} placeholder="E-mail" value={novoContato.email} onChange={e => setNovoContato(f => ({ ...f, email: e.target.value }))} />
+                <input style={{ border: '0.5px solid #E4DCCC', borderRadius: 7, padding: '6px 10px', fontSize: 14 }} placeholder="Nome do contato" value={novoContato.nome} onChange={e => setNovoContato(f => ({ ...f, nome: e.target.value }))} />
+                <input style={{ border: '0.5px solid #E4DCCC', borderRadius: 7, padding: '6px 10px', fontSize: 14 }} placeholder="Cargo" value={novoContato.cargo} onChange={e => setNovoContato(f => ({ ...f, cargo: e.target.value }))} />
+                <input style={{ border: '0.5px solid #E4DCCC', borderRadius: 7, padding: '6px 10px', fontSize: 14 }} placeholder="E-mail" value={novoContato.email} onChange={e => setNovoContato(f => ({ ...f, email: e.target.value }))} />
               </div>
-              <button className="btn-ghost" style={{ marginTop: 8, fontSize: 12 }} disabled={savingContato} onClick={() => void salvarContato()}>
+              <button className="btn-ghost" style={{ marginTop: 8, fontSize: 14 }} disabled={savingContato} onClick={() => void salvarContato()}>
                 {savingContato ? 'Salvando…' : '+ Adicionar contato'}
               </button>
             </div>

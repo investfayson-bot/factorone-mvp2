@@ -98,8 +98,8 @@ export default function GastosPage() {
           <div className="page-sub">Todos os seus gastos do mês</div>
         </div>
         <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-          <input type="month" value={mes} onChange={e => { setMes(e.target.value); carregar(userId, e.target.value) }} className="form-input" style={{ width: 'auto', padding: '6px 10px', fontSize: 12 }} />
-          <label style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'rgba(61,122,110,.1)', border: '1px solid rgba(61,122,110,.3)', borderRadius: 8, padding: '7px 12px', fontSize: 11, fontWeight: 700, color: 'var(--teal)', cursor: 'pointer' }}>
+          <input type="month" value={mes} onChange={e => { setMes(e.target.value); carregar(userId, e.target.value) }} className="form-input" style={{ width: 'auto', padding: '6px 10px', fontSize: 14 }} />
+          <label style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'rgba(61,122,110,.1)', border: '1px solid rgba(61,122,110,.3)', borderRadius: 8, padding: '7px 12px', fontSize: 13, fontWeight: 700, color: 'var(--teal)', cursor: 'pointer' }}>
             {uploadando ? 'Lendo...' : 'OCR'}
             <input type="file" accept="image/*,application/pdf" style={{ display: 'none' }} onChange={e => { const f = e.target.files?.[0]; if (f) void uploadOCR(f); e.currentTarget.value = '' }} />
           </label>
@@ -123,12 +123,12 @@ export default function GastosPage() {
                 <td style={{ fontWeight: 600 }}>{g.descricao}</td>
                 <td><span className="tag gray">{g.categoria}</span></td>
                 <td style={{ color: 'var(--gray-400)' }}>{g.data_despesa?.split('-').reverse().join('/')}</td>
-                <td style={{ color: 'var(--gray-400)', fontSize: 11 }}>{g.parcela_atual ? `${g.parcela_atual}/${g.total_parcelas}x` : '—'}</td>
+                <td style={{ color: 'var(--gray-400)', fontSize: 13 }}>{g.parcela_atual ? `${g.parcela_atual}/${g.total_parcelas}x` : '—'}</td>
                 <td style={{ fontFamily: "var(--font-sans)", fontWeight: 700 }}>{formatBRL(Number(g.valor))}</td>
                 <td><span className={`tag ${g.status === 'pago' ? 'green' : g.status === 'vencido' ? 'red' : 'gray'}`}>{g.status}</span></td>
                 <td style={{ display: 'flex', gap: 6 }}>
-                  {g.status !== 'pago' && <button onClick={() => marcarPago(g.id)} className="btn-ghost" style={{ padding: '3px 8px', fontSize: 10 }}>Pago</button>}
-                  <button onClick={() => excluir(g.id)} className="btn-ghost" style={{ padding: '3px 8px', fontSize: 10, color: 'var(--red)' }}>✕</button>
+                  {g.status !== 'pago' && <button onClick={() => marcarPago(g.id)} className="btn-ghost" style={{ padding: '3px 8px', fontSize: 12 }}>Pago</button>}
+                  <button onClick={() => excluir(g.id)} className="btn-ghost" style={{ padding: '3px 8px', fontSize: 12, color: 'var(--red)' }}>✕</button>
                 </td>
               </tr>
             ))}

@@ -57,16 +57,16 @@ export default function EntradasSaidasChart({ empresaId }: Props) {
 
   if (loading) return <div style={{ height: 160, background: 'var(--gray-100)', borderRadius: 8, animation: 'pulse 1.5s infinite' }} />
   if (error || !chartData.some(r => r.entradas + r.saidas > 0)) {
-    return <div style={{ height: 160, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gray-400)', fontSize: 12 }}>Sem transações no período.</div>
+    return <div style={{ height: 160, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gray-400)', fontSize: 14 }}>Sem transações no período.</div>
   }
 
   return (
     <div>
       <div style={{ display: 'flex', gap: 16, marginBottom: 10 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, color: 'var(--gray-500)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, color: 'var(--gray-500)' }}>
           <div style={{ width: 10, height: 10, borderRadius: 2, background: 'var(--green)' }} /> Entradas
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, color: 'var(--gray-500)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, color: 'var(--gray-500)' }}>
           <div style={{ width: 10, height: 10, borderRadius: 2, background: 'var(--red)' }} /> Saídas
         </div>
       </div>
@@ -83,12 +83,12 @@ export default function EntradasSaidasChart({ empresaId }: Props) {
             </linearGradient>
           </defs>
           <CartesianGrid strokeDasharray="3 3" stroke="var(--gray-100)" vertical={false} />
-          <XAxis dataKey="mes" tick={{ fontSize: 10, fill: 'var(--gray-400)' }} axisLine={false} tickLine={false} />
-          <YAxis tick={{ fontSize: 9, fill: 'var(--gray-300)' }} axisLine={false} tickLine={false} tickFormatter={v => fmtBRLCompact(v)} width={52} />
+          <XAxis dataKey="mes" tick={{ fontSize: 12, fill: 'var(--gray-400)' }} axisLine={false} tickLine={false} />
+          <YAxis tick={{ fontSize: 11, fill: 'var(--gray-300)' }} axisLine={false} tickLine={false} tickFormatter={v => fmtBRLCompact(v)} width={52} />
           <Tooltip
             formatter={(v: number, name: string) => [fmtBRLCompact(v), name === 'entradas' ? 'Entradas' : 'Saídas']}
-            contentStyle={{ fontSize: 11, borderRadius: 8, border: '1px solid var(--gray-100)', background: '#fff' }}
-            labelStyle={{ fontWeight: 700, color: 'var(--navy)', fontSize: 11 }}
+            contentStyle={{ fontSize: 13, borderRadius: 8, border: '1px solid var(--gray-100)', background: '#fff' }}
+            labelStyle={{ fontWeight: 700, color: 'var(--navy)', fontSize: 13 }}
           />
           <Area type="monotone" dataKey="entradas" stroke="#3D7A6E" strokeWidth={2} fill="url(#gradEntradas)" dot={false} activeDot={{ r: 4 }} />
           <Area type="monotone" dataKey="saidas" stroke="#B0413E" strokeWidth={2} fill="url(#gradSaidas)" dot={false} activeDot={{ r: 4 }} />

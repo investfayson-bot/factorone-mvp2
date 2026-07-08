@@ -118,7 +118,7 @@ export default function ProdutosPage() {
           { l: 'Lucro realizado', v: formatBRL(kpi.lucro), c: kpi.lucro >= 0 ? 'var(--sage)' : '#B0413E' },
         ].map(k => (
           <div key={k.l} className="kpi txs-card" style={{ padding: '13px 16px' }}>
-            <div style={{ fontSize: 10.5, color: 'var(--ink-mut)', textTransform: 'uppercase', letterSpacing: '.05em' }}>{k.l}</div>
+            <div style={{ fontSize: 12.5, color: 'var(--ink-mut)', textTransform: 'uppercase', letterSpacing: '.05em' }}>{k.l}</div>
             <div style={{ fontSize: 22, fontWeight: 800, color: k.c, fontVariantNumeric: 'tabular-nums' }}>{k.v}</div>
           </div>
         ))}
@@ -129,7 +129,7 @@ export default function ProdutosPage() {
           <div className="txs-card" style={{ padding: '44px 30px', textAlign: 'center' }}>
             <div style={{ width: 54, height: 54, borderRadius: '50%', background: 'var(--sage-tint)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 14px' }}><i className="fa-solid fa-tags" style={{ fontSize: 22, color: 'var(--sage-deep)' }} /></div>
             <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--ink)', marginBottom: 6 }}>Saiba quanto sobra em cada venda</div>
-            <div style={{ fontSize: 12.5, color: 'var(--ink-mut)', maxWidth: 380, margin: '0 auto 18px', lineHeight: 1.6 }}>Cadastre o custo da matéria-prima e o preço. O sistema mostra sua margem e, a cada venda, joga receita e custo direto no seu DRE.</div>
+            <div style={{ fontSize: 14.5, color: 'var(--ink-mut)', maxWidth: 380, margin: '0 auto 18px', lineHeight: 1.6 }}>Cadastre o custo da matéria-prima e o preço. O sistema mostra sua margem e, a cada venda, joga receita e custo direto no seu DRE.</div>
             <button className="btn-action" onClick={() => setEdit({ id: crypto.randomUUID(), nome: '', unidade: 'un', custo: 0, preco: 0, vendidos: 0, ativo: true })}><i className="fa-solid fa-plus" style={{ marginRight: 6 }} />Cadastrar primeiro produto</button>
           </div>
         ) : (
@@ -141,26 +141,26 @@ export default function ProdutosPage() {
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 8, marginBottom: 12 }}>
                     <div style={{ minWidth: 0 }}>
                       <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--ink)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p.nome || 'Sem nome'}</div>
-                      <div style={{ fontSize: 11, color: 'var(--ink-mut)' }}>por {p.unidade} · {p.vendidos} vendidos</div>
+                      <div style={{ fontSize: 13, color: 'var(--ink-mut)' }}>por {p.unidade} · {p.vendidos} vendidos</div>
                     </div>
-                    <span style={{ fontSize: 11, fontWeight: 800, color: corMargem(pct), background: 'color-mix(in srgb, currentColor 12%, #fff)', padding: '3px 9px', borderRadius: 100, whiteSpace: 'nowrap' }}>{pct.toFixed(0)}%</span>
+                    <span style={{ fontSize: 13, fontWeight: 800, color: corMargem(pct), background: 'color-mix(in srgb, currentColor 12%, #fff)', padding: '3px 9px', borderRadius: 100, whiteSpace: 'nowrap' }}>{pct.toFixed(0)}%</span>
                   </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, marginBottom: 4 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, marginBottom: 4 }}>
                     <span style={{ color: 'var(--ink-mut)' }}>Custo</span><span style={{ fontWeight: 600 }}>{formatBRL(p.custo)}</span>
                   </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, marginBottom: 4 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, marginBottom: 4 }}>
                     <span style={{ color: 'var(--ink-mut)' }}>Preço</span><span style={{ fontWeight: 600 }}>{formatBRL(p.preco)}</span>
                   </div>
                   <div style={{ height: 6, background: 'var(--paper-2)', borderRadius: 3, overflow: 'hidden', margin: '8px 0' }}>
                     <div style={{ height: '100%', width: `${Math.max(0, Math.min(100, pct))}%`, background: corMargem(pct), borderRadius: 3 }} />
                   </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, marginBottom: 12 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 15, marginBottom: 12 }}>
                     <span style={{ color: 'var(--ink-mut)' }}>Sobra por {p.unidade}</span><span style={{ fontWeight: 800, color: corMargem(pct), fontVariantNumeric: 'tabular-nums' }}>{formatBRL(m)}</span>
                   </div>
                   <div style={{ display: 'flex', gap: 6 }}>
-                    <button className="btn-action" style={{ fontSize: 11.5, padding: '6px 12px', flex: 1 }} onClick={() => { setVendendo(p); setQtd('1'); setVCliente(''); setVContato('') }}><i className="fa-solid fa-cart-shopping" style={{ marginRight: 5 }} />Registrar venda</button>
-                    <button className="btn-ghost" style={{ fontSize: 11.5, padding: '6px 10px' }} onClick={() => setEdit(p)} title="Editar"><i className="fa-solid fa-pen" /></button>
-                    <button className="btn-ghost" style={{ fontSize: 11.5, padding: '6px 9px', color: '#B0413E' }} onClick={() => excluir(p.id)} title="Excluir"><i className="fa-solid fa-trash" /></button>
+                    <button className="btn-action" style={{ fontSize: 13.5, padding: '6px 12px', flex: 1 }} onClick={() => { setVendendo(p); setQtd('1'); setVCliente(''); setVContato('') }}><i className="fa-solid fa-cart-shopping" style={{ marginRight: 5 }} />Registrar venda</button>
+                    <button className="btn-ghost" style={{ fontSize: 13.5, padding: '6px 10px' }} onClick={() => setEdit(p)} title="Editar"><i className="fa-solid fa-pen" /></button>
+                    <button className="btn-ghost" style={{ fontSize: 13.5, padding: '6px 9px', color: '#B0413E' }} onClick={() => excluir(p.id)} title="Excluir"><i className="fa-solid fa-trash" /></button>
                   </div>
                 </div>
               )
@@ -176,25 +176,25 @@ export default function ProdutosPage() {
         <div onClick={() => setVendendo(null)} style={{ position: 'fixed', inset: 0, background: 'rgba(19,32,29,.45)', zIndex: 60, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
           <div onClick={e => e.stopPropagation()} className="txs-card" style={{ width: '100%', maxWidth: 380, padding: 22 }}>
             <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--ink)', marginBottom: 4 }}>Registrar venda</div>
-            <div style={{ fontSize: 12, color: 'var(--ink-mut)', marginBottom: 16 }}>{vendendo.nome} · {formatBRL(vendendo.preco)}/{vendendo.unidade}</div>
+            <div style={{ fontSize: 14, color: 'var(--ink-mut)', marginBottom: 16 }}>{vendendo.nome} · {formatBRL(vendendo.preco)}/{vendendo.unidade}</div>
             <label className="form-label">Quantidade</label>
             <input className="form-input" type="number" min={1} value={qtd} onChange={e => setQtd(e.target.value)} autoFocus onKeyDown={e => { if (e.key === 'Enter') void registrarVenda() }} />
             {(() => { const q = Math.max(1, Math.floor(Number(qtd) || 1)); return (
-              <div style={{ background: 'var(--sage-tint)', borderRadius: 9, padding: '12px 14px', margin: '14px 0', fontSize: 12.5 }}>
+              <div style={{ background: 'var(--sage-tint)', borderRadius: 9, padding: '12px 14px', margin: '14px 0', fontSize: 14.5 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 3 }}><span style={{ color: 'var(--ink-mut)' }}>Receita</span><b>{formatBRL(vendendo.preco * q)}</b></div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 3 }}><span style={{ color: 'var(--ink-mut)' }}>Custo (CMV)</span><b>{formatBRL(vendendo.custo * q)}</b></div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', paddingTop: 5, borderTop: '1px solid var(--line)' }}><span style={{ color: 'var(--sage-deep)', fontWeight: 700 }}>Sobra</span><b style={{ color: 'var(--sage-deep)' }}>{formatBRL(margem(vendendo) * q)}</b></div>
               </div>
             ) })()}
             <div style={{ borderTop: '1px solid var(--line)', paddingTop: 14, marginBottom: 12 }}>
-              <div style={{ fontSize: 11.5, fontWeight: 700, color: 'var(--ink-mut)', marginBottom: 8 }}><i className="fa-solid fa-heart-pulse" style={{ marginRight: 6, color: '#B0413E' }} />Agendar follow-up <span style={{ fontWeight: 500 }}>(opcional)</span></div>
+              <div style={{ fontSize: 13.5, fontWeight: 700, color: 'var(--ink-mut)', marginBottom: 8 }}><i className="fa-solid fa-heart-pulse" style={{ marginRight: 6, color: '#B0413E' }} />Agendar follow-up <span style={{ fontWeight: 500 }}>(opcional)</span></div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
                 <input className="form-input" placeholder="Nome do cliente" value={vCliente} onChange={e => setVCliente(e.target.value)} />
                 <input className="form-input" placeholder="WhatsApp (5531…)" value={vContato} onChange={e => setVContato(e.target.value)} />
               </div>
-              {vCliente.trim() && <div style={{ fontSize: 10.5, color: 'var(--sage-deep)', marginTop: 6 }}><i className="fa-solid fa-circle-check" style={{ marginRight: 4 }} />Régua de 3 toques (satisfação, garantia, recompra) será agendada.</div>}
+              {vCliente.trim() && <div style={{ fontSize: 12.5, color: 'var(--sage-deep)', marginTop: 6 }}><i className="fa-solid fa-circle-check" style={{ marginRight: 4 }} />Régua de 3 toques (satisfação, garantia, recompra) será agendada.</div>}
             </div>
-            <div style={{ fontSize: 11, color: 'var(--ink-faint)', marginBottom: 14, lineHeight: 1.5 }}><i className="fa-solid fa-arrow-trend-up" style={{ marginRight: 5 }} />Receita e custo vão direto pro seu DRE.</div>
+            <div style={{ fontSize: 13, color: 'var(--ink-faint)', marginBottom: 14, lineHeight: 1.5 }}><i className="fa-solid fa-arrow-trend-up" style={{ marginRight: 5 }} />Receita e custo vão direto pro seu DRE.</div>
             <div style={{ display: 'flex', gap: 10 }}>
               <button className="btn-ghost" style={{ flex: 1 }} onClick={() => setVendendo(null)}>Cancelar</button>
               <button className="btn-action" style={{ flex: 2 }} onClick={() => void registrarVenda()}>Confirmar venda</button>
@@ -233,10 +233,10 @@ function EditModal({ p, onClose, onSave }: { p: Produto; onClose: () => void; on
             <input className="form-input" type="number" step="0.01" placeholder="0,00" value={f.preco || ''} onChange={e => setF(p => ({ ...p, preco: Number(e.target.value) || 0 }))} />
           </div>
           <div style={{ background: 'var(--sage-tint)', borderRadius: 9, padding: '12px 14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ fontSize: 12.5, color: 'var(--ink-mut)' }}>Sobra por venda</span>
-            <span style={{ fontSize: 16, fontWeight: 800, color: corMargem(pct), fontVariantNumeric: 'tabular-nums' }}>{formatBRL(m)} <span style={{ fontSize: 12 }}>({pct.toFixed(0)}%)</span></span>
+            <span style={{ fontSize: 14.5, color: 'var(--ink-mut)' }}>Sobra por venda</span>
+            <span style={{ fontSize: 16, fontWeight: 800, color: corMargem(pct), fontVariantNumeric: 'tabular-nums' }}>{formatBRL(m)} <span style={{ fontSize: 14 }}>({pct.toFixed(0)}%)</span></span>
           </div>
-          <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12.5, color: 'var(--ink)', cursor: 'pointer' }}>
+          <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 14.5, color: 'var(--ink)', cursor: 'pointer' }}>
             <input type="checkbox" checked={f.ativo} onChange={e => setF(p => ({ ...p, ativo: e.target.checked }))} /> Produto ativo
           </label>
         </div>
