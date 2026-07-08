@@ -68,8 +68,20 @@ Recomendação: **não é um app novo.** Divide por função, encostando no que 
 - Patrimônio e Marketing: confirmado pelo Fayson que ambos viram apps instaláveis de verdade (não ficam soltos/hardcoded).
 - Agendamento/automação/atendimento: não vira app novo — se distribui entre Vendas (agendamento) e Marketing (automação/conteúdo/chat), ver acima.
 
+## Banco — desenho em andamento (aguardando aprovação final do Fayson, ver histórico de chat)
+
+Achado ao investigar o código: hoje o caminho de uma transação do Belvo até virar dado útil passa por **3 telas/passos manuais**: `extrato_bancario` (feed cru) → **Conciliação** (confirma que é real, só aí grava em `transacoes`) → **Classificar** (`app/dashboard/classificar/page.tsx`, só depois disso a IA categoriza). `conta-pj` é a terceira tela (visual de banco: saldo/cartão/extrato).
+
+Decisões já confirmadas pelo Fayson nesta sessão (retomar se a conversa pivotar antes da aprovação final do desenho completo):
+- **Dashboard único**: fundir `conta-pj` (visual) + Conciliação + `classificar` (categorização) numa tela só. `Banco` vira grupo **Core** (sai do Marketplace/`MARKET_APPS`, sempre visível, não depende de segmento/instalação).
+- **Fluxo em um clique**: cada transação nova do extrato aparece pronta pra confirmar — concilia (grava em `transacoes`) E classifica (categoria + fornecedor/cliente) ao mesmo tempo, sem 2 telas separadas.
+- **Tag de fornecedor/cliente**: novo campo `fornecedor_id`/`cliente_id` (nullable, FK) em `transacoes` — linka com cadastro REAL de `fornecedores`/`clientes` (não texto livre). Segue o mesmo padrão de nomenclatura já usado em `20260508200000_sprint9_crm_marketing_logistica.sql` e `20260508300000_sprint10.sql`.
+- **Auto-criação de cadastro**: quando o nome do estabelecimento do Belvo não bate com nenhum fornecedor/cliente existente, a IA **sugere** criar um novo cadastro, mas só grava quando o usuário confirma (evita poluir a base com nomes crus de extrato tipo "PIX 8817").
+- Abas propostas no dashboard único: Visão geral · Fila (a revisar) · Extrato/Classificadas · Resumo (por categoria e por fornecedor/cliente, filtrável por semana/mês/ano).
+- Fora de escopo desta spec: reclassificação em massa de transações antigas, regras automáticas tipo "sempre que vier de X classifica Y sem perguntar" (fica pra depois), múltiplas contas Belvo (já suportado pelo sync atual).
+
 ## Em aberto — perguntas ainda sem resposta (não codar até resolver)
-1. **Banco**: qual a extensão real da integração Belvo hoje (que dados de transação já chegam, existe algum de-para de categoria hoje)? Precisa de sessão de brainstorm dedicada.
+1. **Banco**: desenho acima aguardando aprovação final — falta o Fayson confirmar o desenho consolidado antes de virar spec fechada.
 2. **Financeiro**: o que concretamente significa "departamentos se conversando" em tela — quais módulos precisam mostrar dado de qual outro módulo?
 3. **Contador**: modelo de permissão pra contador convidado (um contador atendendo vários clientes, um cliente com vários CNPJs) ainda não existe no modelo atual de single-tenant-per-usuário — precisa desenho de RLS/roles novo.
 4. **Marketing**: quais integrações de verdade (Instagram API, WhatsApp Business API, e-mail — Gmail/Outlook?) o Fayson já tem acesso/credencial, e quais dependem de aprovação de terceiro (Meta, Google) que pode travar prazo.
