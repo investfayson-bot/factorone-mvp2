@@ -1,0 +1,539 @@
+<style>
+:root {
+  --paper: #EFF4F0;
+  --surface: #FAFCFA;
+  --surface-2: #F2F7F3;
+  --ink: #13201D;
+  --ink-soft: #3C4A46;
+  --ink-mut: #6E7F7A;
+  --ink-faint: #A6B0AC;
+  --sage: #3D7A6E;
+  --sage-deep: #2B564D;
+  --sage-tint: #E9F0ED;
+  --gold: #93701F;
+  --gold-tint: #F3ECDA;
+  --brick: #A23B38;
+  --brick-tint: #F4E4E1;
+  --line: #DCD3BF;
+  --line-soft: #E8E2D2;
+  --font-display: "Iowan Old Style", "Palatino Linotype", "URW Palladio L", Palatino, "P052", Georgia, serif;
+  --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", "Cascadia Code", "Roboto Mono", Menlo, monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #10160F;
+    --surface: #171F19;
+    --surface-2: #1D2620;
+    --ink: #ECF2ED;
+    --ink-soft: #C4D0C9;
+    --ink-mut: #8FA098;
+    --ink-faint: #5C6C64;
+    --sage: #6FAE9E;
+    --sage-deep: #8FC4B5;
+    --sage-tint: #1C2C27;
+    --gold: #D6B871;
+    --gold-tint: #2A2417;
+    --brick: #E08C86;
+    --brick-tint: #2E1C1B;
+    --line: #2A332C;
+    --line-soft: #232B25;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #10160F; --surface: #171F19; --surface-2: #1D2620;
+  --ink: #ECF2ED; --ink-soft: #C4D0C9; --ink-mut: #8FA098; --ink-faint: #5C6C64;
+  --sage: #6FAE9E; --sage-deep: #8FC4B5; --sage-tint: #1C2C27;
+  --gold: #D6B871; --gold-tint: #2A2417;
+  --brick: #E08C86; --brick-tint: #2E1C1B;
+  --line: #2A332C; --line-soft: #232B25;
+}
+:root[data-theme="light"] {
+  --paper: #EFF4F0; --surface: #FAFCFA; --surface-2: #F2F7F3;
+  --ink: #13201D; --ink-soft: #3C4A46; --ink-mut: #6E7F7A; --ink-faint: #A6B0AC;
+  --sage: #3D7A6E; --sage-deep: #2B564D; --sage-tint: #E9F0ED;
+  --gold: #93701F; --gold-tint: #F3ECDA;
+  --brick: #A23B38; --brick-tint: #F4E4E1;
+  --line: #DCD3BF; --line-soft: #E8E2D2;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+::selection { background: var(--sage-tint); color: var(--sage-deep); }
+
+.wrap { max-width: 820px; margin: 0 auto; padding: 64px 28px 120px; }
+
+.masthead { margin-bottom: 56px; }
+.masthead .kicker {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--sage-deep);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+.masthead .kicker::before {
+  content: "";
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--sage);
+  flex-shrink: 0;
+}
+h1 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(32px, 5vw, 44px);
+  line-height: 1.12;
+  letter-spacing: -.01em;
+  margin: 0 0 18px;
+  text-wrap: balance;
+  color: var(--ink);
+}
+h1 em { font-style: italic; color: var(--sage-deep); }
+.dek {
+  font-size: 17px;
+  color: var(--ink-soft);
+  max-width: 62ch;
+  margin: 0;
+}
+.frame-note {
+  margin-top: 22px;
+  font-size: 13.5px;
+  color: var(--ink-mut);
+  border-left: 2px solid var(--line);
+  padding-left: 14px;
+  font-style: italic;
+}
+
+/* thesis */
+.thesis {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--gold);
+  border-radius: 4px;
+  padding: 28px 30px;
+  margin: 44px 0 60px;
+}
+.thesis .label {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 12px;
+}
+.thesis p {
+  font-family: var(--font-display);
+  font-size: 21px;
+  line-height: 1.45;
+  color: var(--ink);
+  margin: 0;
+  text-wrap: balance;
+}
+.thesis p + p { margin-top: 14px; font-family: var(--font-body); font-size: 15px; color: var(--ink-soft); }
+
+/* section */
+section.area {
+  padding: 40px 0;
+  border-top: 1px solid var(--line-soft);
+}
+section.area:first-of-type { border-top: none; padding-top: 0; }
+
+.area-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: 100px;
+  white-space: nowrap;
+}
+.eyebrow.core { background: var(--sage-tint); color: var(--sage-deep); }
+.eyebrow.app { background: var(--gold-tint); color: var(--gold); }
+.eyebrow.layer { background: var(--surface-2); color: var(--ink-mut); border: 1px solid var(--line); }
+
+h2 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 25px;
+  color: var(--ink);
+  margin: 0;
+  letter-spacing: -.01em;
+}
+
+.take {
+  font-size: 15.5px;
+  color: var(--ink-soft);
+  max-width: 66ch;
+  margin: 10px 0 20px;
+}
+
+.rivals {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+.rival-group {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 100px;
+  padding: 5px 12px 5px 5px;
+  font-size: 12.5px;
+  color: var(--ink-mut);
+}
+.rival-group .dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; margin-left: 5px; }
+.rival-group .dot.incumbent { background: var(--brick); }
+.rival-group .dot.spend { background: var(--gold); }
+.rival-group .dot.global { background: var(--ink-faint); }
+.rival-group b { color: var(--ink-soft); font-weight: 600; }
+
+.grid2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+@media (max-width: 640px) { .grid2 { grid-template-columns: 1fr; } }
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 18px 20px;
+}
+.card .card-lbl {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  margin-bottom: 11px;
+  display: block;
+}
+.card.have .card-lbl { color: var(--ink-mut); }
+.card.win { border-color: var(--sage); background: var(--sage-tint); }
+.card.win .card-lbl { color: var(--sage-deep); }
+.card.gap { border-color: var(--brick); background: var(--brick-tint); }
+.card.gap .card-lbl { color: var(--brick); }
+
+.card ul { margin: 0; padding: 0 0 0 16px; }
+.card li { font-size: 13.5px; color: var(--ink-soft); margin-bottom: 6px; }
+.card li:last-child { margin-bottom: 0; }
+.card p { margin: 0; font-size: 13.5px; color: var(--ink-soft); }
+.card.win p, .card.gap p { color: var(--ink); }
+
+.footnote {
+  font-size: 12px;
+  color: var(--ink-mut);
+  margin-top: 10px;
+}
+.footnote a { color: var(--sage-deep); }
+
+/* closing */
+.closing {
+  margin-top: 64px;
+  padding-top: 44px;
+  border-top: 1px solid var(--line-soft);
+}
+.closing h2 { margin-bottom: 14px; }
+.closing p { font-size: 15.5px; color: var(--ink-soft); max-width: 66ch; }
+
+.sources {
+  margin-top: 40px;
+  padding: 20px 22px;
+  background: var(--surface-2);
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--ink-mut);
+}
+.sources .card-lbl {
+  font-family: var(--font-mono); font-size: 10px; font-weight: 600;
+  letter-spacing: .1em; text-transform: uppercase; color: var(--ink-mut);
+  display: block; margin-bottom: 10px;
+}
+.sources ul { margin: 0; padding-left: 16px; }
+.sources li { margin-bottom: 5px; }
+.sources a { color: var(--sage-deep); text-decoration: none; border-bottom: 1px solid var(--line); }
+.sources a:hover { border-color: var(--sage-deep); }
+
+.legend {
+  display: flex; gap: 18px; flex-wrap: wrap;
+  font-size: 12px; color: var(--ink-mut);
+  margin: 6px 0 0;
+}
+.legend span { display: flex; align-items: center; gap: 6px; }
+.legend .dot { width: 6px; height: 6px; border-radius: 50%; }
+
+a:focus-visible, button:focus-visible { outline: 2px solid var(--sage); outline-offset: 2px; }
+</style>
+
+<div class="wrap">
+
+  <div class="masthead">
+    <div class="kicker">Posicionamento estratégico — não auditoria de features</div>
+    <h1>Onde o FactorOne <em>ganha</em>, área por área</h1>
+    <p class="dek">Cruzamento das 8 frentes do produto contra três bandos de concorrente: os sistemas que seus clientes já usam hoje, os apps de conta PJ/cartão corporativo brasileiros, e as referências globais de cada categoria.</p>
+    <p class="frame-note">Isto é leitura de posicionamento, feita a partir do que já está construído no FactorOne e do que dá pra saber publicamente sobre cada concorrente — não é uma auditoria feature-a-feature. Nos itens de Omie e Bling, seu uso real dessas ferramentas vale mais que qualquer busca.</p>
+  </div>
+
+  <div class="thesis">
+    <div class="label">A aposta</div>
+    <p>Nenhum dos concorrentes junta <em>feed bancário classificado</em> + <em>CRM</em> + <em>automação de marketing</em> + <em>portal de contador</em> + <em>IA que vê tudo isso ao mesmo tempo</em> num produto só — e nenhum deles oferece um caminho de entrada que não exige abandonar o sistema que o cliente já usa no dia 1.</p>
+    <p>Os ERPs brasileiros (Omie, Bling, ContaAzul) são fortes em fiscal/estoque/contador. Os apps de conta PJ (Conta Simples, Clara) são fortes em cartão corporativo. Nenhum dos dois grupos tem os dois lados. É essa fronteira que o FactorOne ocupa.</p>
+  </div>
+
+  <div class="legend">
+    <span><span class="dot" style="background:var(--brick)"></span> Incumbentes (o que seus clientes já usam)</span>
+    <span><span class="dot" style="background:var(--gold)"></span> Conta PJ / cartão corporativo BR</span>
+    <span><span class="dot" style="background:var(--ink-faint)"></span> Referência global</span>
+  </div>
+
+  <!-- 1. BANCO -->
+  <section class="area">
+    <div class="area-head">
+      <span class="eyebrow core">Core</span>
+      <h2>Banco</h2>
+    </div>
+    <p class="take">O ângulo "banco de verdade" com Open Finance nativo e classificação automática por transação é o disputado mais de perto pelos apps de conta PJ — não pelos ERPs, que tratam conciliação bancária como uma tela secundária.</p>
+    <div class="rivals">
+      <div class="rival-group"><span class="dot incumbent"></span><b>Omie · Bling · ContaAzul</b> — conciliação básica, não é o produto principal</div>
+      <div class="rival-group"><span class="dot spend"></span><b>Conta Simples · Clara</b> — o rival mais direto: conta PJ + cartão corporativo real</div>
+      <div class="rival-group"><span class="dot global"></span><b>QuickBooks</b> — validou o padrão "toda transação categorizada sozinha" no mundo todo</div>
+    </div>
+    <div class="grid2">
+      <div class="card have">
+        <span class="card-lbl">Já temos</span>
+        <ul>
+          <li>Open Finance real via Belvo, não upload de OFX</li>
+          <li>Motor de categorização que aprende do histórico</li>
+          <li>Ledger único (<code>transacoes</code>) que já alimenta DRE e Fluxo de Caixa</li>
+        </ul>
+      </div>
+      <div class="card win">
+        <span class="card-lbl">Onde ganhamos</span>
+        <p>Conta Simples e Clara param no cartão corporativo — não ligam a transação a um fornecedor/cliente específico nem entregam isso pronto pro contador. Essa ponte banco → fiscal é nossa.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. FINANCEIRO -->
+  <section class="area">
+    <div class="area-head">
+      <span class="eyebrow core">Core</span>
+      <h2>Financeiro</h2>
+    </div>
+    <p class="take">DRE e Fluxo de Caixa são tabela stakes — todo ERP brasileiro tem isso. O diferencial não está em ter os relatórios, está nos módulos se alimentarem sozinhos.</p>
+    <div class="rivals">
+      <div class="rival-group"><span class="dot incumbent"></span><b>Omie · ContaAzul</b> — DRE e fluxo de caixa maduros, é o core deles</div>
+      <div class="rival-group"><span class="dot global"></span><b>SAP · Totvs</b> — o mesmo, em escala enterprise, com integração custosa</div>
+    </div>
+    <div class="grid2">
+      <div class="card have">
+        <span class="card-lbl">Já temos</span>
+        <ul>
+          <li>DRE, Fluxo de Caixa, Indicadores (CAC/LTV/MRR) já existem</li>
+          <li>Venda em Produtos &amp; Margem já cai automático como receita+CMV no DRE</li>
+        </ul>
+      </div>
+      <div class="card win">
+        <span class="card-lbl">Onde ganhamos</span>
+        <p>Estender esse "cai sozinho" pra CRM e Marketing também — nenhum concorrente brasileiro nesse porte faz isso sem módulo pago à parte.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. LEADS / CRM / FOLLOW-UP -->
+  <section class="area">
+    <div class="area-head">
+      <span class="eyebrow app">App instalável</span>
+      <h2>Leads, CRM &amp; follow-up</h2>
+    </div>
+    <p class="take">A Omie é mais forte aqui do que parece de fora: CRM com lead scoring, automação de gatilho por comportamento, e WhatsApp nativo chegando em 2026. Não é um espaço vazio.</p>
+    <div class="rivals">
+      <div class="rival-group"><span class="dot incumbent"></span><b>Omie CRM</b> — lead scoring, automação de cupom/lembrete, WhatsApp nativo (2026)</div>
+      <div class="rival-group"><span class="dot global"></span><b>Salesforce</b> — padrão-ouro enterprise, fora do orçamento de PME</div>
+      <div class="rival-group"><span class="dot global"></span><b>HighLevel</b> — pipeline visual, inbox único (SMS/e-mail/redes), agenda, white-label — a referência que você mesmo citou</div>
+    </div>
+    <div class="grid2">
+      <div class="card have">
+        <span class="card-lbl">Já temos</span>
+        <ul>
+          <li>CRM, Pipeline, Captação de Leads e Pós-venda já existem como apps</li>
+        </ul>
+      </div>
+      <div class="card win">
+        <span class="card-lbl">Onde ganhamos</span>
+        <p>Ligar o funil direto ao CAC e à margem real — porque o dado financeiro já mora no mesmo produto. HighLevel tem o CRM/inbox mais maduro do mercado nisso, mas foi feito pra agência revender pra qualquer nicho — não sabe nada sobre o caixa, o DAS ou o DRE do cliente. A Omie tem CRM decente, mas também separado da profundidade bancária/fiscal.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. MARKETING / AUTOMAÇÃO -->
+  <section class="area">
+    <div class="area-head">
+      <span class="eyebrow app">App instalável</span>
+      <h2>Marketing &amp; automação</h2>
+    </div>
+    <p class="take">HighLevel — a referência que você citou — já entrega quase exatamente o que você descreveu, feature por feature. O gap aqui não é inventar a categoria, é igualar isso e depois ligar ao banco/fiscal que o HighLevel não tem.</p>
+    <div class="rivals">
+      <div class="rival-group"><span class="dot incumbent"></span><b>Omie</b> — automação leve (cupom, lembrete por comportamento), não cria conteúdo</div>
+      <div class="rival-group"><span class="dot global"></span><b>HighLevel</b> — inbox único (SMS/e-mail/Instagram/WhatsApp/chat), Conversation AI responde 24h, Social Planner posta em Instagram/Facebook/LinkedIn/Google, Content AI escreve o texto</div>
+      <div class="rival-group"><span class="dot global"></span><b>Mailchimp</b> — pra onde a Intuit foi depois de sair do Brasil: só e-mail, sem CRM/automação de conversa</div>
+    </div>
+    <div class="grid2">
+      <div class="card have">
+        <span class="card-lbl">Já temos</span>
+        <ul>
+          <li>App "Marketing" existe hoje, mas raso perto do escopo pedido</li>
+        </ul>
+      </div>
+      <div class="card gap">
+        <span class="card-lbl">Gap real — HighLevel já provou que funciona, falta construir</span>
+        <p>Ler/responder e-mail com IA, postar em rede social automático, criar conteúdo, chat embutível no site com toggle on/off — é exatamente o pacote do HighLevel. Não precisa inventar; precisa igualar e depois amarrar ao mesmo lugar que já tem o extrato bancário e o DRE, coisa que o HighLevel não tem.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. CONTADOR -->
+  <section class="area">
+    <div class="area-head">
+      <span class="eyebrow core">Core</span>
+      <h2>Contador</h2>
+    </div>
+    <p class="take">Aqui a régua é alta: Omie e ContaAzul nasceram vendendo justamente para escritórios contábeis. "Ter um dashboard pro contador" não é diferencial — é preço de entrada.</p>
+    <div class="rivals">
+      <div class="rival-group"><span class="dot incumbent"></span><b>Omie · ContaAzul</b> — historicamente fortes em integração com escritório contábil</div>
+      <div class="rival-group"><span class="dot global"></span><b>Totvs</b> — dominante em contabilidade de porte médio/grande</div>
+    </div>
+    <div class="grid2">
+      <div class="card have">
+        <span class="card-lbl">Já temos</span>
+        <ul>
+          <li>Nada construído ainda — módulo em desenho (ver <code>contador-module-vision</code>)</li>
+        </ul>
+      </div>
+      <div class="card win">
+        <span class="card-lbl">Onde ganhamos</span>
+        <p>O ângulo de <em>portal do contador convidado</em> (um contador atendendo vários clientes FactorOne, pedido de documento in-app, sugestão de feature que vira produto) é mais parecido com um produto voltado ao contador do que o "exporta um relatório pro seu contador" tradicional desses concorrentes.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. INTEGRAÇÕES -->
+  <section class="area">
+    <div class="area-head">
+      <span class="eyebrow layer">Camada transversal</span>
+      <h2>Integrações</h2>
+    </div>
+    <p class="take">Omie e Bling têm lojas de apps próprias. SAP/Salesforce/Oracle vivem de hub de integração enterprise. Nenhum desses é o modelo que você descreveu.</p>
+    <div class="rivals">
+      <div class="rival-group"><span class="dot incumbent"></span><b>Omie Store · Bling</b> — marketplace de apps de terceiro dentro do próprio ERP</div>
+      <div class="rival-group"><span class="dot global"></span><b>SAP · Oracle</b> — hub de integração enterprise, implementação cara e lenta</div>
+    </div>
+    <div class="grid2">
+      <div class="card have">
+        <span class="card-lbl">Já temos</span>
+        <ul>
+          <li>Marketplace próprio (<code>lib/marketplace.ts</code>) com apps instaláveis por segmento</li>
+        </ul>
+      </div>
+      <div class="card win">
+        <span class="card-lbl">Onde ganhamos</span>
+        <p>A "esteira" — plugar só a camada de inteligência em cima do Omie/Bling que o cliente já usa, sem forçar migração — não é um modelo de app-store. É absorção gradual. Ninguém desses vende isso.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. IA -->
+  <section class="area">
+    <div class="area-head">
+      <span class="eyebrow core">Core</span>
+      <h2>Camada de inteligência</h2>
+    </div>
+    <p class="take">O coração da tese inteira. Uma IA que já enxerga banco, CRM e fiscal ao mesmo tempo sabe coisas que uma IA presa a um módulo não sabe.</p>
+    <div class="rivals">
+      <div class="rival-group"><span class="dot incumbent"></span><b>Omie</b> — lead scoring pontual, não um assistente cross-módulo</div>
+      <div class="rival-group"><span class="dot global"></span><b>Salesforce Einstein · Oracle Fusion AI</b> — cross-módulo, mas dentro de uma única suíte enterprise, preço fora do alcance de PME</div>
+    </div>
+    <div class="grid2">
+      <div class="card have">
+        <span class="card-lbl">Já temos</span>
+        <ul>
+          <li>Base do FactorHub (<code>hub-agentes.ts</code>) e tabelas <code>hub_*</code></li>
+          <li>Decisão fechada: vira feed proativo ("Central"), não seletor de chat</li>
+        </ul>
+      </div>
+      <div class="card win">
+        <span class="card-lbl">Onde ganhamos</span>
+        <p>Nenhum ERP brasileiro modular tem contexto de banco + vendas + fiscal no mesmo lugar pra uma IA cruzar. É o único grupo aqui onde a vantagem vem de dado, não de esforço de engenharia.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. APPS VERTICAIS -->
+  <section class="area">
+    <div class="area-head">
+      <span class="eyebrow app">App instalável</span>
+      <h2>Apps verticais — jurídico, logística, patrimônio, estoque</h2>
+    </div>
+    <p class="take">Aqui a régua muda por vertical: Bling ganha em estoque/e-commerce, SAP/Totvs ganham em logística industrial pesada — mas ambos exigem sair do financeiro pra usar.</p>
+    <div class="rivals">
+      <div class="rival-group"><span class="dot incumbent"></span><b>Bling</b> — forte em estoque, pedidos, nota fiscal pra e-commerce</div>
+      <div class="rival-group"><span class="dot global"></span><b>SAP · Totvs</b> — logística/industrial completo, caro e lento pra implementar numa PME</div>
+    </div>
+    <div class="grid2">
+      <div class="card have">
+        <span class="card-lbl">Já temos</span>
+        <ul>
+          <li>Logística, Estoque, Produtos &amp; Margem, Jurídico já existem como apps</li>
+          <li>Patrimônio existe na tela, mas ainda não é um app formal do catálogo</li>
+        </ul>
+      </div>
+      <div class="card win">
+        <span class="card-lbl">Onde ganhamos</span>
+        <p>Não é ter mais vertical — é o cliente de produtos químicos ou o de frota não precisar sair do FactorOne pra ver estoque, financeiro e patrimônio pessoal no mesmo lugar.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="closing">
+    <h2>E o ClickUp/Trello?</h2>
+    <p>Não competem de frente — são ferramentas de gestão de trabalho (tarefa, projeto), não ERPs. O risco deles não é "roubar o cliente", é roubar a <em>atenção</em>: se o dono da empresa organiza a rotina no ClickUp e o dinheiro no FactorOne, a Central (item 7 acima) perde a chance de ser onde ele olha primeiro todo dia. Vale tratar como concorrente de hábito, não de feature.</p>
+  </div>
+
+  <div class="sources">
+    <span class="card-lbl">O que foi verificado agora, e o que ainda depende do seu olho</span>
+    <ul>
+      <li>QuickBooks encerrou operação no Brasil em 30/04/2023 (a Intuit foca hoje em Mailchimp por aqui) — <a href="https://www.baguete.com.br/noticias/intuit-desiste-do-quickbooks-no-brasil" target="_blank" rel="noopener">Baguete</a>, <a href="https://startups.com.br/negocios/mudanca-de-planos-intuit-encerra-quickbooks-no-brasil-e-foca-no-mailchimp/" target="_blank" rel="noopener">Startups.com.br</a></li>
+      <li>Omie CRM tem lead scoring, automação por gatilho de comportamento e WhatsApp nativo anunciado pra 2026 — <a href="https://www.omie.com.br/funcionalidades/crm/" target="_blank" rel="noopener">Omie</a></li>
+      <li>Conta Simples e Clara: conta PJ + cartão corporativo com limite flexível e controle por centro de custo — <a href="https://www.clara.com/" target="_blank" rel="noopener">Clara</a>, <a href="https://hml.contasimples.com/" target="_blank" rel="noopener">Conta Simples</a></li>
+      <li>HighLevel em 2026: inbox único cross-canal, Conversation AI (responde 24h), Social Planner (posta em Instagram/Facebook/LinkedIn/Google Business), Content AI, Voice AI pra ligação — <a href="https://www.gohighlevel.com/crm" target="_blank" rel="noopener">GoHighLevel</a></li>
+      <li><b>Não verificado por busca — vale sua palavra final:</b> profundidade real de Bling e o quanto o Omie CRM entrega na prática (você usa os dois com clientes; o que está aqui é o que a Omie divulga, não o que você vê no dia a dia).</li>
+    </ul>
+  </div>
+
+</div>
