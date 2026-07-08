@@ -1,0 +1,800 @@
+<title>FactorOne — Auditoria de Navegação & Blueprint do Banco</title>
+<style>
+  :root {
+    --ink: #13201D; --ink-soft: #26382F;
+    --paper: #FBF8F1; --paper-2: #F3EEE1; --card: #FFFFFF;
+    --line: #E4DCCC; --line-soft: #EFE9DC;
+    --mint: #3D7A6E; --mint-bright: #6FA595; --mint-tint: #E9F0ED;
+    --mut: #7B8C88; --mut-2: #A6B0AC;
+    --good: #2B564D; --good-bg: #E4F0EC;
+    --warn: #9A7B1F; --warn-bg: #FBF0D4;
+    --crit: #A5413E; --crit-bg: #FADEDD;
+    --accent2: #6A5A8E; --accent2-bg: #ECE7F2;
+    --shadow: 0 1px 2px rgba(19,32,29,.06), 0 8px 28px rgba(19,32,29,.07);
+    --shadow-lg: 0 24px 60px rgba(19,32,29,.16);
+    --radius: 14px; --radius-sm: 9px;
+    --serif: ui-serif, "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+    --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --mono: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ink: #EFEADD; --ink-soft: #C9D2CD; --paper: #101915; --paper-2: #16221D;
+      --card: #18251F; --line: #2A3A33; --line-soft: #243029;
+      --mint: #7FB6A6; --mint-bright: #8FC7B6; --mint-tint: #1D2C26;
+      --mut: #92A29C; --mut-2: #6E7E79; --good: #86C7B4; --good-bg: #1B3229;
+      --warn: #E0BD63; --warn-bg: #33290F; --crit: #E88C88; --crit-bg: #3A1E1D;
+      --accent2: #B4A6D6; --accent2-bg: #241F30;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 30px rgba(0,0,0,.35);
+      --shadow-lg: 0 26px 64px rgba(0,0,0,.5);
+    }
+  }
+  :root[data-theme="light"] {
+    --ink: #13201D; --ink-soft: #26382F; --paper: #FBF8F1; --paper-2: #F3EEE1;
+    --card: #FFFFFF; --line: #E4DCCC; --line-soft: #EFE9DC;
+    --mint: #3D7A6E; --mint-bright: #6FA595; --mint-tint: #E9F0ED;
+    --mut: #7B8C88; --mut-2: #A6B0AC; --good: #2B564D; --good-bg: #E4F0EC;
+    --warn: #9A7B1F; --warn-bg: #FBF0D4; --crit: #A5413E; --crit-bg: #FADEDD;
+    --accent2: #6A5A8E; --accent2-bg: #ECE7F2;
+    --shadow: 0 1px 2px rgba(19,32,29,.06), 0 8px 28px rgba(19,32,29,.07);
+    --shadow-lg: 0 24px 60px rgba(19,32,29,.16);
+  }
+  :root[data-theme="dark"] {
+    --ink: #EFEADD; --ink-soft: #C9D2CD; --paper: #101915; --paper-2: #16221D;
+    --card: #18251F; --line: #2A3A33; --line-soft: #243029;
+    --mint: #7FB6A6; --mint-bright: #8FC7B6; --mint-tint: #1D2C26;
+    --mut: #92A29C; --mut-2: #6E7E79; --good: #86C7B4; --good-bg: #1B3229;
+    --warn: #E0BD63; --warn-bg: #33290F; --crit: #E88C88; --crit-bg: #3A1E1D;
+    --accent2: #B4A6D6; --accent2-bg: #241F30;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 30px rgba(0,0,0,.35);
+    --shadow-lg: 0 26px 64px rgba(0,0,0,.5);
+  }
+
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--sans); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+  .col { max-width: 760px; margin-left: auto; margin-right: auto; }
+
+  header.hero {
+    background: radial-gradient(120% 140% at 88% -10%, rgba(111,165,149,.16), transparent 55%), linear-gradient(180deg, var(--paper-2), var(--paper));
+    border-bottom: 1px solid var(--line); padding: 62px 0 46px;
+  }
+  .eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: .18em; text-transform: uppercase; color: var(--mint); font-weight: 600; display: flex; align-items: center; gap: 10px; }
+  .eyebrow::before { content: ""; width: 26px; height: 1px; background: var(--mint); display: inline-block; }
+  h1 { font-family: var(--serif); font-weight: 600; letter-spacing: -.02em; font-size: clamp(30px, 5vw, 50px); line-height: 1.05; margin: 20px 0 0; text-wrap: balance; max-width: 16ch; }
+  h1 em { font-style: italic; color: var(--mint); }
+  .lede { font-size: 18px; color: var(--ink-soft); max-width: 60ch; margin: 20px 0 0; }
+  .meta-row { display: flex; flex-wrap: wrap; gap: 8px 10px; margin-top: 28px; }
+  .chip { font-family: var(--mono); font-size: 11.5px; letter-spacing: .04em; background: var(--card); border: 1px solid var(--line); color: var(--mut); padding: 6px 12px; border-radius: 100px; font-variant-numeric: tabular-nums; }
+  .chip b { color: var(--ink); }
+
+  section { padding: 52px 0; border-bottom: 1px solid var(--line-soft); }
+  .sec-head { display: flex; gap: 16px; align-items: baseline; margin-bottom: 8px; }
+  .sec-num { font-family: var(--mono); font-size: 13px; color: var(--mint); font-weight: 600; letter-spacing: .1em; flex-shrink: 0; padding-top: 4px; }
+  h2 { font-family: var(--serif); font-weight: 600; letter-spacing: -.015em; font-size: clamp(23px, 3.4vw, 32px); line-height: 1.12; margin: 0; text-wrap: balance; }
+  .sub { color: var(--mut); font-size: 16px; margin: 10px 0 0; max-width: 62ch; }
+  h3 { font-size: 15px; letter-spacing: .02em; margin: 34px 0 14px; display: flex; align-items: center; gap: 10px; }
+  h3 .tag { font-family: var(--mono); font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--mut-2); font-weight: 600; }
+  p { margin: 14px 0; }
+  strong { color: var(--ink); }
+  code { font-family: var(--mono); font-size: .86em; background: var(--paper-2); border: 1px solid var(--line-soft); border-radius: 5px; padding: 1px 6px; color: var(--mint); }
+
+  .callout { background: var(--card); border: 1px solid var(--line); border-left: 3px solid var(--mint); border-radius: var(--radius-sm); padding: 20px 22px; margin: 24px 0; box-shadow: var(--shadow); }
+  .callout .k { font-family: var(--mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--mint); font-weight: 600; }
+  .callout p { margin: 8px 0 0; font-size: 15.5px; }
+
+  .dups { display: grid; gap: 14px; margin-top: 26px; }
+  .dup { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px 20px; box-shadow: var(--shadow); }
+  .dup-top { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .sev { font-family: var(--mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; font-weight: 700; padding: 3px 9px; border-radius: 100px; flex-shrink: 0; }
+  .sev.hi { background: var(--crit-bg); color: var(--crit); }
+  .sev.md { background: var(--warn-bg); color: var(--warn); }
+  .dup-title { font-weight: 600; font-size: 16px; }
+  .dup-body { color: var(--ink-soft); font-size: 14.5px; margin-top: 10px; }
+  .paths { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+  .path { font-family: var(--mono); font-size: 11.5px; color: var(--mut); background: var(--paper-2); border: 1px solid var(--line-soft); padding: 3px 8px; border-radius: 6px; }
+  .fix { margin-top: 12px; font-size: 14px; color: var(--mint); display: flex; gap: 8px; align-items: flex-start; }
+  .fix b { color: var(--ink); font-weight: 600; }
+  .fix .arrow { color: var(--mint); flex-shrink: 0; font-weight: 700; }
+
+  .ba { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 26px; }
+  .navcard { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+  .navcard.after { border-color: var(--mint); box-shadow: 0 0 0 1px var(--mint), var(--shadow); }
+  .navcard-h { padding: 13px 18px; font-family: var(--mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; font-weight: 700; border-bottom: 1px solid var(--line-soft); display: flex; align-items: center; justify-content: space-between; }
+  .navcard.before .navcard-h { background: var(--crit-bg); color: var(--crit); }
+  .navcard.after .navcard-h { background: var(--mint-tint); color: var(--mint); }
+  .navcard-b { padding: 12px 12px 16px; }
+  .grp { font-family: var(--mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--mut-2); font-weight: 700; padding: 12px 8px 5px; }
+  .nav-i { display: flex; align-items: center; gap: 9px; padding: 6px 8px; border-radius: 7px; font-size: 13.5px; color: var(--ink-soft); }
+  .nav-i .dot { width: 6px; height: 6px; border-radius: 2px; background: var(--mut-2); flex-shrink: 0; }
+  .nav-i.warn { color: var(--crit); }
+  .nav-i.warn .dot { background: var(--crit); }
+  .nav-i.hl { color: var(--ink); font-weight: 600; }
+  .nav-i.hl .dot { background: var(--mint); }
+  .sub-tabs { display: flex; flex-wrap: wrap; gap: 4px; padding: 2px 8px 6px 25px; }
+  .sub-tabs span { font-family: var(--mono); font-size: 10.5px; color: var(--mut); background: var(--paper-2); border: 1px solid var(--line-soft); padding: 2px 7px; border-radius: 5px; }
+  .dupflag { margin-left: auto; font-family: var(--mono); font-size: 9px; letter-spacing: .1em; text-transform: uppercase; color: var(--crit); background: var(--crit-bg); padding: 1px 6px; border-radius: 4px; font-weight: 700; }
+
+  .principle { display: grid; grid-template-columns: auto 1fr; gap: 16px; align-items: center; border-radius: var(--radius); padding: 22px 26px; margin-top: 26px; background: var(--ink); }
+  :root[data-theme="dark"] .principle { background: #0A120F; }
+  :root[data-theme="light"] .principle { background: var(--ink); }
+  @media (prefers-color-scheme: dark) { .principle { background: #0A120F; } }
+  .principle .big { font-family: var(--serif); font-size: 40px; line-height: 1; color: var(--mint-bright); font-weight: 600; }
+  .principle .txt { font-size: 15.5px; color: #D8E0DC; }
+  .principle .txt b { color: #fff; }
+  :root[data-theme="dark"] .principle .txt { color: var(--ink-soft); }
+  :root[data-theme="dark"] .principle .txt b { color: var(--ink); }
+  @media (prefers-color-scheme: dark) { .principle .txt { color: var(--ink-soft); } .principle .txt b { color: var(--ink); } }
+
+  /* split table: now vs phase2 */
+  .split { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 24px; }
+  .splitcard { border-radius: var(--radius); border: 1px solid var(--line); overflow: hidden; box-shadow: var(--shadow); background: var(--card); }
+  .splitcard-h { padding: 14px 18px; display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 15px; }
+  .splitcard.now .splitcard-h { background: var(--good-bg); color: var(--good); }
+  .splitcard.later .splitcard-h { background: var(--warn-bg); color: var(--warn); }
+  .splitcard-h .badge { font-family: var(--mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; padding: 2px 8px; border-radius: 100px; margin-left: auto; font-weight: 700; }
+  .splitcard.now .badge { background: var(--good); color: #fff; }
+  :root[data-theme="dark"] .splitcard.now .badge { color: #0B1712; }
+  .splitcard.later .badge { background: var(--warn); color: #fff; }
+  :root[data-theme="dark"] .splitcard.later .badge { color: #221A05; }
+  .splitcard ul { list-style: none; margin: 0; padding: 8px 18px 16px; }
+  .splitcard li { padding: 8px 0; border-top: 1px solid var(--line-soft); font-size: 14px; color: var(--ink-soft); display: flex; gap: 9px; align-items: flex-start; }
+  .splitcard li:first-child { border-top: none; }
+  .splitcard li .mk { flex-shrink: 0; font-weight: 700; }
+  .splitcard.now li .mk { color: var(--good); }
+  .splitcard.later li .mk { color: var(--warn); }
+
+  .bank-layout { display: grid; grid-template-columns: 300px 1fr; gap: 30px; margin-top: 28px; align-items: start; }
+  .phone { background: var(--ink); border-radius: 30px; padding: 12px; box-shadow: var(--shadow-lg); position: sticky; top: 20px; }
+  :root[data-theme="dark"] .phone { background: #05201A; }
+  :root[data-theme="light"] .phone { background: var(--ink); }
+  @media (prefers-color-scheme: dark) { .phone { background: #05201A; } }
+  .screen { background: linear-gradient(180deg, #0F3A30, #0B2A23 42%, var(--paper) 42%, var(--paper)); border-radius: 22px; overflow: hidden; color: #EAF2EE; }
+  .scr-top { padding: 18px 18px 6px; display: flex; align-items: center; justify-content: space-between; }
+  .scr-hi { font-size: 12.5px; opacity: .8; }
+  .scr-hi b { display: block; font-size: 15px; opacity: 1; font-weight: 600; margin-top: 1px; }
+  .scr-eye { width: 30px; height: 30px; border-radius: 50%; background: rgba(255,255,255,.14); display: grid; place-items: center; font-size: 13px; }
+  .bal-label { padding: 14px 18px 0; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; opacity: .7; font-family: var(--mono); }
+  .bal { padding: 2px 18px 0; font-size: 30px; font-weight: 700; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+  .bal small { font-size: 15px; opacity: .7; font-weight: 500; }
+  .qa { display: grid; grid-template-columns: repeat(4,1fr); gap: 6px; padding: 0 14px; margin-top: 4px; }
+  .qa-b { text-align: center; padding: 10px 2px; }
+  .qa-ic { width: 40px; height: 40px; margin: 0 auto 5px; border-radius: 12px; background: #fff; color: var(--mint); display: grid; place-items: center; font-size: 15px; box-shadow: 0 3px 10px rgba(0,0,0,.12); position: relative; }
+  .qa-ic .lock { position: absolute; top: -4px; right: -4px; font-size: 9px; background: var(--warn); color: #fff; border-radius: 50%; width: 15px; height: 15px; display: grid; place-items: center; }
+  .qa-t { font-size: 10.5px; color: var(--ink); font-weight: 500; }
+  .scr-body { background: var(--paper); padding: 16px 14px 20px; }
+  .mini-card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 13px 14px; margin-bottom: 10px; }
+  .mc-h { display: flex; align-items: center; justify-content: space-between; font-size: 11px; font-family: var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--mut); }
+  .mc-h .lk { color: var(--mint); }
+  .credit-card { margin-top: 10px; border-radius: 12px; padding: 14px; color: #fff; background: linear-gradient(135deg, #1C4A3E, #2B6B58 60%, #3D7A6E); box-shadow: 0 6px 18px rgba(19,32,29,.24); }
+  .cc-top { display: flex; justify-content: space-between; align-items: center; font-size: 10.5px; opacity: .85; font-family: var(--mono); letter-spacing: .1em; }
+  .cc-num { font-family: var(--mono); font-size: 13px; letter-spacing: .18em; margin-top: 18px; }
+  .cc-bot { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 12px; }
+  .cc-bot .v { font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .cc-bot .l { font-size: 9px; opacity: .8; text-transform: uppercase; letter-spacing: .08em; }
+  .tx { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-top: 1px solid var(--line-soft); }
+  .tx:first-of-type { border-top: none; }
+  .tx-ic { width: 30px; height: 30px; border-radius: 9px; background: var(--mint-tint); color: var(--mint); display: grid; place-items: center; font-size: 12px; flex-shrink: 0; }
+  .tx-m { flex: 1; min-width: 0; }
+  .tx-m b { display: block; font-size: 12.5px; color: var(--ink); font-weight: 600; }
+  .tx-m span { font-size: 10.5px; color: var(--mut); }
+  .tx-v { font-size: 12.5px; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .tx-v.in { color: var(--good); }
+  .tx-v.out { color: var(--ink); }
+  .agg { display: flex; gap: 8px; }
+  .agg .b { flex: 1; background: rgba(255,255,255,.1); border-radius: 8px; padding: 7px 9px; }
+  .agg .b span { font-size: 9px; opacity: .7; text-transform: uppercase; letter-spacing: .06em; display: block; }
+  .agg .b b { font-size: 12.5px; font-variant-numeric: tabular-nums; }
+
+  .blueprint { display: grid; gap: 12px; }
+  .bp { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 15px 17px; box-shadow: var(--shadow); }
+  .bp-h { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .bp-n { font-family: var(--mono); font-size: 12px; color: var(--mint); font-weight: 700; }
+  .bp-t { font-weight: 600; font-size: 15px; }
+  .bp-when { font-family: var(--mono); font-size: 9.5px; letter-spacing: .08em; text-transform: uppercase; padding: 2px 8px; border-radius: 100px; font-weight: 700; }
+  .bp-when.now { background: var(--good-bg); color: var(--good); }
+  .bp-when.later { background: var(--warn-bg); color: var(--warn); }
+  .bp-ref { margin-left: auto; font-family: var(--mono); font-size: 10px; color: var(--mut-2); letter-spacing: .04em; }
+  .bp-d { color: var(--ink-soft); font-size: 14px; margin: 9px 0 0; }
+  .bp-data { margin-top: 9px; font-family: var(--mono); font-size: 11.5px; color: var(--mut); }
+  .bp-data b { color: var(--good); }
+
+  .road { display: grid; gap: 0; margin-top: 24px; position: relative; }
+  .step { display: grid; grid-template-columns: 44px 1fr; gap: 16px; padding-bottom: 24px; position: relative; }
+  .step:not(:last-child)::before { content: ""; position: absolute; left: 21px; top: 34px; bottom: 0; width: 2px; background: var(--line); }
+  .step-n { width: 44px; height: 44px; border-radius: 50%; border: 2px solid var(--mint); display: grid; place-items: center; font-family: var(--mono); font-weight: 700; color: var(--mint); background: var(--card); z-index: 1; font-size: 15px; }
+  .step-c { padding-top: 3px; }
+  .step-c h4 { margin: 6px 0 4px; font-size: 16.5px; }
+  .step-c p { margin: 0; color: var(--ink-soft); font-size: 14.5px; }
+  .step-c .eta { font-family: var(--mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--mint); font-weight: 600; }
+
+  footer { padding: 40px 0 60px; color: var(--mut); font-size: 13px; }
+  footer .col { display: flex; flex-direction: column; gap: 6px; }
+
+  /* ---------- ADVANCED SOLUTION BLUEPRINTS ---------- */
+  .sol-intro { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
+  .sol-badge { font-family: var(--mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; font-weight: 700; padding: 3px 10px; border-radius: 100px; background: var(--ink); color: var(--mint-bright); }
+  :root[data-theme="dark"] .sol-badge { background: var(--mint); color: #0B1712; }
+  @media (prefers-color-scheme: dark) { .sol-badge { background: var(--mint); color: #0B1712; } }
+  .sol-tabs { display: flex; flex-wrap: wrap; gap: 6px; margin: 20px 0 22px; }
+  .sol-tab { font-family: var(--mono); font-size: 12px; padding: 6px 12px; border-radius: 100px; border: 1px solid var(--line); background: var(--card); color: var(--ink-soft); font-weight: 600; }
+  .sol-tab.on { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+  :root[data-theme="dark"] .sol-tab.on { background: var(--mint); color: #0B1712; border-color: var(--mint); }
+  @media (prefers-color-scheme: dark) { .sol-tab.on { background: var(--mint); color: #0B1712; border-color: var(--mint); } }
+
+  .opgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .op { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 16px 18px; box-shadow: var(--shadow); }
+  .op-t { font-weight: 600; font-size: 15.5px; display: flex; align-items: center; gap: 9px; }
+  .op-t .ic { color: var(--mint); width: 20px; text-align: center; }
+  .op-does { color: var(--ink-soft); font-size: 13.5px; margin: 9px 0 0; }
+  .op-fields { margin-top: 11px; display: flex; flex-wrap: wrap; gap: 5px; }
+  .op-fields span { font-family: var(--mono); font-size: 10.5px; color: var(--mut); background: var(--paper-2); border: 1px solid var(--line-soft); padding: 2px 7px; border-radius: 5px; }
+  .op-adv { margin-top: 12px; padding-top: 11px; border-top: 1px dashed var(--line); font-size: 13px; color: var(--ink-soft); display: flex; gap: 8px; align-items: flex-start; }
+  .op-adv .lbl { font-family: var(--mono); font-size: 9.5px; letter-spacing: .08em; text-transform: uppercase; font-weight: 700; color: var(--mint); background: var(--mint-tint); padding: 2px 6px; border-radius: 4px; flex-shrink: 0; }
+  .op-adv b { color: var(--ink); font-weight: 600; }
+
+  .flow { display: flex; flex-wrap: wrap; align-items: stretch; gap: 8px; margin: 24px 0 6px; }
+  .flow-step { flex: 1; min-width: 132px; background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 12px 13px; box-shadow: var(--shadow); }
+  .flow-step .n { font-family: var(--mono); font-size: 10px; color: var(--mint); font-weight: 700; letter-spacing: .06em; }
+  .flow-step .t { font-weight: 600; font-size: 13.5px; margin-top: 3px; }
+  .flow-step .d { font-size: 11.5px; color: var(--mut); margin-top: 4px; line-height: 1.4; }
+  .flow-arrow { align-self: center; color: var(--mint); font-weight: 700; font-size: 16px; }
+
+  .connect { background: var(--ink); border-radius: var(--radius); padding: 26px 28px; margin-top: 26px; color: #EAF2EE; }
+  :root[data-theme="dark"] .connect { background: #0A120F; color: var(--ink-soft); }
+  @media (prefers-color-scheme: dark) { .connect { background: #0A120F; color: var(--ink-soft); } }
+  .connect h4 { margin: 0 0 6px; font-size: 17px; color: #fff; font-family: var(--serif); }
+  :root[data-theme="dark"] .connect h4 { color: var(--ink); }
+  @media (prefers-color-scheme: dark) { .connect h4 { color: var(--ink); } }
+  .connect p { margin: 0; font-size: 14.5px; opacity: .92; }
+  .connect .chain { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 16px; font-family: var(--mono); font-size: 12px; }
+  .connect .node { background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.16); padding: 6px 11px; border-radius: 7px; color: #fff; }
+  :root[data-theme="dark"] .connect .node { background: var(--card); border-color: var(--line); color: var(--ink); }
+  @media (prefers-color-scheme: dark) { .connect .node { background: var(--card); border-color: var(--line); color: var(--ink); } }
+  .connect .arr { color: var(--mint-bright); font-weight: 700; }
+
+  @media (max-width: 860px) {
+    .ba, .split, .opgrid { grid-template-columns: 1fr; }
+    .bank-layout { grid-template-columns: 1fr; }
+    .phone { position: relative; max-width: 320px; margin: 0 auto; }
+    .flow-arrow { display: none; }
+  }
+</style>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">Auditoria de produto · FactorOne</div>
+    <h1>Menos plugins soltos. <em>Soluções</em> com tudo dentro.</h1>
+    <p class="lede">Um raio-x da navegação atual — onde ela se repete e confunde — e uma proposta de reorganização em poucas soluções com sub-abas. Com foco no que roda de verdade primeiro: o <strong>Banco</strong>, com a cara de um app de banco real.</p>
+    <div class="meta-row">
+      <span class="chip"><b>~75</b> páginas em /dashboard</span>
+      <span class="chip"><b>26</b> apps no marketplace</span>
+      <span class="chip"><b>6</b> soluções propostas</span>
+      <span class="chip"><b>4</b> blueprints Advanced</span>
+    </div>
+  </div>
+</header>
+
+<section>
+  <div class="wrap col">
+    <div class="sec-head">
+      <span class="sec-num">01</span>
+      <div>
+        <h2>O diagnóstico: dois menus disputando o mesmo espaço</h2>
+        <p class="sub">A sidebar é montada por duas lógicas ao mesmo tempo — e é daí que vem a sensação de coisa repetida e de "plugin solto".</p>
+      </div>
+    </div>
+
+    <p>Hoje o menu (<code>app/dashboard/layout.tsx</code>) mistura <strong>grupos fixos escritos no código</strong> (Gestão financeira, Contabilidade, Banco…) com <strong>grupos criados dinamicamente pelos apps instalados</strong> do marketplace (<code>lib/marketplace.ts</code>). Como cada app declara seu próprio <code>navGroup</code>, nascem grupos paralelos que fazem quase a mesma coisa que os fixos.</p>
+
+    <div class="callout">
+      <div class="k">Causa-raiz</div>
+      <p>Existe um grupo fixo <strong>"Gestão financeira"</strong> e, ao lado, um grupo <strong>"Financeiro"</strong> gerado pelos apps. O mesmo acontece com <strong>"Contabilidade"</strong> × <strong>"Contabilidade&nbsp;&&nbsp;Fiscal"</strong>. São quatro grupos para duas ideias. E funções que deveriam ser abas de uma solução (agendamento, follow-up, propostas) viram itens avulsos porque cada uma é um "app".</p>
+    </div>
+
+    <h3>Sobreposições concretas <span class="tag">encontradas no código</span></h3>
+    <div class="dups">
+
+      <div class="dup">
+        <div class="dup-top"><span class="sev hi">Duplica</span><span class="dup-title">Financeiro aparece em dois grupos</span></div>
+        <div class="dup-body">"Gestão financeira" (fixo) e "Financeiro" (dos apps) dividem o mesmo tema. Contas a pagar/receber, orçamento, cobranças e indicadores ficam espalhados entre os dois — o usuário não sabe em qual olhar.</div>
+        <div class="paths"><span class="path">/financeiro</span><span class="path">/financeiro/receber</span><span class="path">/cobrancas</span><span class="path">/orcamento</span><span class="path">/despesas</span><span class="path">/receitas</span><span class="path">/reembolsos</span><span class="path">/indicadores</span></div>
+        <div class="fix"><span class="arrow">→</span><div><b>Fundir</b> tudo numa solução <b>Financeiro</b> com sub-abas.</div></div>
+      </div>
+
+      <div class="dup">
+        <div class="dup-top"><span class="sev hi">Espalha</span><span class="dup-title">Comercial fatiado em 6 "apps" soltos</span></div>
+        <div class="dup-body">CRM, Agendamento, Captação, Propostas, Pós-venda&nbsp;&&nbsp;Follow-up e Pipeline são o mesmo funil de vendas — mas cada um entra como plugin separado. É exatamente o "agendamento e follow-up soltos" que você apontou.</div>
+        <div class="paths"><span class="path">/crm</span><span class="path">/agenda</span><span class="path">/captacao</span><span class="path">/propostas</span><span class="path">/posvenda</span><span class="path">/pipeline</span></div>
+        <div class="fix"><span class="arrow">→</span><div><b>Uma solução Clientes&nbsp;&&nbsp;Vendas</b>: o cliente entra (captação), avança (pipeline/agenda), fecha (proposta) e é cuidado (follow-up) — tudo em abas da mesma tela.</div></div>
+      </div>
+
+      <div class="dup">
+        <div class="dup-top"><span class="sev md">Duplica</span><span class="dup-title">Contabilidade em dois grupos</span></div>
+        <div class="dup-body">Grupo fixo "Contabilidade" e grupo "Contabilidade & Fiscal" (dos apps Tax e Simples). Fiscal, NF-e, livros, DAS e portal do contador se dividem entre eles.</div>
+        <div class="paths"><span class="path">/conciliacao</span><span class="path">/contabilidade/livros</span><span class="path">/notas</span><span class="path">/fiscal</span><span class="path">/simples</span><span class="path">/tax</span><span class="path">/prefeituras</span></div>
+        <div class="fix"><span class="arrow">→</span><div><b>Uma solução Contábil&nbsp;&&nbsp;Fiscal.</b></div></div>
+      </div>
+
+      <div class="dup">
+        <div class="dup-top"><span class="sev md">Sobrepõe</span><span class="dup-title">Classificar × Conciliação fazem a mesma coisa</span></div>
+        <div class="dup-body">"Classificar transações" (em Gestão financeira) e "Conciliação Bancária" (em Contabilidade) tratam ambos de casar e categorizar lançamentos do banco. Dois nomes, um trabalho.</div>
+        <div class="paths"><span class="path">/classificar</span><span class="path">/conciliacao</span></div>
+        <div class="fix"><span class="arrow">→</span><div><b>Unificar</b> num fluxo só de "casar & categorizar".</div></div>
+      </div>
+
+      <div class="dup">
+        <div class="dup-top"><span class="sev md">Vários caminhos</span><span class="dup-title">Open Finance tem 3 portas de entrada</span></div>
+        <div class="dup-body">Conectar banco via Belvo aparece como "Conexões", "Conectar banco" e "Soluções" — além de Investimentos existir como página e como app. Confunde na hora que mais importa: plugar a conta.</div>
+        <div class="paths"><span class="path">/conexoes</span><span class="path">/conta-pj/conectar-banco</span><span class="path">/conta-pj/solucoes</span><span class="path">/conta-pj/investimentos</span></div>
+        <div class="fix"><span class="arrow">→</span><div><b>Uma porta só</b> dentro do Banco: "Conectar meus bancos".</div></div>
+      </div>
+
+      <div class="dup">
+        <div class="dup-top"><span class="sev md">Espalha</span><span class="dup-title">IA em 4 lugares diferentes</span></div>
+        <div class="dup-body">Assistente (Visão geral), Agentes (Produtividade), Donna e CFO&nbsp;IA vivem em cantos diferentes — sendo que todos são "o sistema agindo por você".</div>
+        <div class="paths"><span class="path">/assistente</span><span class="path">/agentes</span><span class="path">/agentes/donna</span><span class="path">/aicfo</span></div>
+        <div class="fix"><span class="arrow">→</span><div><b>Um hub Agentes&nbsp;IA</b> reunindo Assistente 24/7, Donna, CFO IA e Automações.</div></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="col">
+      <div class="sec-head">
+        <span class="sec-num">02</span>
+        <div>
+          <h2>A proposta: solução na sidebar, sub-categoria dentro dela</h2>
+          <p class="sub">A regra que resolve tudo: a sidebar lista <strong>soluções</strong> (6–8 itens). Cada solução abre com <strong>abas no topo</strong> para as sub-funções. Nada de 40 links; nada de plugin solto.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="ba">
+      <div class="navcard before">
+        <div class="navcard-h"><span>Hoje</span><span>menu fragmentado</span></div>
+        <div class="navcard-b">
+          <div class="grp">Gestão financeira</div>
+          <div class="nav-i"><span class="dot"></span>Classificar</div>
+          <div class="nav-i"><span class="dot"></span>Fluxo de caixa</div>
+          <div class="nav-i"><span class="dot"></span>Contas a pagar & receber</div>
+          <div class="grp">Financeiro <span class="dupflag">duplica ↑</span></div>
+          <div class="nav-i warn"><span class="dot"></span>Contas a receber plus</div>
+          <div class="nav-i warn"><span class="dot"></span>Subscription billing</div>
+          <div class="nav-i warn"><span class="dot"></span>Budget & forecast</div>
+          <div class="grp">Contabilidade</div>
+          <div class="nav-i"><span class="dot"></span>Conciliação bancária</div>
+          <div class="grp">Contabilidade & Fiscal <span class="dupflag">duplica ↑</span></div>
+          <div class="nav-i warn"><span class="dot"></span>Tax compliance</div>
+          <div class="nav-i warn"><span class="dot"></span>Simples (DAS)</div>
+          <div class="grp">Clientes & Vendas</div>
+          <div class="nav-i warn"><span class="dot"></span>CRM</div>
+          <div class="nav-i warn"><span class="dot"></span>Agendamento</div>
+          <div class="nav-i warn"><span class="dot"></span>Captação</div>
+          <div class="nav-i warn"><span class="dot"></span>Pós-venda & follow-up</div>
+          <div class="nav-i warn"><span class="dot"></span>Propostas</div>
+          <div class="nav-i warn"><span class="dot"></span>Pipeline</div>
+        </div>
+      </div>
+
+      <div class="navcard after">
+        <div class="navcard-h"><span>Proposto</span><span>6 soluções</span></div>
+        <div class="navcard-b">
+          <div class="grp">Principal</div>
+          <div class="nav-i hl"><span class="dot"></span>Início</div>
+          <div class="nav-i hl"><span class="dot"></span>Agentes IA</div>
+          <div class="grp">Soluções</div>
+          <div class="nav-i hl"><span class="dot"></span>Banco</div>
+          <div class="sub-tabs"><span>Home</span><span>Extrato</span><span>Cartões</span><span>Investimentos</span><span>Conectar bancos</span></div>
+          <div class="nav-i hl"><span class="dot"></span>Financeiro</div>
+          <div class="sub-tabs"><span>Pagar & Receber</span><span>Fluxo de caixa</span><span>DRE</span><span>Despesas</span><span>Orçamento</span><span>Indicadores</span></div>
+          <div class="nav-i hl"><span class="dot"></span>Clientes & Vendas</div>
+          <div class="sub-tabs"><span>CRM</span><span>Agenda</span><span>Captação</span><span>Propostas</span><span>Follow-up</span></div>
+          <div class="nav-i hl"><span class="dot"></span>Contábil & Fiscal</div>
+          <div class="sub-tabs"><span>Conciliar</span><span>NF-e</span><span>Livros</span><span>DAS</span><span>Contador</span></div>
+          <div class="grp">Extras</div>
+          <div class="nav-i"><span class="dot"></span>Apps & Marketplace</div>
+          <div class="nav-i"><span class="dot"></span>Equipe & Planos</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="principle">
+        <div class="big">6</div>
+        <div class="txt">O usuário nunca escolhe entre dois menus parecidos. Ele escolhe <b>uma solução</b> e, dentro dela, navega por abas que contam uma história (o dinheiro entra → é classificado → vira relatório). O marketplace continua existindo — mas para <b>ligar/desligar</b> capacidades, não para virar item de menu solto.</div>
+      </div>
+
+      <div class="callout">
+        <div class="k">O que muda no código (barato)</div>
+        <p>O <code>navGroup</code> de cada app passa a apontar para uma das 6 soluções (ex.: <code>agenda</code>, <code>posvenda</code>, <code>crm</code> → todos <code>navGroup: 'Clientes & Vendas'</code>). Some os grupos fixos duplicados de <code>buildNavGroups()</code>. As páginas já existem — é reorganizar o menu e adicionar uma faixa de abas no topo de cada solução. <strong>Preservar</strong> o controle por papel (<code>GRUPO_ROLES</code>) e o corte por segmento (<code>hidePatrimonio</code>).</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="col">
+      <div class="sec-head">
+        <span class="sec-num">03</span>
+        <div>
+          <h2>O Banco, com a cara de um app de banco</h2>
+          <p class="sub">A prioridade — é o que roda de verdade agora, via Open Finance. A meta: quando a pessoa conecta o banco, ela sente que abriu o C6 / BTG / XP. Uma home só, com o dinheiro todo agregado.</p>
+        </div>
+      </div>
+
+      <div class="callout">
+        <div class="k">A distinção que define o escopo</div>
+        <p>O Open Finance (Belvo) que temos hoje é <strong>leitura e agregação</strong>. Isso significa que dá pra entregar <strong>a experiência visual idêntica a um app de banco agora</strong> — ver saldo, extrato, faturas, investimentos. Já o que <strong>age no dinheiro</strong> (bloquear cartão, cartão virtual, PIX saindo da conta) depende da <strong>conta própria FactorOne — a 2ª etapa</strong>, quando as APIs de emissão estiverem prontas. A home abaixo mostra as duas camadas: o que é real hoje e o que entra depois.</p>
+      </div>
+
+      <div class="split">
+        <div class="splitcard now">
+          <div class="splitcard-h">Ver agora <span class="badge">read-only · Belvo</span></div>
+          <ul>
+            <li><span class="mk">✓</span> Saldo total agregado de todos os bancos conectados</li>
+            <li><span class="mk">✓</span> Extrato inteligente (feed por dia, categorizado pela IA)</li>
+            <li><span class="mk">✓</span> Faturas e limite dos cartões — visualizar</li>
+            <li><span class="mk">✓</span> Investimentos: aplicado, rendimento, comparação com CDI</li>
+            <li><span class="mk">✓</span> Conectar novos bancos pelo widget (uma porta só)</li>
+          </ul>
+        </div>
+        <div class="splitcard later">
+          <div class="splitcard-h">Agir na fase 2 <span class="badge">conta própria</span></div>
+          <ul>
+            <li><span class="mk">◔</span> Bloquear / desbloquear cartão</li>
+            <li><span class="mk">◔</span> Cartão virtual e ajuste de limite</li>
+            <li><span class="mk">◔</span> PIX e transferência <strong>saindo</strong> da conta</li>
+            <li><span class="mk">◔</span> Pagar boleto / cobrar direto pelo app</li>
+            <li><span class="mk">◔</span> Abrir conta PJ FactorOne</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="bank-layout">
+      <div class="phone" aria-label="Mockup da home do Banco">
+        <div class="screen">
+          <div class="scr-top">
+            <div class="scr-hi">Bom dia,<b>Vinícius</b></div>
+            <div class="scr-eye" title="Ocultar saldos">👁</div>
+          </div>
+          <div class="bal-label">Patrimônio total · 3 bancos</div>
+          <div class="bal">R$ 284.920<small>,55</small></div>
+          <div class="agg" style="padding: 8px 18px 14px;">
+            <div class="b"><span>Conta</span><b>R$ 62.410</b></div>
+            <div class="b"><span>Investido</span><b>R$ 210.300</b></div>
+            <div class="b"><span>Cartões</span><b>−R$ 12.209</b></div>
+          </div>
+          <div class="qa">
+            <div class="qa-b"><div class="qa-ic">≡</div><div class="qa-t">Extrato</div></div>
+            <div class="qa-b"><div class="qa-ic">▤</div><div class="qa-t">Faturas</div></div>
+            <div class="qa-b"><div class="qa-ic">↗</div><div class="qa-t">Investir</div></div>
+            <div class="qa-b"><div class="qa-ic">⚡<span class="lock">2</span></div><div class="qa-t">PIX</div></div>
+          </div>
+          <div class="scr-body">
+            <div class="mini-card">
+              <div class="mc-h"><span>Meu cartão · fatura</span><span class="lk">Ver →</span></div>
+              <div class="credit-card">
+                <div class="cc-top"><span>NUBANK · via Open Finance</span><span>VISA</span></div>
+                <div class="cc-num">•••• •••• •••• 4127</div>
+                <div class="cc-bot">
+                  <div><div class="l">Fatura atual</div><div class="v">R$ 4.812,90</div></div>
+                  <div><div class="l">Limite livre</div><div class="v">R$ 35.188</div></div>
+                </div>
+              </div>
+            </div>
+            <div class="mini-card">
+              <div class="mc-h"><span>Últimos lançamentos</span><span class="lk">Tudo →</span></div>
+              <div class="tx"><div class="tx-ic">🛒</div><div class="tx-m"><b>Mercado Livre</b><span>Hoje · Cartão 4127</span></div><div class="tx-v out">−R$ 289,90</div></div>
+              <div class="tx"><div class="tx-ic">↓</div><div class="tx-m"><b>PIX recebido · Cliente</b><span>Hoje · Conta C6</span></div><div class="tx-v in">+R$ 3.500,00</div></div>
+              <div class="tx"><div class="tx-ic">⚙</div><div class="tx-m"><b>AWS</b><span>Ontem · Cartão 4127</span></div><div class="tx-v out">−R$ 1.204,10</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bank-notes">
+        <h3 style="margin-top:0">Do que a home é feita <span class="tag">e onde os dados já existem</span></h3>
+        <div class="blueprint">
+          <div class="bp">
+            <div class="bp-h"><span class="bp-n">A</span><span class="bp-t">Patrimônio agregado</span><span class="bp-when now">agora</span><span class="bp-ref">ref: C6 / BTG</span></div>
+            <p class="bp-d">Um número grande no topo somando todos os bancos conectados, com botão de "olho" pra ocultar. Quebra em Conta · Investido · Cartões.</p>
+            <p class="bp-data">Dados: <b>/api/belvo/accounts</b> → saldo, disponível, limite_credito</p>
+          </div>
+          <div class="bp">
+            <div class="bp-h"><span class="bp-n">B</span><span class="bp-t">Extrato inteligente</span><span class="bp-when now">agora</span><span class="bp-ref">ref: Nubank</span></div>
+            <p class="bp-d">Feed de lançamentos por dia, ícone por categoria, entradas em verde. É o mesmo motor do "Classificar" — a IA já categoriza aqui.</p>
+            <p class="bp-data">Dados: <b>/api/belvo/transactions</b> → data, valor, categoria, estabelecimento</p>
+          </div>
+          <div class="bp">
+            <div class="bp-h"><span class="bp-n">C</span><span class="bp-t">Cartões — visualizar</span><span class="bp-when now">agora</span><span class="bp-ref">ref: C6 / XP</span></div>
+            <p class="bp-d">Cartão em destaque com fatura atual e limite livre, lidos do Open Finance. Toque abre o detalhamento da fatura.</p>
+            <p class="bp-data">Dados: <b>/api/belvo/bills</b> (faturas) · página <b>/cartoes</b> já existe</p>
+          </div>
+          <div class="bp">
+            <div class="bp-h"><span class="bp-n">D</span><span class="bp-t">Investimentos</span><span class="bp-when now">agora</span><span class="bp-ref">ref: XP / BTG</span></div>
+            <p class="bp-d">Card com total aplicado, rendimento no mês e comparação com o CDI. Abre a carteira detalhada.</p>
+            <p class="bp-data">Página <b>/conta-pj/investimentos</b> existe · CDI em <b>/api/financeiro/cdi-atual</b></p>
+          </div>
+          <div class="bp">
+            <div class="bp-h"><span class="bp-n">E</span><span class="bp-t">Conectar bancos</span><span class="bp-when now">agora</span><span class="bp-ref">ref: onboarding OF</span></div>
+            <p class="bp-d">Uma porta única de Open Finance (widget Belvo). Cada banco ligado entra como "conta" agregada na home — não como página separada.</p>
+            <p class="bp-data">Já implementado: widget Belvo em <b>/conexoes</b> → só reposicionar</p>
+          </div>
+          <div class="bp">
+            <div class="bp-h"><span class="bp-n">F</span><span class="bp-t">Ações no dinheiro</span><span class="bp-when later">fase 2</span><span class="bp-ref">conta própria</span></div>
+            <p class="bp-d">PIX/transferência saindo, bloquear cartão, cartão virtual, ajustar limite. Dependem da conta emitida pela FactorOne — no mockup aparecem com o selo de bloqueio.</p>
+            <p class="bp-data">Requer: APIs de emissão / payment initiation (2ª etapa)</p>
+          </div>
+        </div>
+
+        <div class="callout" style="margin-top:20px">
+          <div class="k">A boa notícia</div>
+          <p>O <strong>back-end de leitura já traz tudo</strong> — contas, saldos, limites, faturas e transações vêm do Belvo. O que falta pra "cara de banco" é a <strong>camada visual</strong>: transformar a página técnica <code>/conexoes</code> nessa home. É trabalho majoritariamente de front-end sobre dados que já chegam — sem depender da fase 2.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap col">
+    <div class="sec-head">
+      <span class="sec-num">04</span>
+      <div>
+        <h2>Financeiro — blueprint operacional</h2>
+        <div class="sol-intro">
+          <span class="sol-badge">Modo Advanced</span>
+          <p class="sub" style="margin:0">Não é um lançador de contas básico. É o motor que recebe todo dinheiro, classifica com IA, concilia com o banco e vira DRE, fluxo e indicadores — sem redigitar nada.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="sol-tabs">
+      <span class="sol-tab on">Pagar &amp; Receber</span>
+      <span class="sol-tab">Classificar (caixa única)</span>
+      <span class="sol-tab">DRE gerencial</span>
+      <span class="sol-tab">Despesas &amp; Reembolsos</span>
+      <span class="sol-tab">Orçamento</span>
+      <span class="sol-tab">Indicadores</span>
+    </div>
+
+    <div class="opgrid">
+      <div class="op">
+        <div class="op-t"><span class="ic">▤</span>Contas a Pagar &amp; Receber</div>
+        <p class="op-does">Títulos a pagar e a receber com vencimento, baixa, parcelamento e recorrência. Cada título já nasce ligado a um cliente/fornecedor e a uma categoria do DRE.</p>
+        <div class="op-fields"><span>título</span><span>vencimento</span><span>valor</span><span>categoria</span><span>cliente/fornecedor</span><span>status</span><span>recorrência</span></div>
+        <div class="op-adv"><span class="lbl">Advanced</span><div><b>Aging report</b> de inadimplência, <b>régua de cobrança automática</b> (e-mail/WhatsApp), baixa por <b>conciliação com o extrato</b> e recebíveis que já entram na <b>projeção do fluxo</b>.</div></div>
+      </div>
+
+      <div class="op">
+        <div class="op-t"><span class="ic">◱</span>Classificar — caixa única</div>
+        <p class="op-does">Banco + cartão no mesmo lugar. A IA lê a descrição do lançamento e sugere a categoria; você corrige uma vez e ela aprende para as próximas.</p>
+        <div class="op-fields"><span>data</span><span>valor</span><span>origem (banco/cartão)</span><span>categoria IA</span><span>regra</span><span>confiança</span></div>
+        <div class="op-adv"><span class="lbl">Advanced</span><div><b>IA que aprende</b> com suas correções, <b>regras automáticas</b> por padrão de texto, e classificação em lote. Cada item classificado <b>alimenta DRE e Fluxo na hora</b>.</div></div>
+      </div>
+
+      <div class="op">
+        <div class="op-t"><span class="ic">▦</span>DRE gerencial</div>
+        <p class="op-does">Receita, CMV, despesas e resultado montados automaticamente a partir do que foi classificado — não é planilha, é o espelho vivo da operação.</p>
+        <div class="op-fields"><span>receita</span><span>CMV</span><span>despesas</span><span>EBITDA</span><span>margem</span><span>período</span></div>
+        <div class="op-adv"><span class="lbl">Advanced</span><div><b>EBITDA e margem</b> calculados, <b>comparativo entre períodos</b>, <b>análise por IA</b> (o que subiu/caiu e por quê) e export <b>PDF/Excel</b>.</div></div>
+      </div>
+
+      <div class="op">
+        <div class="op-t"><span class="ic">◎</span>Indicadores</div>
+        <p class="op-does">Os números que dizem se a empresa está saudável, além do resultado contábil — para decisão, não só prestação de contas.</p>
+        <div class="op-fields"><span>LTV</span><span>CAC</span><span>MRR</span><span>ROI / ROIC</span><span>burn</span><span>runway</span></div>
+        <div class="op-adv"><span class="lbl">Advanced</span><div>Comparação com <b>taxas de mercado</b>, <b>burn &amp; runway</b> (quantos meses de caixa restam) e alertas quando um indicador sai da faixa saudável.</div></div>
+      </div>
+    </div>
+
+    <div class="col">
+      <h3>Workflow ponta a ponta <span class="tag">o dinheiro nunca é digitado duas vezes</span></h3>
+    </div>
+    <div class="flow">
+      <div class="flow-step"><div class="n">01</div><div class="t">Entra</div><div class="d">Lançamento chega do banco/cartão (Open Finance) ou manual.</div></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><div class="n">02</div><div class="t">IA classifica</div><div class="d">Categoria sugerida; regra aprende com a correção.</div></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><div class="n">03</div><div class="t">Concilia</div><div class="d">Casa com o título de pagar/receber e com o extrato.</div></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><div class="n">04</div><div class="t">Vira relatório</div><div class="d">Cai no DRE, no Fluxo e nos indicadores automaticamente.</div></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap col">
+    <div class="sec-head">
+      <span class="sec-num">05</span>
+      <div>
+        <h2>Fluxo de Caixa — o cérebro que projeta o futuro</h2>
+        <div class="sol-intro">
+          <span class="sol-badge">Modo Advanced</span>
+          <p class="sub" style="margin:0">Não mostra só o saldo de hoje. Projeta 90 dias à frente, simula cenários e avisa <strong>antes</strong> do caixa furar — usando IA sobre os recebíveis, pagáveis e o saldo real dos bancos conectados.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="opgrid">
+      <div class="op">
+        <div class="op-t"><span class="ic">Σ</span>Saldo consolidado</div>
+        <p class="op-does">Soma o dinheiro de todas as contas conectadas por Open Finance + caixa interno, num número só e confiável.</p>
+        <div class="op-fields"><span>contas conectadas</span><span>saldo por banco</span><span>caixa</span><span>disponível</span></div>
+        <div class="op-adv"><span class="lbl">Advanced</span><div><b>Multi-banco agregado</b> em tempo real — o mesmo saldo que aparece na home do Banco.</div></div>
+      </div>
+
+      <div class="op">
+        <div class="op-t"><span class="ic">〰</span>Projeção 90 dias por IA</div>
+        <p class="op-does">Constrói a curva futura do caixa a partir dos recebíveis a entrar, contas a pagar e sazonalidade — não é linha reta, é previsão.</p>
+        <div class="op-fields"><span>recebíveis</span><span>pagáveis</span><span>curva projetada</span><span>previsão IA</span></div>
+        <div class="op-adv"><span class="lbl">Advanced</span><div>Motor de <b>previsão por IA</b> (já no código: 52 pontos de projeção) que ajusta a curva conforme o histórico real.</div></div>
+      </div>
+
+      <div class="op">
+        <div class="op-t"><span class="ic">⋔</span>Cenários</div>
+        <p class="op-does">Otimista, realista e pessimista lado a lado. Simula "e se o maior cliente atrasar 30 dias?" ou "e se eu cortar tal custo?".</p>
+        <div class="op-fields"><span>otimista</span><span>realista</span><span>pessimista</span><span>variáveis</span></div>
+        <div class="op-adv"><span class="lbl">Advanced</span><div>Simulação de <b>atraso de recebimento</b> e <b>corte de custo</b> com impacto imediato na curva.</div></div>
+      </div>
+
+      <div class="op">
+        <div class="op-t"><span class="ic">⚠</span>Alerta de caixa negativo</div>
+        <p class="op-does">Avisa com antecedência o dia em que a projeção cruza o zero — para você agir antes, não depois do aperto.</p>
+        <div class="op-fields"><span>data de furo</span><span>déficit previsto</span><span>ação sugerida</span></div>
+        <div class="op-adv"><span class="lbl">Advanced</span><div>Já implementado (<b>alerta de caixa negativo</b>) e ligado à ação: antecipar recebível ou adiar pagamento.</div></div>
+      </div>
+    </div>
+
+    <div class="col">
+      <h3>Workflow <span class="tag">do dado bruto à decisão</span></h3>
+    </div>
+    <div class="flow">
+      <div class="flow-step"><div class="n">01</div><div class="t">Junta</div><div class="d">Recebíveis + pagáveis + saldo dos bancos conectados.</div></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><div class="n">02</div><div class="t">Projeta</div><div class="d">IA monta a curva de 90 dias.</div></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><div class="n">03</div><div class="t">Simula</div><div class="d">Cenários otimista / realista / pessimista.</div></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><div class="n">04</div><div class="t">Alerta &amp; age</div><div class="d">Se cruza zero, sugere antecipar ou adiar.</div></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap col">
+    <div class="sec-head">
+      <span class="sec-num">06</span>
+      <div>
+        <h2>Contábil &amp; Fiscal — blueprint operacional</h2>
+        <div class="sol-intro">
+          <span class="sol-badge">Modo Advanced</span>
+          <p class="sub" style="margin:0">O que foi classificado no financeiro vira contabilidade de verdade: partidas dobradas, balancete, razão, fechamento e export pro contador — mais NF-e/NFS-e e apuração de imposto no mesmo lugar.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="sol-tabs">
+      <span class="sol-tab on">Conciliar</span>
+      <span class="sol-tab">Livros contábeis</span>
+      <span class="sol-tab">NF-e / NFS-e</span>
+      <span class="sol-tab">DAS / Simples</span>
+      <span class="sol-tab">Portal do contador</span>
+    </div>
+
+    <div class="opgrid">
+      <div class="op">
+        <div class="op-t"><span class="ic">⇄</span>Conciliação bancária</div>
+        <p class="op-does">Casa cada linha do extrato com o lançamento correspondente e gera o lançamento contábil por trás — a ponte entre o financeiro e a contabilidade.</p>
+        <div class="op-fields"><span>extrato</span><span>lançamento</span><span>conta contábil</span><span>status</span><span>divergência</span></div>
+        <div class="op-adv"><span class="lbl">Advanced</span><div>Conciliação <b>em lote</b>, <b>sugestão por IA</b> do par certo e <b>geração automática de lançamentos</b> contábeis.</div></div>
+      </div>
+
+      <div class="op">
+        <div class="op-t"><span class="ic">▤</span>Livros contábeis</div>
+        <p class="op-does">Diário, Razão e Balancete montados a partir dos lançamentos — contabilidade por partidas dobradas, não planilha manual.</p>
+        <div class="op-fields"><span>diário</span><span>razão</span><span>balancete</span><span>débito/crédito</span><span>plano de contas</span></div>
+        <div class="op-adv"><span class="lbl">Advanced</span><div>Já no código: <b>partidas dobradas</b>, <b>balancete</b> e <b>razão</b>. Soma <b>fechamento mensal</b> com período travado.</div></div>
+      </div>
+
+      <div class="op">
+        <div class="op-t"><span class="ic">▧</span>NF-e / NFS-e</div>
+        <p class="op-does">Emissão de nota de produto (NF-e) e serviço (NFS-e), com histórico e captura das notas recebidas de fornecedores.</p>
+        <div class="op-fields"><span>emitir NF-e</span><span>emitir NFS-e</span><span>histórico</span><span>notas recebidas</span><span>prefeitura</span></div>
+        <div class="op-adv"><span class="lbl">Advanced</span><div>Cobertura de <b>todas as prefeituras</b> (NFS-e) e notas emitidas que já <b>caem como receita no DRE</b>.</div></div>
+      </div>
+
+      <div class="op">
+        <div class="op-t"><span class="ic">%</span>DAS / Simples &amp; Portal do contador</div>
+        <p class="op-does">Estimador de imposto do Simples e uma porta dedicada para o contador acessar tudo sem bagunçar o dashboard do dono.</p>
+        <div class="op-fields"><span>alíquota efetiva</span><span>Anexos I–V</span><span>guia DAS</span><span>convite contador</span><span>export</span></div>
+        <div class="op-adv"><span class="lbl">Advanced</span><div><b>Alíquota efetiva</b> por anexo, <b>portal do contador</b> com acesso próprio e export <b>PDF / SPED</b> do período.</div></div>
+      </div>
+    </div>
+
+    <div class="col">
+      <h3>Workflow <span class="tag">do lançamento à obrigação fiscal</span></h3>
+    </div>
+    <div class="flow">
+      <div class="flow-step"><div class="n">01</div><div class="t">Classificado</div><div class="d">Lançamento já categorizado vem do Financeiro.</div></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><div class="n">02</div><div class="t">Vira partida</div><div class="d">Gera débito/crédito nos livros (partida dobrada).</div></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><div class="n">03</div><div class="t">Fecha o mês</div><div class="d">Balancete e razão; período travado.</div></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><div class="n">04</div><div class="t">Cumpre</div><div class="d">Export SPED/PDF pro contador + guias (DAS, NF).</div></div>
+    </div>
+
+    <div class="connect">
+      <h4>As quatro soluções são um sistema só</h4>
+      <p>O mesmo lançamento atravessa tudo sem redigitação — é isso que separa o "Advanced" do "básico com muitos apps soltos".</p>
+      <div class="chain">
+        <span class="node">Banco / Open Finance</span><span class="arr">→</span>
+        <span class="node">Classifica (IA)</span><span class="arr">→</span>
+        <span class="node">DRE + Fluxo</span><span class="arr">→</span>
+        <span class="node">Partidas &amp; Livros</span><span class="arr">→</span>
+        <span class="node">Fiscal / Contador</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap col">
+    <div class="sec-head">
+      <span class="sec-num">07</span>
+      <div>
+        <h2>Ordem de execução sugerida</h2>
+        <p class="sub">Do que dá mais retorno e roda de verdade, para o que é refinamento.</p>
+      </div>
+    </div>
+
+    <div class="road">
+      <div class="step">
+        <div class="step-n">1</div>
+        <div class="step-c">
+          <div class="eta">Prioridade · roda agora</div>
+          <h4>Home do Banco (read-only, cara de app de banco)</h4>
+          <p>Reskin de <code>/conexoes</code> na home agregada do mockup: saldo total, extrato, cartões (fatura/limite), investimentos — sobre os dados do Belvo que já chegam. Ações que "agem" ficam visíveis mas marcadas como fase 2. Tirar o Banco de trás do install do marketplace: ele é a vitrine, deve ser first-class.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-n">2</div>
+        <div class="step-c">
+          <div class="eta">Rápido · alto impacto</div>
+          <h4>Fundir os grupos duplicados do menu</h4>
+          <p>Unir "Gestão financeira" + "Financeiro" e "Contabilidade" + "Contabilidade & Fiscal". Apontar os <code>navGroup</code> dos apps para as soluções certas, preservando <code>GRUPO_ROLES</code> e <code>hidePatrimonio</code>. Some metade da poluição da sidebar sem tocar nas páginas.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-n">3</div>
+        <div class="step-c">
+          <div class="eta">Estrutural</div>
+          <h4>Solução "Clientes & Vendas" com abas</h4>
+          <p>Juntar CRM, Agenda, Captação, Propostas e Follow-up numa tela com sub-abas — resolve o "agendamento e follow-up soltos". O funil vira uma história contínua.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-n">4</div>
+        <div class="step-c">
+          <div class="eta">Refinamento</div>
+          <h4>Hub "Agentes IA" único</h4>
+          <p>Reunir Assistente 24/7, Donna, CFO IA e Automações num só lugar — a inteligência do produto com uma porta de entrada.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap col">
+    <div>Auditoria gerada a partir do código atual — <code>app/dashboard/layout.tsx</code> · <code>lib/marketplace.ts</code> · rotas <code>/api/belvo/*</code>.</div>
+    <div>Mockup do Banco é ilustrativo (valores fictícios) para direção de UX. Referências de experiência: C6, BTG, XP, Nubank.</div>
+  </div>
+</footer>
