@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getSupabaseUser } from '@/lib/supabase-route'
+import { recalcularDREMes } from '@/lib/financeiro/recalcularDRE'
 import type { ConfirmarItem, ConfirmarResposta } from '@/lib/banco/types'
 
 export const runtime = 'nodejs'
@@ -23,6 +24,7 @@ export async function POST(req: NextRequest) {
   }
 
   const resp: ConfirmarResposta = { confirmados: [], falhas: [] }
+  const mesesTocados = new Set<string>()
 
   for (const item of itens) {
     try {
@@ -37,10 +39,21 @@ export async function POST(req: NextRequest) {
       }
 
       const ehSaida = ex.tipo === 'debito'
+      if (ehSaida && item.conta_receber_id) throw new Error('Transação de saída não pode vincular conta a receber')
+      if (!ehSaida && item.conta_pagar_id) throw new Error('Transação de entrada não pode vincular conta a pagar')
 
       // 3. Cadastro novo (só com confirmação do usuário; dedup por CNPJ da contraparte)
       let fornecedorId = item.fornecedor_id ?? null
       let clienteId = item.cliente_id ?? null
+      // IDOR: cadastro escolhido (não criado agora) precisa ser da empresa da sessão.
+      if (fornecedorId) {
+        const { data: f } = await supabase.from('fornecedores').select('id').eq('id', fornecedorId).eq('empresa_id', empresaId).maybeSingle()
+        if (!f) throw new Error('Fornecedor não encontrado')
+      }
+      if (clienteId) {
+        const { data: c } = await supabase.from('clientes').select('id').eq('id', clienteId).eq('empresa_id', empresaId).maybeSingle()
+        if (!c) throw new Error('Cliente não encontrado')
+      }
       const docCp = String(ex.contraparte_documento ?? '').replace(/\D/g, '')
       if (item.novo_fornecedor?.razao_social?.trim()) {
         if (docCp.length >= 11) {
@@ -69,14 +82,19 @@ export async function POST(req: NextRequest) {
         }
       }
 
-      // 4. Valida vínculo de conta prevista (também da empresa — IDOR)
+      // 4. Valida vínculo de conta prevista (também da empresa — IDOR) e traz valor/já pago
+      // pra acumular corretamente em vez de sobrescrever (conta pode já estar parcialmente paga).
+      let contaPagar: { valor: number; valor_pago: number } | null = null
+      let contaReceber: { valor: number; valor_recebido: number } | null = null
       if (item.conta_pagar_id) {
-        const { data: cp } = await supabase.from('contas_pagar').select('id').eq('id', item.conta_pagar_id).eq('empresa_id', empresaId).maybeSingle()
+        const { data: cp } = await supabase.from('contas_pagar').select('valor,valor_pago').eq('id', item.conta_pagar_id).eq('empresa_id', empresaId).maybeSingle()
         if (!cp) throw new Error('Conta a pagar não encontrada')
+        contaPagar = { valor: Number(cp.valor ?? 0), valor_pago: Number(cp.valor_pago ?? 0) }
       }
       if (item.conta_receber_id) {
-        const { data: cr } = await supabase.from('contas_receber').select('id').eq('id', item.conta_receber_id).eq('empresa_id', empresaId).maybeSingle()
+        const { data: cr } = await supabase.from('contas_receber').select('valor,valor_recebido').eq('id', item.conta_receber_id).eq('empresa_id', empresaId).maybeSingle()
         if (!cr) throw new Error('Conta a receber não encontrada')
+        contaReceber = { valor: Number(cr.valor ?? 0), valor_recebido: Number(cr.valor_recebido ?? 0) }
       }
 
       // 5. Cria a transação COMPLETA (nunca existe conciliada-sem-categoria)
@@ -100,24 +118,37 @@ export async function POST(req: NextRequest) {
       const { error: eExtrato } = await supabase.from('extrato_bancario').update({ conciliado: true, transaction_id: tx.id }).eq('id', item.extrato_id).eq('empresa_id', empresaId)
       if (eExtrato) throw new Error(`Marcar extrato conciliado: ${eExtrato.message}`)
 
-      // 7. Baixa a conta prevista (status reais do schema: 'paga' / 'recebida')
-      if (item.conta_pagar_id) {
+      // 7. Baixa a conta prevista — acumula sobre o que já estava pago/recebido (a conta
+      // pode já estar parcialmente paga/recebida) e só marca quitada quando o total bate,
+      // mesmo padrão de app/api/financeiro/{pagar,receber}/[id]/{pagar,receber}/route.ts.
+      if (item.conta_pagar_id && contaPagar) {
+        const novoValorPago = contaPagar.valor_pago + Number(ex.valor ?? 0)
+        const status = novoValorPago >= contaPagar.valor ? 'paga' : 'parcialmente_paga'
         const { error: ePagar } = await supabase.from('contas_pagar')
-          .update({ status: 'paga', valor_pago: Number(ex.valor ?? 0), data_pagamento: dataTx })
+          .update({ status, valor_pago: novoValorPago, data_pagamento: dataTx })
           .eq('id', item.conta_pagar_id).eq('empresa_id', empresaId)
         if (ePagar) throw new Error(`Baixar conta a pagar: ${ePagar.message}`)
       }
-      if (item.conta_receber_id) {
+      if (item.conta_receber_id && contaReceber) {
+        const novoValorRecebido = contaReceber.valor_recebido + Number(ex.valor ?? 0)
+        const status = novoValorRecebido >= contaReceber.valor ? 'recebida' : 'parcialmente_recebida'
         const { error: eReceber } = await supabase.from('contas_receber')
-          .update({ status: 'recebida', valor_recebido: Number(ex.valor ?? 0), data_recebimento: dataTx })
+          .update({ status, valor_recebido: novoValorRecebido, data_recebimento: dataTx })
           .eq('id', item.conta_receber_id).eq('empresa_id', empresaId)
         if (eReceber) throw new Error(`Baixar conta a receber: ${eReceber.message}`)
       }
 
       resp.confirmados.push({ extrato_id: item.extrato_id, transacao_id: tx.id })
+      mesesTocados.add(`${dataTx.slice(0, 7)}`)
     } catch (e: unknown) {
       resp.falhas.push({ extrato_id: item.extrato_id ?? '?', erro: e instanceof Error ? e.message : 'Erro interno' })
     }
+  }
+
+  // DRE é materializado (metricas_financeiras), não calculado on-the-fly — sem isso o
+  // dashboard/relatorios fica desatualizado pra quem só usa o Banco (não emite NFe).
+  for (const mes of Array.from(mesesTocados)) {
+    await recalcularDREMes(empresaId, new Date(`${mes}-01T12:00:00`))
   }
 
   return NextResponse.json(resp)
