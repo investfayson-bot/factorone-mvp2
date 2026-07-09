@@ -41,7 +41,7 @@ function numBRL(v: unknown): number | null {
 export function parseLinhasPlanilha(rows: Record<string, unknown>[]): ItemFaturaImportado[] {
   return rows.map(r => {
     const descricao = String(r.Descrição ?? r.Descricao ?? r.descricao ?? '').trim()
-    const valor = numBRL(r.Valor ?? r.valor) ?? 0
+    const valor = Math.abs(numBRL(r.Valor ?? r.valor) ?? 0)
     const data = toIsoDate(r.Data ?? r.data)
     const parcela = extrairParcela(descricao)
     return {

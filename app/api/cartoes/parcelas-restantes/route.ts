@@ -12,6 +12,33 @@ export const runtime = 'nodejs'
  */
 
 type Linha = { descricao: string; valor: number; restantes: number; origem: string }
+type LinhaBruta = { descricao: string; valor: number; parcela_atual: number; total_parcelas: number; origem: string }
+
+/**
+ * A Belvo grava uma linha NOVA por mês faturado de uma compra parcelada
+ * (parcela 1/10, depois 2/10, depois 3/10...), cada uma com o valor da
+ * parcela. Sem deduplicar, a mesma compra é somada uma vez por mês já
+ * cobrado, inflando "quanto falta pagar". Aqui agrupamos por compra
+ * (origem + descrição + valor da parcela + total) e ficamos só com a
+ * linha de maior parcela_atual — o estado mais recente conhecido dela.
+ */
+function chaveCompra(l: LinhaBruta): string {
+  const desc = l.descricao.trim().toLowerCase().replace(/\s+/g, ' ')
+  return `${l.origem}|${desc}|${l.valor.toFixed(2)}|${l.total_parcelas}`
+}
+
+function deduplicarPorCompra(brutas: LinhaBruta[]): Linha[] {
+  const porCompra = new Map<string, LinhaBruta>()
+  for (const l of brutas) {
+    const chave = chaveCompra(l)
+    const existente = porCompra.get(chave)
+    if (!existente || l.parcela_atual > existente.parcela_atual) porCompra.set(chave, l)
+  }
+  return Array.from(porCompra.values()).map(l => ({
+    descricao: l.descricao, valor: l.valor, origem: l.origem,
+    restantes: l.total_parcelas - l.parcela_atual,
+  }))
+}
 
 function agrupar(linhas: Linha[]) {
   const porRestantes = new Map<number, { valor: number; linhas: Linha[] }>()
@@ -52,7 +79,7 @@ export async function GET(req: NextRequest) {
         .eq('user_id', user.id).not('total_parcelas', 'is', null),
     ])
 
-    const linhas: Linha[] = []
+    const brutas: LinhaBruta[] = []
     for (const [rows, origem] of [
       [belvoR.data, 'belvo'] as const,
       [importadoR.data, 'import'] as const,
@@ -61,13 +88,12 @@ export async function GET(req: NextRequest) {
       for (const r of rows ?? []) {
         const atual = Number(r.parcela_atual)
         const total = Number(r.total_parcelas)
-        if (!Number.isFinite(atual) || !Number.isFinite(total) || total <= 0) continue
-        const restantes = total - atual
-        if (restantes < 0) continue
-        linhas.push({ descricao: r.descricao ?? '', valor: Number(r.valor) || 0, restantes, origem })
+        if (!Number.isFinite(atual) || !Number.isFinite(total) || total <= 0 || atual > total) continue
+        brutas.push({ descricao: r.descricao ?? '', valor: Math.abs(Number(r.valor) || 0), parcela_atual: atual, total_parcelas: total, origem })
       }
     }
 
+    const linhas = deduplicarPorCompra(brutas).filter(l => l.restantes >= 0)
     return NextResponse.json(agrupar(linhas))
   } catch (e: unknown) {
     return NextResponse.json({ error: e instanceof Error ? e.message : 'Erro interno' }, { status: 500 })
