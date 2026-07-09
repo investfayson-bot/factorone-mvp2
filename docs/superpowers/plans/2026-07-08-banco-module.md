@@ -554,6 +554,8 @@ git add app/api/banco/confirmar/route.ts
 git commit -m "feat(banco): POST /api/banco/confirmar — concilia+classifica+baixa em lote"
 ```
 
+**Follow-up registrado no code review (fora do escopo desta task, não implementar sem alinhar):** steps 6-7 agora checam erro e reportam falha corretamente (commit `e1573fb`), mas não há transação de banco real envolvendo steps 5-7 — se o insert de `transacoes` for bem sucedido e o update seguinte falhar, o item vai pra `falhas` porém a transação já foi criada (órfã, sem o extrato marcado conciliado). Resolver de verdade exige uma function Postgres (RPC) envolvendo os 3 passos numa transação. Decisão de arquitetura pra revisitar com o Fayson antes de implementar.
+
 ---
 
 ### Task 5: `components/banco/BancoHeader.tsx`
