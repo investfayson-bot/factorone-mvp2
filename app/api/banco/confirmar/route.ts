@@ -97,18 +97,21 @@ export async function POST(req: NextRequest) {
       if (eTx) throw new Error(eTx.message)
 
       // 6. Marca extrato conciliado
-      await supabase.from('extrato_bancario').update({ conciliado: true, transaction_id: tx.id }).eq('id', item.extrato_id)
+      const { error: eExtrato } = await supabase.from('extrato_bancario').update({ conciliado: true, transaction_id: tx.id }).eq('id', item.extrato_id).eq('empresa_id', empresaId)
+      if (eExtrato) throw new Error(`Marcar extrato conciliado: ${eExtrato.message}`)
 
       // 7. Baixa a conta prevista (status reais do schema: 'paga' / 'recebida')
       if (item.conta_pagar_id) {
-        await supabase.from('contas_pagar')
+        const { error: ePagar } = await supabase.from('contas_pagar')
           .update({ status: 'paga', valor_pago: Number(ex.valor ?? 0), data_pagamento: dataTx })
           .eq('id', item.conta_pagar_id).eq('empresa_id', empresaId)
+        if (ePagar) throw new Error(`Baixar conta a pagar: ${ePagar.message}`)
       }
       if (item.conta_receber_id) {
-        await supabase.from('contas_receber')
+        const { error: eReceber } = await supabase.from('contas_receber')
           .update({ status: 'recebida', valor_recebido: Number(ex.valor ?? 0), data_recebimento: dataTx })
           .eq('id', item.conta_receber_id).eq('empresa_id', empresaId)
+        if (eReceber) throw new Error(`Baixar conta a receber: ${eReceber.message}`)
       }
 
       resp.confirmados.push({ extrato_id: item.extrato_id, transacao_id: tx.id })
