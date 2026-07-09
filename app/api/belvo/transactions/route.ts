@@ -14,6 +14,7 @@ type BelvoTransaction = {
   category?: string
   merchant?: { name?: string } | null
   account?: { id?: string; name?: string; number?: string } | null
+  credit_card_data?: { installment_number?: number | null; total_installments?: number | null } | null
 }
 
 function mapTx(t: BelvoTransaction) {
@@ -27,6 +28,8 @@ function mapTx(t: BelvoTransaction) {
     tipo: t.type ?? null,
     valor: t.amount ?? null,
     moeda: t.currency ?? null,
+    parcela_atual: t.credit_card_data?.installment_number ?? null,
+    total_parcelas: t.credit_card_data?.total_installments ?? null,
   }
 }
 
@@ -73,6 +76,9 @@ export async function POST(req: NextRequest) {
           tipo: t.type ?? null,
           valor: t.amount ?? null,
           moeda: t.currency ?? null,
+          parcela_atual: t.credit_card_data?.installment_number ?? null,
+          total_parcelas: t.credit_card_data?.total_installments ?? null,
+          descritor_bruto: t.merchant?.name ?? t.description ?? null,
         })),
         { onConflict: 'belvo_id' }
       )
@@ -92,13 +98,14 @@ export async function GET(req: NextRequest) {
 
     const { data } = await supabase
       .from('belvo_transacoes')
-      .select('belvo_id, data, descricao, categoria, estabelecimento, conta, tipo, valor, moeda')
+      .select('belvo_id, data, descricao, categoria, estabelecimento, conta, tipo, valor, moeda, parcela_atual, total_parcelas')
       .order('data', { ascending: false })
       .limit(500)
 
     const transacoes = (data ?? []).map(t => ({
       id: t.belvo_id, data: t.data, descricao: t.descricao, categoria: t.categoria,
       estabelecimento: t.estabelecimento, conta: t.conta, tipo: t.tipo, valor: t.valor, moeda: t.moeda,
+      parcela_atual: t.parcela_atual, total_parcelas: t.total_parcelas,
     }))
 
     return NextResponse.json({ transacoes })
