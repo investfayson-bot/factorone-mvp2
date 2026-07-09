@@ -45,8 +45,8 @@ export default function BancoHeader({ empresaNome, empresaCnpj, contas, receber3
     : `${contas.length} conta${contas.length === 1 ? '' : 's'} conectada${contas.length === 1 ? '' : 's'}`
 
   return (
-    <>
-      <div ref={sentinelRef} style={{ height: 1 }} />
+    <div style={{ position: 'relative' }}>
+      <div ref={sentinelRef} style={{ position: 'absolute', top: 0, height: 120, width: 1, pointerEvents: 'none' }} />
       {compact ? (
         <div style={{ position: 'sticky', top: 0, zIndex: 20, background: 'var(--surface, #fff)', borderBottom: '1px solid var(--line, #E4DCCC)', padding: '10px 16px', display: 'flex', alignItems: 'center', gap: 12, borderRadius: '0 0 14px 14px' }}>
           <i className="fa-solid fa-building-columns" style={{ color: 'var(--sage)' }} />
@@ -84,6 +84,6 @@ export default function BancoHeader({ empresaNome, empresaCnpj, contas, receber3
           </div>
         </>
       )}
-    </>
+    </div>
   )
 }
