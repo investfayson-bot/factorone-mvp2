@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { formatBRL } from '@/lib/currency-brl'
 import { fmtBRLCompact } from '@/lib/dre-calculations'
 import { maskCpfCnpj } from '@/lib/masks'
@@ -19,12 +19,18 @@ type Props = {
 export default function BancoHeader({ empresaNome, empresaCnpj, contas, receber30 }: Props) {
   const [hide, setHide] = useState(false)
   const [compact, setCompact] = useState(false)
+  const sentinelRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     setHide(localStorage.getItem('banco-hide-saldo') === '1')
-    const onScroll = () => setCompact(window.scrollY > 120)
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
+  useEffect(() => {
+    const el = sentinelRef.current
+    if (!el) return
+    const observer = new IntersectionObserver(([entry]) => setCompact(!entry.isIntersecting), { threshold: 0 })
+    observer.observe(el)
+    return () => observer.disconnect()
   }, [])
 
   function toggleHide() {
@@ -51,6 +57,7 @@ export default function BancoHeader({ empresaNome, empresaCnpj, contas, receber3
 
   return (
     <>
+      <div ref={sentinelRef} style={{ height: 1 }} />
       <div className="page-hdr">
         <div>
           <div className="page-title">Banco</div>
