@@ -72,25 +72,25 @@ function buildNavGroups(badges: { reembolsos: number; aprovacoes: number }, inst
     {
       label: 'Contabilidade',
       items: [
-        { href: '/dashboard/conciliacao', icon: 'fa-building-columns', label: 'Conciliação Bancária', badge: badges.aprovacoes > 0 ? String(badges.aprovacoes) : undefined, badgeColor: 'var(--teal)' },
         { href: '/dashboard/contadores', icon: 'fa-calculator', label: 'Contador' },
         { href: '/dashboard/contabilidade/livros', icon: 'fa-book', label: 'Livros contábeis' },
         { href: '/dashboard/notas', icon: 'fa-file-invoice-dollar', label: 'Fiscal & NF-e' },
       ],
     },
-    ...(installedIds.includes('banco') ? [{
+    {
       label: 'Banco',
       collapsible: true,
       items: [
-        { href: '/dashboard/conta-pj', icon: 'fa-building-columns', label: 'Visão geral', match: (p: string) => p === '/dashboard/conta-pj' },
-        { href: '/dashboard/conta-pj/extrato', icon: 'fa-list-ul', label: 'Extrato' },
+        { href: '/dashboard/banco', icon: 'fa-building-columns', label: 'Visão geral', match: (p: string) => p === '/dashboard/banco' },
+        { href: '/dashboard/banco?aba=fila', icon: 'fa-inbox', label: 'Fila (a revisar)' },
+        { href: '/dashboard/banco?aba=extrato', icon: 'fa-list-ul', label: 'Extrato' },
         { href: '/dashboard/conta-pj/transferencias', icon: 'fa-bolt', label: 'PIX & Transferências' },
         { href: '/dashboard/cartoes', icon: 'fa-credit-card', label: 'Cartões' },
         { href: '/dashboard/credito', icon: 'fa-hand-holding-dollar', label: 'Crédito & Financiamento' },
         { href: '/dashboard/conexoes', icon: 'fa-link', label: 'Open Finance (Belvo)' },
         { href: '/dashboard/conta-pj/abrir', icon: 'fa-circle-plus', label: 'Abrir conta' },
       ],
-    }] : []),
+    },
     {
       label: 'Configurações',
       items: [
@@ -103,7 +103,6 @@ function buildNavGroups(badges: { reembolsos: number; aprovacoes: number }, inst
 
   // Apps instalados pelo Marketplace aparecem no seu grupo funcional.
   for (const app of MARKET_APPS) {
-    if (app.id === 'banco') continue // Banco é um grupo inteiro, tratado acima
     if (app.id === 'classificar' || app.id === 'cfoia') continue // já são itens fixos do menu
     if (!installedIds.includes(app.id)) continue
     const item: NavItem = { href: app.href, icon: app.icon, label: app.name, badge: 'APP', badgeColor: '#7A6A9E' }
@@ -151,6 +150,7 @@ const pageTitles: Record<string, string> = {
   '/dashboard/produtos': 'Produtos & Margem',
   '/dashboard/agenda': 'Agendamento',
   '/dashboard/orcamento': 'Orçamento',
+  '/dashboard/banco': 'Banco',
   '/dashboard/conciliacao': 'Conciliação Bancária',
   '/dashboard/conciliacao/relatorio': 'Relatório de Conciliação',
   '/dashboard/contadores': 'Portal do Contador',
