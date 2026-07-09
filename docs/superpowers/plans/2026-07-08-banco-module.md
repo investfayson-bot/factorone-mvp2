@@ -1437,6 +1437,16 @@ git commit -m "feat(banco): rotas antigas (conta-pj, conciliacao, classificar) r
 
 ---
 
+**Follow-ups do code review final (não bloqueantes, corrigidos os críticos, resto registrado):**
+- ✅ Corrigido: IDOR em `fornecedor_id`/`cliente_id` passados direto (sem `.eq('empresa_id', ...)`).
+- ✅ Corrigido: `POST /api/banco/confirmar` não chamava `recalcularDREMes` — DRE materializado ficava desatualizado pra quem só usa o Banco.
+- ✅ Corrigido: baixa de conta a pagar/receber sobrescrevia `valor_pago`/`valor_recebido` com o valor da transação em vez de acumular sobre o que já existia, e marcava sempre "paga"/"recebida" mesmo com divergência de valor (a UI aceita match até 15% de diferença) — agora acumula e só quita quando o total bate, com `parcialmente_paga`/`parcialmente_recebida` no meio do caminho.
+- ✅ Corrigido: validação de direção (transação de saída não pode vincular conta a receber e vice-versa).
+- **Não corrigido, registrado pra depois:** `matchContaPrevista`/`score()` em `lib/banco/sugestoes.ts` compara contra o valor TOTAL da conta, não o saldo residual — uma conta já parcialmente paga nunca é sugerida corretamente na fila mesmo quando a transação bate exatamente o saldo que falta. Exige passar o residual (`valor - valor_pago`) pro matcher.
+- **Não corrigido, registrado pra depois:** sem lock contra baixa dupla do mesmo `conta_pagar_id`/`conta_receber_id` (dois itens da fila apontando pra mesma conta sobrescrevem um ao outro) e sem proteção contra corrida (TOCTOU) na checagem de idempotência do extrato (duplo clique / duas abas podem, em teoria, gerar duas transações pra mesma linha de extrato). Resolver de verdade exige lock otimista (`.eq('status', ...)` condicional no update, checando linhas afetadas) ou uma function Postgres — mesma decisão de arquitetura já registrada no follow-up da Task 4 (atomicidade real via RPC).
+
+---
+
 ### Task 12: Verificação end-to-end + revisores
 
 **Files:** nenhum novo (correções pontuais se os revisores acharem problema).
