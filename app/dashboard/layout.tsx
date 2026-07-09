@@ -52,7 +52,6 @@ function buildNavGroups(badges: { reembolsos: number; aprovacoes: number }, inst
     {
       label: 'Gestão financeira',
       items: [
-        { href: '/dashboard/classificar', icon: 'fa-layer-group', label: 'Classificar', badge: 'NEW', badgeColor: 'var(--teal)' },
         { href: '/dashboard/cashflow', icon: 'fa-chart-line', label: 'Fluxo de Caixa' },
         { href: '/dashboard/relatorios', icon: 'fa-chart-bar', label: 'DRE' },
         { href: '/dashboard/financeiro', icon: 'fa-receipt', label: 'Contas a Pagar & Receber', badge: badges.reembolsos > 0 ? String(badges.reembolsos) : undefined, badgeColor: 'var(--teal)' },

@@ -92,7 +92,7 @@ export default function AbrirContaPage() {
             ))}
           </div>
         </div>
-        <button className="btn-action" style={{ width: '100%', padding: '13px 0', fontSize: 14 }} onClick={() => router.push('/dashboard/conta-pj')}>
+        <button className="btn-action" style={{ width: '100%', padding: '13px 0', fontSize: 14 }} onClick={() => router.push('/dashboard/banco')}>
           Ir para minha conta <i className="fa-solid fa-arrow-right" style={{ marginLeft: 8 }} />
         </button>
       </div>

@@ -72,7 +72,7 @@ async function gerarNotificacoes(empresaId: string): Promise<Notif[]> {
       tipo: 'conciliacao',
       titulo: 'Transações sem categoria',
       mensagem: 'Classifique para o DRE ficar preciso',
-      href: '/dashboard/conciliacao',
+      href: '/dashboard/banco?aba=fila',
       lida: false,
       created_at: new Date().toISOString(),
     })

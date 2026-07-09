@@ -29,8 +29,8 @@ export default function AtivacaoChecklist({ empresaId }: { empresaId: string }) 
     try { const { count } = await supabase.from('marketing_leads').select('id', { count: 'exact', head: true }).eq('empresa_id', empresaId); temLead = (count ?? 0) > 0 } catch { /* ignore */ }
 
     const lista: Passo[] = [
-      { id: 'tx', label: 'Traga suas transações', desc: 'Conecte o banco ou popule dados de teste', icon: 'fa-arrow-down-to-bracket', href: '/dashboard/classificar', done: temTx },
-      { id: 'clas', label: 'Classifique com a IA', desc: 'A IA sugere, você confirma', icon: 'fa-layer-group', href: '/dashboard/classificar', done: classificou },
+      { id: 'tx', label: 'Traga suas transações', desc: 'Conecte o banco ou popule dados de teste', icon: 'fa-arrow-down-to-bracket', href: '/dashboard/banco?aba=fila', done: temTx },
+      { id: 'clas', label: 'Classifique com a IA', desc: 'A IA sugere, você confirma', icon: 'fa-layer-group', href: '/dashboard/banco?aba=fila', done: classificou },
       { id: 'dre', label: 'Veja seu resultado', desc: 'DRE, fluxo e onde você gastou', icon: 'fa-chart-bar', href: '/dashboard/relatorios', done: classificou },
       { id: 'site', label: 'Crie sua presença', desc: 'Gere um site que captura cliente', icon: 'fa-globe', href: '/dashboard/marketing/site', done: temSite },
       { id: 'lead', label: 'Capte seu 1º lead', desc: 'Plugue uma fonte e receba leads', icon: 'fa-magnet', href: '/dashboard/captacao', done: temLead },

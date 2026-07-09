@@ -360,7 +360,7 @@ export default function DashboardPage() {
         <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--ink-mut)', textTransform: 'uppercase', letterSpacing: '.1em', marginBottom: 14 }}>Atalhos</div>
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
           {[
-            { icon: 'fa-layer-group', label: 'Classificar', href: '/dashboard/classificar' },
+            { icon: 'fa-layer-group', label: 'Classificar', href: '/dashboard/banco?aba=fila' },
             { icon: 'fa-file-invoice-dollar', label: 'Nova cobrança', href: '/dashboard/financeiro' },
             { icon: 'fa-receipt', label: 'Registrar despesa', href: '/dashboard/despesas' },
             { icon: 'fa-file-lines', label: 'Emitir NF-e', href: '/dashboard/notas' },
@@ -387,7 +387,7 @@ export default function DashboardPage() {
 
       {/* Insight proativo da IA */}
       {insight && (
-        <Link href="/dashboard/classificar" style={{ textDecoration: 'none', display: 'block', marginBottom: 16 }}>
+        <Link href="/dashboard/banco?aba=fila" style={{ textDecoration: 'none', display: 'block', marginBottom: 16 }}>
           <div style={{ background: 'var(--sage-tint)', border: '1px solid var(--sage)', borderRadius: 12, padding: '14px 18px', display: 'flex', gap: 12, alignItems: 'flex-start', boxShadow: 'var(--shadow-card)' }}>
             <div style={{ width: 32, height: 32, borderRadius: '50%', background: 'var(--sage)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
               <i className="fa-solid fa-robot" style={{ color: '#fff', fontSize: 14 }} />
@@ -403,7 +403,7 @@ export default function DashboardPage() {
 
       {/* Contas bancárias + A classificar (estilo QuickBooks BANK ACCOUNTS) */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 16 }}>
-        <Link href="/dashboard/conta-pj" style={{ textDecoration: 'none' }}>
+        <Link href="/dashboard/banco" style={{ textDecoration: 'none' }}>
           <div style={{ background: 'var(--surface)', border: '1px solid var(--line)', borderRadius: 12, padding: '16px 20px', boxShadow: 'var(--shadow-card)', height: '100%' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
               <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--ink-mut)', textTransform: 'uppercase', letterSpacing: '.1em' }}>Contas bancárias</span>
@@ -413,7 +413,7 @@ export default function DashboardPage() {
             <div style={{ fontSize: 26, fontWeight: 700, color: 'var(--navy)', fontVariantNumeric: 'tabular-nums' }}>{fmtBRL(pendencias.saldoBanco)}</div>
           </div>
         </Link>
-        <Link href="/dashboard/classificar" style={{ textDecoration: 'none' }}>
+        <Link href="/dashboard/banco?aba=fila" style={{ textDecoration: 'none' }}>
           <div style={{ background: 'var(--surface)', border: '1px solid var(--line)', borderRadius: 12, padding: '16px 20px', boxShadow: 'var(--shadow-card)', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--ink-mut)', textTransform: 'uppercase', letterSpacing: '.1em' }}>A classificar</span>
@@ -953,7 +953,7 @@ export default function DashboardPage() {
               { href: '/dashboard/despesas', icon: 'fa-file-invoice', label: 'Nova despesa', bg: '#E9F0ED', color: 'var(--teal)' },
               { href: '/dashboard/financeiro/receber', icon: 'fa-arrow-down-circle', label: 'Registrar recebimento', bg: '#E9F0ED', color: 'var(--teal)' },
               { href: '/dashboard/relatorios', icon: 'fa-chart-bar', label: 'Ver DRE', bg: '#E6F1FB', color: '#3D6E8E' },
-              { href: '/dashboard/conciliacao', icon: 'fa-building-columns', label: 'Conciliar', bg: '#E9F0ED', color: 'var(--teal)' },
+              { href: '/dashboard/banco?aba=fila', icon: 'fa-building-columns', label: 'Conciliar', bg: '#E9F0ED', color: 'var(--teal)' },
               { href: '/dashboard/contadores', icon: 'fa-calculator', label: 'Portal Contador', bg: '#F3F0FF', color: '#7A6A9E' },
               { href: '/dashboard/aicfo', icon: 'fa-robot', label: 'Perguntar ao AI', bg: '#13201D', color: '#6FA595' },
             ].map(item => (

@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 type Solucao = { icon: string; label: string; desc: string; href?: string; cor: string; soon?: boolean }
 
 const DISPONIVEIS: Solucao[] = [
-  { icon: 'fa-building-columns', label: 'Conta PJ', desc: 'Saldo, extrato e multi-conta', href: '/dashboard/conta-pj', cor: '#13201D' },
+  { icon: 'fa-building-columns', label: 'Conta PJ', desc: 'Saldo, extrato e multi-conta', href: '/dashboard/banco', cor: '#13201D' },
   { icon: 'fa-bolt', label: 'PIX & Transferências', desc: 'Envie PIX, TED e DOC', href: '/dashboard/conta-pj/transferencias', cor: '#3D7A6E' },
   { icon: 'fa-credit-card', label: 'Cartões', desc: 'Físicos, virtuais e por colaborador', href: '/dashboard/cartoes', cor: '#7A6A9E' },
   { icon: 'fa-hand-holding-dollar', label: 'Crédito & Financiamento', desc: 'Capital de giro e antecipação', href: '/dashboard/credito', cor: '#B08A3E' },
@@ -54,7 +54,7 @@ export default function SolucoesPage() {
           <div className="page-title">Soluções financeiras</div>
           <div className="page-sub">Tudo que sua empresa precisa de banco, num só lugar</div>
         </div>
-        <button className="btn-ghost" style={{ fontSize: 14 }} onClick={() => router.push('/dashboard/conta-pj')}>
+        <button className="btn-ghost" style={{ fontSize: 14 }} onClick={() => router.push('/dashboard/banco')}>
           <i className="fa-solid fa-arrow-left" style={{ marginRight: 6 }} />Banco
         </button>
       </div>

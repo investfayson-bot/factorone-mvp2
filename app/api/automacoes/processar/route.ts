@@ -56,7 +56,7 @@ export async function POST(req: NextRequest) {
         const { data: saldo } = await db.from('contas_bancarias').select('saldo_atual').eq('empresa_id', empresaId).order('saldo_atual', { ascending: true }).limit(1).maybeSingle()
         const s = Number(saldo?.saldo_atual ?? 0)
         if (s < limite) {
-          await inserirNotif(db, empresaId, 'Saldo baixo detectado', `Saldo da conta está em R$ ${s.toLocaleString('pt-BR', { minimumFractionDigits: 2 })} — abaixo do limite de R$ ${limite.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`, 'erro', 'financeiro', '/dashboard/conta-pj')
+          await inserirNotif(db, empresaId, 'Saldo baixo detectado', `Saldo da conta está em R$ ${s.toLocaleString('pt-BR', { minimumFractionDigits: 2 })} — abaixo do limite de R$ ${limite.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`, 'erro', 'financeiro', '/dashboard/banco')
           count++
         }
       }

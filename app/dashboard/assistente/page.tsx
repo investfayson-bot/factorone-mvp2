@@ -120,7 +120,7 @@ export default function AssistentePage() {
   }
 
   const alertas: { txt: string; cor: string; ic: string; href: string }[] = resumo ? [
-    ...(resumo.aClassificar > 0 ? [{ txt: `${resumo.aClassificar} transações a classificar`, cor: '#B0413E', ic: 'fa-layer-group', href: '/dashboard/classificar' }] : []),
+    ...(resumo.aClassificar > 0 ? [{ txt: `${resumo.aClassificar} transações a classificar`, cor: '#B0413E', ic: 'fa-layer-group', href: '/dashboard/banco?aba=fila' }] : []),
     ...(resumo.aReceberQtd > 0 ? [{ txt: `${resumo.aReceberQtd} aluguéis a receber · ${formatBRL(resumo.aReceberValor)}`, cor: 'var(--gold)', ic: 'fa-hand-holding-dollar', href: '/dashboard/patrimonio/recibos' }] : []),
     ...resumo.vencimentos.map(v => ({ txt: v, cor: 'var(--gold)', ic: 'fa-car', href: '/dashboard/patrimonio/veiculos' })),
     ...resumo.obrasEstouro.map(o => ({ txt: `Obra estourando: ${o}`, cor: '#B0413E', ic: 'fa-helmet-safety', href: '/dashboard/patrimonio/obras' })),
