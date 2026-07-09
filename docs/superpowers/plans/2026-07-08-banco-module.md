@@ -876,6 +876,8 @@ git add components/banco/FilaTab.tsx
 git commit -m "feat(banco): FilaTab — fila one-click com categoria, cadastro e conta prevista"
 ```
 
+**Follow-ups registrados no code review (não bloqueantes, não implementar sem alinhar):** (a) extrair o padrão repetido de "chip" (sugestao_cadastro/sugestao_criar/conta_prevista) num componente compartilhado; (b) mover `montarItem` pra `lib/banco/` como função pura, seguindo o padrão de `sugestoes.ts`; (c) o `busy` global serializa confirmação de linhas não relacionadas — só vale trocar por um Set de IDs em voo se virar reclamação real de UX, e com cuidado pra não abrir a race que o `busy` global hoje mascara no lado da API (`/api/banco/confirmar` não tem lock por linha).
+
 ---
 
 ### Task 7: `components/banco/ExtratoTab.tsx` e `ResumoTab.tsx`
