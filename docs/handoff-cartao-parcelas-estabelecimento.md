@@ -77,5 +77,34 @@ cliente de teste brasileiro criado no MockBank.io (banco por trás de `ofmockban
   o formato documentado (`installment_number`/`total_installments` em `credit_card_data`) e
   validar só quando um banco de cliente real conectar em produção.
 
+## Implementado (2026-07-09, sessão Windows) — branch `feat/cartao-parcelas`
+
+- `supabase/migrations/20260709100000_cartao_parcelas.sql`: `parcela_atual`/`total_parcelas`/
+  `descritor_bruto` (nullable) em `belvo_transacoes` + tabela nova `fatura_itens_importados`
+  (PJ via `empresa_id` ou PF via `user_id`, RLS igual ao padrão de `belvo_transacoes`).
+- `app/api/belvo/transactions/route.ts`: lê `credit_card_data.installment_number`/
+  `total_installments` (antes descartado) e persiste.
+- `lib/fatura-import.ts` + `app/api/cartoes/importar-fatura/route.ts`: importação de fatura
+  CSV/XLSX (reaproveita padrão de `/api/importar/despesas`), OFX (parser de `<STMTTRN>` por
+  regex) e PDF (via IA, reaproveita padrão de `/api/despesas/extrair-comprovante`). Fluxo
+  preview → confirm.
+- `app/api/cartoes/parcelas-restantes/route.ts`: junta `belvo_transacoes` +
+  `fatura_itens_importados` + `despesas_pessoais` (PF) e agrupa por parcelas restantes,
+  destacando "termina em 1 mês" / "termina em 2 meses".
+
+**Bug pego no code review e corrigido:** a Belvo grava uma linha NOVA por mês faturado de
+uma compra parcelada (parcela 1/10, depois 2/10, ...), cada uma com o valor da parcela — sem
+deduplicar, o endpoint de resumo somava a mesma compra uma vez por mês já cobrado, inflando
+"quanto falta pagar". Corrigido agrupando por compra (origem+descrição+valor+total) e usando
+só a linha de maior `parcela_atual` antes de somar.
+
+**Limitação conhecida, não corrigida (baixo risco):** o filtro de dono usa `empresa_id` OU
+`user_id`, nunca os dois — linha legada gravada só num dos dois campos ficaria de fora do
+somatório mesmo sendo visível via RLS. Mesmo padrão já existe em `belvo_transacoes` etc.
+
+**Fora de escopo (não decidido ainda):** item 3 (estabelecimento real via CNPJ/BrasilAPI).
+**Não validado com dado real da Belvo** — sandbox/mock abandonado por fricção (ver seção
+acima). Validar quando um banco de cliente real conectar em produção.
+
 ## IMPORTANTE (custo)
 Fazer TUDO inline. Nada de `subagent-driven-development`. Ver memória `custo-subagentes-fan-out`.
