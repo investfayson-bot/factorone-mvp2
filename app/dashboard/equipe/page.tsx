@@ -19,6 +19,7 @@ const ROLES: Record<string, { label: string; desc: string; color: string; bg: st
   operacional: { label: 'Operacional', desc: 'Logística, estoque e contratos',                color: '#B08A3E',  bg: '#fef3c7' },
   logistica:   { label: 'Logística',   desc: 'Logística, estoque e contratos',                color: '#0891b2',  bg: '#E4EDEF' },
   viewer:      { label: 'Visualizador',desc: 'Leitura: dashboard, DRE e relatórios',          color: '#7B8C88',  bg: '#f1f5f9' },
+  contador:    { label: 'Contador',    desc: 'Escritório contábil — leitura de tudo, sem editar', color: '#3D5A80',  bg: '#E3E9F2' },
 }
 
 export default function EquipePage() {
