@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getSupabaseUser } from '@/lib/supabase-route'
+import { getSupabaseUser, bloquearSeLeitura } from '@/lib/supabase-route'
 
 async function empresaDe(req: NextRequest) {
   const { user, supabase } = await getSupabaseUser(req)
@@ -13,6 +13,8 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ p
   const { provider } = await params
   const { user, supabase, empresaId } = await empresaDe(req)
   if (!user) return NextResponse.json({ error: 'Não autenticado' }, { status: 401 })
+  const bloqueio = await bloquearSeLeitura(supabase, user.id)
+  if (bloqueio) return NextResponse.json({ error: `Papel ${bloqueio} é somente leitura` }, { status: 403 })
   const { error } = await supabase.from('cofre_api_keys').delete().eq('empresa_id', empresaId).eq('provider', provider)
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
   return NextResponse.json({ ok: true })

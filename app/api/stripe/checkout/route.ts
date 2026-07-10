@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { createClient } from '@supabase/supabase-js'
 import { erroDesconhecido } from '@/lib/transacao-types'
+import { bloquearSeLeitura } from '@/lib/supabase-route'
 
 export async function POST(req: NextRequest) {
   try {
@@ -35,6 +36,9 @@ export async function POST(req: NextRequest) {
     let customerEmail = email || user?.email || ''
 
     if (user) {
+      const bloqueio = await bloquearSeLeitura(supabase, user.id)
+      if (bloqueio) return NextResponse.json({ error: `Papel ${bloqueio} é somente leitura` }, { status: 403 })
+
       const { data: usuario } = await admin.from('usuarios').select('empresa_id').eq('id', user.id).maybeSingle()
       empresaId = usuario?.empresa_id || user.id
 

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { authorizationHeader, getNfeioApiKey, getNfeioCompanyId, getNfeioServiceBaseUrl, getNfeioProductBaseUrl } from '@/lib/nfeio'
-import { getSupabaseUser } from '@/lib/supabase-route'
+import { getSupabaseUser, bloquearSeLeitura } from '@/lib/supabase-route'
 import { estornarReceitaNota } from '@/lib/notas-financeiras'
 import { erroDesconhecido } from '@/lib/transacao-types'
 
@@ -24,6 +24,8 @@ export async function POST(
 
     const { user, supabase } = await getSupabaseUser(req)
     if (!user) return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
+    const bloqueio = await bloquearSeLeitura(supabase, user.id)
+    if (bloqueio) return NextResponse.json({ error: `Papel ${bloqueio} é somente leitura` }, { status: 403 })
 
     const { data: usrRow } = await supabase.from('usuarios').select('empresa_id').eq('id', user.id).maybeSingle()
     const empresaId = usrRow?.empresa_id ?? user.id

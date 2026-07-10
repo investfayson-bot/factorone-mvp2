@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getSupabaseUser } from '@/lib/supabase-route'
+import { getSupabaseUser, bloquearSeLeitura } from '@/lib/supabase-route'
 import { erroDesconhecido } from '@/lib/transacao-types'
 
 export const runtime = 'nodejs'
@@ -26,6 +26,8 @@ export async function POST(req: NextRequest) {
   try {
     const { user, supabase, empresaId } = await empresaDe(req)
     if (!user) return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
+    const bloqueio = await bloquearSeLeitura(supabase, user.id)
+    if (bloqueio) return NextResponse.json({ error: `Papel ${bloqueio} é somente leitura` }, { status: 403 })
     const { competencia } = (await req.json()) as { competencia?: string }
     if (!competencia || !/^\d{4}-\d{2}$/.test(competencia)) return NextResponse.json({ error: 'competência inválida (YYYY-MM)' }, { status: 400 })
     const { error } = await supabase.from('fechamentos_contabeis').upsert(
@@ -42,6 +44,8 @@ export async function DELETE(req: NextRequest) {
   try {
     const { user, supabase, empresaId } = await empresaDe(req)
     if (!user) return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
+    const bloqueio = await bloquearSeLeitura(supabase, user.id)
+    if (bloqueio) return NextResponse.json({ error: `Papel ${bloqueio} é somente leitura` }, { status: 403 })
     const { competencia } = (await req.json()) as { competencia?: string }
     if (!competencia) return NextResponse.json({ error: 'competência obrigatória' }, { status: 400 })
     const { error } = await supabase.from('fechamentos_contabeis').update({ status: 'reaberto' }).eq('empresa_id', empresaId).eq('competencia', competencia)

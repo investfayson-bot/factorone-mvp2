@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getSupabaseUser } from '@/lib/supabase-route'
+import { getSupabaseUser, bloquearSeLeitura } from '@/lib/supabase-route'
 import { cifrar } from '@/lib/cofre-crypto'
 
 async function empresaDe(req: NextRequest) {
@@ -25,6 +25,8 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   const { user, supabase, empresaId } = await empresaDe(req)
   if (!user) return NextResponse.json({ error: 'Não autenticado' }, { status: 401 })
+  const bloqueio = await bloquearSeLeitura(supabase, user.id)
+  if (bloqueio) return NextResponse.json({ error: `Papel ${bloqueio} é somente leitura` }, { status: 403 })
   const body = await req.json().catch(() => ({}))
   const rotulo = String(body.rotulo || '').trim()
   const valor = String(body.valor || '')
