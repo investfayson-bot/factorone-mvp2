@@ -84,9 +84,8 @@ function buildNavGroups(badges: { reembolsos: number; aprovacoes: number }, inst
         { href: '/dashboard/banco?aba=extrato', icon: 'fa-list-ul', label: 'Extrato' },
         { href: '/dashboard/conta-pj/transferencias', icon: 'fa-bolt', label: 'PIX & Transferências' },
         { href: '/dashboard/cartoes', icon: 'fa-credit-card', label: 'Cartões' },
-        { href: '/dashboard/credito', icon: 'fa-hand-holding-dollar', label: 'Crédito & Financiamento' },
         { href: '/dashboard/conexoes', icon: 'fa-link', label: 'Open Finance (Belvo)' },
-        { href: '/dashboard/conta-pj/abrir', icon: 'fa-circle-plus', label: 'Abrir conta' },
+        { href: '/dashboard/conta-pj/abrir', icon: 'fa-circle-plus', label: 'Abrir conta', badge: 'em breve', badgeColor: 'var(--fo-text-muted)' },
       ],
     },
     {
