@@ -223,13 +223,20 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       const eid = row?.empresa_id ?? u.id
       setEmpresaId(eid)
       if (typeof window !== 'undefined') setSegmento(localStorage.getItem(`fo_segmento_${eid}`) || '')
-      // Papel do usuário: dono (sem empresa_id, é o próprio workspace) = admin;
-      // membro convidado carrega o role de membros_equipe. Sem registro = admin (não trava ninguém).
-      if (row?.empresa_id && u.email) {
+      // Papel do usuário na empresa ativa. Fonte AUTORITATIVA: usuario_empresas.papel
+      // (chaveado por user_id, não por e-mail — imune ao mismatch de e-mail do convite).
+      // Um contador entra aqui com papel='contador' e NUNCA vira admin por omissão.
+      // Fallback legado: membros_equipe (por e-mail) só se não houver membership.
+      if (row?.empresa_id) {
         try {
-          const { data: mem } = await supabase.from('membros_equipe').select('role,status').eq('empresa_id', eid).eq('email', u.email).maybeSingle()
-          if (mem?.role && mem.status !== 'revogado') setRole(mem.role as string)
-        } catch { /* tabela pode não existir → admin */ }
+          const { data: membership } = await supabase.from('usuario_empresas').select('papel').eq('user_id', u.id).eq('empresa_id', eid).maybeSingle()
+          if (membership?.papel) {
+            setRole(membership.papel as string)
+          } else if (u.email) {
+            const { data: mem } = await supabase.from('membros_equipe').select('role,status').eq('empresa_id', eid).eq('email', u.email).maybeSingle()
+            if (mem?.role && mem.status !== 'revogado') setRole(mem.role as string)
+          }
+        } catch { /* mantém default */ }
       }
       if (row?.empresa_id) {
         const { data: emp } = await supabase.from('empresas').select('nome').eq('id', row.empresa_id).maybeSingle()
