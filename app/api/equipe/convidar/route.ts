@@ -23,6 +23,9 @@ export async function POST(req: NextRequest) {
   const email = String(emailRaw ?? '').trim().toLowerCase()
   if (!email) return NextResponse.json({ error: 'E-mail obrigatório' }, { status: 400 })
 
+  const ROLES_VALIDAS = new Set(['admin', 'financeiro', 'comercial', 'operacional', 'logistica', 'viewer', 'contador'])
+  if (!ROLES_VALIDAS.has(role)) return NextResponse.json({ error: 'Papel inválido' }, { status: 400 })
+
   const token = randomUUID()
   const expiresAt = new Date(Date.now() + 7 * 24 * 3600 * 1000).toISOString()
 
