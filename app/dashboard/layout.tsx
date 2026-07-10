@@ -20,12 +20,11 @@ type NavGroup = {
 
 // Quem vê qual grupo do menu. admin (dono) vê tudo. Grupo não listado = visível.
 const GRUPO_ROLES: Record<string, string[]> = {
-  'Gestão financeira': ['admin', 'financeiro', 'viewer'],
   'Financeiro': ['admin', 'financeiro', 'viewer'],
   'Patrimônio': ['admin', 'financeiro'],
-  'Contabilidade': ['admin', 'financeiro'],
-  'Contabilidade & Fiscal': ['admin', 'financeiro'],
+  'Contábil & Fiscal': ['admin', 'financeiro'],
   'Banco': ['admin', 'financeiro'],
+  'Investimentos': ['admin', 'financeiro', 'viewer'],
   'Clientes & Vendas': ['admin', 'comercial'],
   'Operacional': ['admin', 'operacional', 'logistica'],
   'Configurações': ['admin'],
@@ -50,7 +49,7 @@ function buildNavGroups(badges: { reembolsos: number; aprovacoes: number }, inst
       ],
     },
     {
-      label: 'Gestão financeira',
+      label: 'Financeiro',
       items: [
         { href: '/dashboard/cashflow', icon: 'fa-chart-line', label: 'Fluxo de Caixa' },
         { href: '/dashboard/relatorios', icon: 'fa-chart-bar', label: 'DRE' },
@@ -69,7 +68,7 @@ function buildNavGroups(badges: { reembolsos: number; aprovacoes: number }, inst
       ],
     },
     {
-      label: 'Contabilidade',
+      label: 'Contábil & Fiscal',
       items: [
         { href: '/dashboard/contadores', icon: 'fa-calculator', label: 'Contador' },
         { href: '/dashboard/contabilidade/livros', icon: 'fa-book', label: 'Livros contábeis' },
