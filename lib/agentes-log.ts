@@ -6,7 +6,9 @@ import type { SupabaseClient } from '@supabase/supabase-js'
 export type AgenteInfo = { id: string; nome: string; papel: string; cor: string; inicial: string; modulo: string; href: string }
 
 export const AGENTES_DASHBOARD: AgenteInfo[] = [
-  { id: 'donna', nome: 'Donna', papel: 'E-mail, atendimento do site e Telegram', cor: '#DB2777', inicial: 'DO', modulo: 'Donna', href: '/dashboard/agentes/donna' },
+  { id: 'acessor', nome: 'Acessor', papel: 'CEO/CFO digital — análise financeira, previsões e risco de caixa', cor: '#047A50', inicial: 'AC', modulo: 'Acessor', href: '/dashboard/aicfo' },
+  { id: 'conversas', nome: 'Conversas', papel: 'Inbox unificado — site, WhatsApp, Instagram, Telegram', cor: '#DB2777', inicial: 'CO', modulo: 'Atendimento', href: '/dashboard/agentes/conversas' },
+  { id: 'automacoes', nome: 'Automações', papel: 'Regras de autonomia por canal — automático ou aguarda aprovação', cor: '#B08A3E', inicial: 'AU', modulo: 'Automações', href: '/dashboard/agentes/automacoes' },
   { id: 'louis', nome: 'Louis', papel: 'Classificação financeira e conciliação', cor: '#2563EB', inicial: 'LO', modulo: 'Financeiro', href: '/dashboard/classificar' },
   { id: 'rachel', nome: 'Rachel', papel: 'Marketing, conteúdo e campanhas', cor: '#D97706', inicial: 'RA', modulo: 'Marketing', href: '/dashboard/marketing' },
   { id: 'samantha', nome: 'Samantha', papel: 'Qualificação de leads e CRM', cor: '#0D9488', inicial: 'SA', modulo: 'CRM', href: '/dashboard/crm' },

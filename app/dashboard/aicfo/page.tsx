@@ -93,8 +93,8 @@ export default function AICFOPage() {
       {/* Header */}
       <div className="page-hdr">
         <div>
-          <div className="page-title">FactorOne AI</div>
-          <div className="page-sub">CFO digital · análise financeira · previsões · risco de caixa</div>
+          <div className="page-title">Acessor</div>
+          <div className="page-sub">CEO/CFO digital · análise financeira · previsões · risco de caixa</div>
         </div>
         <button
           onClick={() => void carregarCtx()}

@@ -119,7 +119,9 @@ function buildNavGroups(badges: { reembolsos: number; aprovacoes: number }, inst
 
 const pageTitles: Record<string, string> = {
   '/dashboard': 'Dashboard',
-  '/dashboard/aicfo': 'FactorOne AI',
+  '/dashboard/aicfo': 'Acessor',
+  '/dashboard/agentes/conversas': 'Conversas',
+  '/dashboard/agentes/automacoes': 'Automações',
   '/dashboard/assistente': 'Assistente',
   '/dashboard/agentes': 'Agentes',
   '/dashboard/tarefas': 'Scale · Tarefas',
