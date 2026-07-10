@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getSupabaseUser } from '@/lib/supabase-route'
+import { getSupabaseUser, bloquearSeLeitura } from '@/lib/supabase-route'
 import { decifrar } from '@/lib/cofre-crypto'
 
 async function empresaDe(req: NextRequest) {
@@ -15,6 +15,8 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   const { id } = await params
   const { user, supabase, empresaId } = await empresaDe(req)
   if (!user) return NextResponse.json({ error: 'Não autenticado' }, { status: 401 })
+  const bloqueio = await bloquearSeLeitura(supabase, user.id)
+  if (bloqueio) return NextResponse.json({ error: `Papel ${bloqueio} é somente leitura` }, { status: 403 })
   const { data, error } = await supabase
     .from('cofre_pessoal')
     .select('valor_cifrado')
@@ -34,6 +36,8 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
   const { id } = await params
   const { user, supabase, empresaId } = await empresaDe(req)
   if (!user) return NextResponse.json({ error: 'Não autenticado' }, { status: 401 })
+  const bloqueio = await bloquearSeLeitura(supabase, user.id)
+  if (bloqueio) return NextResponse.json({ error: `Papel ${bloqueio} é somente leitura` }, { status: 403 })
   const { error } = await supabase.from('cofre_pessoal').delete().eq('id', id).eq('empresa_id', empresaId)
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
   return NextResponse.json({ ok: true })

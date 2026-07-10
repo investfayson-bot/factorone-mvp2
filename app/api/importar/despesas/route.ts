@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import * as XLSX from 'xlsx'
-import { getSupabaseUser } from '@/lib/supabase-route'
+import { getSupabaseUser, bloquearSeLeitura } from '@/lib/supabase-route'
 
 type ParsedRow = {
   Data: string
@@ -82,6 +82,9 @@ export async function POST(req: NextRequest) {
       total: parsed.length,
     })
   }
+
+  const bloqueio = await bloquearSeLeitura(supabase, user.id)
+  if (bloqueio) return NextResponse.json({ error: `Papel ${bloqueio} é somente leitura` }, { status: 403 })
 
   const { data: u } = await supabase.from('usuarios').select('empresa_id').eq('id', user.id).maybeSingle()
   const empresaId = (u?.empresa_id as string) || user.id

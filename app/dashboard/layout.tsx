@@ -20,12 +20,11 @@ type NavGroup = {
 
 // Quem vê qual grupo do menu. admin (dono) vê tudo. Grupo não listado = visível.
 const GRUPO_ROLES: Record<string, string[]> = {
-  'Gestão financeira': ['admin', 'financeiro', 'viewer'],
   'Financeiro': ['admin', 'financeiro', 'viewer'],
   'Patrimônio': ['admin', 'financeiro'],
-  'Contabilidade': ['admin', 'financeiro'],
-  'Contabilidade & Fiscal': ['admin', 'financeiro'],
+  'Contábil & Fiscal': ['admin', 'financeiro'],
   'Banco': ['admin', 'financeiro'],
+  'Investimentos': ['admin', 'financeiro', 'viewer'],
   'Clientes & Vendas': ['admin', 'comercial'],
   'Operacional': ['admin', 'operacional', 'logistica'],
   'Configurações': ['admin'],
@@ -50,7 +49,7 @@ function buildNavGroups(badges: { reembolsos: number; aprovacoes: number }, inst
       ],
     },
     {
-      label: 'Gestão financeira',
+      label: 'Financeiro',
       items: [
         { href: '/dashboard/cashflow', icon: 'fa-chart-line', label: 'Fluxo de Caixa' },
         { href: '/dashboard/relatorios', icon: 'fa-chart-bar', label: 'DRE' },
@@ -69,8 +68,9 @@ function buildNavGroups(badges: { reembolsos: number; aprovacoes: number }, inst
       ],
     },
     {
-      label: 'Contabilidade',
+      label: 'Contábil & Fiscal',
       items: [
+        { href: '/dashboard/escritorio', icon: 'fa-briefcase', label: 'Escritório (clientes)' },
         { href: '/dashboard/contadores', icon: 'fa-calculator', label: 'Contador' },
         { href: '/dashboard/contabilidade/livros', icon: 'fa-book', label: 'Livros contábeis' },
         { href: '/dashboard/notas', icon: 'fa-file-invoice-dollar', label: 'Fiscal & NF-e' },
@@ -85,9 +85,8 @@ function buildNavGroups(badges: { reembolsos: number; aprovacoes: number }, inst
         { href: '/dashboard/banco?aba=extrato', icon: 'fa-list-ul', label: 'Extrato' },
         { href: '/dashboard/conta-pj/transferencias', icon: 'fa-bolt', label: 'PIX & Transferências' },
         { href: '/dashboard/cartoes', icon: 'fa-credit-card', label: 'Cartões' },
-        { href: '/dashboard/credito', icon: 'fa-hand-holding-dollar', label: 'Crédito & Financiamento' },
         { href: '/dashboard/conexoes', icon: 'fa-link', label: 'Open Finance (Belvo)' },
-        { href: '/dashboard/conta-pj/abrir', icon: 'fa-circle-plus', label: 'Abrir conta' },
+        { href: '/dashboard/conta-pj/abrir', icon: 'fa-circle-plus', label: 'Abrir conta', badge: 'em breve', badgeColor: 'var(--fo-text-muted)' },
       ],
     },
     {
@@ -102,7 +101,7 @@ function buildNavGroups(badges: { reembolsos: number; aprovacoes: number }, inst
 
   // Apps instalados pelo Marketplace aparecem no seu grupo funcional.
   for (const app of MARKET_APPS) {
-    if (app.id === 'classificar' || app.id === 'cfoia') continue // já são itens fixos do menu
+    if (app.id === 'classificar' || app.id === 'cfoia' || app.id === 'patrimonio') continue // já são itens fixos do menu (patrimonio só liga/desliga o grupo fixo)
     if (!installedIds.includes(app.id)) continue
     const item: NavItem = { href: app.href, icon: app.icon, label: app.name, badge: 'APP', badgeColor: '#7A6A9E' }
     let group = groups.find(g => g.label === app.navGroup)
@@ -135,6 +134,7 @@ const pageTitles: Record<string, string> = {
   '/dashboard/marketing/central': 'Marketing',
   '/dashboard/marketing/site': 'Gere seu site',
   '/dashboard/contabilidade/livros': 'Livros contábeis',
+  '/dashboard/escritorio': 'Escritório Contábil',
   '/dashboard/credito': 'Crédito & Financiamento',
   '/dashboard/financeiro': 'Contas a Pagar & Receber',
   '/dashboard/despesas': 'Despesas',
@@ -223,13 +223,20 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       const eid = row?.empresa_id ?? u.id
       setEmpresaId(eid)
       if (typeof window !== 'undefined') setSegmento(localStorage.getItem(`fo_segmento_${eid}`) || '')
-      // Papel do usuário: dono (sem empresa_id, é o próprio workspace) = admin;
-      // membro convidado carrega o role de membros_equipe. Sem registro = admin (não trava ninguém).
-      if (row?.empresa_id && u.email) {
+      // Papel do usuário na empresa ativa. Fonte AUTORITATIVA: usuario_empresas.papel
+      // (chaveado por user_id, não por e-mail — imune ao mismatch de e-mail do convite).
+      // Um contador entra aqui com papel='contador' e NUNCA vira admin por omissão.
+      // Fallback legado: membros_equipe (por e-mail) só se não houver membership.
+      if (row?.empresa_id) {
         try {
-          const { data: mem } = await supabase.from('membros_equipe').select('role,status').eq('empresa_id', eid).eq('email', u.email).maybeSingle()
-          if (mem?.role && mem.status !== 'revogado') setRole(mem.role as string)
-        } catch { /* tabela pode não existir → admin */ }
+          const { data: membership } = await supabase.from('usuario_empresas').select('papel').eq('user_id', u.id).eq('empresa_id', eid).maybeSingle()
+          if (membership?.papel) {
+            setRole(membership.papel as string)
+          } else if (u.email) {
+            const { data: mem } = await supabase.from('membros_equipe').select('role,status').eq('empresa_id', eid).eq('email', u.email).maybeSingle()
+            if (mem?.role && mem.status !== 'revogado') setRole(mem.role as string)
+          }
+        } catch { /* mantém default */ }
       }
       if (row?.empresa_id) {
         const { data: emp } = await supabase.from('empresas').select('nome').eq('id', row.empresa_id).maybeSingle()
@@ -283,13 +290,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             </button>
           </div>
           <nav className="sb-nav">
-            {buildNavGroups(badges, installedIds, role, ['produto', 'servico', 'industria'].includes(segmento)).map(group => {
+            {buildNavGroups(badges, installedIds, role, (!installedIds.includes('patrimonio') && !['imoveis', 'completo'].includes(segmento))).map(group => {
               const inGroup = group.items.some(i => isActive(pathname, i))
               const isCollapsed = group.collapsible && collapsedGroups[group.label] && !inGroup
               return (
                 <div key={group.label}>
                   {group.collapsible ? (
-                    <div className="nav-section" onClick={() => toggleGroup(group.label, buildNavGroups(badges, installedIds, role, ['produto', 'servico', 'industria'].includes(segmento)))}
+                    <div className="nav-section" onClick={() => toggleGroup(group.label, buildNavGroups(badges, installedIds, role, (!installedIds.includes('patrimonio') && !['imoveis', 'completo'].includes(segmento))))}
                       style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between', userSelect: 'none' }}>
                       <span>{group.label}</span>
                       <i className={`fa-solid fa-chevron-${isCollapsed ? 'right' : 'down'}`} style={{ fontSize: 11, opacity: .5 }} />

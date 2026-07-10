@@ -1,10 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getSupabaseUser } from '@/lib/supabase-route'
+import { getSupabaseUser, bloquearSeLeitura } from '@/lib/supabase-route'
 import { conciliarExtrato } from '@/lib/financeiro/conciliacao'
 
 export async function POST(req: NextRequest) {
   const { user, supabase } = await getSupabaseUser(req)
   if (!user) return NextResponse.json({ error: 'Não autenticado' }, { status: 401 })
+  const bloqueio = await bloquearSeLeitura(supabase, user.id)
+  if (bloqueio) return NextResponse.json({ error: `Papel ${bloqueio} é somente leitura` }, { status: 403 })
   const body = await req.json()
   const { data: u } = await supabase.from('usuarios').select('empresa_id').eq('id', user.id).maybeSingle()
   const empresaId = (u?.empresa_id as string) || user.id

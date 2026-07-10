@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getSupabaseUser } from '@/lib/supabase-route'
+import { getSupabaseUser, getPapelAtivo } from '@/lib/supabase-route'
 import { randomUUID } from 'crypto'
 
 export const runtime = 'nodejs'
@@ -11,14 +11,20 @@ export async function POST(req: NextRequest) {
   const { data: ur } = await supabase.from('usuarios').select('empresa_id').eq('id', user.id).maybeSingle()
   const empresaId = ur?.empresa_id ?? user.id
 
-  // Só admin (proprietário ou membro com role=admin) pode convidar/alterar papéis.
-  const { data: eu } = await supabase.from('membros_equipe').select('role,status').eq('empresa_id', empresaId).eq('email', user.email ?? '').maybeSingle()
-  if (eu && eu.status !== 'revogado' && eu.role !== 'admin') {
+  // Só papel 'admin' pode convidar/alterar equipe. Fonte AUTORITATIVA: usuario_empresas
+  // (por user_id). Fecha o fail-open antigo (checava por e-mail em membros_equipe; quem
+  // não tinha registro — ex.: contador — passava como admin) e barra escalada de papel.
+  const papel = await getPapelAtivo(supabase, user.id)
+  if (papel !== 'admin') {
     return NextResponse.json({ error: 'Apenas o Admin pode convidar membros.' }, { status: 403 })
   }
 
-  const { email, nome, role } = await req.json() as { email: string; nome?: string; role: string }
+  const { email: emailRaw, nome, role } = await req.json() as { email: string; nome?: string; role: string }
+  const email = String(emailRaw ?? '').trim().toLowerCase()
   if (!email) return NextResponse.json({ error: 'E-mail obrigatório' }, { status: 400 })
+
+  const ROLES_VALIDAS = new Set(['admin', 'financeiro', 'comercial', 'operacional', 'logistica', 'viewer', 'contador'])
+  if (!ROLES_VALIDAS.has(role)) return NextResponse.json({ error: 'Papel inválido' }, { status: 400 })
 
   const token = randomUUID()
   const expiresAt = new Date(Date.now() + 7 * 24 * 3600 * 1000).toISOString()

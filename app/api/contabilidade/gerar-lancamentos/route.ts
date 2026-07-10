@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getSupabaseUser } from '@/lib/supabase-route'
+import { getSupabaseUser, bloquearSeLeitura } from '@/lib/supabase-route'
 import { gerarLancamentos } from '@/lib/contabilidade/motor'
 import { erroDesconhecido } from '@/lib/transacao-types'
 
@@ -10,6 +10,8 @@ export async function POST(req: NextRequest) {
   try {
     const { user, supabase } = await getSupabaseUser(req)
     if (!user) return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
+    const bloqueio = await bloquearSeLeitura(supabase, user.id)
+    if (bloqueio) return NextResponse.json({ error: `Papel ${bloqueio} é somente leitura` }, { status: 403 })
     const { data: u } = await supabase.from('usuarios').select('empresa_id').eq('id', user.id).maybeSingle()
     const empresaId = (u?.empresa_id as string) || user.id
     const r = await gerarLancamentos(supabase, empresaId)

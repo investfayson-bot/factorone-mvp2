@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FactorOne — Estrutura do Sistema (protótipo)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Inter+Tight:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F4F7F5; --bg-2:#ECF2EE; --surface:#FFFFFF; --surface-2:#F7FAF8;
+    --ink:#0A1A13; --ink-soft:#37473F; --mut:#66756D; --mut-2:#98A59E;
+    --line:#E4EBE7; --line-soft:#EEF3F0;
+    --green:#00A868; --green-deep:#047A50; --green-bright:#12C27E; --green-ink:#064E36;
+    --green-tint:#E6F6EE; --green-tint-2:#D3EFE0;
+    --good:#047A50; --good-bg:#E6F6EE;
+    --warn:#B45309; --warn-bg:#FCF1E1;
+    --crit:#C5443E; --crit-bg:#FCEAE8;
+    --blue:#2563C9; --blue-bg:#E8F0FC;
+    --purple:#5B57C7; --purple-bg:#ECEBFA;
+    --shadow-xs:0 1px 2px rgba(10,26,19,.05);
+    --shadow:0 1px 2px rgba(10,26,19,.05),0 6px 20px rgba(10,26,19,.05);
+    --shadow-md:0 2px 6px rgba(10,26,19,.06),0 14px 40px rgba(10,26,19,.09);
+    --shadow-lg:0 30px 70px rgba(6,78,54,.18);
+    --r-lg:20px; --r:14px; --r-sm:10px;
+    --sans:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+    --display:'Inter Tight','Inter',system-ui,sans-serif;
+    --mono:'IBM Plex Mono',ui-monospace,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;font-size:14px;line-height:1.5}
+  ::-webkit-scrollbar{width:10px;height:10px}
+  ::-webkit-scrollbar-thumb{background:#D5DED8;border-radius:20px;border:3px solid var(--bg)}
+
+  /* ---------- APP SHELL ---------- */
+  .app{display:grid;grid-template-columns:256px 1fr;min-height:100vh}
+
+  /* ---------- SIDEBAR ---------- */
+  .side{background:var(--surface);border-right:1px solid var(--line);display:flex;flex-direction:column;height:100vh;position:sticky;top:0}
+  .side-top{padding:18px 18px 8px}
+  .brand{display:flex;align-items:center;gap:9px;font-family:var(--display);font-weight:700;font-size:17px;letter-spacing:-.02em}
+  .brand .mark{width:28px;height:28px;border-radius:9px;background:linear-gradient(135deg,var(--green-bright),var(--green-deep));display:grid;place-items:center;color:#fff;font-weight:800;font-size:15px;box-shadow:0 4px 12px rgba(0,168,104,.35)}
+  .brand .dot{color:var(--green)}
+  .company{margin:14px 0 4px;display:flex;align-items:center;gap:10px;padding:9px 11px;border:1px solid var(--line);border-radius:11px;background:var(--surface-2);cursor:pointer}
+  .company .logo{width:26px;height:26px;border-radius:8px;background:var(--green-ink);color:#fff;display:grid;place-items:center;font-weight:700;font-size:12px;flex-shrink:0}
+  .company .nm{flex:1;min-width:0}
+  .company .nm b{display:block;font-size:12.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .company .nm span{font-size:10.5px;color:var(--mut);font-family:var(--mono)}
+  .company .cv{color:var(--mut-2);font-size:11px}
+
+  .nav{flex:1;overflow-y:auto;padding:6px 12px 12px}
+  .nav-grp{font-family:var(--mono);font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--mut-2);font-weight:600;padding:16px 10px 7px}
+  .nav-i{display:flex;align-items:center;gap:11px;padding:9px 11px;border-radius:10px;font-size:13.5px;color:var(--ink-soft);cursor:pointer;font-weight:500;transition:background .12s}
+  .nav-i:hover{background:var(--surface-2)}
+  .nav-i .ic{width:19px;text-align:center;color:var(--mut);font-size:15px;flex-shrink:0}
+  .nav-i .lbl{flex:1}
+  .nav-i .cnt{font-family:var(--mono);font-size:10px;background:var(--green-tint);color:var(--green-deep);padding:1px 7px;border-radius:999px;font-weight:600}
+  .nav-i.active{background:var(--green-ink);color:#fff}
+  .nav-i.active .ic{color:var(--green-bright)}
+  .nav-i.active .cnt{background:rgba(255,255,255,.16);color:#fff}
+
+  .side-user{border-top:1px solid var(--line);padding:12px 16px;display:flex;align-items:center;gap:10px}
+  .avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#12C27E,#047A50);color:#fff;display:grid;place-items:center;font-weight:700;font-size:13px;flex-shrink:0}
+  .side-user .u{flex:1;min-width:0}
+  .side-user .u b{display:block;font-size:12.5px;font-weight:600}
+  .side-user .u span{font-size:10.5px;color:var(--mut)}
+
+  /* ---------- MAIN ---------- */
+  .main{min-width:0;display:flex;flex-direction:column}
+  .topbar{position:sticky;top:0;z-index:20;background:rgba(244,247,245,.82);backdrop-filter:saturate(180%) blur(12px);border-bottom:1px solid var(--line);padding:14px 30px;display:flex;align-items:center;gap:16px}
+  .crumb{font-family:var(--mono);font-size:11px;color:var(--mut);letter-spacing:.02em}
+  .crumb b{color:var(--ink)}
+  .topbar h1{font-family:var(--display);font-size:20px;font-weight:700;letter-spacing:-.02em;margin:0}
+  .live{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--green-deep);background:var(--green-tint);border:1px solid var(--green-tint-2);padding:4px 10px;border-radius:999px;font-weight:600}
+  .live::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 0 3px rgba(0,168,104,.2);animation:pulse 2s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+  .search{margin-left:auto;display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:8px 12px;color:var(--mut);font-size:12.5px;width:230px;box-shadow:var(--shadow-xs)}
+  .tb-ic{width:36px;height:36px;border-radius:10px;background:var(--surface);border:1px solid var(--line);display:grid;place-items:center;color:var(--ink-soft);box-shadow:var(--shadow-xs);cursor:pointer}
+
+  .subtabs{display:flex;gap:6px;padding:14px 30px 0;flex-wrap:wrap}
+  .subtab{font-size:12.5px;padding:8px 14px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink-soft);cursor:pointer;font-weight:500;box-shadow:var(--shadow-xs);white-space:nowrap}
+  .subtab:hover{border-color:var(--green-tint-2)}
+  .subtab.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+
+  .content{padding:22px 30px 48px}
+
+  /* ---------- GENERIC UI ---------- */
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+  .kpi{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px;box-shadow:var(--shadow)}
+  .kpi .l{font-size:11.5px;color:var(--mut);font-weight:500;display:flex;align-items:center;gap:7px}
+  .kpi .l .d{width:8px;height:8px;border-radius:3px;background:var(--green)}
+  .kpi .v{font-family:var(--display);font-size:26px;font-weight:700;letter-spacing:-.02em;margin-top:9px;font-variant-numeric:tabular-nums}
+  .kpi .c{font-size:11.5px;margin-top:4px;font-weight:600}
+  .kpi .c.up{color:var(--good)} .kpi .c.warn{color:var(--warn)} .kpi .c.mut{color:var(--mut)}
+
+  .grid2{display:grid;grid-template-columns:1.5fr 1fr;gap:16px;margin-top:16px}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
+  .card-h{padding:15px 18px;border-bottom:1px solid var(--line-soft);display:flex;align-items:center;justify-content:space-between}
+  .card-h b{font-size:14px;font-weight:700;letter-spacing:-.01em}
+  .card-h .mini{font-family:var(--mono);font-size:10.5px;color:var(--mut)}
+  .card-b{padding:16px 18px}
+
+  .dre-row{display:flex;justify-content:space-between;padding:9px 0;border-top:1px solid var(--line-soft);font-size:13px}
+  .dre-row:first-child{border-top:none}
+  .dre-row.tot{font-weight:700;color:var(--ink)}
+  .dre-row .neg{color:var(--crit);font-variant-numeric:tabular-nums}
+  .dre-row .pos{color:var(--good);font-variant-numeric:tabular-nums;font-weight:600}
+  .dre-row .num{font-variant-numeric:tabular-nums}
+  .dre-row.hl{background:var(--green-tint);margin:2px -8px;padding:9px 8px;border-radius:8px;border:none}
+
+  .txn{display:flex;align-items:center;gap:12px;padding:11px 0;border-top:1px solid var(--line-soft)}
+  .txn:first-child{border-top:none}
+  .txn .ic{width:34px;height:34px;border-radius:10px;background:var(--green-tint);color:var(--green-deep);display:grid;place-items:center;font-size:13px;flex-shrink:0}
+  .txn .m{flex:1;min-width:0}
+  .txn .m b{display:block;font-size:12.5px;font-weight:600}
+  .txn .m span{font-size:11px;color:var(--mut)}
+  .txn .val{font-size:13px;font-weight:700;font-variant-numeric:tabular-nums}
+  .txn .val.in{color:var(--good)} .txn .val.out{color:var(--ink)}
+  .tag-st{font-family:var(--mono);font-size:9.5px;text-transform:uppercase;letter-spacing:.05em;padding:2px 7px;border-radius:5px;font-weight:600}
+  .tag-st.ok{background:var(--good-bg);color:var(--good)}
+  .tag-st.pend{background:var(--warn-bg);color:var(--warn)}
+
+  /* chart */
+  .chart{display:flex;align-items:flex-end;gap:14px;height:150px;padding:8px 4px 0}
+  .bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;height:100%;justify-content:flex-end}
+  .bar-pair{display:flex;gap:3px;align-items:flex-end;height:100%;width:100%;justify-content:center}
+  .bar{width:12px;border-radius:4px 4px 0 0}
+  .bar.inb{background:linear-gradient(180deg,var(--green-bright),var(--green))}
+  .bar.outb{background:#E4EBE7}
+  .bar-col .mo{font-family:var(--mono);font-size:10px;color:var(--mut)}
+  .legend{display:flex;gap:16px;font-size:11px;color:var(--mut);margin-top:6px}
+  .legend i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+
+  /* bank home */
+  .bank-hero{background:linear-gradient(150deg,#06623F,#043D28 90%);border-radius:var(--r-lg);padding:24px 26px;color:#EAF6F0;box-shadow:var(--shadow-md);position:relative;overflow:hidden}
+  .bank-hero::after{content:"";position:absolute;right:-50px;top:-50px;width:240px;height:240px;background:radial-gradient(circle,rgba(18,194,126,.35),transparent 65%)}
+  .bank-hero .rel{position:relative;z-index:1}
+  .bh-top{display:flex;justify-content:space-between;align-items:flex-start}
+  .bh-lab{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;opacity:.8}
+  .bh-bal{font-family:var(--display);font-size:42px;font-weight:800;letter-spacing:-.03em;margin-top:6px;font-variant-numeric:tabular-nums}
+  .bh-bal small{font-size:22px;opacity:.7}
+  .bh-agg{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
+  .bh-agg .b{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.16);border-radius:12px;padding:11px 15px;min-width:130px}
+  .bh-agg .b span{font-family:var(--mono);font-size:9.5px;opacity:.72;text-transform:uppercase;letter-spacing:.05em;display:block}
+  .bh-agg .b b{font-size:16px;font-weight:700;font-variant-numeric:tabular-nums;margin-top:2px;display:block}
+  .bh-eye{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.14);display:grid;place-items:center;font-size:14px;cursor:pointer}
+
+  .qa-row{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-top:16px}
+  .qa2{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px 10px;text-align:center;box-shadow:var(--shadow-xs);cursor:pointer;position:relative}
+  .qa2 .ic{width:42px;height:42px;margin:0 auto 8px;border-radius:13px;background:var(--green-tint);color:var(--green-deep);display:grid;place-items:center;font-size:17px}
+  .qa2 .t{font-size:12px;font-weight:600}
+  .qa2 .lock{position:absolute;top:8px;right:8px;font-family:var(--mono);font-size:8.5px;background:var(--warn-bg);color:var(--warn);padding:2px 6px;border-radius:5px;font-weight:700}
+
+  .ccards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .vcard{border-radius:var(--r);padding:16px;color:#fff;background:linear-gradient(135deg,#05341F,#06623F 60%,#12C27E);box-shadow:0 8px 22px rgba(6,78,54,.28);position:relative;overflow:hidden}
+  .vcard.alt{background:linear-gradient(135deg,#052B3A,#0B4A63 60%,#2BB3D6)}
+  .vcard.alt2{background:linear-gradient(135deg,#3A2B05,#7A5A0B 60%,#D6A52B)}
+  .vc-top{display:flex;justify-content:space-between;font-family:var(--mono);font-size:10px;opacity:.9;letter-spacing:.06em}
+  .vc-num{font-family:var(--mono);font-size:14px;letter-spacing:.14em;margin-top:22px}
+  .vc-bot{display:flex;justify-content:space-between;align-items:flex-end;margin-top:14px}
+  .vc-bot .l{font-family:var(--mono);font-size:8.5px;opacity:.8;text-transform:uppercase}
+  .vc-bot .v{font-size:14px;font-weight:700;font-variant-numeric:tabular-nums}
+  .vc-bar{height:5px;border-radius:3px;background:rgba(255,255,255,.25);margin-top:12px;overflow:hidden}
+  .vc-bar i{display:block;height:100%;background:#fff;border-radius:3px}
+
+  .bank-cols{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
+
+  .conn{display:flex;align-items:center;gap:12px;padding:13px 0;border-top:1px solid var(--line-soft)}
+  .conn:first-child{border-top:none}
+  .conn .lg{width:38px;height:38px;border-radius:10px;background:var(--surface-2);border:1px solid var(--line);display:grid;place-items:center;font-weight:700;font-size:12px;color:var(--green-deep);flex-shrink:0}
+  .conn .m{flex:1}
+  .conn .m b{display:block;font-size:13px;font-weight:600}
+  .conn .m span{font-size:11px;color:var(--mut)}
+
+  /* pipeline */
+  .pipe{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+  .pcol{background:var(--surface-2);border:1px solid var(--line-soft);border-radius:var(--r);padding:10px}
+  .pcol-h{font-size:11.5px;font-weight:700;padding:6px 8px;display:flex;justify-content:space-between;color:var(--ink-soft)}
+  .pcol-h .n{font-family:var(--mono);font-size:10px;color:var(--mut);background:var(--surface);border:1px solid var(--line);padding:1px 7px;border-radius:999px}
+  .deal{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:11px 12px;margin-top:8px;box-shadow:var(--shadow-xs)}
+  .deal b{font-size:12.5px;display:block;font-weight:600}
+  .deal .v{font-family:var(--mono);font-size:12px;color:var(--green-deep);font-weight:600;margin-top:5px}
+  .deal .who{font-size:10.5px;color:var(--mut);margin-top:3px}
+
+  /* CFO chat */
+  .chat{max-width:720px}
+  .msg{display:flex;gap:12px;margin-bottom:16px}
+  .msg .ava{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#12C27E,#047A50);color:#fff;display:grid;place-items:center;flex-shrink:0;font-size:15px}
+  .msg .bub{background:var(--surface);border:1px solid var(--line);border-radius:4px 14px 14px 14px;padding:14px 16px;box-shadow:var(--shadow);font-size:13.5px;color:var(--ink-soft)}
+  .msg.me{flex-direction:row-reverse}
+  .msg.me .ava{background:var(--green-ink)}
+  .msg.me .bub{background:var(--green-ink);color:#EAF6F0;border-radius:14px 4px 14px 14px;border-color:transparent}
+  .chatbox{display:flex;gap:10px;margin-top:8px;max-width:720px}
+  .chatbox input{flex:1;border:1px solid var(--line);border-radius:12px;padding:12px 15px;font-family:var(--sans);font-size:13.5px;outline:none;background:var(--surface)}
+  .chatbox input:focus{border-color:var(--green)}
+  .chatbox .send{background:var(--green);color:#fff;border:none;border-radius:12px;padding:0 20px;font-weight:600;font-size:13.5px;cursor:pointer;font-family:var(--sans)}
+
+  /* placeholder module */
+  .modh{display:flex;align-items:flex-start;gap:14px;margin-bottom:18px}
+  .modh .bi{width:44px;height:44px;border-radius:12px;background:var(--green-tint);color:var(--green-deep);display:grid;place-items:center;font-size:20px;flex-shrink:0}
+  .modh h2{font-family:var(--display);font-size:20px;margin:0 0 3px;letter-spacing:-.02em}
+  .modh p{margin:0;color:var(--mut);font-size:13.5px;max-width:64ch}
+  .fields{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+  .fields span{font-family:var(--mono);font-size:10.5px;color:var(--mut);background:var(--surface-2);border:1px solid var(--line);padding:3px 8px;border-radius:6px}
+  .skl{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:8px}
+  .skl .s{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;box-shadow:var(--shadow-xs)}
+  .skl .s .t{font-size:12px;font-weight:600;color:var(--ink-soft)}
+  .skl .s .ln{height:8px;border-radius:5px;background:var(--line-soft);margin-top:12px}
+  .skl .s .ln.w2{width:70%} .skl .s .ln.w3{width:45%}
+  .demo-note{margin-top:22px;font-family:var(--mono);font-size:11px;color:var(--mut);background:var(--surface-2);border:1px dashed var(--line);border-radius:10px;padding:11px 14px}
+
+  .sec-title{font-family:var(--display);font-size:15px;font-weight:700;letter-spacing:-.01em;margin:22px 0 12px;display:flex;align-items:center;gap:9px}
+  .sec-title .mini{font-family:var(--mono);font-size:10px;color:var(--mut-2);text-transform:uppercase;letter-spacing:.08em;font-weight:600}
+
+  @media(max-width:1080px){.kpis{grid-template-columns:repeat(2,1fr)}.qa-row{grid-template-columns:repeat(3,1fr)}.ccards{grid-template-columns:1fr}.grid2,.bank-cols,.pipe{grid-template-columns:1fr}}
+  @media(max-width:760px){.app{grid-template-columns:1fr}.side{display:none}}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="side">
+    <div class="side-top">
+      <div class="brand"><span class="mark">F</span>FactorOne<span class="dot">.</span></div>
+      <div class="company">
+        <div class="logo">M</div>
+        <div class="nm"><b>Metalúrgica SP Ltda</b><span>CNPJ ••• / 0001-42</span></div>
+        <div class="cv">▾</div>
+      </div>
+    </div>
+    <nav class="nav" id="nav">
+      <div class="nav-grp">Principal</div>
+      <div class="nav-i" data-sol="inicio"><span class="ic">◧</span><span class="lbl">Início</span></div>
+      <div class="nav-i" data-sol="agentes"><span class="ic">✦</span><span class="lbl">Agentes IA</span><span class="cnt">3</span></div>
+      <div class="nav-grp">Soluções</div>
+      <div class="nav-i" data-sol="banco"><span class="ic">▣</span><span class="lbl">Banco</span></div>
+      <div class="nav-i" data-sol="financeiro"><span class="ic">◈</span><span class="lbl">Financeiro</span></div>
+      <div class="nav-i" data-sol="clientes"><span class="ic">◔</span><span class="lbl">Clientes & Vendas</span></div>
+      <div class="nav-i" data-sol="contabil"><span class="ic">▦</span><span class="lbl">Contábil & Fiscal</span><span class="cnt">2</span></div>
+      <div class="nav-grp">Extras</div>
+      <div class="nav-i" data-sol="apps"><span class="ic">⊞</span><span class="lbl">Apps & Marketplace</span></div>
+      <div class="nav-i" data-sol="equipe"><span class="ic">◕</span><span class="lbl">Equipe & Planos</span></div>
+    </nav>
+    <div class="side-user">
+      <div class="avatar">V</div>
+      <div class="u"><b>Vinícius Santos</b><span>Administrador</span></div>
+      <div class="cv" style="color:var(--mut-2)">⚙</div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <div>
+        <div class="crumb" id="crumb">FactorOne · <b>Início</b></div>
+        <h1 id="pageTitle">Visão geral</h1>
+      </div>
+      <span class="live" id="live">Tempo real</span>
+      <div class="search">🔎 Buscar…</div>
+      <div class="tb-ic">🔔</div>
+    </div>
+    <div class="subtabs" id="subtabs"></div>
+    <div class="content" id="content"></div>
+  </div>
+</div>
+
+<script>
+/* ---------- fake data helpers ---------- */
+const BRL = n => "R$ " + n.toLocaleString('pt-BR');
+
+/* ---------- solution config ---------- */
+const SOL = {
+  inicio:    {title:"Visão geral", crumb:"Início", tabs:[]},
+  agentes:   {title:"Agentes IA", crumb:"Agentes IA", tabs:["CFO IA","Assistente 24/7","Donna","Automações"]},
+  banco:     {title:"Banco", crumb:"Banco", tabs:["Home","Extrato","Cartões","Investimentos","Conectar bancos"]},
+  financeiro:{title:"Financeiro", crumb:"Financeiro", tabs:["Pagar & Receber","Classificar","DRE gerencial","Despesas","Orçamento","Indicadores"]},
+  clientes:  {title:"Clientes & Vendas", crumb:"Clientes & Vendas", tabs:["CRM","Pipeline","Agenda","Propostas","Follow-up"]},
+  contabil:  {title:"Contábil & Fiscal", crumb:"Contábil & Fiscal", tabs:["Conciliar","Livros","NF-e / NFS-e","DAS / Simples","Portal do contador"]},
+  apps:      {title:"Apps & Marketplace", crumb:"Apps & Marketplace", tabs:[]},
+  equipe:    {title:"Equipe & Planos", crumb:"Equipe & Planos", tabs:["Equipe","Papéis & acessos","Plano","Faturamento"]},
+};
+
+/* ---------- panels ---------- */
+const P = {};
+
+P["inicio"] = () => `
+  <div class="kpis">
+    <div class="kpi"><div class="l"><span class="d"></span>Receita Mensal</div><div class="v">R$ 2,84M</div><div class="c up">↑ +18% vs mês anterior</div></div>
+    <div class="kpi"><div class="l"><span class="d"></span>Lucro Líquido</div><div class="v">R$ 349K</div><div class="c up">↑ 12,3% de margem</div></div>
+    <div class="kpi"><div class="l"><span class="d"></span>Saldo consolidado</div><div class="v">R$ 1,25M</div><div class="c mut">3 bancos conectados</div></div>
+    <div class="kpi"><div class="l"><span class="d" style="background:var(--warn)"></span>Runway (alerta IA)</div><div class="v">67 dias</div><div class="c warn">⚠ revisar Marketing</div></div>
+  </div>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-h"><b>Entradas vs Saídas</b><span class="mini">últimos 6 meses</span></div>
+      <div class="card-b">
+        ${chart()}
+        <div class="legend"><span><i class="inb" style="background:var(--green)"></i>Entradas</span><span><i style="background:#E4EBE7"></i>Saídas</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-h"><b>DRE resumido</b><span class="mini">gerado por IA</span></div>
+      <div class="card-b">
+        ${dreRows()}
+      </div>
+    </div>
+  </div>
+  <div class="grid2" style="grid-template-columns:1fr">
+    <div class="card">
+      <div class="card-h"><b>Últimas transações</b><span class="mini">classificadas · 94% automático</span></div>
+      <div class="card-b">
+        ${txn("🏭","Aço Brasil Ltda","NF-e #004521 · Duplicata","+R$ 48.000","in","ok","Recebido")}
+        ${txn("↓","Folha Outubro","Processamento automático","−R$ 92.000","out","ok","Pago")}
+        ${txn("⚡","Cartão FactorOne · Marketing","Fora da política (+23%)","−R$ 12.400","out","pend","Revisar")}
+        ${txn("↑","Cliente RS · Pix","NF-e #007832","+R$ 34.200","in","ok","Recebido")}
+      </div>
+    </div>
+  </div>`;
+
+P["banco:Home"] = () => `
+  <div class="bank-hero"><div class="rel">
+    <div class="bh-top">
+      <div><div class="bh-lab">Patrimônio total · 3 bancos</div>
+      <div class="bh-bal">R$ 284.920<small>,55</small></div></div>
+      <div class="bh-eye" title="Ocultar saldos">👁</div>
+    </div>
+    <div class="bh-agg">
+      <div class="b"><span>Conta corrente</span><b>R$ 62.410</b></div>
+      <div class="b"><span>Investido</span><b>R$ 210.300</b></div>
+      <div class="b"><span>Cartões</span><b>−R$ 12.209</b></div>
+    </div>
+  </div></div>
+  <div class="qa-row">
+    ${qa("≡","Extrato")}${qa("▤","Faturas")}${qa("↗","Investir")}${qa("⇄","Transferir","fase 2")}${qa("⚡","PIX","fase 2")}${qa("＋","Conectar")}
+  </div>
+  <div class="bank-cols">
+    <div class="card">
+      <div class="card-h"><b>Meu cartão · fatura</b><span class="mini">via Open Finance</span></div>
+      <div class="card-b">
+        <div class="vcard">
+          <div class="vc-top"><span>NUBANK · Open Finance</span><span>VISA</span></div>
+          <div class="vc-num">•••• •••• •••• 4127</div>
+          <div class="vc-bot"><div><div class="l">Fatura atual</div><div class="v">R$ 4.812,90</div></div><div><div class="l">Limite livre</div><div class="v">R$ 35.188</div></div></div>
+          <div class="vc-bar"><i style="width:12%"></i></div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-h"><b>Últimos lançamentos</b><span class="mini">agregado</span></div>
+      <div class="card-b">
+        ${txn("🛒","Mercado Livre","Hoje · Cartão 4127","−R$ 289,90","out")}
+        ${txn("↓","PIX recebido · Cliente","Hoje · Conta C6","+R$ 3.500,00","in")}
+        ${txn("⚙","AWS","Ontem · Cartão 4127","−R$ 1.204,10","out")}
+        ${txn("🏢","Aluguel","Ontem · Conta BTG","−R$ 6.800,00","out")}
+      </div>
+    </div>
+  </div>`;
+
+P["banco:Extrato"] = () => `
+  <div class="card">
+    <div class="card-h"><b>Extrato inteligente</b><span class="mini">categorizado pela IA · 3 contas</span></div>
+    <div class="card-b">
+      <div class="sec-title" style="margin-top:0">Hoje <span class="mini">08 jul</span></div>
+      ${txn("🛒","Mercado Livre","Cartão 4127 · Compras","−R$ 289,90","out","ok","Compras")}
+      ${txn("↓","PIX recebido · Cliente RS","Conta C6 · Receita","+R$ 3.500,00","in","ok","Receita")}
+      <div class="sec-title">Ontem <span class="mini">07 jul</span></div>
+      ${txn("⚙","AWS","Cartão 4127 · Infra/TI","−R$ 1.204,10","out","ok","Infra")}
+      ${txn("🏢","Aluguel galpão","Conta BTG · Ocupação","−R$ 6.800,00","out","ok","Ocupação")}
+      ${txn("🚚","Transportadora Sul","Conta C6 · Logística","−R$ 940,00","out","pend","Classificar")}
+    </div>
+  </div>`;
+
+P["banco:Cartões"] = () => `
+  <div class="ccards">
+    <div class="vcard"><div class="vc-top"><span>MARKETING</span><span>⚠ 87%</span></div><div class="vc-num">•••• 3302</div><div class="vc-bot"><div><div class="l">Usado</div><div class="v">R$ 43.500</div></div><div><div class="l">Limite</div><div class="v">R$ 50K</div></div></div><div class="vc-bar"><i style="width:87%"></i></div></div>
+    <div class="vcard alt"><div class="vc-top"><span>FORNECEDOR</span><span>✓ OK</span></div><div class="vc-num">•••• 8741</div><div class="vc-bot"><div><div class="l">Usado</div><div class="v">R$ 68.000</div></div><div><div class="l">Limite</div><div class="v">R$ 200K</div></div></div><div class="vc-bar"><i style="width:34%"></i></div></div>
+    <div class="vcard alt2"><div class="vc-top"><span>VIAGENS</span><span>✓ OK</span></div><div class="vc-num">•••• 7719</div><div class="vc-bot"><div><div class="l">Usado</div><div class="v">R$ 29.000</div></div><div><div class="l">Limite</div><div class="v">R$ 80K</div></div></div><div class="vc-bar"><i style="width:36%"></i></div></div>
+  </div>
+  <div class="kpis" style="margin-top:16px">
+    <div class="kpi"><div class="l">Limite total</div><div class="v">R$ 850K</div><div class="c mut">8 cartões ativos</div></div>
+    <div class="kpi"><div class="l">Utilizado</div><div class="v">R$ 312K</div><div class="c mut">36,7%</div></div>
+    <div class="kpi"><div class="l">Disponível</div><div class="v">R$ 538K</div><div class="c up">63,3%</div></div>
+    <div class="kpi"><div class="l">Cashback mês</div><div class="v">R$ 1.560</div><div class="c up">↑ acumulando</div></div>
+  </div>`;
+
+P["banco:Investimentos"] = () => `
+  <div class="kpis">
+    <div class="kpi"><div class="l">Total aplicado</div><div class="v">R$ 580K</div><div class="c mut">2 instituições</div></div>
+    <div class="kpi"><div class="l">Rendimento mês</div><div class="v">R$ 4.180</div><div class="c up">↑ 100% CDI</div></div>
+    <div class="kpi"><div class="l">CDI atual</div><div class="v">10,4%</div><div class="c mut">a.a.</div></div>
+    <div class="kpi"><div class="l">Liquidez D+0</div><div class="v">R$ 210K</div><div class="c up">disponível</div></div>
+  </div>
+  <div class="card" style="margin-top:16px">
+    <div class="card-h"><b>Carteira</b><span class="mini">via Open Finance · leitura</span></div>
+    <div class="card-b">
+      ${txn("₿","CDB BTG · 102% CDI","Vencimento 2027 · liquidez diária","R$ 330.000","in","ok","Rende")}
+      ${txn("◈","Tesouro Selic 2029","XP · marcação a mercado","R$ 180.000","in","ok","Rende")}
+      ${txn("◱","Fundo DI XP","Resgate D+0","R$ 70.000","in","ok","Rende")}
+    </div>
+  </div>`;
+
+P["banco:Conectar bancos"] = () => `
+  <div class="modh"><div class="bi">＋</div><div><h2>Conectar meus bancos</h2><p>Uma porta única de Open Finance (widget Belvo). Cada banco ligado entra como conta agregada na home — não como página separada.</p></div></div>
+  <div class="card">
+    <div class="card-h"><b>Bancos conectados</b><span class="mini">3 ativos · sync 2 min atrás</span></div>
+    <div class="card-b">
+      ${conn("C6","C6 Bank","Conta + cartão · sincronizado")}
+      ${conn("BTG","BTG Pactual","Conta + investimentos · sincronizado")}
+      ${conn("NU","Nubank","Cartão · sincronizado")}
+    </div>
+  </div>
+  <div class="card" style="margin-top:14px">
+    <div class="card-h"><b>Adicionar novo banco</b><span class="mini">Open Finance</span></div>
+    <div class="card-b">
+      ${conn("XP","XP Inc.","Toque para conectar via widget")}
+      ${conn("IT","Itaú Empresas","Toque para conectar via widget")}
+    </div>
+  </div>`;
+
+P["financeiro:DRE gerencial"] = () => `
+  <div class="kpis">
+    <div class="kpi"><div class="l">Receita Bruta</div><div class="v">R$ 2,84M</div><div class="c up">↑ +18%</div></div>
+    <div class="kpi"><div class="l">Margem Bruta</div><div class="v">44,7%</div><div class="c up">↑ +2pp</div></div>
+    <div class="kpi"><div class="l">EBITDA</div><div class="v">R$ 586K</div><div class="c mut">20,6%</div></div>
+    <div class="kpi"><div class="l">Lucro Líquido</div><div class="v">R$ 349K</div><div class="c up">↑ 12,3%</div></div>
+  </div>
+  <div class="card" style="margin-top:16px">
+    <div class="card-h"><b>DRE — Outubro 2025</b><span class="mini">montado automaticamente do que foi classificado</span></div>
+    <div class="card-b">
+      ${dreRows(true)}
+    </div>
+  </div>`;
+
+P["financeiro:Pagar & Receber"] = () => `
+  <div class="kpis">
+    <div class="kpi"><div class="l">A receber (30d)</div><div class="v">R$ 840K</div><div class="c mut">12 duplicatas</div></div>
+    <div class="kpi"><div class="l">A pagar (30d)</div><div class="v">R$ 612K</div><div class="c mut">28 títulos</div></div>
+    <div class="kpi"><div class="l" >Inadimplência</div><div class="v">R$ 47K</div><div class="c warn">⚠ 3 clientes</div></div>
+    <div class="kpi"><div class="l">Saldo projetado</div><div class="v">+R$ 228K</div><div class="c up">após 30 dias</div></div>
+  </div>
+  <div class="card" style="margin-top:16px">
+    <div class="card-h"><b>Títulos em aberto</b><span class="mini">régua de cobrança automática ativa</span></div>
+    <div class="card-b">
+      ${txn("🏭","Aço Brasil Ltda","Vence 12/07 · Duplicata #4521","R$ 48.000","in","ok","A receber")}
+      ${txn("🚚","Transportadora Sul","Vencido 03/07 · 5 dias","R$ 18.400","in","pend","Cobrar")}
+      ${txn("↓","Folha Julho","Vence 05/08 · recorrente","R$ 92.000","out","ok","A pagar")}
+      ${txn("⚙","AWS","Vence 10/08 · recorrente","R$ 3.600","out","ok","A pagar")}
+    </div>
+  </div>`;
+
+P["clientes:Pipeline"] = P["clientes:CRM"] = () => `
+  <div class="sec-title" style="margin-top:0">Funil de vendas <span class="mini">arraste para avançar</span></div>
+  <div class="pipe">
+    ${pcol("Captação","3",[["Indústria Metal RS","R$ 120K","Lead inbound"],["Usinagem BH","R$ 64K","Indicação"]])}
+    ${pcol("Qualificado","2",[["Fundição Norte","R$ 210K","Reunião agendada"]])}
+    ${pcol("Proposta","2",[["Aço Brasil Ltda","R$ 340K","Enviada 05/07"],["Tubos SP","R$ 88K","Negociando"]])}
+    ${pcol("Fechado","1",[["Metalúrgica RS","R$ 156K","✓ Ganhou"]])}
+  </div>`;
+
+P["agentes:CFO IA"] = () => `
+  <div class="kpis">
+    <div class="kpi"><div class="l">Previsão 30d</div><div class="v">R$ 2,6M</div><div class="c up">94% confiança</div></div>
+    <div class="kpi"><div class="l">Risco de caixa</div><div class="v">67 dias</div><div class="c warn">⚠ atenção</div></div>
+    <div class="kpi"><div class="l">Anomalias</div><div class="v">3</div><div class="c warn">detectadas</div></div>
+    <div class="kpi"><div class="l">Precisão IA</div><div class="v">94%</div><div class="c mut">classificação</div></div>
+  </div>
+  <div class="chat" style="margin-top:22px">
+    <div class="msg"><div class="ava">✦</div><div class="bub"><b>⚡ Alerta de liquidez.</b> A projeção aponta risco de caixa em 67 dias com o padrão atual de gastos. Recomendo revisar Marketing (+23% acima da média) e renegociar contratos de fornecedores.</div></div>
+    <div class="msg me"><div class="ava">V</div><div class="bub">Qual o impacto se reduzirmos 15% de Marketing?</div></div>
+    <div class="msg"><div class="ava">✦</div><div class="bub"><b>✅ Simulação.</b> Com corte de 15% em Marketing (R$ 18.600/mês), o runway passa de 67 para <b>94 dias</b>. Economia anual estimada: <b>R$ 223K</b>. Recomendo manter awareness e cortar mídia paga.</div></div>
+  </div>
+  <div class="chatbox"><input placeholder="Pergunte ao CFO IA…"><button class="send">Enviar</button></div>`;
+
+P["contabil:Conciliar"] = () => `
+  <div class="kpis">
+    <div class="kpi"><div class="l">Conciliado</div><div class="v">96%</div><div class="c up">automático</div></div>
+    <div class="kpi"><div class="l">Pendentes</div><div class="v">14</div><div class="c warn">para revisar</div></div>
+    <div class="kpi"><div class="l">Divergências</div><div class="v">2</div><div class="c warn">⚠ valor</div></div>
+    <div class="kpi"><div class="l">Lançamentos</div><div class="v">1.248</div><div class="c mut">este mês</div></div>
+  </div>
+  <div class="card" style="margin-top:16px">
+    <div class="card-h"><b>Extrato × Lançamentos</b><span class="mini">sugestão de par por IA</span></div>
+    <div class="card-b">
+      ${txn("⇄","TED · Aço Brasil","→ Duplicata #4521 · match 99%","R$ 48.000","in","ok","Conciliar")}
+      ${txn("⇄","Pix saída · Folha","→ Provisão folha jul · match 97%","R$ 92.000","out","ok","Conciliar")}
+      ${txn("⇄","Débito · desconhecido","Sem par encontrado","R$ 1.240","out","pend","Revisar")}
+    </div>
+  </div>`;
+
+/* ---------- component builders ---------- */
+function chart(){
+  const d=[[62,48],[70,55],[58,60],[75,52],[80,58],[95,72]];
+  const mo=["Mai","Jun","Jul","Ago","Set","Out"];const mx=100;
+  return `<div class="chart">`+d.map((p,i)=>`<div class="bar-col"><div class="bar-pair">
+    <div class="bar inb" style="height:${p[0]/mx*100}%"></div>
+    <div class="bar outb" style="height:${p[1]/mx*100}%"></div></div>
+    <div class="mo">${mo[i]}</div></div>`).join('')+`</div>`;
+}
+function dreRows(full){
+  const base=[["Receita Bruta","R$ 2.840.000","","num"],["(-) Deduções e Impostos","−R$ 284.000","neg"],["Receita Líquida","R$ 2.556.000","","tot"],["(-) CMV","−R$ 1.274.000","neg"],["Lucro Bruto","R$ 1.282.000","","hl"]];
+  const ext=[["(-) Desp. Operacionais","−R$ 696.000","neg"],["EBITDA","R$ 586.000","","tot"],["(-) Depreciação","−R$ 86.000","neg"],["(-) IR/CSLL","−R$ 151.000","neg"],["Lucro Líquido","R$ 349.000","","hl"]];
+  const rows=full?base.concat(ext):base.concat([["EBITDA","R$ 586.000","","tot"],["Lucro Líquido","R$ 349.000","","hl"]]);
+  return rows.map(r=>{
+    const cls=r[3]==='tot'?'dre-row tot':r[3]==='hl'?'dre-row tot hl':'dre-row';
+    const val=r[2]==='neg'?`<span class="neg">${r[1]}</span>`:r[3]==='hl'?`<span class="pos">${r[1]}</span>`:`<span class="num">${r[1]}</span>`;
+    return `<div class="${cls}"><span>${r[0]}</span>${val}</div>`;
+  }).join('');
+}
+function txn(ic,t,s,v,dir,st,stt){
+  const tag=st?`<span class="tag-st ${st}">${stt}</span>`:'';
+  return `<div class="txn"><div class="ic">${ic}</div><div class="m"><b>${t}</b><span>${s}</span></div>${tag}<div class="val ${dir}">${v}</div></div>`;
+}
+function qa(ic,t,lock){return `<div class="qa2">${lock?`<span class="lock">${lock}</span>`:''}<div class="ic">${ic}</div><div class="t">${t}</div></div>`;}
+function conn(lg,t,s){return `<div class="conn"><div class="lg">${lg}</div><div class="m"><b>${t}</b><span>${s}</span></div><div class="cv" style="color:var(--mut-2)">›</div></div>`;}
+function pcol(t,n,deals){return `<div class="pcol"><div class="pcol-h">${t}<span class="n">${n}</span></div>`+deals.map(d=>`<div class="deal"><b>${d[0]}</b><div class="v">${d[1]}</div><div class="who">${d[2]}</div></div>`).join('')+`</div>`;}
+
+function placeholder(sol,tab){
+  const descr = {
+    "Classificar":["◱","Caixa única — banco + cartão no mesmo lugar. A IA lê a descrição e sugere a categoria; você corrige uma vez e ela aprende.",["data","valor","origem","categoria IA","regra","confiança"]],
+    "Despesas":["🧾","Captura de NF-e por OCR, aprovações por app e reembolso via Pix D+1, com política por centro de custo.",["recibo","OCR","aprovação","reembolso","centro de custo"]],
+    "Orçamento":["◎","Orçado × realizado por centro de custo, com bloqueio automático ao estourar o limite.",["orçado","realizado","desvio","centro de custo","alerta"]],
+    "Indicadores":["📈","LTV, CAC, MRR, ROI/ROIC, burn e runway — comparados com o mercado, com alerta fora da faixa.",["LTV","CAC","MRR","ROI","burn","runway"]],
+    "Agenda":["🗓","Agendamento de reuniões e follow-ups do funil, integrado ao pipeline e ao CRM.",["evento","cliente","etapa","lembrete"]],
+    "Propostas":["📄","Geração e envio de propostas ligadas ao negócio no pipeline, com aceite e assinatura.",["proposta","valor","validade","aceite"]],
+    "Follow-up":["🔁","Régua de pós-venda e reengajamento automático por e-mail/WhatsApp.",["cadência","canal","gatilho","status"]],
+    "Livros":["▤","Diário, Razão e Balancete por partidas dobradas — montados dos lançamentos, com fechamento mensal.",["diário","razão","balancete","débito/crédito"]],
+    "NF-e / NFS-e":["▧","Emissão de NF-e e NFS-e, histórico e captura de notas recebidas — cobertura de prefeituras.",["emitir","histórico","recebidas","prefeitura"]],
+    "DAS / Simples":["%","Estimador de imposto do Simples por anexo, alíquota efetiva e guia DAS.",["alíquota","Anexos I–V","guia DAS","export"]],
+    "Portal do contador":["🧑‍💼","Acesso próprio do contador ao bookkeeping — ver lançamentos e exportar SPED/ECD/ECF, sem ver saldo.",["convite","lançamentos","SPED","ECD/ECF"]],
+    "Assistente 24/7":["💬","Assistente que responde perguntas financeiras em linguagem natural, sobre os seus dados.",["pergunta","contexto","resposta"]],
+    "Donna":["✦","Agente que executa tarefas por você — organiza, cobra, concilia e avisa.",["tarefa","gatilho","ação"]],
+    "Automações":["⚙","Regras 'quando isso → faça aquilo' entre bancos, DRE, cobrança e avisos.",["gatilho","condição","ação"]],
+    "Equipe":["◕","Membros da empresa, convites e status de acesso.",["membro","e-mail","papel","status"]],
+    "Papéis & acessos":["🔐","Controle por papel (GRUPO_ROLES) e corte por segmento — quem vê o quê.",["papel","permissão","segmento"]],
+    "Plano":["◈","Plano atual, limites e upgrade.",["plano","limites","upgrade"]],
+    "Faturamento":["💳","Faturas da assinatura FactorOne e método de pagamento.",["fatura","método","histórico"]],
+  };
+  const d = descr[tab] || ["◧", "Módulo do sistema.", []];
+  return `<div class="modh"><div class="bi">${d[0]}</div><div><h2>${tab}</h2><p>${d[1]}</p>
+    <div class="fields">${d[2].map(f=>`<span>${f}</span>`).join('')}</div></div></div>
+    <div class="skl">
+      <div class="s"><div class="t">Visão principal</div><div class="ln"></div><div class="ln w2"></div><div class="ln w3"></div></div>
+      <div class="s"><div class="t">Detalhe</div><div class="ln"></div><div class="ln w2"></div><div class="ln w3"></div></div>
+      <div class="s"><div class="t">Ações</div><div class="ln"></div><div class="ln w2"></div><div class="ln w3"></div></div>
+    </div>
+    <div class="demo-note">Nesta demonstração, o foco visual está em Início, Banco, Financeiro (DRE / Pagar & Receber), Pipeline e CFO IA. Este módulo mostra a estrutura e os campos — o mesmo padrão de tela se aplica.</div>`;
+}
+
+function appsPanel(){
+  const apps=[["Omie ERP","✓ Sincronizado"],["Conta Azul","✓ Sincronizado"],["SAP B1","✓ Sincronizado"],["Itaú Empresas","Open Finance"],["BTG Pactual","Open Finance"],["Salesforce","CRM Sync"],["SEFAZ / NF-e","Transmitindo"],["TOTVS","✓ Sincronizado"],["Zapier","Conectar +"]];
+  return `<div class="modh"><div class="bi">⊞</div><div><h2>Apps & Marketplace</h2><p>O marketplace liga/desliga capacidades — não vira item de menu solto. Cada app aponta para uma das 6 soluções.</p></div></div>
+  <div class="kpis"><div class="kpi"><div class="l">Conectados</div><div class="v">9</div><div class="c up">ativos</div></div><div class="kpi"><div class="l">Sync hoje</div><div class="v">1.248</div><div class="c mut">transações</div></div><div class="kpi"><div class="l">Erros</div><div class="v">0</div><div class="c up">✓ limpo</div></div><div class="kpi"><div class="l">Última sync</div><div class="v">2 min</div><div class="c mut">atrás</div></div></div>
+  <div class="card" style="margin-top:16px"><div class="card-h"><b>Integrações ativas</b><span class="mini">nativas</span></div><div class="card-b">${apps.map(a=>conn(a[0].slice(0,2).toUpperCase(),a[0],a[1])).join('')}</div></div>`;
+}
+
+/* ---------- render engine ---------- */
+let state={sol:"inicio",tab:null};
+
+function render(){
+  const cfg=SOL[state.sol];
+  document.getElementById('pageTitle').textContent=cfg.title;
+  document.getElementById('crumb').innerHTML=`FactorOne · <b>${cfg.crumb}</b>`+(state.tab?` · ${state.tab}`:'');
+  // live badge only for realtime-ish views
+  document.getElementById('live').style.display=(['banco','financeiro','inicio','agentes','contabil'].includes(state.sol))?'inline-flex':'none';
+  // subtabs
+  const st=document.getElementById('subtabs');
+  if(cfg.tabs.length){
+    st.style.display='flex';
+    st.innerHTML=cfg.tabs.map(t=>`<div class="subtab ${t===state.tab?'on':''}" data-tab="${t}">${t}</div>`).join('');
+    st.querySelectorAll('.subtab').forEach(el=>el.onclick=()=>{state.tab=el.dataset.tab;render();});
+  } else { st.style.display='none'; st.innerHTML=''; }
+  // content
+  const c=document.getElementById('content');
+  let html;
+  if(state.sol==='inicio') html=P['inicio']();
+  else if(state.sol==='apps') html=appsPanel();
+  else {
+    const key=state.sol+':'+state.tab;
+    html = P[key] ? P[key]() : placeholder(state.sol,state.tab);
+  }
+  c.innerHTML=html;
+  c.scrollTo?.(0,0);
+  window.scrollTo(0,0);
+  // sidebar active
+  document.querySelectorAll('.nav-i').forEach(n=>n.classList.toggle('active',n.dataset.sol===state.sol));
+}
+
+document.querySelectorAll('.nav-i').forEach(n=>{
+  n.onclick=()=>{ state.sol=n.dataset.sol; const cfg=SOL[state.sol]; state.tab=cfg.tabs[0]||null; render(); };
+});
+render();
+</script>
+</body>
+</html>

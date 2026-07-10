@@ -50,6 +50,7 @@ export default function MarketplacePage() {
   }
 
   const visible = MARKET_APPS
+    .filter(a => !a.oculto)
     .filter(a => filter === 'all' || a.cat === filter)
     .filter(a => !search || a.name.toLowerCase().includes(search.toLowerCase()) || a.desc.toLowerCase().includes(search.toLowerCase()))
 

@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getSupabaseUser } from '@/lib/supabase-route'
+import { getSupabaseUser, bloquearSeLeitura } from '@/lib/supabase-route'
 
 export async function POST(req: NextRequest) {
   const { user, supabase } = await getSupabaseUser(req)
   if (!user) return NextResponse.json({ error: 'Não autenticado' }, { status: 401 })
+  const bloqueio = await bloquearSeLeitura(supabase, user.id)
+  if (bloqueio) return NextResponse.json({ error: `Papel ${bloqueio} é somente leitura` }, { status: 403 })
   const body = (await req.json()) as { orcamento_linha_id: string; valor_solicitado: number; justificativa: string }
   if ((body.justificativa || '').trim().length < 20) return NextResponse.json({ error: 'Justificativa mínima de 20 caracteres' }, { status: 400 })
   const { data: u } = await supabase.from('usuarios').select('empresa_id').eq('id', user.id).maybeSingle()
@@ -22,6 +24,8 @@ export async function POST(req: NextRequest) {
 export async function PUT(req: NextRequest) {
   const { user, supabase } = await getSupabaseUser(req)
   if (!user) return NextResponse.json({ error: 'Não autenticado' }, { status: 401 })
+  const bloqueio = await bloquearSeLeitura(supabase, user.id)
+  if (bloqueio) return NextResponse.json({ error: `Papel ${bloqueio} é somente leitura` }, { status: 403 })
   const body = (await req.json()) as { id: string; status: 'aprovado' | 'rejeitado' }
   const { data: sup, error: supErr } = await supabase.from('suplementacoes').update({
     status: body.status,

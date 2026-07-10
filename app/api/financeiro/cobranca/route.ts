@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { Resend } from 'resend'
 import { differenceInCalendarDays } from 'date-fns'
 import type { SupabaseClient } from '@supabase/supabase-js'
-import { getSupabaseUser } from '@/lib/supabase-route'
+import { getSupabaseUser, bloquearSeLeitura } from '@/lib/supabase-route'
 
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null
 
@@ -66,6 +66,8 @@ async function enviarUmaCobranca(
 export async function POST(req: NextRequest) {
   const { user, supabase } = await getSupabaseUser(req)
   if (!user) return NextResponse.json({ error: 'Não autenticado' }, { status: 401 })
+  const bloqueio = await bloquearSeLeitura(supabase, user.id)
+  if (bloqueio) return NextResponse.json({ error: `Papel ${bloqueio} é somente leitura` }, { status: 403 })
   const body = await req.json()
   const action = body.action || 'enviar'
   const { data: u } = await supabase.from('usuarios').select('empresa_id').eq('id', user.id).maybeSingle()

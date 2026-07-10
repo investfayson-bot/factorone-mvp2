@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getSupabaseUser } from '@/lib/supabase-route'
+import { getSupabaseUser, bloquearSeLeitura } from '@/lib/supabase-route'
 import { createClient } from '@supabase/supabase-js'
 import Anthropic from '@anthropic-ai/sdk'
 
@@ -81,8 +81,10 @@ ${lista}`,
 }
 
 export async function POST(req: NextRequest) {
-  const { user } = await getSupabaseUser(req)
+  const { user, supabase } = await getSupabaseUser(req)
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const bloqueio = await bloquearSeLeitura(supabase, user.id)
+  if (bloqueio) return NextResponse.json({ error: `Papel ${bloqueio} é somente leitura` }, { status: 403 })
 
   const db = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!)
   const { data: u } = await db.from('usuarios').select('empresa_id').eq('id', user.id).maybeSingle()
