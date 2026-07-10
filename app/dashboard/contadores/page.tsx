@@ -64,6 +64,12 @@ export default function ContadoresPage() {
     { id: '4', nome: 'DEFIS', vencimento: new Date(new Date().getFullYear(), new Date().getMonth() + 1, 31).toISOString().slice(0, 10), status: 'pendente', valor: null },
   ])
 
+  // Convite de contador com login completo (usuario_empresas.papel='contador'),
+  // direto daqui — antes só dava pra fazer isso em /dashboard/equipe.
+  const [modalConvite, setModalConvite] = useState(false)
+  const [conviteForm, setConviteForm] = useState({ email: '', nome: '' })
+  const [convidando, setConvidando] = useState(false)
+
   // Acessos
   const [modal, setModal] = useState(false)
   const [form, setForm] = useState({ nome: '', email: '' })
@@ -102,6 +108,29 @@ export default function ContadoresPage() {
       setRecibos((recRes.data as Recibo[]) ?? [])
     } finally {
       setLoading(false)
+    }
+  }
+
+  async function convidarContadorLogin() {
+    if (!conviteForm.email.trim()) { toast.error('E-mail obrigatório'); return }
+    setConvidando(true)
+    try {
+      const { data: sess } = await supabase.auth.getSession()
+      const res = await fetch('/api/equipe/convidar', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${sess.session?.access_token ?? ''}` },
+        body: JSON.stringify({ email: conviteForm.email.trim(), nome: conviteForm.nome.trim(), role: 'contador' }),
+      })
+      const d = await res.json() as { ok?: boolean; error?: string }
+      if (d.ok) {
+        toast.success('Convite enviado! Seu contador vai receber o link por e-mail.')
+        setModalConvite(false)
+        setConviteForm({ email: '', nome: '' })
+      } else {
+        toast.error(d.error ?? 'Erro ao convidar')
+      }
+    } finally {
+      setConvidando(false)
     }
   }
 
@@ -184,8 +213,11 @@ export default function ContadoresPage() {
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'var(--navy)', color: '#6FA595', fontSize: 12, padding: '5px 12px', borderRadius: 20, fontWeight: 700, letterSpacing: '0.05em' }}>
             <i className="fa-solid fa-calculator" style={{ fontSize: 13 }} />MODO CONTADOR
           </div>
-          <button className="btn-action" onClick={() => { setTab('acessos'); setModal(true) }} style={{ fontSize: 14, padding: '6px 14px' }}>
-            <i className="fa-solid fa-key" style={{ marginRight: 6 }} />Gerenciar acessos
+          <button className="btn-action" onClick={() => setModalConvite(true)} style={{ fontSize: 14, padding: '6px 14px' }}>
+            <i className="fa-solid fa-user-plus" style={{ marginRight: 6 }} />Convidar meu contador
+          </button>
+          <button className="btn-action btn-ghost" onClick={() => { setTab('acessos'); setModal(true) }} style={{ fontSize: 14, padding: '6px 14px' }}>
+            <i className="fa-solid fa-key" style={{ marginRight: 6 }} />Link somente-leitura
           </button>
           <button
             style={{ fontSize: 14, padding: '6px 14px', background: '#3D7A6E', color: '#fff', border: 'none', borderRadius: 8, cursor: 'pointer', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 6 }}
@@ -526,6 +558,32 @@ export default function ContadoresPage() {
                 </div>
               )
             })}
+          </div>
+        </div>
+      )}
+
+      {/* Modal convidar contador com login completo */}
+      {modalConvite && (
+        <div className="modal-bg" onClick={e => { if (e.target === e.currentTarget) setModalConvite(false) }}>
+          <div style={{ background: '#fff', border: '0.5px solid #E4DCCC', borderRadius: 16, padding: 28, width: '100%', maxWidth: 480 }}>
+            <h2 style={{ fontSize: 16, fontWeight: 700, color: 'var(--navy)', marginBottom: 6, fontFamily: "var(--font-sans)" }}>Convidar meu contador</h2>
+            <p style={{ fontSize: 13.5, color: '#7B8C88', marginBottom: 20 }}>Ele recebe um convite por e-mail, cria login próprio e acessa sua empresa (leitura) direto do painel dele em Escritório — sem precisar de link separado.</p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+              <div>
+                <label style={{ fontSize: 13, color: '#7B8C88', display: 'block', marginBottom: 6, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.07em' }}>E-mail do contador *</label>
+                <input className="form-input" type="email" placeholder="contador@escritorio.com.br" value={conviteForm.email} onChange={e => setConviteForm(f => ({ ...f, email: e.target.value }))} style={{ width: '100%' }} />
+              </div>
+              <div>
+                <label style={{ fontSize: 13, color: '#7B8C88', display: 'block', marginBottom: 6, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.07em' }}>Nome (opcional)</label>
+                <input className="form-input" placeholder="Ex: João Silva Contabilidade" value={conviteForm.nome} onChange={e => setConviteForm(f => ({ ...f, nome: e.target.value }))} style={{ width: '100%' }} />
+              </div>
+            </div>
+            <div style={{ display: 'flex', gap: 10, marginTop: 24, justifyContent: 'flex-end' }}>
+              <button onClick={() => setModalConvite(false)} style={{ padding: '8px 16px', borderRadius: 8, border: '0.5px solid #E4DCCC', background: 'transparent', color: '#7B8C88', fontSize: 14, cursor: 'pointer' }}>Cancelar</button>
+              <button className="btn-action" onClick={convidarContadorLogin} disabled={convidando || !conviteForm.email.trim()} style={{ fontSize: 14, padding: '8px 20px' }}>
+                {convidando ? 'Enviando...' : 'Enviar convite'}
+              </button>
+            </div>
           </div>
         </div>
       )}
