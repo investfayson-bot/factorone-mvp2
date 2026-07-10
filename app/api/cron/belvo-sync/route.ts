@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient, type SupabaseClient } from '@supabase/supabase-js'
 import { belvoFetch } from '@/lib/belvo'
+import { categorizarLoteIA } from '@/lib/categorizar-ia'
+import { matchComprovantesPendentes } from '@/lib/financeiro/matchComprovante'
 
 export const runtime = 'nodejs'
 export const maxDuration = 300
@@ -122,11 +124,34 @@ export async function GET(req: NextRequest) {
       await persistContas(db, link, owner, accounts)
       await persistTransacoes(db, link, owner, txs)
       await syncNativo(db, owner, accounts, txs)
+      if (owner.empresa_id) await matchComprovantesPendentes(db, owner.empresa_id)
       okCount++
       totalTx += txs.length
     } catch (e) {
       erros.push({ link, erro: e instanceof Error ? e.message : 'erro' })
     }
+  }
+
+  // Classificação automática: pega linhas sem categoria inseridas na última
+  // hora e categoriza em lote por IA — mesma função usada no botão manual
+  // de /api/conta-pj/categorizar-extrato.
+  const { data: pendentes } = await db
+    .from('extrato_bancario')
+    .select('id, descricao, contraparte_nome, categoria')
+    .or('categoria.eq.Outros,categoria.is.null')
+    .gte('created_at', new Date(Date.now() - 3600_000).toISOString())
+    .limit(500)
+  if (pendentes?.length) {
+    const itens = pendentes.map(t => ({
+      id: t.id as string,
+      texto: [t.descricao, t.contraparte_nome].filter(Boolean).join(' · '),
+    }))
+    const mapa = await categorizarLoteIA(itens)
+    await Promise.all(
+      Object.entries(mapa).map(([id, categoria]) =>
+        db.from('extrato_bancario').update({ categoria }).eq('id', id)
+      )
+    )
   }
 
   return NextResponse.json({ links: (links ?? []).length, sincronizados: okCount, transacoes: totalTx, erros })

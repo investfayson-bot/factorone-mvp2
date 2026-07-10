@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import Anthropic from '@anthropic-ai/sdk'
 import { createClient } from '@supabase/supabase-js'
 import { getSupabaseUser, bloquearSeLeitura } from '@/lib/supabase-route'
+import { matchComprovante } from '@/lib/financeiro/matchComprovante'
 
 export const runtime = 'nodejs'
 
@@ -179,6 +180,10 @@ Formato exato:
         despesa_id: despesaId,
       })
       .eq('id', insertRecibo.data.id)
+
+    if (ocr.valor > 0) {
+      await matchComprovante(service, empresaId, insertRecibo.data.id as string, ocr.valor, ocr.data, path)
+    }
 
     return NextResponse.json({
       recibo_id: insertRecibo.data.id,
