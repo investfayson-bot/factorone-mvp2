@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Anthropic from '@anthropic-ai/sdk'
 import { createClient } from '@supabase/supabase-js'
-import { getSupabaseUser } from '@/lib/supabase-route'
+import { getSupabaseUser, bloquearSeLeitura } from '@/lib/supabase-route'
 
 export const runtime = 'nodejs'
 
@@ -63,6 +63,8 @@ export async function POST(req: NextRequest) {
 
     const { user, supabase } = await getSupabaseUser(req)
     if (!user) return NextResponse.json({ error: 'Não autenticado' }, { status: 401 })
+    const bloqueio = await bloquearSeLeitura(supabase, user.id)
+    if (bloqueio) return NextResponse.json({ error: `Papel ${bloqueio} é somente leitura` }, { status: 403 })
 
     const form = await req.formData()
     const file = form.get('file')
