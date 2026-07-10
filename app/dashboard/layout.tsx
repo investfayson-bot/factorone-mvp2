@@ -70,6 +70,7 @@ function buildNavGroups(badges: { reembolsos: number; aprovacoes: number }, inst
     {
       label: 'Contábil & Fiscal',
       items: [
+        { href: '/dashboard/escritorio', icon: 'fa-briefcase', label: 'Escritório (clientes)' },
         { href: '/dashboard/contadores', icon: 'fa-calculator', label: 'Contador' },
         { href: '/dashboard/contabilidade/livros', icon: 'fa-book', label: 'Livros contábeis' },
         { href: '/dashboard/notas', icon: 'fa-file-invoice-dollar', label: 'Fiscal & NF-e' },
@@ -133,6 +134,7 @@ const pageTitles: Record<string, string> = {
   '/dashboard/marketing/central': 'Marketing',
   '/dashboard/marketing/site': 'Gere seu site',
   '/dashboard/contabilidade/livros': 'Livros contábeis',
+  '/dashboard/escritorio': 'Escritório Contábil',
   '/dashboard/credito': 'Crédito & Financiamento',
   '/dashboard/financeiro': 'Contas a Pagar & Receber',
   '/dashboard/despesas': 'Despesas',
