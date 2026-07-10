@@ -40,15 +40,77 @@ CREATE POLICY "regras_classificacao_own" ON public.regras_classificacao FOR ALL
 -- status_classificacao: 'sugerida' (IA chutou, baixa confiança, precisa
 -- correção) | 'aguardando_ok' (regra aprendida aplicada, só falta confirmar
 -- em lote) | 'confirmada' (usuário já bateu o OK, ou lançamento manual).
-ALTER TABLE public.transacoes
-  ADD COLUMN IF NOT EXISTS origem_documento text CHECK (origem_documento IS NULL OR origem_documento IN ('foto','pdf','manual','open_finance')) DEFAULT 'manual',
-  ADD COLUMN IF NOT EXISTS documento_anexo_url text,
-  ADD COLUMN IF NOT EXISTS status_classificacao text CHECK (status_classificacao IS NULL OR status_classificacao IN ('sugerida','aguardando_ok','confirmada')) DEFAULT 'confirmada';
+--
+-- ATENÇÃO: `transacoes` foi renomeada pra `transactions` numa migration
+-- anterior (20260409_master_consolidation.sql) em alguns ambientes — hoje
+-- `public.transacoes` pode ser só uma VIEW de leitura sobre `transactions`,
+-- e ALTER TABLE ADD COLUMN falha em view. Este bloco acha a tabela FÍSICA
+-- de verdade (relkind='r') entre os dois nomes possíveis e altera ela.
+DO $$
+DECLARE
+  tbl_fisica text;
+BEGIN
+  IF EXISTS (SELECT 1 FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace WHERE n.nspname = 'public' AND c.relname = 'transacoes' AND c.relkind = 'r') THEN
+    tbl_fisica := 'transacoes';
+  ELSIF EXISTS (SELECT 1 FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace WHERE n.nspname = 'public' AND c.relname = 'transactions' AND c.relkind = 'r') THEN
+    tbl_fisica := 'transactions';
+  ELSE
+    RAISE EXCEPTION 'Nenhuma tabela física encontrada entre public.transacoes e public.transactions';
+  END IF;
 
-ALTER TABLE public.despesas
-  ADD COLUMN IF NOT EXISTS origem_documento text CHECK (origem_documento IS NULL OR origem_documento IN ('foto','pdf','manual','open_finance')) DEFAULT 'manual',
-  ADD COLUMN IF NOT EXISTS status_classificacao text CHECK (status_classificacao IS NULL OR status_classificacao IN ('sugerida','aguardando_ok','confirmada')) DEFAULT 'confirmada';
+  EXECUTE format('ALTER TABLE public.%I ADD COLUMN IF NOT EXISTS origem_documento text', tbl_fisica);
+  EXECUTE format('ALTER TABLE public.%I ADD COLUMN IF NOT EXISTS documento_anexo_url text', tbl_fisica);
+  EXECUTE format('ALTER TABLE public.%I ADD COLUMN IF NOT EXISTS status_classificacao text', tbl_fisica);
 
-ALTER TABLE public.extrato_bancario
-  ADD COLUMN IF NOT EXISTS origem_documento text CHECK (origem_documento IS NULL OR origem_documento IN ('foto','pdf','manual','open_finance')) DEFAULT 'open_finance',
-  ADD COLUMN IF NOT EXISTS status_classificacao text CHECK (status_classificacao IS NULL OR status_classificacao IN ('sugerida','aguardando_ok','confirmada')) DEFAULT 'confirmada';
+  -- CHECK constraints separados (ADD COLUMN ... CHECK inline não é
+  -- idempotente do jeito IF NOT EXISTS acima; roda à parte, protegido).
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'transacoes_origem_documento_chk') THEN
+    EXECUTE format('ALTER TABLE public.%I ADD CONSTRAINT transacoes_origem_documento_chk CHECK (origem_documento IS NULL OR origem_documento IN (%L,%L,%L,%L))', tbl_fisica, 'foto', 'pdf', 'manual', 'open_finance');
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'transacoes_status_classificacao_chk') THEN
+    EXECUTE format('ALTER TABLE public.%I ADD CONSTRAINT transacoes_status_classificacao_chk CHECK (status_classificacao IS NULL OR status_classificacao IN (%L,%L,%L))', tbl_fisica, 'sugerida', 'aguardando_ok', 'confirmada');
+  END IF;
+  EXECUTE format('ALTER TABLE public.%I ALTER COLUMN origem_documento SET DEFAULT %L', tbl_fisica, 'manual');
+  EXECUTE format('ALTER TABLE public.%I ALTER COLUMN status_classificacao SET DEFAULT %L', tbl_fisica, 'confirmada');
+END $$;
+
+-- despesas e extrato_bancario não têm histórico de rename encontrado nas
+-- migrations — mas usa o mesmo cinto-de-segurança (relkind='r') depois do
+-- susto acima, pra não travar a migration inteira se algo parecido existir.
+DO $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace WHERE n.nspname = 'public' AND c.relname = 'despesas' AND c.relkind = 'r') THEN
+    ALTER TABLE public.despesas
+      ADD COLUMN IF NOT EXISTS origem_documento text,
+      ADD COLUMN IF NOT EXISTS status_classificacao text;
+    IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'despesas_origem_documento_chk') THEN
+      ALTER TABLE public.despesas ADD CONSTRAINT despesas_origem_documento_chk CHECK (origem_documento IS NULL OR origem_documento IN ('foto','pdf','manual','open_finance'));
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'despesas_status_classificacao_chk') THEN
+      ALTER TABLE public.despesas ADD CONSTRAINT despesas_status_classificacao_chk CHECK (status_classificacao IS NULL OR status_classificacao IN ('sugerida','aguardando_ok','confirmada'));
+    END IF;
+    ALTER TABLE public.despesas ALTER COLUMN origem_documento SET DEFAULT 'manual';
+    ALTER TABLE public.despesas ALTER COLUMN status_classificacao SET DEFAULT 'confirmada';
+  ELSE
+    RAISE NOTICE 'public.despesas não é tabela física (relkind != r) — pulei essa parte, confira manualmente';
+  END IF;
+END $$;
+
+DO $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace WHERE n.nspname = 'public' AND c.relname = 'extrato_bancario' AND c.relkind = 'r') THEN
+    ALTER TABLE public.extrato_bancario
+      ADD COLUMN IF NOT EXISTS origem_documento text,
+      ADD COLUMN IF NOT EXISTS status_classificacao text;
+    IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'extrato_bancario_origem_documento_chk') THEN
+      ALTER TABLE public.extrato_bancario ADD CONSTRAINT extrato_bancario_origem_documento_chk CHECK (origem_documento IS NULL OR origem_documento IN ('foto','pdf','manual','open_finance'));
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'extrato_bancario_status_classificacao_chk') THEN
+      ALTER TABLE public.extrato_bancario ADD CONSTRAINT extrato_bancario_status_classificacao_chk CHECK (status_classificacao IS NULL OR status_classificacao IN ('sugerida','aguardando_ok','confirmada'));
+    END IF;
+    ALTER TABLE public.extrato_bancario ALTER COLUMN origem_documento SET DEFAULT 'open_finance';
+    ALTER TABLE public.extrato_bancario ALTER COLUMN status_classificacao SET DEFAULT 'confirmada';
+  ELSE
+    RAISE NOTICE 'public.extrato_bancario não é tabela física (relkind != r) — pulei essa parte, confira manualmente';
+  END IF;
+END $$;
