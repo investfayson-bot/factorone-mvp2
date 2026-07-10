@@ -1,0 +1,4 @@
+# Normaliza fim-de-linha: todo arquivo de texto é LF no repositório.
+# Mata o ruído de CRLF (Windows/Dropbox) que fazia dezenas de arquivos
+# aparecerem "modificados" sem nenhuma mudança de conteúdo real.
+* text=auto eol=lf
