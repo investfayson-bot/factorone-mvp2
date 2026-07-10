@@ -241,6 +241,48 @@ export async function emailSaldoBaixo(para: string, nomeEmpresa: string, saldo: 
   } catch { return false }
 }
 
+export async function emailRelatorioMensal(
+  para: string,
+  nomeEmpresa: string,
+  competenciaLabel: string,
+  metricas: { receita_bruta: number; despesas_operacionais: number; lucro_liquido: number },
+  variacaoLucroPct: number | null
+): Promise<boolean> {
+  if (!process.env.RESEND_API_KEY) return false
+  const variacaoTxt = variacaoLucroPct === null
+    ? ''
+    : `<div style="font-size:12px;color:${variacaoLucroPct >= 0 ? '#047857' : '#B91C1C'};margin-top:4px">${variacaoLucroPct >= 0 ? '▲' : '▼'} ${Math.abs(variacaoLucroPct).toFixed(1)}% vs. mês anterior</div>`
+  const corpo = `
+    <p style="margin:0 0 16px;font-size:14px;line-height:1.7;color:#334155">
+      Resumo financeiro de <strong>${nomeEmpresa}</strong> — <strong>${competenciaLabel}</strong>:
+    </p>
+    <div style="display:flex;gap:16px;margin-bottom:20px">
+      <div style="flex:1;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:8px;padding:14px 16px">
+        <div style="font-size:11px;color:#047857;font-weight:700;text-transform:uppercase;letter-spacing:.05em">Receita</div>
+        <div style="font-size:18px;font-weight:800;color:#047857;font-family:monospace">${formatBRL(metricas.receita_bruta)}</div>
+      </div>
+      <div style="flex:1;background:#FEF2F2;border:1px solid #FCA5A5;border-radius:8px;padding:14px 16px">
+        <div style="font-size:11px;color:#991B1B;font-weight:700;text-transform:uppercase;letter-spacing:.05em">Despesas</div>
+        <div style="font-size:18px;font-weight:800;color:#991B1B;font-family:monospace">${formatBRL(metricas.despesas_operacionais)}</div>
+      </div>
+    </div>
+    <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:14px 16px;margin-bottom:20px">
+      <div style="font-size:11px;color:#334155;font-weight:700;text-transform:uppercase;letter-spacing:.05em">Resultado do mês</div>
+      <div style="font-size:22px;font-weight:800;color:#0f172a;font-family:monospace">${formatBRL(metricas.lucro_liquido)}</div>
+      ${variacaoTxt}
+    </div>
+    <a href="${APP_URL}/dashboard/relatorios" style="display:inline-block;background:#3D7A6E;color:#fff;text-decoration:none;padding:11px 24px;border-radius:8px;font-size:13px;font-weight:700">
+      Ver DRE completo →
+    </a>`
+  try {
+    const { error } = await getResend().emails.send({
+      from: FROM, to: para, subject: `Resumo de ${competenciaLabel} — ${nomeEmpresa}`,
+      html: baseHtml('#3D7A6E', `Resumo financeiro · ${competenciaLabel}`, corpo, para),
+    })
+    return !error
+  } catch { return false }
+}
+
 export async function enviarNotificacao({ tipo, para, dados }: EnviarNotificacaoParams): Promise<boolean> {
   if (!process.env.RESEND_API_KEY) return false
   const cfg = CONFIGS[tipo]

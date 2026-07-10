@@ -32,6 +32,7 @@ export default function EquipePage() {
   const [form, setForm] = useState({ email: '', nome: '', role: 'viewer' })
   const [currentUserEmail, setCurrentUserEmail] = useState('')
   const [meuRole, setMeuRole] = useState('admin')
+  const [nivelRelatorio, setNivelRelatorio] = useState<'resumo' | 'completo'>('resumo')
 
   useEffect(() => { carregar() }, [])
 
@@ -44,6 +45,8 @@ export default function EquipePage() {
       const { data: ur } = await supabase.from('usuarios').select('empresa_id').eq('id', user.id).maybeSingle()
       const eid = ur?.empresa_id ?? user.id
       setEmpresaId(eid)
+      const { data: emp } = await supabase.from('empresas').select('relatorio_mensal_nivel').eq('id', eid).maybeSingle()
+      if (emp?.relatorio_mensal_nivel) setNivelRelatorio(emp.relatorio_mensal_nivel as 'resumo' | 'completo')
       const { data } = await supabase.from('membros_equipe').select('*').eq('empresa_id', eid).order('created_at')
       const lista = (data ?? []) as Membro[]
       setMembros(lista)
@@ -92,6 +95,11 @@ export default function EquipePage() {
     await carregar()
   }
 
+  async function salvarNivelRelatorio(nivel: 'resumo' | 'completo') {
+    setNivelRelatorio(nivel)
+    await supabase.from('empresas').update({ relatorio_mensal_nivel: nivel }).eq('id', empresaId)
+  }
+
   const ativos = membros.filter(m => m.status === 'ativo').length
   const pendentes = membros.filter(m => m.status === 'pendente').length
 
@@ -119,6 +127,13 @@ export default function EquipePage() {
         <div>
           <div className="page-title">Equipe</div>
           <div className="page-sub">{ativos} membros ativos · {pendentes} convites pendentes</div>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: '#7B8C88' }}>
+          Relatório mensal por e-mail:
+          <select value={nivelRelatorio} onChange={e => void salvarNivelRelatorio(e.target.value as 'resumo' | 'completo')} style={{ fontSize: 13, padding: '4px 8px', borderRadius: 6, border: '1px solid #e2e8f0' }}>
+            <option value="resumo">Resumo</option>
+            <option value="completo">Completo</option>
+          </select>
         </div>
         <button className="btn-action" onClick={() => { setShowConvidar(true); setConviteEnviado('') }}>
           <i className="fa-solid fa-user-plus" /> Convidar membro
