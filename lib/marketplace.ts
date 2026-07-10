@@ -20,6 +20,8 @@ export type MarketApp = {
   href: string
   /** true se há uma página dedicada (não placeholder). */
   hasPage: boolean
+  /** true = fica fora da vitrine do Marketplace (guardado pra depois, ex.: tier Pro). Página segue existindo. */
+  oculto?: boolean
 }
 
 export const MARKET_APPS: MarketApp[] = [
@@ -30,7 +32,7 @@ export const MARKET_APPS: MarketApp[] = [
   { id: 'posvenda',    name: 'Pós-venda & Follow-up', icon: 'fa-heart-pulse',      iconColor: '#B0413E', iconBg: '#FCE7E7', rating: 4.9, rev: 57,  desc: 'Nunca esqueça um cliente: réguas de satisfação, garantia e recompra com mensagem pronta pra enviar.', badge: 'new', cat: 'vendas', navGroup: 'Clientes & Vendas', href: '/dashboard/posvenda', hasPage: true },
   { id: 'produtos',    name: 'Produtos & Margem',    icon: 'fa-tags',               iconColor: '#0E7490', iconBg: '#CFFAFE', rating: 4.9, rev: 44,  desc: 'Custo de matéria-prima × preço = quanto sobra em cada venda. Registrar venda cai no DRE (receita + CMV).', badge: 'new', cat: 'financeiro', navGroup: 'Financeiro', href: '/dashboard/produtos', hasPage: true },
   { id: 'indicadores', name: 'Indicadores',         icon: 'fa-gauge-high',         iconColor: '#5E8C87', iconBg: '#EAF5F3', rating: 4.8, rev: 96,  desc: 'LTV, CAC, MRR, ROI, ROIC, burn e runway + taxas de mercado.',      badge: 'new',     cat: 'financeiro', navGroup: 'Financeiro',  href: '/dashboard/indicadores',   hasPage: true },
-  { id: 'ma',          name: 'M&A',                 icon: 'fa-handshake-angle',    iconColor: '#7C3AED', iconBg: '#EDE9FE', rating: 4.7, rev: 41,  desc: 'Valuation por múltiplos + checklist de due diligence.',            badge: '',        cat: 'financeiro', navGroup: 'Financeiro',  href: '/dashboard/ma',            hasPage: true },
+  { id: 'ma',          name: 'M&A',                 icon: 'fa-handshake-angle',    iconColor: '#7C3AED', iconBg: '#EDE9FE', rating: 4.7, rev: 41,  desc: 'Valuation por múltiplos + checklist de due diligence.',            badge: '',        cat: 'financeiro', navGroup: 'Financeiro',  href: '/dashboard/ma',            hasPage: true, oculto: true },
   { id: 'juridico',    name: 'Jurídico',            icon: 'fa-scale-balanced',     iconColor: '#1C2B2A', iconBg: '#EEF2F1', rating: 4.6, rev: 58,  desc: 'Contratos, societário, marca, compliance — empresa e PF.',         badge: 'new',     cat: 'fiscal',     navGroup: 'Contábil & Fiscal',      href: '/dashboard/juridico',      hasPage: true },
   { id: 'prefeituras', name: 'Prefeituras & NFS-e', icon: 'fa-landmark',           iconColor: '#B8922A', iconBg: '#FEF3C7', rating: 4.7, rev: 63,  desc: 'Todas as prefeituras do Brasil + emissão de NFS-e.',               badge: '',        cat: 'fiscal',     navGroup: 'Contábil & Fiscal',      href: '/dashboard/prefeituras',   hasPage: true },
   { id: 'crm',       name: 'CRM',                    icon: 'fa-handshake',          iconColor: '#1E40AF', iconBg: '#DBEAFE', rating: 4.8, rev: 120, desc: 'Gestão de leads, contatos e pipeline de vendas.',   badge: 'popular', cat: 'vendas',      navGroup: 'Clientes & Vendas',      href: '/dashboard/crm',                hasPage: true  },
@@ -48,6 +50,7 @@ export const MARKET_APPS: MarketApp[] = [
   { id: 'hr',        name: 'RH & Benefícios',        icon: 'fa-heart-pulse',        iconColor: '#BE123C', iconBg: '#FFE4E6', rating: 4.6, rev: 90,  desc: 'Férias, ponto, benefícios e colaboradores.',        badge: '',        cat: 'rh',          navGroup: 'RH',          href: '/dashboard/rh',                 hasPage: true  },
   { id: 'tax',       name: 'Tax Compliance',         icon: 'fa-scale-balanced',     iconColor: '#1D4ED8', iconBg: '#DBEAFE', rating: 4.8, rev: 69,  desc: 'Conformidade fiscal e obrigações acessórias.',      badge: 'new',     cat: 'fiscal',      navGroup: 'Contábil & Fiscal', href: '/dashboard/tax',                hasPage: true  },
   { id: 'simples',   name: 'Simples Nacional (DAS)', icon: 'fa-calculator',         iconColor: '#1D4ED8', iconBg: '#DBEAFE', rating: 4.7, rev: 58,  desc: 'Estimador de DAS e alíquota efetiva (Anexos I–V).', badge: 'new',     cat: 'fiscal',      navGroup: 'Contábil & Fiscal', href: '/dashboard/simples',            hasPage: true  },
+  { id: 'patrimonio',name: 'Patrimônio',             icon: 'fa-building',           iconColor: '#3D7A6E', iconBg: '#E9F0ED', rating: 4.8, rev: 67,  desc: 'Imóveis, veículos, obras, recibos e distribuição de sócios — só instale se você gerencia patrimônio.', badge: '', cat: 'operacional', navGroup: 'Patrimônio', href: '/dashboard/patrimonio/imoveis', hasPage: true },
 ]
 
 import { supabase } from '@/lib/supabase'

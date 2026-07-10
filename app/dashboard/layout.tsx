@@ -100,7 +100,7 @@ function buildNavGroups(badges: { reembolsos: number; aprovacoes: number }, inst
 
   // Apps instalados pelo Marketplace aparecem no seu grupo funcional.
   for (const app of MARKET_APPS) {
-    if (app.id === 'classificar' || app.id === 'cfoia') continue // já são itens fixos do menu
+    if (app.id === 'classificar' || app.id === 'cfoia' || app.id === 'patrimonio') continue // já são itens fixos do menu (patrimonio só liga/desliga o grupo fixo)
     if (!installedIds.includes(app.id)) continue
     const item: NavItem = { href: app.href, icon: app.icon, label: app.name, badge: 'APP', badgeColor: '#7A6A9E' }
     let group = groups.find(g => g.label === app.navGroup)
@@ -281,13 +281,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             </button>
           </div>
           <nav className="sb-nav">
-            {buildNavGroups(badges, installedIds, role, ['produto', 'servico', 'industria'].includes(segmento)).map(group => {
+            {buildNavGroups(badges, installedIds, role, (!installedIds.includes('patrimonio') && !['imoveis', 'completo'].includes(segmento))).map(group => {
               const inGroup = group.items.some(i => isActive(pathname, i))
               const isCollapsed = group.collapsible && collapsedGroups[group.label] && !inGroup
               return (
                 <div key={group.label}>
                   {group.collapsible ? (
-                    <div className="nav-section" onClick={() => toggleGroup(group.label, buildNavGroups(badges, installedIds, role, ['produto', 'servico', 'industria'].includes(segmento)))}
+                    <div className="nav-section" onClick={() => toggleGroup(group.label, buildNavGroups(badges, installedIds, role, (!installedIds.includes('patrimonio') && !['imoveis', 'completo'].includes(segmento))))}
                       style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between', userSelect: 'none' }}>
                       <span>{group.label}</span>
                       <i className={`fa-solid fa-chevron-${isCollapsed ? 'right' : 'down'}`} style={{ fontSize: 11, opacity: .5 }} />
