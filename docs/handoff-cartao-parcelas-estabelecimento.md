@@ -1,5 +1,30 @@
 # Handoff — Cartão: análise de custos + parcelas restantes + nome/endereço do estabelecimento
 
+## ⇢ STATUS AO VIVO (2026-07-09, sessão Linux) — LER PRIMEIRO
+
+O Fayson não estava vendo o Banco no app, achou que "não foi entregue" e que /integracoes
+estava no lugar errado. Diagnóstico com evidência:
+
+- **O código do Banco ESTÁ no `main` e COMPILA.** `git cat-file` confirma
+  `app/dashboard/banco/page.tsx` em `origin/main` (7fcf002); `npx tsc --noEmit` → exit 0, limpo.
+  Ou seja: não é código faltando. **É o DEPLOY servindo versão velha.**
+- **`/integracoes` já está certo:** existe só `app/dashboard/integracoes/page.tsx` (dentro da
+  plataforma). NÃO existe rota `/integracoes` na raiz. A única referência
+  (`layout.tsx:167`) aponta pra `/dashboard/integracoes`. Se o Fayson vê "errado", é a mesma
+  causa: está olhando o deploy ANTIGO, de antes do merge do Banco.
+- **Conclusão: os dois sintomas ("não vejo Banco" + "integracoes no lugar errado") têm UMA
+  causa só — o deploy de produção está defasado / não reflete o `main` atual.** Ação: conferir
+  na Vercel se produção aponta pra `main` e se o último build rodou; ou forçar redeploy.
+  Não mexer mais no código por causa disso — o código está certo.
+- **Belvo sandbox: beco sem saída confirmado** (ver seção MockBank abaixo). Pra SIMULAR
+  cartão parcelado antes do cliente sem depender da Belvo: existe `POST /api/demo/seed`
+  (autenticado) mas ele só popula `transacoes`, não `belvo_transacoes`/`extrato_bancario` com
+  parcelas. Falta um seed que insira compras parceladas fake — tarefa pequena, ainda não feita.
+- **feat/cartao-parcelas NÃO está no GitHub** — só no disco do Windows. Risco de perda.
+
+---
+
+
 > Pedido do Fayson (cliente perguntou): análise de custos por segmento, quantas parcelas
 > ainda faltam nos próximos meses (somar as que terminam em 1 mês e em 2 meses), e
 > identificar o estabelecimento real (nome fantasia → razão social + endereço), porque
