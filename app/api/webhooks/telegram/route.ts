@@ -3,6 +3,8 @@ import Anthropic from '@anthropic-ai/sdk'
 import { createClient } from '@supabase/supabase-js'
 import { registrarAcaoAgente } from '@/lib/agentes-log'
 import { encontrarRegra, type Regra } from '@/lib/donna/regras'
+import { processarMensagemVisitante } from '@/lib/donna/site-agent'
+import { checkRateLimit } from '@/lib/rate-limit'
 
 export const runtime = 'nodejs'
 
@@ -118,6 +120,43 @@ async function commitAgendamento(
   return `Feito! Agendei ${tipo}${quemFmt} pra ${dataFmt}${horaFmt}. Já está no seu CRM (aba Agenda).`
 }
 
+// Bot de atendimento a cliente via deep link (t.me/<bot>?start=<empresaId>):
+// o dono do negócio divulga esse link pros próprios clientes, que ficam
+// numa conversa de cliente (atendimento_conversas, canal telegram) —
+// completamente separada do assistente pessoal (usuarios.telegram_chat_id).
+// É um bot global (1 token pra todo o FactorOne) — o mesmo chatId PODE ser
+// cliente de mais de uma empresa ao mesmo tempo, de propósito (cada empresa
+// tem seu próprio link). A unicidade de verdade é por empresa (índice único
+// empresa_id+canal+canal_identificador), não global.
+async function abrirConversaCliente(supabase: ReturnType<typeof db>, empresaId: string, chatId: string): Promise<string> {
+  const { data, error } = await supabase
+    .from('atendimento_conversas')
+    .upsert(
+      { empresa_id: empresaId, canal: 'telegram', canal_identificador: chatId, visitante_nome: 'Contato via Telegram', status: 'aberta' },
+      { onConflict: 'empresa_id,canal,canal_identificador', ignoreDuplicates: true }
+    )
+    .select('id')
+    .maybeSingle()
+  if (data) return data.id as string
+  if (error) throw error
+
+  // ignoreDuplicates não devolve a linha existente — busca de novo.
+  const { data: existente } = await supabase
+    .from('atendimento_conversas')
+    .select('id')
+    .eq('empresa_id', empresaId)
+    .eq('canal', 'telegram')
+    .eq('canal_identificador', chatId)
+    .single()
+  return existente!.id as string
+}
+
+async function atenderClienteTelegram(supabase: ReturnType<typeof db>, empresaId: string, conversaId: string, chatId: string, texto: string): Promise<void> {
+  await supabase.from('atendimento_mensagens').insert({ conversa_id: conversaId, empresa_id: empresaId, autor: 'visitante', texto })
+  const { data: regrasData } = await supabase.from('donna_regras').select('*').eq('empresa_id', empresaId).eq('ativa', true)
+  await processarMensagemVisitante(supabase, empresaId, conversaId, texto, (regrasData ?? []) as Regra[], 'telegram', t => sendTelegram(chatId, t))
+}
+
 const ACAO_PENDENTE = 'aguardando_confirmacao_agendamento'
 const AFIRMATIVO = /^(sim|s|ss|confirma|confirmado|pode|pode sim|ok|okay|beleza|isso|exato|correto|manda)\b/i
 
@@ -196,8 +235,45 @@ export async function POST(req: NextRequest) {
       .eq('telegram_chat_id', chatId)
       .maybeSingle()
 
-    // Conta ainda não vinculada a este chat — tenta parear por código ou orienta.
+    // Conta ainda não vinculada a este chat como dono — pode ser: deep link de
+    // cliente (/start <empresaId>), continuação de uma conversa de cliente já
+    // aberta, pareamento por código (dono), ou desconhecido.
     if (!usuario) {
+      const deepLinkMatch = texto.match(/^\/start\s+([0-9a-f-]{36})$/i)
+      if (deepLinkMatch) {
+        if (!checkRateLimit(`tg-start:${chatId}`, 5, 60_000).allowed) return NextResponse.json({ ok: true })
+        const empresaId = deepLinkMatch[1]
+        const { data: donoValido } = await supabase.from('usuarios').select('id').eq('empresa_id', empresaId).limit(1).maybeSingle()
+        if (!donoValido) {
+          await sendTelegram(chatId, 'Esse link não parece válido. Confere com quem te mandou.')
+          return NextResponse.json({ ok: true })
+        }
+        await abrirConversaCliente(supabase, empresaId, chatId)
+        await sendTelegram(chatId, 'Oi! Pode mandar sua dúvida que eu já te ajudo.')
+        return NextResponse.json({ ok: true })
+      }
+
+      // O mesmo chatId pode ter uma atendimento_conversas em mais de uma
+      // empresa (bot global, várias empresas divulgando o próprio link) —
+      // sem jeito de saber qual empresa essa mensagem solta é "pra". Rotear
+      // pra conversa mais recentemente ativa é a melhor aproximação (é o que
+      // qualquer app de chat faria); nunca escolher arbitrariamente.
+      const { data: conversasCliente } = await supabase
+        .from('atendimento_conversas')
+        .select('id, empresa_id')
+        .eq('canal', 'telegram')
+        .eq('canal_identificador', chatId)
+        .order('updated_at', { ascending: false })
+        .limit(1)
+      const conversaCliente = conversasCliente?.[0]
+      if (conversaCliente) {
+        if (!checkRateLimit(`tg-cliente:${chatId}`, 15, 60_000).allowed || !checkRateLimit(`tg-empresa:${conversaCliente.empresa_id}`, 60, 3_600_000).allowed) {
+          return NextResponse.json({ ok: true })
+        }
+        await atenderClienteTelegram(supabase, conversaCliente.empresa_id as string, conversaCliente.id as string, chatId, texto)
+        return NextResponse.json({ ok: true })
+      }
+
       if (texto === '/start') {
         await sendTelegram(chatId, 'Oi! Sou o assistente do FactorOne. Pra te reconhecer, gere um código em /dashboard/integracoes (Telegram) e me manda o código aqui.')
         return NextResponse.json({ ok: true })

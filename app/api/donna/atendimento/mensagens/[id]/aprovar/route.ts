@@ -14,7 +14,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
   const patch: Record<string, unknown> = { pendente_aprovacao: false }
   if (body.texto?.trim()) patch.texto = body.texto.trim()
-  const { error } = await supabase.from('atendimento_mensagens').update(patch).eq('id', id)
+  const { error } = await supabase.from('atendimento_mensagens').update(patch).eq('id', id).eq('empresa_id', empresaId)
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
   await supabase.from('atendimento_conversas').update({ status: 'aberta', updated_at: new Date().toISOString() }).eq('id', msg.conversa_id).eq('empresa_id', empresaId)
   return NextResponse.json({ ok: true })

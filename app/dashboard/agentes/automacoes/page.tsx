@@ -28,6 +28,8 @@ function AutomacoesContent() {
 
   const [googleEmail, setGoogleEmail] = useState<string | null>(null)
   const [conectando, setConectando] = useState(false)
+  const [empresaId, setEmpresaId] = useState('')
+  const [telegramBotUsername, setTelegramBotUsername] = useState<string | null>(null)
 
   const [regras, setRegras] = useState<Regra[]>([])
   const [showRegraModal, setShowRegraModal] = useState(false)
@@ -47,16 +49,19 @@ function AutomacoesContent() {
       setToken(tk)
       const { data: u } = await supabase.from('usuarios').select('empresa_id').eq('id', user.id).maybeSingle()
       const eid = (u?.empresa_id as string) ?? user.id
+      setEmpresaId(eid)
 
       const a = tk ? { Authorization: `Bearer ${tk}` } : {}
-      const [contaRes, regrasRes, emailsRes] = await Promise.all([
+      const [contaRes, regrasRes, emailsRes, statusRes] = await Promise.all([
         supabase.from('google_contas').select('email').eq('empresa_id', eid).maybeSingle(),
         fetch('/api/donna/regras', { headers: a }),
         fetch('/api/donna/emails?status=pendente_aprovacao', { headers: a }),
+        fetch('/api/integracoes/status', { headers: a }),
       ])
       setGoogleEmail((contaRes.data?.email as string) ?? null)
       const jr = await regrasRes.json(); if (regrasRes.ok) setRegras(jr.regras ?? [])
       const je = await emailsRes.json(); if (emailsRes.ok) setEmails(je.emails ?? [])
+      const js = await statusRes.json(); if (statusRes.ok) setTelegramBotUsername(js.telegramBotUsername ?? null)
       setLoading(false)
     })()
   }, [])
@@ -152,6 +157,33 @@ function AutomacoesContent() {
           <button className="btn-action" style={{ fontSize: 13 }} disabled={conectando} onClick={() => void conectarGoogle()}>{googleEmail ? 'Trocar conta' : 'Conectar com Google'}</button>
           {googleEmail && <button className="btn-action btn-ghost" style={{ fontSize: 13, color: '#B0413E', borderColor: '#B0413E' }} onClick={() => void desconectarGoogle()}>Remover</button>}
         </div>
+      </div>
+
+      {/* Bot de atendimento a cliente via Telegram */}
+      <div className="txs-card" style={{ padding: '14px 18px', marginBottom: 18, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 10 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <div style={{ width: 36, height: 36, borderRadius: 10, background: 'rgba(34,158,217,.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <i className="fa-brands fa-telegram" style={{ color: '#229ED9', fontSize: 15 }} />
+          </div>
+          <div>
+            <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--ink)' }}>Telegram — atendimento a clientes</div>
+            <div style={{ fontSize: 13, color: 'var(--ink-mut)' }}>
+              {loading ? '—' : telegramBotUsername ? 'Divulgue esse link — quem clicar vira uma conversa aqui em Conversas' : 'Bot não configurado ainda (falta TELEGRAM_BOT_TOKEN/USERNAME no ambiente)'}
+            </div>
+          </div>
+        </div>
+        {telegramBotUsername && empresaId && (
+          <button
+            className="btn-action"
+            style={{ fontSize: 13 }}
+            onClick={() => {
+              void navigator.clipboard.writeText(`https://t.me/${telegramBotUsername}?start=${empresaId}`)
+              toast.success('Link copiado!')
+            }}
+          >
+            <i className="fa-solid fa-link" style={{ marginRight: 6 }} />Copiar link do bot
+          </button>
+        )}
       </div>
 
       <div style={{ display: 'flex', gap: 6, marginBottom: 16 }}>

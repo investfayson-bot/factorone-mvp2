@@ -8,7 +8,7 @@ export async function GET(req: NextRequest) {
   const empresaId = (u?.empresa_id as string) || user.id
   const { data, error } = await supabase
     .from('atendimento_conversas')
-    .select('id,visitante_nome,visitante_email,status,motivo,created_at,updated_at')
+    .select('id,visitante_nome,visitante_email,status,motivo,canal,canal_identificador,created_at,updated_at')
     .eq('empresa_id', empresaId)
     .order('updated_at', { ascending: false })
     .limit(100)

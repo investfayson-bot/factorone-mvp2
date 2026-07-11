@@ -22,5 +22,5 @@ export async function GET(req: NextRequest) {
     status.google_donna = Boolean(conta)
   }
 
-  return NextResponse.json(status)
+  return NextResponse.json({ ...status, telegramBotUsername: process.env.TELEGRAM_BOT_USERNAME || null })
 }

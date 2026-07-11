@@ -3,13 +3,15 @@ import { getSupabaseUser } from '@/lib/supabase-route'
 
 type Pendente = {
   id: string
-  canal: 'site' | 'email'
+  canal: 'site' | 'telegram' | 'email'
   contato: string
   trecho: string
   motivo: string
   created_at: string
   link: string
 }
+
+const CANAL_LABEL: Record<'site' | 'telegram', string> = { site: 'Site', telegram: 'Telegram' }
 
 export async function GET(req: NextRequest) {
   const { user, supabase } = await getSupabaseUser(req)
@@ -20,7 +22,7 @@ export async function GET(req: NextRequest) {
   const [conversasRes, emailsRes] = await Promise.all([
     supabase
       .from('atendimento_conversas')
-      .select('id,visitante_nome,motivo,updated_at')
+      .select('id,visitante_nome,motivo,canal,updated_at')
       .eq('empresa_id', empresaId)
       .eq('status', 'aguardando_humano')
       .order('updated_at', { ascending: false })
@@ -34,7 +36,7 @@ export async function GET(req: NextRequest) {
       .limit(30),
   ])
 
-  const conversas = (conversasRes.data ?? []) as { id: string; visitante_nome: string | null; motivo: string | null; updated_at: string }[]
+  const conversas = (conversasRes.data ?? []) as { id: string; visitante_nome: string | null; motivo: string | null; canal: 'site' | 'telegram'; updated_at: string }[]
   const conversaIds = conversas.map(c => c.id)
 
   const trechoPorConversa = new Map<string, string>()
@@ -52,8 +54,8 @@ export async function GET(req: NextRequest) {
 
   const pendentesConversas: Pendente[] = conversas.map(c => ({
     id: c.id,
-    canal: 'site',
-    contato: `${c.visitante_nome || 'Visitante'} · Site`,
+    canal: c.canal,
+    contato: `${c.visitante_nome || 'Visitante'} · ${CANAL_LABEL[c.canal]}`,
     trecho: trechoPorConversa.get(c.id) || '',
     motivo: c.motivo || 'Aguardando sua resposta',
     created_at: c.updated_at,

@@ -29,18 +29,24 @@ async function montarContextoNegocio(supabase: SupabaseClient, empresaId: string
   return { contexto: partes.join('\n') || 'Sem informações detalhadas cadastradas ainda.', agendaToken: (agendaRes.data?.token as string) ?? null }
 }
 
+type CanalAtendimento = 'site' | 'telegram'
+
+const ORIGEM_LABEL: Record<CanalAtendimento, string> = { site: 'do seu site', telegram: 'do Telegram' }
+
 export async function processarMensagemVisitante(
   supabase: SupabaseClient,
   empresaId: string,
   conversaId: string,
   mensagemVisitante: string,
-  regras: Regra[]
+  regras: Regra[],
+  canal: CanalAtendimento = 'site',
+  entregar?: (texto: string) => Promise<void>
 ): Promise<void> {
-  const regra = encontrarRegra(regras, 'site', mensagemVisitante)
+  const regra = encontrarRegra(regras, canal === 'telegram' ? 'telegram' : 'site', mensagemVisitante)
   const autonomia = regra?.autonomia ?? 'rascunho'
   const { contexto, agendaToken } = await montarContextoNegocio(supabase, empresaId)
 
-  const system = `Você é a Donna, atendente virtual deste negócio, respondendo visitantes do site.
+  const system = `Você é a Donna, atendente virtual deste negócio, respondendo contatos ${ORIGEM_LABEL[canal]}.
 CONTEXTO DO NEGÓCIO:
 ${contexto}
 Responda em português, de forma simpática, curta e direta. Se não souber responder com confiança, ou o pedido for sensível/complexo (reclamação, cancelamento, negociação), use transferir_humano em vez de inventar uma resposta.`
@@ -49,10 +55,12 @@ Responda em português, de forma simpática, curta e direta. Se não souber resp
 
   if (!decisao || decisao.tool === 'transferir_humano') {
     const motivo = String(decisao?.input.motivo ?? '').trim() || 'Pedido sensível ou fora do escopo automático — a IA preferiu não arriscar uma resposta'
-    await supabase.from('atendimento_conversas').update({ status: 'aguardando_humano', motivo, updated_at: new Date().toISOString() }).eq('id', conversaId)
-    await supabase.from('atendimento_mensagens').insert({ conversa_id: conversaId, empresa_id: empresaId, autor: 'donna', texto: 'Já chamei alguém do time pra te ajudar com isso — só um instante!', pendente_aprovacao: false })
-    await supabase.from('notificacoes').insert({ empresa_id: empresaId, titulo: 'Atendimento aguardando você', mensagem: 'Um visitante do seu site precisa de uma resposta que a Donna não conseguiu dar sozinha.', tipo: 'aviso', modulo: 'donna', link: '/dashboard/agentes/conversas', lida: false })
-    await registrarAcaoAgente(supabase, empresaId, 'donna', 'Transferiu uma conversa do site pra você', { detalhe: motivo })
+    const aviso = 'Já chamei alguém do time pra te ajudar com isso — só um instante!'
+    await supabase.from('atendimento_conversas').update({ status: 'aguardando_humano', motivo, updated_at: new Date().toISOString() }).eq('id', conversaId).eq('empresa_id', empresaId)
+    await supabase.from('atendimento_mensagens').insert({ conversa_id: conversaId, empresa_id: empresaId, autor: 'donna', texto: aviso, pendente_aprovacao: false })
+    await supabase.from('notificacoes').insert({ empresa_id: empresaId, titulo: 'Atendimento aguardando você', mensagem: `Um contato ${ORIGEM_LABEL[canal]} precisa de uma resposta que a Donna não conseguiu dar sozinha.`, tipo: 'aviso', modulo: 'donna', link: '/dashboard/agentes/conversas', lida: false })
+    await registrarAcaoAgente(supabase, empresaId, 'donna', `Transferiu uma conversa ${ORIGEM_LABEL[canal]} pra você`, { detalhe: motivo })
+    if (entregar) await entregar(aviso)
     return
   }
 
@@ -62,15 +70,18 @@ Responda em português, de forma simpática, curta e direta. Se não souber resp
 
   if (autonomia === 'automatico') {
     await supabase.from('atendimento_mensagens').insert({ conversa_id: conversaId, empresa_id: empresaId, autor: 'donna', texto, pendente_aprovacao: false })
-    await registrarAcaoAgente(supabase, empresaId, 'donna', 'Respondeu um visitante no chat do site', { detalhe: texto.slice(0, 140) })
+    await registrarAcaoAgente(supabase, empresaId, 'donna', `Respondeu um contato ${ORIGEM_LABEL[canal]}`, { detalhe: texto.slice(0, 140) })
+    if (entregar) await entregar(texto)
   } else {
     const motivo = regra
       ? `Regra "${regra.nome ?? regra.criterio}" está em modo rascunho — aguardando sua aprovação`
       : 'Sem regra automática pra esse assunto — resposta preparada aguardando sua aprovação'
+    const aviso = 'Só um momento, já te retorno!'
     await supabase.from('atendimento_mensagens').insert({ conversa_id: conversaId, empresa_id: empresaId, autor: 'donna', texto, pendente_aprovacao: true })
-    await supabase.from('atendimento_mensagens').insert({ conversa_id: conversaId, empresa_id: empresaId, autor: 'donna', texto: 'Só um momento, já te retorno!', pendente_aprovacao: false })
-    await supabase.from('atendimento_conversas').update({ status: 'aguardando_humano', motivo, updated_at: new Date().toISOString() }).eq('id', conversaId)
+    await supabase.from('atendimento_mensagens').insert({ conversa_id: conversaId, empresa_id: empresaId, autor: 'donna', texto: aviso, pendente_aprovacao: false })
+    await supabase.from('atendimento_conversas').update({ status: 'aguardando_humano', motivo, updated_at: new Date().toISOString() }).eq('id', conversaId).eq('empresa_id', empresaId)
     await supabase.from('notificacoes').insert({ empresa_id: empresaId, titulo: 'Donna preparou uma resposta de atendimento', mensagem: texto.slice(0, 140), tipo: 'info', modulo: 'donna', link: '/dashboard/agentes/conversas', lida: false })
     await registrarAcaoAgente(supabase, empresaId, 'donna', 'Preparou uma resposta de atendimento pra sua aprovação', { detalhe: texto.slice(0, 140) })
+    if (entregar) await entregar(aviso)
   }
 }
