@@ -85,7 +85,7 @@ export default function ObrigacoesPage() {
     try {
       const res = await fetch(`/api/fiscal/obrigacoes/${o.id}/status`, {
         method: 'POST', headers: { 'Content-Type': 'application/json', ...(await authHeaders()) },
-        body: JSON.stringify({ status: 'pago' }),
+        body: JSON.stringify({ status: 'pago', empresaId: o.empresa_id }),
       })
       const d = await res.json() as { ok?: boolean; error?: string }
       if (!res.ok || !d.ok) throw new Error(d.error || 'Falha ao atualizar')
@@ -103,13 +103,14 @@ export default function ObrigacoesPage() {
       fd.set('nome', `Comprovante — ${o.nome}`)
       fd.set('descricao', `Anexado a partir de Obrigações · ${o.empresa_nome}`)
       fd.set('competencia', o.competencia ?? (o.vencimento ? o.vencimento.slice(0, 7) : ''))
+      fd.set('empresaId', o.empresa_id)
       fd.set('file', file)
       const res = await fetch('/api/cofre-fiscal', { method: 'POST', headers: await authHeaders(), body: fd })
       const d = await res.json() as { ok?: boolean; error?: string }
       if (!res.ok || !d.ok) throw new Error(d.error || 'Falha ao anexar')
       await fetch(`/api/fiscal/obrigacoes/${o.id}/status`, {
         method: 'POST', headers: { 'Content-Type': 'application/json', ...(await authHeaders()) },
-        body: JSON.stringify({ status: 'pago' }),
+        body: JSON.stringify({ status: 'pago', empresaId: o.empresa_id }),
       })
       toast.success('Comprovante guardado no Cofre Fiscal e obrigação marcada como paga')
       void carregar()

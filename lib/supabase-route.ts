@@ -22,16 +22,45 @@ export async function getSupabaseUser(
 const PAPEIS_SO_LEITURA = new Set(['contador', 'viewer'])
 
 /**
- * Papel do usuário na empresa ATIVA dele (usuarios.empresa_id), lido da fonte
- * autoritativa usuario_empresas por user_id. Sem membership (login legado, dono
- * do próprio workspace) → 'admin'. Um contador que trocou pra uma empresa-cliente
- * retorna 'contador' aqui, mesmo sendo membership legítima.
+ * Papel do usuário numa empresa ESPECÍFICA, lido da fonte autoritativa
+ * usuario_empresas por (user_id, empresa_id). Sem membership pra essa empresa
+ * (login legado dono do próprio workspace, ou dono de Holding acessando uma
+ * empresa do grupo sem linha própria em usuario_empresas) → 'admin'.
+ */
+export async function getPapelParaEmpresa(supabase: SupabaseClient, userId: string, empresaId: string): Promise<string> {
+  const { data: m } = await supabase.from('usuario_empresas').select('papel').eq('user_id', userId).eq('empresa_id', empresaId).maybeSingle()
+  return (m?.papel as string) || 'admin'
+}
+
+/**
+ * Papel do usuário na empresa ATIVA dele (usuarios.empresa_id). Um contador
+ * que trocou pra uma empresa-cliente retorna 'contador' aqui, mesmo sendo
+ * membership legítima. Pra checar papel numa empresa que NÃO é a ativa
+ * (ex.: outra empresa do mesmo grupo/Holding), use getPapelParaEmpresa.
  */
 export async function getPapelAtivo(supabase: SupabaseClient, userId: string): Promise<string> {
   const { data: u } = await supabase.from('usuarios').select('empresa_id').eq('id', userId).maybeSingle()
   const eid = (u?.empresa_id as string) ?? userId
-  const { data: m } = await supabase.from('usuario_empresas').select('papel').eq('user_id', userId).eq('empresa_id', eid).maybeSingle()
-  return (m?.papel as string) || 'admin'
+  return getPapelParaEmpresa(supabase, userId, eid)
+}
+
+/**
+ * true se `empresaId` é a própria empresa ativa do usuário OU pertence a um
+ * grupo (Holding) do qual ele é dono (`grupos_empresariais.owner_user_id`).
+ * Use pra validar uma empresa ALVO explícita (ex.: vinda do body de uma rota)
+ * antes de gravar algo nela — sem isso, rotas que assumem "empresa ativa ==
+ * empresa alvo" gravam no tenant errado quando chamadas a partir de uma
+ * visão consolidada/multi-empresa (Fase 5, achado do rls-tenant-guardian).
+ */
+export async function empresaPertenceAoUsuario(supabase: SupabaseClient, userId: string, empresaId: string): Promise<boolean> {
+  const { data: u } = await supabase.from('usuarios').select('empresa_id').eq('id', userId).maybeSingle()
+  const propria = (u?.empresa_id as string) ?? userId
+  if (empresaId === propria) return true
+  const { data: grupos } = await supabase.from('grupos_empresariais').select('id').eq('owner_user_id', userId)
+  const grupoIds = (grupos ?? []).map(g => g.id as string)
+  if (grupoIds.length === 0) return false
+  const { data: membro } = await supabase.from('grupo_membros').select('empresa_id').in('grupo_id', grupoIds).eq('empresa_id', empresaId).maybeSingle()
+  return !!membro
 }
 
 /** true se o papel pode ESCREVER (mutar) dados sensíveis da empresa. */
