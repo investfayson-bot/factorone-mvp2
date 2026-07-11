@@ -17,6 +17,7 @@ import { useHolding } from '@/lib/holding-context'
 import { calcularPresumido, type TipoAtividade } from '@/lib/fiscal/lucro-presumido'
 import { calcularReal } from '@/lib/fiscal/lucro-real'
 import { calcularFatorR } from '@/lib/fiscal/fator-r'
+import { estimarCppPatronal, ALIQUOTA_CPP_PATRONAL_ESTIMADA } from '@/lib/fiscal/cpp-patronal'
 
 type Faixa = { ate: number; aliquota: number; pd: number }
 
@@ -199,10 +200,19 @@ export default function ImpostosRegimePage() {
 
   // ---------- Simulador de Regime ----------
   const tipoAtividade = TIPO_POR_ANEXO[anexo]
+  // Fator R (LC 123 §5º-J/§5º-M) só decide entre Anexo III e V — não existe
+  // pro Anexo IV (construção, vigilância, advocacia etc., achado do
+  // revisor-financeiro: mostrar Fator R pro Anexo IV é conselho fiscal
+  // errado, essas atividades nunca migram de anexo por causa da folha).
+  const elegivelFatorR = anexo === 'III' || anexo === 'V'
+  // CPP/INSS patronal já vem embutida na alíquota do DAS nos Anexos I, II,
+  // III e V — só o Anexo IV paga CPP à parte, igual Presumido/Real.
+  const cppEmbutidaNoSimples = anexo !== 'IV'
   const mesesNum = Math.max(1, Math.min(12, Number(meses) || 6))
   const receitaMesNum = Number(receitaMes) || 0
-  const despesasMesNum = Number(despesasMes) || 0
+  const despesasMesNum = Math.max(0, Number(despesasMes) || 0)
   const aliquotaIssIcmsNum = Math.max(0, Number(aliquotaIssIcms) || 0) / 100
+  const folhaMesNum = Math.max(0, Number(folha12m) || 0) / 12
   const podeSimular = receitaMesNum > 0
 
   const simplesTotal = r.das * mesesNum
@@ -215,21 +225,37 @@ export default function ImpostosRegimePage() {
     [receitaMesNum, despesasMesNum, mesesNum, tipoAtividade, aliquotaIssIcmsNum]
   )
 
-  const regimes = [
-    { id: 'simples', nome: 'Simples Nacional', total: simplesTotal, nota: `Anexo ${anexo} · alíquota efetiva ${(r.aliqEfetiva * 100).toFixed(2)}%` },
-    { id: 'presumido', nome: 'Lucro Presumido', total: presumido.total, nota: 'IRPJ+CSLL+PIS/COFINS+ISS/ICMS' },
-    { id: 'real', nome: 'Lucro Real', total: real.total, nota: 'Apuração sobre lucro efetivo' },
-  ].sort((a, b) => a.total - b.total)
-  const [melhor, segundo] = regimes
-  const economia = podeSimular && segundo ? segundo.total - melhor.total : 0
+  // CPP patronal estimada: soma-se a Presumido/Real (à parte, sempre) só
+  // quando o Simples do anexo escolhido já a embute — senão a comparação
+  // favorece Presumido/Real artificialmente (achado do revisor-financeiro).
+  // Sem folha informada, não dá pra estimar — o aviso abaixo cobre isso.
+  const cppAjuste = folhaMesNum > 0 && cppEmbutidaNoSimples ? estimarCppPatronal(folhaMesNum, mesesNum) : 0
+  const comparacaoIncompleta = cppEmbutidaNoSimples && folhaMesNum === 0
+
+  // Lucro Presumido é ilegal acima de R$78M de receita bruta anual (Lei
+  // 9.718/98, art. 13) — usa o maior entre RBT12 informado e a receita do
+  // mês anualizada como proxy de receita anual.
+  const receitaAnualProxy = Math.max(Number(rbt12) || 0, receitaMesNum * 12)
+  const presumidoPermitido = receitaAnualProxy <= 78_000_000
+
+  const candidatos = [
+    { id: 'simples' as const, nome: 'Simples Nacional', total: simplesTotal, elegivel: true, nota: `Anexo ${anexo} · alíquota efetiva ${(r.aliqEfetiva * 100).toFixed(2)}%` },
+    { id: 'presumido' as const, nome: 'Lucro Presumido', total: presumido.total + cppAjuste, elegivel: presumidoPermitido, nota: presumidoPermitido ? `IRPJ+CSLL+PIS/COFINS+ISS/ICMS${cppAjuste > 0 ? '+CPP' : ''}` : 'Acima de R$78M/ano — obrigatório Lucro Real' },
+    { id: 'real' as const, nome: 'Lucro Real', total: real.total + cppAjuste, elegivel: true, nota: `Apuração sobre lucro efetivo${cppAjuste > 0 ? '+CPP' : ''}` },
+  ]
+  const regimes = candidatos.filter(c => c.elegivel).sort((a, b) => a.total - b.total)
+  const melhor = podeSimular ? regimes[0] : undefined
+  const segundo = regimes[1]
+  const economia = podeSimular && melhor && segundo ? segundo.total - melhor.total : 0
 
   const fatorR = folha12m && rbt12 ? calcularFatorR(Number(folha12m) || 0, Number(rbt12) || 0) : null
 
-  // Painel de Impostos: itens do regime recomendado
-  const painelItens = podeSimular
+  // Painel de Impostos: itens do regime recomendado (+ CPP quando somada)
+  const cppItem = cppAjuste > 0 ? [{ operacao: 'CPP patronal estimada (INSS+RAT+terceiros, ~26,8% da folha)', aliquota: ALIQUOTA_CPP_PATRONAL_ESTIMADA, base: folhaMesNum * mesesNum, imposto: cppAjuste }] : []
+  const painelItens = podeSimular && melhor
     ? melhor.id === 'simples'
       ? [{ operacao: `Simples Nacional — Anexo ${anexo}`, aliquota: r.aliqEfetiva, base: receitaMesNum * mesesNum, imposto: simplesTotal }]
-      : melhor.id === 'presumido' ? presumido.itens : real.itens
+      : melhor.id === 'presumido' ? [...presumido.itens, ...cppItem] : [...real.itens, ...cppItem]
     : []
 
   async function abrirEdicao(e: EmpresaCadastro) {
@@ -364,8 +390,9 @@ export default function ImpostosRegimePage() {
       {/* ---------- Simulador de Regime ---------- */}
       <div style={{ borderTop: '1px solid var(--line)', paddingTop: 22, marginBottom: 6 }}>
         <div style={{ fontSize: 15.5, fontWeight: 800, color: 'var(--ink)' }}>Simulador de Regime Tributário</div>
-        <div style={{ fontSize: 12.5, color: 'var(--mut)', marginTop: 2, marginBottom: 16 }}>
+        <div style={{ fontSize: 12.5, color: 'var(--mut)', marginTop: 2, marginBottom: 16, lineHeight: 1.6 }}>
           Estimativa simplificada pra comparar Simples × Lucro Presumido × Lucro Real com os mesmos dados acima — não substitui apuração oficial.
+          Assume receita mensal constante durante todo o período simulado (o RBT12 real muda mês a mês). Entre R$3,6M–4,8M de RBT12 o Simples também paga ICMS/ISS por fora do DAS, não incluído aqui.
         </div>
       </div>
 
@@ -396,31 +423,41 @@ export default function ImpostosRegimePage() {
         </div>
       ) : (
         <>
+          {comparacaoIncompleta && (
+            <div style={{ background: 'rgba(176,65,62,.08)', border: '1px solid rgba(176,65,62,.3)', borderRadius: 10, padding: '10px 14px', marginBottom: 12, fontSize: 12.5, color: '#B0413E', fontWeight: 600 }}>
+              ⚠ Sem a folha de pagamento (campo &quot;Folha 12m&quot; acima), esta comparação NÃO inclui a CPP/INSS patronal (~26,8% da folha) que Presumido e Real pagam à parte — no Anexo {anexo} do Simples ela já está embutida no DAS. Sem esse dado, Presumido/Real podem aparecer mais baratos do que realmente são.
+            </div>
+          )}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12, marginBottom: 12 }}>
-            {regimes.map((reg, i) => (
-              <div key={reg.id} className="card-v2" style={{
-                padding: 14, border: i === 0 ? '1.5px solid var(--acc)' : '1.5px solid var(--line)',
-                background: i === 0 ? 'var(--acc-soft)' : 'var(--card)',
-              }}>
-                {i === 0 && <span className="chip-v2 g" style={{ marginBottom: 6, display: 'inline-block' }}>Recomendado</span>}
-                <div style={{ fontSize: 12.5, fontWeight: 700, color: 'var(--ink)', marginBottom: 4 }}>{reg.nome}</div>
-                <div style={{ fontSize: 19, fontWeight: 800, color: 'var(--ink)', fontVariantNumeric: 'tabular-nums' }}>
-                  {formatBRL(reg.total)}<small style={{ fontSize: 11, fontWeight: 700, color: 'var(--mut)' }}> /{mesesNum === 1 ? 'mês' : `${mesesNum}m`}</small>
+            {candidatos.map(reg => {
+              const recomendado = reg.elegivel && melhor?.id === reg.id
+              return (
+                <div key={reg.id} className="card-v2" style={{
+                  padding: 14, border: recomendado ? '1.5px solid var(--acc)' : '1.5px solid var(--line)',
+                  background: recomendado ? 'var(--acc-soft)' : 'var(--card)',
+                  opacity: reg.elegivel ? 1 : .55,
+                }}>
+                  {recomendado && <span className="chip-v2 g" style={{ marginBottom: 6, display: 'inline-block' }}>Recomendado</span>}
+                  {!reg.elegivel && <span className="chip-v2 y" style={{ marginBottom: 6, display: 'inline-block' }}>Não permitido</span>}
+                  <div style={{ fontSize: 12.5, fontWeight: 700, color: 'var(--ink)', marginBottom: 4 }}>{reg.nome}</div>
+                  <div style={{ fontSize: 19, fontWeight: 800, color: 'var(--ink)', fontVariantNumeric: 'tabular-nums' }}>
+                    {formatBRL(reg.total)}<small style={{ fontSize: 11, fontWeight: 700, color: 'var(--mut)' }}> /{mesesNum === 1 ? 'mês' : `${mesesNum}m`}</small>
+                  </div>
+                  <div style={{ fontSize: 10.5, color: 'var(--mut)', fontWeight: 700, marginTop: 3 }}>{reg.nota}</div>
                 </div>
-                <div style={{ fontSize: 10.5, color: 'var(--mut)', fontWeight: 700, marginTop: 3 }}>{reg.nota}</div>
-              </div>
-            ))}
+              )
+            })}
           </div>
-          {economia > 0 && (
+          {economia > 0 && melhor && segundo && (
             <div style={{ background: 'var(--acc-soft)', border: '1px solid var(--line)', borderRadius: 10, padding: '10px 14px', marginBottom: 16, fontSize: 12.5, color: 'var(--acc-ink)', fontWeight: 700 }}>
               💡 Ficando em {melhor.nome}, a economia é de {formatBRL(economia)} em relação a {segundo.nome} no período de {mesesNum} mês{mesesNum === 1 ? '' : 'es'}.
             </div>
           )}
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: 16, marginBottom: 16 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: 16, marginBottom: 8 }}>
             {/* Painel de impostos */}
             <div className="card-v2" style={{ padding: 16 }}>
-              <div style={{ fontSize: 13.5, fontWeight: 700, color: 'var(--ink)', marginBottom: 10 }}>Painel de Impostos — regime recomendado ({melhor.nome})</div>
+              <div style={{ fontSize: 13.5, fontWeight: 700, color: 'var(--ink)', marginBottom: 10 }}>Painel de Impostos — regime recomendado ({melhor?.nome})</div>
               <div style={{ display: 'grid', gridTemplateColumns: '1.6fr .7fr 1fr .8fr', fontSize: 11, color: 'var(--mut)', fontWeight: 700, padding: '4px 0', borderBottom: '1px solid var(--line)' }}>
                 <span>Operação</span><span>Alíquota</span><span>Base</span><span style={{ textAlign: 'right' }}>Imposto</span>
               </div>
@@ -433,8 +470,8 @@ export default function ImpostosRegimePage() {
                 </div>
               ))}
               <div style={{ fontSize: 11.5, color: 'var(--mut)', fontWeight: 600, marginTop: 10, lineHeight: 1.6 }}>
-                Total apurado no período: <b style={{ color: 'var(--ink)' }}>{formatBRL(melhor.total)}</b>.
-                {melhor.id === 'real' && ' Lucro Real aqui não desconta créditos de PIS/COFINS sobre insumos — o valor real tende a ser menor do que este.'}
+                Total apurado no período: <b style={{ color: 'var(--ink)' }}>{formatBRL(melhor?.total ?? 0)}</b>.
+                {melhor?.id === 'real' && ' Lucro Real aqui não desconta créditos de PIS/COFINS sobre insumos — o valor real tende a ser menor do que este.'}
               </div>
             </div>
 
@@ -442,16 +479,16 @@ export default function ImpostosRegimePage() {
             <div style={{ background: 'linear-gradient(135deg,#0C1D16,#143526)', borderRadius: 14, padding: '16px 18px', color: '#DCE7E0' }}>
               <span style={{ background: '#22C55E', color: '#06130C', fontSize: 9.5, fontWeight: 800, padding: '2px 7px', borderRadius: 5, letterSpacing: '.05em' }}>FACTORONE AI</span>
               <div style={{ fontSize: 13.5, fontWeight: 800, color: '#fff', margin: '9px 0 8px' }}>Como pagar menos imposto</div>
-              {fatorR && tipoAtividade === 'servicos' ? (
+              {fatorR && elegivelFatorR ? (
                 <p style={{ fontSize: 12, lineHeight: 1.6 }}>
                   Seu Fator R está em <b>{(fatorR.percentual * 100).toFixed(1)}%</b> — {fatorR.acimaDoLimite
                     ? <>acima dos 28% que garantem o Anexo III. Margem de segurança: <b>{fatorR.margemPontosPercentuais.toFixed(1)} p.p.</b> Se a folha cair, você perde o Anexo III e paga mais imposto.</>
                     : <>abaixo dos 28% — você está no Anexo V, com alíquota maior. Aumentando a folha (salários/pró-labore) pra pelo menos <b>{formatBRL(fatorR.folhaMensalMinimaParaAnexoIII)}/mês</b>, você entra no Anexo III.</>}
                 </p>
-              ) : podeSimular ? (
+              ) : melhor ? (
                 <p style={{ fontSize: 12, lineHeight: 1.6 }}>
                   {melhor.id === 'simples'
-                    ? 'O Simples Nacional segue sendo o mais barato com os dados atuais. Informe a folha de pagamento acima pra ver o Fator R, se sua atividade permitir Anexo III/V.'
+                    ? `O Simples Nacional segue sendo o mais barato com os dados atuais.${elegivelFatorR ? ' Informe a folha de pagamento acima pra ver o Fator R.' : ''}`
                     : `${melhor.nome} está saindo mais barato que o Simples com os dados informados — vale confirmar com o contador antes de migrar de regime (a troca só vale pro ano seguinte).`}
                 </p>
               ) : (

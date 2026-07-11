@@ -11,6 +11,12 @@
  * imposto real do Lucro Real. Tratar como estimativa conservadora (o Real
  * tende a compensar melhor do que este número sugere), não como valor
  * final — apuração de créditos exige o contador.
+ *
+ * Também NÃO considera: CPP/INSS patronal sobre a folha (ver
+ * lib/fiscal/cpp-patronal.ts — precisa ser somado à parte pra comparar com
+ * o Simples), retenções na fonte, substituição tributária, e compensação
+ * de prejuízo fiscal de períodos anteriores (ferramenta real de economia
+ * do Lucro Real, não modelada aqui).
  */
 
 export type TipoAtividade = 'comercio' | 'industria' | 'servicos'

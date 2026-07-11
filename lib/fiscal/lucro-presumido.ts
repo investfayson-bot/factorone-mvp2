@@ -11,8 +11,14 @@
  * nacional única).
  *
  * NÃO considera: substituição tributária, retenções na fonte, contribuições
- * previdenciárias, incentivos fiscais setoriais. É uma estimativa pra
- * comparação de regime, não substitui apuração oficial do contador.
+ * previdenciárias (CPP/INSS patronal sobre a folha — ver
+ * lib/fiscal/cpp-patronal.ts, precisa ser somada à parte pra comparar com
+ * o Simples), incentivos fiscais setoriais. Também não valida o teto legal
+ * de R$ 78 milhões/ano de receita bruta (Lei 9.718/98, art. 13) acima do
+ * qual o Presumido deixa de ser opção legal — quem chama esta função
+ * precisa checar isso antes de considerar o resultado válido. É uma
+ * estimativa pra comparação de regime, não substitui apuração oficial do
+ * contador.
  */
 
 export type TipoAtividade = 'comercio' | 'industria' | 'servicos'
