@@ -1,14 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getSupabaseUser, bloquearSeLeitura } from '@/lib/supabase-route'
-import { categorizarLoteIA } from '@/lib/categorizar-ia'
 import { erroDesconhecido } from '@/lib/transacao-types'
+import { classificarLote } from '@/lib/financeiro/motorClassificacao'
+import { CATEGORIAS } from '@/lib/banco/types'
 
-// TODO(migração pendente, PRÓXIMA tarefa após Extrato validado em produção
-// com dado real): mesma situação de app/api/banco/fila/route.ts — motor
-// ANTIGO aqui, motor NOVO (lib/financeiro/motorClassificacao.ts) já rodando
-// no Extrato (Fase 3). Não avançar pra Fase 4 do pacote de reskin sem essa
-// migração feita ou agendada com data — dois motores coexistindo geram
-// categoria divergente pro mesmo estabelecimento.
+// Migrado pro motor novo (Fase 0/lib/financeiro/motorClassificacao.ts) em
+// 2026-07-11, depois do Extrato (Fase 3) validado em produção com dado
+// real. Antes disso usava categorizarLoteIA direto, sem aprendizado
+// persistente — agora toda categorização nova alimenta regras_classificacao,
+// a mesma fonte que o Extrato usa, sem mais dois motores divergindo.
 
 export const runtime = 'nodejs'
 
@@ -40,19 +40,16 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ categorizadas: 0, mensagem: 'Nada a categorizar — extrato já classificado.' })
     }
 
-    const itens = pendentes.map(t => ({
-      id: t.id as string,
-      texto: [t.descricao, t.contraparte_nome].filter(Boolean).join(' · '),
-    }))
-    const mapa = await categorizarLoteIA(itens)
+    const itens = pendentes.map(t => ({ id: t.id as string, texto: [t.descricao, t.contraparte_nome].filter(Boolean).join(' · ') }))
+    const resultados = await classificarLote(supabase, { empresaId }, itens, [...CATEGORIAS])
 
     let n = 0
-    await Promise.all(
-      Object.entries(mapa).map(async ([id, categoria]) => {
-        const { error: e } = await supabase.from('extrato_bancario').update({ categoria }).eq('id', id)
-        if (!e) n++
-      }),
-    )
+    await Promise.all(resultados.map(async (r) => {
+      const { error: e } = await supabase.from('extrato_bancario')
+        .update({ categoria: r.categoria, status_classificacao: r.status })
+        .eq('id', r.id)
+      if (!e) n++
+    }))
 
     return NextResponse.json({ categorizadas: n, total_pendentes: pendentes.length })
   } catch (e: unknown) {

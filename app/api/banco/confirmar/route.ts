@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getSupabaseUser } from '@/lib/supabase-route'
 import { recalcularDREMes } from '@/lib/financeiro/recalcularDRE'
+import { confirmarClassificacao } from '@/lib/financeiro/motorClassificacao'
 import type { ConfirmarItem, ConfirmarResposta } from '@/lib/banco/types'
 
 export const runtime = 'nodejs'
@@ -114,9 +115,16 @@ export async function POST(req: NextRequest) {
       }).select('id').single()
       if (eTx) throw new Error(eTx.message)
 
-      // 6. Marca extrato conciliado
-      const { error: eExtrato } = await supabase.from('extrato_bancario').update({ conciliado: true, transaction_id: tx.id }).eq('id', item.extrato_id).eq('empresa_id', empresaId)
+      // 6. Marca extrato conciliado + status_classificacao confirmada
+      const { error: eExtrato } = await supabase.from('extrato_bancario')
+        .update({ conciliado: true, transaction_id: tx.id, categoria: item.categoria.trim(), status_classificacao: 'confirmada' })
+        .eq('id', item.extrato_id).eq('empresa_id', empresaId)
       if (eExtrato) throw new Error(`Marcar extrato conciliado: ${eExtrato.message}`)
+
+      // 6b. Grava/reforça a regra aprendida (Fase 0) — fecha o loop de
+      // aprendizado da fila: da próxima vez que "${ex.descricao}" aparecer
+      // nesta empresa, o motor já classifica sozinho.
+      await confirmarClassificacao(supabase, { empresaId }, ex.descricao ?? '', item.categoria.trim())
 
       // 7. Baixa a conta prevista — acumula sobre o que já estava pago/recebido (a conta
       // pode já estar parcialmente paga/recebida) e só marca quitada quando o total bate,

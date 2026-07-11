@@ -1,20 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getSupabaseUser, bloquearSeLeitura } from '@/lib/supabase-route'
 import { createClient } from '@supabase/supabase-js'
-import Anthropic from '@anthropic-ai/sdk'
+import { classificarLote } from '@/lib/financeiro/motorClassificacao'
+import { CATEGORIAS } from '@/lib/banco/types'
 
 export const runtime = 'nodejs'
 // Max body size for App Router: configure via next.config
 // OFX/CSV files typically < 2MB, well within 4MB default
 
-// TODO(migração pendente, PRÓXIMA tarefa após Extrato validado em produção
-// com dado real): categorizarComIA() abaixo é um TERCEIRO ponto no motor
-// ANTIGO (achado ao ligar "+ Anexar extrato" no Extrato novo, que reusa
-// esta rota pro upload em si mas ainda cai nesse categorizador ao
-// importar). Mesma migração pendente de app/api/banco/fila/route.ts e
-// app/api/conta-pj/categorizar-extrato/route.ts — não adiar indefinidamente.
+// Migrado pro motor novo (Fase 0/lib/financeiro/motorClassificacao.ts) em
+// 2026-07-11, depois do Extrato (Fase 3) validado em produção com dado
+// real. categorizarComIA() (prompt Anthropic ad-hoc, categorias
+// hardcoded diferentes das outras rotas) foi o terceiro ponto no motor
+// antigo — trocado por classificarLote, mesma fonte/categorias que
+// Extrato e fila usam agora.
 
-type Transacao = { data: string; descricao: string; valor: number; tipo: 'credito' | 'debito'; categoria?: string }
+type Transacao = { data: string; descricao: string; valor: number; tipo: 'credito' | 'debito'; categoria?: string; status_classificacao?: 'sugerida' | 'aguardando_ok' }
 
 function parseOFX(text: string): Transacao[] {
   const txs: Transacao[] = []
@@ -56,37 +57,6 @@ function parseCSV(text: string): Transacao[] {
   return txs
 }
 
-async function categorizarComIA(txs: Transacao[]): Promise<Transacao[]> {
-  if (!process.env.ANTHROPIC_API_KEY || txs.length === 0) return txs
-  const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
-  const lista = txs.slice(0, 60).map((t, i) => `${i + 1}. ${t.tipo === 'debito' ? '-' : '+'}R$${t.valor.toFixed(2)} | ${t.descricao}`).join('\n')
-  const msg = await client.messages.create({
-    model: 'claude-haiku-4-5-20251001',
-    max_tokens: 1024,
-    messages: [{
-      role: 'user',
-      content: `Categorize cada transação bancária abaixo com uma categoria financeira curta em português.
-Categorias disponíveis: Fornecedores, Folha de Pagamento, Impostos, Serviços, Aluguel, Materiais, Vendas, Transferência, Tarifas Bancárias, Outros.
-Responda APENAS com um JSON array com os índices e categorias: [{"i":1,"cat":"Fornecedores"}, ...]
-
-Transações:
-${lista}`,
-    }],
-  })
-  try {
-    const txt = msg.content[0].type === 'text' ? msg.content[0].text : ''
-    const match = txt.match(/\[[\s\S]*\]/)
-    if (!match) return txs
-    const cats = JSON.parse(match[0]) as Array<{ i: number; cat: string }>
-    return txs.map((t, idx) => {
-      const found = cats.find(c => c.i === idx + 1)
-      return found ? { ...t, categoria: found.cat } : t
-    })
-  } catch {
-    return txs
-  }
-}
-
 export async function POST(req: NextRequest) {
   const { user, supabase } = await getSupabaseUser(req)
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -107,7 +77,12 @@ export async function POST(req: NextRequest) {
 
   if (txs.length === 0) return NextResponse.json({ error: 'Nenhuma transação encontrada. Verifique o formato do arquivo (OFX ou CSV com data;descrição;valor).' }, { status: 422 })
 
-  const categorizadas = await categorizarComIA(txs)
+  const itens = txs.map((t, i) => ({ id: String(i), texto: t.descricao }))
+  const resultados = await classificarLote(db, { empresaId }, itens, [...CATEGORIAS])
+  const categorizadas: Transacao[] = txs.map((t, i) => {
+    const r = resultados.find(x => x.id === String(i))
+    return { ...t, categoria: r?.categoria ?? 'Outros', status_classificacao: r?.status ?? 'sugerida' }
+  })
 
   const conta = await db.from('contas_bancarias').select('id').eq('empresa_id', empresaId).eq('status', 'ativa').maybeSingle()
   const contaId = conta.data?.id ?? null
@@ -121,7 +96,9 @@ export async function POST(req: NextRequest) {
     data_transacao: t.data,
     valor: t.valor,
     categoria: t.categoria ?? 'Outros',
+    status_classificacao: t.status_classificacao,
     origem: 'importacao_ofx',
+    origem_documento: 'manual',
   }))
 
   await db.from('extrato_bancario').insert(rows)

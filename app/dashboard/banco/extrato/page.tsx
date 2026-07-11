@@ -79,13 +79,10 @@ export default function BancoExtratoPage() {
       const h = await authHeaders()
       const fd = new FormData()
       fd.append('file', file)
-      fd.append('confirm', 'false')
-      const preview = await fetch('/api/conta-pj/importar-extrato', { method: 'POST', headers: h, body: fd }).then(r => r.json())
-      if (preview.error) { toast.error(preview.error); return }
-      const fd2 = new FormData()
-      fd2.append('file', file)
-      fd2.append('confirm', 'true')
-      const r = await fetch('/api/conta-pj/importar-extrato', { method: 'POST', headers: h, body: fd2 })
+      // /api/conta-pj/importar-extrato não tem etapa de prévia — insere
+      // direto no extrato_bancario numa chamada só (import falso-duplo foi
+      // um bug corrigido aqui: essa rota nunca leu um campo "confirm").
+      const r = await fetch('/api/conta-pj/importar-extrato', { method: 'POST', headers: h, body: fd })
       const j = await r.json()
       if (r.ok) { toast.success(`${j.importadas ?? ''} lançamento(s) importado(s)`.trim()); void carregar() }
       else toast.error(j.error || 'Falha ao importar extrato')

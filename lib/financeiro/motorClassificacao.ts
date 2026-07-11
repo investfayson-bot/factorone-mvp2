@@ -58,6 +58,49 @@ export async function classificar(
   return { categoria, status: 'sugerida', confianca: 0 }
 }
 
+export type ItemLote = { id: string; texto: string }
+export type ClassificacaoLoteResultado = ClassificacaoResultado & { id: string }
+
+/**
+ * Mesma lógica de `classificar()`, mas em lote — uma query só pra achar
+ * todas as regras aprendidas do grupo, e UMA chamada de IA batchada pro
+ * resto (em vez de uma chamada por item). Usado onde volume importa
+ * (importação de extrato OFX/CSV, fila do Banco) pra não regredir custo/
+ * latência que o motor antigo já tinha (batch de até 60 itens numa
+ * chamada só).
+ */
+export async function classificarLote(
+  db: SupabaseClient,
+  tid: TitularidadeId,
+  itens: ItemLote[],
+  categorias: string[]
+): Promise<ClassificacaoLoteResultado[]> {
+  if (itens.length === 0) return []
+  const chaves = itens.map(i => ({ ...i, chave: normalizarEstabelecimento(i.texto) }))
+
+  const base = db.from('regras_classificacao').select('estabelecimento_normalizado, categoria, confianca')
+  const { data: regrasData } = 'empresaId' in tid && tid.empresaId
+    ? await base.eq('empresa_id', tid.empresaId).is('pessoa_fisica_user_id', null)
+    : await base.eq('pessoa_fisica_user_id', (tid as { pessoaFisicaUserId: string }).pessoaFisicaUserId).is('empresa_id', null)
+  const regras = new Map((regrasData ?? []).map(r => [r.estabelecimento_normalizado as string, r]))
+
+  const resultado: ClassificacaoLoteResultado[] = []
+  const semRegra: { id: string; texto: string; chave: string }[] = []
+  for (const item of chaves) {
+    const regra = regras.get(item.chave)
+    if (regra) resultado.push({ id: item.id, categoria: regra.categoria as string, status: 'aguardando_ok', confianca: regra.confianca as number })
+    else semRegra.push(item)
+  }
+
+  if (semRegra.length) {
+    const mapa = await categorizarLoteIA(semRegra.map(i => ({ id: i.chave, texto: i.texto })), categorias)
+    for (const item of semRegra) {
+      resultado.push({ id: item.id, categoria: mapa[item.chave] || categorias[0] || 'Outros', status: 'sugerida', confianca: 0 })
+    }
+  }
+  return resultado
+}
+
 /**
  * Confirma (ou corrige) a classificação de um lançamento — grava/atualiza a
  * regra aprendida pra essa titularidade. Chamar sempre que o usuário aprova
