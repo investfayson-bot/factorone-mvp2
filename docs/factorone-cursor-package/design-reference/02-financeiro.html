@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="../node_modules/@fontsource/space-grotesk/index.css">
+<link rel="stylesheet" href="../node_modules/@fontsource/space-grotesk/700.css">
+<link rel="stylesheet" href="../node_modules/@fontsource/space-grotesk/500.css">
+<link rel="stylesheet" href="../node_modules/@fontsource/manrope/index.css">
+<link rel="stylesheet" href="../node_modules/@fontsource/manrope/600.css">
+<link rel="stylesheet" href="../node_modules/@fontsource/manrope/700.css">
+<link rel="stylesheet" href="../node_modules/@fontsource/manrope/800.css">
+<link rel="stylesheet" href="base.css">
+<style>
+/* header do módulo + sub-abas (a decisão que estamos validando) */
+.mod-head{background:var(--card);border-bottom:1px solid var(--line);padding:16px 24px 0}
+.mod-title{display:flex;align-items:center;gap:12px}
+.mod-title h1{font-size:19px;font-weight:700;letter-spacing:-.02em}
+.route{font-family:'Space Grotesk';font-size:10.5px;color:var(--mut2);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:3px 8px}
+.mod-actions{margin-left:auto;display:flex;gap:8px}
+.btn{font-size:12px;font-weight:800;border-radius:8px;padding:8px 14px;cursor:pointer;border:1px solid var(--line);background:var(--card)}
+.btn.primary{background:var(--acc);border-color:var(--acc);color:#fff}
+.tabs{display:flex;gap:2px;margin-top:14px}
+.tab{font-size:12.5px;font-weight:700;color:var(--mut);padding:9px 14px;border-radius:9px 9px 0 0;cursor:pointer;position:relative}
+.tab.on{color:var(--acc-ink)}
+.tab.on::after{content:'';position:absolute;left:10px;right:10px;bottom:0;height:2.5px;border-radius:3px 3px 0 0;background:var(--acc)}
+.tab .cnt{font-family:'Space Grotesk';font-size:10px;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:0 6px;margin-left:5px;color:var(--mut)}
+.tab.on .cnt{background:var(--acc-soft);border-color:transparent;color:var(--acc-ink)}
+
+/* hub */
+.kpis4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px;border-top:3px solid var(--acc)}
+.kpi.red{border-top-color:var(--neg)}.kpi.gold{border-top-color:var(--warn)}.kpi.ink{border-top-color:#111C16}
+.kpi small{font-size:11px;color:var(--mut);font-weight:700}
+.kpi .v{font-family:'Space Grotesk';font-size:18px;font-weight:700;letter-spacing:-.02em;margin:3px 0 2px}
+.kpi .d{font-size:11px;font-weight:700;color:var(--mut)}
+
+.split{display:grid;grid-template-columns:1.5fr 1fr;gap:14px;align-items:start}
+
+/* card IA "por que mudou" */
+.why{background:linear-gradient(135deg,#0C1D16,#143526);border-radius:var(--r);padding:14px 16px;color:#DCE7E0}
+.why .tag{background:#22C55E;color:#06130C;font-size:9.5px;font-weight:800;padding:2px 7px;border-radius:5px;letter-spacing:.05em;font-family:'Space Grotesk'}
+.why h3{color:#fff;font-size:13.5px;margin:9px 0 6px}
+.why p{font-size:12px;line-height:1.6;color:#C4D4CB}
+.why p b{color:#fff}.why .hw{color:#FBBF24;font-weight:800}.why .hl{color:#4ADE80;font-weight:800}
+.why .actions{display:flex;gap:8px;margin-top:11px}
+.why .ghost{font-size:11px;font-weight:800;border:1px solid rgba(255,255,255,.2);border-radius:7px;padding:6px 11px;color:#fff}
+.why .solid{font-size:11px;font-weight:800;background:#22C55E;border-radius:7px;padding:6px 11px;color:#06130C}
+
+/* tabela */
+table{width:100%;border-collapse:collapse}
+th{font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--mut2);font-weight:800;text-align:left;padding:7px 8px;border-bottom:1px solid var(--line)}
+td{font-size:12px;font-weight:600;padding:9px 8px;border-bottom:1px solid var(--bg)}
+td.num{font-family:'Space Grotesk';font-weight:700}
+tr:last-child td{border:0}
+
+/* hub cards — seções que não viram aba */
+.hub{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.hub-c{background:var(--card);border:1px solid var(--line);border-radius:var(--r-sm);padding:12px 13px;display:flex;gap:10px;align-items:flex-start;cursor:pointer}
+.hub-c:hover{border-color:var(--acc)}
+.hub-ic{width:30px;height:30px;border-radius:8px;background:var(--acc-soft);display:grid;place-items:center;flex-shrink:0}
+.hub-ic svg{width:15px;height:15px;stroke:var(--acc-ink)}
+.hub-c b{font-size:12px;display:block}
+.hub-c small{font-size:10.5px;color:var(--mut);font-weight:600;line-height:1.4;display:block;margin-top:1px}
+.hub-c .st{font-family:'Space Grotesk';font-size:10.5px;font-weight:700;color:var(--acc-ink);margin-top:4px;display:block}
+
+/* barras + linhas de pendência (mesmo padrão da tela 1) */
+.bar-row{display:grid;grid-template-columns:96px 1fr 46px;align-items:center;gap:10px;padding:5px 0;font-size:11.5px;font-weight:600}
+.bar-row .tr{height:7px;background:var(--bg);border-radius:6px;overflow:hidden}
+.bar-row .tr i{display:block;height:100%;border-radius:6px}
+.bar-row b{font-family:'Space Grotesk';text-align:right}
+.pend{display:flex;align-items:center;gap:9px;padding:6px 0;font-size:12px;font-weight:600}
+.pend .n2{font-family:'Space Grotesk';font-weight:700;font-size:11.5px;min-width:34px;height:26px;border-radius:8px;display:grid;place-items:center;flex-shrink:0;padding:0 6px}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute"><defs>
+<g id="i-home"><path d="M3 10l7-7 7 7v8a1 1 0 01-1 1h-4v-6H8v6H4a1 1 0 01-1-1z" fill="none" stroke-width="1.7" stroke-linejoin="round"/></g>
+<g id="i-bot"><rect x="4" y="7" width="12" height="9" rx="2.5" fill="none" stroke-width="1.7"/><path d="M10 4v3M7.5 11.5h0M12.5 11.5h0" stroke-width="1.7" stroke-linecap="round"/></g>
+<g id="i-bank"><path d="M3 8l7-5 7 5M4 8v7m4-7v7m4-7v7m4-7v7M2.5 17.5h15" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></g>
+<g id="i-fin"><path d="M4 16V9m4 7V4m4 12v-5m4 5V7" stroke-width="1.9" stroke-linecap="round" fill="none"/></g>
+<g id="i-users"><circle cx="7.5" cy="7" r="2.6" fill="none" stroke-width="1.7"/><path d="M3.5 16c.5-2.6 2-4 4-4s3.5 1.4 4 4M13 5.5a2.4 2.4 0 010 4.6M14.5 12.3c1.5.5 2.3 1.7 2.6 3.7" fill="none" stroke-width="1.7" stroke-linecap="round"/></g>
+<g id="i-doc"><path d="M6 3h6l3 3v11H6z" fill="none" stroke-width="1.7" stroke-linejoin="round"/><path d="M8.5 10h4m-4 3h4" stroke-width="1.7" stroke-linecap="round"/></g>
+<g id="i-mega"><path d="M3 9v3l2 .5V15a1 1 0 001 1h2l.7-3.6L15 15V4L5 7z" fill="none" stroke-width="1.6" stroke-linejoin="round"/></g>
+<g id="i-grid"><rect x="3.5" y="3.5" width="5.5" height="5.5" rx="1.4" fill="none" stroke-width="1.7"/><rect x="11" y="3.5" width="5.5" height="5.5" rx="1.4" fill="none" stroke-width="1.7"/><rect x="3.5" y="11" width="5.5" height="5.5" rx="1.4" fill="none" stroke-width="1.7"/><rect x="11" y="11" width="5.5" height="5.5" rx="1.4" fill="none" stroke-width="1.7"/></g>
+<g id="i-plug"><path d="M7 3v4m6-4v4M5.5 7h9v3a4.5 4.5 0 01-9 0zM10 14.5V18" fill="none" stroke-width="1.7" stroke-linecap="round"/></g>
+<g id="i-gear"><circle cx="10" cy="10" r="2.6" fill="none" stroke-width="1.7"/><path d="M10 3.5v2m0 9v2m6.5-6.5h-2m-9 0h-2m10.6-4.6l-1.4 1.4m-6.4 6.4l-1.4 1.4m9.2 0l-1.4-1.4M6.8 6.8L5.4 5.4" stroke-width="1.6" stroke-linecap="round"/></g>
+<g id="i-chev"><path d="M6 8l4 4 4-4" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g>
+<g id="i-sea"><circle cx="9" cy="9" r="5.5" fill="none" stroke-width="1.8"/><path d="M13.5 13.5L17 17" stroke-width="1.8" stroke-linecap="round"/></g>
+<g id="i-bell"><path d="M10 3.5a4.5 4.5 0 00-4.5 4.5c0 4-1.5 5-1.5 5h12s-1.5-1-1.5-5A4.5 4.5 0 0010 3.5zM8.5 15.5a1.6 1.6 0 003 0" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></g>
+<g id="i-plus"><path d="M10 4.5v11M4.5 10h11" stroke-width="2" stroke-linecap="round"/></g>
+<g id="i-cash"><rect x="2.5" y="6" width="15" height="9" rx="1.8" fill="none" stroke-width="1.6"/><circle cx="10" cy="10.5" r="2.2" fill="none" stroke-width="1.6"/></g>
+<g id="i-rep"><path d="M4 10a6 6 0 016-6 6 6 0 015.2 3M16 10a6 6 0 01-6 6 6 6 0 01-5.2-3M15.2 3v4h-4M4.8 17v-4h4" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></g>
+<g id="i-target"><circle cx="10" cy="10" r="6.5" fill="none" stroke-width="1.6"/><circle cx="10" cy="10" r="2.5" fill="none" stroke-width="1.6"/></g>
+<g id="i-fold"><path d="M3 6a1.5 1.5 0 011.5-1.5H8l2 2h6.5A1.5 1.5 0 0118 8v7a1.5 1.5 0 01-1.5 1.5h-12A1.5 1.5 0 013 15z" fill="none" stroke-width="1.6" stroke-linejoin="round"/></g>
+<g id="i-tag"><path d="M3.5 9V4.5A1 1 0 014.5 3.5H9l7.5 7.5-5.5 5.5z" fill="none" stroke-width="1.6" stroke-linejoin="round"/><circle cx="7" cy="7" r="1" fill="currentColor" stroke="none"/></g>
+<g id="i-tel"><path d="M4 15.5c5-1.2 8.8-5 10-10M6 4h8a2 2 0 012 2v8" fill="none" stroke-width="0" /><path d="M3.5 10.5c2-4.5 6-7 12-7l-2.6 2.6M15.5 9.5c-2 4.5-6 7-12 7l2.6-2.6" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></g>
+</defs></svg>
+
+<div class="app">
+  <aside class="sidebar">
+    <div class="logo"><div class="logo-mark">F</div><div class="logo-name">Factor<span>One</span></div></div>
+    <div class="nav-label">Principal</div>
+    <div class="nav-item"><svg viewBox="0 0 20 20"><use href="#i-home"/></svg>Início</div>
+    <div class="nav-item"><svg viewBox="0 0 20 20"><use href="#i-bot"/></svg>Agentes IA<span class="nav-badge">24</span></div>
+    <div class="nav-label">Soluções</div>
+    <div class="nav-item"><svg viewBox="0 0 20 20"><use href="#i-bank"/></svg>Banco</div>
+    <div class="nav-item on"><svg viewBox="0 0 20 20"><use href="#i-fin"/></svg>Financeiro</div>
+    <div class="nav-item"><svg viewBox="0 0 20 20"><use href="#i-users"/></svg>Clientes &amp; Vendas</div>
+    <div class="nav-item"><svg viewBox="0 0 20 20"><use href="#i-doc"/></svg>Contábil &amp; Fiscal</div>
+    <div class="nav-item"><svg viewBox="0 0 20 20"><use href="#i-mega"/></svg>Marketing</div>
+    <div class="nav-label">Extras</div>
+    <div class="nav-item"><svg viewBox="0 0 20 20"><use href="#i-grid"/></svg>Apps &amp; Marketplace</div>
+    <div class="nav-item"><svg viewBox="0 0 20 20"><use href="#i-users"/></svg>Equipe &amp; Planos</div>
+    <div class="nav-item"><svg viewBox="0 0 20 20"><use href="#i-plug"/></svg>Integrações</div>
+    <div class="nav-item"><svg viewBox="0 0 20 20"><use href="#i-gear"/></svg>Configurações</div>
+    <div class="side-foot">
+      <div class="profile"><div class="avatar">FS<i></i></div><div><b>Fayson Santos</b><small>Administrador</small></div></div>
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar">
+      <div class="holding"><div class="hd-ic">GS</div>Grupo Santos Holding · Consolidado<svg viewBox="0 0 20 20"><use href="#i-chev"/></svg></div>
+      <div class="search"><svg viewBox="0 0 20 20"><use href="#i-sea"/></svg>Buscar no sistema… <span style="margin-left:auto;font-size:10px;border:1px solid var(--line2);border-radius:5px;padding:1px 5px">⌘K</span></div>
+      <div class="tb-actions">
+        <div class="tb-btn green"><svg viewBox="0 0 20 20"><use href="#i-plus"/></svg></div>
+        <div class="tb-btn"><svg viewBox="0 0 20 20"><use href="#i-bell"/></svg><span class="tb-dot">8</span></div>
+        <div class="avatar" style="width:32px;height:32px">FS<i style="border-color:#fff"></i></div>
+      </div>
+    </div>
+
+    <!-- header do módulo com sub-abas = rota própria -->
+    <div class="mod-head">
+      <div class="mod-title">
+        <h1>Financeiro</h1>
+        <span class="route">factorone.app/financeiro/visao-geral</span>
+        <div class="mod-actions">
+          <span class="btn">Exportar</span>
+          <span class="btn primary">+ Novo lançamento</span>
+        </div>
+      </div>
+      <div class="tabs">
+        <div class="tab on">Visão Geral</div>
+        <div class="tab">Contas a Pagar<span class="cnt">8</span></div>
+        <div class="tab">Contas a Receber<span class="cnt">14</span></div>
+        <div class="tab">Fluxo de Caixa</div>
+        <div class="tab">DRE</div>
+        <div class="tab">Mais ▾</div>
+      </div>
+    </div>
+
+    <div class="content">
+      <!-- KPIs do módulo -->
+      <div class="kpis4">
+        <div class="kpi red"><small>A pagar (7 dias)</small><div class="v">R$ 96.240</div><div class="d">8 títulos · <span class="down">3 vencem amanhã</span></div></div>
+        <div class="kpi"><small>A receber (7 dias)</small><div class="v">R$ 184.500</div><div class="d">14 títulos · <span class="up">92% em dia</span></div></div>
+        <div class="kpi ink"><small>Saldo projetado (30d)</small><div class="v">R$ 660.000</div><div class="d"><span class="down">⚠ negativo em 18/07</span></div></div>
+        <div class="kpi gold"><small>Inadimplência</small><div class="v">4,2%</div><div class="d"><span class="up">↓ 1,1 p.p.</span> vs mês ant.</div></div>
+      </div>
+
+      <div class="split">
+        <div class="col" style="display:flex;flex-direction:column;gap:14px">
+          <!-- tabela contas a pagar -->
+          <div class="card">
+            <div class="card-h"><h3>Vencendo agora</h3><span class="link">Ir para Contas a Pagar →</span></div>
+            <table>
+              <tr><th>Fornecedor</th><th>Empresa</th><th>Vencimento</th><th style="text-align:right">Valor</th><th>Status</th></tr>
+              <tr><td>Adobe Brasil</td><td>FactorOne Tec</td><td>11/07/2026</td><td class="num" style="text-align:right">R$ 1.250,00</td><td><span class="chip r">Vence amanhã</span></td></tr>
+              <tr><td>Google Workspace</td><td>FLAC</td><td>11/07/2026</td><td class="num" style="text-align:right">R$ 320,00</td><td><span class="chip r">Vence amanhã</span></td></tr>
+              <tr><td>AWS Serviços</td><td>FactorOne Tec</td><td>11/07/2026</td><td class="num" style="text-align:right">R$ 2.450,00</td><td><span class="chip r">Vence amanhã</span></td></tr>
+              <tr><td>Marketing Digital</td><td>FLAC</td><td>15/07/2026</td><td class="num" style="text-align:right">R$ 980,00</td><td><span class="chip y">Em 5 dias</span></td></tr>
+              <tr><td>Aluguel Matriz</td><td>VN Prime</td><td>20/07/2026</td><td class="num" style="text-align:right">R$ 5.200,00</td><td><span class="chip g">Programado</span></td></tr>
+            </table>
+          </div>
+
+          <!-- hub: seções que não viram aba -->
+          <div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+              <h3 class="sg" style="font-size:13px">Tudo do Financeiro</h3>
+              <small style="color:var(--mut2);font-weight:700;font-size:10.5px">SEÇÕES ACESSADAS PELA VISÃO GERAL — SEM POLUIR AS ABAS</small>
+            </div>
+            <div class="hub">
+              <div class="hub-c"><div class="hub-ic"><svg viewBox="0 0 20 20"><use href="#i-rep"/></svg></div><div><b>Assinaturas &amp; Recorrências</b><small>SaaS, aluguéis e contratos</small><span class="st">R$ 42.300/mês</span></div></div>
+              <div class="hub-c"><div class="hub-ic"><svg viewBox="0 0 20 20"><use href="#i-cash"/></svg></div><div><b>Reembolsos</b><small>Solicitações da equipe</small><span class="st">4 aguardando</span></div></div>
+              <div class="hub-c"><div class="hub-ic"><svg viewBox="0 0 20 20"><use href="#i-target"/></svg></div><div><b>Orçamentos</b><small>Orçado × realizado</small><span class="st">87% consumido</span></div></div>
+              <div class="hub-c"><div class="hub-ic"><svg viewBox="0 0 20 20"><use href="#i-fold"/></svg></div><div><b>Centro de Custos</b><small>Rateio por área e projeto</small><span class="st">6 centros ativos</span></div></div>
+              <div class="hub-c"><div class="hub-ic"><svg viewBox="0 0 20 20"><use href="#i-tag"/></svg></div><div><b>Categorias</b><small>Plano de contas + IA</small><span class="st">98% classificado</span></div></div>
+              <div class="hub-c"><div class="hub-ic"><svg viewBox="0 0 20 20"><use href="#i-fin"/></svg></div><div><b>Forecast &amp; Cenários</b><small>Simulação "e se…"</small><span class="st">3 cenários salvos</span></div></div>
+              <div class="hub-c" style="border-color:var(--warn);background:var(--warn-soft)"><div class="hub-ic" style="background:#fff"><svg viewBox="0 0 20 20" style="stroke:var(--warn)"><use href="#i-tag"/></svg></div><div><b>Precificação &amp; Margem</b><small>Custo por kg/L/item, ponto de equilíbrio</small><span class="st" style="color:var(--warn)">6 produtos calculados</span></div></div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <!-- inteligência embutida: por que mudou -->
+          <div class="why">
+            <span class="tag">FACTORONE AI</span>
+            <h3>Por que sua margem caiu 4,1 p.p.?</h3>
+            <p><b>Marketing subiu 34%</b> na FLAC (novas campanhas Meta) e <span class="hw">duas duplicatas grandes atrasaram</span> — Cliente XP (R$ 125.000) e Cliente ABC (R$ 45.000). Sem esses dois efeitos, sua margem teria <span class="hl">subido 1,3 p.p.</span></p>
+            <div class="actions"><span class="solid">Cobrar duplicatas</span><span class="ghost">Simular cenário</span></div>
+          </div>
+
+          <!-- alerta preditivo -->
+          <div class="card">
+            <div class="card-h"><h3>Risco de inadimplência</h3><span class="chip y">Preditivo</span></div>
+            <div class="bar-row" style="grid-template-columns:96px 1fr 46px"><span>Cliente XP</span><div class="tr"><i style="width:82%;background:#DE4B4B"></i></div><b>82%</b></div>
+            <div class="bar-row" style="grid-template-columns:96px 1fr 46px"><span>Empresa Beta</span><div class="tr"><i style="width:44%;background:#F59E0B"></i></div><b>44%</b></div>
+            <div class="bar-row" style="grid-template-columns:96px 1fr 46px"><span>Software Ltda</span><div class="tr"><i style="width:12%;background:#16A34A"></i></div><b>12%</b></div>
+            <p style="font-size:11px;color:var(--mut);margin-top:8px;font-weight:600">Baseado no padrão histórico de atraso de cada cliente.</p>
+          </div>
+
+          <!-- régua de cobrança -->
+          <div class="card">
+            <div class="card-h"><h3>Régua de cobrança</h3><span class="link">Configurar</span></div>
+            <div class="pend"><span class="n2" style="background:var(--acc-soft);color:var(--acc-ink)">D-3</span>Lembrete amigável por e-mail + WhatsApp</div>
+            <div class="pend"><span class="n2" style="background:var(--warn-soft);color:var(--warn)">D+1</span>Cobrança com 2ª via do boleto/PIX</div>
+            <div class="pend"><span class="n2" style="background:var(--neg-soft);color:var(--neg)">D+7</span>Escalada: IA liga o alerta pro Acessor</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
