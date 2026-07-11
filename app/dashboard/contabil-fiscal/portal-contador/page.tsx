@@ -97,9 +97,13 @@ export default function PortalContadorPage() {
         headers: { 'Content-Type': 'application/json', ...(await auth()) },
         body: JSON.stringify({ email: conviteForm.email.trim(), nome: conviteForm.nome.trim(), role: 'contador' }),
       })
-      const d = await res.json() as { ok?: boolean; error?: string }
+      const d = await res.json() as { ok?: boolean; email_enviado?: boolean; email_erro?: string | null; error?: string }
       if (d.ok) {
-        toast.success('Convite enviado! Seu contador recebe o link por e-mail e cria o próprio login.')
+        if (d.email_enviado) {
+          toast.success('Convite enviado! Seu contador recebe o link por e-mail e cria o próprio login.')
+        } else {
+          toast.error(`Convite registrado, mas o e-mail NÃO foi enviado${d.email_erro ? ` (${d.email_erro})` : ''}. Reenvie ou compartilhe o link manualmente.`, { duration: 8000 })
+        }
         setModalConvite(false)
         setConviteForm({ email: '', nome: '' })
         void carregar()

@@ -71,8 +71,11 @@ export default function EquipePage() {
         },
         body: JSON.stringify(form),
       })
-      const d = await res.json() as { ok?: boolean; error?: string }
+      const d = await res.json() as { ok?: boolean; email_enviado?: boolean; email_erro?: string | null; error?: string }
       if (d.ok) {
+        if (d.email_enviado === false) {
+          alert(`Convite registrado, mas o e-mail NÃO foi enviado${d.email_erro ? ` (${d.email_erro})` : ''}. Compartilhe o link de aceite manualmente.`)
+        }
         setConviteEnviado(form.email)
         setForm({ email: '', nome: '', role: 'viewer' })
         await carregar()
