@@ -7,6 +7,13 @@ export const runtime = 'nodejs'
 // Max body size for App Router: configure via next.config
 // OFX/CSV files typically < 2MB, well within 4MB default
 
+// TODO(migração pendente, PRÓXIMA tarefa após Extrato validado em produção
+// com dado real): categorizarComIA() abaixo é um TERCEIRO ponto no motor
+// ANTIGO (achado ao ligar "+ Anexar extrato" no Extrato novo, que reusa
+// esta rota pro upload em si mas ainda cai nesse categorizador ao
+// importar). Mesma migração pendente de app/api/banco/fila/route.ts e
+// app/api/conta-pj/categorizar-extrato/route.ts — não adiar indefinidamente.
+
 type Transacao = { data: string; descricao: string; valor: number; tipo: 'credito' | 'debito'; categoria?: string }
 
 function parseOFX(text: string): Transacao[] {

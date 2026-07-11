@@ -3,6 +3,13 @@ import { getSupabaseUser, bloquearSeLeitura } from '@/lib/supabase-route'
 import { categorizarLoteIA } from '@/lib/categorizar-ia'
 import { erroDesconhecido } from '@/lib/transacao-types'
 
+// TODO(migração pendente, PRÓXIMA tarefa após Extrato validado em produção
+// com dado real): mesma situação de app/api/banco/fila/route.ts — motor
+// ANTIGO aqui, motor NOVO (lib/financeiro/motorClassificacao.ts) já rodando
+// no Extrato (Fase 3). Não avançar pra Fase 4 do pacote de reskin sem essa
+// migração feita ou agendada com data — dois motores coexistindo geram
+// categoria divergente pro mesmo estabelecimento.
+
 export const runtime = 'nodejs'
 
 const SEM_CATEGORIA = (c: unknown) => {

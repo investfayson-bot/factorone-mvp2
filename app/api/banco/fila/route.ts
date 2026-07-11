@@ -1,6 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getSupabaseUser } from '@/lib/supabase-route'
 import { categorizarLoteIA } from '@/lib/categorizar-ia'
+
+// TODO(migração pendente, PRÓXIMA tarefa após Extrato validado em produção
+// com dado real): esta rota usa o motor de classificação ANTIGO
+// (categorizarLoteIA, sem aprendizado persistente, sem separação PJ/PF).
+// O Extrato novo (Fase 3, /dashboard/banco/extrato) já usa o motor NOVO
+// (lib/financeiro/motorClassificacao.ts, com regras_classificacao). Manter
+// os dois motores coexistindo por mais tempo que o necessário é pior que
+// tabela duplicada: pode gerar categoria divergente pro mesmo
+// estabelecimento dependendo de qual tela classificou primeiro. Não
+// avançar pra Fase 4 do pacote de reskin sem essa migração feita ou pelo
+// menos agendada com data. Ver docs/factorone-cursor-package* e a memória
+// "pacote-fases-reskin" pro contexto completo dessa decisão.
 import { construirHistorico, melhorDoHistorico, matchContraparte, matchContaPrevista, type Cadastro, type ContaPrevista } from '@/lib/banco/sugestoes'
 import { CATEGORIAS, type FilaItem } from '@/lib/banco/types'
 
