@@ -16,7 +16,7 @@ export async function GET(req: NextRequest) {
   const state = req.nextUrl.searchParams.get('state')
   const erro = req.nextUrl.searchParams.get('error')
 
-  const falhar = (motivo: string) => NextResponse.redirect(`${origin}/dashboard/agentes/donna?erro=${encodeURIComponent(motivo)}`)
+  const falhar = (motivo: string) => NextResponse.redirect(`${origin}/dashboard/agentes/automacoes?erro=${encodeURIComponent(motivo)}`)
 
   if (erro) return falhar('Autorização recusada no Google')
   if (!code || !state) return falhar('Retorno inválido do Google')
@@ -38,7 +38,7 @@ export async function GET(req: NextRequest) {
       ativo: true,
     }, { onConflict: 'empresa_id' })
 
-    return NextResponse.redirect(`${origin}/dashboard/agentes/donna?conectado=1`)
+    return NextResponse.redirect(`${origin}/dashboard/agentes/automacoes?conectado=1`)
   } catch {
     return falhar('Falha ao conectar com o Google')
   }

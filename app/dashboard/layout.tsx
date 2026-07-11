@@ -68,8 +68,10 @@ function buildNavGroups(badges: { reembolsos: number }, installedIds: string[] =
 const pageTitles: Record<string, string> = {
   '/dashboard': 'Início',
   '/dashboard/aicfo': 'Acessor',
+  '/dashboard/agentes/acessor': 'Acessor',
   '/dashboard/agentes/conversas': 'Conversas',
   '/dashboard/agentes/automacoes': 'Automações',
+  '/dashboard/agentes/atividade': 'Atividade & custos',
   '/dashboard/agentes': 'Agentes IA',
   '/dashboard/banco': 'Banco',
   '/dashboard/financeiro': 'Financeiro',

@@ -6,7 +6,9 @@
 // (aba Regras) — só reorganizado pra viver junto com E-mails, que é a
 // fila de rascunhos que essas regras geram.
 
-import { useEffect, useMemo, useState } from 'react'
+import { Suspense, useEffect, useMemo, useState } from 'react'
+import { useSearchParams } from 'next/navigation'
+import Link from 'next/link'
 import toast from 'react-hot-toast'
 import { supabase } from '@/lib/supabase'
 
@@ -18,9 +20,10 @@ type EmailItem = { id: string; remetente: string; assunto: string; snippet: stri
 const CANAL_LABEL: Record<Canal, string> = { email: 'E-mail', site: 'Atendimento (site)', telegram: 'Telegram' }
 const VAZIO_REGRA = { nome: '', canal: 'email' as Canal, criterio: '', autonomia: 'rascunho' as Autonomia, ativa: true }
 
-export default function AutomacoesPage() {
+function AutomacoesContent() {
+  const params = useSearchParams()
   const [token, setToken] = useState('')
-  const [tab, setTab] = useState<'regras' | 'emails'>('regras')
+  const [tab, setTab] = useState<'regras' | 'emails'>(params.get('tab') === 'emails' ? 'emails' : 'regras')
   const [loading, setLoading] = useState(true)
 
   const [googleEmail, setGoogleEmail] = useState<string | null>(null)
@@ -127,11 +130,8 @@ export default function AutomacoesPage() {
 
   return (
     <>
-      <div className="page-hdr">
-        <div>
-          <div className="page-title">Automações</div>
-          <div className="page-sub">Você decide o que a IA faz sozinha e o que espera sua aprovação, canal por canal.</div>
-        </div>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+        <div style={{ fontSize: 13.5, color: 'var(--ink-mut)' }}>Todas as regras de todos os canais — você decide o que a IA faz sozinha e o que espera sua aprovação. <Link href="/dashboard/agentes/atividade" className="link-v2">Ver atividade e custos por agente →</Link></div>
         <button className="btn-action" onClick={() => { setRegraForm({ ...VAZIO_REGRA }); setShowRegraModal(true) }}>
           <i className="fa-solid fa-plus" style={{ marginRight: 6 }} />Nova regra
         </button>
@@ -258,5 +258,13 @@ export default function AutomacoesPage() {
         </div>
       )}
     </>
+  )
+}
+
+export default function AutomacoesPage() {
+  return (
+    <Suspense fallback={null}>
+      <AutomacoesContent />
+    </Suspense>
   )
 }

@@ -6,7 +6,7 @@ import type { SupabaseClient } from '@supabase/supabase-js'
 export type AgenteInfo = { id: string; nome: string; papel: string; cor: string; inicial: string; modulo: string; href: string }
 
 export const AGENTES_DASHBOARD: AgenteInfo[] = [
-  { id: 'acessor', nome: 'Acessor', papel: 'CEO/CFO digital — análise financeira, previsões e risco de caixa', cor: '#047A50', inicial: 'AC', modulo: 'Acessor', href: '/dashboard/aicfo' },
+  { id: 'acessor', nome: 'Acessor', papel: 'CEO/CFO digital — análise financeira, previsões e risco de caixa', cor: '#047A50', inicial: 'AC', modulo: 'Acessor', href: '/dashboard/agentes/acessor' },
   { id: 'conversas', nome: 'Conversas', papel: 'Inbox unificado — site, WhatsApp, Instagram, Telegram', cor: '#DB2777', inicial: 'CO', modulo: 'Atendimento', href: '/dashboard/agentes/conversas' },
   { id: 'automacoes', nome: 'Automações', papel: 'Regras de autonomia por canal — automático ou aguarda aprovação', cor: '#B08A3E', inicial: 'AU', modulo: 'Automações', href: '/dashboard/agentes/automacoes' },
   { id: 'louis', nome: 'Louis', papel: 'Classificação financeira e conciliação', cor: '#2563EB', inicial: 'LO', modulo: 'Financeiro', href: '/dashboard/classificar' },

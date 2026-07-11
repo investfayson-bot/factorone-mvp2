@@ -48,10 +48,11 @@ Responda em português, de forma simpática, curta e direta. Se não souber resp
   const decisao = await decidirAcao({ system, mensagem: mensagemVisitante, tools: TOOLS_SITE })
 
   if (!decisao || decisao.tool === 'transferir_humano') {
-    await supabase.from('atendimento_conversas').update({ status: 'aguardando_humano', updated_at: new Date().toISOString() }).eq('id', conversaId)
+    const motivo = String(decisao?.input.motivo ?? '').trim() || 'Pedido sensível ou fora do escopo automático — a IA preferiu não arriscar uma resposta'
+    await supabase.from('atendimento_conversas').update({ status: 'aguardando_humano', motivo, updated_at: new Date().toISOString() }).eq('id', conversaId)
     await supabase.from('atendimento_mensagens').insert({ conversa_id: conversaId, empresa_id: empresaId, autor: 'donna', texto: 'Já chamei alguém do time pra te ajudar com isso — só um instante!', pendente_aprovacao: false })
-    await supabase.from('notificacoes').insert({ empresa_id: empresaId, titulo: 'Atendimento aguardando você', mensagem: 'Um visitante do seu site precisa de uma resposta que a Donna não conseguiu dar sozinha.', tipo: 'aviso', modulo: 'donna', link: '/dashboard/agentes/donna', lida: false })
-    await registrarAcaoAgente(supabase, empresaId, 'donna', 'Transferiu uma conversa do site pra você', { detalhe: String(decisao?.input.motivo ?? '') })
+    await supabase.from('notificacoes').insert({ empresa_id: empresaId, titulo: 'Atendimento aguardando você', mensagem: 'Um visitante do seu site precisa de uma resposta que a Donna não conseguiu dar sozinha.', tipo: 'aviso', modulo: 'donna', link: '/dashboard/agentes/conversas', lida: false })
+    await registrarAcaoAgente(supabase, empresaId, 'donna', 'Transferiu uma conversa do site pra você', { detalhe: motivo })
     return
   }
 
@@ -63,10 +64,13 @@ Responda em português, de forma simpática, curta e direta. Se não souber resp
     await supabase.from('atendimento_mensagens').insert({ conversa_id: conversaId, empresa_id: empresaId, autor: 'donna', texto, pendente_aprovacao: false })
     await registrarAcaoAgente(supabase, empresaId, 'donna', 'Respondeu um visitante no chat do site', { detalhe: texto.slice(0, 140) })
   } else {
+    const motivo = regra
+      ? `Regra "${regra.nome ?? regra.criterio}" está em modo rascunho — aguardando sua aprovação`
+      : 'Sem regra automática pra esse assunto — resposta preparada aguardando sua aprovação'
     await supabase.from('atendimento_mensagens').insert({ conversa_id: conversaId, empresa_id: empresaId, autor: 'donna', texto, pendente_aprovacao: true })
     await supabase.from('atendimento_mensagens').insert({ conversa_id: conversaId, empresa_id: empresaId, autor: 'donna', texto: 'Só um momento, já te retorno!', pendente_aprovacao: false })
-    await supabase.from('atendimento_conversas').update({ status: 'aguardando_humano', updated_at: new Date().toISOString() }).eq('id', conversaId)
-    await supabase.from('notificacoes').insert({ empresa_id: empresaId, titulo: 'Donna preparou uma resposta de atendimento', mensagem: texto.slice(0, 140), tipo: 'info', modulo: 'donna', link: '/dashboard/agentes/donna', lida: false })
+    await supabase.from('atendimento_conversas').update({ status: 'aguardando_humano', motivo, updated_at: new Date().toISOString() }).eq('id', conversaId)
+    await supabase.from('notificacoes').insert({ empresa_id: empresaId, titulo: 'Donna preparou uma resposta de atendimento', mensagem: texto.slice(0, 140), tipo: 'info', modulo: 'donna', link: '/dashboard/agentes/conversas', lida: false })
     await registrarAcaoAgente(supabase, empresaId, 'donna', 'Preparou uma resposta de atendimento pra sua aprovação', { detalhe: texto.slice(0, 140) })
   }
 }

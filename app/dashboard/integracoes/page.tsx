@@ -195,7 +195,7 @@ export default function IntegracoesPage() {
                         </button>
                       )}
                       {item.id === 'google_donna' ? (
-                        <Link href="/dashboard/agentes/donna" style={{
+                        <Link href="/dashboard/agentes/automacoes" style={{
                           fontSize: 13, padding: '3px 10px', borderRadius: 6, border: '1px solid var(--gray-100)',
                           color: 'var(--teal)', fontWeight: 600, textDecoration: 'none',
                         }}>

@@ -87,7 +87,7 @@ async function processarUmEmail(
       mensagem: `De ${msg.remetente}: "${msg.assunto}" — aguardando sua aprovação.`,
       tipo: 'info',
       modulo: 'donna',
-      link: '/dashboard/agentes/donna',
+      link: '/dashboard/agentes/automacoes?tab=emails',
       lida: false,
     })
   }
