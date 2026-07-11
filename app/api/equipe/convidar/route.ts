@@ -43,15 +43,12 @@ export async function POST(req: NextRequest) {
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
-  // Envia o convite via Resend. Bugs corrigidos aqui: (1) o from era um
-  // domínio hardcoded não verificado no Resend — o envio falhava sempre;
-  // (2) o erro do send era engolido e a UI dizia "convite enviado" mesmo
-  // sem e-mail sair. Agora usa RESEND_FROM (domínio verificado, mesmo das
-  // rotas de cobrança/notas) e reporta email_enviado de verdade.
-  const resendKey = process.env.RESEND_API_KEY
+  // Envia o convite com fallback de provedor (lib/email/enviar.ts):
+  // Resend primeiro; se falhar (ex.: domínio verificando), Mailtrap.
+  // O resultado real do envio vai na resposta — nunca sucesso de mentira.
   let emailEnviado = false
   let emailErro: string | null = null
-  if (resendKey) {
+  {
     const origin = process.env.NEXT_PUBLIC_APP_URL ?? req.headers.get('origin') ?? 'https://factorone-mvp2.vercel.app'
     const linkAceite = `${origin}/equipe/aceitar/${token}`
 
@@ -64,12 +61,10 @@ export async function POST(req: NextRequest) {
     }
     const roleLabel = ROLE_LABELS[role] ?? role
 
-    const Resend = (await import('resend')).Resend
-    const resend = new Resend(resendKey)
-    const { error: sendError } = await resend.emails.send({
-      from: process.env.RESEND_FROM || 'FactorOne <onboarding@resend.dev>',
-      to: email,
-      subject: `Você foi convidado para a equipe ${nomeEmpresa} no FactorOne`,
+    const { enviarEmail } = await import('@/lib/email/enviar')
+    const resultado = await enviarEmail({
+      para: email,
+      assunto: `Você foi convidado para a equipe ${nomeEmpresa} no FactorOne`,
       html: `<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
 <body style="margin:0;padding:0;background:#f4f4ef;font-family:'Helvetica Neue',Arial,sans-serif">
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4ef;padding:32px 16px">
@@ -117,8 +112,8 @@ export async function POST(req: NextRequest) {
   </table>
 </body></html>`,
     })
-    emailEnviado = !sendError
-    emailErro = sendError ? (sendError.message ?? 'Falha no envio') : null
+    emailEnviado = resultado.ok
+    emailErro = resultado.ok ? null : resultado.erro
   }
 
   return NextResponse.json({ ok: true, email_enviado: emailEnviado, email_erro: emailErro })

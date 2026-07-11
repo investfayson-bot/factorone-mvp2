@@ -13,7 +13,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   const { user, supabase } = await getSupabaseUser(req)
   if (!user) return NextResponse.json({ error: 'Não autenticado' }, { status: 401 })
 
-  if (!process.env.RESEND_API_KEY) return NextResponse.json({ error: 'Envio de e-mail não configurado (RESEND_API_KEY)' }, { status: 500 })
+  if (!process.env.RESEND_API_KEY && !process.env.MAILTRAP_TOKEN) return NextResponse.json({ error: 'Envio de e-mail não configurado (RESEND_API_KEY/MAILTRAP_TOKEN)' }, { status: 500 })
 
   const body = await req.json().catch(() => ({})) as { email?: string }
   const destino = String(body.email ?? '').trim().toLowerCase() || user.email
@@ -37,12 +37,10 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   const { data: emp } = await service.from('empresas').select('nome').eq('id', empresaId).maybeSingle()
   const nomeEmpresa = (emp?.nome as string) || 'FactorOne'
 
-  const Resend = (await import('resend')).Resend
-  const resend = new Resend(process.env.RESEND_API_KEY)
-  const { error: sendError } = await resend.emails.send({
-    from: process.env.RESEND_FROM || 'FactorOne <onboarding@resend.dev>',
-    to: destino,
-    subject: `Documento fiscal — ${doc.nome} (${nomeEmpresa})`,
+  const { enviarEmail } = await import('@/lib/email/enviar')
+  const resultado = await enviarEmail({
+    para: destino,
+    assunto: `Documento fiscal — ${doc.nome} (${nomeEmpresa})`,
     html: `<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"></head>
 <body style="margin:0;padding:0;background:#f4f4ef;font-family:'Helvetica Neue',Arial,sans-serif">
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4ef;padding:32px 16px">
@@ -72,6 +70,6 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 </body></html>`,
   })
 
-  if (sendError) return NextResponse.json({ error: sendError.message ?? 'Falha no envio' }, { status: 502 })
-  return NextResponse.json({ ok: true, destino })
+  if (!resultado.ok) return NextResponse.json({ error: resultado.erro }, { status: 502 })
+  return NextResponse.json({ ok: true, destino, provedor: resultado.provedor })
 }
