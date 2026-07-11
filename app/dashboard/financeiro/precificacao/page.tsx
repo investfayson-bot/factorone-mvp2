@@ -41,7 +41,7 @@ function calcular(form: Form) {
   const insumo = parseBRLInput(form.custo_insumo)
   const maoObra = parseBRLInput(form.mao_obra)
   const fixas = parseBRLInput(form.despesas_fixas_rateadas)
-  const producao = Number(form.producao_mensal_estimada) || 1
+  const producao = Math.max(0, Number(form.producao_mensal_estimada) || 0)
   const impostosPct = pct(form.impostos_pct)
   const comissaoPct = pct(form.comissao_pct)
   const margemPct = pct(form.margem_pct)
@@ -58,10 +58,15 @@ function calcular(form: Form) {
   const lucroDepoisFixas = margemValor
   const margemContribuicao = preco - custoDireto - impostosValor - comissaoValor
   const custoFixoTotal = fixas * producao
-  const pontoEquilibrio = margemContribuicao > 0 ? custoFixoTotal / margemContribuicao : 0
+  // margemContribuicao <= 0 com custo fixo a recuperar = nunca atinge o equilíbrio (não é "0 unidades")
+  const pontoEquilibrio = invalido
+    ? null
+    : margemContribuicao > 0
+      ? custoFixoTotal / margemContribuicao
+      : custoFixoTotal > 0 ? Infinity : 0
   const markup = custoTotalAntes > 0 ? ((preco / custoTotalAntes) - 1) * 100 : 0
 
-  return { custoDireto, custoTotalAntes, impostosValor, comissaoValor, margemValor, preco, lucroAntesFixas, lucroDepoisFixas, pontoEquilibrio, markup, invalido }
+  return { custoDireto, custoTotalAntes, impostosValor, comissaoValor, margemValor, preco, lucroAntesFixas, lucroDepoisFixas, pontoEquilibrio, markup, invalido, margemContribuicao }
 }
 
 function unidadeSufixo(u: string) {
@@ -228,40 +233,51 @@ export default function PrecificacaoPage() {
               <div style={{ fontSize: 12, color: '#C4D4CB' }}>Cobre custos + impostos + margem de {form.margem_pct || 0}% definida</div>
             </div>
 
-            <div className="card-v2">
-              <div className="card-v2-h"><h3>De onde vem o preço</h3></div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px dashed var(--line)', fontSize: 12.5, fontWeight: 600 }}><span>Custo direto (insumo + mão de obra)</span><b style={{ fontFamily: "'Space Grotesk', sans-serif" }}>{formatBRL(calc.custoDireto)}</b></div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px dashed var(--line)', fontSize: 12.5, fontWeight: 600 }}><span>+ Despesas fixas rateadas</span><b style={{ fontFamily: "'Space Grotesk', sans-serif" }}>{formatBRL(parseBRLInput(form.despesas_fixas_rateadas))}</b></div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px dashed var(--line)', fontSize: 12.5, fontWeight: 600, color: 'var(--neg)' }}><span>Custo total antes de impostos e margem</span><b style={{ fontFamily: "'Space Grotesk', sans-serif" }}>{formatBRL(calc.custoTotalAntes)}</b></div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px dashed var(--line)', fontSize: 12.5, fontWeight: 600 }}><span>+ Impostos ({form.impostos_pct || 0}% sobre o preço final)</span><b style={{ fontFamily: "'Space Grotesk', sans-serif" }}>{formatBRL(calc.impostosValor)}</b></div>
-              {parseFloat(form.comissao_pct || '0') > 0 && (
-                <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px dashed var(--line)', fontSize: 12.5, fontWeight: 600 }}><span>+ Comissão ({form.comissao_pct}% sobre o preço final)</span><b style={{ fontFamily: "'Space Grotesk', sans-serif" }}>{formatBRL(calc.comissaoValor)}</b></div>
-              )}
-              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px dashed var(--line)', fontSize: 12.5, fontWeight: 600, color: 'var(--acc-ink)' }}><span>+ Margem de lucro ({form.margem_pct || 0}% sobre o preço final)</span><b style={{ fontFamily: "'Space Grotesk', sans-serif" }}>{formatBRL(calc.margemValor)}</b></div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', paddingTop: 12, fontSize: 15, fontWeight: 700 }}><span>Preço final sugerido</span><b style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 19, color: 'var(--acc-ink)' }}>{formatBRL(calc.preco)}</b></div>
-            </div>
+            {calc.invalido ? (
+              <div className="card-v2" style={{ textAlign: 'center', color: 'var(--mut)', padding: 24 }}>
+                Ajuste os percentuais acima (impostos + comissão + margem somam 100% ou mais) para ver o breakdown e a matriz.
+              </div>
+            ) : (
+              <>
+                <div className="card-v2">
+                  <div className="card-v2-h"><h3>De onde vem o preço</h3></div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px dashed var(--line)', fontSize: 12.5, fontWeight: 600 }}><span>Custo direto (insumo + mão de obra)</span><b style={{ fontFamily: "'Space Grotesk', sans-serif" }}>{formatBRL(calc.custoDireto)}</b></div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px dashed var(--line)', fontSize: 12.5, fontWeight: 600 }}><span>+ Despesas fixas rateadas</span><b style={{ fontFamily: "'Space Grotesk', sans-serif" }}>{formatBRL(parseBRLInput(form.despesas_fixas_rateadas))}</b></div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px dashed var(--line)', fontSize: 12.5, fontWeight: 600, color: 'var(--neg)' }}><span>Custo total antes de impostos e margem</span><b style={{ fontFamily: "'Space Grotesk', sans-serif" }}>{formatBRL(calc.custoTotalAntes)}</b></div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px dashed var(--line)', fontSize: 12.5, fontWeight: 600 }}><span>+ Impostos ({form.impostos_pct || 0}% sobre o preço final)</span><b style={{ fontFamily: "'Space Grotesk', sans-serif" }}>{formatBRL(calc.impostosValor)}</b></div>
+                  {parseFloat(form.comissao_pct || '0') > 0 && (
+                    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px dashed var(--line)', fontSize: 12.5, fontWeight: 600 }}><span>+ Comissão ({form.comissao_pct}% sobre o preço final)</span><b style={{ fontFamily: "'Space Grotesk', sans-serif" }}>{formatBRL(calc.comissaoValor)}</b></div>
+                  )}
+                  {/* Margem exibida como resíduo (preço - demais linhas já arredondadas) pra soma visual sempre fechar com o total */}
+                  <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px dashed var(--line)', fontSize: 12.5, fontWeight: 600, color: 'var(--acc-ink)' }}><span>+ Margem de lucro ({form.margem_pct || 0}% sobre o preço final)</span><b style={{ fontFamily: "'Space Grotesk', sans-serif" }}>{formatBRL(calc.preco - calc.custoTotalAntes - calc.impostosValor - calc.comissaoValor)}</b></div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', paddingTop: 12, fontSize: 15, fontWeight: 700 }}><span>Preço final sugerido</span><b style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 19, color: 'var(--acc-ink)' }}>{formatBRL(calc.preco)}</b></div>
+                </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 8 }}>
-              <div style={{ background: 'var(--bg)', borderRadius: 8, padding: 9, textAlign: 'center' }}>
-                <small style={{ fontSize: 10, color: 'var(--mut)', fontWeight: 700, display: 'block' }}>Lucro antes das fixas</small>
-                <b style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 14, color: 'var(--acc-ink)' }}>{formatBRL(calc.lucroAntesFixas)}</b>
-              </div>
-              <div style={{ background: 'var(--bg)', borderRadius: 8, padding: 9, textAlign: 'center' }}>
-                <small style={{ fontSize: 10, color: 'var(--mut)', fontWeight: 700, display: 'block' }}>Lucro depois das fixas</small>
-                <b style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 14, color: 'var(--acc-ink)' }}>{formatBRL(calc.lucroDepoisFixas)}</b>
-              </div>
-              <div style={{ background: 'var(--bg)', borderRadius: 8, padding: 9, textAlign: 'center' }}>
-                <small style={{ fontSize: 10, color: 'var(--mut)', fontWeight: 700, display: 'block' }}>Ponto de equilíbrio</small>
-                <b style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 14 }}>{calc.pontoEquilibrio.toFixed(1)} {form.unidade}/mês</b>
-              </div>
-              <div style={{ background: 'var(--bg)', borderRadius: 8, padding: 9, textAlign: 'center' }}>
-                <small style={{ fontSize: 10, color: 'var(--mut)', fontWeight: 700, display: 'block' }}>Markup aplicado</small>
-                <b style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 14 }}>{calc.markup.toFixed(0)}%</b>
-              </div>
-            </div>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 8 }}>
+                  <div style={{ background: 'var(--bg)', borderRadius: 8, padding: 9, textAlign: 'center' }}>
+                    <small style={{ fontSize: 10, color: 'var(--mut)', fontWeight: 700, display: 'block' }}>Lucro antes das fixas</small>
+                    <b style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 14, color: 'var(--acc-ink)' }}>{formatBRL(calc.lucroAntesFixas)}</b>
+                  </div>
+                  <div style={{ background: 'var(--bg)', borderRadius: 8, padding: 9, textAlign: 'center' }}>
+                    <small style={{ fontSize: 10, color: 'var(--mut)', fontWeight: 700, display: 'block' }}>Lucro depois das fixas</small>
+                    <b style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 14, color: calc.lucroDepoisFixas < 0 ? 'var(--neg)' : 'var(--acc-ink)' }}>{formatBRL(calc.lucroDepoisFixas)}</b>
+                  </div>
+                  <div style={{ background: 'var(--bg)', borderRadius: 8, padding: 9, textAlign: 'center' }}>
+                    <small style={{ fontSize: 10, color: 'var(--mut)', fontWeight: 700, display: 'block' }}>Ponto de equilíbrio</small>
+                    <b style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 14, color: calc.pontoEquilibrio === Infinity ? 'var(--neg)' : undefined }}>
+                      {calc.pontoEquilibrio === Infinity ? 'Nunca (prejuízo)' : calc.pontoEquilibrio === null ? '—' : `${calc.pontoEquilibrio.toFixed(1)} ${form.unidade}/mês`}
+                    </b>
+                  </div>
+                  <div style={{ background: 'var(--bg)', borderRadius: 8, padding: 9, textAlign: 'center' }}>
+                    <small style={{ fontSize: 10, color: 'var(--mut)', fontWeight: 700, display: 'block' }}>Markup aplicado</small>
+                    <b style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 14 }}>{calc.markup.toFixed(0)}%</b>
+                  </div>
+                </div>
+              </>
+            )}
 
-            <button className="btn-v2 primary" disabled={salvando} onClick={() => void salvar()}>
-              {salvando ? 'Salvando…' : editandoId ? 'Salvar alterações' : '+ Salvar como produto'}
+            <button className="btn-v2 primary" disabled={salvando || calc.invalido} onClick={() => void salvar()}>
+              {salvando ? 'Salvando…' : calc.invalido ? 'Ajuste os percentuais para salvar' : editandoId ? 'Salvar alterações' : '+ Salvar como produto'}
             </button>
           </div>
         </div>
