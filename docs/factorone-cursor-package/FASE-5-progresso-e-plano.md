@@ -7,7 +7,49 @@ sessão (Windows) continuar a partir daqui. Memória do Claude Code é local por
 não sincroniza entre os dois clones — por isso isso vai como arquivo versionado no repo,
 não só como memória.
 
-## Estado: Blocos 1 e 2 CONCLUÍDOS (commits 675e5ad e 2695cd4, sessão Windows, 2026-07-11). Próximo: Bloco 3 (Obrigações + links_governamentais), aguardando checkpoint do Fayson.
+## Estado: Blocos 1, 2, 3 e 4 CONCLUÍDOS. Próximo: Bloco 5 (feed de notícias RSS), depois checkpoint visual do Fayson pra fechar a Fase 5.
+
+## Handoff 2026-07-11 (sessão claude.ai/code, tarde/noite — Blocos 3 e 4)
+
+Branch `claude/factorone-phase-5-handoff-vd1srp`, PR #6 aberto (o Fayson criou pela UI).
+
+- **Bloco 3 (Obrigações)**: calendário fiscal mensal + lista, tabela
+  `links_governamentais` (link direto Gov.br/e-CAC por tipo de obrigação),
+  ações reais (marcar como paga, anexar comprovante → Cofre Fiscal). Rotas
+  `/api/fiscal/obrigacoes` (GET, escopo Consolidado/Só empresas via
+  `resolverEscopoBanco`) e `/api/fiscal/obrigacoes/[id]/status` (POST).
+  `rls-tenant-guardian` achou e foi corrigido: em visão Consolidado/Holding,
+  "anexar comprovante"/"marcar como paga" gravavam na empresa ATIVA do
+  login em vez da empresa DA OBRIGAÇÃO — vazava comprovante de uma empresa
+  do grupo pro Cofre Fiscal de outra. Fix: `lib/supabase-route.ts` ganhou
+  `getPapelParaEmpresa` e `empresaPertenceAoUsuario`; rotas de escrita agora
+  exigem `empresaId` explícito e validado, não assumem mais "empresa ativa
+  == empresa alvo". Mesmo padrão vale pra qualquer rota nova que escreva a
+  partir de uma visão multi-empresa — não repetir o erro.
+- **Bloco 4 (Simulador de Regime)**: `lib/fiscal/lucro-presumido.ts`,
+  `lucro-real.ts`, `fator-r.ts`, `cpp-patronal.ts`. 3 cards Simples ×
+  Presumido × Real com recomendado + economia, Painel de Impostos, card IA
+  "Como pagar menos imposto" (Fator R), "Onde cada CNPJ está cadastrado"
+  (migration `20260711060000` adiciona `cidade/uf/regime_tributario` em
+  `empresas`, editável via `/api/empresas/perfil-fiscal`). `revisor-financeiro`
+  rodado (pedido explícito do Fayson, não pulado) e achou 3 bloqueantes,
+  todos corrigidos no commit seguinte: (1) Fator R aparecia pro Anexo IV,
+  onde não existe; (2) CPP/INSS patronal omitida da comparação — Presumido/
+  Real apareciam artificialmente mais baratos que o Simples (que já embute
+  CPP nos Anexos I/II/III/V); (3) nenhuma trava pro teto legal de R$78M/ano
+  do Lucro Presumido (Lei 9.718/98 art. 13). Fórmulas centrais (alíquotas,
+  bases, tabelas do Simples) foram conferidas e batem com a legislação.
+- **Pendências que sobraram pra próxima sessão**: nenhuma correção de
+  segurança/cálculo em aberto nos Blocos 3-4. Falta o Fayson validar
+  visualmente (não dá pra testar headless neste container — sem
+  Supabase local configurado, `npm run dev` cai em 500 em qualquer rota
+  de API; confirmado que é limitação do ambiente, não regressão, testando
+  uma rota antiga igual). Gap conhecido e não mexido: a RLS de `empresas`
+  (`empresa_acesso`, `FOR ALL`) permite escrita direta de qualquer membro
+  do tenant sem checar papel — mesma categoria de lacuna que motivou o
+  gate manual nas rotas novas, mas a policy em si não foi endurecida
+  (tabela central demais pra mexer sem trocar TODAS as escritas cliente
+  primeiro; ver rotina do Bloco 1 pra esse tipo de endurecimento).
 
 ## Handoff 2026-07-11 (fim do dia, sessão Windows → claude.ai/code)
 
