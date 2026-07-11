@@ -469,3 +469,70 @@ tr:hover td { background: var(--surface-2); }
 .pill-sel-v2 { display: flex; gap: 6px; }
 .pill-sel-v2 span { font-size: 11.5px; font-weight: 700; padding: 6px 12px; border-radius: 20px; cursor: pointer; color: var(--mut); border: 1px solid var(--line); background: var(--card); }
 .pill-sel-v2 span.on { background: var(--acc-soft); color: var(--acc-ink); border-color: transparent; }
+
+/* ---- Segmented control (Consolidado / Só empresas / Só PF) ---- */
+.seg-v2 { display: inline-flex; background: var(--bg); border: 1px solid var(--line); border-radius: 9px; padding: 3px; gap: 2px; }
+.seg-v2 span { font-size: 11.5px; font-weight: 800; padding: 6px 13px; border-radius: 7px; color: var(--mut); cursor: pointer; }
+.seg-v2 span.on { background: var(--card); color: var(--acc-ink); box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+
+/* ---- Banco · Visão Geral: cards de patrimônio + contas + feed ---- */
+.patri-v2 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+.patri-card-v2 { background: var(--card); border: 1px solid var(--line); border-radius: var(--r); padding: 14px 16px; }
+.patri-card-v2 small { font-size: 11px; color: var(--mut); font-weight: 700; text-transform: uppercase; letter-spacing: .04em; }
+.patri-card-v2 .v { font-family: 'Space Grotesk', sans-serif; font-size: 24px; font-weight: 700; letter-spacing: -.02em; margin: 5px 0 3px; }
+.patri-tag-v2 { display: inline-flex; align-items: center; gap: 5px; font-size: 10.5px; font-weight: 800; padding: 2px 8px; border-radius: 20px; margin-bottom: 8px; }
+.patri-tag-v2.pj { background: var(--acc-soft); color: var(--acc-ink); }
+.patri-tag-v2.pf { background: #EEF2FF; color: #4F46E5; }
+.patri-tag-v2.inv { background: var(--warn-soft); color: var(--warn); }
+
+.acc-row-v2 { display: flex; align-items: center; gap: 10px; padding: 10px 4px; border-bottom: 1px solid var(--bg); }
+.acc-row-v2:last-child { border: 0; }
+.acc-ic-v2 { width: 34px; height: 34px; border-radius: 9px; display: grid; place-items: center; font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 11px; color: #fff; flex-shrink: 0; }
+.acc-row-v2 b { display: block; font-size: 12.5px; }
+.acc-row-v2 small { font-size: 10.5px; color: var(--mut2); font-weight: 600; }
+.acc-row-v2 .v { margin-left: auto; font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 13.5px; text-align: right; }
+
+.feed-v2 { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--bg); font-size: 12px; font-weight: 600; }
+.feed-v2:last-child { border: 0; }
+.feed-v2 .fic { width: 28px; height: 28px; border-radius: 8px; display: grid; place-items: center; flex-shrink: 0; }
+.feed-v2 .desc { flex: 1; }
+.feed-v2 small { display: block; color: var(--mut2); font-size: 10.5px; font-weight: 600; }
+.feed-v2 .val { font-family: 'Space Grotesk', sans-serif; font-weight: 700; }
+.feed-v2 .val.in { color: var(--acc-ink); }
+.feed-v2 .val.out { color: var(--neg); }
+
+/* ---- Banco · Investimentos ---- */
+.kpis4-v2 { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; }
+.alloc-row-v2 { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--bg); }
+.alloc-row-v2:last-child { border: 0; }
+.alloc-dot-v2 { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+.alloc-row-v2 b { font-size: 12.5px; display: block; }
+.alloc-row-v2 small { font-size: 10.5px; color: var(--mut2); font-weight: 600; }
+.alloc-row-v2 .v { margin-left: auto; text-align: right; font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 13px; }
+.alloc-row-v2 .v small { display: block; font-size: 10px; color: var(--mut2); font-weight: 600; }
+
+.origin-v2 { font-size: 9.5px; font-weight: 800; padding: 2px 7px; border-radius: 20px; white-space: nowrap; }
+.origin-v2.of { background: var(--acc-soft); color: var(--acc-ink); }
+.origin-v2.man { background: var(--bg); color: var(--mut); border: 1px solid var(--line); }
+.buysell-v2 { display: flex; gap: 5px; }
+.buysell-v2 span { font-size: 10px; font-weight: 800; padding: 3px 8px; border-radius: 6px; cursor: pointer; }
+.buysell-v2 .buy { background: var(--acc-soft); color: var(--acc-ink); }
+.buysell-v2 .sell { background: var(--neg-soft); color: var(--neg); }
+.bank-tag-v2 { display: flex; align-items: center; gap: 7px; padding: 7px 0; font-size: 11.5px; font-weight: 700; }
+.bank-tag-v2 i { width: 8px; height: 8px; border-radius: 50%; background: var(--acc); display: inline-block; }
+
+/* ---- Ticker de mercado (Banco · Investimentos) ---- */
+.ticker-v2 { display: flex; align-items: center; gap: 22px; overflow-x: auto; background: var(--card); border: 1px solid var(--line); border-radius: var(--r); padding: 10px 16px; scrollbar-width: none; }
+.ticker-v2::-webkit-scrollbar { display: none; }
+.ticker-v2 .it { display: flex; align-items: baseline; gap: 6px; white-space: nowrap; font-size: 11.5px; flex-shrink: 0; }
+.ticker-v2 .it b { font-family: 'Space Grotesk', sans-serif; font-weight: 700; color: var(--ink); }
+.ticker-v2 .it .chg.up { color: var(--acc-ink); font-weight: 800; }
+.ticker-v2 .it .chg.down { color: var(--neg); font-weight: 800; }
+.ticker-v2 .upd { margin-left: auto; font-size: 10px; color: var(--mut2); font-weight: 700; flex-shrink: 0; }
+
+/* ---- Extrato (Banco): status de classificação, badges de origem ---- */
+.class-status-v2 { font-size: 10px; font-weight: 800; padding: 3px 8px; border-radius: 20px; white-space: nowrap; }
+.class-status-v2.confirmado { background: var(--acc-soft); color: var(--acc-ink); }
+.class-status-v2.aguardando { background: var(--warn-soft); color: var(--warn); border: 1px dashed var(--warn); }
+.class-status-v2.sugestao { background: var(--warn-soft); color: var(--warn); }
+.origem-badge-v2 { font-size: 10px; font-weight: 700; color: var(--mut); }
