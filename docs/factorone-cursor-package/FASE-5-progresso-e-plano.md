@@ -9,6 +9,60 @@ não só como memória.
 
 ## Estado: Blocos 1 e 2 CONCLUÍDOS (commits 675e5ad e 2695cd4, sessão Windows, 2026-07-11). Próximo: Bloco 3 (Obrigações + links_governamentais), aguardando checkpoint do Fayson.
 
+## Handoff 2026-07-11 (fim do dia, sessão Windows → claude.ai/code)
+
+O Fayson vai continuar via claude.ai/code — estado operacional completo:
+
+- **Login dele**: migrado de invest.fayson@gmail.com para
+  **contato@factorone.com.br** (auth + public.usuarios, mesma senha).
+- **Telegram**: bot ativo é **@Factorone1bot** (o @FactorONe_Bot anterior
+  foi descartado, webhook removido). Webhook registrado pra
+  /api/webhooks/telegram com secret; TELEGRAM_BOT_TOKEN e
+  TELEGRAM_WEBHOOK_SECRET atualizados no Vercel production; Fayson
+  redeployou e CONFIRMOU o bot funcionando. Vincular conta: Dashboard →
+  Integrações → Telegram → Gerar código → mandar os 6 dígitos no bot.
+- **E-mail**: EMAIL_PROVIDER=mailtrap ativo (Resend desligado por enquanto —
+  domínio factorone.com.br pendente de verificação DNS lá; quando verificar,
+  é só remover EMAIL_PROVIDER do Vercel que o Resend volta como principal).
+  MAILTRAP_TOKEN no Vercel. ATENÇÃO: domínio demo do Mailtrap estourou a
+  cota (403 usage limit no teste real) e só entrega pro e-mail do dono da
+  conta Mailtrap — o convite bonito (template com banner/foto já pronto em
+  app/api/equipe/convidar) só chega quando um provedor destravar.
+- **Google/Gmail (erro 401 diagnosticado)**: GOOGLE_CLIENT_ID/SECRET
+  estavam VAZIOS ("") em produção. Fayson criou as credenciais no Google
+  Cloud, colocou no .env.local, e ambas foram atualizadas no Vercel
+  production (ID validado: termina .apps.googleusercontent.com; secret
+  GOCSPX-). **Falta redeploy pra valerem** — o próximo push em main
+  auto-deploya. Depois: Agentes IA → Automações → Conectar Google.
+- **Cofre Fiscal**: migration 20260711040000 JÁ RODADA em produção
+  ("fiscal OK success"). Validação visual do Fayson ainda pendente.
+- **Pendências do Fayson**: (a) validar Blocos 1-2 no app; (b) OK ou não
+  pra contador poder ADICIONAR docs no Cofre (hoje pode, não exclui);
+  (c) conferir RLS de notas_fiscais no painel Supabase; (d) rotacionar
+  tokens que passaram em texto puro no chat (bot Telegram, Mailtrap).
+- **Visão nova registrada**: "acesso total pelo Telegram" (mandar/gerar
+  e-mail, anotações, últimos e-mails, agenda, saldo, tráfego do site,
+  atendimento) — vira spec própria DEPOIS da Fase 5; não começar antes.
+  **Ampliação (verbatim do Fayson, 2026-07-11)**: o @Factorone1bot tem que
+  ser mais que assistente financeiro — assistente pessoal completo, agindo
+  como CEO/CFO/COO em todos os níveis, gerenciando o sistema E o dia a dia.
+  Exemplos dele: mandar FOTO de recibo no Telegram → bot lê (OCR já existe
+  em /api/contabilidade/processar-recibo) e lança no sistema; extrato de
+  cartão; arquivo/Excel de patrimônio/imóveis; vencimento de conta; boleto —
+  identificar e categorizar TUDO sozinho, pro cliente que não consegue nem
+  abrir o sistema. Isso conversa 1:1 com a visão "classificação universal"
+  (memória visao-classificacao-universal-2026-07-11): o Telegram vira mais
+  um canal de ENTRADA do mesmo pipeline documento→IA→classificação. Peças
+  existentes reaproveitáveis: webhook do Telegram já recebe mensagem, OCR de
+  recibo pronto, motor de classificação da Fase 0, importador de extrato.
+  Falta: receber FOTO/arquivo no webhook (hoje só texto), rotear por tipo de
+  documento, e o pipeline Excel de patrimônio (Fase 7 do pacote cobre
+  patrimônio-OCR).
+- **Próximo trabalho de código**: Bloco 3 (Obrigações — calendário fiscal
+  + tabela links_governamentais + link Gov.br por obrigação), depois
+  checkpoint, Bloco 4 (Simulador de Regime — revisor-financeiro
+  OBRIGATÓRIO antes de dar por pronto), Bloco 5 (feed de notícias).
+
 Bloco 2 (Cofre Fiscal): tabela `cofre_fiscal_documentos` (migration
 20260711040000 — RODAR no Supabase), upload via /api/cofre-fiscal (bucket
 `recibos`, prefixo cofre/), URL assinada e reenvio por e-mail via rotas
