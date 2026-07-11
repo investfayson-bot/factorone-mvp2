@@ -13,7 +13,12 @@ export default function AceitarConvitePage({ params }: { params: Promise<{ token
   const router = useRouter()
 
   async function verificar(tk: string) {
-    const { data } = await supabase.from('membros_equipe').select('email,role,nome,status,expires_at').eq('token', tk).maybeSingle()
+    // Lookup server-side por token exato — a leitura client-side de
+    // membros_equipe foi fechada por RLS (não dava pra escopar por tenant
+    // antes do login sem abrir enumeração da tabela inteira).
+    const r = await fetch(`/api/equipe/convite/${encodeURIComponent(tk)}`)
+    const j = await r.json().catch(() => ({})) as { convite?: { email: string; role: string; nome: string | null; status: string; expires_at: string | null } }
+    const data = r.ok ? j.convite : null
     if (!data) { setEstado('erro'); setMsg('Convite inválido ou expirado.'); return }
     if (data.status === 'ativo') { setEstado('sucesso'); setMsg('Este convite já foi aceito.'); return }
     if (data.expires_at && new Date(data.expires_at) < new Date()) { setEstado('erro'); setMsg('Este convite expirou.'); return }

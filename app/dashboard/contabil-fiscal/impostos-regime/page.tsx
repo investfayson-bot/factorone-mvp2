@@ -1,6 +1,13 @@
 'use client'
 
+// Impostos & Regime (Fase 5, Bloco 1) — baseline: o estimador de DAS do
+// Simples Nacional já existente (portado de /dashboard/simples, mesmas
+// tabelas 2024). O simulador comparando Simples × Presumido × Real é o
+// Bloco 4 — cálculo tributário que o Fayson quer validar com calma antes
+// de ir pro ar, então aqui tem só o aviso, não uma versão de mentira.
+
 import { useEffect, useState } from 'react'
+import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
 import { formatBRL } from '@/lib/currency-brl'
 import toast from 'react-hot-toast'
@@ -75,7 +82,7 @@ function calcular(rbt12: number, receitaMes: number, anexo: string) {
   return { faixa, aliqEfetiva, das, acimaLimite }
 }
 
-export default function SimplesPage() {
+export default function ImpostosRegimePage() {
   const [empresaId, setEmpresaId] = useState('')
   const [anexo, setAnexo] = useState('III')
   const [rbt12, setRbt12] = useState('')
@@ -121,7 +128,7 @@ export default function SimplesPage() {
   // DAS vence no dia 20 do mês seguinte à competência.
   function vencimentoDAS(comp: string): string {
     const [y, m] = comp.split('-').map(Number)
-    const prox = new Date(Date.UTC(y, m, 20)) // m (0-based+1) = mês seguinte
+    const prox = new Date(Date.UTC(y, m, 20))
     return prox.toISOString().slice(0, 10)
   }
 
@@ -140,7 +147,7 @@ export default function SimplesPage() {
       })
       const d = await res.json() as { ok?: boolean; atualizado?: boolean; error?: string }
       if (!res.ok || !d.ok) throw new Error(d.error || 'Falha ao registrar')
-      toast.success(`DAS de ${competencia} ${d.atualizado ? 'atualizado' : 'registrado'} no Tax Compliance (vence ${venc}).`)
+      toast.success(`DAS de ${competencia} ${d.atualizado ? 'atualizado' : 'registrado'} (vence ${venc}).`)
     } catch (e) {
       toast.error(e instanceof Error ? e.message : 'Falha ao registrar')
     } finally {
@@ -149,20 +156,26 @@ export default function SimplesPage() {
   }
 
   return (
-    <div style={{ maxWidth: 920 }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 18, gap: 12, flexWrap: 'wrap' }}>
+    <div style={{ maxWidth: 940, paddingBottom: 30 }}>
+      {/* Aviso: comparador de regimes é o Bloco 4 */}
+      <div style={{ background: 'var(--acc-soft)', border: '1px solid var(--line)', borderRadius: 10, padding: '10px 14px', marginBottom: 16, fontSize: 12.5, color: 'var(--acc-ink)', display: 'flex', alignItems: 'center', gap: 8 }}>
+        <i className="fa-solid fa-circle-info" />
+        Por enquanto: estimador de DAS do Simples Nacional. A comparação Simples × Lucro Presumido × Lucro Real está em construção e chega numa próxima etapa.
+      </div>
+
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, gap: 12, flexWrap: 'wrap' }}>
         <div>
-          <h1 style={{ fontFamily: "var(--font-sans)", fontSize: 18, fontWeight: 700, color: 'var(--navy)', margin: 0 }}>Simples Nacional — Estimador de DAS</h1>
-          <div style={{ fontSize: 14, color: 'var(--gray-500)', marginTop: 3 }}>Calcule a alíquota efetiva e o imposto do mês (tabelas 2024).</div>
+          <div style={{ fontSize: 15.5, fontWeight: 800, color: 'var(--ink)' }}>Simples Nacional — Estimador de DAS</div>
+          <div style={{ fontSize: 12.5, color: 'var(--mut)', marginTop: 2 }}>Alíquota efetiva e imposto do mês (tabelas 2024).</div>
         </div>
-        <button onClick={estimarFaturamento} className="btn-action btn-ghost" disabled={estimando} style={{ borderRadius: 8 }}>
+        <button onClick={() => void estimarFaturamento()} className="btn-v2" disabled={estimando}>
           {estimando ? 'Estimando…' : 'Estimar RBT12 do faturamento'}
         </button>
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
         {/* Entradas */}
-        <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: 20, display: 'flex', flexDirection: 'column', gap: 14 }}>
+        <div className="card-v2" style={{ padding: 18, display: 'flex', flexDirection: 'column', gap: 12 }}>
           <div className="form-group" style={{ margin: 0 }}>
             <label className="form-label">Anexo (atividade)</label>
             <select className="form-input" value={anexo} onChange={e => setAnexo(e.target.value)}>
@@ -181,41 +194,41 @@ export default function SimplesPage() {
             <label className="form-label">Competência</label>
             <input className="form-input" type="month" value={competencia} onChange={e => setCompetencia(e.target.value)} />
           </div>
-          <button onClick={registrarDAS} className="btn-action" disabled={registrando || r.das <= 0} style={{ borderRadius: 8, opacity: (registrando || r.das <= 0) ? .6 : 1 }}>
-            {registrando ? 'Registrando…' : 'Registrar DAS no Tax Compliance'}
+          <button onClick={() => void registrarDAS()} className="btn-v2 primary" disabled={registrando || r.das <= 0} style={{ opacity: (registrando || r.das <= 0) ? .6 : 1 }}>
+            {registrando ? 'Registrando…' : 'Registrar DAS nas obrigações'}
           </button>
         </div>
 
         {/* Resultado */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-            <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: '14px 16px' }}>
-              <div style={{ fontSize: 13, color: 'var(--gray-400)', textTransform: 'uppercase' }}>DAS do mês</div>
-              <div style={{ fontSize: 22, fontWeight: 800, color: 'var(--red)', marginTop: 4 }}>{formatBRL(r.das)}</div>
+            <div className="card-v2" style={{ padding: '13px 16px' }}>
+              <div style={{ fontSize: 11.5, color: 'var(--mut)', textTransform: 'uppercase', letterSpacing: '.05em', fontWeight: 700 }}>DAS do mês</div>
+              <div style={{ fontSize: 21, fontWeight: 800, color: '#B0413E', marginTop: 4, fontVariantNumeric: 'tabular-nums' }}>{formatBRL(r.das)}</div>
             </div>
-            <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: '14px 16px' }}>
-              <div style={{ fontSize: 13, color: 'var(--gray-400)', textTransform: 'uppercase' }}>Alíquota efetiva</div>
-              <div style={{ fontSize: 22, fontWeight: 800, color: 'var(--navy)', marginTop: 4 }}>{(r.aliqEfetiva * 100).toFixed(2)}%</div>
+            <div className="card-v2" style={{ padding: '13px 16px' }}>
+              <div style={{ fontSize: 11.5, color: 'var(--mut)', textTransform: 'uppercase', letterSpacing: '.05em', fontWeight: 700 }}>Alíquota efetiva</div>
+              <div style={{ fontSize: 21, fontWeight: 800, color: 'var(--ink)', marginTop: 4, fontVariantNumeric: 'tabular-nums' }}>{(r.aliqEfetiva * 100).toFixed(2)}%</div>
             </div>
           </div>
 
-          <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: 16 }}>
-            <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--navy)', marginBottom: 10 }}>Resumo</div>
+          <div className="card-v2" style={{ padding: 16 }}>
+            <div style={{ fontSize: 13.5, fontWeight: 700, color: 'var(--ink)', marginBottom: 8 }}>Resumo</div>
             {[
               { label: 'Alíquota nominal da faixa', valor: `${(r.faixa.aliquota * 100).toFixed(2)}%` },
               { label: 'Parcela a deduzir', valor: formatBRL(r.faixa.pd) },
               { label: 'RBT12', valor: formatBRL(Number(rbt12) || 0) },
               { label: 'Receita do mês', valor: formatBRL(Number(receitaMes) || 0) },
             ].map(x => (
-              <div key={x.label} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, padding: '6px 0', borderBottom: '1px solid var(--gray-100)' }}>
-                <span style={{ color: 'var(--gray-400)' }}>{x.label}</span>
-                <span style={{ color: 'var(--navy)', fontFamily: "var(--font-sans)" }}>{x.valor}</span>
+              <div key={x.label} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, padding: '6px 0', borderBottom: '1px solid var(--line)' }}>
+                <span style={{ color: 'var(--mut)' }}>{x.label}</span>
+                <span style={{ color: 'var(--ink)', fontVariantNumeric: 'tabular-nums' }}>{x.valor}</span>
               </div>
             ))}
           </div>
 
           {r.acimaLimite && (
-            <div style={{ background: 'rgba(176,65,62,.08)', border: '1px solid rgba(176,65,62,.3)', borderRadius: 10, padding: '10px 14px', fontSize: 14, color: '#B0413E' }}>
+            <div style={{ background: 'rgba(176,65,62,.08)', border: '1px solid rgba(176,65,62,.3)', borderRadius: 10, padding: '10px 14px', fontSize: 13, color: '#B0413E' }}>
               RBT12 acima de R$ 4.800.000 — fora do limite do Simples Nacional. Considere Lucro Presumido/Real.
             </div>
           )}
@@ -223,11 +236,11 @@ export default function SimplesPage() {
       </div>
 
       {/* Tabela do anexo */}
-      <div style={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 12, padding: 16, marginTop: 16 }}>
-        <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--navy)', marginBottom: 10 }}>{ANEXOS[anexo].nome} — faixas</div>
-        <table style={{ width: '100%', fontSize: 14, borderCollapse: 'collapse' }}>
+      <div className="card-v2" style={{ padding: 16, marginTop: 16 }}>
+        <div style={{ fontSize: 13.5, fontWeight: 700, color: 'var(--ink)', marginBottom: 10 }}>{ANEXOS[anexo].nome} — faixas</div>
+        <table style={{ width: '100%', fontSize: 13, borderCollapse: 'collapse' }}>
           <thead>
-            <tr style={{ color: 'var(--gray-400)', fontSize: 13 }}>
+            <tr style={{ color: 'var(--mut)', fontSize: 12 }}>
               <th style={{ textAlign: 'left', padding: '6px 4px' }}>RBT12 até</th>
               <th style={{ textAlign: 'right', padding: '6px 4px' }}>Alíquota</th>
               <th style={{ textAlign: 'right', padding: '6px 4px' }}>Parcela a deduzir</th>
@@ -237,18 +250,22 @@ export default function SimplesPage() {
             {faixas.map((f, i) => {
               const ativa = f === r.faixa && (Number(rbt12) || 0) > 0
               return (
-                <tr key={i} style={{ background: ativa ? 'rgba(61,122,110,.08)' : 'transparent' }}>
-                  <td style={{ padding: '6px 4px', fontWeight: ativa ? 700 : 400, color: ativa ? 'var(--navy)' : 'var(--gray-500)' }}>{formatBRL(f.ate)} {ativa && '←'}</td>
-                  <td style={{ textAlign: 'right', padding: '6px 4px', fontWeight: ativa ? 700 : 400 }}>{(f.aliquota * 100).toFixed(2)}%</td>
-                  <td style={{ textAlign: 'right', padding: '6px 4px', color: 'var(--gray-500)' }}>{formatBRL(f.pd)}</td>
+                <tr key={i} style={{ background: ativa ? 'var(--acc-soft)' : 'transparent' }}>
+                  <td style={{ padding: '6px 4px', fontWeight: ativa ? 700 : 400, color: ativa ? 'var(--ink)' : 'var(--mut)', fontVariantNumeric: 'tabular-nums' }}>{formatBRL(f.ate)} {ativa && '←'}</td>
+                  <td style={{ textAlign: 'right', padding: '6px 4px', fontWeight: ativa ? 700 : 400, fontVariantNumeric: 'tabular-nums' }}>{(f.aliquota * 100).toFixed(2)}%</td>
+                  <td style={{ textAlign: 'right', padding: '6px 4px', color: 'var(--mut)', fontVariantNumeric: 'tabular-nums' }}>{formatBRL(f.pd)}</td>
                 </tr>
               )
             })}
           </tbody>
         </table>
-        <div style={{ fontSize: 12, color: 'var(--gray-400)', marginTop: 10, lineHeight: 1.6 }}>
+        <div style={{ fontSize: 12, color: 'var(--mut)', marginTop: 10, lineHeight: 1.6 }}>
           Estimativa simplificada. Não considera Fator R (Anexo III × V), sublimites estaduais, ICMS/ISS por fora, nem retenções. Consulte seu contador para o valor oficial.
         </div>
+      </div>
+
+      <div style={{ marginTop: 14, fontSize: 12.5, color: 'var(--mut)' }}>
+        Registrou o DAS? Acompanhe o pagamento em <Link href="/dashboard/tax" style={{ color: 'var(--acc)', fontWeight: 600 }}>Tax Compliance</Link>.
       </div>
     </div>
   )

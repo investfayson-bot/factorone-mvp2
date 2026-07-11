@@ -156,7 +156,7 @@ export default function LivrosContabeisPage() {
             <option value={12}>Últimos 12 meses</option>
             <option value={36}>Últimos 3 anos</option>
           </select>
-          <Link href="/dashboard/contadores" className="btn-ghost" style={{ fontSize: 14, textDecoration: 'none' }}>
+          <Link href="/dashboard/contabil-fiscal/portal-contador" className="btn-ghost" style={{ fontSize: 14, textDecoration: 'none' }}>
             <i className="fa-solid fa-user-tie" style={{ marginRight: 6 }} />Contador
           </Link>
         </div>
