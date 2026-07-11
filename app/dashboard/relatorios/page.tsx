@@ -156,20 +156,10 @@ export default function RelatoriosPage() {
   async function exportarPdf() {
     setExportandoPdf(true)
     try {
-      const { data: sess } = await supabase.auth.getSession()
-      const res = await fetch('/api/dre/exportar-pdf', { method: 'POST', headers: { 'Content-Type': 'application/json', ...(sess.session?.access_token ? { Authorization: `Bearer ${sess.session.access_token}` } : {}) }, body: JSON.stringify({ empresaNome: 'Empresa', periodo: competencia, dre: linhas.map((l) => ({ linha: l.linha, valor: l.atual })), metricas: metricas ?? {}, analise }) })
-      if (!res.ok) {
-        let erro = `Falha ao gerar PDF (HTTP ${res.status})`
-        try { const body = await res.json(); if (body?.error) erro = body.error } catch {}
-        toast.error(erro)
-        return
-      }
-      const blob = await res.blob()
-      if (blob.size === 0) { toast.error('PDF gerado está vazio'); return }
-      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `dre_${competencia}.pdf`; a.click(); URL.revokeObjectURL(a.href)
-      toast.success('DRE exportado em PDF')
-    } catch (e: unknown) {
-      toast.error(e instanceof Error ? e.message : 'Erro ao exportar PDF')
+      const { baixarArquivo } = await import('@/lib/download-arquivo')
+      const r = await baixarArquivo(`/api/dre/exportar-pdf?competencia=${competencia}`, `dre_${competencia}.pdf`)
+      if ('erro' in r) toast.error(r.erro)
+      else toast.success('DRE exportado em PDF')
     } finally {
       setExportandoPdf(false)
     }

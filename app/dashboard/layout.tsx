@@ -38,7 +38,7 @@ function buildNavGroups(badges: { reembolsos: number }, installedIds: string[] =
       label: 'SOLUÇÕES',
       items: [
         { href: '/dashboard/banco', icon: 'fa-building-columns', label: 'Banco' },
-        { href: '/dashboard/financeiro', icon: 'fa-chart-line', label: 'Financeiro', badge: badges.reembolsos > 0 ? String(badges.reembolsos) : undefined },
+        { href: '/dashboard/financeiro/visao-geral', icon: 'fa-chart-line', label: 'Financeiro', badge: badges.reembolsos > 0 ? String(badges.reembolsos) : undefined },
         { href: '/dashboard/crm', icon: 'fa-users', label: 'Clientes & Vendas' },
         { href: '/dashboard/contabilidade/livros', icon: 'fa-file-invoice-dollar', label: 'Contábil & Fiscal' },
         { href: '/dashboard/marketing/central', icon: 'fa-bullhorn', label: 'Marketing' },

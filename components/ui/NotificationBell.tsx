@@ -32,7 +32,7 @@ async function gerarNotificacoes(empresaId: string): Promise<Notif[]> {
       tipo: 'vencimento',
       titulo: `${vencidas.length} conta${vencidas.length > 1 ? 's' : ''} vencida${vencidas.length > 1 ? 's' : ''}`,
       mensagem: `Total: R$ ${vencidas.reduce((s, p) => s + Number(p.valor), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`,
-      href: '/dashboard/financeiro?tab=pagar',
+      href: '/dashboard/financeiro/contas-a-pagar',
       lida: false,
       created_at: new Date().toISOString(),
     })
@@ -46,7 +46,7 @@ async function gerarNotificacoes(empresaId: string): Promise<Notif[]> {
       tipo: 'vencimento',
       titulo: `${proximas.length} conta${proximas.length > 1 ? 's' : ''} vence${proximas.length > 1 ? 'm' : ''} em 7 dias`,
       mensagem: proximas[0]?.descricao ?? 'Ver lançamentos',
-      href: '/dashboard/financeiro?tab=pagar',
+      href: '/dashboard/financeiro/contas-a-pagar',
       lida: false,
       created_at: new Date().toISOString(),
     })
@@ -59,7 +59,7 @@ async function gerarNotificacoes(empresaId: string): Promise<Notif[]> {
       tipo: 'vencimento',
       titulo: `${receberRes.data!.length} recebimento${receberRes.data!.length > 1 ? 's' : ''} em atraso`,
       mensagem: 'Clique para enviar cobranças',
-      href: '/dashboard/financeiro?tab=receber',
+      href: '/dashboard/financeiro/contas-a-receber',
       lida: false,
       created_at: new Date().toISOString(),
     })

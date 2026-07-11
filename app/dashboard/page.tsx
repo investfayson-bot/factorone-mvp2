@@ -412,7 +412,7 @@ export default function DashboardPage() {
             <div className="card-v2-h"><h3>Atalhos rápidos</h3></div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
               {[
-                { icon: 'fa-file-invoice-dollar', label: 'Nova cobrança', href: '/dashboard/financeiro' },
+                { icon: 'fa-file-invoice-dollar', label: 'Nova cobrança', href: '/dashboard/financeiro/visao-geral' },
                 { icon: 'fa-file-lines', label: 'Emitir NF-e', href: '/dashboard/notas' },
                 { icon: 'fa-receipt', label: 'Registrar despesa', href: '/dashboard/despesas' },
                 { icon: 'fa-building-columns', label: 'Conectar banco', href: '/dashboard/conexoes' },

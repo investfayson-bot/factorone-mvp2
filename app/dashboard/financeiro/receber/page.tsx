@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation'
 
 export default function FinanceiroReceberAlias() {
-  redirect('/dashboard/financeiro?tab=receber')
+  redirect('/dashboard/financeiro/contas-a-receber')
 }

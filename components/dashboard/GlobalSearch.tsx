@@ -25,15 +25,15 @@ const CATEGORIAS: Record<string, { label: string; icon: string; iconColor: strin
 
 const NAV_ITEMS: Resultado[] = [
   { id: 'nav-dash',      label: 'Dashboard',              sub: 'Visão geral financeira',     icon: 'fa-chart-line',             iconColor: 'var(--navy)', href: '/dashboard',                categoria: 'nav' },
-  { id: 'nav-cashflow',  label: 'Cash Flow',              sub: 'Fluxo de caixa e projeções', icon: 'fa-water',                  iconColor: 'var(--navy)', href: '/dashboard/cashflow',       categoria: 'nav' },
+  { id: 'nav-cashflow',  label: 'Cash Flow',              sub: 'Fluxo de caixa e projeções', icon: 'fa-water',                  iconColor: 'var(--navy)', href: '/dashboard/financeiro/fluxo-de-caixa',       categoria: 'nav' },
   { id: 'nav-receitas',  label: 'Receitas',               sub: 'Receitas e faturamento',     icon: 'fa-arrow-trend-up',         iconColor: 'var(--navy)', href: '/dashboard/receitas',       categoria: 'nav' },
-  { id: 'nav-fin',       label: 'Contas Pagar/Receber',   sub: 'Financeiro',                 icon: 'fa-arrow-right-arrow-left', iconColor: 'var(--navy)', href: '/dashboard/financeiro',     categoria: 'nav' },
+  { id: 'nav-fin',       label: 'Contas Pagar/Receber',   sub: 'Financeiro',                 icon: 'fa-arrow-right-arrow-left', iconColor: 'var(--navy)', href: '/dashboard/financeiro/visao-geral',     categoria: 'nav' },
   { id: 'nav-desp',      label: 'Despesas & Recibos',     sub: 'Gestão de despesas',         icon: 'fa-receipt',                iconColor: 'var(--navy)', href: '/dashboard/despesas',       categoria: 'nav' },
   { id: 'nav-crm',       label: 'CRM',                    sub: 'Pipeline de vendas',         icon: 'fa-handshake',              iconColor: 'var(--navy)', href: '/dashboard/crm',            categoria: 'nav' },
   { id: 'nav-clientes',  label: 'Clientes',               sub: 'Gestão de clientes',         icon: 'fa-users',                  iconColor: 'var(--navy)', href: '/dashboard/clientes',       categoria: 'nav' },
   { id: 'nav-mkt',       label: 'Marketing',              sub: 'Campanhas e leads',          icon: 'fa-bullhorn',               iconColor: 'var(--navy)', href: '/dashboard/marketing',      categoria: 'nav' },
   { id: 'nav-log',       label: 'Logística',              sub: 'Rotas e frota',              icon: 'fa-truck-fast',             iconColor: 'var(--navy)', href: '/dashboard/logistica',      categoria: 'nav' },
-  { id: 'nav-relat',     label: 'DRE & Relatórios',       sub: 'Relatórios financeiros',     icon: 'fa-file-invoice-dollar',    iconColor: 'var(--navy)', href: '/dashboard/relatorios',     categoria: 'nav' },
+  { id: 'nav-relat',     label: 'DRE & Relatórios',       sub: 'Relatórios financeiros',     icon: 'fa-file-invoice-dollar',    iconColor: 'var(--navy)', href: '/dashboard/financeiro/dre',     categoria: 'nav' },
   { id: 'nav-planos',    label: 'Planos & Billing',       sub: 'Assinatura e plano',         icon: 'fa-star',                   iconColor: 'var(--navy)', href: '/dashboard/planos',         categoria: 'nav' },
   { id: 'nav-equipe',    label: 'Equipe',                 sub: 'Membros e permissões',       icon: 'fa-users-gear',             iconColor: 'var(--navy)', href: '/dashboard/equipe',         categoria: 'nav' },
 ]
@@ -55,7 +55,7 @@ async function buscarDados(q: string, empresaId: string): Promise<Resultado[]> {
   const results: Resultado[] = []
 
   for (const t of txRes.data ?? []) {
-    results.push({ id: `tx-${t.id}`, label: t.descricao, sub: `${t.tipo === 'entrada' ? '+' : '-'} ${fmt(t.valor)}`, icon: 'fa-arrow-right-arrow-left', iconColor: 'var(--teal)', href: '/dashboard/cashflow', categoria: 'transacoes' })
+    results.push({ id: `tx-${t.id}`, label: t.descricao, sub: `${t.tipo === 'entrada' ? '+' : '-'} ${fmt(t.valor)}`, icon: 'fa-arrow-right-arrow-left', iconColor: 'var(--teal)', href: '/dashboard/financeiro/fluxo-de-caixa', categoria: 'transacoes' })
   }
   for (const d of despRes.data ?? []) {
     results.push({ id: `d-${d.id}`, label: d.descricao, sub: `${d.categoria ?? 'Despesa'} · ${fmt(d.valor)}`, icon: 'fa-receipt', iconColor: 'var(--red)', href: '/dashboard/despesas', categoria: 'despesas' })

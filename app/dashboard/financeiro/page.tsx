@@ -1,5 +1,5 @@
-import FinanceiroPageClient from './FinanceiroPageClient'
+import { redirect } from 'next/navigation'
 
 export default function FinanceiroPage() {
-  return <FinanceiroPageClient />
+  redirect('/dashboard/financeiro/visao-geral')
 }

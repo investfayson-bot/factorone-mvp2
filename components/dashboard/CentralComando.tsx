@@ -50,8 +50,8 @@ export default function CentralComando({ empresaId }: { empresaId: string }) {
     { label: 'Arrecadação', valor: fmt(d.arrecada), sub: 'receita do mês', cor: '#3D7A6E', icon: 'fa-arrow-trend-up', href: '/dashboard/relatorios' },
     { label: 'Custos', valor: fmt(d.custos), sub: 'CMV + operacional', cor: '#B0413E', icon: 'fa-arrow-trend-down', href: '/dashboard/despesas' },
     { label: 'Resultado', valor: fmt(d.resultado), sub: `margem ${d.margem.toFixed(0)}%`, cor: d.resultado >= 0 ? '#13201D' : '#B0413E', icon: 'fa-scale-balanced', href: '/dashboard/indicadores' },
-    { label: 'A receber', valor: fmt(d.aReceber), sub: 'em aberto', cor: '#3D7A6E', icon: 'fa-inbox', href: '/dashboard/financeiro?tab=receber' },
-    { label: 'A pagar', valor: fmt(d.aPagar), sub: 'em aberto', cor: '#B08A3E', icon: 'fa-paper-plane', href: '/dashboard/financeiro?tab=pagar' },
+    { label: 'A receber', valor: fmt(d.aReceber), sub: 'em aberto', cor: '#3D7A6E', icon: 'fa-inbox', href: '/dashboard/financeiro/contas-a-receber' },
+    { label: 'A pagar', valor: fmt(d.aPagar), sub: 'em aberto', cor: '#B08A3E', icon: 'fa-paper-plane', href: '/dashboard/financeiro/contas-a-pagar' },
     { label: 'ROI marketing', valor: d.roi != null ? `${d.roi >= 0 ? '+' : ''}${d.roi.toFixed(0)}%` : '—', sub: 'retorno de anúncio', cor: '#2B564D', icon: 'fa-bullseye', href: '/dashboard/indicadores' },
   ] : []
 

@@ -424,3 +424,48 @@ tr:hover td { background: var(--surface-2); }
 .kpi-v2 .l { font-size: 11px; color: var(--mut); font-weight: 600; }
 .kpi-v2 .v { font-family: 'Space Grotesk', sans-serif; font-size: 22px; font-weight: 700; letter-spacing: -.02em; margin-top: 6px; color: var(--ink); font-variant-numeric: tabular-nums; }
 .kpi-v2 .c { font-size: 11px; margin-top: 4px; font-weight: 700; }
+.kpi-v2.ink { border-top-color: #111C16; }
+
+/* ---- Header de módulo com sub-abas (rotas próprias) ---- */
+.mod-head { background: var(--card); border-bottom: 1px solid var(--line); padding: 16px 24px 0; }
+.mod-title { display: flex; align-items: center; gap: 12px; }
+.mod-title h1 { font-size: 19px; font-weight: 700; letter-spacing: -.02em; color: var(--ink); font-family: 'Space Grotesk', sans-serif; }
+.route-v2 { font-family: 'Space Grotesk', sans-serif; font-size: 10.5px; color: var(--mut2); background: var(--bg); border: 1px solid var(--line); border-radius: 6px; padding: 3px 8px; }
+.mod-actions { margin-left: auto; display: flex; gap: 8px; }
+.btn-v2 { font-size: 12px; font-weight: 800; border-radius: 8px; padding: 8px 14px; cursor: pointer; border: 1px solid var(--line); background: var(--card); color: var(--ink); }
+.btn-v2.primary { background: var(--acc); border-color: var(--acc); color: #fff; }
+.mod-tabs { display: flex; gap: 2px; margin-top: 14px; overflow-x: auto; }
+.mod-tab { font-size: 12.5px; font-weight: 700; color: var(--mut); padding: 9px 14px; border-radius: 9px 9px 0 0; cursor: pointer; position: relative; white-space: nowrap; text-decoration: none; }
+.mod-tab.on { color: var(--acc-ink); }
+.mod-tab.on::after { content: ''; position: absolute; left: 10px; right: 10px; bottom: 0; height: 2.5px; border-radius: 3px 3px 0 0; background: var(--acc); }
+.mod-tab .cnt { font-family: 'Space Grotesk', sans-serif; font-size: 10px; background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 0 6px; margin-left: 5px; color: var(--mut); }
+.mod-tab.on .cnt { background: var(--acc-soft); border-color: transparent; color: var(--acc-ink); }
+
+/* ---- Hub de atalhos (cards que não viram aba) ---- */
+.hub-v2 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.hub-c-v2 { background: var(--card); border: 1px solid var(--line); border-radius: var(--r-sm); padding: 12px 13px; display: flex; gap: 10px; align-items: flex-start; cursor: pointer; text-decoration: none; }
+.hub-c-v2:hover { border-color: var(--acc); }
+.hub-ic-v2 { width: 30px; height: 30px; border-radius: 8px; background: var(--acc-soft); display: grid; place-items: center; flex-shrink: 0; color: var(--acc-ink); }
+.hub-c-v2 b { font-size: 12px; display: block; color: var(--ink); }
+.hub-c-v2 small { font-size: 10.5px; color: var(--mut); font-weight: 600; line-height: 1.4; display: block; margin-top: 1px; }
+.hub-c-v2 .st { font-family: 'Space Grotesk', sans-serif; font-size: 10.5px; font-weight: 700; color: var(--acc-ink); margin-top: 4px; display: block; }
+
+/* ---- Barra de risco (bar-row) e timeline de régua (pend) ---- */
+.bar-row-v2 { display: grid; grid-template-columns: 96px 1fr 46px; align-items: center; gap: 10px; padding: 5px 0; font-size: 11.5px; font-weight: 600; }
+.bar-row-v2 .tr { height: 7px; background: var(--bg); border-radius: 6px; overflow: hidden; }
+.bar-row-v2 .tr i { display: block; height: 100%; border-radius: 6px; }
+.bar-row-v2 b { font-family: 'Space Grotesk', sans-serif; text-align: right; }
+.pend-v2 { display: flex; align-items: center; gap: 9px; padding: 6px 0; font-size: 12px; font-weight: 600; }
+.pend-v2 .n2 { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 11.5px; min-width: 34px; height: 26px; border-radius: 8px; display: grid; place-items: center; flex-shrink: 0; padding: 0 6px; }
+
+/* ---- Tabela padrão v2 ---- */
+.table-v2 { width: 100%; border-collapse: collapse; }
+.table-v2 th { font-size: 10px; text-transform: uppercase; letter-spacing: .06em; color: var(--mut2); font-weight: 800; text-align: left; padding: 7px 8px; border-bottom: 1px solid var(--line); }
+.table-v2 td { font-size: 12px; font-weight: 600; padding: 9px 8px; border-bottom: 1px solid var(--bg); }
+.table-v2 td.num { font-family: 'Space Grotesk', sans-serif; font-weight: 700; }
+.table-v2 tr:last-child td { border: 0; }
+
+/* ---- Pills de filtro secundário (status etc.) ---- */
+.pill-sel-v2 { display: flex; gap: 6px; }
+.pill-sel-v2 span { font-size: 11.5px; font-weight: 700; padding: 6px 12px; border-radius: 20px; cursor: pointer; color: var(--mut); border: 1px solid var(--line); background: var(--card); }
+.pill-sel-v2 span.on { background: var(--acc-soft); color: var(--acc-ink); border-color: transparent; }
