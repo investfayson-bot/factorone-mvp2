@@ -7,7 +7,18 @@ sessão (Windows) continuar a partir daqui. Memória do Claude Code é local por
 não sincroniza entre os dois clones — por isso isso vai como arquivo versionado no repo,
 não só como memória.
 
-## Estado: Bloco 1 CONCLUÍDO (commit 675e5ad, sessão Windows, 2026-07-11). Próximo: Bloco 2 (Cofre Fiscal), aguardando checkpoint do Fayson.
+## Estado: Blocos 1 e 2 CONCLUÍDOS (commits 675e5ad e 2695cd4, sessão Windows, 2026-07-11). Próximo: Bloco 3 (Obrigações + links_governamentais), aguardando checkpoint do Fayson.
+
+Bloco 2 (Cofre Fiscal): tabela `cofre_fiscal_documentos` (migration
+20260711040000 — RODAR no Supabase), upload via /api/cofre-fiscal (bucket
+`recibos`, prefixo cofre/), URL assinada e reenvio por e-mail via rotas
+próprias. Decisão de produto pendente de OK do Fayson: papel contador PODE
+adicionar docs ao Cofre (é o histórico do que ele fez), mas não excluir;
+viewer 100% leitura. Guias de tax_obrigacoes aparecem automaticamente.
+Também nesse intervalo: fix do e-mail de convite (from não verificado +
+erro engolido; template profissional novo) — domínio factorone.com.br
+verificando no Resend (DNS pending do lado do Fayson); plano B anotado:
+Mailtrap com marca d'água como feature.
 
 Bloco 1 entregue conforme o plano abaixo, com um adendo importante: a revisão
 rls-tenant-guardian achou 2 furos CRÍTICOS pré-existentes de RLS
