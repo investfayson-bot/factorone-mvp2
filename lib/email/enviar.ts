@@ -12,7 +12,11 @@ export type ResultadoEnvio = { ok: boolean; provedor?: 'resend' | 'mailtrap'; er
 export async function enviarEmail(opts: { para: string; assunto: string; html: string }): Promise<ResultadoEnvio> {
   const erros: string[] = []
 
-  if (process.env.RESEND_API_KEY) {
+  // EMAIL_PROVIDER=mailtrap pula o Resend (pedido do Fayson enquanto o
+  // domínio não verifica lá). Tirar a env volta pro fluxo Resend→Mailtrap.
+  const soMailtrap = process.env.EMAIL_PROVIDER === 'mailtrap'
+
+  if (!soMailtrap && process.env.RESEND_API_KEY) {
     try {
       const Resend = (await import('resend')).Resend
       const resend = new Resend(process.env.RESEND_API_KEY)
