@@ -21,7 +21,7 @@ type Kpis = {
 const SUBS = [
   { href: '/dashboard/contabil-fiscal/obrigacoes', icone: 'fa-calendar-check', titulo: 'Obrigações', desc: 'Vencimentos e guias registradas' },
   { href: '/dashboard/contabil-fiscal/impostos-regime', icone: 'fa-percent', titulo: 'Impostos & Regime', desc: 'Estimador de DAS do Simples' },
-  { href: '/dashboard/contabil-fiscal/cofre-fiscal', icone: 'fa-vault', titulo: 'Cofre Fiscal', desc: 'Documentos fiscais (em construção)' },
+  { href: '/dashboard/contabil-fiscal/cofre-fiscal', icone: 'fa-vault', titulo: 'Cofre Fiscal', desc: 'Guias, declarações, contratos e procurações' },
   { href: '/dashboard/contabil-fiscal/portal-contador', icone: 'fa-user-tie', titulo: 'Portal do Contador', desc: 'Convide seu contador ou acesse seus clientes' },
 ]
 
