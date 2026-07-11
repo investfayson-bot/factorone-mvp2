@@ -18,7 +18,16 @@ type Form = {
   producao_mensal_estimada: string; impostos_pct: string; comissao_pct: string; margem_pct: string
 }
 
-const UNIDADES = ['kg', 'L', 'm', 'item', 'hora']
+// A unidade muda TODA a conta (sufixos, ponto de equilíbrio) — quem vende
+// por peso precifica o kg, não a hora. Rótulos por extenso pra ficar óbvio
+// que dá pra escolher (o "Unidade: hora" antigo passava batido).
+const UNIDADES: { valor: string; rotulo: string }[] = [
+  { valor: 'hora', rotulo: 'por hora' },
+  { valor: 'item', rotulo: 'por item / unidade' },
+  { valor: 'kg', rotulo: 'por peso (kg)' },
+  { valor: 'L', rotulo: 'por litro (L)' },
+  { valor: 'm', rotulo: 'por metro (m)' },
+]
 
 const FORM_VAZIO: Form = {
   nome: '', unidade: 'hora',
@@ -186,8 +195,14 @@ export default function PrecificacaoPage() {
                 onChange={e => set('nome', e.target.value)}
                 style={{ border: 'none', fontSize: 13.5, fontWeight: 700, fontFamily: "'Space Grotesk', sans-serif", outline: 'none', flex: 1 }}
               />
-              <select className="form-input" style={{ width: 'auto', padding: '4px 8px', fontSize: 11.5 }} value={form.unidade} onChange={e => set('unidade', e.target.value)}>
-                {UNIDADES.map(u => <option key={u} value={u}>Unidade: {u}</option>)}
+              <select
+                className="form-input"
+                title="Como você cobra: por hora, por item, por peso…"
+                style={{ width: 'auto', padding: '5px 10px', fontSize: 12, fontWeight: 700, color: 'var(--acc-ink)', background: 'var(--acc-soft)', border: '1px solid var(--acc)', borderRadius: 8, cursor: 'pointer' }}
+                value={form.unidade}
+                onChange={e => set('unidade', e.target.value)}
+              >
+                {UNIDADES.map(u => <option key={u.valor} value={u.valor}>Cobrar {u.rotulo}</option>)}
               </select>
             </div>
             {[

@@ -110,41 +110,43 @@ export default function AcessorPage() {
           </button>
         </div>
 
-        {mensagens.length === 0 && (
-          <div style={{ padding: '14px 18px 6px' }}>
-            <div style={{ fontSize: 12, fontWeight: 700, color: '#7B8C88', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }}>Ações rápidas</div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 8, marginBottom: 16 }}>
-              {ACOES_RAPIDAS.map(a => (
-                <button
-                  key={a.label}
-                  onClick={() => void enviar(a.msg)}
-                  style={{
-                    display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 7,
-                    padding: '10px 12px', border: '0.5px solid #E4DCCC', borderRadius: 10,
-                    background: '#fff', cursor: 'pointer', textAlign: 'left', transition: 'all .15s',
-                  }}
-                  onMouseOver={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = '#3D7A6E'; (e.currentTarget as HTMLButtonElement).style.background = 'rgba(61,122,110,0.04)' }}
-                  onMouseOut={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = '#E4DCCC'; (e.currentTarget as HTMLButtonElement).style.background = '#fff' }}
-                >
-                  <div style={{ width: 28, height: 28, borderRadius: 7, background: '#E9F0ED', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <i className={`fa-solid ${a.icon}`} style={{ color: '#3D7A6E', fontSize: 14 }} />
-                  </div>
-                  <span style={{ fontSize: 13, fontWeight: 600, color: '#13201D', lineHeight: 1.3 }}>{a.label}</span>
-                </button>
-              ))}
-            </div>
-            <div style={{ fontSize: 12, fontWeight: 700, color: '#7B8C88', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }}>Perguntas sugeridas</div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-              {SUGESTOES.map(s => (
-                <button key={s} className="quick-btn" onClick={() => void enviar(s)} style={{ display: 'block', width: '100%', textAlign: 'left', fontSize: 13, lineHeight: 1.4 }}>
-                  {s}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
         <div className="ai-msgs">
+          {/* Estado vazio DENTRO da área rolável — fora dela (como era) o
+              bloco estourava o container de altura fixa (overflow hidden),
+              cortava o input e travava o scroll da tela inteira. */}
+          {mensagens.length === 0 && (
+            <div style={{ padding: '0 2px' }}>
+              <div style={{ fontSize: 12, fontWeight: 700, color: '#7B8C88', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }}>Ações rápidas</div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 8, marginBottom: 16 }}>
+                {ACOES_RAPIDAS.map(a => (
+                  <button
+                    key={a.label}
+                    onClick={() => void enviar(a.msg)}
+                    style={{
+                      display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 7,
+                      padding: '10px 12px', border: '0.5px solid #E4DCCC', borderRadius: 10,
+                      background: '#fff', cursor: 'pointer', textAlign: 'left', transition: 'all .15s',
+                    }}
+                    onMouseOver={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = '#3D7A6E'; (e.currentTarget as HTMLButtonElement).style.background = 'rgba(61,122,110,0.04)' }}
+                    onMouseOut={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = '#E4DCCC'; (e.currentTarget as HTMLButtonElement).style.background = '#fff' }}
+                  >
+                    <div style={{ width: 28, height: 28, borderRadius: 7, background: '#E9F0ED', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <i className={`fa-solid ${a.icon}`} style={{ color: '#3D7A6E', fontSize: 14 }} />
+                    </div>
+                    <span style={{ fontSize: 13, fontWeight: 600, color: '#13201D', lineHeight: 1.3 }}>{a.label}</span>
+                  </button>
+                ))}
+              </div>
+              <div style={{ fontSize: 12, fontWeight: 700, color: '#7B8C88', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }}>Perguntas sugeridas</div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                {SUGESTOES.map(s => (
+                  <button key={s} className="quick-btn" onClick={() => void enviar(s)} style={{ display: 'block', width: '100%', textAlign: 'left', fontSize: 13, lineHeight: 1.4 }}>
+                    {s}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
           {mensagens.map((m, i) => (
             <div key={i} className={`msg ${m.role}`}>
               <div className={`msg-av ${m.role === 'assistant' ? 'ai' : 'user'}`}>
