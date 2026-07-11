@@ -7,7 +7,19 @@ sessão (Windows) continuar a partir daqui. Memória do Claude Code é local por
 não sincroniza entre os dois clones — por isso isso vai como arquivo versionado no repo,
 não só como memória.
 
-## Estado: nada da Fase 5 foi implementado ainda. Isto é só o plano.
+## Estado: Bloco 1 CONCLUÍDO (commit 675e5ad, sessão Windows, 2026-07-11). Próximo: Bloco 2 (Cofre Fiscal), aguardando checkpoint do Fayson.
+
+Bloco 1 entregue conforme o plano abaixo, com um adendo importante: a revisão
+rls-tenant-guardian achou 2 furos CRÍTICOS pré-existentes de RLS
+(contadores_public_read expunha token_acesso de todas as empresas pra anon;
+membros_equipe_token_read USING(true) deixava qualquer login enumerar equipe
+e tokens de convite de todos os tenants) + 1 escalada (papel contador
+escrevia em tax_obrigacoes/contadores direto do client). Tudo corrigido no
+mesmo commit: migration 20260711030000 (JÁ RODADA em produção pelo Fayson),
+endpoint /api/equipe/convite/[token], rotas /api/fiscal/registrar-das e
+/api/contadores/gerenciar com bloquearSeLeitura. PENDÊNCIA: confirmar no
+painel do Supabase se `notas_fiscais` tem RLS em produção (definição só
+existe em script solto antigo, não nas migrations — se não tiver, é crítico).
 
 ## O que já existe no repo (achado por investigação, não presumir do zero)
 
