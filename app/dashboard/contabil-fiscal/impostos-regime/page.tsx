@@ -1,16 +1,22 @@
 'use client'
 
-// Impostos & Regime (Fase 5, Bloco 1) — baseline: o estimador de DAS do
-// Simples Nacional já existente (portado de /dashboard/simples, mesmas
-// tabelas 2024). O simulador comparando Simples × Presumido × Real é o
-// Bloco 4 — cálculo tributário que o Fayson quer validar com calma antes
-// de ir pro ar, então aqui tem só o aviso, não uma versão de mentira.
+// Impostos & Regime (Fase 5, Bloco 1 + Bloco 4). Bloco 1 entregou o
+// estimador de DAS do Simples Nacional (mantido abaixo). Bloco 4 adiciona o
+// Simulador de Regime (Simples × Presumido × Real), o Painel de Impostos, o
+// card "Como pagar menos imposto" (Fator R) e "Onde cada CNPJ está
+// cadastrado" — seguindo o mockup 05-contabil.html. Todo valor de Presumido/
+// Real é estimativa simplificada (lib/fiscal/lucro-presumido.ts,
+// lucro-real.ts) — não substitui apuração oficial do contador.
 
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
 import { formatBRL } from '@/lib/currency-brl'
 import toast from 'react-hot-toast'
+import { useHolding } from '@/lib/holding-context'
+import { calcularPresumido, type TipoAtividade } from '@/lib/fiscal/lucro-presumido'
+import { calcularReal } from '@/lib/fiscal/lucro-real'
+import { calcularFatorR } from '@/lib/fiscal/fator-r'
 
 type Faixa = { ate: number; aliquota: number; pd: number }
 
@@ -73,6 +79,10 @@ const ANEXOS: Record<string, { nome: string; faixas: Faixa[] }> = {
   },
 }
 
+const TIPO_POR_ANEXO: Record<string, TipoAtividade> = {
+  I: 'comercio', II: 'industria', III: 'servicos', IV: 'servicos', V: 'servicos',
+}
+
 function calcular(rbt12: number, receitaMes: number, anexo: string) {
   const faixas = ANEXOS[anexo].faixas
   const faixa = faixas.find(f => rbt12 <= f.ate) ?? faixas[faixas.length - 1]
@@ -82,7 +92,18 @@ function calcular(rbt12: number, receitaMes: number, anexo: string) {
   return { faixa, aliqEfetiva, das, acimaLimite }
 }
 
+type EmpresaCadastro = { id: string; nome: string; cnpj: string | null; cidade: string | null; uf: string | null; regime_tributario: string | null }
+
+const REGIME_LABEL: Record<string, string> = { simples: 'Simples Nacional', presumido: 'Lucro Presumido', real: 'Lucro Real' }
+
+async function authHeaders(): Promise<Record<string, string>> {
+  const { data } = await supabase.auth.getSession()
+  const t = data.session?.access_token
+  return t ? { Authorization: `Bearer ${t}` } : {}
+}
+
 export default function ImpostosRegimePage() {
+  const { grupoAtivoId, escopo, grupos } = useHolding()
   const [empresaId, setEmpresaId] = useState('')
   const [anexo, setAnexo] = useState('III')
   const [rbt12, setRbt12] = useState('')
@@ -91,6 +112,18 @@ export default function ImpostosRegimePage() {
   const [estimando, setEstimando] = useState(false)
   const [registrando, setRegistrando] = useState(false)
 
+  // Simulador de Regime
+  const [meses, setMeses] = useState('6')
+  const [despesasMes, setDespesasMes] = useState('')
+  const [aliquotaIssIcms, setAliquotaIssIcms] = useState('5')
+  const [folha12m, setFolha12m] = useState('')
+
+  // Onde cada CNPJ está cadastrado
+  const [empresas, setEmpresas] = useState<EmpresaCadastro[]>([])
+  const [editando, setEditando] = useState<string | null>(null)
+  const [formEdit, setFormEdit] = useState({ cidade: '', uf: '', regime: '' })
+  const [salvandoEdit, setSalvandoEdit] = useState(false)
+
   useEffect(() => {
     supabase.auth.getUser().then(async ({ data: { user } }) => {
       if (!user) return
@@ -98,6 +131,17 @@ export default function ImpostosRegimePage() {
       setEmpresaId((u?.empresa_id as string) ?? user.id)
     })
   }, [])
+
+  const carregarEmpresas = useCallback(async () => {
+    const qs = new URLSearchParams({ escopo })
+    if (grupoAtivoId) qs.set('grupoId', grupoAtivoId)
+    try {
+      const res = await fetch(`/api/empresas/perfil-fiscal?${qs}`, { headers: await authHeaders() })
+      const d = await res.json() as { empresas?: EmpresaCadastro[] }
+      setEmpresas(res.ok ? (d.empresas ?? []) : [])
+    } catch { setEmpresas([]) }
+  }, [escopo, grupoAtivoId])
+  useEffect(() => { void carregarEmpresas() }, [carregarEmpresas])
 
   async function estimarFaturamento() {
     if (!empresaId) return
@@ -138,11 +182,9 @@ export default function ImpostosRegimePage() {
     setRegistrando(true)
     try {
       const venc = vencimentoDAS(competencia)
-      // via API (gate de papel: contador/viewer não registra imposto)
-      const { data: sess } = await supabase.auth.getSession()
       const res = await fetch('/api/fiscal/registrar-das', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', ...(sess.session?.access_token ? { Authorization: `Bearer ${sess.session.access_token}` } : {}) },
+        headers: { 'Content-Type': 'application/json', ...(await authHeaders()) },
         body: JSON.stringify({ competencia, valor: Number(r.das.toFixed(2)), vencimento: venc }),
       })
       const d = await res.json() as { ok?: boolean; atualizado?: boolean; error?: string }
@@ -155,14 +197,65 @@ export default function ImpostosRegimePage() {
     }
   }
 
-  return (
-    <div style={{ maxWidth: 940, paddingBottom: 30 }}>
-      {/* Aviso: comparador de regimes é o Bloco 4 */}
-      <div style={{ background: 'var(--acc-soft)', border: '1px solid var(--line)', borderRadius: 10, padding: '10px 14px', marginBottom: 16, fontSize: 12.5, color: 'var(--acc-ink)', display: 'flex', alignItems: 'center', gap: 8 }}>
-        <i className="fa-solid fa-circle-info" />
-        Por enquanto: estimador de DAS do Simples Nacional. A comparação Simples × Lucro Presumido × Lucro Real está em construção e chega numa próxima etapa.
-      </div>
+  // ---------- Simulador de Regime ----------
+  const tipoAtividade = TIPO_POR_ANEXO[anexo]
+  const mesesNum = Math.max(1, Math.min(12, Number(meses) || 6))
+  const receitaMesNum = Number(receitaMes) || 0
+  const despesasMesNum = Number(despesasMes) || 0
+  const aliquotaIssIcmsNum = Math.max(0, Number(aliquotaIssIcms) || 0) / 100
+  const podeSimular = receitaMesNum > 0
 
+  const simplesTotal = r.das * mesesNum
+  const presumido = useMemo(
+    () => calcularPresumido(receitaMesNum, mesesNum, tipoAtividade, aliquotaIssIcmsNum),
+    [receitaMesNum, mesesNum, tipoAtividade, aliquotaIssIcmsNum]
+  )
+  const real = useMemo(
+    () => calcularReal(receitaMesNum, despesasMesNum, mesesNum, tipoAtividade, aliquotaIssIcmsNum),
+    [receitaMesNum, despesasMesNum, mesesNum, tipoAtividade, aliquotaIssIcmsNum]
+  )
+
+  const regimes = [
+    { id: 'simples', nome: 'Simples Nacional', total: simplesTotal, nota: `Anexo ${anexo} · alíquota efetiva ${(r.aliqEfetiva * 100).toFixed(2)}%` },
+    { id: 'presumido', nome: 'Lucro Presumido', total: presumido.total, nota: 'IRPJ+CSLL+PIS/COFINS+ISS/ICMS' },
+    { id: 'real', nome: 'Lucro Real', total: real.total, nota: 'Apuração sobre lucro efetivo' },
+  ].sort((a, b) => a.total - b.total)
+  const [melhor, segundo] = regimes
+  const economia = podeSimular && segundo ? segundo.total - melhor.total : 0
+
+  const fatorR = folha12m && rbt12 ? calcularFatorR(Number(folha12m) || 0, Number(rbt12) || 0) : null
+
+  // Painel de Impostos: itens do regime recomendado
+  const painelItens = podeSimular
+    ? melhor.id === 'simples'
+      ? [{ operacao: `Simples Nacional — Anexo ${anexo}`, aliquota: r.aliqEfetiva, base: receitaMesNum * mesesNum, imposto: simplesTotal }]
+      : melhor.id === 'presumido' ? presumido.itens : real.itens
+    : []
+
+  async function abrirEdicao(e: EmpresaCadastro) {
+    setEditando(e.id)
+    setFormEdit({ cidade: e.cidade ?? '', uf: e.uf ?? '', regime: e.regime_tributario ?? '' })
+  }
+
+  async function salvarEdicao(id: string) {
+    setSalvandoEdit(true)
+    try {
+      const res = await fetch('/api/empresas/perfil-fiscal', {
+        method: 'PATCH', headers: { 'Content-Type': 'application/json', ...(await authHeaders()) },
+        body: JSON.stringify({ empresaId: id, cidade: formEdit.cidade, uf: formEdit.uf, regimeTributario: formEdit.regime }),
+      })
+      const d = await res.json() as { ok?: boolean; error?: string }
+      if (!res.ok || !d.ok) throw new Error(d.error || 'Falha ao salvar')
+      toast.success('Cadastro atualizado')
+      setEditando(null)
+      void carregarEmpresas()
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : 'Erro')
+    } finally { setSalvandoEdit(false) }
+  }
+
+  return (
+    <div style={{ maxWidth: 1080, paddingBottom: 30 }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, gap: 12, flexWrap: 'wrap' }}>
         <div>
           <div style={{ fontSize: 15.5, fontWeight: 800, color: 'var(--ink)' }}>Simples Nacional — Estimador de DAS</div>
@@ -264,8 +357,148 @@ export default function ImpostosRegimePage() {
         </div>
       </div>
 
-      <div style={{ marginTop: 14, fontSize: 12.5, color: 'var(--mut)' }}>
+      <div style={{ marginTop: 14, marginBottom: 26, fontSize: 12.5, color: 'var(--mut)' }}>
         Registrou o DAS? Acompanhe o pagamento em <Link href="/dashboard/tax" style={{ color: 'var(--acc)', fontWeight: 600 }}>Tax Compliance</Link>.
+      </div>
+
+      {/* ---------- Simulador de Regime ---------- */}
+      <div style={{ borderTop: '1px solid var(--line)', paddingTop: 22, marginBottom: 6 }}>
+        <div style={{ fontSize: 15.5, fontWeight: 800, color: 'var(--ink)' }}>Simulador de Regime Tributário</div>
+        <div style={{ fontSize: 12.5, color: 'var(--mut)', marginTop: 2, marginBottom: 16 }}>
+          Estimativa simplificada pra comparar Simples × Lucro Presumido × Lucro Real com os mesmos dados acima — não substitui apuração oficial.
+        </div>
+      </div>
+
+      <div className="card-v2" style={{ padding: 16, marginBottom: 16 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10 }}>
+          <div className="form-group" style={{ margin: 0 }}>
+            <label className="form-label">Período (meses)</label>
+            <input className="form-input" type="number" min={1} max={12} value={meses} onChange={e => setMeses(e.target.value)} />
+          </div>
+          <div className="form-group" style={{ margin: 0 }}>
+            <label className="form-label">Despesas dedutíveis/mês (R$)</label>
+            <input className="form-input" type="number" value={despesasMes} onChange={e => setDespesasMes(e.target.value)} placeholder="Ex.: 20000" />
+          </div>
+          <div className="form-group" style={{ margin: 0 }}>
+            <label className="form-label">Alíquota {tipoAtividade === 'servicos' ? 'ISS' : 'ICMS'} (%)</label>
+            <input className="form-input" type="number" step="0.1" value={aliquotaIssIcms} onChange={e => setAliquotaIssIcms(e.target.value)} placeholder="Ex.: 5" />
+          </div>
+          <div className="form-group" style={{ margin: 0 }}>
+            <label className="form-label">Folha 12m — p/ Fator R (R$, opcional)</label>
+            <input className="form-input" type="number" value={folha12m} onChange={e => setFolha12m(e.target.value)} placeholder="Salários + pró-labore + encargos" />
+          </div>
+        </div>
+      </div>
+
+      {!podeSimular ? (
+        <div className="card-v2" style={{ padding: 24, textAlign: 'center', color: 'var(--mut)', fontSize: 13, marginBottom: 16 }}>
+          Preencha a receita do mês acima pra comparar os 3 regimes.
+        </div>
+      ) : (
+        <>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12, marginBottom: 12 }}>
+            {regimes.map((reg, i) => (
+              <div key={reg.id} className="card-v2" style={{
+                padding: 14, border: i === 0 ? '1.5px solid var(--acc)' : '1.5px solid var(--line)',
+                background: i === 0 ? 'var(--acc-soft)' : 'var(--card)',
+              }}>
+                {i === 0 && <span className="chip-v2 g" style={{ marginBottom: 6, display: 'inline-block' }}>Recomendado</span>}
+                <div style={{ fontSize: 12.5, fontWeight: 700, color: 'var(--ink)', marginBottom: 4 }}>{reg.nome}</div>
+                <div style={{ fontSize: 19, fontWeight: 800, color: 'var(--ink)', fontVariantNumeric: 'tabular-nums' }}>
+                  {formatBRL(reg.total)}<small style={{ fontSize: 11, fontWeight: 700, color: 'var(--mut)' }}> /{mesesNum === 1 ? 'mês' : `${mesesNum}m`}</small>
+                </div>
+                <div style={{ fontSize: 10.5, color: 'var(--mut)', fontWeight: 700, marginTop: 3 }}>{reg.nota}</div>
+              </div>
+            ))}
+          </div>
+          {economia > 0 && (
+            <div style={{ background: 'var(--acc-soft)', border: '1px solid var(--line)', borderRadius: 10, padding: '10px 14px', marginBottom: 16, fontSize: 12.5, color: 'var(--acc-ink)', fontWeight: 700 }}>
+              💡 Ficando em {melhor.nome}, a economia é de {formatBRL(economia)} em relação a {segundo.nome} no período de {mesesNum} mês{mesesNum === 1 ? '' : 'es'}.
+            </div>
+          )}
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: 16, marginBottom: 16 }}>
+            {/* Painel de impostos */}
+            <div className="card-v2" style={{ padding: 16 }}>
+              <div style={{ fontSize: 13.5, fontWeight: 700, color: 'var(--ink)', marginBottom: 10 }}>Painel de Impostos — regime recomendado ({melhor.nome})</div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1.6fr .7fr 1fr .8fr', fontSize: 11, color: 'var(--mut)', fontWeight: 700, padding: '4px 0', borderBottom: '1px solid var(--line)' }}>
+                <span>Operação</span><span>Alíquota</span><span>Base</span><span style={{ textAlign: 'right' }}>Imposto</span>
+              </div>
+              {painelItens.map((it, i) => (
+                <div key={i} style={{ display: 'grid', gridTemplateColumns: '1.6fr .7fr 1fr .8fr', fontSize: 12.5, padding: '7px 0', borderBottom: '1px solid var(--line)' }}>
+                  <span style={{ color: 'var(--ink)' }}>{it.operacao}</span>
+                  <span style={{ fontWeight: 700 }}>{(it.aliquota * 100).toFixed(2)}%</span>
+                  <span style={{ color: 'var(--mut)', fontVariantNumeric: 'tabular-nums' }}>{formatBRL(it.base)}</span>
+                  <span style={{ textAlign: 'right', fontWeight: 700, fontVariantNumeric: 'tabular-nums' }}>{formatBRL(it.imposto)}</span>
+                </div>
+              ))}
+              <div style={{ fontSize: 11.5, color: 'var(--mut)', fontWeight: 600, marginTop: 10, lineHeight: 1.6 }}>
+                Total apurado no período: <b style={{ color: 'var(--ink)' }}>{formatBRL(melhor.total)}</b>.
+                {melhor.id === 'real' && ' Lucro Real aqui não desconta créditos de PIS/COFINS sobre insumos — o valor real tende a ser menor do que este.'}
+              </div>
+            </div>
+
+            {/* Como pagar menos imposto */}
+            <div style={{ background: 'linear-gradient(135deg,#0C1D16,#143526)', borderRadius: 14, padding: '16px 18px', color: '#DCE7E0' }}>
+              <span style={{ background: '#22C55E', color: '#06130C', fontSize: 9.5, fontWeight: 800, padding: '2px 7px', borderRadius: 5, letterSpacing: '.05em' }}>FACTORONE AI</span>
+              <div style={{ fontSize: 13.5, fontWeight: 800, color: '#fff', margin: '9px 0 8px' }}>Como pagar menos imposto</div>
+              {fatorR && tipoAtividade === 'servicos' ? (
+                <p style={{ fontSize: 12, lineHeight: 1.6 }}>
+                  Seu Fator R está em <b>{(fatorR.percentual * 100).toFixed(1)}%</b> — {fatorR.acimaDoLimite
+                    ? <>acima dos 28% que garantem o Anexo III. Margem de segurança: <b>{fatorR.margemPontosPercentuais.toFixed(1)} p.p.</b> Se a folha cair, você perde o Anexo III e paga mais imposto.</>
+                    : <>abaixo dos 28% — você está no Anexo V, com alíquota maior. Aumentando a folha (salários/pró-labore) pra pelo menos <b>{formatBRL(fatorR.folhaMensalMinimaParaAnexoIII)}/mês</b>, você entra no Anexo III.</>}
+                </p>
+              ) : podeSimular ? (
+                <p style={{ fontSize: 12, lineHeight: 1.6 }}>
+                  {melhor.id === 'simples'
+                    ? 'O Simples Nacional segue sendo o mais barato com os dados atuais. Informe a folha de pagamento acima pra ver o Fator R, se sua atividade permitir Anexo III/V.'
+                    : `${melhor.nome} está saindo mais barato que o Simples com os dados informados — vale confirmar com o contador antes de migrar de regime (a troca só vale pro ano seguinte).`}
+                </p>
+              ) : (
+                <p style={{ fontSize: 12, lineHeight: 1.6 }}>Preencha a receita do mês pra receber uma recomendação.</p>
+              )}
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* Onde cada CNPJ está cadastrado */}
+      <div className="card-v2" style={{ overflow: 'hidden', marginBottom: 30 }}>
+        <div style={{ padding: '12px 16px', borderBottom: '1px solid var(--line)', fontSize: 13.5, fontWeight: 700, color: 'var(--ink)' }}>
+          Onde cada CNPJ está cadastrado
+        </div>
+        {empresas.length === 0 ? (
+          <div style={{ padding: '20px 16px', textAlign: 'center', color: 'var(--mut)', fontSize: 13 }}>Nenhuma empresa no escopo atual.</div>
+        ) : empresas.map(e => (
+          <div key={e.id} style={{ padding: '10px 16px', borderBottom: '1px solid var(--line)' }}>
+            {editando === e.id ? (
+              <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
+                <span style={{ fontSize: 12.5, fontWeight: 700, color: 'var(--ink)', minWidth: 140 }}>{e.nome}</span>
+                <select className="form-input" style={{ width: 150, height: 30, fontSize: 12 }} value={formEdit.regime} onChange={ev => setFormEdit(f => ({ ...f, regime: ev.target.value }))}>
+                  <option value="">Regime — selecione</option>
+                  <option value="simples">Simples Nacional</option>
+                  <option value="presumido">Lucro Presumido</option>
+                  <option value="real">Lucro Real</option>
+                </select>
+                <input className="form-input" style={{ width: 150, height: 30, fontSize: 12 }} placeholder="Cidade" value={formEdit.cidade} onChange={ev => setFormEdit(f => ({ ...f, cidade: ev.target.value }))} />
+                <input className="form-input" style={{ width: 54, height: 30, fontSize: 12 }} placeholder="UF" maxLength={2} value={formEdit.uf} onChange={ev => setFormEdit(f => ({ ...f, uf: ev.target.value.toUpperCase() }))} />
+                <button className="btn-v2 primary" style={{ padding: '5px 10px', fontSize: 12 }} disabled={salvandoEdit} onClick={() => void salvarEdicao(e.id)}>Salvar</button>
+                <button className="btn-v2" style={{ padding: '5px 10px', fontSize: 12 }} onClick={() => setEditando(null)}>Cancelar</button>
+              </div>
+            ) : (
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12.5, fontWeight: 600 }}>
+                <span style={{ color: 'var(--ink)', fontWeight: 700 }}>{e.nome}</span>
+                <span style={{ color: 'var(--mut)' }}>·</span>
+                <span style={{ color: 'var(--ink)', fontWeight: 700 }}>{e.regime_tributario ? REGIME_LABEL[e.regime_tributario] : 'Regime não informado'}</span>
+                {(e.cidade || e.uf) && <><span style={{ color: 'var(--mut)' }}>·</span><span style={{ color: 'var(--mut)' }}>{[e.cidade, e.uf].filter(Boolean).join('/')}</span></>}
+                <button className="btn-v2" style={{ padding: '3px 9px', fontSize: 11, marginLeft: 'auto' }} onClick={() => void abrirEdicao(e)}>Editar</button>
+              </div>
+            )}
+          </div>
+        ))}
+        {grupos.length === 0 && (
+          <div style={{ padding: '8px 16px', fontSize: 11, color: 'var(--mut)' }}>Sem Holding criada — mostrando sua empresa.</div>
+        )}
       </div>
     </div>
   )
