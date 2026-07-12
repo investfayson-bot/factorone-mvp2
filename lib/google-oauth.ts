@@ -1,6 +1,17 @@
 import crypto from 'crypto'
 
-const SCOPES = 'https://www.googleapis.com/auth/gmail.modify https://www.googleapis.com/auth/gmail.compose https://www.googleapis.com/auth/userinfo.email'
+// Escopos do acessor completo (pedido do Fayson 2026-07-11): Gmail (ler/
+// responder), Calendar (agendar de verdade), Drive.file (criar docs/
+// apresentações — só arquivos criados pelo app, não o Drive inteiro).
+// Ampliar escopo exige reconectar a conta Google — por isso já vai tudo
+// junto antes da primeira conexão.
+const SCOPES = [
+  'https://www.googleapis.com/auth/gmail.modify',
+  'https://www.googleapis.com/auth/gmail.compose',
+  'https://www.googleapis.com/auth/calendar.events',
+  'https://www.googleapis.com/auth/drive.file',
+  'https://www.googleapis.com/auth/userinfo.email',
+].join(' ')
 const ESTADO_TTL_MS = 10 * 60 * 1000
 
 export function appUrl(reqOrigin?: string): string {
