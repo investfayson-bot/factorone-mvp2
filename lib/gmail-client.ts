@@ -159,6 +159,43 @@ export async function arquivar(accessToken: string, id: string): Promise<void> {
   return arquivarEModificar(accessToken, id, { removeLabelIds: ['UNREAD', 'INBOX'] })
 }
 
+// ── Labels (Fase acessor: organizar a caixa DENTRO do Gmail) ──
+export type GmailLabel = { id: string; name: string }
+
+export async function listarLabels(accessToken: string): Promise<GmailLabel[]> {
+  const r = await fetch(`${BASE}/labels`, { headers: auth(accessToken) })
+  if (!r.ok) throw new Error(`Gmail labels falhou: ${await r.text()}`)
+  const j = await r.json() as { labels?: GmailLabel[] }
+  return j.labels ?? []
+}
+
+export async function criarLabel(accessToken: string, name: string): Promise<GmailLabel> {
+  const r = await fetch(`${BASE}/labels`, {
+    method: 'POST',
+    headers: { ...auth(accessToken), 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name, labelListVisibility: 'labelShow', messageListVisibility: 'show' }),
+  })
+  if (!r.ok) throw new Error(`Gmail criar label falhou: ${await r.text()}`)
+  return r.json()
+}
+
+// garante que a label existe (cria se não) e devolve o id — idempotente
+export async function garantirLabel(accessToken: string, name: string, cache?: GmailLabel[]): Promise<string> {
+  const existentes = cache ?? await listarLabels(accessToken)
+  const achada = existentes.find(l => l.name.toLowerCase() === name.toLowerCase())
+  if (achada) return achada.id
+  const nova = await criarLabel(accessToken, name)
+  return nova.id
+}
+
+export async function listarMensagens(accessToken: string, q: string, maxResults = 50): Promise<MensagemResumo[]> {
+  const url = `${BASE}/messages?${new URLSearchParams({ q, maxResults: String(maxResults) })}`
+  const r = await fetch(url, { headers: auth(accessToken) })
+  if (!r.ok) throw new Error(`Gmail list falhou: ${await r.text()}`)
+  const j = await r.json() as { messages?: MensagemResumo[] }
+  return j.messages ?? []
+}
+
 export async function obterPerfil(accessToken: string): Promise<{ emailAddress: string }> {
   const r = await fetch(`${BASE}/profile`, { headers: auth(accessToken) })
   if (!r.ok) throw new Error(`Gmail profile falhou: ${await r.text()}`)

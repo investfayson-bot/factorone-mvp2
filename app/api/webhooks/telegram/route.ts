@@ -7,6 +7,8 @@ import { processarMensagemVisitante } from '@/lib/donna/site-agent'
 import { checkRateLimit } from '@/lib/rate-limit'
 
 export const runtime = 'nodejs'
+// organizar inbox varre até 40 e-mails + IA + labels — não cabe nos 10s default
+export const maxDuration = 60
 
 function getAnthropic() {
   return new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! })
@@ -440,6 +442,16 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: true })
     }
 
+    // "organiza/classifica meus e-mails" — varre a caixa, cria labels no
+    // Gmail e devolve o relatório (lib/donna/organizar-inbox).
+    if (/\b(organiza|organizar|classifica|classificar|arruma|arrumar|relat[óo]rio)\b/i.test(texto) && /\be-?mails?\b|caixa de entrada|\binbox\b|\bgmail\b/i.test(texto)) {
+      await sendTelegram(chatId, 'Deixa comigo — varrendo sua caixa dos últimos 7 dias, classificando e criando as labels no Gmail. Uns 30 segundos…')
+      const { organizarInboxEmpresa } = await import('@/lib/donna/organizar-inbox')
+      const r = await organizarInboxEmpresa(supabase, empresaIdTg)
+      await sendTelegram(chatId, r.ok ? (r.relatorio ?? 'Feito.') : `Não consegui: ${r.erro}`)
+      return NextResponse.json({ ok: true })
+    }
+
     // Pedido de envio do DRE — age de verdade (gera PDF + e-mail com anexo).
     if (pedeEnvioDre(texto)) {
       const resposta = await enviarDrePorEmail(supabase, empresaIdTg, usuario.id as string, texto, (usuario.email as string) ?? null)
@@ -494,7 +506,7 @@ export async function POST(req: NextRequest) {
         max_tokens: 400,
         system: `Você é o acessor FactorOne via Telegram — assistente executivo (CEO/CFO) do dono do negócio. Responda em português, de forma MUITO concisa (máx 3 parágrafos curtos). Sem emojis em excesso. Seja direto como um CFO.
 
-AÇÕES QUE VOCÊ EXECUTA DE VERDADE (nunca diga que não consegue): enviar o DRE mensal por e-mail em PDF (o usuário pede "envia o DRE de <mês> pra <email>"), agendar reuniões/compromissos. Se o pedido for uma dessas ações mas você recebeu a mensagem aqui, oriente o usuário a formular assim. Outras ações (ler e-mails, responder leads) estão chegando — diga que estão em construção, não que são impossíveis.
+AÇÕES QUE VOCÊ EXECUTA DE VERDADE (nunca diga que não consegue): enviar o DRE mensal por e-mail em PDF ("envia o DRE de <mês> pra <email>"), agendar reuniões/compromissos, organizar/classificar a caixa de e-mail com labels no Gmail e relatório ("organiza meus e-mails"). Se o pedido for uma dessas ações mas você recebeu a mensagem aqui, oriente o usuário a formular assim. Outras ações (ler e-mails, responder leads) estão chegando — diga que estão em construção, não que são impossíveis.
 
 DADOS DA EMPRESA:
 ${JSON.stringify(contexto)}`,
