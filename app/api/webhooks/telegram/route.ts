@@ -88,12 +88,10 @@ async function enviarDrePorEmail(
       return `Não achei métricas fechadas pra ${dre.periodo} — o DRE sairia zerado. Confere em Financeiro → DRE se a competência ${competencia} está calculada, ou me pede outro mês.`
     }
 
-    const { enviarEmail } = await import('@/lib/email/enviar')
     const fmt = (v: number) => v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
-    const resultado = await enviarEmail({
-      para: destino,
-      assunto: `DRE ${dre.periodo} — ${dre.empresaNome}`,
-      html: `<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"></head>
+    const assunto = `DRE ${dre.periodo} — ${dre.empresaNome}`
+    const anexos = [{ filename: dre.filename, conteudoBase64: dre.buffer.toString('base64'), tipo: 'application/pdf' }]
+    const html = `<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"></head>
 <body style="margin:0;padding:0;background:#f4f4ef;font-family:'Helvetica Neue',Arial,sans-serif">
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4ef;padding:32px 16px"><tr><td align="center">
     <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;border:1px solid #e5e2d9;overflow:hidden">
@@ -115,12 +113,34 @@ async function enviarDrePorEmail(
       </td></tr>
     </table>
   </td></tr></table>
-</body></html>`,
-      anexos: [{ filename: dre.filename, conteudoBase64: dre.buffer.toString('base64'), tipo: 'application/pdf' }],
-    })
+</body></html>`
 
-    if (!resultado.ok) return `Gerei o DRE de ${dre.periodo}, mas o envio falhou: ${resultado.erro}`
-    return `Feito ✅ DRE de ${dre.periodo} (${dre.empresaNome}) enviado pra ${destino}.\n\nResumo: receita ${fmt(dre.resumo.receita)} · EBITDA ${fmt(dre.resumo.ebitda)} · lucro líquido ${fmt(dre.resumo.lucro)} (${dre.resumo.margem.toFixed(1)}%).`
+    // 1º: Gmail do próprio dono (google_contas conectada) — sai do e-mail
+    // real dele, sem cota de terceiros. 2º: fallback Mailtrap/Resend.
+    const okMsg = (via: string) => `Feito ✅ DRE de ${dre.periodo} (${dre.empresaNome}) enviado pra ${destino} ${via}.\n\nResumo: receita ${fmt(dre.resumo.receita)} · EBITDA ${fmt(dre.resumo.ebitda)} · lucro líquido ${fmt(dre.resumo.lucro)} (${dre.resumo.margem.toFixed(1)}%).`
+
+    const errosEnvio: string[] = []
+    const { data: contaGoogle } = await supabase.from('google_contas').select('email, refresh_token_cifrado').eq('empresa_id', empresaId).eq('ativo', true).maybeSingle()
+    if (contaGoogle) {
+      try {
+        const { decifrar } = await import('@/lib/cofre-crypto')
+        const { renovarAccessToken } = await import('@/lib/google-oauth')
+        const { enviarEmailNovo } = await import('@/lib/gmail-client')
+        const tok = await renovarAccessToken(decifrar(contaGoogle.refresh_token_cifrado as string))
+        await enviarEmailNovo(tok.access_token, { to: destino, from: contaGoogle.email as string, subject: assunto, html, anexos })
+        return okMsg(`pelo seu Gmail (${contaGoogle.email})`)
+      } catch (e) {
+        errosEnvio.push(`Gmail: ${e instanceof Error ? e.message.slice(0, 160) : 'falha'}`)
+      }
+    }
+
+    const { enviarEmail } = await import('@/lib/email/enviar')
+    const resultado = await enviarEmail({ para: destino, assunto, html, anexos })
+    if (resultado.ok) return okMsg(`(via ${resultado.provedor})`)
+
+    errosEnvio.push(resultado.erro ?? 'falha')
+    const dica = contaGoogle ? '' : '\n\nDica: conecta seu Google em Agentes IA → Automações que eu passo a enviar direto do seu Gmail, sem depender de provedor externo.'
+    return `Gerei o DRE de ${dre.periodo}, mas o envio falhou: ${errosEnvio.join(' | ')}${dica}`
   } catch (e) {
     return `Não consegui gerar/enviar o DRE: ${e instanceof Error ? e.message : 'erro inesperado'}`
   }

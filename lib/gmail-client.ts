@@ -95,6 +95,53 @@ export async function enviarResposta(accessToken: string, opts: { to: string; fr
   return j.id
 }
 
+// E-mail novo (não-resposta) com corpo HTML e anexos — MIME multipart
+// montado na mão, mesmo espírito fetch-puro do resto do arquivo. Usado
+// pelo acessor pra mandar DRE/relatórios PELO GMAIL do próprio dono
+// (sem depender de Resend/Mailtrap e sem verificação de domínio).
+export async function enviarEmailNovo(accessToken: string, opts: {
+  to: string; from: string; subject: string; html: string
+  anexos?: { filename: string; conteudoBase64: string; tipo: string }[]
+}): Promise<string> {
+  const boundary = `fo_${Date.now().toString(36)}`
+  // RFC 2047 pro assunto aguentar acento
+  const subjectB64 = `=?UTF-8?B?${Buffer.from(opts.subject, 'utf8').toString('base64')}?=`
+  const partes = [
+    `To: ${opts.to}`,
+    `From: ${opts.from}`,
+    `Subject: ${subjectB64}`,
+    'MIME-Version: 1.0',
+    `Content-Type: multipart/mixed; boundary="${boundary}"`,
+    '',
+    `--${boundary}`,
+    'Content-Type: text/html; charset=utf-8',
+    'Content-Transfer-Encoding: base64',
+    '',
+    Buffer.from(opts.html, 'utf8').toString('base64'),
+  ]
+  for (const a of opts.anexos ?? []) {
+    partes.push(
+      `--${boundary}`,
+      `Content-Type: ${a.tipo}; name="${a.filename}"`,
+      'Content-Transfer-Encoding: base64',
+      `Content-Disposition: attachment; filename="${a.filename}"`,
+      '',
+      a.conteudoBase64,
+    )
+  }
+  partes.push(`--${boundary}--`)
+  const raw = Buffer.from(partes.join('\r\n'), 'utf8').toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
+
+  const r = await fetch(`${BASE}/messages/send`, {
+    method: 'POST',
+    headers: { ...auth(accessToken), 'Content-Type': 'application/json' },
+    body: JSON.stringify({ raw }),
+  })
+  if (!r.ok) throw new Error(`Gmail send falhou: ${await r.text()}`)
+  const j = await r.json() as { id: string }
+  return j.id
+}
+
 export async function arquivarEModificar(accessToken: string, id: string, opts: { removeLabelIds?: string[]; addLabelIds?: string[] }): Promise<void> {
   const r = await fetch(`${BASE}/messages/${id}/modify`, {
     method: 'POST',
