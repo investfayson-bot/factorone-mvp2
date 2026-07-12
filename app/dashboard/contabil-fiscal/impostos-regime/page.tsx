@@ -18,6 +18,7 @@ import { calcularPresumido, type TipoAtividade } from '@/lib/fiscal/lucro-presum
 import { calcularReal } from '@/lib/fiscal/lucro-real'
 import { calcularFatorR } from '@/lib/fiscal/fator-r'
 import { estimarCppPatronal, ALIQUOTA_CPP_PATRONAL_ESTIMADA } from '@/lib/fiscal/cpp-patronal'
+import NoticiasFiscais from '@/components/fiscal/NoticiasFiscais'
 
 type Faixa = { ate: number; aliquota: number; pd: number }
 
@@ -498,6 +499,11 @@ export default function ImpostosRegimePage() {
           </div>
         </>
       )}
+
+      {/* Mudanças de legislação (Bloco 5 — RSS público) */}
+      <div style={{ marginBottom: 16 }}>
+        <NoticiasFiscais />
+      </div>
 
       {/* Onde cada CNPJ está cadastrado */}
       <div className="card-v2" style={{ overflow: 'hidden', marginBottom: 30 }}>

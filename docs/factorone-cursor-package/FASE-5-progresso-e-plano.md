@@ -7,7 +7,20 @@ sessão (Windows) continuar a partir daqui. Memória do Claude Code é local por
 não sincroniza entre os dois clones — por isso isso vai como arquivo versionado no repo,
 não só como memória.
 
-## Estado: Blocos 1, 2, 3 e 4 CONCLUÍDOS. Próximo: Bloco 5 (feed de notícias RSS), depois checkpoint visual do Fayson pra fechar a Fase 5.
+## Estado: TODOS os 5 blocos CONCLUÍDOS (2026-07-11). Fase 5 aguardando só o checkpoint visual do Fayson + migrations pendentes.
+
+**Bloco 5 (feed de notícias) — CONCLUÍDO pela sessão Windows**, no mesmo
+push que mesclou a branch dos Blocos 3-4 na main: `/api/fiscal/noticias`
+(RSS Receita Federal + Agência Brasil, parser RSS+Atom próprio, filtro por
+palavras-chave tributárias, exige data — itens de navegação do portal caem
+fora —, dedupe por link, cache 1h) + componente `NoticiasFiscais` plugado
+em Impostos & Regime e na Visão Geral. Feeds testados vivos em 2026-07-11.
+Card some sozinho se nenhuma fonte responder — nunca quebra a página.
+
+**Migrations pendentes de rodar no Supabase (Fayson)**:
+`20260711050000_obrigacoes_links_gov.sql` e
+`20260711060000_empresas_perfil_fiscal.sql` (Blocos 3-4). A do Cofre
+(20260711040000) já foi rodada.
 
 ## Handoff 2026-07-11 (sessão claude.ai/code, tarde/noite — Blocos 3 e 4)
 

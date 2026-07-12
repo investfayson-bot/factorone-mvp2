@@ -10,6 +10,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
 import { formatBRL } from '@/lib/currency-brl'
+import NoticiasFiscais from '@/components/fiscal/NoticiasFiscais'
 
 type Kpis = {
   obrigacoesPendentes: number
@@ -117,6 +118,11 @@ export default function ContabilFiscalVisaoGeral() {
             </div>
           </Link>
         ))}
+      </div>
+
+      {/* Mudanças de legislação (Bloco 5 — RSS público) */}
+      <div style={{ marginBottom: 24 }}>
+        <NoticiasFiscais />
       </div>
 
       {/* Ferramentas standalone */}
