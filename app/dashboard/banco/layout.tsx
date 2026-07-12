@@ -9,6 +9,7 @@ const TABS: { href: string; label: string }[] = [
   { href: '/dashboard/banco/pix-transferencias', label: 'PIX & Transferências' },
   { href: '/dashboard/banco/cartoes', label: 'Cartões' },
   { href: '/dashboard/banco/investimentos', label: 'Investimentos' },
+  { href: '/dashboard/banco/patrimonio', label: 'Patrimônio' },
 ]
 
 export default function BancoLayout({ children }: { children: React.ReactNode }) {
