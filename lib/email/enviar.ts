@@ -9,7 +9,9 @@
 
 export type ResultadoEnvio = { ok: boolean; provedor?: 'resend' | 'mailtrap'; erro?: string }
 
-export async function enviarEmail(opts: { para: string; assunto: string; html: string }): Promise<ResultadoEnvio> {
+export type AnexoEmail = { filename: string; conteudoBase64: string; tipo: string }
+
+export async function enviarEmail(opts: { para: string; assunto: string; html: string; anexos?: AnexoEmail[] }): Promise<ResultadoEnvio> {
   const erros: string[] = []
 
   // EMAIL_PROVIDER=mailtrap pula o Resend (pedido do Fayson enquanto o
@@ -25,6 +27,7 @@ export async function enviarEmail(opts: { para: string; assunto: string; html: s
         to: opts.para,
         subject: opts.assunto,
         html: opts.html,
+        attachments: (opts.anexos ?? []).map(a => ({ filename: a.filename, content: a.conteudoBase64 })),
       })
       if (!error) return { ok: true, provedor: 'resend' }
       erros.push(`Resend: ${error.message ?? 'falha'}`)
@@ -43,7 +46,13 @@ export async function enviarEmail(opts: { para: string; assunto: string; html: s
       const res = await fetch('https://send.api.mailtrap.io/api/send', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${process.env.MAILTRAP_TOKEN}` },
-        body: JSON.stringify({ from, to: [{ email: opts.para }], subject: opts.assunto, html: opts.html }),
+        body: JSON.stringify({
+          from,
+          to: [{ email: opts.para }],
+          subject: opts.assunto,
+          html: opts.html,
+          attachments: (opts.anexos ?? []).map(a => ({ filename: a.filename, content: a.conteudoBase64, type: a.tipo, disposition: 'attachment' })),
+        }),
       })
       if (res.ok) return { ok: true, provedor: 'mailtrap' }
       const body = await res.text().catch(() => '')

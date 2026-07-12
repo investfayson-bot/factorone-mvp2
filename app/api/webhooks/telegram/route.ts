@@ -38,6 +38,94 @@ export async function GET() {
   return NextResponse.json({ status: 'ok', servico: 'FactorOne Telegram Webhook' })
 }
 
+// ── Ação: enviar DRE por e-mail ─────────────────────────────────────────
+// Primeira "ferramenta de agir" do acessor (visão CEO/CFO/COO): em vez de
+// responder "não consigo enviar e-mails", o bot gera o PDF do DRE
+// (lib/pdf/dre, mesmo gerador da rota /api/dre/exportar-pdf) e envia por
+// e-mail (lib/email/enviar, com anexo). Quem manda é o DONO já vinculado
+// por telegram_chat_id — não há autonomia a configurar: é comando direto.
+
+const MESES_PT: Record<string, number> = {
+  janeiro: 1, fevereiro: 2, marco: 3, março: 3, abril: 4, maio: 5, junho: 6,
+  julho: 7, agosto: 8, setembro: 9, outubro: 10, novembro: 11, dezembro: 12,
+}
+
+// "maio/2026", "maio de 2026", "2026-05", "mês passado", nada → mês anterior
+// (último mês fechado — DRE do mês corrente ainda está incompleto).
+function extrairCompetencia(texto: string): string {
+  const t = texto.toLowerCase()
+  const iso = t.match(/\b(20\d{2})-(0[1-9]|1[0-2])\b/)
+  if (iso) return `${iso[1]}-${iso[2]}`
+  const nome = t.match(/\b(janeiro|fevereiro|mar[çc]o|abril|maio|junho|julho|agosto|setembro|outubro|novembro|dezembro)\b(?:\s*(?:de|\/)\s*(20\d{2}))?/)
+  if (nome) {
+    const mes = MESES_PT[nome[1]]
+    const ano = nome[2] ? Number(nome[2]) : new Date().getFullYear()
+    return `${ano}-${String(mes).padStart(2, '0')}`
+  }
+  const ref = new Date()
+  ref.setDate(1)
+  ref.setMonth(ref.getMonth() - 1)
+  return ref.toISOString().slice(0, 7)
+}
+
+function pedeEnvioDre(texto: string): boolean {
+  const t = texto.toLowerCase()
+  return /\bdre\b|demonstrativo de resultado/.test(t) && /\b(envia|enviar|envie|manda|mandar|mande|e-?mail|gera|gerar|gere)\b/.test(t)
+}
+
+async function enviarDrePorEmail(
+  supabase: ReturnType<typeof db>, empresaId: string, texto: string, emailPadrao: string | null,
+): Promise<string> {
+  const emailNoTexto = texto.match(/[\w.+-]+@[\w-]+\.[\w.-]+/)?.[0]
+  const destino = (emailNoTexto || emailPadrao || '').toLowerCase()
+  if (!destino) return 'Pra qual e-mail envio? Manda de novo com o endereço (ex.: "envia o DRE de maio pra contato@factorone.com.br").'
+
+  const competencia = extrairCompetencia(texto)
+  try {
+    const { gerarDrePdf } = await import('@/lib/pdf/dre')
+    const dre = await gerarDrePdf(supabase, empresaId, competencia)
+    if (dre.resumo.receita === 0 && dre.resumo.lucro === 0) {
+      return `Não achei métricas fechadas pra ${dre.periodo} — o DRE sairia zerado. Confere em Financeiro → DRE se a competência ${competencia} está calculada, ou me pede outro mês.`
+    }
+
+    const { enviarEmail } = await import('@/lib/email/enviar')
+    const fmt = (v: number) => v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+    const resultado = await enviarEmail({
+      para: destino,
+      assunto: `DRE ${dre.periodo} — ${dre.empresaNome}`,
+      html: `<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"></head>
+<body style="margin:0;padding:0;background:#f4f4ef;font-family:'Helvetica Neue',Arial,sans-serif">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4ef;padding:32px 16px"><tr><td align="center">
+    <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;border:1px solid #e5e2d9;overflow:hidden">
+      <tr><td style="background:#0C1D16;padding:22px 32px">
+        <div style="color:#ffffff;font-size:20px;font-weight:800">Factor<span style="color:#4ADE80">One</span></div>
+        <div style="color:#9FC3BB;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-top:2px">DRE Mensal</div>
+      </td></tr>
+      <tr><td style="padding:28px 32px">
+        <h1 style="margin:0 0 8px;font-size:18px;font-weight:800;color:#13201D">DRE de ${dre.periodo}</h1>
+        <p style="margin:0 0 16px;font-size:13px;line-height:1.7;color:#3C4A46">${dre.empresaNome} — demonstrativo completo em anexo (PDF).</p>
+        <table cellpadding="0" cellspacing="0" width="100%" style="font-size:13px;color:#3C4A46">
+          <tr><td style="padding:6px 0;border-bottom:1px solid #f0ede4">Receita Bruta</td><td align="right" style="font-weight:700;color:#13201D">${fmt(dre.resumo.receita)}</td></tr>
+          <tr><td style="padding:6px 0;border-bottom:1px solid #f0ede4">EBITDA</td><td align="right" style="font-weight:700;color:#13201D">${fmt(dre.resumo.ebitda)}</td></tr>
+          <tr><td style="padding:6px 0">Lucro Líquido (${dre.resumo.margem.toFixed(1)}%)</td><td align="right" style="font-weight:700;color:${dre.resumo.lucro >= 0 ? '#16A34A' : '#B0413E'}">${fmt(dre.resumo.lucro)}</td></tr>
+        </table>
+      </td></tr>
+      <tr><td style="padding:14px 32px 20px;border-top:1px solid #f0ede4">
+        <p style="margin:0;font-size:11px;color:#9AA6A2">Gerado e enviado pelo acessor FactorOne via Telegram</p>
+      </td></tr>
+    </table>
+  </td></tr></table>
+</body></html>`,
+      anexos: [{ filename: dre.filename, conteudoBase64: dre.buffer.toString('base64'), tipo: 'application/pdf' }],
+    })
+
+    if (!resultado.ok) return `Gerei o DRE de ${dre.periodo}, mas o envio falhou: ${resultado.erro}`
+    return `Feito ✅ DRE de ${dre.periodo} (${dre.empresaNome}) enviado pra ${destino}.\n\nResumo: receita ${fmt(dre.resumo.receita)} · EBITDA ${fmt(dre.resumo.ebitda)} · lucro líquido ${fmt(dre.resumo.lucro)} (${dre.resumo.margem.toFixed(1)}%).`
+  } catch (e) {
+    return `Não consegui gerar/enviar o DRE: ${e instanceof Error ? e.message : 'erro inesperado'}`
+  }
+}
+
 const TIPOS_ATIVIDADE = ['reuniao', 'ligacao', 'email', 'tarefa', 'visita', 'whatsapp', 'outro'] as const
 
 type ExtracaoAgendamento = {
@@ -231,7 +319,7 @@ export async function POST(req: NextRequest) {
     const supabase = db()
     const { data: usuario } = await supabase
       .from('usuarios')
-      .select('id, empresa_id, nome')
+      .select('id, empresa_id, nome, email')
       .eq('telegram_chat_id', chatId)
       .maybeSingle()
 
@@ -316,6 +404,14 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: true })
     }
 
+    // Pedido de envio do DRE — age de verdade (gera PDF + e-mail com anexo).
+    if (pedeEnvioDre(texto)) {
+      const resposta = await enviarDrePorEmail(supabase, empresaIdTg, texto, (usuario.email as string) ?? null)
+      await sendTelegram(chatId, resposta)
+      await supabase.from('lifeos_interacoes').insert({ empresa_id: empresaIdTg, origem: 'telegram', mensagem_usuario: texto, resposta_ia: resposta }).then(() => {})
+      return NextResponse.json({ ok: true })
+    }
+
     // Se parecer um pedido de agendamento, tenta agir de verdade (cria em
     // crm_atividades, ou pergunta antes conforme a regra de autonomia) em vez
     // de só responder em texto.
@@ -360,7 +456,9 @@ export async function POST(req: NextRequest) {
       const completion = await getAnthropic().messages.create({
         model: 'claude-haiku-4-5-20251001',
         max_tokens: 400,
-        system: `Você é o assistente financeiro FactorOne via Telegram. Responda em português, de forma MUITO concisa (máx 3 parágrafos curtos). Sem emojis em excesso. Seja direto como um CFO.
+        system: `Você é o acessor FactorOne via Telegram — assistente executivo (CEO/CFO) do dono do negócio. Responda em português, de forma MUITO concisa (máx 3 parágrafos curtos). Sem emojis em excesso. Seja direto como um CFO.
+
+AÇÕES QUE VOCÊ EXECUTA DE VERDADE (nunca diga que não consegue): enviar o DRE mensal por e-mail em PDF (o usuário pede "envia o DRE de <mês> pra <email>"), agendar reuniões/compromissos. Se o pedido for uma dessas ações mas você recebeu a mensagem aqui, oriente o usuário a formular assim. Outras ações (ler e-mails, responder leads) estão chegando — diga que estão em construção, não que são impossíveis.
 
 DADOS DA EMPRESA:
 ${JSON.stringify(contexto)}`,
