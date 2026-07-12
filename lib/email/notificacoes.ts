@@ -1,10 +1,4 @@
-import { Resend } from 'resend'
-
-const FROM = process.env.EMAIL_FROM || 'FactorOne <notificacoes@factorone.com.br>'
-
-function getResend() {
-  return new Resend(process.env.RESEND_API_KEY!)
-}
+import { enviarEmail } from '@/lib/email/enviar'
 
 export type TipoNotificacao =
   | 'reembolso_solicitado'
@@ -135,7 +129,6 @@ function baseHtml(corHeader: string, titulo: string, corpo: string, para: string
 }
 
 export async function emailBoasVindas(para: string, nomeEmpresa: string): Promise<boolean> {
-  if (!process.env.RESEND_API_KEY) return false
   const corpo = `
     <p style="margin:0 0 16px;font-size:15px;font-weight:700;color:#1a2b4a">Bem-vindo ao FactorOne, ${nomeEmpresa}!</p>
     <p style="margin:0 0 20px;font-size:13px;line-height:1.7;color:#334155">Sua conta está configurada e pronta para uso. Veja por onde começar:</p>
@@ -153,10 +146,8 @@ export async function emailBoasVindas(para: string, nomeEmpresa: string): Promis
         Acessar o dashboard →
       </a>
     </div>`
-  try {
-    const { error } = await getResend().emails.send({ from: FROM, to: para, subject: `Bem-vindo ao FactorOne, ${nomeEmpresa}!`, html: baseHtml('#1A2B4A', `Bem-vindo, ${nomeEmpresa}!`, corpo, para) })
-    return !error
-  } catch { return false }
+  const r = await enviarEmail({ para, assunto: `Bem-vindo ao FactorOne, ${nomeEmpresa}!`, html: baseHtml('#1A2B4A', `Bem-vindo, ${nomeEmpresa}!`, corpo, para) })
+  return r.ok
 }
 
 export async function emailConviteContador(
@@ -165,7 +156,6 @@ export async function emailConviteContador(
   nomeEmpresa: string,
   accessUrl: string,
 ): Promise<boolean> {
-  if (!process.env.RESEND_API_KEY) return false
   const corpo = `
     <p style="margin:0 0 16px;font-size:15px;font-weight:700;color:#1a2b4a">Olá, ${nomeContador}!</p>
     <p style="margin:0 0 18px;font-size:13px;line-height:1.7;color:#334155">
@@ -183,19 +173,15 @@ export async function emailConviteContador(
       Este link é pessoal e dá acesso aos dados financeiros de ${nomeEmpresa} — não compartilhe.
       Se você não esperava este convite, ignore este e-mail.
     </p>`
-  try {
-    const { error } = await getResend().emails.send({
-      from: FROM,
-      to: para,
-      subject: `${nomeEmpresa} convidou você para a contabilidade no FactorOne`,
-      html: baseHtml('#0f766e', 'Convite — Portal do Contador', corpo, para),
-    })
-    return !error
-  } catch { return false }
+  const r = await enviarEmail({
+    para,
+    assunto: `${nomeEmpresa} convidou você para a contabilidade no FactorOne`,
+    html: baseHtml('#0f766e', 'Convite — Portal do Contador', corpo, para),
+  })
+  return r.ok
 }
 
 export async function emailDasAlert(para: string, nomeEmpresa: string, valor: number, vencimento: string): Promise<boolean> {
-  if (!process.env.RESEND_API_KEY) return false
   const corpo = `
     <p style="margin:0 0 16px;font-size:14px;line-height:1.7;color:#334155">
       O <strong>DAS (Simples Nacional)</strong> de <strong>${nomeEmpresa}</strong> vence em breve:
@@ -208,14 +194,11 @@ export async function emailDasAlert(para: string, nomeEmpresa: string, valor: nu
     <a href="${APP_URL}/dashboard/contabilidade" style="display:inline-block;background:#B8922A;color:#fff;text-decoration:none;padding:11px 24px;border-radius:8px;font-size:13px;font-weight:700">
       Ver detalhes no FactorOne →
     </a>`
-  try {
-    const { error } = await getResend().emails.send({ from: FROM, to: para, subject: `⚠️ DAS vencendo — ${nomeEmpresa}`, html: baseHtml('#B8922A', 'DAS vencendo em breve', corpo, para) })
-    return !error
-  } catch { return false }
+  const r = await enviarEmail({ para, assunto: `⚠️ DAS vencendo — ${nomeEmpresa}`, html: baseHtml('#B8922A', 'DAS vencendo em breve', corpo, para) })
+  return r.ok
 }
 
 export async function emailSaldoBaixo(para: string, nomeEmpresa: string, saldo: number, limite: number): Promise<boolean> {
-  if (!process.env.RESEND_API_KEY) return false
   const corpo = `
     <p style="margin:0 0 16px;font-size:14px;line-height:1.7;color:#334155">
       O saldo da conta de <strong>${nomeEmpresa}</strong> está abaixo do limite configurado:
@@ -235,10 +218,8 @@ export async function emailSaldoBaixo(para: string, nomeEmpresa: string, saldo: 
     <a href="${APP_URL}/dashboard/conta-pj" style="display:inline-block;background:#C0504A;color:#fff;text-decoration:none;padding:11px 24px;border-radius:8px;font-size:13px;font-weight:700">
       Ver conta bancária →
     </a>`
-  try {
-    const { error } = await getResend().emails.send({ from: FROM, to: para, subject: `🔴 Saldo baixo — ${nomeEmpresa}`, html: baseHtml('#C0504A', 'Alerta de saldo baixo', corpo, para) })
-    return !error
-  } catch { return false }
+  const r = await enviarEmail({ para, assunto: `🔴 Saldo baixo — ${nomeEmpresa}`, html: baseHtml('#C0504A', 'Alerta de saldo baixo', corpo, para) })
+  return r.ok
 }
 
 export async function emailRelatorioMensal(
@@ -248,7 +229,6 @@ export async function emailRelatorioMensal(
   metricas: { receita_bruta: number; despesas_operacionais: number; lucro_liquido: number },
   variacaoLucroPct: number | null
 ): Promise<boolean> {
-  if (!process.env.RESEND_API_KEY) return false
   const variacaoTxt = variacaoLucroPct === null
     ? ''
     : `<div style="font-size:12px;color:${variacaoLucroPct >= 0 ? '#047857' : '#B91C1C'};margin-top:4px">${variacaoLucroPct >= 0 ? '▲' : '▼'} ${Math.abs(variacaoLucroPct).toFixed(1)}% vs. mês anterior</div>`
@@ -274,27 +254,16 @@ export async function emailRelatorioMensal(
     <a href="${APP_URL}/dashboard/relatorios" style="display:inline-block;background:#3D7A6E;color:#fff;text-decoration:none;padding:11px 24px;border-radius:8px;font-size:13px;font-weight:700">
       Ver DRE completo →
     </a>`
-  try {
-    const { error } = await getResend().emails.send({
-      from: FROM, to: para, subject: `Resumo de ${competenciaLabel} — ${nomeEmpresa}`,
-      html: baseHtml('#3D7A6E', `Resumo financeiro · ${competenciaLabel}`, corpo, para),
-    })
-    return !error
-  } catch { return false }
+  const r = await enviarEmail({
+    para,
+    assunto: `Resumo de ${competenciaLabel} — ${nomeEmpresa}`,
+    html: baseHtml('#3D7A6E', `Resumo financeiro · ${competenciaLabel}`, corpo, para),
+  })
+  return r.ok
 }
 
 export async function enviarNotificacao({ tipo, para, dados }: EnviarNotificacaoParams): Promise<boolean> {
-  if (!process.env.RESEND_API_KEY) return false
   const cfg = CONFIGS[tipo]
-  try {
-    const { error } = await getResend().emails.send({
-      from: FROM,
-      to: para,
-      subject: cfg.assunto,
-      html: buildHtml(cfg, dados, para),
-    })
-    return !error
-  } catch {
-    return false
-  }
+  const r = await enviarEmail({ para, assunto: cfg.assunto, html: buildHtml(cfg, dados, para) })
+  return r.ok
 }
