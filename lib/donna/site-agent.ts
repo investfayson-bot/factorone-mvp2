@@ -33,6 +33,36 @@ type CanalAtendimento = 'site' | 'telegram'
 
 const ORIGEM_LABEL: Record<CanalAtendimento, string> = { site: 'do seu site', telegram: 'do Telegram' }
 
+// Fase 6 — preenchimento automático do Pipeline: sinal de intenção de
+// compra na conversa cria o card em Prospect (temperatura sugerida pela
+// heurística; "quente" quando há urgência). Fire-and-forget: qualquer erro
+// aqui não pode derrubar o atendimento.
+const INTENCAO_COMPRA = /\b(or[çc]amento|proposta|pre[çc]o|quanto custa|valor d[oa]|contratar|comprar|fechar neg[óo]cio|desconto|plano|assinar)\b/i
+const URGENCIA = /\b(urgente|hoje|agora|amanh[ãa]|essa semana|o quanto antes|r[áa]pido)\b/i
+
+async function detectarIntencaoCompra(
+  supabase: SupabaseClient, empresaId: string, conversaId: string, mensagem: string, canal: CanalAtendimento,
+): Promise<void> {
+  try {
+    if (!INTENCAO_COMPRA.test(mensagem)) return
+    const { data: conversa } = await supabase.from('atendimento_conversas').select('visitante_nome, visitante_email').eq('id', conversaId).maybeSingle()
+    const nome = (conversa?.visitante_nome as string | null)?.trim()
+    if (!nome) return // sem nome não dá pra criar card útil
+    const { garantirCardPipeline } = await import('@/lib/crm/pipeline-auto')
+    const { criado } = await garantirCardPipeline(supabase, {
+      empresaId,
+      titulo: nome,
+      contato: nome,
+      temperatura: URGENCIA.test(mensagem) ? 'quente' : 'morno',
+      origem: 'ia',
+      detalheOrigem: `IA detectou intenção de compra numa conversa ${ORIGEM_LABEL[canal]}: "${mensagem.slice(0, 100)}"`,
+    })
+    if (criado) {
+      await registrarAcaoAgente(supabase, empresaId, 'donna', 'Criou um card no Pipeline a partir de uma conversa', { detalhe: `${nome} — intenção de compra detectada` })
+    }
+  } catch { /* nunca derruba o atendimento */ }
+}
+
 export async function processarMensagemVisitante(
   supabase: SupabaseClient,
   empresaId: string,
@@ -45,6 +75,9 @@ export async function processarMensagemVisitante(
   const regra = encontrarRegra(regras, canal === 'telegram' ? 'telegram' : 'site', mensagemVisitante)
   const autonomia = regra?.autonomia ?? 'rascunho'
   const { contexto, agendaToken } = await montarContextoNegocio(supabase, empresaId)
+
+  // não-bloqueante: alimenta o Pipeline se houver sinal de compra
+  void detectarIntencaoCompra(supabase, empresaId, conversaId, mensagemVisitante, canal)
 
   const system = `Você é a Donna, atendente virtual deste negócio, respondendo contatos ${ORIGEM_LABEL[canal]}.
 CONTEXTO DO NEGÓCIO:

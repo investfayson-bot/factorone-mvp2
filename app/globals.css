@@ -536,3 +536,44 @@ tr:hover td { background: var(--surface-2); }
 .class-status-v2.aguardando { background: var(--warn-soft); color: var(--warn); border: 1px dashed var(--warn); }
 .class-status-v2.sugestao { background: var(--warn-soft); color: var(--warn); }
 .origem-badge-v2 { font-size: 10px; font-weight: 700; color: var(--mut); }
+
+/* ---- Fase 6: Pipeline Kanban com temperatura (08-crm.html, verbatim) ---- */
+.kanban { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; }
+.kb-col { background: var(--bg); border-radius: var(--r); padding: 10px; min-height: 120px; }
+.kb-col.drag-over { outline: 2px dashed var(--acc); outline-offset: -2px; }
+.kb-h { display: flex; justify-content: space-between; align-items: center; padding: 2px 4px 9px; font-size: 12px; font-weight: 800; }
+.kb-h span { color: var(--mut2); font-weight: 700; font-size: 11px; }
+.kb-card { background: var(--card); border: 1px solid var(--line); border-radius: 9px; padding: 10px 11px; margin-bottom: 8px; cursor: pointer; }
+.kb-card.selected { box-shadow: 0 0 0 2px var(--acc); }
+.kb-card.ia { border-color: var(--acc); background: var(--acc-soft); }
+.kb-card b { font-size: 12px; display: block; margin-bottom: 2px; }
+.kb-card .co { font-size: 10.5px; color: var(--mut2); font-weight: 600; }
+.kb-card .val { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 12.5px; margin-top: 6px; }
+.temp { display: inline-flex; align-items: center; gap: 4px; font-size: 9.5px; font-weight: 800; padding: 2px 7px; border-radius: 20px; margin-top: 6px; }
+.temp.hot { background: #FEE2E2; color: #DC2626; }
+.temp.warm { background: var(--warn-soft); color: var(--warn); }
+.temp.cold { background: #DBEAFE; color: #2563EB; }
+.stale { font-size: 9.5px; color: var(--neg); font-weight: 800; margin-top: 5px; display: block; }
+.ia-negociando { font-size: 9.5px; font-weight: 800; color: var(--acc-ink); margin-top: 5px; display: block; }
+
+/* ---- Fase 6: Alçada de negociação (card escuro) ---- */
+.alc { background: linear-gradient(135deg,#0C1D16,#143526); border-radius: var(--r); padding: 14px 16px; color: #DCE7E0; }
+.alc .tag { background: #22C55E; color: #06130C; font-size: 9.5px; font-weight: 800; padding: 2px 7px; border-radius: 5px; letter-spacing: .05em; font-family: 'Space Grotesk', sans-serif; }
+.alc h3 { color: #fff; font-size: 13.5px; margin: 9px 0 10px; }
+.alc-row { display: flex; align-items: center; justify-content: space-between; padding: 9px 0; border-bottom: 1px solid rgba(255,255,255,.08); font-size: 12px; gap: 12px; }
+.alc-row:last-child { border: 0; }
+.alc-row b { color: #fff; }
+.alc-row small { color: #9DB0A6; font-weight: 600; display: block; font-size: 10.5px; }
+.range { display: flex; align-items: center; gap: 8px; }
+.range .track { width: 90px; height: 6px; background: rgba(255,255,255,.12); border-radius: 4px; position: relative; }
+.range .track i { position: absolute; left: 0; top: 0; height: 100%; background: #22C55E; border-radius: 4px; }
+.alc .foot { font-size: 10.5px; color: #9DB0A6; margin-top: 10px; line-height: 1.5; }
+.alc .foot b { color: #4ADE80; }
+
+/* ---- Fase 6: log de auditoria da negociação ---- */
+.audit { display: flex; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--bg); font-size: 11.5px; }
+.audit:last-child { border: 0; }
+.audit .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--acc); margin-top: 5px; flex-shrink: 0; }
+.audit .dot.warn { background: var(--warn); }
+.audit b { display: block; font-weight: 700; }
+.audit small { color: var(--mut2); font-weight: 600; }

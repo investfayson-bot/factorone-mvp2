@@ -452,6 +452,33 @@ function ConversasContent() {
           <div style={{ padding: '10px 16px', borderBottom: '1px solid var(--line-soft)', fontSize: 12.5, fontWeight: 800, color: 'var(--ink)' }}>
             Automação{canalAtivo ? ` · ${CANAL_META[canalAtivo].label}` : ''}
           </div>
+          {/* Fase 6 — classificar temperatura aqui cria/atualiza o card no
+              Pipeline automaticamente (spec: de qualquer tela do sistema) */}
+          {selecionado?.tipo === 'conversa' && selecionado.conversa.visitante_nome && (
+            <div style={{ padding: '10px 16px', borderBottom: '1px solid var(--line-soft)' }}>
+              <div style={{ fontSize: 10.5, fontWeight: 800, color: 'var(--ink-mut)', textTransform: 'uppercase', letterSpacing: '.05em', marginBottom: 6 }}>Temperatura do lead</div>
+              <div style={{ display: 'flex', gap: 4 }}>
+                {([['frio', 'cold', 'Frio'], ['morno', 'warm', 'Morno'], ['quente', 'hot', 'Quente']] as const).map(([t, classe, label]) => (
+                  <span
+                    key={t}
+                    className={`temp ${classe}`}
+                    style={{ margin: 0, cursor: 'pointer' }}
+                    onClick={async () => {
+                      const conv = selecionado.conversa
+                      const r = await fetch('/api/crm/classificar-temperatura', {
+                        method: 'POST', headers: { 'Content-Type': 'application/json', ...auth },
+                        body: JSON.stringify({ titulo: conv.visitante_nome, contato: conv.visitante_nome, temperatura: t, origem_detalhe: `Classificado na conversa (${conv.canal})` }),
+                      })
+                      const d = await r.json() as { ok?: boolean; criado?: boolean; error?: string }
+                      if (r.ok && d.ok) toast.success(d.criado ? 'Card criado no Pipeline (Prospect)' : 'Temperatura atualizada no Pipeline')
+                      else toast.error(d.error || 'Falha ao classificar')
+                    }}
+                  >{label}</span>
+                ))}
+              </div>
+              <div style={{ fontSize: 10, color: 'var(--ink-mut)', marginTop: 5 }}>Classificar cria o card no Pipeline se ainda não existir.</div>
+            </div>
+          )}
           {!canalAtivo ? (
             <div style={{ padding: '18px 16px', fontSize: 12.5, color: 'var(--ink-mut)' }}>Selecione uma conversa pra ver as regras do canal.</div>
           ) : canalAtivo === 'whatsapp' || canalAtivo === 'instagram' ? (
