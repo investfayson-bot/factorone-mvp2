@@ -234,13 +234,13 @@ export default function DashboardPage() {
           {/* 1. Hero */}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 280px', gap: 14 }}>
             <div className="card-v2">
-              <div style={{ fontSize: 18, fontWeight: 800, fontFamily: "'Space Grotesk', sans-serif", color: 'var(--ink)' }}>{saudacao}, {nome} 👋</div>
+              <div style={{ fontSize: 18, fontWeight: 700, fontFamily: "'Space Grotesk', sans-serif", color: 'var(--ink)' }}>{saudacao}, {nome} 👋</div>
               <div style={{ fontSize: 12.5, color: 'var(--mut)', marginTop: 4, textTransform: 'capitalize' }}>{empresaNome || 'Sua operação'} · {dataLabel}</div>
             </div>
             <div className="card-v2">
               <div style={{ fontSize: 10.5, fontWeight: 700, color: 'var(--mut)', textTransform: 'uppercase', letterSpacing: '.06em' }}>Score da Empresa</div>
               <div style={{ display: 'flex', alignItems: 'baseline', gap: 4, marginTop: 4 }}>
-                <span style={{ fontSize: 30, fontWeight: 800, fontFamily: "'Space Grotesk', sans-serif", color: 'var(--ink)' }}>{scoreScaled ?? '—'}</span>
+                <span style={{ fontSize: 30, fontWeight: 700, fontFamily: "'Space Grotesk', sans-serif", color: 'var(--ink)' }}>{scoreScaled ?? '—'}</span>
                 <span style={{ fontSize: 13, color: 'var(--mut)' }}>/100</span>
               </div>
               <span className={`chip-v2 ${scoreScaled === null ? 'y' : scoreScaled >= 80 ? 'g' : scoreScaled >= 60 ? 'g' : scoreScaled >= 40 ? 'y' : 'r'}`}>{scoreLabel}</span>

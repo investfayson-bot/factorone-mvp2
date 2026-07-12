@@ -1,9 +1,12 @@
 'use client'
 import GenericCrud from '@/components/apps/GenericCrud'
 import { formatBRL } from '@/lib/currency-brl'
+import VoltarSolucao from '@/components/dashboard/VoltarSolucao'
 
 export default function CobrancasPage() {
   return (
+    <>
+    <VoltarSolucao href="/dashboard/financeiro/visao-geral" label="Financeiro" />
     <GenericCrud
       table="assinaturas_cobranca"
       titulo="Subscription Billing"
@@ -33,5 +36,6 @@ export default function CobrancasPage() {
         { label: 'MRR (mensal ativo)', value: rows => formatBRL(rows.filter(r => r.status === 'ativa' && r.ciclo === 'mensal').reduce((s, r) => s + Number(r.valor ?? 0), 0)) },
       ]}
     />
+    </>
   )
 }

@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
@@ -45,6 +45,8 @@ async function authHeaders(): Promise<Record<string, string>> {
 export default function FinanceiroLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const [mostrarMais, setMostrarMais] = useState(false)
+  const [maisPos, setMaisPos] = useState({ top: 0, left: 0 })
+  const maisRef = useRef<HTMLDivElement>(null)
   const [counts, setCounts] = useState<{ pagar: number; receber: number }>({ pagar: 0, receber: 0 })
   const [exportando, setExportando] = useState(false)
 
@@ -110,23 +112,32 @@ export default function FinanceiroLayout({ children }: { children: React.ReactNo
               {t.countKey && <span className="cnt">{counts[t.countKey]}</span>}
             </Link>
           ))}
-          <div style={{ position: 'relative' }}>
-            <div className="mod-tab" onClick={() => setMostrarMais(v => !v)}>Mais ▾</div>
-            {mostrarMais && (
-              <>
-                <div style={{ position: 'fixed', inset: 0, zIndex: 9 }} onClick={() => setMostrarMais(false)} />
-                <div style={{ position: 'absolute', top: '100%', left: 0, background: 'var(--card)', border: '1px solid var(--line)', borderRadius: 10, boxShadow: '0 8px 24px rgba(0,0,0,.12)', padding: 6, minWidth: 210, zIndex: 10 }}>
-                  {MAIS.map(m => (
-                    <Link key={m.label} href={m.href} onClick={() => setMostrarMais(false)} style={{ display: 'block', padding: '8px 10px', borderRadius: 7, fontSize: 12.5, fontWeight: 600, color: 'var(--ink)', textDecoration: 'none' }}>
-                      {m.label}
-                    </Link>
-                  ))}
-                </div>
-              </>
-            )}
+          <div style={{ position: 'relative' }} ref={maisRef}>
+            <div
+              className="mod-tab"
+              onClick={() => {
+                const r = maisRef.current?.getBoundingClientRect()
+                if (r) setMaisPos({ top: r.bottom, left: r.left })
+                setMostrarMais(v => !v)
+              }}
+            >
+              Mais ▾
+            </div>
           </div>
         </div>
       </div>
+      {mostrarMais && (
+        <>
+          <div style={{ position: 'fixed', inset: 0, zIndex: 9 }} onClick={() => setMostrarMais(false)} />
+          <div style={{ position: 'fixed', top: maisPos.top, left: maisPos.left, background: 'var(--card)', border: '1px solid var(--line)', borderRadius: 10, boxShadow: '0 8px 24px rgba(0,0,0,.12)', padding: 6, minWidth: 210, zIndex: 10 }}>
+            {MAIS.map(m => (
+              <Link key={m.label} href={m.href} onClick={() => setMostrarMais(false)} style={{ display: 'block', padding: '8px 10px', borderRadius: 7, fontSize: 12.5, fontWeight: 600, color: 'var(--ink)', textDecoration: 'none' }}>
+                {m.label}
+              </Link>
+            ))}
+          </div>
+        </>
+      )}
       <div style={{ padding: '14px 24px 0' }}>
         {children}
       </div>

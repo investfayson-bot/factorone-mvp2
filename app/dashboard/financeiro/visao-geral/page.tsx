@@ -193,7 +193,7 @@ export default function VisaoGeralFinanceiro() {
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
           <div className="insights-v2">
-            <span style={{ fontSize: 9.5, fontWeight: 800, background: 'var(--acc2)', color: '#06130C', padding: '2px 7px', borderRadius: 5, letterSpacing: '.05em', fontFamily: "'Space Grotesk', sans-serif" }}>FACTORONE AI</span>
+            <span style={{ fontSize: 9.5, fontWeight: 700, background: 'var(--acc2)', color: '#06130C', padding: '2px 7px', borderRadius: 5, letterSpacing: '.05em', fontFamily: "'Space Grotesk', sans-serif" }}>FACTORONE AI</span>
             {insight ? (
               <>
                 <h3 style={{ color: '#fff', fontSize: 13.5, margin: '9px 0 6px' }}>Fique de olho nas duplicatas atrasadas</h3>

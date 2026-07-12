@@ -8,6 +8,7 @@ import { formatBRL } from '@/lib/currency-brl'
 import { CATEGORIAS_PADRAO } from '@/lib/despesas-categorizacao'
 import Modal from '@/components/ui/Modal'
 import * as XLSX from 'xlsx'
+import VoltarSolucao from '@/components/dashboard/VoltarSolucao'
 
 type DespesaRow = {
   id: string
@@ -386,6 +387,7 @@ export default function DespesasPage() {
 
   return (
     <>
+      <VoltarSolucao href="/dashboard/financeiro/visao-geral" label="Financeiro" />
       {/* Header */}
       <div className="page-hdr">
         <div>

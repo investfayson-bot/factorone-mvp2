@@ -9,6 +9,7 @@ import OrcamentoWizard from '@/components/orcamento/OrcamentoWizard'
 import EditarLinhaModal from '@/components/orcamento/EditarLinhaModal'
 import SuplementacaoModal from '@/components/orcamento/SuplementacaoModal'
 import { calcularResumoOrcamento } from '@/lib/orcamento/engine'
+import VoltarSolucao from '@/components/dashboard/VoltarSolucao'
 
 type Orcamento = { id: string; nome: string; ano_fiscal: number; status: string; versao: number }
 type Linha = { id: string; categoria: string; centro_custo_id: string | null; mes: number; ano: number; valor_previsto: number; valor_realizado: number; variacao: number; variacao_pct: number }
@@ -104,6 +105,7 @@ export default function OrcamentoPage() {
 
   return (
     <>
+      <VoltarSolucao href="/dashboard/financeiro/visao-geral" label="Financeiro" />
       <div className="page-hdr">
         <div>
           <div className="page-title">Orçamento Anual {ano}</div>

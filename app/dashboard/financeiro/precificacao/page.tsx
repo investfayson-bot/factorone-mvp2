@@ -23,10 +23,12 @@ type Form = {
 // que dá pra escolher (o "Unidade: hora" antigo passava batido).
 const UNIDADES: { valor: string; rotulo: string }[] = [
   { valor: 'hora', rotulo: 'por hora' },
+  { valor: 'dia', rotulo: 'por dia' },
   { valor: 'item', rotulo: 'por item / unidade' },
   { valor: 'kg', rotulo: 'por peso (kg)' },
   { valor: 'L', rotulo: 'por litro (L)' },
   { valor: 'm', rotulo: 'por metro (m)' },
+  { valor: 'lb', rotulo: 'por libra (lb)' },
 ]
 
 const FORM_VAZIO: Form = {

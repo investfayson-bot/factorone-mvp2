@@ -4,6 +4,7 @@ import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
 import { formatBRL } from '@/lib/currency-brl'
 import Modal from '@/components/ui/Modal'
+import VoltarSolucao from '@/components/dashboard/VoltarSolucao'
 
 type Reembolso = {
   id: string
@@ -232,6 +233,7 @@ export default function ReembolsosPage() {
 
   return (
     <>
+      <VoltarSolucao href="/dashboard/financeiro/visao-geral" label="Financeiro" />
       <div className="page-hdr">
         <div>
           <div className="page-title">Reembolsos</div>

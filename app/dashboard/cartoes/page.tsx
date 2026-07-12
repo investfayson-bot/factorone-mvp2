@@ -4,6 +4,7 @@ import { supabase } from '@/lib/supabase'
 import { formatBRL } from '@/lib/currency-brl'
 import toast from 'react-hot-toast'
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts'
+import VoltarSolucao from '@/components/dashboard/VoltarSolucao'
 
 type Cartao = {
   id: string; nome: string; bandeira: string; limite: number
@@ -189,6 +190,7 @@ export default function CartoesPage() {
 
   return (
     <>
+      <VoltarSolucao href="/dashboard/banco/cartoes" label="Banco" />
       {/* Header */}
       <div className="page-hdr">
         <div>
