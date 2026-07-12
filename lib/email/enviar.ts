@@ -3,9 +3,9 @@
 // (MAILTRAP_TOKEN/MAILTRAP_FROM). Devolve qual provedor saiu e o erro real
 // de cada tentativa, nunca sucesso de mentira.
 //
-// Atenção Mailtrap: o domínio demo (demomailtrap.co) só entrega pro e-mail
-// do dono da conta — serve pra teste; produção de verdade exige domínio
-// próprio verificado lá também.
+// 2026-07-12: domínio demo do Mailtrap (demomailtrap.co) estourou a cota
+// compartilhada e foi desativado. factorone.com.br já está verificado lá —
+// é o remetente padrão agora enquanto o Resend não sai do ar.
 
 export type ResultadoEnvio = { ok: boolean; provedor?: 'resend' | 'mailtrap'; erro?: string }
 
@@ -39,7 +39,7 @@ export async function enviarEmail(opts: { para: string; assunto: string; html: s
   if (process.env.MAILTRAP_TOKEN) {
     try {
       // From "Nome <email>" pro formato da API do Mailtrap
-      const fromRaw = process.env.MAILTRAP_FROM || 'FactorOne <hello@demomailtrap.co>'
+      const fromRaw = process.env.MAILTRAP_FROM || 'FactorOne <contato@factorone.com.br>'
       const m = fromRaw.match(/^(.*?)\s*<(.+)>$/)
       const from = m ? { name: m[1].trim() || 'FactorOne', email: m[2].trim() } : { name: 'FactorOne', email: fromRaw.trim() }
 
