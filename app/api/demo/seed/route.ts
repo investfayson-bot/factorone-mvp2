@@ -202,14 +202,13 @@ export async function POST(req: NextRequest) {
   resultado.atividades = 1
 
   // ── Conversa (Agentes IA — widget do site, aguardando humano) ────────────
-  // NOTA: colunas `motivo` e `canal` (migrations 20260711010000/020000) ainda
-  // não existem no banco remoto — ver aviso separado. Omitidas aqui até serem
-  // aplicadas, senão o insert falha inteiro.
   const { data: conversa, error: errConv } = await db.from('atendimento_conversas').insert({
     empresa_id: empresaId,
     visitante_nome: `Rafael Souza ${DEMO_TAG}`,
     visitante_email: 'rafael.souza@exemplo.com',
     status: 'aguardando_humano',
+    motivo: 'Cliente pediu desconto acima do limite da IA — precisa de aprovação humana.',
+    canal: 'site',
   }).select('id').single()
   if (errConv) return NextResponse.json({ error: `atendimento_conversas: ${errConv.message}`, parcial: resultado }, { status: 500 })
   resultado.conversas = 1
