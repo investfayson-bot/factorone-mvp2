@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase'
+import toast from 'react-hot-toast'
 
 type Membro = {
   id: string
@@ -10,6 +11,11 @@ type Membro = {
   status: string
   created_at: string
   user_id: string | null
+  token: string | null
+}
+
+function linkConvite(token: string) {
+  return `${window.location.origin}/equipe/aceitar/${token}`
 }
 
 const ROLES: Record<string, { label: string; desc: string; color: string; bg: string }> = {
@@ -29,6 +35,9 @@ export default function EquipePage() {
   const [showConvidar, setShowConvidar] = useState(false)
   const [saving, setSaving] = useState(false)
   const [conviteEnviado, setConviteEnviado] = useState('')
+  const [conviteEmailFalhou, setConviteEmailFalhou] = useState(false)
+  const [conviteToken, setConviteToken] = useState('')
+  const [reenviando, setReenviando] = useState('')
   const [form, setForm] = useState({ email: '', nome: '', role: 'viewer' })
   const [currentUserEmail, setCurrentUserEmail] = useState('')
   const [meuRole, setMeuRole] = useState('admin')
@@ -36,11 +45,11 @@ export default function EquipePage() {
 
   useEffect(() => { carregar() }, [])
 
-  async function carregar() {
+  async function carregar(): Promise<Membro[]> {
     setLoading(true)
     try {
       const { data: { user } } = await supabase.auth.getUser()
-      if (!user) return
+      if (!user) return []
       setCurrentUserEmail(user.email ?? '')
       const { data: ur } = await supabase.from('usuarios').select('empresa_id').eq('id', user.id).maybeSingle()
       const eid = ur?.empresa_id ?? user.id
@@ -53,37 +62,63 @@ export default function EquipePage() {
       // Dono do workspace (sem empresa_id próprio) é admin; membro convidado carrega seu role.
       const mine = lista.find(m => m.email === user.email && m.status !== 'revogado')
       setMeuRole(!ur?.empresa_id ? 'admin' : (mine?.role ?? 'admin'))
+      return lista
     } finally {
       setLoading(false)
     }
+  }
+
+  async function enviarConvite(body: { email: string; nome?: string; role: string }) {
+    const { data: sess } = await supabase.auth.getSession()
+    const res = await fetch('/api/equipe/convidar', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${sess.session?.access_token ?? ''}`,
+      },
+      body: JSON.stringify(body),
+    })
+    return await res.json() as { ok?: boolean; email_enviado?: boolean; email_erro?: string | null; error?: string }
   }
 
   async function convidar() {
     if (!form.email) return
     setSaving(true)
     try {
-      const { data: sess } = await supabase.auth.getSession()
-      const res = await fetch('/api/equipe/convidar', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${sess.session?.access_token ?? ''}`,
-        },
-        body: JSON.stringify(form),
-      })
-      const d = await res.json() as { ok?: boolean; email_enviado?: boolean; email_erro?: string | null; error?: string }
+      const d = await enviarConvite(form)
       if (d.ok) {
-        if (d.email_enviado === false) {
-          alert(`Convite registrado, mas o e-mail NÃO foi enviado${d.email_erro ? ` (${d.email_erro})` : ''}. Compartilhe o link de aceite manualmente.`)
-        }
-        setConviteEnviado(form.email)
+        const emailFalhou = d.email_enviado === false
+        const emailConvidado = form.email
+        setConviteEmailFalhou(emailFalhou)
+        setConviteEnviado(emailConvidado)
         setForm({ email: '', nome: '', role: 'viewer' })
-        await carregar()
+        const lista = await carregar()
+        if (emailFalhou) {
+          const criado = lista.find(m => m.email === emailConvidado)
+          if (criado?.token) setConviteToken(criado.token)
+          toast.error(`E-mail não enviado${d.email_erro ? `: ${d.email_erro}` : ''}. Copie o link de convite abaixo.`, { duration: 6000 })
+        }
       } else {
-        alert(d.error ?? 'Erro ao convidar')
+        toast.error(d.error ?? 'Erro ao convidar')
       }
     } finally {
       setSaving(false)
+    }
+  }
+
+  async function reenviar(m: Membro) {
+    setReenviando(m.id)
+    try {
+      const d = await enviarConvite({ email: m.email, nome: m.nome ?? undefined, role: m.role })
+      if (!d.ok) { toast.error(d.error ?? 'Erro ao reenviar'); return }
+      if (d.email_enviado === false) {
+        toast.error(`E-mail não enviado${d.email_erro ? `: ${d.email_erro}` : ''}. Use "Copiar link".`, { duration: 6000 })
+      } else {
+        toast.success('Convite reenviado')
+      }
+      await carregar()
+    } finally {
+      setReenviando('')
     }
   }
 
@@ -211,11 +246,32 @@ export default function EquipePage() {
                   </td>
                   <td style={{ fontSize: 14 }}>{new Date(m.created_at).toLocaleDateString('pt-BR')}</td>
                   <td>
-                    {m.status !== 'revogado' && (
-                      <button onClick={() => void revogar(m.id)} className="btn-action btn-ghost" style={{ fontSize: 13, padding: '3px 10px', color: '#B0413E', borderColor: 'rgba(176,65,62,.3)' }}>
-                        Revogar
-                      </button>
-                    )}
+                    <div style={{ display: 'flex', gap: 6, justifyContent: 'flex-end' }}>
+                      {m.status === 'pendente' && m.token && (
+                        <button
+                          onClick={() => { void navigator.clipboard.writeText(linkConvite(m.token as string)); toast.success('Link copiado') }}
+                          className="btn-action btn-ghost"
+                          style={{ fontSize: 13, padding: '3px 10px' }}
+                        >
+                          Copiar link
+                        </button>
+                      )}
+                      {m.status === 'pendente' && (
+                        <button
+                          onClick={() => void reenviar(m)}
+                          disabled={reenviando === m.id}
+                          className="btn-action btn-ghost"
+                          style={{ fontSize: 13, padding: '3px 10px' }}
+                        >
+                          {reenviando === m.id ? 'Reenviando...' : 'Reenviar'}
+                        </button>
+                      )}
+                      {m.status !== 'revogado' && (
+                        <button onClick={() => void revogar(m.id)} className="btn-action btn-ghost" style={{ fontSize: 13, padding: '3px 10px', color: '#B0413E', borderColor: 'rgba(176,65,62,.3)' }}>
+                          Revogar
+                        </button>
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -235,12 +291,28 @@ export default function EquipePage() {
 
             {conviteEnviado ? (
               <div style={{ textAlign: 'center', padding: '24px 0' }}>
-                <i className="fa-solid fa-circle-check" style={{ fontSize: 48, color: '#3D7A6E', marginBottom: 16, display: 'block' }} />
-                <div style={{ fontWeight: 700, fontSize: 16, marginBottom: 8 }}>Convite enviado!</div>
-                <div style={{ fontSize: 15, color: '#7B8C88' }}>Um e-mail foi enviado para <strong>{conviteEnviado}</strong> com o link de acesso.</div>
+                <i className={`fa-solid ${conviteEmailFalhou ? 'fa-triangle-exclamation' : 'fa-circle-check'}`} style={{ fontSize: 48, color: conviteEmailFalhou ? '#B08A3E' : '#3D7A6E', marginBottom: 16, display: 'block' }} />
+                <div style={{ fontWeight: 700, fontSize: 16, marginBottom: 8 }}>{conviteEmailFalhou ? 'Convite registrado, e-mail não enviado' : 'Convite enviado!'}</div>
+                <div style={{ fontSize: 15, color: '#7B8C88' }}>
+                  {conviteEmailFalhou
+                    ? <>O convite para <strong>{conviteEnviado}</strong> foi criado, mas o e-mail falhou ao sair. Copie o link e envie manualmente.</>
+                    : <>Um e-mail foi enviado para <strong>{conviteEnviado}</strong> com o link de acesso.</>}
+                </div>
+                {conviteEmailFalhou && conviteToken && (
+                  <div style={{ marginTop: 16, display: 'flex', gap: 8, alignItems: 'center', background: '#fef3c7', border: '1px solid #f5deb3', borderRadius: 8, padding: '8px 10px', textAlign: 'left' }}>
+                    <input readOnly value={linkConvite(conviteToken)} style={{ flex: 1, border: 'none', background: 'transparent', fontSize: 12.5, color: '#3C4A46', outline: 'none' }} onFocus={e => e.currentTarget.select()} />
+                    <button
+                      className="btn-action"
+                      style={{ fontSize: 12.5, padding: '5px 10px', flexShrink: 0 }}
+                      onClick={() => { void navigator.clipboard.writeText(linkConvite(conviteToken)); toast.success('Link copiado') }}
+                    >
+                      Copiar
+                    </button>
+                  </div>
+                )}
                 <div style={{ marginTop: 20, display: 'flex', justifyContent: 'center', gap: 10 }}>
-                  <button className="btn-ghost" onClick={() => { setConviteEnviado(''); setShowConvidar(false) }}>Fechar</button>
-                  <button className="btn-action" onClick={() => setConviteEnviado('')}>Convidar outro</button>
+                  <button className="btn-ghost" onClick={() => { setConviteEnviado(''); setConviteEmailFalhou(false); setConviteToken(''); setShowConvidar(false) }}>Fechar</button>
+                  <button className="btn-action" onClick={() => { setConviteEnviado(''); setConviteEmailFalhou(false); setConviteToken('') }}>Convidar outro</button>
                 </div>
               </div>
             ) : (
