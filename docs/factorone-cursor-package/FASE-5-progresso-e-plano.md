@@ -17,10 +17,12 @@ fora —, dedupe por link, cache 1h) + componente `NoticiasFiscais` plugado
 em Impostos & Regime e na Visão Geral. Feeds testados vivos em 2026-07-11.
 Card some sozinho se nenhuma fonte responder — nunca quebra a página.
 
-**Migrations pendentes de rodar no Supabase (Fayson)**:
-`20260711050000_obrigacoes_links_gov.sql` e
-`20260711060000_empresas_perfil_fiscal.sql` (Blocos 3-4). A do Cofre
-(20260711040000) já foi rodada.
+**Migrations: TODAS rodadas em produção** (Fayson confirmou 2026-07-11:
+20260711040000 do Cofre + 20260711050000 links_gov + 20260711060000
+perfil_fiscal, "success"). Deploy de produção com tudo: Ready.
+Falta só o checkpoint visual do Fayson (em especial a lógica do Simulador
+de Regime, que ele pediu pra conferir pessoalmente) pra Fase 5 = DONE e
+liberar a Fase 6 (Clientes & Vendas).
 
 ## Handoff 2026-07-11 (sessão claude.ai/code, tarde/noite — Blocos 3 e 4)
 
