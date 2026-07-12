@@ -74,7 +74,7 @@ function pedeEnvioDre(texto: string): boolean {
 }
 
 async function enviarDrePorEmail(
-  supabase: ReturnType<typeof db>, empresaId: string, texto: string, emailPadrao: string | null,
+  supabase: ReturnType<typeof db>, empresaId: string, userId: string, texto: string, emailPadrao: string | null,
 ): Promise<string> {
   const emailNoTexto = texto.match(/[\w.+-]+@[\w-]+\.[\w.-]+/)?.[0]
   const destino = (emailNoTexto || emailPadrao || '').toLowerCase()
@@ -139,7 +139,23 @@ async function enviarDrePorEmail(
     if (resultado.ok) return okMsg(`(via ${resultado.provedor})`)
 
     errosEnvio.push(resultado.erro ?? 'falha')
-    const dica = contaGoogle ? '' : '\n\nDica: conecta seu Google em Agentes IA → Automações que eu passo a enviar direto do seu Gmail, sem depender de provedor externo.'
+    let dica = ''
+    if (!contaGoogle) {
+      // Caso real do Fayson: Google conectado, mas em OUTRA empresa do mesmo
+      // dono — sem este aviso a dica genérica confunde ("mas já conectei!").
+      const { data: vinculos } = await supabase.from('usuario_empresas').select('empresa_id').eq('user_id', userId)
+      const empresasDoUsuario = (vinculos ?? []).map(v => v.empresa_id as string).filter(id => id !== empresaId)
+      const { data: outras } = empresasDoUsuario.length > 0
+        ? await supabase.from('google_contas').select('email, empresa_id, empresas(nome)').eq('ativo', true).in('empresa_id', empresasDoUsuario)
+        : { data: [] }
+      const outra = (outras ?? [])[0] as { email: string; empresas: { nome: string } | { nome: string }[] | null } | undefined
+      if (outra) {
+        const nomeOutra = Array.isArray(outra.empresas) ? outra.empresas[0]?.nome : outra.empresas?.nome
+        dica = `\n\nSeu Google (${outra.email}) está conectado na empresa "${nomeOutra ?? 'outra'}", não nesta. Conecta também aqui: Agentes IA → Automações → Conectar Google (com a empresa atual ativa).`
+      } else {
+        dica = '\n\nDica: conecta seu Google em Agentes IA → Automações que eu passo a enviar direto do seu Gmail, sem depender de provedor externo.'
+      }
+    }
     return `Gerei o DRE de ${dre.periodo}, mas o envio falhou: ${errosEnvio.join(' | ')}${dica}`
   } catch (e) {
     return `Não consegui gerar/enviar o DRE: ${e instanceof Error ? e.message : 'erro inesperado'}`
@@ -426,7 +442,7 @@ export async function POST(req: NextRequest) {
 
     // Pedido de envio do DRE — age de verdade (gera PDF + e-mail com anexo).
     if (pedeEnvioDre(texto)) {
-      const resposta = await enviarDrePorEmail(supabase, empresaIdTg, texto, (usuario.email as string) ?? null)
+      const resposta = await enviarDrePorEmail(supabase, empresaIdTg, usuario.id as string, texto, (usuario.email as string) ?? null)
       await sendTelegram(chatId, resposta)
       await supabase.from('lifeos_interacoes').insert({ empresa_id: empresaIdTg, origem: 'telegram', mensagem_usuario: texto, resposta_ia: resposta }).then(() => {})
       return NextResponse.json({ ok: true })
