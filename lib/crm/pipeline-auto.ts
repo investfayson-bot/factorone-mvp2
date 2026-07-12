@@ -24,11 +24,13 @@ export async function garantirCardPipeline(
   const tituloNorm = opts.titulo.trim()
 
   // já existe card aberto pra esse negócio? (título igual, etapa não fechada)
+  // .eq exato — .ilike sem escapar %/_ fazia pattern-matching não
+  // intencional se o nome do lead tivesse wildcard (achado da revisão)
   const { data: existente } = await db
     .from('crm_oportunidades')
     .select('id, temperatura')
     .eq('empresa_id', opts.empresaId)
-    .ilike('titulo', tituloNorm)
+    .eq('titulo', tituloNorm)
     .in('etapa', ['prospeccao', 'qualificado', 'proposta', 'negociacao'])
     .limit(1)
     .maybeSingle()

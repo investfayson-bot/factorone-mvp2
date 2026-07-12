@@ -53,15 +53,17 @@ export default function PatrimonioPage() {
   const carregar = useCallback(async () => {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) { setLoading(false); return }
-    const { data: u } = await supabase.from('usuarios').select('empresa_id').eq('id', user.id).maybeSingle()
-    const eid = (u?.empresa_id as string) ?? user.id
-    const [imRes, alRes] = await Promise.all([
-      supabase.from('imoveis_detalhes').select('id, endereco, cidade, estado, area_m2, tipo_imovel, matricula, valor_aquisicao, data_aquisicao, valor_venal, vendido, valor_venda, data_venda').eq('empresa_id', eid).order('created_at', { ascending: false }).limit(300),
-      supabase.from('itbi_aliquotas').select('cidade, uf, aliquota_pct').eq('empresa_id', eid),
-    ])
-    setImoveis((imRes.data as Imovel[]) ?? [])
-    setAliquotas((alRes.data as Aliquota[]) ?? [])
-    setLoading(false)
+    try {
+      const { data: u } = await supabase.from('usuarios').select('empresa_id').eq('id', user.id).maybeSingle()
+      const eid = (u?.empresa_id as string) ?? user.id
+      const [imRes, alRes] = await Promise.all([
+        supabase.from('imoveis_detalhes').select('id, endereco, cidade, estado, area_m2, tipo_imovel, matricula, valor_aquisicao, data_aquisicao, valor_venal, vendido, valor_venda, data_venda').eq('empresa_id', eid).order('created_at', { ascending: false }).limit(300),
+        supabase.from('itbi_aliquotas').select('cidade, uf, aliquota_pct').eq('empresa_id', eid),
+      ])
+      setImoveis((imRes.data as Imovel[]) ?? [])
+      setAliquotas((alRes.data as Aliquota[]) ?? [])
+    } catch { /* rede */ }
+    finally { setLoading(false) }
   }, [])
   useEffect(() => { void carregar() }, [carregar])
 
@@ -307,7 +309,7 @@ function DetalheImovel({ imovel, aliquotas, onFechar, onMudou }: {
             </div>
           )}
           <div style={{ fontSize: 10.5, color: 'var(--mut)', marginTop: 6, lineHeight: 1.5 }}>
-            ⚠ Estimativa simplificada. Há isenções comuns (ex.: único imóvel até R$ 440 mil; venda de residencial com compra de outro em 180 dias) e fatores de redução por tempo — valide com seu contador antes de decidir.
+            <i className="fa-solid fa-triangle-exclamation" style={{ marginRight: 4, fontSize: 9 }} />Estimativa simplificada. Há isenções comuns (ex.: único imóvel até R$ 440 mil; venda de residencial com compra de outro em 180 dias) e fatores de redução por tempo — valide com seu contador antes de decidir.
           </div>
         </div>
 

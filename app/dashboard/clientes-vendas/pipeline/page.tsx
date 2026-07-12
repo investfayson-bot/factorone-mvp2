@@ -137,8 +137,8 @@ export default function PipelinePage() {
                         {t && <div className={`temp ${t.classe}`}><i className={`fa-solid ${t.icone}`} style={{ fontSize: 9 }} />{t.label}</div>}
                         <div className="val">{formatBRL(Number(n.valor ?? 0))}</div>
                         {n.ia_negociando
-                          ? <span className="ia-negociando">🤖 IA negociando dentro da alçada</span>
-                          : n.dias_parado >= DIAS_PARADO_ALERTA && <span className="stale">⚠ {n.dias_parado} dias parado, sem contato</span>}
+                          ? <span className="ia-negociando"><i className="fa-solid fa-robot" style={{ marginRight: 4, fontSize: 9 }} />IA negociando dentro da alçada</span>
+                          : n.dias_parado >= DIAS_PARADO_ALERTA && <span className="stale"><i className="fa-solid fa-triangle-exclamation" style={{ marginRight: 4, fontSize: 9 }} />{n.dias_parado} dias parado, sem contato</span>}
                       </div>
                     )
                   })}

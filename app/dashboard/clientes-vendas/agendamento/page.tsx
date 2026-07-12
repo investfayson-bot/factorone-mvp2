@@ -33,18 +33,20 @@ export default function AgendamentoPage() {
       setLoading(true)
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) { setLoading(false); return }
-      const { data: u } = await supabase.from('usuarios').select('empresa_id').eq('id', user.id).maybeSingle()
-      const eid = (u?.empresa_id as string) ?? user.id
-      const ini = `${ano}-${String(mes + 1).padStart(2, '0')}-01`
-      const fim = new Date(ano, mes + 1, 0).toISOString().slice(0, 10)
-      const { data } = await supabase
-        .from('crm_atividades')
-        .select('id, tipo, titulo, descricao, data, hora_inicio, status, clientes(nome)')
-        .eq('empresa_id', eid)
-        .gte('data', ini).lte('data', fim)
-        .order('data').order('hora_inicio')
-      setAtividades((data as Atividade[]) ?? [])
-      setLoading(false)
+      try {
+        const { data: u } = await supabase.from('usuarios').select('empresa_id').eq('id', user.id).maybeSingle()
+        const eid = (u?.empresa_id as string) ?? user.id
+        const ini = `${ano}-${String(mes + 1).padStart(2, '0')}-01`
+        const fim = new Date(ano, mes + 1, 0).toISOString().slice(0, 10)
+        const { data } = await supabase
+          .from('crm_atividades')
+          .select('id, tipo, titulo, descricao, data, hora_inicio, status, clientes(nome)')
+          .eq('empresa_id', eid)
+          .gte('data', ini).lte('data', fim)
+          .order('data').order('hora_inicio')
+        setAtividades((data as Atividade[]) ?? [])
+      } catch { /* rede */ }
+      finally { setLoading(false) }
     })()
   }, [ano, mes])
 

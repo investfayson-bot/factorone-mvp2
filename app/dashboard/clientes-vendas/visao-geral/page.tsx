@@ -30,15 +30,17 @@ export default function ClientesVendasVisaoGeral() {
     void (async () => {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) { setLoading(false); return }
-      const { data: u } = await supabase.from('usuarios').select('empresa_id').eq('id', user.id).maybeSingle()
-      const eid = (u?.empresa_id as string) ?? user.id
-      const { data } = await supabase
-        .from('crm_oportunidades')
-        .select('id, titulo, valor, etapa, temperatura, ultimo_contato_em, updated_at, created_at, data_fechamento')
-        .eq('empresa_id', eid)
-        .limit(500)
-      setOps((data as Op[]) ?? [])
-      setLoading(false)
+      try {
+        const { data: u } = await supabase.from('usuarios').select('empresa_id').eq('id', user.id).maybeSingle()
+        const eid = (u?.empresa_id as string) ?? user.id
+        const { data } = await supabase
+          .from('crm_oportunidades')
+          .select('id, titulo, valor, etapa, temperatura, ultimo_contato_em, updated_at, created_at, data_fechamento')
+          .eq('empresa_id', eid)
+          .limit(500)
+        setOps((data as Op[]) ?? [])
+      } catch { /* rede — mostra vazio em vez de travar no skeleton */ }
+      finally { setLoading(false) }
     })()
   }, [])
 
@@ -125,7 +127,7 @@ export default function ClientesVendasVisaoGeral() {
             <div key={o.id} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 0', borderBottom: '1px solid var(--line)' }}>
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ fontSize: 12.5, fontWeight: 700, color: 'var(--ink)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{o.titulo}</div>
-                <div style={{ fontSize: 11, color: '#B0413E', fontWeight: 700 }}>⚠ {o.dias} dias sem contato</div>
+                <div style={{ fontSize: 11, color: '#B0413E', fontWeight: 700 }}><i className="fa-solid fa-triangle-exclamation" style={{ marginRight: 4, fontSize: 10 }} />{o.dias} dias sem contato</div>
               </div>
               <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--ink)', fontVariantNumeric: 'tabular-nums' }}>{formatBRL(Number(o.valor ?? 0))}</span>
             </div>

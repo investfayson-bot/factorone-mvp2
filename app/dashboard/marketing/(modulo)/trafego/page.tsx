@@ -24,16 +24,18 @@ export default function TrafegoPagoPage() {
     void (async () => {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) { setLoading(false); return }
-      const { data: u } = await supabase.from('usuarios').select('empresa_id').eq('id', user.id).maybeSingle()
-      const eid = (u?.empresa_id as string) ?? user.id
-      const { data } = await supabase
-        .from('marketing_campanhas')
-        .select('id, nome, tipo, status, gasto, impressoes, cliques, conversoes, receita_gerada')
-        .eq('empresa_id', eid)
-        .in('tipo', ['meta_ads', 'google_ads'])
-        .order('created_at', { ascending: false })
-      setCampanhas((data as Campanha[]) ?? [])
-      setLoading(false)
+      try {
+        const { data: u } = await supabase.from('usuarios').select('empresa_id').eq('id', user.id).maybeSingle()
+        const eid = (u?.empresa_id as string) ?? user.id
+        const { data } = await supabase
+          .from('marketing_campanhas')
+          .select('id, nome, tipo, status, gasto, impressoes, cliques, conversoes, receita_gerada')
+          .eq('empresa_id', eid)
+          .in('tipo', ['meta_ads', 'google_ads'])
+          .order('created_at', { ascending: false })
+        setCampanhas((data as Campanha[]) ?? [])
+      } catch { /* rede */ }
+      finally { setLoading(false) }
     })()
   }, [])
 

@@ -26,16 +26,18 @@ export default function EmailMarketingPage() {
   const carregar = useCallback(async () => {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) { setLoading(false); return }
-    const { data: u } = await supabase.from('usuarios').select('empresa_id').eq('id', user.id).maybeSingle()
-    const eid = (u?.empresa_id as string) ?? user.id
-    const { data } = await supabase
-      .from('marketing_conteudo')
-      .select('id, titulo, status, data_pub, copy')
-      .eq('empresa_id', eid).eq('tipo', 'email')
-      .order('created_at', { ascending: false })
-      .limit(50)
-    setEmails((data as EmailMkt[]) ?? [])
-    setLoading(false)
+    try {
+      const { data: u } = await supabase.from('usuarios').select('empresa_id').eq('id', user.id).maybeSingle()
+      const eid = (u?.empresa_id as string) ?? user.id
+      const { data } = await supabase
+        .from('marketing_conteudo')
+        .select('id, titulo, status, data_pub, copy')
+        .eq('empresa_id', eid).eq('tipo', 'email')
+        .order('created_at', { ascending: false })
+        .limit(50)
+      setEmails((data as EmailMkt[]) ?? [])
+    } catch { /* rede */ }
+    finally { setLoading(false) }
   }, [])
   useEffect(() => { void carregar() }, [carregar])
 

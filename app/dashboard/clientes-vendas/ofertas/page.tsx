@@ -35,16 +35,18 @@ export default function OfertasPage() {
     void (async () => {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) { setLoading(false); return }
-      const { data: u } = await supabase.from('usuarios').select('empresa_id').eq('id', user.id).maybeSingle()
-      const eid = (u?.empresa_id as string) ?? user.id
-      const { data } = await supabase
-        .from('crm_ofertas')
-        .select('id, desconto_pct, status, canal, automatica, created_at, crm_oportunidades(titulo, valor, temperatura)')
-        .eq('empresa_id', eid)
-        .order('created_at', { ascending: false })
-        .limit(200)
-      setOfertas((data as Oferta[]) ?? [])
-      setLoading(false)
+      try {
+        const { data: u } = await supabase.from('usuarios').select('empresa_id').eq('id', user.id).maybeSingle()
+        const eid = (u?.empresa_id as string) ?? user.id
+        const { data } = await supabase
+          .from('crm_ofertas')
+          .select('id, desconto_pct, status, canal, automatica, created_at, crm_oportunidades(titulo, valor, temperatura)')
+          .eq('empresa_id', eid)
+          .order('created_at', { ascending: false })
+          .limit(200)
+        setOfertas((data as Oferta[]) ?? [])
+      } catch { /* rede */ }
+      finally { setLoading(false) }
     })()
   }, [])
 
@@ -121,7 +123,7 @@ export default function OfertasPage() {
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--ink)' }}>{n?.titulo ?? 'Negócio removido'}</div>
                 <div style={{ fontSize: 11, color: 'var(--mut)', fontWeight: 600 }}>
-                  {new Date(o.created_at).toLocaleDateString('pt-BR')}{o.canal ? ` · ${o.canal}` : ''} · {o.automatica ? '🤖 automática' : 'manual'}
+                  {new Date(o.created_at).toLocaleDateString('pt-BR')}{o.canal ? ` · ${o.canal}` : ''} · {o.automatica ? 'automática (IA)' : 'manual'}
                   {n?.valor != null && ` · negócio de ${formatBRL(Number(n.valor))}`}
                 </div>
               </div>

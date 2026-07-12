@@ -27,18 +27,20 @@ export default function PosVendaPage() {
   const carregar = useCallback(async () => {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) { setLoading(false); return }
-    const { data: u } = await supabase.from('usuarios').select('empresa_id').eq('id', user.id).maybeSingle()
-    const eid = (u?.empresa_id as string) ?? user.id
-    setEmpresaId(eid)
-    const { data } = await supabase
-      .from('crm_oportunidades')
-      .select('id, titulo, valor, data_fechamento, cliente_id')
-      .eq('empresa_id', eid)
-      .eq('etapa', 'fechado_ganho')
-      .order('data_fechamento', { ascending: false, nullsFirst: false })
-      .limit(100)
-    setFechados((data as Fechado[]) ?? [])
-    setLoading(false)
+    try {
+      const { data: u } = await supabase.from('usuarios').select('empresa_id').eq('id', user.id).maybeSingle()
+      const eid = (u?.empresa_id as string) ?? user.id
+      setEmpresaId(eid)
+      const { data } = await supabase
+        .from('crm_oportunidades')
+        .select('id, titulo, valor, data_fechamento, cliente_id')
+        .eq('empresa_id', eid)
+        .eq('etapa', 'fechado_ganho')
+        .order('data_fechamento', { ascending: false, nullsFirst: false })
+        .limit(100)
+      setFechados((data as Fechado[]) ?? [])
+    } catch { /* rede */ }
+    finally { setLoading(false) }
   }, [])
   useEffect(() => { void carregar() }, [carregar])
 

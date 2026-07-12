@@ -37,19 +37,21 @@ export default function MarketingVisaoGeral() {
   const carregar = useCallback(async () => {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) { setLoading(false); return }
-    const { data: u } = await supabase.from('usuarios').select('empresa_id').eq('id', user.id).maybeSingle()
-    const eid = (u?.empresa_id as string) ?? user.id
-    const inicioMes = new Date(); inicioMes.setDate(1)
-    const iniIso = inicioMes.toISOString().slice(0, 10)
-    const [campRes, contRes, leadsRes] = await Promise.all([
-      supabase.from('marketing_campanhas').select('id, nome, tipo, status, orcamento, gasto, impressoes, cliques, conversoes, receita_gerada').eq('empresa_id', eid).order('created_at', { ascending: false }).limit(50),
-      supabase.from('marketing_conteudo').select('id, titulo, tipo, data_pub, status').eq('empresa_id', eid).not('data_pub', 'is', null).gte('data_pub', iniIso).order('data_pub').limit(40),
-      supabase.from('marketing_leads').select('id', { count: 'exact', head: true }).eq('empresa_id', eid).gte('created_at', inicioMes.toISOString()),
-    ])
-    setCampanhas((campRes.data as Campanha[]) ?? [])
-    setConteudos((contRes.data as Conteudo[]) ?? [])
-    setLeadsMes(leadsRes.count ?? 0)
-    setLoading(false)
+    try {
+      const { data: u } = await supabase.from('usuarios').select('empresa_id').eq('id', user.id).maybeSingle()
+      const eid = (u?.empresa_id as string) ?? user.id
+      const inicioMes = new Date(); inicioMes.setDate(1)
+      const iniIso = inicioMes.toISOString().slice(0, 10)
+      const [campRes, contRes, leadsRes] = await Promise.all([
+        supabase.from('marketing_campanhas').select('id, nome, tipo, status, orcamento, gasto, impressoes, cliques, conversoes, receita_gerada').eq('empresa_id', eid).order('created_at', { ascending: false }).limit(50),
+        supabase.from('marketing_conteudo').select('id, titulo, tipo, data_pub, status').eq('empresa_id', eid).not('data_pub', 'is', null).gte('data_pub', iniIso).order('data_pub').limit(40),
+        supabase.from('marketing_leads').select('id', { count: 'exact', head: true }).eq('empresa_id', eid).gte('created_at', inicioMes.toISOString()),
+      ])
+      setCampanhas((campRes.data as Campanha[]) ?? [])
+      setConteudos((contRes.data as Conteudo[]) ?? [])
+      setLeadsMes(leadsRes.count ?? 0)
+    } catch { /* rede */ }
+    finally { setLoading(false) }
   }, [])
   useEffect(() => { void carregar() }, [carregar])
 

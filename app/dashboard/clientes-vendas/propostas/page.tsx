@@ -30,17 +30,19 @@ export default function PropostasV2Page() {
   const carregar = useCallback(async () => {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) { setLoading(false); return }
-    const { data: u } = await supabase.from('usuarios').select('empresa_id').eq('id', user.id).maybeSingle()
-    const eid = (u?.empresa_id as string) ?? user.id
-    setEmpresaId(eid)
-    const { data } = await supabase
-      .from('propostas')
-      .select('id, cliente, titulo, valor, status, validade, created_at')
-      .eq('empresa_id', eid)
-      .order('created_at', { ascending: false })
-      .limit(100)
-    setPropostas((data as Proposta[]) ?? [])
-    setLoading(false)
+    try {
+      const { data: u } = await supabase.from('usuarios').select('empresa_id').eq('id', user.id).maybeSingle()
+      const eid = (u?.empresa_id as string) ?? user.id
+      setEmpresaId(eid)
+      const { data } = await supabase
+        .from('propostas')
+        .select('id, cliente, titulo, valor, status, validade, created_at')
+        .eq('empresa_id', eid)
+        .order('created_at', { ascending: false })
+        .limit(100)
+      setPropostas((data as Proposta[]) ?? [])
+    } catch { /* rede */ }
+    finally { setLoading(false) }
   }, [])
   useEffect(() => { void carregar() }, [carregar])
 
