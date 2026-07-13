@@ -38,10 +38,10 @@
   /* cor areia (barras secundárias, como no mock) */
   --sand: #D8C9A0; --sand-soft: #E7DDC2;
 
-  /* tipografia — Nunito (arredondada, legível, uma fonte só no sistema inteiro) */
-  --font-display: 'Nunito', system-ui, sans-serif;
-  --font-sans: 'Nunito', system-ui, sans-serif;
-  --font-mono: 'Nunito', ui-monospace, monospace; /* números tabulares via font-variant-numeric */
+  /* tipografia — Space Grotesk (headings) + Manrope (body) */
+  --font-display: 'Space Grotesk', system-ui, sans-serif;
+  --font-sans: 'Manrope', system-ui, sans-serif;
+  --font-mono: 'Manrope', ui-monospace, monospace; /* números tabulares via font-variant-numeric */
 
   /* sombras suaves (cards flutuam de leve) */
   --shadow-card: 0 1px 2px rgba(19,32,29,.04), 0 4px 14px rgba(19,32,29,.06);
@@ -115,7 +115,7 @@ body {
 
 /* ── PAGE HEADER ── */
 .page-hdr { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 26px; padding-bottom: 16px; border-bottom: 1px solid var(--line); }
-.page-title { font-family: 'Space Grotesk', sans-serif; font-size: 19px; font-weight: 700; color: var(--ink); letter-spacing: -.02em; line-height: 1.1; }
+.page-title { font-family: var(--font-display); font-size: 19px; font-weight: 700; color: var(--ink); letter-spacing: -.02em; line-height: 1.1; }
 .page-sub { font-size: 14px; color: var(--ink-mut); font-family: var(--font-sans); margin-top: 6px; font-weight: 400; }
 
 /* ── BUTTONS ── */
