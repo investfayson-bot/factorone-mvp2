@@ -36,6 +36,8 @@ const FERRAMENTAS = [
 export default function ContabilFiscalVisaoGeral() {
   const [kpis, setKpis] = useState<Kpis>({ obrigacoesPendentes: 0, proximoVencimento: null, notasMes: 0, lancamentosPendentes: 0 })
   const [loading, setLoading] = useState(true)
+  const [obrigacoesList, setObrigacoesList] = useState<any[]>([])
+  const [selecionada, setSelecionada] = useState<any | null>(null)
 
   useEffect(() => {
     void (async () => {
@@ -47,13 +49,14 @@ export default function ContabilFiscalVisaoGeral() {
       const mesIni = hoje.slice(0, 7) + '-01'
 
       const [obrigRes, notaRes, txRes] = await Promise.all([
-        supabase.from('tax_obrigacoes').select('nome, vencimento, valor, status').eq('empresa_id', eid).not('status', 'in', '("entregue","pago")').gte('vencimento', hoje).order('vencimento', { ascending: true }).limit(20),
+        supabase.from('tax_obrigacoes').select('*').eq('empresa_id', eid).not('status', 'in', '("entregue","pago")').gte('vencimento', hoje).order('vencimento', { ascending: true }),
         supabase.from('notas_fiscais').select('id', { count: 'exact', head: true }).eq('empresa_id', eid).gte('data_emissao', mesIni),
         supabase.from('transacoes').select('id', { count: 'exact', head: true }).eq('empresa_id', eid).gte('data', mesIni).in('status', ['pendente', 'nao_classificado', 'sem_comprovante']),
       ])
 
       const pendentes = obrigRes.data ?? []
       const prox = pendentes[0]
+      setObrigacoesList(pendentes)
       setKpis({
         obrigacoesPendentes: pendentes.length,
         proximoVencimento: prox ? { nome: prox.nome as string, vencimento: prox.vencimento as string, valor: prox.valor as number | null } : null,
@@ -70,7 +73,7 @@ export default function ContabilFiscalVisaoGeral() {
     <div style={{ maxWidth: 1040, paddingBottom: 30 }}>
       {/* KPIs */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12, marginBottom: 20 }}>
-        <div className="kpi-v2">
+        <div className="kpi-v2" onClick={() => prox && setSelecionada(obrigacoesList[0])} style={{ cursor: prox ? 'pointer' : 'default', transition: 'opacity .2s' }} onMouseEnter={e => prox && (e.currentTarget.style.opacity = '0.8')} onMouseLeave={e => e.currentTarget.style.opacity = '1'}>
           <div className="l">Próxima obrigação</div>
           {loading ? (
             <div className="v">…</div>
@@ -141,6 +144,46 @@ export default function ContabilFiscalVisaoGeral() {
           </Link>
         ))}
       </div>
+
+      {/* Drawer: detalhe de obrigação */}
+      {selecionada && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.3)', zIndex: 100, display: 'flex', alignItems: 'flex-end' }} onClick={() => setSelecionada(null)}>
+          <div onClick={e => e.stopPropagation()} style={{ background: '#fff', width: '100%', maxWidth: 500, borderRadius: '16px 16px 0 0', padding: 24, maxHeight: '80vh', overflowY: 'auto' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+              <h2 style={{ fontSize: 18, fontWeight: 800 }}>{selecionada.nome}</h2>
+              <button onClick={() => setSelecionada(null)} style={{ background: 'none', border: 'none', fontSize: 20, cursor: 'pointer' }}>✕</button>
+            </div>
+            <div style={{ display: 'grid', gap: 16 }}>
+              <div>
+                <div style={{ fontSize: 12, color: 'var(--mut)', marginBottom: 4 }}>Vencimento</div>
+                <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--ink)' }}>{new Date(selecionada.vencimento + 'T12:00:00').toLocaleDateString('pt-BR')}</div>
+              </div>
+              {selecionada.valor != null && (
+                <div>
+                  <div style={{ fontSize: 12, color: 'var(--mut)', marginBottom: 4 }}>Valor</div>
+                  <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--ink)' }}>{formatBRL(Number(selecionada.valor))}</div>
+                </div>
+              )}
+              <div>
+                <div style={{ fontSize: 12, color: 'var(--mut)', marginBottom: 4 }}>Status</div>
+                <div style={{ fontSize: 13, fontWeight: 700, padding: '6px 10px', background: selecionada.status === 'entregue' ? 'var(--acc-soft)' : selecionada.status === 'pago' ? '#D1FAE5' : 'var(--warn-soft)', borderRadius: 4, display: 'inline-block', color: selecionada.status === 'entregue' ? 'var(--acc-ink)' : selecionada.status === 'pago' ? '#047857' : 'var(--warn)' }}>
+                  {selecionada.status}
+                </div>
+              </div>
+              {selecionada.descricao && (
+                <div>
+                  <div style={{ fontSize: 12, color: 'var(--mut)', marginBottom: 4 }}>Descrição</div>
+                  <div style={{ fontSize: 13, color: 'var(--ink)', lineHeight: 1.5 }}>{selecionada.descricao}</div>
+                </div>
+              )}
+              <div style={{ display: 'flex', gap: 10, marginTop: 12 }}>
+                <Link href="/dashboard/contabil-fiscal/obrigacoes" className="btn-v2 primary" style={{ flex: 1, textAlign: 'center', textDecoration: 'none' }}>Ir para Obrigações</Link>
+                <button onClick={() => setSelecionada(null)} className="btn-v2" style={{ flex: 1 }}>Fechar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
