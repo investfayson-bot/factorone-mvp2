@@ -1,5 +1,6 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { categorizarLoteIA } from '@/lib/categorizar-ia'
+import { categoriaConhecida } from '@/lib/financeiro/estabelecimentos-conhecidos'
 
 export type TitularidadeId = { empresaId: string; pessoaFisicaUserId?: never } | { empresaId?: never; pessoaFisicaUserId: string }
 
@@ -53,6 +54,13 @@ export async function classificar(
     return { categoria: regra.categoria as string, status: 'aguardando_ok', confianca: regra.confianca as number }
   }
 
+  // Estabelecimento muito conhecido (Netflix, Vivo, Disney+...) — não precisa
+  // esperar a IA nem uma regra aprendida antes, já sugere com confiança alta.
+  const conhecida = categoriaConhecida(descricaoOuEstabelecimento)
+  if (conhecida && categorias.includes(conhecida)) {
+    return { categoria: conhecida, status: 'aguardando_ok', confianca: 1 }
+  }
+
   const mapa = await categorizarLoteIA([{ id: chave, texto: descricaoOuEstabelecimento }], categorias)
   const categoria = mapa[chave] || categorias[0] || 'Outros'
   return { categoria, status: 'sugerida', confianca: 0 }
@@ -88,8 +96,10 @@ export async function classificarLote(
   const semRegra: { id: string; texto: string; chave: string }[] = []
   for (const item of chaves) {
     const regra = regras.get(item.chave)
-    if (regra) resultado.push({ id: item.id, categoria: regra.categoria as string, status: 'aguardando_ok', confianca: regra.confianca as number })
-    else semRegra.push(item)
+    if (regra) { resultado.push({ id: item.id, categoria: regra.categoria as string, status: 'aguardando_ok', confianca: regra.confianca as number }); continue }
+    const conhecida = categoriaConhecida(item.texto)
+    if (conhecida && categorias.includes(conhecida)) { resultado.push({ id: item.id, categoria: conhecida, status: 'aguardando_ok', confianca: 1 }); continue }
+    semRegra.push(item)
   }
 
   if (semRegra.length) {

@@ -195,8 +195,8 @@ export default function BancoExtratoPage() {
                             >
                               <option value="" disabled>trocar categoria</option>
                               {(l.titularidade === 'pj'
-                                ? ['Fornecedores', 'Marketing', 'Impostos/Taxas', 'Folha de Pagamento', 'Serviços de Terceiros', 'Aluguel/Infraestrutura', 'Tecnologia/Software', 'Consultoria', 'Outros']
-                                : ['Mercado', 'Lazer', 'Saúde', 'Transporte', 'Moradia', 'Educação', 'Outros']
+                                ? ['Fornecedores', 'Marketing', 'Impostos/Taxas', 'Folha de Pagamento', 'Serviços de Terceiros', 'Aluguel/Infraestrutura', 'Tecnologia/Software', 'Assinaturas', 'Consultoria', 'Outros']
+                                : ['Mercado', 'Lazer', 'Saúde', 'Transporte', 'Moradia', 'Educação', 'Assinaturas', 'Outros']
                               ).map(c => <option key={c} value={c}>{c}</option>)}
                             </select>
                           </div>

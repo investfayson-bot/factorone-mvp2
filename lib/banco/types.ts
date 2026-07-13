@@ -1,7 +1,7 @@
 // Tipos compartilhados do Banco module (fila, confirmação, categorias).
 
 export const CATEGORIAS = [
-  'Alimentação', 'Transporte / Combustível', 'Software / SaaS', 'Marketing',
+  'Alimentação', 'Transporte / Combustível', 'Software / SaaS', 'Assinaturas', 'Marketing',
   'Fornecedores', 'Impostos', 'Salários', 'Aluguel', 'Serviços',
   'Receita de vendas', 'Tarifas bancárias', 'Outros',
 ] as const

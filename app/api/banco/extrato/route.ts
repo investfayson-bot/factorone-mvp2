@@ -68,8 +68,8 @@ export async function GET(req: NextRequest) {
 
   // Motor novo (Fase 0) entra só pra quem o motor antigo nunca classificou
   // (categoria vazia/"Outros") — primeira vez que ESSA tela toca a linha.
-  const categoriasPj = ['Fornecedores', 'Marketing', 'Impostos/Taxas', 'Folha de Pagamento', 'Serviços de Terceiros', 'Aluguel/Infraestrutura', 'Tecnologia/Software', 'Consultoria', 'Outros']
-  const categoriasPf = ['Mercado', 'Lazer', 'Saúde', 'Transporte', 'Moradia', 'Educação', 'Outros']
+  const categoriasPj = ['Fornecedores', 'Marketing', 'Impostos/Taxas', 'Folha de Pagamento', 'Serviços de Terceiros', 'Aluguel/Infraestrutura', 'Tecnologia/Software', 'Assinaturas', 'Consultoria', 'Outros']
+  const categoriasPf = ['Mercado', 'Lazer', 'Saúde', 'Transporte', 'Moradia', 'Educação', 'Assinaturas', 'Outros']
   const pendentes = linhas.filter(l => SEM_CATEGORIA(l.categoria)).slice(0, 40) // limite de segurança por página
 
   for (const l of pendentes) {

@@ -3,6 +3,7 @@ export const CATEGORIAS_PADRAO = [
   'Transporte',
   'Hospedagem',
   'Tecnologia/Software',
+  'Assinaturas',
   'Marketing',
   'Fornecedores',
   'Folha de Pagamento',
@@ -18,7 +19,10 @@ const SUGESTOES_CATEGORIA: Array<{ matcher: RegExp; categoria: string }> = [
   { matcher: /(ifood|restaurante|lanch|caf[eé]|padaria|mercado|supermercado)/i, categoria: 'Alimentação' },
   { matcher: /(hotel|airbnb|pousada|booking)/i, categoria: 'Hospedagem' },
   { matcher: /(google|meta|facebook|instagram|ads|tiktok|linkedin ads)/i, categoria: 'Marketing' },
-  { matcher: /(netflix|spotify|apple|google cloud|aws|azure|openai|notion|slack|figma|github|software|saas)/i, categoria: 'Tecnologia/Software' },
+  // Assinaturas de consumo (streaming/telecom) — distinto de Tecnologia/Software
+  // (ferramentas B2B tipo AWS/Notion/Figma), checado antes por ser mais específico.
+  { matcher: /(netflix|disney\+?|hbo ?max|amazon prime|globoplay|paramount\+?|youtube premium|deezer|\bvivo\b|\bclaro\b|\btim\b|\boi\b|\bsky\b)/i, categoria: 'Assinaturas' },
+  { matcher: /(spotify|apple|google cloud|aws|azure|openai|notion|slack|figma|github|software|saas)/i, categoria: 'Tecnologia/Software' },
   { matcher: /(imposto|tributo|darf|simples|taxa|iof|icms|iss)/i, categoria: 'Impostos/Taxas' },
   { matcher: /(aluguel|condom[ií]nio|energia|internet|[áa]gua|luz)/i, categoria: 'Aluguel/Infraestrutura' },
   { matcher: /(consultoria|assessoria|contador|contabil)/i, categoria: 'Consultoria' },
