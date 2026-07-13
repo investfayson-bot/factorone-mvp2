@@ -18,7 +18,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ toke
   // Validate token
   const { data: cont } = await supabase
     .from('contadores')
-    .select('nome, status, empresa_id, permissoes')
+    .select('nome, email, status, empresa_id, permissoes')
     .eq('token_acesso', token)
     .maybeSingle()
 
@@ -28,9 +28,26 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ toke
   const eid = cont.empresa_id as string
   const perm = (cont.permissoes ?? {}) as Record<string, boolean>
 
-  // Return contador info only
+  // Return contador info + list of all companies this contador has access to
   if (tab === 'info') {
-    return NextResponse.json({ nome: cont.nome, status: cont.status, permissoes: perm })
+    const { data: todas } = await supabase
+      .from('contadores')
+      .select('empresa_id')
+      .eq('email', cont.email)
+      .eq('status', 'ativo')
+    const empresas = (todas ?? []).map(x => x.empresa_id as string)
+    const { data: emps } = await supabase
+      .from('empresas')
+      .select('id, nome')
+      .in('id', empresas.length > 0 ? empresas : [eid])
+    const empAtual = (emps ?? []).find(e => e.id === eid)
+    return NextResponse.json({
+      nome: cont.nome,
+      status: cont.status,
+      permissoes: perm,
+      empresa_atual: empAtual ? { id: empAtual.id, nome: empAtual.nome } : { id: eid, nome: 'Empresa' },
+      empresas_acesso: emps ?? [],
+    })
   }
 
   // Check permissions

@@ -5,7 +5,8 @@ import { useParams } from 'next/navigation'
 import { formatBRL } from '@/lib/currency-brl'
 
 type Permissoes = Record<string, boolean>
-type ContadorInfo = { nome: string; status: string; permissoes: Permissoes; empresa_nome?: string }
+type Empresa = { id: string; nome: string }
+type ContadorInfo = { nome: string; status: string; permissoes: Permissoes; empresa_atual: Empresa; empresas_acesso: Empresa[] }
 type Metrica = { competencia: string; receita_bruta: number; lucro_liquido: number; ebitda: number; margem_liquida: number }
 type Lancamento = { id: string; descricao: string; valor: number; tipo: string; competencia: string; origem: string }
 type NotaEmitida = { id: string; numero: string | null; destinatario_nome: string | null; valor_total: number; status: string; created_at: string; xml_url: string | null; pdf_url: string | null }
@@ -47,6 +48,7 @@ export default function PortalContadorPage() {
   const [despesas, setDespesas] = useState<Despesa[]>([])
   const [dataLoading, setDataLoading] = useState(false)
   const [competencia, setCompetencia] = useState('') // YYYY-MM (filtro de exportacao)
+  const [empresaSelecionada, setEmpresaSelecionada] = useState<Empresa | null>(null)
 
   useEffect(() => {
     if (!token) return
@@ -56,6 +58,7 @@ export default function PortalContadorPage() {
         if (r.status === 403) { setError('revoked'); return }
         const d = await r.json() as ContadorInfo
         setCont(d)
+        setEmpresaSelecionada(d.empresa_atual)
       })
       .catch(() => setError('network'))
       .finally(() => setLoading(false))
@@ -146,8 +149,25 @@ export default function PortalContadorPage() {
                 <div style={{ fontSize: 15, fontWeight: 700, color: '#13201D', fontFamily: "var(--font-sans)" }}>
                   Olá, {cont.nome}
                 </div>
-                <div style={{ fontSize: 13, color: '#7B8C88', marginTop: 3 }}>
-                  {cont.empresa_nome ? `Empresa: ${cont.empresa_nome} · ` : ''}Acesso em tempo real · Dados confidenciais
+                <div style={{ fontSize: 13, color: '#7B8C88', marginTop: 3, display: 'flex', alignItems: 'center', gap: 8 }}>
+                  {cont.empresas_acesso.length > 1 ? (
+                    <>
+                      <select
+                        value={empresaSelecionada?.id || ''}
+                        onChange={e => {
+                          const emp = cont.empresas_acesso.find(x => x.id === e.target.value)
+                          if (emp) setEmpresaSelecionada(emp)
+                        }}
+                        style={{ padding: '4px 8px', fontSize: 13, border: '0.5px solid #E4DCCC', borderRadius: 6, background: '#fff', cursor: 'pointer' }}
+                      >
+                        {cont.empresas_acesso.map(e => <option key={e.id} value={e.id}>{e.nome}</option>)}
+                      </select>
+                      ·
+                    </>
+                  ) : (
+                    <span>{empresaSelecionada?.nome || 'Empresa'} ·</span>
+                  )}
+                  Acesso em tempo real · Dados confidenciais
                 </div>
               </div>
             </div>
