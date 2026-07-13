@@ -57,14 +57,7 @@ function buildNavGroups(badges: { reembolsos: number }, installedIds: string[] =
     },
   ]
 
-  let out = groups
-  if (role !== 'admin') {
-    out = out.map(g => g.label === 'SOLUÇÕES'
-      ? { ...g, items: g.items.filter(i => (GRUPO_ROLES[i.label] ?? ['admin', 'financeiro', 'comercial', 'operacional', 'logistica', 'viewer']).includes(role)) }
-      : g
-    )
-  }
-  return out
+  return groups
 }
 
 const pageTitles: Record<string, string> = {
