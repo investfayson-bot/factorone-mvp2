@@ -9,6 +9,8 @@ type ContaPagar = { id: string; fornecedor_nome: string; descricao: string; cate
 type ContaReceber = { id: string; cliente_nome: string; descricao: string; data_vencimento: string; valor: number; valor_recebido: number; status: string; dias_atraso: number }
 type Previsao = { saldoAtual: number; d7: number; d30: number; d90: number }
 type Aging = { pagar: Record<string, number>; receber: Record<string, number>; receber_rows: { nome: string; data_vencimento: string; valor: number }[] }
+type LinhaDRE = { nome: string; valor: number; transacoes: Array<{ id: string; descricao: string; valor: number; categoria?: string; status?: string; cliente_nome?: string; fornecedor_nome?: string }> }
+type DRE = { receitas: { linhas: LinhaDRE[]; total: number }; despesas: { linhas: LinhaDRE[]; total: number }; lucro: number; margem: string }
 
 async function authHeaders(): Promise<Record<string, string>> {
   const { data } = await supabase.auth.getSession()
@@ -49,23 +51,27 @@ export default function VisaoGeralFinanceiro() {
   const [receber, setReceber] = useState<ContaReceber[]>([])
   const [previsao, setPrevisao] = useState<Previsao | null>(null)
   const [aging, setAging] = useState<Aging | null>(null)
+  const [dre, setDre] = useState<DRE | null>(null)
+  const [linhaSelecionada, setLinhaSelecionada] = useState<LinhaDRE | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     let ativo = true
     async function carregar() {
       const h = await authHeaders()
-      const [p, r, prev, ag] = await Promise.all([
+      const [p, r, prev, ag, dreData] = await Promise.all([
         fetch('/api/financeiro/pagar?status=todas', { headers: h }).then(x => x.json()).catch(() => ({ data: [] })),
         fetch('/api/financeiro/receber?status=todas', { headers: h }).then(x => x.json()).catch(() => ({ data: [] })),
         fetch('/api/cashflow/previsao', { headers: h }).then(x => x.json()).catch(() => null),
         fetch('/api/financeiro/aging', { headers: h }).then(x => x.json()).catch(() => null),
+        fetch('/api/financeiro/dre', { headers: h }).then(x => x.json()).catch(() => null),
       ])
       if (!ativo) return
       setPagar((p.data || []) as ContaPagar[])
       setReceber((r.data || []) as ContaReceber[])
       setPrevisao(prev)
       setAging(ag)
+      setDre(dreData)
       setLoading(false)
     }
     void carregar()
@@ -145,6 +151,83 @@ export default function VisaoGeralFinanceiro() {
           <div className="c" style={{ color: 'var(--mut)' }}>Sobre o total a receber</div>
         </div>
       </div>
+
+      {dre && (
+        <div className="card-v2">
+          <div className="card-v2-h">
+            <h3>Demonstração de Resultado (DRE)</h3>
+            <span style={{ fontSize: 12, color: 'var(--mut)' }}>clique em qualquer linha para detalhes</span>
+          </div>
+          <table className="table-v2" style={{ width: '100%' }}>
+            <tbody>
+              {dre.receitas.linhas.map((l, i) => (
+                <tr key={`r-${i}`} onClick={() => setLinhaSelecionada(l)} style={{ cursor: 'pointer', transition: 'background .2s' }} onMouseEnter={e => e.currentTarget.style.background = 'var(--cream)'} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
+                  <td style={{ padding: '12px', fontSize: 13, fontWeight: 600 }}>{l.nome}</td>
+                  <td style={{ padding: '12px', textAlign: 'right', fontSize: 13, color: 'var(--acc-ink)', fontWeight: 600 }}>{formatBRL(l.valor)}</td>
+                </tr>
+              ))}
+              <tr style={{ background: 'var(--cream)', fontWeight: 700, borderTop: '1px solid var(--line)' }}>
+                <td style={{ padding: '12px', fontSize: 13 }}>Receita Total</td>
+                <td style={{ padding: '12px', textAlign: 'right', fontSize: 14, color: 'var(--acc-ink)' }}>{formatBRL(dre.receitas.total)}</td>
+              </tr>
+              <tr style={{ height: 8 }}></tr>
+              {dre.despesas.linhas.map((l, i) => (
+                <tr key={`d-${i}`} onClick={() => setLinhaSelecionada(l)} style={{ cursor: 'pointer', transition: 'background .2s' }} onMouseEnter={e => e.currentTarget.style.background = 'var(--cream)'} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
+                  <td style={{ padding: '12px', fontSize: 13, fontWeight: 600 }}>{l.nome}</td>
+                  <td style={{ padding: '12px', textAlign: 'right', fontSize: 13, color: 'var(--neg)', fontWeight: 600 }}>({formatBRL(l.valor)})</td>
+                </tr>
+              ))}
+              <tr style={{ background: 'var(--cream)', fontWeight: 700, borderTop: '1px solid var(--line)' }}>
+                <td style={{ padding: '12px', fontSize: 13 }}>Despesa Total</td>
+                <td style={{ padding: '12px', textAlign: 'right', fontSize: 14, color: 'var(--neg)' }}>({formatBRL(dre.despesas.total)})</td>
+              </tr>
+              <tr style={{ height: 8 }}></tr>
+              <tr style={{ background: dre.lucro >= 0 ? 'var(--acc-soft)' : 'var(--neg-soft)', fontWeight: 800, borderTop: '2px solid var(--line)' }}>
+                <td style={{ padding: '12px', fontSize: 14 }}>Lucro Líquido</td>
+                <td style={{ padding: '12px', textAlign: 'right', fontSize: 16, color: dre.lucro >= 0 ? 'var(--acc-ink)' : 'var(--neg)' }}>{formatBRL(dre.lucro)}</td>
+              </tr>
+              <tr style={{ background: 'transparent' }}>
+                <td style={{ padding: '8px 12px', fontSize: 12, color: 'var(--mut)' }}>Margem</td>
+                <td style={{ padding: '8px 12px', textAlign: 'right', fontSize: 12, color: 'var(--mut)' }}>{dre.margem}%</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {linhaSelecionada && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.3)', zIndex: 100, display: 'flex', alignItems: 'flex-end' }} onClick={() => setLinhaSelecionada(null)}>
+          <div onClick={e => e.stopPropagation()} style={{ background: '#fff', width: '100%', maxWidth: 500, borderRadius: '16px 16px 0 0', padding: 24, maxHeight: '80vh', overflowY: 'auto' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+              <h2 style={{ fontSize: 18, fontWeight: 800 }}>{linhaSelecionada.nome}</h2>
+              <button onClick={() => setLinhaSelecionada(null)} style={{ background: 'none', border: 'none', fontSize: 20, cursor: 'pointer' }}>✕</button>
+            </div>
+            <div style={{ background: 'var(--cream)', padding: 16, borderRadius: 8, marginBottom: 20 }}>
+              <div style={{ fontSize: 12, color: 'var(--mut)', marginBottom: 4 }}>Total</div>
+              <div style={{ fontSize: 24, fontWeight: 800, color: 'var(--ink)' }}>{formatBRL(linhaSelecionada.valor)}</div>
+            </div>
+            <div style={{ marginBottom: 20 }}>
+              <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 12 }}>Transações ({linhaSelecionada.transacoes.length})</div>
+              {linhaSelecionada.transacoes.length === 0 ? (
+                <div style={{ fontSize: 12, color: 'var(--mut)' }}>Nenhuma transação nesta categoria.</div>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  {linhaSelecionada.transacoes.map(t => (
+                    <div key={t.id} className="feed-v2">
+                      <div className="desc">
+                        <b>{t.descricao || t.cliente_nome || t.fornecedor_nome || '(sem descrição)'}</b>
+                        {t.categoria && <small style={{ display: 'block' }}>Categoria: {t.categoria}</small>}
+                      </div>
+                      <div className="val" style={{ color: 'inherit' }}>{formatBRL(t.valor)}</div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+            <button onClick={() => setLinhaSelecionada(null)} className="btn-v2" style={{ width: '100%' }}>Fechar</button>
+          </div>
+        </div>
+      )}
 
       <div className="split" style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: 14, alignItems: 'start' }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
