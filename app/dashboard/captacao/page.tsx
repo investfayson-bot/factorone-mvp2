@@ -12,6 +12,14 @@ import toast from 'react-hot-toast'
 
 type Lead = { id: string; nome: string | null; email: string | null; telefone: string | null; origem: string | null; status: string; created_at: string }
 
+const ETAPAS: { status: string; label: string }[] = [
+  { status: 'novo', label: 'Novo' },
+  { status: 'contato', label: 'Em contato' },
+  { status: 'qualificado', label: 'Qualificado' },
+  { status: 'convertido', label: 'Convertido' },
+  { status: 'perdido', label: 'Perdido' },
+]
+
 type Conector = { nome: string; icon: string; cor: string; ativo: boolean; nota: string; sistema?: string; ajudaChave?: string }
 const CONECTORES: Conector[] = [
   { nome: 'Webhook / Zapier / Make', icon: 'fa-plug', cor: '#3D7A6E', ativo: true, nota: 'Cole a URL abaixo em qualquer ferramenta e conecte tudo.' },
@@ -33,6 +41,8 @@ export default function CaptacaoPage() {
   const [plugFor, setPlugFor] = useState<Conector | null>(null)
   const [apiKey, setApiKey] = useState('')
   const [salvandoKey, setSalvandoKey] = useState(false)
+  const [dragId, setDragId] = useState<string | null>(null)
+  const [dragOver, setDragOver] = useState<string | null>(null)
 
   const carregar = useCallback(async () => {
     const { data: { user } } = await supabase.auth.getUser(); if (!user) return
@@ -64,13 +74,32 @@ export default function CaptacaoPage() {
     finally { setSalvandoKey(false) }
   }
 
-  async function converter(l: Lead) {
-    const { error } = await supabase.from('crm_oportunidades').insert({ empresa_id: empresaId, titulo: l.nome || 'Lead', etapa: 'prospeccao', probabilidade: 20, valor: null })
-    if (error) { toast.error('Falha ao converter'); return }
-    await supabase.from('marketing_leads').update({ status: 'convertido' }).eq('id', l.id)
-    toast.success('Virou oportunidade no CRM — defina o valor lá')
-    void carregar()
+  async function moverLead(l: Lead, novoStatus: string) {
+    if (l.status === novoStatus) return
+    setLeads(prev => prev.map(x => x.id === l.id ? { ...x, status: novoStatus } : x))
+    if (novoStatus === 'convertido') {
+      const { error: errOp } = await supabase.from('crm_oportunidades').insert({ empresa_id: empresaId, titulo: l.nome || 'Lead', etapa: 'prospeccao', probabilidade: 20, valor: null })
+      if (errOp) { toast.error('Falha ao converter'); void carregar(); return }
+      toast.success('Virou oportunidade no CRM — defina o valor lá')
+    }
+    const { error } = await supabase.from('marketing_leads').update({ status: novoStatus }).eq('id', l.id)
+    if (error) { toast.error('Falha ao mover'); void carregar() }
   }
+
+  function soltar(status: string) {
+    if (!dragId) return
+    const l = leads.find(x => x.id === dragId)
+    setDragId(null); setDragOver(null)
+    if (!l) return
+    void moverLead(l, status)
+  }
+
+  const porEtapa = useMemo(() => {
+    const m = new Map<string, Lead[]>()
+    for (const e of ETAPAS) m.set(e.status, [])
+    for (const l of leads) m.get(l.status)?.push(l)
+    return m
+  }, [leads])
 
   const captados = leads.length
   const convertidos = leads.filter(l => l.status === 'convertido').length
@@ -87,20 +116,64 @@ export default function CaptacaoPage() {
 
       {/* Esteira / resultado */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 12, marginBottom: 18 }}>
-        {[
-          { lbl: 'Leads captados', val: String(captados), cor: 'var(--navy)', ic: 'fa-inbox' },
-          { lbl: 'Novos (a tratar)', val: String(novos), cor: 'var(--gold)', ic: 'fa-bell' },
-          { lbl: 'Convertidos', val: String(convertidos), cor: 'var(--sage)', ic: 'fa-arrow-right-arrow-left' },
-          { lbl: 'Pipeline (CRM)', val: formatBRL(pipeline), cor: 'var(--sage-deep)', ic: 'fa-sack-dollar' },
-        ].map(k => (
-          <div key={k.lbl} className="kpi" style={{ padding: '14px 16px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--ink-mut)', textTransform: 'uppercase', letterSpacing: '.08em' }}>{k.lbl}</span>
-              <i className={`fa-solid ${k.ic}`} style={{ fontSize: 14, color: k.cor }} />
-            </div>
-            <div style={{ fontSize: 20, fontWeight: 700, color: k.cor, marginTop: 8, fontVariantNumeric: 'tabular-nums' }}>{k.val}</div>
+        <div className="kpi-v2"><div className="l">Leads captados</div><div className="v">{captados}</div><div className="c" style={{ color: 'var(--mut)', fontWeight: 500 }}>total no funil</div></div>
+        <div className="kpi-v2"><div className="l">Novos (a tratar)</div><div className="v">{novos}</div><div className="c" style={{ color: 'var(--mut)', fontWeight: 500 }}>ainda sem contato</div></div>
+        <div className="kpi-v2"><div className="l">Convertidos</div><div className="v">{convertidos}</div><div className="c" style={{ color: 'var(--mut)', fontWeight: 500 }}>viraram oportunidade</div></div>
+        <div className="kpi-v2"><div className="l">Pipeline (CRM)</div><div className="v">{formatBRL(pipeline)}</div><div className="c" style={{ color: 'var(--mut)', fontWeight: 500 }}>negócios em aberto</div></div>
+      </div>
+
+      {/* Funil de leads */}
+      <div className="card-v2" style={{ padding: 16, marginBottom: 16 }}>
+        <div style={{ fontSize: 13.5, fontWeight: 800, color: 'var(--ink)', marginBottom: 12 }}>Funil de leads</div>
+        {leads.length === 0 && (
+          <div style={{ fontSize: 12.5, color: 'var(--ink-mut)', marginBottom: 12 }}>
+            <i className="fa-solid fa-circle-info" style={{ marginRight: 6 }} />Nenhum lead ainda. Cole a URL do webhook numa ferramenta e mande um teste — ele aparece aqui na hora.
           </div>
-        ))}
+        )}
+        <div className="kanban" style={{ gridTemplateColumns: 'repeat(5,1fr)' }}>
+          {ETAPAS.map(e => {
+            const itens = porEtapa.get(e.status) ?? []
+            return (
+              <div
+                key={e.status}
+                className={`kb-col${dragOver === e.status ? ' drag-over' : ''}`}
+                onDragOver={ev => { ev.preventDefault(); setDragOver(e.status) }}
+                onDragLeave={() => setDragOver(v => (v === e.status ? null : v))}
+                onDrop={() => soltar(e.status)}
+              >
+                <div className="kb-h">{e.label} <span>{itens.length}</span></div>
+                {itens.map(l => (
+                  <div
+                    key={l.id}
+                    className="kb-card"
+                    draggable
+                    onDragStart={() => setDragId(l.id)}
+                  >
+                    <b>{l.nome || 'Lead'}</b>
+                    <div className="co">{[l.email, l.telefone].filter(Boolean).join(' · ') || '—'}</div>
+                    <div className="co" style={{ marginTop: 4 }}><i className="fa-solid fa-tag" style={{ fontSize: 8, marginRight: 4 }} />{l.origem || 'Webhook'}</div>
+                    {e.status !== 'convertido' && e.status !== 'perdido' && (
+                      <div style={{ display: 'flex', gap: 6, marginTop: 8 }}>
+                        <button
+                          className="btn-v2"
+                          style={{ fontSize: 10.5, padding: '4px 8px', flex: 1 }}
+                          onClick={() => void moverLead(l, 'convertido')}
+                        >Virar oportunidade</button>
+                        <button
+                          className="btn-v2"
+                          style={{ fontSize: 10.5, padding: '4px 8px', color: 'var(--neg)' }}
+                          onClick={() => void moverLead(l, 'perdido')}
+                          title="Marcar como perdido"
+                        ><i className="fa-solid fa-xmark" /></button>
+                      </div>
+                    )}
+                  </div>
+                ))}
+                {itens.length === 0 && <div style={{ fontSize: 11, color: 'var(--mut2)', textAlign: 'center', padding: '14px 0' }}>Arraste um lead pra cá</div>}
+              </div>
+            )
+          })}
+        </div>
       </div>
 
       {/* Webhook — plugue sua solução */}
@@ -146,29 +219,6 @@ export default function CaptacaoPage() {
             ) : (
               <span style={{ fontSize: 11.5, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '.06em', color: 'var(--ink-mut)' }}>Em breve</span>
             )}
-          </div>
-        ))}
-      </div>
-
-      {/* Leads */}
-      <div className="txs-card">
-        <div style={{ padding: '12px 18px', borderBottom: '1px solid var(--line)', fontSize: 14, fontWeight: 700, color: 'var(--ink)' }}>Leads captados</div>
-        {leads.length === 0 ? (
-          <div style={{ padding: 40, textAlign: 'center', color: 'var(--ink-mut)', fontSize: 15 }}>
-            <i className="fa-solid fa-inbox" style={{ fontSize: 24, color: 'var(--sage)', display: 'block', marginBottom: 10 }} />
-            Nenhum lead ainda. Cole a URL do webhook numa ferramenta e mande um teste — ele aparece aqui na hora.
-          </div>
-        ) : leads.map((l, i) => (
-          <div key={l.id} style={{ display: 'grid', gridTemplateColumns: '1fr 160px 110px 140px', gap: 12, alignItems: 'center', padding: '11px 18px', borderBottom: i < leads.length - 1 ? '1px solid var(--line-soft)' : 'none' }}>
-            <div style={{ minWidth: 0 }}>
-              <div style={{ fontSize: 14.5, fontWeight: 600, color: 'var(--ink)' }}>{l.nome || 'Lead'}</div>
-              <div style={{ fontSize: 13, color: 'var(--ink-mut)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{[l.email, l.telefone].filter(Boolean).join(' · ') || '—'}</div>
-            </div>
-            <span style={{ fontSize: 13, color: 'var(--ink-soft)' }}><i className="fa-solid fa-tag" style={{ marginRight: 5, fontSize: 11, color: 'var(--ink-mut)' }} />{l.origem || 'Webhook'}</span>
-            <span style={{ justifySelf: 'start', fontSize: 11.5, fontWeight: 600, padding: '3px 9px', borderRadius: 100, textTransform: 'uppercase', letterSpacing: '.05em', color: l.status === 'convertido' ? 'var(--sage-deep)' : 'var(--gold)', background: l.status === 'convertido' ? 'var(--sage-tint)' : 'var(--gold-tint)' }}>{l.status}</span>
-            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-              {l.status !== 'convertido' && <button className="btn-action" style={{ fontSize: 13, padding: '6px 12px' }} onClick={() => void converter(l)}><i className="fa-solid fa-arrow-right" style={{ marginRight: 5 }} />Virar oportunidade</button>}
-            </div>
           </div>
         ))}
       </div>
