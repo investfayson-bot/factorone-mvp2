@@ -375,6 +375,14 @@ tr:hover td { background: var(--surface-2); }
 }
 .app { display: grid; grid-template-columns: 224px 1fr; min-height: 100vh; }
 
+/* ---- Tamanho de fonte (Configurações > acessibilidade) ----
+   O design system usa px fixo em vez de rem, então um zoom no <body> é o
+   jeito mais seguro de escalar tudo (texto, ícones, espaçamento) sem reescrever
+   centenas de valores. `zoom` não é padrão CSS mas tem suporte amplo em
+   navegadores Chromium/WebKit (não Firefox) — aceitável pro público do app. */
+html[data-font-size="sm"] body { zoom: 0.9; }
+html[data-font-size="lg"] body { zoom: 1.15; }
+
 /* ---- Sidebar ---- */
 .sidebar-v2 { background: var(--sb); color: #DCE7E0; display: flex; flex-direction: column; padding: 16px 12px 12px; position: relative; height: 100vh; position: sticky; top: 0; }
 .logo { display: flex; align-items: center; gap: 9px; padding: 2px 8px 16px; border-bottom: 1px solid var(--sb-line); margin-bottom: 12px; }
@@ -601,3 +609,4 @@ tr:hover td { background: var(--surface-2); }
 .camp-row:last-child { border: 0; }
 .camp-row .bar { flex: 1; height: 6px; background: var(--bg); border-radius: 5px; overflow: hidden; }
 .camp-row .bar i { display: block; height: 100%; background: var(--acc); }
+

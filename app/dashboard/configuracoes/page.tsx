@@ -7,6 +7,7 @@
 import { useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
+import FontSizeControl from '@/components/dashboard/FontSizeControl'
 
 async function chamarSeed(action: 'seed' | 'clear' | 'reset') {
   const { data: sess } = await supabase.auth.getSession()
@@ -100,6 +101,7 @@ export default function ConfiguracoesPage() {
         <i className="fa-solid fa-sliders" style={{ fontSize: 26, marginBottom: 12, display: 'block' }} />
         Em construção — chega numa fase futura do reskin.
       </div>
+      <FontSizeControl />
       <DadosDemonstracao />
     </div>
   )
