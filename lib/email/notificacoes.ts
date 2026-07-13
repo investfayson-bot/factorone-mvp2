@@ -1,4 +1,5 @@
 import { enviarEmail } from '@/lib/email/enviar'
+import { rodapeAssinatura } from '@/lib/email/assinatura'
 
 export type TipoNotificacao =
   | 'reembolso_solicitado'
@@ -95,8 +96,8 @@ function buildHtml(cfg: typeof CONFIGS[TipoNotificacao], dados: EnviarNotificaca
           </td>
         </tr>
         <tr>
-          <td style="padding:16px 28px;border-top:1px solid #f1f5f9">
-            <p style="margin:0;font-size:11px;color:#94a3b8">Este email foi enviado para ${para} · FactorOne Finance OS</p>
+          <td style="padding:20px 28px;border-top:1px solid #f1f5f9">
+            ${rodapeAssinatura(para)}
           </td>
         </tr>
       </table>
@@ -119,8 +120,8 @@ function baseHtml(corHeader: string, titulo: string, corpo: string, para: string
           <div style="color:#fff;font-size:20px;font-weight:700">${titulo}</div>
         </td></tr>
         <tr><td style="padding:28px">${corpo}</td></tr>
-        <tr><td style="padding:14px 28px;border-top:1px solid #f1f5f9">
-          <p style="margin:0;font-size:11px;color:#94a3b8">Este email foi enviado para ${para} · FactorOne Finance OS</p>
+        <tr><td style="padding:20px 28px;border-top:1px solid #f1f5f9">
+          ${rodapeAssinatura(para)}
         </td></tr>
       </table>
     </td></tr>
