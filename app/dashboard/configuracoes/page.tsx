@@ -22,6 +22,7 @@ async function chamarSeed(action: 'seed' | 'clear' | 'reset') {
 const LABEL_TABELA: Record<string, string> = {
   transacoes: 'Transações', contas_bancarias: 'Conta bancária', extrato: 'Extrato', cartoes: 'Cartão', investimentos: 'Investimentos',
   clientes: 'Clientes', oportunidades: 'Oportunidades (pipeline)', atividades: 'Atividades (follow-up)',
+  ofertas: 'Ofertas', propostas: 'Propostas',
   conversas: 'Conversas', emails: 'E-mails',
 }
 
@@ -55,9 +56,9 @@ function DadosDemonstracao() {
       <div style={{ fontWeight: 700, fontSize: 15, marginBottom: 4 }}>Dados de demonstração</div>
       <div style={{ fontSize: 13, color: 'var(--mut, #7B8C88)', marginBottom: 16 }}>
         Sem banco real conectado ainda? Popula o sistema com dados simulados (transações, conta bancária,
-        cartão, investimento, cliente + oportunidade + follow-up no CRM, uma conversa e um e-mail pendente)
-        pra você testar as telas de ponta a ponta. Tudo marcado com <code>[demo]</code> — dá pra limpar sem
-        afetar dado real.
+        cartão, investimento, 4 clientes com pipeline em etapas diferentes, ofertas, propostas, follow-ups,
+        uma conversa e um e-mail pendente) pra você testar as telas de ponta a ponta. Tudo marcado com{' '}
+        <code>[demo]</code> — dá pra limpar sem afetar dado real.
       </div>
       <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
         <button className="btn-action" disabled={rodando !== ''} onClick={() => void rodar('seed')}>

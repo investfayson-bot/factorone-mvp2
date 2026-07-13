@@ -43,6 +43,7 @@ const SEED: { descricao: string; tipo: 'entrada' | 'saida'; valor: number; categ
 // pros filhos sozinhos (faturas_cartao / atendimento_mensagens).
 const LIMPEZA: { tabela: string; coluna: string }[] = [
   { tabela: 'crm_atividades', coluna: 'titulo' },
+  { tabela: 'propostas', coluna: 'cliente' },
   { tabela: 'crm_oportunidades', coluna: 'titulo' },
   { tabela: 'clientes', coluna: 'nome' },
   { tabela: 'atendimento_conversas', coluna: 'visitante_nome' },
@@ -176,48 +177,84 @@ export async function POST(req: NextRequest) {
   if (errInv) return NextResponse.json({ error: `investimentos: ${errInv.message}`, parcial: resultado }, { status: 500 })
   resultado.investimentos = investimentos.length
 
-  // ── CRM: cliente + oportunidade (pipeline) + atividade (follow-up) ──────
-  const { data: cliente, error: errCliente } = await db.from('clientes').insert({
-    empresa_id: empresaId,
-    nome: `Construtora Horizonte Ltda ${DEMO_TAG}`,
-    tipo: 'pj',
-    email: 'contato@horizonte-demo.com.br',
-    telefone: '(11) 98888-1234',
-    segmento: 'Construção civil',
-    status: 'ativo',
-    origem: 'Indicação',
-  }).select('id').single()
+  // ── CRM: vários clientes em etapas diferentes do pipeline, com follow-up,
+  // ofertas, timeline e propostas — pra Clientes & Vendas não ficar com um
+  // cenário só. Cobre visão-geral, pipeline, ofertas, propostas, pós-venda
+  // e agendamento (cada um lê uma combinação diferente dessas tabelas).
+  const CLIENTES_SEED = [
+    { nome: 'Construtora Horizonte Ltda', tipo: 'pj' as const, email: 'contato@horizonte-demo.com.br', telefone: '(11) 98888-1234', segmento: 'Construção civil', status: 'ativo', origem: 'Indicação' },
+    { nome: 'Studio Betoni Arquitetura', tipo: 'pj' as const, email: 'ola@betoni-demo.com.br', telefone: '(11) 97777-4321', segmento: 'Arquitetura', status: 'prospect', origem: 'Site' },
+    { nome: 'Mercado Bom Preço', tipo: 'pj' as const, email: 'compras@bompreco-demo.com.br', telefone: '(21) 96666-8899', segmento: 'Varejo alimentício', status: 'ativo', origem: 'Indicação' },
+    { nome: 'Clínica Vitalis', tipo: 'pj' as const, email: 'financeiro@vitalis-demo.com.br', telefone: '(31) 95555-2200', segmento: 'Saúde', status: 'churned', origem: 'Evento' },
+  ]
+  const { data: clientesInseridos, error: errCliente } = await db.from('clientes').insert(
+    CLIENTES_SEED.map(c => ({ empresa_id: empresaId, nome: `${c.nome} ${DEMO_TAG}`, tipo: c.tipo, email: c.email, telefone: c.telefone, segmento: c.segmento, status: c.status, origem: c.origem }))
+  ).select('id,nome')
   if (errCliente) return NextResponse.json({ error: `clientes: ${errCliente.message}`, parcial: resultado }, { status: 500 })
-  resultado.clientes = 1
-  const clienteId = (cliente as { id: string }).id
+  resultado.clientes = clientesInseridos!.length
+  const cid = (nomeParcial: string) => (clientesInseridos as { id: string; nome: string }[]).find(c => c.nome.startsWith(nomeParcial))!.id
 
-  const { data: oportunidade, error: errOp } = await db.from('crm_oportunidades').insert({
-    empresa_id: empresaId,
-    cliente_id: clienteId,
-    titulo: `Proposta reforma comercial ${DEMO_TAG}`,
-    valor: 84000,
-    etapa: 'negociacao',
-    probabilidade: 60,
-    data_fechamento: futuro(12),
-    responsavel_nome: 'Ana Ferreira',
-    descricao: 'Cliente pediu revisão de escopo — aguardando retorno.',
-  }).select('id').single()
+  const OPORTUNIDADES_SEED = [
+    { cliente: 'Construtora Horizonte', titulo: 'Proposta reforma comercial', valor: 84000, etapa: 'negociacao', probabilidade: 60, dataFechamento: futuro(12), descricao: 'Cliente pediu revisão de escopo — aguardando retorno.' },
+    { cliente: 'Studio Betoni', titulo: 'Consultoria de projeto residencial', valor: 18500, etapa: 'qualificado', probabilidade: 30, dataFechamento: futuro(25), descricao: 'Primeira reunião feita, aguardando briefing detalhado.' },
+    { cliente: 'Mercado Bom Preço', titulo: 'Contrato anual de manutenção', valor: 45600, etapa: 'proposta', probabilidade: 50, dataFechamento: futuro(8), descricao: 'Proposta enviada, cliente comparando com concorrente.' },
+    { cliente: 'Mercado Bom Preço', titulo: 'Expansão loja 2 — mobiliário', valor: 132000, etapa: 'fechado_ganho', probabilidade: 100, dataFechamento: d(5), descricao: 'Contrato assinado, início da obra na próxima semana.' },
+    { cliente: 'Clínica Vitalis', titulo: 'Reforma sala de espera', valor: 27300, etapa: 'fechado_perdido', probabilidade: 0, dataFechamento: d(20), descricao: null, motivoPerda: 'Cliente fechou com concorrente por preço.' },
+  ]
+  const { data: opsInseridas, error: errOp } = await db.from('crm_oportunidades').insert(
+    OPORTUNIDADES_SEED.map(o => ({
+      empresa_id: empresaId, cliente_id: cid(o.cliente), titulo: `${o.titulo} ${DEMO_TAG}`, valor: o.valor, etapa: o.etapa,
+      probabilidade: o.probabilidade, data_fechamento: o.dataFechamento, responsavel_nome: 'Ana Ferreira',
+      descricao: o.descricao, motivo_perda: o.motivoPerda ?? null,
+    }))
+  ).select('id,titulo,etapa')
   if (errOp) return NextResponse.json({ error: `crm_oportunidades: ${errOp.message}`, parcial: resultado }, { status: 500 })
-  resultado.oportunidades = 1
+  resultado.oportunidades = opsInseridas!.length
+  const opsPorTitulo = opsInseridas as { id: string; titulo: string; etapa: string }[]
+  const opId = (tituloParcial: string) => opsPorTitulo.find(o => o.titulo.startsWith(tituloParcial))!.id
+  const opGanha = opsPorTitulo.find(o => o.etapa === 'fechado_ganho')!.id
+  const opNegociacao = opId('Proposta reforma comercial')
+  const opProposta = opId('Contrato anual de manutenção')
 
-  await db.from('crm_atividades').insert({
-    empresa_id: empresaId,
-    cliente_id: clienteId,
-    oportunidade_id: (oportunidade as { id: string }).id,
-    tipo: 'ligacao',
-    titulo: `Follow-up proposta Horizonte ${DEMO_TAG}`,
-    descricao: 'Ligar pra saber se aprovaram o orçamento revisado.',
-    data: futuro(1),
-    status: 'pendente',
-    responsavel_nome: 'Ana Ferreira',
-    lembrete: true,
-  })
-  resultado.atividades = 1
+  const ATIVIDADES_SEED = [
+    { cliente: 'Construtora Horizonte', op: opNegociacao, tipo: 'ligacao', titulo: 'Follow-up proposta Horizonte', descricao: 'Ligar pra saber se aprovaram o orçamento revisado.', data: futuro(1), status: 'pendente', lembrete: true },
+    { cliente: 'Studio Betoni', op: null, tipo: 'reuniao', titulo: 'Reunião de briefing Betoni', descricao: 'Alinhar escopo do projeto residencial.', data: futuro(3), status: 'pendente', lembrete: true },
+    { cliente: 'Mercado Bom Preço', op: opProposta, tipo: 'email', titulo: 'Reenviar proposta com desconto', descricao: 'Cliente pediu revisão de valor — mandar nova versão.', data: d(1), status: 'pendente', lembrete: false },
+    { cliente: 'Mercado Bom Preço', op: opGanha, tipo: 'visita', titulo: 'Visita técnica loja 2', descricao: 'Medir espaço antes da entrega do mobiliário.', data: d(3), status: 'realizada', lembrete: false },
+    { cliente: 'Clínica Vitalis', op: null, tipo: 'tarefa', titulo: 'Enviar pesquisa de motivo de perda', descricao: null, data: d(10), status: 'realizada', lembrete: false },
+  ]
+  const { error: errAtiv } = await db.from('crm_atividades').insert(
+    ATIVIDADES_SEED.map(a => ({
+      empresa_id: empresaId, cliente_id: cid(a.cliente), oportunidade_id: a.op, tipo: a.tipo,
+      titulo: `${a.titulo} ${DEMO_TAG}`, descricao: a.descricao, data: a.data, status: a.status,
+      responsavel_nome: 'Ana Ferreira', lembrete: a.lembrete,
+    }))
+  )
+  if (errAtiv) return NextResponse.json({ error: `crm_atividades: ${errAtiv.message}`, parcial: resultado }, { status: 500 })
+  resultado.atividades = ATIVIDADES_SEED.length
+
+  const { error: errOfertas } = await db.from('crm_ofertas').insert([
+    { empresa_id: empresaId, oportunidade_id: opProposta, desconto_pct: 8, status: 'aguardando', canal: 'e-mail', automatica: false },
+    { empresa_id: empresaId, oportunidade_id: opGanha, desconto_pct: 5, status: 'aceita', canal: 'whatsapp', automatica: true },
+    { empresa_id: empresaId, oportunidade_id: opNegociacao, desconto_pct: 12, status: 'recusada', canal: 'e-mail', automatica: false },
+  ])
+  if (errOfertas) return NextResponse.json({ error: `crm_ofertas: ${errOfertas.message}`, parcial: resultado }, { status: 500 })
+  resultado.ofertas = 3
+
+  await db.from('crm_negociacao_eventos').insert([
+    { empresa_id: empresaId, oportunidade_id: opNegociacao, origem: 'humano', titulo: 'Proposta enviada por e-mail', detalhe: 'Valor: R$ 84.000, condições em 3x.' },
+    { empresa_id: empresaId, oportunidade_id: opNegociacao, origem: 'ia', titulo: 'Cliente pediu desconto de 12%', detalhe: 'Acima da alçada automática — transferido pra você.' },
+    { empresa_id: empresaId, oportunidade_id: opGanha, origem: 'humano', titulo: 'Contrato assinado', detalhe: 'Assinatura via DocuSign em ' + d(5) + '.' },
+  ])
+
+  const { error: errProp } = await db.from('propostas').insert([
+    { empresa_id: empresaId, cliente: `Construtora Horizonte Ltda ${DEMO_TAG}`, titulo: 'Reforma comercial — 3 pavimentos', valor: 84000, status: 'enviada', validade: futuro(15) },
+    { empresa_id: empresaId, cliente: `Mercado Bom Preço ${DEMO_TAG}`, titulo: 'Contrato anual de manutenção', valor: 45600, status: 'enviada', validade: futuro(7) },
+    { empresa_id: empresaId, cliente: `Mercado Bom Preço ${DEMO_TAG}`, titulo: 'Expansão loja 2 — mobiliário', valor: 132000, status: 'aceita', validade: d(2) },
+    { empresa_id: empresaId, cliente: `Clínica Vitalis ${DEMO_TAG}`, titulo: 'Reforma sala de espera', valor: 27300, status: 'recusada', validade: d(15) },
+  ])
+  if (errProp) return NextResponse.json({ error: `propostas: ${errProp.message}`, parcial: resultado }, { status: 500 })
+  resultado.propostas = 4
 
   // ── Conversa (Agentes IA — widget do site, aguardando humano) ────────────
   const { data: conversa, error: errConv } = await db.from('atendimento_conversas').insert({
