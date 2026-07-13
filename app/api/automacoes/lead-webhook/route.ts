@@ -54,7 +54,7 @@ export async function POST(req: NextRequest) {
 
       // Se tem email, armazena pra rastreamento
       if (body.email) {
-        await supabase.from('crm_oportunidades').update({ email_contato: body.email }).eq('id', r.id).catch(() => null)
+        await supabase.from('crm_oportunidades').update({ email_contato: body.email }).eq('id', r.id)
       }
     }
 
