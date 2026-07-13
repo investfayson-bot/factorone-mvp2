@@ -115,6 +115,26 @@ export default function PortalContadorPage() {
     }
   }
 
+  async function desconectarContador(id: string, email: string) {
+    if (!confirm(`Desconectar ${email}? Ele perderá acesso à empresa.`)) return
+    try {
+      const res = await fetch('/api/equipe/remover', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...(await auth()) },
+        body: JSON.stringify({ membroId: id }),
+      })
+      const d = await res.json() as { ok?: boolean; error?: string }
+      if (d.ok) {
+        toast.success('Contador desconectado. E-mail de aviso foi enviado.')
+        void carregar()
+      } else {
+        toast.error(d.error ?? 'Falha ao desconectar')
+      }
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : 'Erro')
+    }
+  }
+
   // via API (gate de papel: o próprio contador convidado não pode mexer nos acessos)
   async function gerenciarToken(id: string, acao: 'revogar' | 'excluir') {
     const msg = acao === 'revogar' ? 'Revogar este link de acesso?' : 'Excluir permanentemente este acesso?'
@@ -242,6 +262,7 @@ export default function PortalContadorPage() {
                   {c.nome && <div style={{ fontSize: 12, color: 'var(--mut)' }}>{c.email}</div>}
                 </div>
                 <span className={`chip-v2 ${c.status === 'ativo' ? 'g' : 'y'}`}>{c.status === 'ativo' ? 'Contador · leitura' : 'Convite pendente'}</span>
+                <button onClick={() => void desconectarContador(c.id, c.email)} className="btn-action btn-ghost" style={{ fontSize: 12, padding: '4px 12px', color: '#B0413E', borderColor: 'rgba(176,65,62,.3)' }} title="Desconectar este contador">✕</button>
               </div>
             ))}
           </div>

@@ -124,8 +124,20 @@ export default function EquipePage() {
 
   async function revogar(id: string) {
     if (!confirm('Revogar acesso deste membro?')) return
-    await supabase.from('membros_equipe').update({ status: 'revogado' }).eq('id', id)
-    await carregar()
+    try {
+      const { data: sess } = await supabase.auth.getSession()
+      const tk = sess.session?.access_token ?? ''
+      const h = tk ? { Authorization: `Bearer ${tk}` } : {}
+      const res = await fetch('/api/equipe/remover', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...h },
+        body: JSON.stringify({ membroId: id }),
+      })
+      if (!res.ok) throw new Error((await res.json()).error || 'Falha ao revogar')
+      await carregar()
+    } catch (e) {
+      console.error(e)
+    }
   }
 
   async function alterarRole(id: string, role: string) {
