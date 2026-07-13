@@ -35,6 +35,8 @@ export default function MarketingVisaoGeral() {
   const [sugestoes, setSugestoes] = useState<Sugestao[]>([])
   const [agendandoIdx, setAgendandoIdx] = useState<number | null>(null)
 
+  const [campanhaSelecionada, setCampanhaSelecionada] = useState<Campanha | null>(null)
+
   const carregar = useCallback(async () => {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) { setLoading(false); return }
@@ -205,7 +207,7 @@ export default function MarketingVisaoGeral() {
               const pct = Number(c.orcamento ?? 0) > 0 ? Math.min(100, (Number(c.gasto ?? 0) / Number(c.orcamento)) * 100) : 0
               const roas = Number(c.gasto ?? 0) > 0 ? Number(c.receita_gerada ?? 0) / Number(c.gasto ?? 1) : null
               return (
-                <div key={c.id} className="camp-row">
+                <div key={c.id} className="camp-row" onClick={() => setCampanhaSelecionada(c)} style={{ cursor: 'pointer', transition: 'background .2s' }} onMouseEnter={e => e.currentTarget.style.background = 'var(--cream)'} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
                   <span style={{ minWidth: 130, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', color: 'var(--ink)', fontWeight: 700 }}>{c.nome}</span>
                   <div className="bar"><i style={{ width: `${pct}%` }} /></div>
                   <span style={{ fontVariantNumeric: 'tabular-nums', color: 'var(--mut)' }}>{formatBRL(Number(c.gasto ?? 0))}</span>
@@ -250,6 +252,75 @@ export default function MarketingVisaoGeral() {
           </div>
         </div>
       </div>
+
+      {/* Drawer: detalhe de campanha */}
+      {campanhaSelecionada && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.3)', zIndex: 100, display: 'flex', alignItems: 'flex-end' }} onClick={() => setCampanhaSelecionada(null)}>
+          <div onClick={e => e.stopPropagation()} style={{ background: '#fff', width: '100%', maxWidth: 500, borderRadius: '16px 16px 0 0', padding: 24, maxHeight: '80vh', overflowY: 'auto' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+              <h2 style={{ fontSize: 18, fontWeight: 800 }}>{campanhaSelecionada.nome}</h2>
+              <button onClick={() => setCampanhaSelecionada(null)} style={{ background: 'none', border: 'none', fontSize: 20, cursor: 'pointer' }}>✕</button>
+            </div>
+            <div style={{ display: 'grid', gap: 16 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                <div>
+                  <div style={{ fontSize: 12, color: 'var(--mut)', marginBottom: 4 }}>Tipo</div>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--ink)' }}>{campanhaSelecionada.tipo === 'meta_ads' ? 'Meta Ads' : campanhaSelecionada.tipo === 'google_ads' ? 'Google Ads' : campanhaSelecionada.tipo}</div>
+                </div>
+                <div>
+                  <div style={{ fontSize: 12, color: 'var(--mut)', marginBottom: 4 }}>Status</div>
+                  <div style={{ fontSize: 13, fontWeight: 700, padding: '4px 8px', background: campanhaSelecionada.status === 'ativa' ? 'var(--acc-soft)' : 'var(--warn-soft)', borderRadius: 4, display: 'inline-block', color: campanhaSelecionada.status === 'ativa' ? 'var(--acc-ink)' : 'var(--warn)', textTransform: 'capitalize' }}>
+                  {campanhaSelecionada.status}
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <div style={{ fontSize: 12, color: 'var(--mut)', marginBottom: 4 }}>Orçamento</div>
+                <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--ink)' }}>{formatBRL(Number(campanhaSelecionada.orcamento ?? 0))}</div>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, padding: '12px', background: 'var(--cream)', borderRadius: 8 }}>
+                <div>
+                  <div style={{ fontSize: 11, color: 'var(--mut)', marginBottom: 2 }}>Gasto</div>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--ink)' }}>{formatBRL(Number(campanhaSelecionada.gasto ?? 0))}</div>
+                </div>
+                <div>
+                  <div style={{ fontSize: 11, color: 'var(--mut)', marginBottom: 2 }}>ROAS</div>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: Number(campanhaSelecionada.gasto ?? 0) > 0 && Number(campanhaSelecionada.receita_gerada ?? 0) / Number(campanhaSelecionada.gasto ?? 1) >= 1 ? 'var(--acc-ink)' : 'var(--mut)' }}>
+                    {Number(campanhaSelecionada.gasto ?? 0) > 0 ? `${(Number(campanhaSelecionada.receita_gerada ?? 0) / Number(campanhaSelecionada.gasto ?? 1)).toFixed(1)}x` : '—'}
+                  </div>
+                </div>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8, fontSize: 12 }}>
+                <div>
+                  <div style={{ color: 'var(--mut)', marginBottom: 2 }}>Impressões</div>
+                  <div style={{ fontWeight: 700, color: 'var(--ink)' }}>{campanhaSelecionada.impressoes?.toLocaleString('pt-BR') ?? '0'}</div>
+                </div>
+                <div>
+                  <div style={{ color: 'var(--mut)', marginBottom: 2 }}>Cliques</div>
+                  <div style={{ fontWeight: 700, color: 'var(--ink)' }}>{campanhaSelecionada.cliques?.toLocaleString('pt-BR') ?? '0'}</div>
+                </div>
+                <div>
+                  <div style={{ color: 'var(--mut)', marginBottom: 2 }}>Conversões</div>
+                  <div style={{ fontWeight: 700, color: 'var(--ink)' }}>{campanhaSelecionada.conversoes?.toLocaleString('pt-BR') ?? '0'}</div>
+                </div>
+              </div>
+
+              <div>
+                <div style={{ fontSize: 12, color: 'var(--mut)', marginBottom: 4 }}>Receita Gerada</div>
+                <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--acc-ink)' }}>{formatBRL(Number(campanhaSelecionada.receita_gerada ?? 0))}</div>
+              </div>
+
+              <div style={{ display: 'flex', gap: 10 }}>
+                <Link href="/dashboard/marketing/campanhas" className="btn-v2 primary" style={{ flex: 1, textAlign: 'center', textDecoration: 'none' }}>Ir para Campanhas</Link>
+                <button onClick={() => setCampanhaSelecionada(null)} className="btn-v2" style={{ flex: 1 }}>Fechar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
