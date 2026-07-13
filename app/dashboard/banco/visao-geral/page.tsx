@@ -43,6 +43,7 @@ export default function BancoVisaoGeral() {
   const { grupoAtivoId, escopo, setEscopo, grupos } = useHolding()
   const [resumo, setResumo] = useState<Resumo | null>(null)
   const [loading, setLoading] = useState(true)
+  const [contaSelecionada, setContaSelecionada] = useState<ContaLinha | null>(null)
 
   useEffect(() => {
     let ativo = true
@@ -133,7 +134,7 @@ export default function BancoVisaoGeral() {
             <div className="card-v2">
               <div className="card-v2-h"><h3>Contas por titularidade</h3></div>
               {resumo.contas.map((c, i) => (
-                <div key={c.id} className="acc-row-v2">
+                <div key={c.id} className="acc-row-v2" onClick={() => setContaSelecionada(c)} style={{ cursor: 'pointer', transition: 'background .2s' }} onMouseEnter={e => e.currentTarget.style.background = 'var(--cream)'} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
                   <div className="acc-ic-v2" style={{ background: c.titularidade === 'pf' ? '#4F46E5' : CORES_CONTA[i % CORES_CONTA.length] }}>
                     <i className={`fa-solid ${c.titularidade === 'pf' ? 'fa-user' : 'fa-building'}`} style={{ color: '#fff', fontSize: 13 }} />
                   </div>
@@ -141,7 +142,7 @@ export default function BancoVisaoGeral() {
                     <b>{c.empresa_nome ?? 'Pessoa física'}</b>
                     <small>{c.instituicao} · {c.titularidade === 'pj' ? 'PJ' : 'Pessoa física'}</small>
                   </div>
-                  <div className="v">{formatBRL(c.saldo)}</div>
+                  <div className="v" style={{ fontWeight: 700, cursor: 'pointer' }}>{formatBRL(c.saldo)}</div>
                 </div>
               ))}
             </div>
@@ -164,6 +165,26 @@ export default function BancoVisaoGeral() {
             </div>
           </div>
         </>
+      )}
+
+      {contaSelecionada && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.3)', zIndex: 100, display: 'flex', alignItems: 'flex-end' }} onClick={() => setContaSelecionada(null)}>
+          <div onClick={e => e.stopPropagation()} style={{ background: '#fff', width: '100%', maxWidth: 500, borderRadius: '16px 16px 0 0', padding: 24, maxHeight: '80vh', overflowY: 'auto' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+              <h2 style={{ fontSize: 18, fontWeight: 800 }}>{contaSelecionada.empresa_nome ?? 'Pessoa Física'}</h2>
+              <button onClick={() => setContaSelecionada(null)} style={{ background: 'none', border: 'none', fontSize: 20, cursor: 'pointer' }}>✕</button>
+            </div>
+            <div style={{ background: 'var(--cream)', padding: 16, borderRadius: 8, marginBottom: 20 }}>
+              <div style={{ fontSize: 12, color: 'var(--mut)', marginBottom: 4 }}>Saldo em {contaSelecionada.instituicao}</div>
+              <div style={{ fontSize: 24, fontWeight: 800, color: 'var(--ink)' }}>{formatBRL(contaSelecionada.saldo)}</div>
+              <div style={{ fontSize: 11, color: 'var(--mut)', marginTop: 8 }}>Titularidade: {contaSelecionada.titularidade === 'pj' ? 'PJ' : 'Pessoa Física'}</div>
+            </div>
+            <div style={{ display: 'flex', gap: 10 }}>
+              <Link href={`/dashboard/banco/extrato?conta=${contaSelecionada.id}`} className="btn-v2 primary" style={{ flex: 1, textAlign: 'center', textDecoration: 'none' }}>Ver Extrato</Link>
+              <button className="btn-v2" onClick={() => setContaSelecionada(null)} style={{ flex: 1 }}>Fechar</button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   )
