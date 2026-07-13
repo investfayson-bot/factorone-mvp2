@@ -39,7 +39,7 @@ export async function GET(req: NextRequest) {
   const [pjR, pfR] = await Promise.all([
     empresaIds.length
       ? db.from('extrato_bancario')
-          .select('id, empresa_id, descricao, valor, tipo, data_transacao, categoria, status_classificacao, origem_documento, documento_anexo_url, contraparte_nome')
+          .select('id, empresa_id, descricao, valor, tipo, data_transacao, categoria, status_classificacao, origem_documento, comprovante_url, contraparte_nome')
           .in('empresa_id', empresaIds).order('data_transacao', { ascending: false }).limit(300)
       : Promise.resolve({ data: [] }),
     incluiPf
@@ -50,12 +50,12 @@ export async function GET(req: NextRequest) {
   ])
 
   let linhas: ExtratoLinha[] = [
-    ...((pjR.data ?? []) as Array<{ id: string; empresa_id: string; descricao: string; valor: number; tipo: string; data_transacao: string; categoria: string | null; status_classificacao: string | null; origem_documento: string | null; documento_anexo_url: string | null; contraparte_nome: string | null }>).map(t => ({
+    ...((pjR.data ?? []) as Array<{ id: string; empresa_id: string; descricao: string; valor: number; tipo: string; data_transacao: string; categoria: string | null; status_classificacao: string | null; origem_documento: string | null; comprovante_url: string | null; contraparte_nome: string | null }>).map(t => ({
       id: t.id, titularidade: 'pj' as const, empresa_id: t.empresa_id, empresa_nome: empresaNomes.get(t.empresa_id) ?? null,
       descricao: t.contraparte_nome || t.descricao, valor: Number(t.valor), tipo: (t.tipo === 'credito' ? 'entrada' : 'saida') as 'entrada' | 'saida',
       data: String(t.data_transacao).slice(0, 10), categoria: t.categoria,
       status_classificacao: (t.status_classificacao ?? 'confirmada') as ExtratoLinha['status_classificacao'],
-      origem_documento: t.origem_documento, documento_anexo_url: t.documento_anexo_url,
+      origem_documento: t.origem_documento, documento_anexo_url: t.comprovante_url,
     })),
     ...((pfR.data ?? []) as Array<{ id: string; descricao: string; valor: number; tipo: string; data: string; categoria: string | null; status_classificacao: string | null; origem_documento: string | null; documento_anexo_url: string | null; estabelecimento: string | null }>).map(t => ({
       id: t.id, titularidade: 'pf' as const, empresa_id: null, empresa_nome: null,

@@ -19,7 +19,7 @@ async function chamarSeed(action: 'seed' | 'clear' | 'reset') {
 }
 
 const LABEL_TABELA: Record<string, string> = {
-  transacoes: 'Transações', contas_bancarias: 'Conta bancária', cartoes: 'Cartão', investimentos: 'Investimentos',
+  transacoes: 'Transações', contas_bancarias: 'Conta bancária', extrato: 'Extrato', cartoes: 'Cartão', investimentos: 'Investimentos',
   clientes: 'Clientes', oportunidades: 'Oportunidades (pipeline)', atividades: 'Atividades (follow-up)',
   conversas: 'Conversas', emails: 'E-mails',
 }

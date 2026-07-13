@@ -97,8 +97,8 @@ export async function POST(req: NextRequest) {
   if (errTx) return NextResponse.json({ error: `transacoes: ${errTx.message}` }, { status: 500 })
   resultado.transacoes = rows.length
 
-  // ── Conta bancária (Open Finance simulado) ──────────────────────────────
-  const { error: errConta } = await db.from('contas_bancarias').insert({
+  // ── Conta bancária (Open Finance simulado) + extrato ────────────────────
+  const { data: conta, error: errConta } = await db.from('contas_bancarias').insert({
     empresa_id: empresaId,
     tipo: 'corrente',
     banco_nome: `Banco Simulado S.A. ${DEMO_TAG}`,
@@ -111,9 +111,27 @@ export async function POST(req: NextRequest) {
     is_principal: false,
     open_finance_id: `demo-${randomUUID()}`,
     status: 'ativa',
-  })
+  }).select('id').single()
   if (errConta) return NextResponse.json({ error: `contas_bancarias: ${errConta.message}`, parcial: resultado }, { status: 500 })
   resultado.contas_bancarias = 1
+  const contaId = (conta as { id: string }).id
+
+  // Extrato (Banco > Extrato) é alimentado por extrato_bancario, tabela
+  // separada de `transacoes` (Visão Geral) — sem isso a tela fica vazia
+  // mesmo com transações semeadas. Duas pendentes de classificação, pra
+  // testar o fluxo de "aguardando OK".
+  const extratoRows: { descricao: string; valor: number; tipo: 'credito' | 'debito'; categoria: string | null; status_classificacao: 'sugerida' | 'confirmada'; dias: number }[] = [
+    { descricao: `Netflix.com`, valor: 55.90, tipo: 'debito', categoria: null, status_classificacao: 'sugerida', dias: 1 },
+    { descricao: `Disney Plus`, valor: 37.90, tipo: 'debito', categoria: null, status_classificacao: 'sugerida', dias: 2 },
+    { descricao: `PIX RECEBIDO — Cliente ACME Ltda`, valor: 12500.00, tipo: 'credito', categoria: 'Receita de vendas', status_classificacao: 'confirmada', dias: 2 },
+    { descricao: `Aluguel Sala Comercial`, valor: 4500.00, tipo: 'debito', categoria: 'Aluguel/Infraestrutura', status_classificacao: 'confirmada', dias: 5 },
+  ]
+  const { error: errExtrato } = await db.from('extrato_bancario').insert(extratoRows.map(e => ({
+    conta_id: contaId, empresa_id: empresaId, descricao: `${e.descricao} ${DEMO_TAG}`, valor: e.valor, tipo: e.tipo,
+    categoria: e.categoria, status_classificacao: e.status_classificacao, data_transacao: d(e.dias),
+  })))
+  if (errExtrato) return NextResponse.json({ error: `extrato_bancario: ${errExtrato.message}`, parcial: resultado }, { status: 500 })
+  resultado.extrato = extratoRows.length
 
   // ── Cartão corporativo + fatura do mês ───────────────────────────────────
   const { data: cartao, error: errCartao } = await db.from('cartoes_corporativos').insert({
