@@ -11,6 +11,7 @@ export default function DepartamentosPage() {
   const [loading, setLoading] = useState(true)
   const [modal, setModal] = useState(false)
   const [form, setForm] = useState({ nome: '', descricao: '' })
+  const [selecionado, setSelecionado] = useState<Dept | null>(null)
 
   useEffect(() => {
     const carregar = async () => {
@@ -60,7 +61,7 @@ export default function DepartamentosPage() {
       ) : (
         <div style={{ display: 'grid', gap: 12 }}>
           {depts.map(d => (
-            <div key={d.id} className="card-v2" style={{ padding: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div key={d.id} className="card-v2" onClick={() => setSelecionado(d)} style={{ padding: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer', transition: 'background .2s' }} onMouseEnter={e => e.currentTarget.style.background = 'var(--cream)'} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
               <div>
                 <div style={{ fontSize: 15, fontWeight: 700 }}>{d.nome}</div>
                 {d.descricao && <div style={{ fontSize: 13, color: 'var(--mut)', marginTop: 4 }}>{d.descricao}</div>}
@@ -95,6 +96,46 @@ export default function DepartamentosPage() {
             <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end' }}>
               <button onClick={() => setModal(false)} className="btn-v2">Cancelar</button>
               <button onClick={() => void criar()} className="btn-v2 primary">Criar</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Drawer: detalhe de departamento */}
+      {selecionado && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.3)', zIndex: 100, display: 'flex', alignItems: 'flex-end' }} onClick={() => setSelecionado(null)}>
+          <div onClick={e => e.stopPropagation()} style={{ background: '#fff', width: '100%', maxWidth: 500, borderRadius: '16px 16px 0 0', padding: 24, maxHeight: '80vh', overflowY: 'auto' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+              <h2 style={{ fontSize: 18, fontWeight: 800 }}>{selecionado.nome}</h2>
+              <button onClick={() => setSelecionado(null)} style={{ background: 'none', border: 'none', fontSize: 20, cursor: 'pointer' }}>✕</button>
+            </div>
+            <div style={{ display: 'grid', gap: 16 }}>
+              {selecionado.descricao && (
+                <div>
+                  <div style={{ fontSize: 12, color: 'var(--mut)', marginBottom: 4 }}>Descrição</div>
+                  <div style={{ fontSize: 13, color: 'var(--ink)', lineHeight: 1.5 }}>{selecionado.descricao}</div>
+                </div>
+              )}
+
+              <div>
+                <div style={{ fontSize: 12, color: 'var(--mut)', marginBottom: 4 }}>Status</div>
+                <div style={{ fontSize: 13, fontWeight: 700, padding: '4px 8px', background: selecionado.ativo ? 'var(--acc-soft)' : '#f1f5f9', borderRadius: 4, display: 'inline-block', color: selecionado.ativo ? 'var(--acc-ink)' : 'var(--mut)' }}>
+                  {selecionado.ativo ? 'Ativo' : 'Inativo'}
+                </div>
+              </div>
+
+              <div style={{ display: 'grid', gap: 10 }}>
+                <button onClick={() => { setSelecionado(null); alert('Chat do departamento — feature em desenvolvimento') }} className="btn-v2 primary" style={{ width: '100%' }}>
+                  <i className="fa-solid fa-comments" style={{ marginRight: 8 }} />Chat da Equipe
+                </button>
+                <button onClick={() => { setSelecionado(null); alert('AI por Setor — recomendações específicas desta área') }} className="btn-v2" style={{ width: '100%' }}>
+                  <i className="fa-solid fa-wand-magic-sparkles" style={{ marginRight: 8 }} />Assessora IA Setorial
+                </button>
+                <button onClick={() => { setSelecionado(null); alert('Gerenciar membros do departamento') }} className="btn-v2" style={{ width: '100%' }}>
+                  <i className="fa-solid fa-people-group" style={{ marginRight: 8 }} />Membros
+                </button>
+                <button onClick={() => setSelecionado(null)} className="btn-v2" style={{ width: '100%' }}>Fechar</button>
+              </div>
             </div>
           </div>
         </div>
