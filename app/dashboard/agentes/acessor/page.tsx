@@ -34,6 +34,8 @@ export default function AcessorPage() {
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const [ctx, setCtx] = useState<Ctx>({ saldo: 0, receita: 0, despesas: 0, aReceber: 0, runway: null })
+  const [departamentos, setDepartamentos] = useState<any[]>([])
+  const [setorAtivo, setSetorAtivo] = useState<string>('geral')
   const refFim = useRef<HTMLDivElement>(null)
 
   useEffect(() => { refFim.current?.scrollIntoView({ behavior: 'smooth' }) }, [mensagens, loading])
@@ -61,6 +63,18 @@ export default function AcessorPage() {
   }, [])
 
   useEffect(() => { void carregarCtx() }, [carregarCtx])
+
+  useEffect(() => {
+    const carregarDepartamentos = async () => {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return
+      const { data: ur } = await supabase.from('usuarios').select('empresa_id').eq('id', user.id).maybeSingle()
+      const eid = (ur?.empresa_id as string) || user.id
+      const { data } = await supabase.from('departamentos').select('id,nome').eq('empresa_id', eid).eq('ativo', true)
+      setDepartamentos(data || [])
+    }
+    void carregarDepartamentos()
+  }, [])
 
   async function enviar(m?: string) {
     const texto = (m || input).trim()
@@ -109,6 +123,28 @@ export default function AcessorPage() {
             <i className="fa-solid fa-arrows-rotate" style={{ fontSize: 11 }} />Atualizar
           </button>
         </div>
+
+        {/* Seletor de setor (AI sectorial) */}
+        {departamentos.length > 0 && (
+          <div style={{ padding: '8px 16px', borderBottom: '1px solid #E4DCCC', display: 'flex', gap: 8, alignItems: 'center', fontSize: 12 }}>
+            <span style={{ fontWeight: 600, color: '#3C4A46' }}>Contexto:</span>
+            <button
+              onClick={() => setSetorAtivo('geral')}
+              style={{ padding: '4px 10px', borderRadius: 6, background: setorAtivo === 'geral' ? '#3D7A6E' : '#E9F0ED', color: setorAtivo === 'geral' ? '#fff' : '#3D7A6E', border: 'none', cursor: 'pointer', fontWeight: 600, fontSize: 11 }}
+            >
+              Geral
+            </button>
+            {departamentos.map(d => (
+              <button
+                key={d.id}
+                onClick={() => setSetorAtivo(d.id)}
+                style={{ padding: '4px 10px', borderRadius: 6, background: setorAtivo === d.id ? '#3D7A6E' : '#E9F0ED', color: setorAtivo === d.id ? '#fff' : '#3D7A6E', border: 'none', cursor: 'pointer', fontWeight: 600, fontSize: 11 }}
+              >
+                {d.nome}
+              </button>
+            ))}
+          </div>
+        )}
 
         <div className="ai-msgs">
           {/* Estado vazio DENTRO da área rolável — fora dela (como era) o
