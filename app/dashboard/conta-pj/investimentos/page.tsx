@@ -67,8 +67,8 @@ export default function InvestimentosPage() {
           <div className="page-sub">Carteira da empresa · aplicado, rendimento e vencimentos</div>
         </div>
         <div style={{ display: 'flex', gap: 8 }}>
-          <Link href="/dashboard/conta-pj" className="btn-ghost" style={{ fontSize: 14, textDecoration: 'none' }}>
-            <i className="fa-solid fa-arrow-left" style={{ marginRight: 6 }} />Banco
+          <Link href="/dashboard/banco/investimentos" className="btn-ghost" style={{ fontSize: 14, textDecoration: 'none' }}>
+            <i className="fa-solid fa-arrow-left" style={{ marginRight: 6 }} />Investimentos
           </Link>
           <button className="btn-action" style={{ fontSize: 14 }} onClick={() => setModal(true)}>
             <i className="fa-solid fa-plus" style={{ marginRight: 6 }} />Novo investimento
