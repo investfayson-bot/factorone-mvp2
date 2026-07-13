@@ -11,13 +11,16 @@ import { formatBRL } from '@/lib/currency-brl'
 type Campanha = { id: string; nome: string; tipo: string; status: string; orcamento: number | null; gasto: number | null; conversoes: number; receita_gerada: number | null }
 
 const TIPO_LABEL: Record<string, string> = { meta_ads: 'Meta Ads', google_ads: 'Google Ads', email: 'E-mail', seo: 'SEO', social: 'Social', outro: 'Outro' }
+const STATUS_LABEL: Record<string, string> = { rascunho: 'Rascunho', ativa: 'Ativa', pausada: 'Pausada', concluida: 'Concluída', cancelada: 'Cancelada' }
+
+const FORM_VAZIO = { nome: '', tipo: 'meta_ads', status: 'ativa', orcamento: '', data_inicio: '', data_fim: '', url_destino: '', notas: '' }
 
 export default function CampanhasPage() {
   const [campanhas, setCampanhas] = useState<Campanha[]>([])
   const [empresaId, setEmpresaId] = useState('')
   const [loading, setLoading] = useState(true)
   const [modal, setModal] = useState(false)
-  const [form, setForm] = useState({ nome: '', tipo: 'meta_ads', orcamento: '' })
+  const [form, setForm] = useState({ ...FORM_VAZIO })
   const [salvando, setSalvando] = useState(false)
 
   const carregar = useCallback(async () => {
@@ -50,12 +53,14 @@ export default function CampanhasPage() {
     setSalvando(true)
     try {
       const { error } = await supabase.from('marketing_campanhas').insert({
-        empresa_id: empresaId, nome: form.nome.trim(), tipo: form.tipo,
-        orcamento: form.orcamento ? Number(form.orcamento) : null, status: 'ativa',
+        empresa_id: empresaId, nome: form.nome.trim(), tipo: form.tipo, status: form.status,
+        orcamento: form.orcamento ? Number(form.orcamento) : null,
+        data_inicio: form.data_inicio || null, data_fim: form.data_fim || null,
+        url_destino: form.url_destino || null, notas: form.notas || null,
       })
       if (error) throw error
       toast.success('Campanha criada')
-      setModal(false); setForm({ nome: '', tipo: 'meta_ads', orcamento: '' })
+      setModal(false); setForm({ ...FORM_VAZIO })
       void carregar()
     } catch (e) { toast.error(e instanceof Error ? e.message : 'Erro') }
     finally { setSalvando(false) }
@@ -100,14 +105,31 @@ export default function CampanhasPage() {
 
       {modal && (
         <div className="modal-bg" onClick={e => { if (e.target === e.currentTarget) setModal(false) }}>
-          <div style={{ background: 'var(--card)', border: '1px solid var(--line)', borderRadius: 14, padding: 26, width: '100%', maxWidth: 420 }}>
+          <div style={{ background: 'var(--card)', border: '1px solid var(--line)', borderRadius: 14, padding: 26, width: '100%', maxWidth: 480 }}>
             <h2 style={{ fontSize: 16, fontWeight: 800, color: 'var(--ink)', marginBottom: 16 }}>Nova campanha</h2>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               <input className="form-input" placeholder="Nome *" value={form.nome} onChange={e => setForm(f => ({ ...f, nome: e.target.value }))} />
-              <select className="form-input" value={form.tipo} onChange={e => setForm(f => ({ ...f, tipo: e.target.value }))}>
-                {Object.entries(TIPO_LABEL).map(([v, l]) => <option key={v} value={v}>{l}</option>)}
-              </select>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                <select className="form-input" value={form.tipo} onChange={e => setForm(f => ({ ...f, tipo: e.target.value }))}>
+                  {Object.entries(TIPO_LABEL).map(([v, l]) => <option key={v} value={v}>{l}</option>)}
+                </select>
+                <select className="form-input" value={form.status} onChange={e => setForm(f => ({ ...f, status: e.target.value }))}>
+                  {Object.entries(STATUS_LABEL).map(([v, l]) => <option key={v} value={v}>{l}</option>)}
+                </select>
+              </div>
               <input className="form-input" type="number" placeholder="Orçamento (R$)" value={form.orcamento} onChange={e => setForm(f => ({ ...f, orcamento: e.target.value }))} />
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                <div>
+                  <label style={{ fontSize: 11.5, fontWeight: 700, color: 'var(--mut)', display: 'block', marginBottom: 4 }}>Início</label>
+                  <input className="form-input" type="date" value={form.data_inicio} onChange={e => setForm(f => ({ ...f, data_inicio: e.target.value }))} />
+                </div>
+                <div>
+                  <label style={{ fontSize: 11.5, fontWeight: 700, color: 'var(--mut)', display: 'block', marginBottom: 4 }}>Fim</label>
+                  <input className="form-input" type="date" value={form.data_fim} onChange={e => setForm(f => ({ ...f, data_fim: e.target.value }))} />
+                </div>
+              </div>
+              <input className="form-input" placeholder="URL de destino (landing page, anúncio...)" value={form.url_destino} onChange={e => setForm(f => ({ ...f, url_destino: e.target.value }))} />
+              <textarea className="form-input" placeholder="Notas (público-alvo, criativos, observações...)" rows={3} value={form.notas} onChange={e => setForm(f => ({ ...f, notas: e.target.value }))} style={{ resize: 'vertical', fontFamily: 'inherit' }} />
             </div>
             <div style={{ display: 'flex', gap: 10, marginTop: 20, justifyContent: 'flex-end' }}>
               <button className="btn-v2" onClick={() => setModal(false)}>Cancelar</button>
