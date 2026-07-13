@@ -189,7 +189,7 @@ function DashboardShell({ children }: { children: React.ReactNode }) {
       const { count: r } = await supabase.from('reembolsos').select('id', { count: 'exact', head: true }).eq('empresa_id', eid).eq('status', 'pendente')
       setBadges({ reembolsos: r ?? 0 })
     })
-  }, [router])
+  }, [])
 
   async function sair() {
     await supabase.auth.signOut()
