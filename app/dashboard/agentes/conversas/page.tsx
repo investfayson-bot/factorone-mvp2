@@ -287,7 +287,7 @@ function ConversasContent() {
               onChange={e => setBusca(e.target.value)}
               style={{ fontSize: 13.5, height: 34 }}
             />
-            <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginTop: 10 }}>
+            <div style={{ display: 'flex', gap: 6, flexWrap: 'nowrap', overflowX: 'auto', marginTop: 10, paddingBottom: 2 }}>
               {CANAIS_FILTRO.map(id => (
                 <button
                   key={id}
@@ -296,6 +296,7 @@ function ConversasContent() {
                     fontSize: 12, padding: '4px 10px', borderRadius: 20, border: '1px solid var(--line)', cursor: 'pointer',
                     background: canalFiltro === id ? 'var(--sage-deep)' : 'var(--surface-2)',
                     color: canalFiltro === id ? '#fff' : 'var(--ink-mut)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 5,
+                    whiteSpace: 'nowrap', flexShrink: 0,
                   }}
                 >
                   {id !== 'todos' && <i className={CANAL_META[id].icone} style={{ fontSize: 11 }} />}
