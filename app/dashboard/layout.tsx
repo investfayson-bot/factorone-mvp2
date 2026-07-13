@@ -15,6 +15,8 @@ import { HoldingProvider, useHolding } from '@/lib/holding-context'
 type NavItem = { href: string; icon: string; label: string; badge?: string; match?: (p: string) => boolean }
 type NavGroup = { label: string; items: NavItem[] }
 
+// Force redeploy — remove infinite loop bug in useEffect
+
 // Fase 1 (docs/factorone-cursor-package/FASE-1) — estrutura definitiva do
 // menu, não muda mais por fase: PRINCIPAL / SOLUÇÕES / EXTRAS.
 const GRUPO_ROLES: Record<string, string[]> = {
