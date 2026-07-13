@@ -9,6 +9,14 @@
       "schedule": "0 8 * * *"
     },
     {
+      "path": "/api/cron/automacoes-fase3",
+      "schedule": "0 */5 * * *"
+    },
+    {
+      "path": "/api/cron/email-lead-processor",
+      "schedule": "0 */10 * * *"
+    },
+    {
       "path": "/api/cron/belvo-sync",
       "schedule": "0 6 * * *"
     },
@@ -20,5 +28,8 @@
       "path": "/api/cron/relatorio-mensal",
       "schedule": "0 9 1 * *"
     }
-  ]
+  ],
+  "env": {
+    "CRON_SECRET": "@cron_secret"
+  }
 }
