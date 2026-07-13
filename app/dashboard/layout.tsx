@@ -154,7 +154,7 @@ function DashboardShell({ children }: { children: React.ReactNode }) {
   const [empresaId, setEmpresaId] = useState('')
   const [badges, setBadges] = useState({ reembolsos: 0 })
   const [installedIds, setInstalledIds] = useState<string[]>([])
-  const [role, setRole] = useState('admin')
+  const [role, setRole] = useState('admin') // default admin — mantém se não conseguir carregar do banco
 
   useEffect(() => {
     const sync = () => { void fetchInstalledIds().then(setInstalledIds) }
