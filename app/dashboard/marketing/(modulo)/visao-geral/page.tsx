@@ -13,6 +13,7 @@ import { formatBRL } from '@/lib/currency-brl'
 
 type Campanha = { id: string; nome: string; tipo: string; status: string; orcamento: number | null; gasto: number | null; impressoes: number; cliques: number; conversoes: number; receita_gerada: number | null }
 type Conteudo = { id: string; titulo: string; tipo: string; data_pub: string | null; status: string }
+const EM_PRODUCAO = new Set(['producao', 'revisao', 'agendado'])
 type Sugestao = { tipo: string; titulo: string; copy: string }
 
 const TIPO_ICONE: Record<string, string> = { post_instagram: 'fa-image', reel: 'fa-film', story: 'fa-bolt', email: 'fa-envelope', post_linkedin: 'fa-briefcase' }
@@ -68,7 +69,7 @@ export default function MarketingVisaoGeral() {
       return { tipo, label: tipo === 'meta_ads' ? 'Meta Ads' : 'Google Ads', investimento: inv, roas: inv > 0 ? rec / inv : null }
     })
     const melhor = [...ativas].filter(c => Number(c.gasto ?? 0) > 0).sort((a, b) => (Number(b.receita_gerada ?? 0) / Number(b.gasto ?? 1)) - (Number(a.receita_gerada ?? 0) / Number(a.gasto ?? 1)))[0] ?? null
-    return { ativas, investimento, roas, cpl, porCanal, melhor }
+    return { ativas, investimento, receita, roas, cpl, porCanal, melhor }
   }, [campanhas, leadsMes])
 
   async function gerar() {
@@ -117,7 +118,34 @@ export default function MarketingVisaoGeral() {
         <div className="kpi-v2"><div className="l">Investimento em ads (mês)</div><div className="v">{loading ? '…' : formatBRL(m.investimento)}</div><div className="c" style={{ color: 'var(--mut)', fontWeight: 500 }}>campanhas ativas</div></div>
         <div className="kpi-v2"><div className="l">ROAS médio</div><div className="v">{loading || m.roas == null ? '—' : `${m.roas.toFixed(1)}x`}</div><div className="c" style={{ color: 'var(--mut)', fontWeight: 500 }}>receita / investimento</div></div>
         <div className="kpi-v2"><div className="l">Leads gerados (mês)</div><div className="v">{loading ? '…' : leadsMes}</div><div className="c" style={{ color: 'var(--mut)', fontWeight: 500 }}>{m.cpl != null ? `CPL ${formatBRL(m.cpl)}` : 'sem custo atribuído'}</div></div>
-        <div className="kpi-v2"><div className="l">Conteúdos no mês</div><div className="v">{loading ? '…' : conteudos.length}</div><div className="c" style={{ color: 'var(--mut)', fontWeight: 500 }}>agendados/publicados</div></div>
+        <div className="kpi-v2"><div className="l">Conteúdos no mês</div><div className="v">{loading ? '…' : conteudos.length}</div><div className="c" style={{ color: 'var(--mut)', fontWeight: 500 }}>{loading ? '' : `${conteudos.filter(c => EM_PRODUCAO.has(c.status)).length} em produção`}</div></div>
+      </div>
+
+      {/* Motor de Receita — esteira Investido → Leads → Receita → ROAS */}
+      <div className="card-v2" style={{ padding: 16, marginBottom: 14 }}>
+        <div style={{ fontSize: 13.5, fontWeight: 800, color: 'var(--ink)', marginBottom: 12 }}>Motor de Receita</div>
+        <div style={{ display: 'flex', alignItems: 'stretch' }}>
+          {[
+            { label: 'Investido', val: formatBRL(m.investimento), sub: 'em ads (mês)', href: '/dashboard/marketing/trafego' },
+            { label: 'Leads', val: String(leadsMes), sub: m.cpl != null ? `CPL ${formatBRL(m.cpl)}` : 'gerados no mês', href: '/dashboard/captacao' },
+            { label: 'Receita gerada', val: formatBRL(m.receita), sub: 'atribuída às campanhas', href: '/dashboard/financeiro/dre' },
+            { label: 'ROAS', val: m.roas != null ? `${m.roas.toFixed(1)}x` : '—', sub: 'receita / investimento', href: '/dashboard/marketing/campanhas' },
+          ].map((e, i, arr) => (
+            <div key={e.label} style={{ display: 'flex', alignItems: 'center', flex: 1 }}>
+              <Link href={e.href} style={{ flex: 1, textDecoration: 'none' }}>
+                <div style={{ padding: '12px 14px', borderRadius: 10, background: 'var(--bg)', transition: 'background .15s' }}
+                  onMouseEnter={ev => { ev.currentTarget.style.background = 'var(--acc-soft)' }}
+                  onMouseLeave={ev => { ev.currentTarget.style.background = 'var(--bg)' }}
+                >
+                  <div style={{ fontSize: 11, color: 'var(--mut)', fontWeight: 600 }}>{e.label}</div>
+                  <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 18, fontWeight: 700, color: 'var(--ink)', margin: '4px 0 2px', letterSpacing: '-.02em' }}>{loading ? '…' : e.val}</div>
+                  <div style={{ fontSize: 10.5, color: 'var(--mut2)', fontWeight: 600 }}>{e.sub}</div>
+                </div>
+              </Link>
+              {i < arr.length - 1 && <i className="fa-solid fa-arrow-right" style={{ color: 'var(--mut2)', fontSize: 12, padding: '0 10px', flexShrink: 0 }} />}
+            </div>
+          ))}
+        </div>
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: 14, alignItems: 'start' }}>

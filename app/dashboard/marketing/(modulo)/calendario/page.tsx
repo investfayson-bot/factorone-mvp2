@@ -8,7 +8,8 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import toast from 'react-hot-toast'
 import { supabase } from '@/lib/supabase'
 
-type Conteudo = { id: string; titulo: string; tipo: string; status: string; data_pub: string | null; hora_pub: string | null; canal: string | null; copy: string | null }
+type Conteudo = { id: string; titulo: string; tipo: string; status: string; data_pub: string | null; hora_pub: string | null; canal: string | null; copy: string | null; responsavel: string | null; campanha_id: string | null }
+type CampanhaOpcao = { id: string; nome: string }
 
 const MESES = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro']
 const TIPOS = ['post_instagram', 'reel', 'story', 'email', 'post_linkedin', 'blog', 'video', 'outro']
@@ -16,6 +17,7 @@ const STATUS = ['ideia', 'producao', 'revisao', 'agendado', 'publicado', 'cancel
 
 export default function CalendarioEditorialPage() {
   const [conteudos, setConteudos] = useState<Conteudo[]>([])
+  const [campanhas, setCampanhas] = useState<CampanhaOpcao[]>([])
   const [empresaId, setEmpresaId] = useState('')
   const [mesAtual, setMesAtual] = useState(() => { const d = new Date(); return new Date(d.getFullYear(), d.getMonth(), 1) })
   const [editando, setEditando] = useState<Partial<Conteudo> | null>(null)
@@ -31,13 +33,16 @@ export default function CalendarioEditorialPage() {
     setEmpresaId(eid)
     const ini = `${ano}-${String(mes + 1).padStart(2, '0')}-01`
     const fim = new Date(ano, mes + 1, 0).toISOString().slice(0, 10)
-    const { data } = await supabase
-      .from('marketing_conteudo')
-      .select('id, titulo, tipo, status, data_pub, hora_pub, canal, copy')
-      .eq('empresa_id', eid)
-      .gte('data_pub', ini).lte('data_pub', fim)
-      .order('data_pub')
-    setConteudos((data as Conteudo[]) ?? [])
+    const [contRes, campRes] = await Promise.all([
+      supabase.from('marketing_conteudo')
+        .select('id, titulo, tipo, status, data_pub, hora_pub, canal, copy, responsavel, campanha_id')
+        .eq('empresa_id', eid)
+        .gte('data_pub', ini).lte('data_pub', fim)
+        .order('data_pub'),
+      supabase.from('marketing_campanhas').select('id, nome').eq('empresa_id', eid).order('nome'),
+    ])
+    setConteudos((contRes.data as Conteudo[]) ?? [])
+    setCampanhas((campRes.data as CampanhaOpcao[]) ?? [])
   }, [ano, mes])
   useEffect(() => { void carregar() }, [carregar])
 
@@ -59,6 +64,8 @@ export default function CalendarioEditorialPage() {
         hora_pub: editando.hora_pub || null,
         canal: editando.canal || null,
         copy: editando.copy || null,
+        responsavel: editando.responsavel || null,
+        campanha_id: editando.campanha_id || null,
       }
       const { error } = editando.id
         ? await supabase.from('marketing_conteudo').update(payload).eq('id', editando.id)
@@ -99,8 +106,13 @@ export default function CalendarioEditorialPage() {
               <div key={i} className={`cal-d${iso === hojeIso ? ' hoje' : ''}`} style={{ cursor: 'pointer' }} onClick={() => setEditando({ data_pub: iso })}>
                 {dia}
                 {posts.map(p => (
-                  <span key={p.id} className={`cal-post${p.tipo === 'email' ? ' ads' : ''}`} onClick={e => { e.stopPropagation(); setEditando(p) }}>
-                    {p.status === 'publicado' ? '✓ ' : ''}{p.titulo}
+                  <span
+                    key={p.id}
+                    className={`cal-post${p.tipo === 'email' ? ' ads' : ''}`}
+                    title={p.responsavel ? `Responsável: ${p.responsavel}` : undefined}
+                    onClick={e => { e.stopPropagation(); setEditando(p) }}
+                  >
+                    {p.status === 'publicado' ? '✓ ' : ''}{p.titulo}{p.responsavel ? ` · ${p.responsavel}` : ''}
                   </span>
                 ))}
               </div>
@@ -127,6 +139,13 @@ export default function CalendarioEditorialPage() {
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
                 <input className="form-input" type="date" value={editando.data_pub ?? ''} onChange={e => setEditando(v => ({ ...v, data_pub: e.target.value }))} />
                 <input className="form-input" type="time" value={editando.hora_pub ?? ''} onChange={e => setEditando(v => ({ ...v, hora_pub: e.target.value }))} />
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                <input className="form-input" placeholder="Responsável" value={editando.responsavel ?? ''} onChange={e => setEditando(v => ({ ...v, responsavel: e.target.value }))} />
+                <select className="form-input" value={editando.campanha_id ?? ''} onChange={e => setEditando(v => ({ ...v, campanha_id: e.target.value || null }))}>
+                  <option value="">Sem campanha vinculada</option>
+                  {campanhas.map(c => <option key={c.id} value={c.id}>{c.nome}</option>)}
+                </select>
               </div>
               <textarea className="form-input" rows={4} placeholder="Texto/copy do post" value={editando.copy ?? ''} onChange={e => setEditando(v => ({ ...v, copy: e.target.value }))} />
             </div>
