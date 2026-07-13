@@ -25,6 +25,8 @@ const FUNIL: { etapa: string; label: string }[] = [
 export default function ClientesVendasVisaoGeral() {
   const [ops, setOps] = useState<Op[]>([])
   const [loading, setLoading] = useState(true)
+  const [opSelecionada, setOpSelecionada] = useState<Op | null>(null)
+  const [etapaFiltro, setEtapaFiltro] = useState<string | null>(null)
 
   useEffect(() => {
     void (async () => {
@@ -95,12 +97,12 @@ export default function ClientesVendasVisaoGeral() {
       <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: 14, alignItems: 'start' }}>
         {/* Funil */}
         <div className="card-v2" style={{ padding: 16 }}>
-          <div style={{ fontSize: 13.5, fontWeight: 800, color: 'var(--ink)', marginBottom: 12 }}>Funil de vendas</div>
+          <div style={{ fontSize: 13.5, fontWeight: 800, color: 'var(--ink)', marginBottom: 12 }}>Funil de vendas <span style={{ fontSize: 12, color: 'var(--mut)', fontWeight: 500 }}>(clique em uma etapa)</span></div>
           {m.funil.map((f, i) => {
             const anterior = i > 0 ? m.funil[i - 1] : null
             const passagem = anterior && anterior.qtd > 0 ? Math.round((f.qtd / anterior.qtd) * 100) : null
             return (
-              <div key={f.etapa} style={{ marginBottom: 10 }}>
+              <div key={f.etapa} onClick={() => setEtapaFiltro(f.etapa)} style={{ marginBottom: 10, cursor: 'pointer', transition: 'opacity .2s' }} onMouseEnter={e => e.currentTarget.style.opacity = '0.7'} onMouseLeave={e => e.currentTarget.style.opacity = '1'}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, marginBottom: 3 }}>
                   <span style={{ fontWeight: 700, color: 'var(--ink)' }}>{f.label} <span style={{ color: 'var(--mut)', fontWeight: 600 }}>· {f.qtd}</span></span>
                   <span style={{ color: 'var(--mut)', fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>
@@ -124,7 +126,7 @@ export default function ClientesVendasVisaoGeral() {
           {m.quentesParados.length === 0 ? (
             <div style={{ fontSize: 12, color: 'var(--mut)' }}>Nenhum lead quente parado — ou você está em dia, ou falta classificar temperaturas no Pipeline.</div>
           ) : m.quentesParados.map(o => (
-            <div key={o.id} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 0', borderBottom: '1px solid var(--line)' }}>
+            <div key={o.id} onClick={() => setOpSelecionada(o)} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 0', borderBottom: '1px solid var(--line)', cursor: 'pointer', transition: 'background .2s' }} onMouseEnter={e => e.currentTarget.style.background = 'var(--cream)'} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ fontSize: 12.5, fontWeight: 700, color: 'var(--ink)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{o.titulo}</div>
                 <div style={{ fontSize: 11, color: '#B0413E', fontWeight: 700 }}><i className="fa-solid fa-triangle-exclamation" style={{ marginRight: 4, fontSize: 10 }} />{o.dias} dias sem contato</div>
@@ -134,6 +136,74 @@ export default function ClientesVendasVisaoGeral() {
           ))}
         </div>
       </div>
+
+      {/* Drawer: detalhe de oportunidade */}
+      {opSelecionada && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.3)', zIndex: 100, display: 'flex', alignItems: 'flex-end' }} onClick={() => setOpSelecionada(null)}>
+          <div onClick={e => e.stopPropagation()} style={{ background: '#fff', width: '100%', maxWidth: 500, borderRadius: '16px 16px 0 0', padding: 24, maxHeight: '80vh', overflowY: 'auto' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+              <h2 style={{ fontSize: 18, fontWeight: 800 }}>{opSelecionada.titulo}</h2>
+              <button onClick={() => setOpSelecionada(null)} style={{ background: 'none', border: 'none', fontSize: 20, cursor: 'pointer' }}>✕</button>
+            </div>
+            <div style={{ display: 'grid', gap: 16 }}>
+              <div>
+                <div style={{ fontSize: 12, color: 'var(--mut)', marginBottom: 4 }}>Valor</div>
+                <div style={{ fontSize: 22, fontWeight: 800, color: 'var(--ink)' }}>{formatBRL(Number(opSelecionada.valor ?? 0))}</div>
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                <div>
+                  <div style={{ fontSize: 12, color: 'var(--mut)', marginBottom: 4 }}>Etapa</div>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--ink)' }}>{FUNIL.find(f => f.etapa === opSelecionada.etapa)?.label || opSelecionada.etapa}</div>
+                </div>
+                <div>
+                  <div style={{ fontSize: 12, color: 'var(--mut)', marginBottom: 4 }}>Temperatura</div>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: opSelecionada.temperatura === 'quente' ? '#DC2626' : opSelecionada.temperatura === 'morna' ? '#F59E0B' : '#6B7280' }}>{opSelecionada.temperatura ?? '—'}</div>
+                </div>
+              </div>
+              {opSelecionada.ultimo_contato_em && (
+                <div>
+                  <div style={{ fontSize: 12, color: 'var(--mut)', marginBottom: 4 }}>Último contato</div>
+                  <div style={{ fontSize: 13, color: 'var(--ink)' }}>{new Date(opSelecionada.ultimo_contato_em).toLocaleDateString('pt-BR')}</div>
+                </div>
+              )}
+              <div style={{ display: 'flex', gap: 10 }}>
+                <Link href={`/dashboard/clientes-vendas/pipeline?oportunidade=${opSelecionada.id}`} className="btn-v2 primary" style={{ flex: 1, textAlign: 'center', textDecoration: 'none' }}>Editar</Link>
+                <button onClick={() => setOpSelecionada(null)} className="btn-v2" style={{ flex: 1 }}>Fechar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal: lista de oportunidades por etapa */}
+      {etapaFiltro && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.5)', zIndex: 101, display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={() => setEtapaFiltro(null)}>
+          <div onClick={e => e.stopPropagation()} style={{ background: '#fff', borderRadius: 12, padding: 24, maxWidth: 600, width: '90%', maxHeight: '80vh', overflowY: 'auto' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+              <h2 style={{ fontSize: 18, fontWeight: 800 }}>{FUNIL.find(f => f.etapa === etapaFiltro)?.label}</h2>
+              <button onClick={() => setEtapaFiltro(null)} style={{ background: 'none', border: 'none', fontSize: 20, cursor: 'pointer' }}>✕</button>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              {ops.filter(o => o.etapa === etapaFiltro).length === 0 ? (
+                <div style={{ fontSize: 13, color: 'var(--mut)' }}>Nenhuma oportunidade nesta etapa.</div>
+              ) : ops.filter(o => o.etapa === etapaFiltro).map(o => (
+                <div key={o.id} onClick={() => { setOpSelecionada(o); setEtapaFiltro(null) }} style={{ padding: 12, border: '1px solid var(--line)', borderRadius: 8, cursor: 'pointer', transition: 'background .2s' }} onMouseEnter={e => e.currentTarget.style.background = 'var(--cream)'} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start' }}>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontSize: 13.5, fontWeight: 700, color: 'var(--ink)' }}>{o.titulo}</div>
+                      <div style={{ fontSize: 12, color: 'var(--mut)', marginTop: 4 }}>
+                        {o.temperatura && <span style={{ display: 'inline-block', marginRight: 12 }}>🔥 {o.temperatura}</span>}
+                        {o.ultimo_contato_em && <span style={{ display: 'inline-block' }}>Contato: {new Date(o.ultimo_contato_em).toLocaleDateString('pt-BR')}</span>}
+                      </div>
+                    </div>
+                    <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--ink)' }}>{formatBRL(Number(o.valor ?? 0))}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
