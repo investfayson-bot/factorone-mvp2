@@ -218,7 +218,7 @@ export default function CartoesPage() {
             </div>
           </div>
           <div className="kpi-val">{formatBRL(totalLimite)}</div>
-          <div className="kpi-delta">{cartoes.length} cartão{cartoes.length !== 1 ? 'ões' : ''}</div>
+          <div className="kpi-delta">{cartoes.length} {cartoes.length === 1 ? 'cartão' : 'cartões'}</div>
         </div>
         <div className="kpi" style={{ borderTop: `3px solid ${usoPct > 80 ? '#B0413E' : usoPct > 60 ? '#B08A3E' : '#3D7A6E'}` }}>
           <div className="kpi-lbl">Usado este mês
