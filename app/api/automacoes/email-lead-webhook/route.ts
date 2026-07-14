@@ -57,7 +57,7 @@ export async function POST(req: NextRequest) {
       origem: 'email',
       titulo: `Email recebido: ${assunto}`,
       detalhe: corpo?.slice(0, 500) || 'Sem corpo',
-    }).catch(() => null)
+    })
 
     // Salva contato de email
     if (r.criado) {
@@ -65,7 +65,6 @@ export async function POST(req: NextRequest) {
         .from('crm_oportunidades')
         .update({ email_contato: emailNorm })
         .eq('id', r.id)
-        .catch(() => null)
     }
 
     // Cria nota interna com full email
