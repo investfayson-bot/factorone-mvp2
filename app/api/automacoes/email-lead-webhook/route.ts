@@ -74,7 +74,7 @@ export async function POST(req: NextRequest) {
       origem: 'sistema',
       titulo: 'Email Original Capturado',
       detalhe: `De: ${de}\nAssunto: ${assunto}\n\n${corpo || '(sem corpo)'}`,
-    }).catch(() => null)
+    })
 
     return NextResponse.json({
       ok: true,
