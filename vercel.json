@@ -28,8 +28,5 @@
       "path": "/api/cron/relatorio-mensal",
       "schedule": "0 9 1 * *"
     }
-  ],
-  "env": {
-    "CRON_SECRET": "@cron_secret"
-  }
+  ]
 }
