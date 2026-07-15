@@ -56,9 +56,19 @@ create policy "work_items select by empresa" on public.work_items
 -- rota server-side (service role), mesmo padrão de usuario_empresas.
 
 -- Fix: linhas novas de extrato_bancario nasciam com status_classificacao
--- 'confirmada' por default (nunca precisavam de revisão), porque só quem
--- setava esse campo explicitamente era o motor lazy da tela Extrato. Com o
--- Action Engine classificando na ingestão (Task 5), o default correto pra
--- uma linha nova é "ainda não foi vista" — 'sugerida'.
+-- 'confirmada' por default. Hoje duas rotas inserem sem setar esse campo
+-- explicitamente: app/api/cron/belvo-sync/route.ts (sync automático) e
+-- app/api/belvo/sync/route.ts (sync manual disparado pelo usuário) — ambas
+-- dependiam desse default pra virar "sugerida" na prática, via classificação
+-- lazy da tela Extrato.
+-- A Task 5 deste plano passa a classificar explicitamente toda linha
+-- inserida por app/api/cron/belvo-sync/route.ts na ingestão. Já
+-- app/api/belvo/sync/route.ts NÃO é tocada por nenhuma task deste plano v1 —
+-- suas linhas continuam caindo em 'sugerida' e dependendo só da
+-- classificação lazy da tela Extrato pra virar 'confirmada' (mesmo
+-- comportamento de hoje, só que via o novo default em vez de setado à mão).
+-- Elas não geram work_item nesta v1 — limitação de escopo aceita, não bug.
+-- Por isso o default correto pra uma linha nova em geral é "ainda não foi
+-- vista" — 'sugerida'.
 alter table public.extrato_bancario
   alter column status_classificacao set default 'sugerida';
