@@ -234,3 +234,86 @@ powered by Celcoin"); verde bem escuro tipo black quando for oferta/premium (os 
 
 ## NORTE (depois do ship)
 Business OS por departamento, com inteligência real, + integração FactorOne + FactorHub + LifeOS.
+
+## VERTICAIS REAIS — mapeamento e priorização AGILE (2026-07-15)
+
+Base: 7 clientes/dores reais do Fayson que já testaram a plataforma e gostaram (contador com base
+de 1000+ contadores, imobiliária, e-commerce/social commerce, logística/frota, indústria química
+B2B, gestão de pousadas/hotéis via agência de marketing, restaurante). Ver arquitetura de 5 camadas
+em memória `arquitetura-camadas-ceo-os`.
+
+### O padrão (o que TODO vertical pediu, sem exceção) → 🟢 CORE
+Isso não é feature de nicho — é a espinha do produto, tem que estar rígido antes de qualquer
+vertical entrar:
+- Financeiro (DRE, fluxo de caixa, quanto gasta e em qual setor)
+- **Agenda** — todo vertical tem compromisso/visita/entrega/reunião pra controlar
+- **Controle de vendas** — não só CRM de lead, o funil fechado até a venda
+- CRM + funil + follow-up **apuradíssimo** — não é feature secundária, é diferencial
+- **Central de atendimento** — atendimento ao cliente do tenant, não só canal de venda
+- Canal unificado / omnichannel (WhatsApp, Telegram, chat) — já existe conceito "Conversa"
+- Acesso via WhatsApp/Telegram (Donna) — "contabilidade fiscal na palma da mão"
+- Multi-CNPJ / múltiplas empresas por usuário, cada uma no seu ambiente
+- Dashboard que se adapta ao tipo de negócio (Cockpit + Intelligence, não um dash genérico) —
+  precisa servir tanto quem está **começando** (quer o básico funcionando) quanto quem já está
+  **no meio ou lá em cima** (quer métrica e relatório fundo). O Core tem que aguentar as duas pontas
+  do mesmo empreendedor ao longo do tempo, não só o dia 1.
+- **Inovação/criação/conteúdo** — geração de conteúdo não é só Growth de e-commerce/imobiliária,
+  é algo que todo empreendedor early/mid-stage pede pra se manter relevante
+
+### 🟡 GROWTH (recorrente entre verticais, mas não estrutural)
+- Geração automática de conteúdo (vídeo → cortes/reels) — pedido por e-commerce, imobiliária, pousada
+- Bot de atendimento que cai direto no CRM (e-commerce, pousada, restaurante)
+- Email marketing + copy automatizada
+- Pesquisa de satisfação / NPS (restaurante, pousada)
+- Prospecção B2B assistida (scraping tipo mymaps + estratégia de lead) — química, mas reaplicável
+
+### 🔵 MARKETPLACE (plugável, por vertical — não vai para todo tenant)
+| Vertical | App/módulo específico | Por quê é marketplace e não core |
+|---|---|---|
+| **Contador** | Portal Contador↔Cliente com rastreador de bookkeeping estilo "rastreio de encomenda" (o que o cliente mandou vs. o que o contador já viu/processou) | Só existe onde há relação contador-cliente formal |
+| Imobiliária/corretor | Gestão de Patrimônio (upload PDF/Excel de imóvel → valor, documentos) + chaves/visitas/agendamento por telefone | Peso de imóvel físico é vertical, não universal |
+| E-commerce | Custo por unidade (antes/depois de fixo), automação de postagem pro algoritmo | Modelo de margem por SKU é de quem vende produto |
+| Logística/frota | Gestão de frota: rota, vida útil de pneu, manutenção, pagamento de motorista | Ativo físico (caminhão) não existe fora desse vertical |
+| Química/indústria B2B | Estoque de matéria-prima + dosador, prospecção presencial B2B | Fluxo de venda presencial/B2B é atípico |
+| Pousada/hotel (via agência) | CRM + ofertas + canal unificado *para os clientes da agência* (multi-tenant dentro de multi-tenant) | Agência revendendo pra terceiros é modelo de revenda, não uso direto |
+| Restaurante/bar/padaria | Cardápio com QR code, controle de pessoal, NPS | Cardápio físico é vertical |
+
+### Mecanismo técnico: Perfil de Negócio
+Não existe hoje um jeito de a plataforma "saber" que tipo de negócio é o tenant. Proposta:
+- No onboarding (ou depois, em Configurações), o usuário escolhe o **tipo de negócio**
+  (Contador / Imobiliária / E-commerce / Logística / Indústria B2B / Agência / Food service / Outro).
+- Esse campo decide: quais apps do Marketplace aparecem sugeridos, quais KPIs o Cockpit prioriza
+  por padrão, e quais perguntas o Intelligence já sabe fazer sem o usuário digitar.
+- Isso é o que o Fayson descreveu como "a plataforma vai direcionar baseado no tipo de serviço dele"
+  — é 1 campo + 1 tabela de mapeamento, não um sistema novo. Reaproveita `lib/marketplace.ts`
+  (já tem `navGroup` por app — só falta o filtro por tipo de negócio).
+
+### Priorização AGILE — ordem de construção, não lista de features
+Regra: **nunca abrir 2 verticais em paralelo.** Cada vertical novo só entra depois do anterior
+estar vendendo, não só "funcionando".
+
+1. **Sprint atual (já em andamento):** Core 🟢 — recorrência financeira, CRM, omnichannel. Isso já
+   está no backlog como prioridade nº1 pra venda desta semana. Nenhum vertical novo compete com isso.
+2. **Próximo vertical: Contador.** Motivo — não é 1 cliente, é um canal de distribuição (1000+
+   contadores, cada um traz N clientes). Já existe base disso na seção "Portal do Contador" acima
+   e a faixa "convide seu contador" já estava planejada. Constrói o rastreador
+   contador↔cliente + o Perfil de Negócio mínimo (só o suficiente pra diferenciar contador de PJ comum).
+3. **Depois:** entre os outros 6, priorizar por sinal comercial real (quem já topou pagar/testar de
+   verdade), não por qual é "mais legal de construir". Fayson decide qual dos 6 está mais quente
+   quando chegar a hora — não travar decisão nisso agora.
+4. Cada vertical novo = 1 app de Marketplace + ajuste no Perfil de Negócio, nunca um fork do
+   produto. Se algum pedido de vertical exigir mudar o Core, ele sobe de categoria pra 🟢 e entra
+   na discussão de Constituição, não é implementado direto.
+
+### O que isso NÃO é
+Não é planejar construir os 7 verticais. É garantir que quando cada um chegar, ele encaixa num
+molde já pronto (Perfil de Negócio + Marketplace) em vez de virar um projeto novo do zero.
+
+### 🔵 Aposta de longo prazo (Marketplace/Norte, NÃO construir agora): Crédito
+Ideia do Fayson: score de crédito próprio + sugestão de cartão de crédito baseado nesse score,
+no estilo Credit Karma (Canadá) — ele identifica isso como um gargalo real do mercado brasileiro
+(não existe hoje). Caminho natural: score → recomendação de cartão → eventualmente o FactorOne
+emitir cartão e aceitar pagamento direto. Pré-requisito óbvio: só faz sentido depois que o FactorOne
+tiver histórico financeiro real e volume de dado suficiente pra sustentar um score honesto — não é
+Sprint 0 nem vertical, é um produto financeiro à parte que nasce dos dados que o Core já vai estar
+coletando. Registrado aqui pra não perder a ideia, não pra entrar no roadmap atual.
