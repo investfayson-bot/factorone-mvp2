@@ -144,10 +144,10 @@ export default function DashboardPage() {
         const { data: sessWi } = await supabase.auth.getSession()
         const wiTk = sessWi.session?.access_token ?? ''
         if (wiTk) {
-          const wiRes = await fetch('/api/action-engine/work-items', { headers: { Authorization: `Bearer ${wiTk}` } })
-          if (wiRes.ok) {
-            const wiJson = await wiRes.json() as { work_items?: typeof prioridades }
-            setPrioridades((wiJson.work_items ?? []).slice(0, 5))
+          const wiRes = await fetch('/api/action-engine/work-items', { headers: { Authorization: `Bearer ${wiTk}` } }).catch(() => null)
+          if (wiRes?.ok) {
+            const wiJson = await wiRes.json().catch(() => null) as { work_items?: typeof prioridades } | null
+            if (wiJson) setPrioridades((wiJson.work_items ?? []).slice(0, 5))
           }
         }
 
