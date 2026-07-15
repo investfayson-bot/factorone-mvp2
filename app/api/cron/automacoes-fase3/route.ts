@@ -161,7 +161,8 @@ async function verificarObrigacoesFiscaisVencendo() {
   const { data: obrigacoes } = await supabaseAdmin
     .from('tax_obrigacoes')
     .select('id, nome, tipo, vencimento, valor, empresa_id, status')
-    .not('status', 'in', '(pago,entregue)')
+    .not('status', 'in', '("pago","entregue")')
+    .not('empresa_id', 'is', null)
     .lte('vencimento', emTresDias)
 
   let criados = 0
