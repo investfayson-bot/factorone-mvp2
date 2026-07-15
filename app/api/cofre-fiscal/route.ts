@@ -76,16 +76,20 @@ export async function POST(req: NextRequest) {
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
   const { registrarResultado } = await import('@/lib/action-engine/registrarResultado')
-  await registrarResultado(service, {
-    empresaId,
-    tipo: 'document_uploaded',
-    origem: 'documento',
-    origemRef: `cofre_fiscal_documentos:${data.id}`,
-    responsavelPapel: 'contador',
-    resolvidoAutomaticamente: false,
-    sugestaoIa: null,
-    arquivoPath,
-  })
+  try {
+    await registrarResultado(service, {
+      empresaId,
+      tipo: 'document_uploaded',
+      origem: 'documento',
+      origemRef: `cofre_fiscal_documentos:${data.id}`,
+      responsavelPapel: 'contador',
+      resolvidoAutomaticamente: false,
+      sugestaoIa: null,
+      arquivoPath,
+    })
+  } catch (e) {
+    console.error(`[cofre-fiscal] registrarResultado falhou para documento ${data.id}:`, e)
+  }
 
   return NextResponse.json({ ok: true, id: data.id })
 }
