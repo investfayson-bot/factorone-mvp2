@@ -173,9 +173,15 @@ export async function GET(req: NextRequest) {
         try {
           // registrarResultado primeiro: garante que todo lançamento
           // auto-classificado tem rastro no Action Engine antes de mutar
-          // extrato_bancario/regras_classificacao. Se isso falhar, a linha
-          // não é tocada — fica pendente pra próxima execução do cron, em
-          // vez de "confirmada" silenciosamente sem work_item.
+          // extrato_bancario/regras_classificacao. Se registrarResultado
+          // falhar, a linha não é tocada — fica pendente pra próxima
+          // execução, em vez de "confirmada" silenciosamente sem work_item.
+          // Trade-off aceito: se registrarResultado tiver sucesso mas um
+          // passo SEGUINTE falhar (update/confirmarClassificacao), a linha
+          // é reprocessada no próximo ciclo e um SEGUNDO work_item
+          // 'resolvido' pode ser criado pro mesmo origem_ref (o índice de
+          // dedup só cobre itens abertos) — ruído de auditoria, não perda
+          // de dado nem bug visível ao usuário.
           await registrarResultado(db, {
             empresaId,
             tipo: 'transaction_received',
