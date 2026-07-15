@@ -29,6 +29,7 @@ export async function POST(req: NextRequest) {
       processarCartaosNaoClassificados(),
       processarLeadsSemTemperatura(),
       verificarSaldosCriticos(),
+      verificarObrigacoesFiscaisVencendo(),
     ]
 
     const resultados = await Promise.allSettled(tasks)
@@ -36,7 +37,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({
       ok: true,
       tasks: resultados.map((r, i) => ({
-        task: ['cartoes', 'leads', 'saldos'][i],
+        task: ['cartoes', 'leads', 'saldos', 'obrigacoes_fiscais'][i],
         status: r.status,
         resultado: r.status === 'fulfilled' ? r.value : r.reason?.message || 'Erro',
       })),
@@ -151,4 +152,32 @@ async function verificarSaldosCriticos() {
   }
 
   return { contas_criticas: contas?.length || 0, notificacoes_criadas }
+}
+
+async function verificarObrigacoesFiscaisVencendo() {
+  const { registrarResultado } = await import('@/lib/action-engine/registrarResultado')
+  const emTresDias = new Date(Date.now() + 3 * 86_400_000).toISOString().slice(0, 10)
+
+  const { data: obrigacoes } = await supabaseAdmin
+    .from('tax_obrigacoes')
+    .select('id, nome, tipo, vencimento, valor, empresa_id, status')
+    .not('status', 'in', '(pago,entregue)')
+    .lte('vencimento', emTresDias)
+
+  let criados = 0
+  for (const o of obrigacoes ?? []) {
+    const id = await registrarResultado(supabaseAdmin, {
+      empresaId: o.empresa_id as string,
+      tipo: 'tax_due',
+      origem: 'obrigacao_fiscal',
+      origemRef: `tax_obrigacoes:${o.id}`,
+      responsavelPapel: 'contador',
+      resolvidoAutomaticamente: false,
+      prazo: o.vencimento as string,
+      impactoValor: o.valor != null ? Number(o.valor) : null,
+      sugestaoIa: { nome: o.nome, tipo: o.tipo },
+    })
+    if (id) criados++
+  }
+  return { verificadas: (obrigacoes ?? []).length, work_items_criados: criados }
 }
