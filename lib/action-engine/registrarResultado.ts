@@ -51,8 +51,8 @@ export async function registrarResultado(
     .single()
 
   if (error) {
-    if ((error as { code?: string }).code === '23505') return null
-    throw new Error(`registrarResultado falhou (${params.origemRef}): ${error.message}`)
+    if (error.code === '23505' && error.message.includes('work_items_origem_aberto_idx')) return null
+    throw new Error(`registrarResultado falhou (${params.origemRef}): ${error.message}`, { cause: error })
   }
   return data.id as string
 }
