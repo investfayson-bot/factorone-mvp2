@@ -139,13 +139,16 @@ export async function GET(req: NextRequest) {
     .from('extrato_bancario')
     .select('id, descricao, contraparte_nome, categoria, valor, empresa_id')
     .or('categoria.eq.Outros,categoria.is.null')
+    .neq('status_classificacao', 'confirmada')
     .gte('created_at', new Date(Date.now() - 3600_000).toISOString())
     .limit(500)
+
+  const errosClassificacao: { empresaId: string; linhaId: string; erro: string }[] = []
 
   if (pendentes?.length) {
     const { classificarLote, confirmarClassificacao } = await import('@/lib/financeiro/motorClassificacao')
     const { registrarResultado } = await import('@/lib/action-engine/registrarResultado')
-    const CATEGORIAS_PJ = ['Fornecedores', 'Marketing', 'Impostos/Taxas', 'Folha de Pagamento', 'Serviços de Terceiros', 'Aluguel/Infraestrutura', 'Tecnologia/Software', 'Assinaturas', 'Consultoria', 'Outros']
+    const { CATEGORIAS } = await import('@/lib/banco/types')
     const LIMIAR_CONFIANCA_AUTO = 3
 
     const porEmpresa = new Map<string, typeof pendentes>()
@@ -158,7 +161,7 @@ export async function GET(req: NextRequest) {
 
     for (const [empresaId, linhas] of Array.from(porEmpresa.entries())) {
       const itens = linhas.map(l => ({ id: l.id as string, texto: [l.descricao, l.contraparte_nome].filter(Boolean).join(' · ') }))
-      const resultados = await classificarLote(db, { empresaId }, itens, CATEGORIAS_PJ)
+      const resultados = await classificarLote(db, { empresaId }, itens, [...CATEGORIAS])
       const porId = new Map(resultados.map(r => [r.id, r]))
 
       for (const linha of linhas) {
@@ -167,12 +170,12 @@ export async function GET(req: NextRequest) {
         const resolveSozinho = r.status === 'aguardando_ok' && r.confianca >= LIMIAR_CONFIANCA_AUTO
         const novoStatus = resolveSozinho ? 'confirmada' : r.status
 
-        await db.from('extrato_bancario').update({ categoria: r.categoria, status_classificacao: novoStatus }).eq('id', linha.id)
-        if (resolveSozinho) {
-          await confirmarClassificacao(db, { empresaId }, [linha.descricao, linha.contraparte_nome].filter(Boolean).join(' · '), r.categoria)
-        }
-
         try {
+          // registrarResultado primeiro: garante que todo lançamento
+          // auto-classificado tem rastro no Action Engine antes de mutar
+          // extrato_bancario/regras_classificacao. Se isso falhar, a linha
+          // não é tocada — fica pendente pra próxima execução do cron, em
+          // vez de "confirmada" silenciosamente sem work_item.
           await registrarResultado(db, {
             empresaId,
             tipo: 'transaction_received',
@@ -184,15 +187,21 @@ export async function GET(req: NextRequest) {
             sugestaoIa: { categoria: r.categoria, confianca: r.confianca },
             decisaoDetalhe: resolveSozinho ? { categoria: r.categoria, confianca: r.confianca } : undefined,
           })
+
+          await db.from('extrato_bancario').update({ categoria: r.categoria, status_classificacao: novoStatus }).eq('id', linha.id)
+          if (resolveSozinho) {
+            await confirmarClassificacao(db, { empresaId }, [linha.descricao, linha.contraparte_nome].filter(Boolean).join(' · '), r.categoria)
+          }
         } catch (e) {
-          // Falha em registrar work_item não pode abortar o resto do lote —
-          // a linha já foi classificada acima, só o rastro do Action Engine
-          // que falhou. Loga e segue pra próxima linha.
-          console.error(`registrarResultado falhou para extrato_bancario:${linha.id}`, e)
+          // Falha em qualquer etapa não pode abortar o resto do lote — loga,
+          // acumula pro response, e segue pra próxima linha.
+          const erro = e instanceof Error ? e.message : 'erro'
+          console.error(`classificação falhou para extrato_bancario:${linha.id}`, e)
+          errosClassificacao.push({ empresaId, linhaId: linha.id as string, erro })
         }
       }
     }
   }
 
-  return NextResponse.json({ links: (links ?? []).length, sincronizados: okCount, transacoes: totalTx, erros })
+  return NextResponse.json({ links: (links ?? []).length, sincronizados: okCount, transacoes: totalTx, erros, errosClassificacao })
 }
