@@ -20,7 +20,7 @@ export type RegistrarResultadoParams = {
   origemRef: string
   responsavelPapel: ResponsavelPapel
   resolvidoAutomaticamente: boolean
-  prazo?: string | null
+  prazo?: string | null // formato 'YYYY-MM-DD' (sem horário) — usado por calcularScore
   impactoValor?: number | null
   sugestaoIa?: Record<string, unknown> | null
   arquivoPath?: string | null
