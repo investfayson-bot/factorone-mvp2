@@ -4,12 +4,13 @@ import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 
 export default function AceitarConvitePage({ params }: { params: Promise<{ token: string }> }) {
-  const [estado, setEstado] = useState<'loading' | 'login' | 'aceitando' | 'sucesso' | 'erro'>('loading')
+  const [estado, setEstado] = useState<'loading' | 'login' | 'confirmar' | 'aceitando' | 'sucesso' | 'erro'>('loading')
   const [msg, setMsg] = useState('')
   const [token, setToken] = useState('')
   const [convite, setConvite] = useState<{ email: string; role: string; nome: string | null } | null>(null)
   const [loginForm, setLoginForm] = useState({ email: '', senha: '' })
   const [loginLoading, setLoginLoading] = useState(false)
+  const [sessaoAtualEmail, setSessaoAtualEmail] = useState('')
   const router = useRouter()
 
   async function verificar(tk: string) {
@@ -24,10 +25,14 @@ export default function AceitarConvitePage({ params }: { params: Promise<{ token
     if (data.expires_at && new Date(data.expires_at) < new Date()) { setEstado('erro'); setMsg('Este convite expirou.'); return }
     setConvite(data as { email: string; role: string; nome: string | null })
 
-    // Check if already logged in
+    // Se já tem sessão ativa (ex.: convite aberto no mesmo navegador em que já
+    // está logado), NÃO aceita direto — troca a empresa ativa da conta sem
+    // avisar, e quem recebe fica sem entender por que o dashboard "não mudou
+    // pra tela de contador". Mostra confirmação explícita primeiro.
     const { data: { user } } = await supabase.auth.getUser()
     if (user) {
-      await aceitar(tk)
+      setSessaoAtualEmail(user.email ?? '')
+      setEstado('confirmar')
     } else {
       setLoginForm(f => ({ ...f, email: data.email ?? '' }))
       setEstado('login')
@@ -47,7 +52,8 @@ export default function AceitarConvitePage({ params }: { params: Promise<{ token
       if (!r.ok) { const j = await r.json().catch(() => ({})); setEstado('erro'); setMsg(j.error || 'Falha ao aceitar o convite.'); return }
     } catch { setEstado('erro'); setMsg('Falha ao aceitar o convite.'); return }
     setEstado('sucesso')
-    setTimeout(() => router.push('/dashboard'), 2000)
+    const destino = convite?.role === 'contador' ? '/dashboard/contabil-fiscal/portal-contador' : '/dashboard'
+    setTimeout(() => router.push(destino), 2000)
   }
 
   useEffect(() => {
@@ -102,6 +108,32 @@ export default function AceitarConvitePage({ params }: { params: Promise<{ token
             <i className="fa-solid fa-circle-xmark" style={{ fontSize: 52, color: '#B0413E', marginBottom: 16, display: 'block' }} />
             <h2 style={{ color: '#0d1b2a', marginBottom: 8 }}>Convite inválido</h2>
             <p style={{ color: '#64748b', fontSize: 14 }}>{msg}</p>
+          </div>
+        )}
+
+        {estado === 'confirmar' && convite && (
+          <div>
+            <i className="fa-solid fa-triangle-exclamation" style={{ fontSize: 40, color: '#B08A3E', marginBottom: 16, display: 'block' }} />
+            <h2 style={{ color: '#0d1b2a', marginBottom: 8 }}>Confirmar troca de empresa</h2>
+            <p style={{ color: '#64748b', fontSize: 14.5, marginBottom: 20, lineHeight: 1.5 }}>
+              Você está logado como <strong>{sessaoAtualEmail}</strong>. Aceitar este convite como{' '}
+              <strong>{ROLES[convite.role] ?? convite.role}</strong> vai trocar sua empresa ativa. Seu acesso às
+              empresas atuais não é perdido — você pode voltar a qualquer momento em &quot;Trocar empresa&quot;.
+            </p>
+            <div style={{ display: 'flex', gap: 10 }}>
+              <button
+                onClick={() => router.push('/dashboard')}
+                style={{ flex: 1, background: '#f1f5f9', color: '#334155', border: 'none', borderRadius: 8, padding: '12px', fontWeight: 600, fontSize: 14, cursor: 'pointer' }}
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={() => void aceitar(token)}
+                style={{ flex: 1, background: 'var(--teal)', color: '#fff', border: 'none', borderRadius: 8, padding: '12px', fontWeight: 700, fontSize: 14, cursor: 'pointer' }}
+              >
+                Aceitar convite
+              </button>
+            </div>
           </div>
         )}
 
