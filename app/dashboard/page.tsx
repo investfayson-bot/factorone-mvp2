@@ -60,6 +60,7 @@ export default function DashboardPage() {
   const [topCats, setTopCats] = useState<{ cat: string; val: number }[]>([])
   const [insight, setInsight] = useState('')
   const [pendencias, setPendencias] = useState({ reembolsos: 0, aprovacoes: 0, contasPagarVencendo: 0 })
+  const [prioridades, setPrioridades] = useState<{ id: string; tipo: string; origem: string; score: number; prazo: string | null; impacto_valor: number | null }[]>([])
   const [hoje, setHoje] = useState({
     financeiro: { pagos: 0, vencendo: 0 },
     vendas: { novosHoje: 0, semResposta: 0 },
@@ -139,6 +140,16 @@ export default function DashboardPage() {
           aprovacoes: (aPendRes.data ?? []).length,
           contasPagarVencendo: (cPagarRes.data ?? []).length,
         })
+
+        const { data: sessWi } = await supabase.auth.getSession()
+        const wiTk = sessWi.session?.access_token ?? ''
+        if (wiTk) {
+          const wiRes = await fetch('/api/action-engine/work-items', { headers: { Authorization: `Bearer ${wiTk}` } }).catch(() => null)
+          if (wiRes?.ok) {
+            const wiJson = await wiRes.json().catch(() => null) as { work_items?: typeof prioridades } | null
+            if (wiJson) setPrioridades((wiJson.work_items ?? []).slice(0, 5))
+          }
+        }
 
         // "Hoje na sua operação" — Financeiro, Vendas, Fiscal, Banco
         const em48h = new Date(Date.now() + 48 * 3600_000).toISOString().slice(0, 10)
@@ -401,6 +412,22 @@ export default function DashboardPage() {
 
           <div className="card-v2">
             <div className="card-v2-h"><h3>Pendências & Aprovações</h3></div>
+            {prioridades.length > 0 && (
+              <div style={{ marginBottom: 14 }}>
+                <div style={{ fontSize: 11.5, fontWeight: 700, color: 'var(--mut)', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: 8 }}>
+                  Prioridades
+                </div>
+                {prioridades.map(p => (
+                  <div key={p.id} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '6px 0', fontSize: 12.5 }}>
+                    <span style={{ width: 6, height: 6, borderRadius: 3, background: p.score >= 70 ? '#B0413E' : p.score >= 40 ? '#B08A3E' : 'var(--acc)', flexShrink: 0 }} />
+                    <span style={{ color: 'var(--ink)', flex: 1 }}>
+                      {p.origem === 'obrigacao_fiscal' ? 'Obrigação fiscal' : p.origem === 'documento' ? 'Documento pendente' : 'Transação a confirmar'}
+                      {p.prazo && <span style={{ color: 'var(--mut)' }}> · vence {new Date(`${p.prazo}T12:00:00`).toLocaleDateString('pt-BR')}</span>}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8, fontSize: 12.5 }}>
               <div style={{ display: 'flex', gap: 8, alignItems: 'baseline' }}><b style={{ fontFamily: "'Space Grotesk', sans-serif" }}>{pendencias.aprovacoes}</b><span style={{ color: 'var(--mut)' }}>solicitações aguardando aprovação</span></div>
               <div style={{ display: 'flex', gap: 8, alignItems: 'baseline' }}><b style={{ fontFamily: "'Space Grotesk', sans-serif" }}>{pendencias.contasPagarVencendo}</b><span style={{ color: 'var(--mut)' }}>contas a pagar vencendo (7d)</span></div>

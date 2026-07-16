@@ -19,7 +19,7 @@ function pesoPrazo(prazo: string | null): number {
 }
 
 function pesoValor(valor: number | null): number {
-  if (!valor || valor <= 0) return 0
+  if (!valor || !Number.isFinite(valor) || valor <= 0) return 0
   return Math.min(20, Math.log10(valor + 1) * 4)
 }
 

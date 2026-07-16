@@ -16,6 +16,7 @@ type Doc = {
   id: string; tipo: string; nome: string; descricao: string | null
   competencia: string | null; arquivo_path: string | null; created_at: string
   origem: 'cofre' | 'obrigacao'
+  workItemId?: string; workItemStatus?: 'aberto' | 'em_analise' | 'resolvido' | 'ignorado'
 }
 
 const TIPOS: { id: string; label: string; icone: string }[] = [
@@ -63,7 +64,15 @@ export default function CofreFiscalPage() {
         supabase.from('tax_obrigacoes').select('id, nome, tipo, competencia, vencimento, valor, status').eq('empresa_id', eid).in('status', ['entregue', 'pago']).order('vencimento', { ascending: false }).limit(100),
       ])
 
-      const doCofre: Doc[] = ((cofreRes.data ?? []) as Omit<Doc, 'origem'>[]).map(d => ({ ...d, origem: 'cofre' as const }))
+      const wiJson = await fetch('/api/action-engine/work-items?origem=documento&status=todos', { headers: await auth() })
+        .then(r => r.ok ? r.json() as Promise<{ work_items?: { id: string; origem_ref: string; status: string }[] }> : { work_items: [] })
+        .catch(() => ({ work_items: [] }))
+      const statusPorDocId = new Map((wiJson.work_items ?? []).map(w => [w.origem_ref.replace('cofre_fiscal_documentos:', ''), w]))
+
+      const doCofre: Doc[] = ((cofreRes.data ?? []) as Omit<Doc, 'origem' | 'workItemId' | 'workItemStatus'>[]).map(d => {
+        const wi = statusPorDocId.get(d.id)
+        return { ...d, origem: 'cofre' as const, workItemId: wi?.id, workItemStatus: wi?.status as Doc['workItemStatus'] }
+      })
       const deObrig: Doc[] = ((obrigRes.data ?? []) as { id: string; nome: string; tipo: string | null; competencia: string | null; vencimento: string | null; valor: number | null }[]).map(o => ({
         id: `obr-${o.id}`,
         tipo: 'guia',
@@ -156,6 +165,20 @@ export default function CofreFiscalPage() {
     } finally { setAcaoEm(null) }
   }
 
+  async function marcarProcessado(doc: Doc) {
+    if (!doc.workItemId) return
+    setAcaoEm(doc.id)
+    try {
+      const res = await fetch(`/api/action-engine/work-items/${doc.workItemId}/resolver`, { method: 'POST', headers: await auth() })
+      const d = await res.json() as { ok?: boolean; error?: string }
+      if (!res.ok || !d.ok) throw new Error(d.error || 'Falha ao marcar como processado')
+      toast.success('Documento marcado como processado')
+      void carregar()
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : 'Erro')
+    } finally { setAcaoEm(null) }
+  }
+
   return (
     <div style={{ maxWidth: 940, paddingBottom: 30 }}>
       {/* Filtros + ação */}
@@ -202,10 +225,21 @@ export default function CofreFiscalPage() {
                 {!d.arquivo_path && <span style={{ color: '#B08A3E' }}> · sem arquivo anexado</span>}
               </div>
             </div>
+            {d.workItemStatus && d.workItemStatus !== 'resolvido' && (
+              <span className="chip-v2 y" style={{ flexShrink: 0 }}>Aguardando contador</span>
+            )}
+            {d.workItemStatus === 'resolvido' && (
+              <span className="chip-v2 g" style={{ flexShrink: 0 }}>Processado</span>
+            )}
             <div style={{ display: 'flex', gap: 6, flexShrink: 0, opacity: acaoEm === d.id ? .5 : 1 }}>
               <button title="Imprimir" className="btn-v2" style={{ padding: '5px 9px' }} disabled={!!acaoEm} onClick={() => void abrir(d, true)}><i className="fa-solid fa-print" style={{ fontSize: 12 }} /></button>
               <button title="Baixar / abrir" className="btn-v2" style={{ padding: '5px 9px' }} disabled={!!acaoEm} onClick={() => void abrir(d, false)}><i className="fa-solid fa-arrow-down" style={{ fontSize: 12 }} /></button>
               <button title="Reenviar por e-mail" className="btn-v2" style={{ padding: '5px 9px' }} disabled={!!acaoEm} onClick={() => void reenviar(d)}><i className="fa-solid fa-paper-plane" style={{ fontSize: 12 }} /></button>
+              {d.workItemId && d.workItemStatus !== 'resolvido' && (
+                <button title="Marcar como processado" className="btn-v2" style={{ padding: '5px 9px' }} disabled={!!acaoEm} onClick={() => void marcarProcessado(d)}>
+                  <i className="fa-solid fa-check" style={{ fontSize: 12, color: '#2E7D32' }} />
+                </button>
+              )}
               {d.origem === 'cofre' && (
                 <button title="Excluir" className="btn-v2" style={{ padding: '5px 9px' }} disabled={!!acaoEm} onClick={() => void excluir(d)}><i className="fa-solid fa-trash" style={{ fontSize: 12, color: '#B0413E' }} /></button>
               )}

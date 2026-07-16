@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient, type SupabaseClient } from '@supabase/supabase-js'
 import { belvoFetch } from '@/lib/belvo'
-import { categorizarLoteIA } from '@/lib/categorizar-ia'
 import { matchComprovantesPendentes } from '@/lib/financeiro/matchComprovante'
 
 export const runtime = 'nodejs'
@@ -132,27 +131,83 @@ export async function GET(req: NextRequest) {
     }
   }
 
-  // Classificação automática: pega linhas sem categoria inseridas na última
-  // hora e categoriza em lote por IA — mesma função usada no botão manual
-  // de /api/conta-pj/categorizar-extrato.
+  // Classificação automática via Action Engine: linhas sem categoria
+  // inseridas na última hora. Confiança >= 3 (estabelecimento já confirmado
+  // 3+ vezes por essa empresa) resolve sozinho; caso contrário vira work_item
+  // pro usuário confirmar em /dashboard/banco/extrato.
   const { data: pendentes } = await db
     .from('extrato_bancario')
-    .select('id, descricao, contraparte_nome, categoria')
+    .select('id, descricao, contraparte_nome, categoria, valor, empresa_id')
     .or('categoria.eq.Outros,categoria.is.null')
+    .neq('status_classificacao', 'confirmada')
     .gte('created_at', new Date(Date.now() - 3600_000).toISOString())
     .limit(500)
+
+  const errosClassificacao: { empresaId: string; linhaId: string; erro: string }[] = []
+
   if (pendentes?.length) {
-    const itens = pendentes.map(t => ({
-      id: t.id as string,
-      texto: [t.descricao, t.contraparte_nome].filter(Boolean).join(' · '),
-    }))
-    const mapa = await categorizarLoteIA(itens)
-    await Promise.all(
-      Object.entries(mapa).map(([id, categoria]) =>
-        db.from('extrato_bancario').update({ categoria }).eq('id', id)
-      )
-    )
+    const { classificarLote, confirmarClassificacao } = await import('@/lib/financeiro/motorClassificacao')
+    const { registrarResultado } = await import('@/lib/action-engine/registrarResultado')
+    const { CATEGORIAS } = await import('@/lib/banco/types')
+    const LIMIAR_CONFIANCA_AUTO = 3
+
+    const porEmpresa = new Map<string, typeof pendentes>()
+    for (const p of pendentes) {
+      const eid = p.empresa_id as string
+      if (!eid) continue
+      if (!porEmpresa.has(eid)) porEmpresa.set(eid, [])
+      porEmpresa.get(eid)!.push(p)
+    }
+
+    for (const [empresaId, linhas] of Array.from(porEmpresa.entries())) {
+      const itens = linhas.map(l => ({ id: l.id as string, texto: [l.descricao, l.contraparte_nome].filter(Boolean).join(' · ') }))
+      const resultados = await classificarLote(db, { empresaId }, itens, [...CATEGORIAS])
+      const porId = new Map(resultados.map(r => [r.id, r]))
+
+      for (const linha of linhas) {
+        const r = porId.get(linha.id as string)
+        if (!r) continue
+        const resolveSozinho = r.status === 'aguardando_ok' && r.confianca >= LIMIAR_CONFIANCA_AUTO
+        const novoStatus = resolveSozinho ? 'confirmada' : r.status
+
+        try {
+          // registrarResultado primeiro: garante que todo lançamento
+          // auto-classificado tem rastro no Action Engine antes de mutar
+          // extrato_bancario/regras_classificacao. Se registrarResultado
+          // falhar, a linha não é tocada — fica pendente pra próxima
+          // execução, em vez de "confirmada" silenciosamente sem work_item.
+          // Trade-off aceito: se registrarResultado tiver sucesso mas um
+          // passo SEGUINTE falhar (update/confirmarClassificacao), a linha
+          // é reprocessada no próximo ciclo e um SEGUNDO work_item
+          // 'resolvido' pode ser criado pro mesmo origem_ref (o índice de
+          // dedup só cobre itens abertos) — ruído de auditoria, não perda
+          // de dado nem bug visível ao usuário.
+          await registrarResultado(db, {
+            empresaId,
+            tipo: 'transaction_received',
+            origem: 'open_finance',
+            origemRef: `extrato_bancario:${linha.id}`,
+            responsavelPapel: 'financeiro',
+            resolvidoAutomaticamente: resolveSozinho,
+            impactoValor: Math.abs(Number(linha.valor) || 0),
+            sugestaoIa: { categoria: r.categoria, confianca: r.confianca },
+            decisaoDetalhe: resolveSozinho ? { categoria: r.categoria, confianca: r.confianca } : undefined,
+          })
+
+          await db.from('extrato_bancario').update({ categoria: r.categoria, status_classificacao: novoStatus }).eq('id', linha.id)
+          if (resolveSozinho) {
+            await confirmarClassificacao(db, { empresaId }, [linha.descricao, linha.contraparte_nome].filter(Boolean).join(' · '), r.categoria)
+          }
+        } catch (e) {
+          // Falha em qualquer etapa não pode abortar o resto do lote — loga,
+          // acumula pro response, e segue pra próxima linha.
+          const erro = e instanceof Error ? e.message : 'erro'
+          console.error(`classificação falhou para extrato_bancario:${linha.id}`, e)
+          errosClassificacao.push({ empresaId, linhaId: linha.id as string, erro })
+        }
+      }
+    }
   }
 
-  return NextResponse.json({ links: (links ?? []).length, sincronizados: okCount, transacoes: totalTx, erros })
+  return NextResponse.json({ links: (links ?? []).length, sincronizados: okCount, transacoes: totalTx, erros, errosClassificacao })
 }
