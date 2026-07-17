@@ -24,6 +24,16 @@ export async function POST(req: NextRequest) {
   if (!convite) return NextResponse.json({ error: 'Convite inválido' }, { status: 404 })
   if (convite.expires_at && new Date(convite.expires_at as string) < new Date()) return NextResponse.json({ error: 'Convite expirado' }, { status: 400 })
 
+  // Nunca deixa um convite rebaixar quem já é DONO da empresa (empresas.user_id).
+  // Bug real que aconteceu: o próprio dono se convidou como 'contador' pra
+  // testar o fluxo, o convite foi aceito, e sobrescreveu o papel dele de
+  // 'admin' pra 'contador' na PRÓPRIA empresa — perdeu acesso ao próprio
+  // sidebar completo até alguém corrigir na mão no banco.
+  const { data: empresaAlvo } = await svc.from('empresas').select('user_id').eq('id', convite.empresa_id as string).maybeSingle()
+  if (empresaAlvo?.user_id === user.id) {
+    return NextResponse.json({ error: 'Você é o dono desta empresa — não é possível aceitar um convite que rebaixaria seu próprio acesso.' }, { status: 400 })
+  }
+
   const { error: eConv } = await svc.from('membros_equipe').update({ status: 'ativo', user_id: user.id, updated_at: new Date().toISOString() }).eq('token', token)
   if (eConv) return NextResponse.json({ error: eConv.message }, { status: 500 })
 
