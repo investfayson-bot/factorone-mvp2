@@ -25,12 +25,17 @@ export default function AceitarConvitePage({ params }: { params: Promise<{ token
     if (data.expires_at && new Date(data.expires_at) < new Date()) { setEstado('erro'); setMsg('Este convite expirou.'); return }
     setConvite(data as { email: string; role: string; nome: string | null })
 
-    // Se já tem sessão ativa (ex.: convite aberto no mesmo navegador em que já
-    // está logado), NÃO aceita direto — troca a empresa ativa da conta sem
-    // avisar, e quem recebe fica sem entender por que o dashboard "não mudou
-    // pra tela de contador". Mostra confirmação explícita primeiro.
+    // Convite de contador exige login explícito sempre — não reaproveita
+    // sessão de navegador que por acaso já esteja logada (evita acesso ao
+    // portal do contador "por engano", sem o contador ter digitado nada).
+    // Pra qualquer outro papel, se já tem sessão ativa, mostra confirmação
+    // antes de trocar a empresa ativa em vez de trocar direto sem avisar.
     const { data: { user } } = await supabase.auth.getUser()
-    if (user) {
+    if (data.role === 'contador') {
+      if (user) await supabase.auth.signOut()
+      setLoginForm(f => ({ ...f, email: data.email ?? '' }))
+      setEstado('login')
+    } else if (user) {
       setSessaoAtualEmail(user.email ?? '')
       setEstado('confirmar')
     } else {

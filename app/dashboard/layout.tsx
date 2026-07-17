@@ -20,10 +20,16 @@ type NavGroup = { label: string; items: NavItem[] }
 // Fase 1 (docs/factorone-cursor-package/FASE-1) — estrutura definitiva do
 // menu, não muda mais por fase: PRINCIPAL / SOLUÇÕES / EXTRAS.
 const GRUPO_ROLES: Record<string, string[]> = {
+  'Início': ['admin', 'financeiro', 'comercial', 'operacional', 'logistica', 'viewer', 'contador'],
+  'Agentes IA': ['admin', 'financeiro', 'comercial', 'operacional', 'logistica', 'viewer'],
   'Financeiro': ['admin', 'financeiro', 'viewer'],
-  'Contábil & Fiscal': ['admin', 'financeiro'],
+  'Contábil & Fiscal': ['admin', 'financeiro', 'contador'],
   'Banco': ['admin', 'financeiro'],
   'Clientes & Vendas': ['admin', 'comercial'],
+  'Marketing': ['admin', 'comercial'],
+  'Apps & Marketplace': ['admin'],
+  'Equipe & Planos': ['admin'],
+  'Integrações': ['admin'],
   'Configurações': ['admin'],
 }
 
@@ -59,10 +65,9 @@ function buildNavGroups(badges: { reembolsos: number }, installedIds: string[] =
 
   let out = groups
   if (role !== 'admin') {
-    out = out.map(g => g.label === 'SOLUÇÕES'
-      ? { ...g, items: g.items.filter(i => (GRUPO_ROLES[i.label] ?? ['admin', 'financeiro', 'comercial', 'operacional', 'logistica', 'viewer']).includes(role)) }
-      : g
-    )
+    out = out
+      .map(g => ({ ...g, items: g.items.filter(i => (GRUPO_ROLES[i.label] ?? ['admin', 'financeiro', 'comercial', 'operacional', 'logistica', 'viewer']).includes(role)) }))
+      .filter(g => g.items.length > 0)
   }
   return out
 }
